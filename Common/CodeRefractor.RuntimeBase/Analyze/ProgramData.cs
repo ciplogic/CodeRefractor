@@ -1,0 +1,56 @@
+using System;
+using System.Collections.Generic;
+
+namespace CodeRefractor.RuntimeBase.Analyze
+{
+    public class ProgramData
+    {
+        private static readonly ProgramData StaticInstance = new ProgramData();
+        public Dictionary<string, AssemblyData> AssemblyDatas { get; set; }
+        public static ProgramData Instance { get { return StaticInstance; } }
+
+        ProgramData()
+        {
+            AssemblyDatas = new Dictionary<string, AssemblyData>();
+        }
+
+        public AssemblyData CurrentAsembly { get; set; }
+        public TypeData LocateType(Type type)
+        {
+            var fullName = TypeData.ComputeFullName(type.Namespace, type.Name);
+            return LocateType(fullName);
+        }
+
+        public TypeData LocateType(string fullTypeName)
+        {
+            foreach (var assemblyData in AssemblyDatas.Values)
+            {
+                TypeData result;
+                if (assemblyData.Types.TryGetValue(fullTypeName, out result))
+                    return result;
+            }
+            return null;
+        }
+
+        public TypeData UpdateType(Type declaringType)
+        {
+            var fullName = TypeData.ComputeFullName(declaringType.Namespace, declaringType.Name);
+            var locateType = LocateType(fullName);
+            if (locateType != null)
+                return locateType;
+
+            var result = TypeData.GetTypeData(declaringType);
+            foreach (var fieldDataRef in result.Fields)
+            {
+                var info = fieldDataRef.TypeData.Info;
+                UpdateType(info);
+                if (info.IsArray)
+                {
+                    var elementType = info.GetElementType();
+                    UpdateType(elementType);
+                }
+            }
+            return result;
+        }
+    }
+}

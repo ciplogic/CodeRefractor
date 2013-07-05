@@ -1,0 +1,37 @@
+#include <vector>
+
+static std::vector<System::Byte*> _constTables;
+System::Byte* RuntimeHelpers_GetBytes(int id)
+{
+	return _constTables[id];
+}
+
+void AddConstantByteArray(System::Byte* data)
+{
+	_constTables.push_back(data);
+}
+#ifdef WIN32
+
+HMODULE LoadNativeLibrary(const System::Char* dllFileName)
+{
+	return LoadLibraryW(dllFileName);
+}
+
+void* LoadNativeMethod(HMODULE module, const char* methodName)
+{
+	return (void*)GetProcAddress(module, methodName);
+}
+#else
+#include <dlfcn.h>
+
+void* LoadNativeLibrary(const char* dllFileName)
+{
+	return dlopen(dllFileName, RTLD_LAZY);
+}
+
+void* LoadNativeMethod(void* module, const char* methodName)
+{
+	return (void*)dlsym(module, methodName);
+}
+#endif
+

@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{10CEF783-53C3-42A7-940A-73773A2AF24F}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CodeRefractor.RuntimeBase</RootNamespace>
+    <AssemblyName>CodeRefractor.RuntimeBase</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Analyze\AssemblyData.cs" />
+    <Compile Include="Analyze\FieldDataRef.cs" />
+    <Compile Include="Analyze\ProgramData.cs" />
+    <Compile Include="CilMethodAttribute.cs" />
+    <Compile Include="DataBase\Cursor.cs" />
+    <Compile Include="DataBase\Dict.cs" />
+    <Compile Include="DataBase\DynNode.cs" />
+    <Compile Include="DataBase\DynNodeUtils.cs" />
+    <Compile Include="DataBase\Compacter\ExiLikeEvent.cs" />
+    <Compile Include="DataBase\Compacter\ExpanderTransformer.cs" />
+    <Compile Include="DataBase\Compacter\GzipExtractUtils.cs" />
+    <Compile Include="DataBase\SerializeXml\ListSet.cs" />
+    <Compile Include="DataBase\Compacter\MinimizeTransformer.cs" />
+    <Compile Include="DataBase\SerializeXml\SerializeLogic.cs" />
+    <Compile Include="DataBase\SerializeXml\XNodeAttribute.cs" />
+    <Compile Include="MiddleEnd\MethodInterpreterUtils.cs" />
+    <Compile Include="MiddleEnd\MethodKind.cs" />
+    <Compile Include="MiddleEnd\PlatformInvokeRepresentation.cs" />
+    <Compile Include="MiddleEnd\SimpleOperations\ConstTable\ConstByteArrayData.cs" />
+    <Compile Include="MiddleEnd\SimpleOperations\ConstTable\ConstByteArrayValue.cs" />
+    <Compile Include="MiddleEnd\SimpleOperations\ConstTable\ConstByteArrayList.cs" />
+    <Compile Include="Shared\ObcodeIntValues.cs" />
+    <Compile Include="Shared\ReflectionUtils.cs" />
+    <Compile Include="Analyze\TypeData.cs" />
+    <Compile Include="CommonExtensions.cs" />
+    <Compile Include="EvaluatorStack.cs" />
+    <Compile Include="MapTypeAttribute.cs" />
+    <Compile Include="CppMethodBodyAttribute.cs" />
+    <Compile Include="MiddleEnd\FieldGetter.cs" />
+    <Compile Include="MiddleEnd\FieldSetter.cs" />
+    <Compile Include="MiddleEnd\MetaMidRepresentation.cs" />
+    <Compile Include="MiddleEnd\MethodData.cs" />
+    <Compile Include="MiddleEnd\MethodInterpreter.cs" />
+    <Compile Include="MiddleEnd\Operator.cs" />
+    <Compile Include="MiddleEnd\SimpleOperations\ArgumentVariable.cs" />
+    <Compile Include="MiddleEnd\SimpleOperations\ArrayVariable.cs" />
+    <Compile Include="MiddleEnd\SimpleOperations\Assignment.cs" />
+    <Compile Include="MiddleEnd\SimpleOperations\BinaryOperator.cs" />
+    <Compile Include="MiddleEnd\SimpleOperations\BranchOperator.cs" />
+    <Compile Include="MiddleEnd\SimpleOperations\ConstValue.cs" />
+    <Compile Include="MiddleEnd\SimpleOperations\IdentifierValue.cs" />
+    <Compile Include="MiddleEnd\SimpleOperations\LocalOperation.cs" />
+    <Compile Include="MiddleEnd\SimpleOperations\LocalVariable.cs" />
+    <Compile Include="MiddleEnd\SimpleOperations\NewArrayObject.cs" />
+    <Compile Include="MiddleEnd\SimpleOperations\NewConstructedObject.cs" />
+    <Compile Include="MiddleEnd\SimpleOperations\UnaryOperator.cs" />
+    <Compile Include="MiddleEnd\SimpleOperations\VariableKind.cs" />
+    <Compile Include="Optimizations\OptimizationPass.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Shared\OpcodeBranchNames.cs" />
+    <Compile Include="Shared\OpcodeOperatorNames.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\mono.reflection-master\Mono.Reflection.csproj">
+      <Project>{97B010AB-0756-46DC-B75A-7A6C4F6FF28D}</Project>
+      <Name>Mono.Reflection</Name>
+    </ProjectReference>
+  </ItemGroup>
+</Project>
