@@ -122,7 +122,7 @@ namespace CodeRefractor.RuntimeBase
         public static string ClangMethodSignature(this MethodBase method, Type mappedType = null)
         {
             var declaringType = mappedType ?? method.DeclaringType;
-            var typeNamespace = declaringType.Namespace.Replace('.', '_');
+            var typeNamespace = (declaringType.Namespace??string.Empty).Replace('.', '_');
             var typeName = declaringType.Name;
             var methodName = method.Name;
             if (method is ConstructorInfo)

@@ -100,7 +100,7 @@ namespace CodeRefractor.Compiler.Backend
         {
             var method = methodBodyAttribute.Value;
             var typeData = method.DeclaringType;
-            var mappedType = crCrRuntimeLibrary._reverseMappedTypes[typeData];
+            var mappedType = crCrRuntimeLibrary.ReverseMappedTypes[typeData];
             var methodNativeDescription = method.GetCustomAttribute<CppMethodBodyAttribute>();
             if (methodNativeDescription == null)
                 throw new InvalidDataException(

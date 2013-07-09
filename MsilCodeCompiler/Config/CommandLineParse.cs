@@ -109,7 +109,7 @@ namespace CodeRefractor.Compiler.Config
         public List<OptimizationPass> BuildOptimizationPasses()
         {
             OptimizationPasses = new OptimizationPass[]
-                                     {/*
+                                     {
                                          new DeleteVregAssignedAndUsedNextLine(),
                                          new DeleteVregAsLocalAssignedAndUsedPreviousLine(),
                                          new ConstantVariablePropagation(),
@@ -124,12 +124,13 @@ namespace CodeRefractor.Compiler.Config
                                          new DeleteJumpNextLine(),
                                          new DeleteGappingVregAssignment(),
                                          new OperatorConstantFolding(),
-                                         new DceLocalAssigned(),
-                                         new ConstantDfaAnalysis(),
+                                         
                                          new ConstantVariableBranchOperatorPropagation(),
                                          new ConstantVariablePropagationInCall(),
                                          new OperatorConstantFolding(),
-                                       */
+                                         /*new DceLocalAssigned(),
+                                         new ConstantDfaAnalysis(),*/
+                                       
                                      }.ToList();
             return OptimizationPasses;
         }

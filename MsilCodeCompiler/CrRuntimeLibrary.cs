@@ -18,8 +18,8 @@ namespace CodeRefractor.Compiler
 
         private readonly Dictionary<string, MetaLinker> _supportedCilMethods = new Dictionary<string, MetaLinker>();
         private readonly Dictionary<string, MethodBase> _supportedMethods = new Dictionary<string, MethodBase>();
-        public readonly Dictionary<Type, Type> _mappedTypes = new Dictionary<Type, Type>();
-        public readonly Dictionary<Type, Type> _reverseMappedTypes = new Dictionary<Type, Type>();
+        public readonly Dictionary<Type, Type> MappedTypes = new Dictionary<Type, Type>();
+        public readonly Dictionary<Type, Type> ReverseMappedTypes = new Dictionary<Type, Type>();
 
         private readonly Dictionary<Type, List<CppMethodDefinition>> _crMethods =
             new Dictionary<Type, List<CppMethodDefinition>>();
@@ -36,8 +36,8 @@ namespace CodeRefractor.Compiler
                 var mapTypeAttr = item.GetCustomAttribute<MapTypeAttribute>();
                 if (mapTypeAttr != null)
                 {
-                    _mappedTypes[mapTypeAttr.MappedType] = item;
-                    _reverseMappedTypes[item] = mapTypeAttr.MappedType;
+                    MappedTypes[mapTypeAttr.MappedType] = item;
+                    ReverseMappedTypes[item] = mapTypeAttr.MappedType;
                 }
                 ScanType(item);
             }

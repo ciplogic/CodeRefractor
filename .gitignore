@@ -1,0 +1,14 @@
+_ReSharper*
+bin/*.dll
+Common/CodeRefractor.RuntimeBase/obj
+Common/CodeRefractor.RuntimeBase/bin
+MsilCodeCompiler/obj
+VmTests/Projects/SimpleAdditions/obj/*
+VmTests/MsilCodeCompiler.Tests/obj/*
+Views/CodeRefractor.Launcher/obj
+IlSpy
+*.suo
+*.pdb
+*.vshost.exe
+Common/CodeRefactor.OpenRuntime/obj/*
+*.userprefs

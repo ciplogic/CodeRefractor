@@ -32,7 +32,7 @@ namespace CodeRefractor.Compiler.Util
                 PathOfCompilerTools = @"c:\Oss\Dev-Cpp\MinGW64\bin\";
                 CompilerExe = "g++.exe";
                 OptimizationFlags = "-Ofast -fomit-frame-pointer -ffast-math -std=c++11 -static-libgcc ";
-                LinkerOptions = " -L. -lCodeRefactorRuntime";
+                LinkerOptions = "";
             }
         }
 		
