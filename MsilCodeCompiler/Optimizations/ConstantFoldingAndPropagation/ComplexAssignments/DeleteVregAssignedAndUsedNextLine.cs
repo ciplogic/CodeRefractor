@@ -1,5 +1,7 @@
 ﻿#region Usings
 
+using System.Collections.Generic;
+using System.Linq;
 using CodeRefractor.Compiler.Optimizations.Common;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.MiddleEnd;
@@ -12,15 +14,18 @@ namespace CodeRefractor.Compiler.Optimizations.ConstantFoldingAndPropagation.Com
 {
     internal class DeleteVregAssignedAndUsedNextLine : ResultingOptimizationPass
     {
-        private MetaMidRepresentation _intermediateCode;
         private int _currentRow;
         private int _currentId;
         private LocalVariable _leftVreg;
+        
+        private readonly HashSet<int> _vregToBeDeleted = new HashSet<int>();
+        private readonly HashSet<int> _instructionsToBeDeleted = new HashSet<int>();
+        private MetaMidRepresentation _intermediateCode;
 
         public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
         {
-            _intermediateCode = intermediateCode;
             var operations = intermediateCode.LocalOperations;
+            _intermediateCode = intermediateCode;
             for (var i = 0; i < operations.Count - 1; i++)
             {
                 var srcOperation = operations[i];
@@ -35,6 +40,25 @@ namespace CodeRefractor.Compiler.Optimizations.ConstantFoldingAndPropagation.Com
 
                 ProcessOperation(operations[i + 1], assignment);
             }
+            CleanVRegs(intermediateCode);
+        }
+
+        private void CleanVRegs(MetaMidRepresentation intermediateCode)
+        {
+            var liveVRegs = intermediateCode.Vars.VirtRegs.Where(vreg => vreg.Kind != VariableKind.Vreg || !_vregToBeDeleted.Contains(vreg.Id)).ToList();
+            intermediateCode.Vars.VirtRegs = liveVRegs;
+            var pos = 0;
+            var liveOperations = new List<LocalOperation>();
+            foreach (var op in intermediateCode.LocalOperations)
+            {
+                if(!_instructionsToBeDeleted.Contains(pos))
+                    liveOperations.Add(op);
+                pos++;
+            }
+            intermediateCode.LocalOperations = liveOperations;
+
+            _vregToBeDeleted.Clear();
+            _instructionsToBeDeleted.Clear();
         }
 
         private void ProcessOperation(LocalOperation destOperation, Assignment assignment)
@@ -193,7 +217,9 @@ namespace CodeRefractor.Compiler.Optimizations.ConstantFoldingAndPropagation.Com
                 if (operation.OperationUses(_leftVreg))
                     return;
             }
-            operations.RemoveAt(_currentRow);
+            _vregToBeDeleted.Add(_leftVreg.Id);
+            _instructionsToBeDeleted.Add(_currentRow);
+
         }
     }
 }
