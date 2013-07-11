@@ -136,8 +136,8 @@ namespace CodeRefractor.Compiler.Backend
 
         private void HandleSwitch(LocalOperation operation, StringBuilder bodySb)
         {
-            var assign = (Assignment) operation.Value;  
-            var instructionTable =(Instruction[]) ((ConstValue) assign.Right).Value;
+            var assign = (Assignment) operation.Value;
+            var instructionTable = (Instruction[]) ((ConstValue) assign.Right).Value;
 
             var instructionLabelIds = instructionTable.Select(i => i.Offset).ToList();
             bodySb.AppendFormat("switch({0}) {{", assign.Left.Name);

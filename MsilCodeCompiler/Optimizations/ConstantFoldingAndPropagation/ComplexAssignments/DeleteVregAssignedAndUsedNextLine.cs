@@ -17,7 +17,7 @@ namespace CodeRefractor.Compiler.Optimizations.ConstantFoldingAndPropagation.Com
         private int _currentRow;
         private int _currentId;
         private LocalVariable _leftVreg;
-        
+
         private readonly HashSet<int> _vregToBeDeleted = new HashSet<int>();
         private readonly HashSet<int> _instructionsToBeDeleted = new HashSet<int>();
         private MetaMidRepresentation _intermediateCode;
@@ -45,13 +45,15 @@ namespace CodeRefractor.Compiler.Optimizations.ConstantFoldingAndPropagation.Com
 
         private void CleanVRegs(MetaMidRepresentation intermediateCode)
         {
-            var liveVRegs = intermediateCode.Vars.VirtRegs.Where(vreg => vreg.Kind != VariableKind.Vreg || !_vregToBeDeleted.Contains(vreg.Id)).ToList();
+            var liveVRegs =
+                intermediateCode.Vars.VirtRegs.Where(
+                    vreg => vreg.Kind != VariableKind.Vreg || !_vregToBeDeleted.Contains(vreg.Id)).ToList();
             intermediateCode.Vars.VirtRegs = liveVRegs;
             var pos = 0;
             var liveOperations = new List<LocalOperation>();
             foreach (var op in intermediateCode.LocalOperations)
             {
-                if(!_instructionsToBeDeleted.Contains(pos))
+                if (!_instructionsToBeDeleted.Contains(pos))
                     liveOperations.Add(op);
                 pos++;
             }
@@ -219,7 +221,6 @@ namespace CodeRefractor.Compiler.Optimizations.ConstantFoldingAndPropagation.Com
             }
             _vregToBeDeleted.Add(_leftVreg.Id);
             _instructionsToBeDeleted.Add(_currentRow);
-
         }
     }
 }

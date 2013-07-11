@@ -100,7 +100,7 @@ namespace CodeRefractor.Compiler
                                               AttributeData = methodNativeDescription,
                                               MethodDefinition = method
                                           };
-            if(methodNativeDescription.IsPure)
+            if (methodNativeDescription.IsPure)
                 PureMethodTable.AddPureFunction(method);
             methodList.Add(cppMethodDefinition);
         }

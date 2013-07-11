@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using CodeRefractor.Compiler.Optimizations;
-using CodeRefractor.Compiler.Optimizations.ConstantDfa;
 using CodeRefractor.Compiler.Optimizations.ConstantFoldingAndPropagation;
 using CodeRefractor.Compiler.Optimizations.ConstantFoldingAndPropagation.ComplexAssignments;
 using CodeRefractor.Compiler.Optimizations.Jumps;
@@ -21,8 +20,8 @@ namespace CodeRefractor.Compiler.Config
 {
     internal class CommandLineParse
     {
-        public static CommandLineParse StaticInstance = new CommandLineParse();
-        public List<string> Arguments = new List<string>();
+        public static readonly CommandLineParse StaticInstance = new CommandLineParse();
+        public readonly List<string> Arguments = new List<string>();
 
         public static CommandLineParse Instance
         {
@@ -124,13 +123,11 @@ namespace CodeRefractor.Compiler.Config
                                          new DeleteJumpNextLine(),
                                          new DeleteGappingVregAssignment(),
                                          new OperatorConstantFolding(),
-                                         
                                          new ConstantVariableBranchOperatorPropagation(),
-                                         new EvaluatePureFunctionWithConstantCall(), 
+                                         new EvaluatePureFunctionWithConstantCall(),
                                          new OperatorConstantFolding(),
                                          /*new DceLocalAssigned(),
                                          new ConstantDfaAnalysis(),*/
-                                       
                                      }.ToList();
             return OptimizationPasses;
         }

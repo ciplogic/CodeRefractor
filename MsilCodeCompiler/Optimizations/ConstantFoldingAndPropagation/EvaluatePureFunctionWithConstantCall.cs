@@ -1,12 +1,16 @@
-﻿using System.Collections.Generic;
+﻿#region Usings
+
+using System.Collections.Generic;
 using CodeRefractor.Compiler.Optimizations.Common;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 
+#endregion
+
 namespace CodeRefractor.Compiler.Optimizations.ConstantFoldingAndPropagation
 {
-    class EvaluatePureFunctionWithConstantCall : ResultingOptimizationPass
+    internal class EvaluatePureFunctionWithConstantCall : ResultingOptimizationPass
     {
         public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
         {
@@ -14,11 +18,11 @@ namespace CodeRefractor.Compiler.Optimizations.ConstantFoldingAndPropagation
             for (var i = 0; i < operations.Count - 1; i++)
             {
                 var operation = operations[i];
-                if(operation.Kind!=LocalOperation.Kinds.Call)
+                if (operation.Kind != LocalOperation.Kinds.Call)
                     continue;
 
-                var operationData = (MethodData)operation.Value;
-                if(!operationData.IsPure || !operationData.IsStatic)
+                var operationData = (MethodData) operation.Value;
+                if (!operationData.IsPure || !operationData.IsStatic)
                     continue;
                 var methodInfo = operationData.Info;
                 var constParams = new List<object>();
@@ -26,20 +30,20 @@ namespace CodeRefractor.Compiler.Optimizations.ConstantFoldingAndPropagation
                 foreach (var parameter in operationData.Parameters)
                 {
                     var constParam = parameter as ConstValue;
-                    if(constParam==null)
+                    if (constParam == null)
                     {
                         paramsAreConst = false;
                         break;
                     }
                     constParams.Add(constParam.Value);
                 }
-                if(!paramsAreConst)
+                if (!paramsAreConst)
                     continue;
                 var result = methodInfo.Invoke(null, constParams.ToArray());
-                operations[i] = new LocalOperation()
+                operations[i] = new LocalOperation
                                     {
                                         Kind = LocalOperation.Kinds.Assignment,
-                                        Value = new Assignment()
+                                        Value = new Assignment
                                                     {
                                                         Left = operationData.Result,
                                                         Right = new ConstValue(result)

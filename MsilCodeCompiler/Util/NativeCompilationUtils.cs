@@ -35,7 +35,7 @@ namespace CodeRefractor.Compiler.Util
                 LinkerOptions = "";
             }
         }
-		
+
         private class LinuxGccOptions : Options
         {
             public LinuxGccOptions()
@@ -46,6 +46,7 @@ namespace CodeRefractor.Compiler.Util
                 LinkerOptions = "-L. -lCRRuntimeLinux -ldl";
             }
         }
+
         [XNode]
         public class Options
         {
