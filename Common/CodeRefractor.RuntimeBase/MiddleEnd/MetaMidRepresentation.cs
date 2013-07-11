@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using CodeRefractor.Compiler.Shared;
 using CodeRefractor.RuntimeBase.Analyze;
+using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.ConstTable;
 using CodeRefractor.RuntimeBase.Shared;
@@ -15,14 +15,9 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 {
     public class MetaMidRepresentation
     {
-        public readonly SortedDictionary<int, LocalVariable> _localVariables = new SortedDictionary<int, LocalVariable>();
+        public readonly MidRepresentationVariables Vars = new MidRepresentationVariables();
 
         public readonly List<LocalOperation> LocalOperations = new List<LocalOperation>();
-        public readonly List<LocalVariableInfo> Variables = new List<LocalVariableInfo>();
-        public readonly List<ArgumentVariable> Arguments = new List<ArgumentVariable>();
-        public readonly List<LocalVariable> VirtRegs = new List<LocalVariable>();
-        public readonly List<LocalVariable> LocalVars = new List<LocalVariable>();
-
         private MethodBase _method;
 
         public MethodBase Method
@@ -31,25 +26,25 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             set
             {
                 _method = value;
-                Variables.Clear();
-                Variables.AddRange(_method.GetMethodBody().LocalVariables);
+                Vars.Variables.Clear();
+                Vars.Variables.AddRange(_method.GetMethodBody().LocalVariables);
                 int pos = 0;
                 var isConstructor = _method is ConstructorInfo;
                 if (isConstructor || !Method.IsStatic)
                 {
-                    Arguments.Add(new ArgumentVariable("_this")
+                    Vars.Arguments.Add(new ArgumentVariable("_this")
                     {
                         FixedType = Method.DeclaringType
                     });
                 }
-                Arguments.AddRange(_method.GetParameters().Select(param => new ArgumentVariable(param.Name)
+                Vars.Arguments.AddRange(_method.GetParameters().Select(param => new ArgumentVariable(param.Name)
                 {
                     FixedType = param.ParameterType,
                     Id = pos++
                 }));
 
                 pos = 0;
-                LocalVars.AddRange(Variables.Select(v => new LocalVariable()
+                Vars.LocalVars.AddRange(Vars.Variables.Select(v => new LocalVariable()
                 {
                     FixedType = v.LocalType,
                     Id = pos++,
@@ -78,7 +73,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         public LocalVariable SetNewVReg(EvaluatorStack evaluator)
         {
             var newLocal = evaluator.SetNewVReg();
-            VirtRegs.Add(newLocal);
+            Vars.VirtRegs.Add(newLocal);
             return newLocal;
         }
 
@@ -92,7 +87,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             };
 
             evaluator.Stack.Pop();
-            _localVariables[value] = newLocal;
+            Vars.LocalVariables[value] = newLocal;
             var assingment = new Assignment
             {
                 Left = newLocal,
@@ -105,7 +100,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
         public void CopyLocalVariableIntoStack(int value, EvaluatorStack evaluator)
         {
-            var locVar = _localVariables[value];
+            var locVar = Vars.LocalVariables[value];
 
             var vreg = SetNewVReg(evaluator);
 
@@ -126,6 +121,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 Kind = kind,
                 Value = value
             };
+            
             LocalOperations.Add(result);
             var assignment = result.Value as Assignment;
             if (assignment != null)
@@ -140,9 +136,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         public static bool HandleRuntimeHelpersMethod(MethodBase method)
         {
             var declType = method.DeclaringType;
-            if (declType != typeof(RuntimeHelpers))
-                return false;
-            return true;
+            return declType == typeof(RuntimeHelpers);
         }
 
         public void Call(object operand, EvaluatorStack evaluator)
@@ -394,7 +388,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         public void LoadArgument(int pushedIntValue, EvaluatorStack evaluator)
         {
 
-            var argument = Arguments[pushedIntValue];
+            var argument = Vars.Arguments[pushedIntValue];
             var vreg = SetNewVReg(evaluator);
             vreg.FixedType = argument.ComputedType();
             var assignment = new Assignment()

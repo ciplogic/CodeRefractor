@@ -54,7 +54,9 @@
     <Compile Include="DataBase\SerializeXml\SerializeLogic.cs" />
     <Compile Include="DataBase\SerializeXml\XNodeAttribute.cs" />
     <Compile Include="MiddleEnd\MethodInterpreterUtils.cs" />
-    <Compile Include="MiddleEnd\MethodKind.cs" />
+    <Compile Include="MiddleEnd\Methods\MethodKind.cs" />
+    <Compile Include="MiddleEnd\Methods\PureMethodTable.cs" />
+    <Compile Include="MiddleEnd\MidRepresentationVariables.cs" />
     <Compile Include="MiddleEnd\PlatformInvokeRepresentation.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\ConstTable\ConstByteArrayData.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\ConstTable\ConstByteArrayValue.cs" />
@@ -66,12 +68,12 @@
     <Compile Include="EvaluatorStack.cs" />
     <Compile Include="MapTypeAttribute.cs" />
     <Compile Include="CppMethodBodyAttribute.cs" />
-    <Compile Include="MiddleEnd\FieldGetter.cs" />
-    <Compile Include="MiddleEnd\FieldSetter.cs" />
+    <Compile Include="MiddleEnd\SimpleOperations\FieldGetter.cs" />
+    <Compile Include="MiddleEnd\SimpleOperations\FieldSetter.cs" />
     <Compile Include="MiddleEnd\MetaMidRepresentation.cs" />
-    <Compile Include="MiddleEnd\MethodData.cs" />
+    <Compile Include="MiddleEnd\Methods\MethodData.cs" />
     <Compile Include="MiddleEnd\MethodInterpreter.cs" />
-    <Compile Include="MiddleEnd\Operator.cs" />
+    <Compile Include="MiddleEnd\SimpleOperations\Operator.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\ArgumentVariable.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\ArrayVariable.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\Assignment.cs" />

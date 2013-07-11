@@ -126,7 +126,7 @@ namespace CodeRefractor.Compiler.Config
                                          new OperatorConstantFolding(),
                                          
                                          new ConstantVariableBranchOperatorPropagation(),
-                                         new ConstantVariablePropagationInCall(),
+                                         new EvaluatePureFunctionWithConstantCall(), 
                                          new OperatorConstantFolding(),
                                          /*new DceLocalAssigned(),
                                          new ConstantDfaAnalysis(),*/

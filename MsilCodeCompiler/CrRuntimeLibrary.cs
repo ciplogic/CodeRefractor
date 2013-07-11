@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using CodeRefractor.Compiler.FrontEnd;
 using CodeRefractor.RuntimeBase;
+using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.Shared;
 
 #endregion
@@ -99,6 +100,8 @@ namespace CodeRefractor.Compiler
                                               AttributeData = methodNativeDescription,
                                               MethodDefinition = method
                                           };
+            if(methodNativeDescription.IsPure)
+                PureMethodTable.AddPureFunction(method);
             methodList.Add(cppMethodDefinition);
         }
 

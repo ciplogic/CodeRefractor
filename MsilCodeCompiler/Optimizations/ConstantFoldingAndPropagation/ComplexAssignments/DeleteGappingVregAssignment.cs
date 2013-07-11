@@ -2,6 +2,7 @@
 
 using CodeRefractor.Compiler.Optimizations.Common;
 using CodeRefractor.RuntimeBase.MiddleEnd;
+using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 
 #endregion
@@ -97,7 +98,6 @@ namespace CodeRefractor.Compiler.Optimizations.ConstantFoldingAndPropagation.Com
             if (right is LocalVariable && VarMatchVreg(assignment.Left))
             {
                 assignment.Left = right as LocalVariable;
-                return;
             }
         }
 

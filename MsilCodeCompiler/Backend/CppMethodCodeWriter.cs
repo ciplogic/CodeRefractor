@@ -9,6 +9,7 @@ using CodeRefractor.Compiler.Shared;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
+using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.ConstTable;
 using CodeRefractor.RuntimeBase.Shared;
@@ -257,12 +258,12 @@ namespace CodeRefractor.Compiler.Backend
         private static StringBuilder ComputeVariableSb(MetaMidRepresentation midRepresentation)
         {
             var variablesSb = new StringBuilder();
-            foreach (var variableInfo in midRepresentation.LocalVars)
+            foreach (var variableInfo in midRepresentation.Vars.LocalVars)
             {
                 variablesSb.AppendFormat("{0} local_{1};", variableInfo.ComputedType().ToCppName(), variableInfo.Id);
                 variablesSb.AppendLine();
             }
-            foreach (var localVariable in midRepresentation.VirtRegs)
+            foreach (var localVariable in midRepresentation.Vars.VirtRegs)
             {
                 variablesSb.AppendFormat("{0} vreg_{1};", localVariable.ComputedType().ToCppName(), localVariable.Id);
                 variablesSb.AppendLine();

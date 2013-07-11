@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using CodeRefractor.Compiler.Optimizations.Common;
 using CodeRefractor.RuntimeBase.MiddleEnd;
+using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 
 #endregion
@@ -16,7 +17,7 @@ namespace CodeRefractor.Compiler.Optimizations.SimpleDce
         public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
         {
             var operations = intermediateCode.LocalOperations;
-            var vregConstants = new HashSet<int>(intermediateCode.VirtRegs.Select(localVar => localVar.Id));
+            var vregConstants = new HashSet<int>(intermediateCode.Vars.VirtRegs.Select(localVar => localVar.Id));
 
             RemoveCandidatesInLoadLocal(operations, vregConstants);
             RemoveCandidatesInOperators(operations, vregConstants);
@@ -186,7 +187,7 @@ namespace CodeRefractor.Compiler.Optimizations.SimpleDce
         {
             foreach (var vregConstant in vregConstants)
             {
-                intermediateCode.VirtRegs.RemoveAll(l => l.Id == vregConstant && l.Kind == VariableKind.Vreg);
+                intermediateCode.Vars.VirtRegs.RemoveAll(l => l.Id == vregConstant && l.Kind == VariableKind.Vreg);
             }
 
             foreach (var vregConstant in vregConstants)

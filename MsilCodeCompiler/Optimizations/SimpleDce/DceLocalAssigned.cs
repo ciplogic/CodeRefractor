@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using CodeRefractor.Compiler.Optimizations.Common;
 using CodeRefractor.RuntimeBase.MiddleEnd;
+using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 
 #endregion
@@ -17,7 +18,7 @@ namespace CodeRefractor.Compiler.Optimizations.SimpleDce
         {
             var operations = intermediateCode.LocalOperations;
             var vregConstants = new HashSet<int>();
-            foreach (var localVariable in intermediateCode.LocalVars)
+            foreach (var localVariable in intermediateCode.Vars.LocalVars)
             {
                 vregConstants.Add(localVariable.Id);
             }
@@ -158,8 +159,8 @@ namespace CodeRefractor.Compiler.Optimizations.SimpleDce
                                              Result |= canRemove;
                                              return canRemove;
                                          });
-                intermediateCode.LocalVars.RemoveAll(local => local.Id == localUnused);
-                intermediateCode._localVariables.Remove(localUnused);
+                intermediateCode.Vars.LocalVars.RemoveAll(local => local.Id == localUnused);
+                intermediateCode.Vars.LocalVariables.Remove(localUnused);
             }
         }
 

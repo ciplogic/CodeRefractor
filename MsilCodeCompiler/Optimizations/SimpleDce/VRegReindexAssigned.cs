@@ -13,7 +13,7 @@ namespace CodeRefractor.Compiler.Optimizations.SimpleDce
     {
         public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
         {
-            var virtRegs = intermediateCode.VirtRegs;
+            var virtRegs = intermediateCode.Vars.VirtRegs;
             var vregConstants = new SortedSet<int>(virtRegs.Select(localVar => localVar.Id));
             var last = vregConstants.LastOrDefault();
             if (last == 0 || last == vregConstants.Count)
