@@ -54,30 +54,11 @@ namespace CodeRefractor.Compiler.Backend
             var entryPoint = linker.EntryPoint;
             var assemblyData = AssemblyData.GetAssemblyData(entryPoint.DeclaringType.Assembly);
             var typeDatas = assemblyData.Types.Values.Where(t => t.IsClass && !t.IsArray).ToArray();
-            foreach (var typeData in typeDatas)
-            {
-                sb.AppendFormat("namespace {0} {{", typeData.Namespace).AppendLine();
-                sb.AppendFormat("struct {0};", typeData.Name).AppendLine();
-                sb.AppendFormat("}}").AppendLine();
-            }
-            foreach (var typeData in typeDatas)
-            {
-                sb.AppendFormat("namespace {0} {{", typeData.Namespace).AppendLine();
-                sb.AppendFormat("struct {0} {{", typeData.Name).AppendLine();
-                foreach (var fieldData in typeData.Fields.Where(field => !field.IsStatic))
-                {
-                    sb.AppendFormat(" {0} {1};", fieldData.TypeData.Info.ToCppName(), fieldData.Name).AppendLine();
-                }
-                sb.AppendFormat("}}; }}").AppendLine();
-                foreach (var item in typeData.Interpreters)
-                {
-                    var interpreterCodeWriter = new MethodInterpreterCodeWriter
-                                                    {
-                                                        Interpreter = item
-                                                    };
-                    sb.Append(interpreterCodeWriter.WriteHeaderMethod());
-                }
-            }
+
+            WriteForwardTypeDefinitions(sb, typeDatas);
+            WriteForwardStructBodies(typeDatas, sb);
+            WriteStaticFieldDefinitions(sb, typeDatas);
+
             foreach (var metaInterpreter in GlobalMethodPool.Instance.Interpreters)
             {
                 var interpreterCodeWriter = new MethodInterpreterCodeWriter
@@ -92,6 +73,59 @@ namespace CodeRefractor.Compiler.Backend
             sb.AppendLine(ConstByteArrayList.BuildConstantTable());
 
             return sb;
+        }
+
+        private static void WriteStaticFieldDefinitions(StringBuilder sb, TypeData[] typeDatas)
+        {
+            foreach (var typeData in typeDatas)
+            {
+                foreach (var fieldData in typeData.Fields.Where(field => field.IsStatic))
+                {
+                    sb.AppendFormat("{2} {4}::{0}::{1} = {3};",
+                                    typeData.Name,
+                                    fieldData.Name,
+                                    fieldData.TypeData.Info.ToCppName(),
+                                    Activator.CreateInstance(fieldData.TypeData.Info),
+                                    typeData.Namespace
+                        ).AppendLine();
+                }
+            }
+        }
+
+        private static void WriteForwardStructBodies(TypeData[] typeDatas, StringBuilder sb)
+        {
+            foreach (var typeData in typeDatas)
+            {
+                sb.AppendFormat("namespace {0} {{", typeData.Namespace).AppendLine();
+                sb.AppendFormat("struct {0} {{", typeData.Name).AppendLine();
+                foreach (var fieldData in typeData.Fields.Where(field => !field.IsStatic))
+                {
+                    sb.AppendFormat(" {0} {1};", fieldData.TypeData.Info.ToCppName(), fieldData.Name).AppendLine();
+                }
+                foreach (var fieldData in typeData.Fields.Where(field => field.IsStatic))
+                {
+                    sb.AppendFormat(" static {0} {1};", fieldData.TypeData.Info.ToCppName(), fieldData.Name).AppendLine();
+                }
+                sb.AppendFormat("}}; }}").AppendLine();
+                foreach (var item in typeData.Interpreters)
+                {
+                    var interpreterCodeWriter = new MethodInterpreterCodeWriter
+                                                    {
+                                                        Interpreter = item
+                                                    };
+                    sb.Append(interpreterCodeWriter.WriteHeaderMethod());
+                }
+            }
+        }
+
+        private static void WriteForwardTypeDefinitions(StringBuilder sb, TypeData[] typeDatas)
+        {
+            foreach (var typeData in typeDatas)
+            {
+                sb.AppendFormat("namespace {0} {{", typeData.Namespace).AppendLine();
+                sb.AppendFormat("struct {0};", typeData.Name).AppendLine();
+                sb.AppendFormat("}}").AppendLine();
+            }
         }
 
         private static void WriteUsedCppRuntimeMethod(CrRuntimeLibrary crCrRuntimeLibrary,

@@ -15,10 +15,10 @@ namespace CodeRefractor.RuntimeBase.Analyze
         }
 
         public AssemblyData CurrentAsembly { get; set; }
-        public TypeData LocateType(Type type)
+        public static TypeData LocateType(Type type)
         {
             var fullName = TypeData.ComputeFullName(type.Namespace, type.Name);
-            return LocateType(fullName);
+            return Instance.LocateType(fullName);
         }
 
         public TypeData LocateType(string fullTypeName)
@@ -32,10 +32,10 @@ namespace CodeRefractor.RuntimeBase.Analyze
             return null;
         }
 
-        public TypeData UpdateType(Type declaringType)
+        public static TypeData UpdateType(Type declaringType)
         {
             var fullName = TypeData.ComputeFullName(declaringType.Namespace, declaringType.Name);
-            var locateType = LocateType(fullName);
+            var locateType = Instance.LocateType(fullName);
             if (locateType != null)
                 return locateType;
 

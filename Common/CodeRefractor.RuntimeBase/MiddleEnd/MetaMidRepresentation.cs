@@ -309,6 +309,25 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             AddOperation(LocalOperation.Kinds.SetField, assignment);
         }
 
+
+
+        public void StoreStaticField(EvaluatorStack evaluator, FieldInfo fieldInfo)
+        {
+            var firstVar = evaluator.Stack.Pop();
+            var fieldName = fieldInfo.Name;
+            var assignment = new Assignment()
+            {
+                Left = new StaticFieldSetter()
+                {
+                    DeclaringType = fieldInfo.DeclaringType,
+                    FieldName = fieldName
+                },
+                Right = firstVar
+            };
+            assignment.Left.FixedType = firstVar.ComputedType();
+            AddOperation(LocalOperation.Kinds.SetStaticField, assignment);
+        }
+
         #region Branching operators
 
         public void BranchIfTrue(int pushedIntValue, EvaluatorStack evaluator)
@@ -405,7 +424,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
             var vreg = SetNewVReg(evaluator);
             vreg.FixedType = firstVar.ComputedType().LocateField(fieldName).FieldType;
-            ProgramData.Instance.UpdateType(vreg.FixedType);
+            ProgramData.UpdateType(vreg.FixedType);
             var assignment = new Assignment
             {
                 Left = vreg,
@@ -416,6 +435,25 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 }
             };
             AddOperation(LocalOperation.Kinds.GetField, assignment);
+        }
+
+        public void LoadStaticField(EvaluatorStack evaluator, FieldInfo operand)
+        {
+            var vreg = SetNewVReg(evaluator);
+            var fieldName = operand.Name;
+            var declaringType = operand.DeclaringType;
+            vreg.FixedType = declaringType.LocateField(fieldName).FieldType;
+            var typeData = ProgramData.UpdateType(declaringType);
+            var assignment = new Assignment
+            {
+                Left = vreg,
+                Right = new StaticFieldGetter()
+                {
+                    FieldName = fieldName,
+                    DeclaringType = typeData
+                }
+            };
+            AddOperation(LocalOperation.Kinds.GetStaticField, assignment);
         }
 
         public void LoadLength(EvaluatorStack evaluator)
@@ -478,7 +516,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 Left = result,
                 Right = new NewConstructedObject(constructorInfo)
             };
-            ProgramData.Instance.UpdateType(constructorInfo.DeclaringType);
+            ProgramData.UpdateType(constructorInfo.DeclaringType);
             AddOperation(LocalOperation.Kinds.NewObject, assignment);
         }
 

@@ -135,6 +135,16 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 MidRepresentation.Switch(evaluator, (Instruction[])instruction.Operand);
                 return;
             }
+            if (opcodeStr == "ldsfld")
+            {
+                MidRepresentation.LoadStaticField(evaluator, (FieldInfo)instruction.Operand);
+                return;
+            }
+            if (opcodeStr == "stsfld")
+            {
+                MidRepresentation.StoreStaticField(evaluator, (FieldInfo)instruction.Operand);
+                return;
+            }
 
 
             throw new InvalidOperationException(string.Format("Unknown instruction: {0}", instruction));

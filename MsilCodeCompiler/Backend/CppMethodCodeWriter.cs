@@ -99,6 +99,13 @@ namespace CodeRefractor.Compiler.Backend
                     case LocalOperation.Kinds.GetField:
                         HandleLoadField(operation, bodySb);
                         break;
+                    case LocalOperation.Kinds.SetStaticField:
+                        HandleSetStaticField(operation, bodySb);
+                        break;
+
+                    case LocalOperation.Kinds.GetStaticField:
+                        HandleLoadStaticField(operation, bodySb);
+                        break;
 
                     case LocalOperation.Kinds.LoadArgument:
                         HandleLoadArgument(operation, bodySb);
@@ -132,6 +139,20 @@ namespace CodeRefractor.Compiler.Backend
             }
             bodySb.AppendLine("}");
             return bodySb;
+        }
+
+        private void HandleLoadStaticField(LocalOperation operation, StringBuilder bodySb)
+        {
+            var assign = (Assignment) operation.Value;
+            var rightData = (StaticFieldGetter)assign.Right;
+            bodySb.AppendFormat("{0} = {1}::{2};", assign.Left.Name, rightData.DeclaringType.Name, rightData.FieldName);
+        }
+
+        private void HandleSetStaticField(LocalOperation operation, StringBuilder bodySb)
+        {
+            var assign = (Assignment)operation.Value;
+            var rightData = (StaticFieldSetter)assign.Left;
+            bodySb.AppendFormat("{1}::{2} = {0};", assign.Right.Name, rightData.DeclaringType.Name, rightData.FieldName);
         }
 
         private void HandleSwitch(LocalOperation operation, StringBuilder bodySb)
@@ -241,7 +262,7 @@ namespace CodeRefractor.Compiler.Backend
             var cppNameSmart = declaringType.ToCppName();
             var cppName = declaringType.ToCppName(false);
             bodySb.AppendFormat("{1} = {0}(new {2}());", cppNameSmart, value.Left.Name, cppName).AppendLine();
-            var typeData = ProgramData.Instance.LocateType(declaringType);
+            var typeData = ProgramData.LocateType(declaringType);
             var typeNs = declaringType.Namespace;
             foreach (var methodInterpreter in typeData.Interpreters)
             {

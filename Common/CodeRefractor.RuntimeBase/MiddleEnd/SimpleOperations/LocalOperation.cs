@@ -20,7 +20,9 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
             SetArrayItem,
             CopyArrayInitializer,
             CallRuntime,
-            Switch
+            Switch,
+            GetStaticField,
+            SetStaticField
         }
 
         public Kinds Kind;

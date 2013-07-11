@@ -150,7 +150,7 @@ namespace CodeRefractor.Compiler.FrontEnd
             AddClassIfNecessary(interpreter.Method).Add(interpreter);
             GlobalMethodPool.Instance.Interpreters[method.Key] = interpreter;
 
-            var typeData = ProgramData.Instance.UpdateType(method.Value.DeclaringType);
+            var typeData = ProgramData.UpdateType(method.Value.DeclaringType);
             typeData.AddMethodInterpreter(interpreter);
         }
 

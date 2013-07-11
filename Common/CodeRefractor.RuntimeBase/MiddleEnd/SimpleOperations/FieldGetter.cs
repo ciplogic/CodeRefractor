@@ -1,6 +1,4 @@
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
-
-namespace CodeRefractor.RuntimeBase.MiddleEnd
+namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 {
     public class FieldGetter : IdentifierValue
     {
