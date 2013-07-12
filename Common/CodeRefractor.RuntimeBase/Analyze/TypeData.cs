@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.Shared;
 
@@ -14,6 +15,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
         public List<FieldDataRef> Fields;
         public Type Info;
         public List<MethodInterpreter> Interpreters;
+        public Dictionary<String,int> InterpreterMapping= new Dictionary<string, int>();
 
         public TypeData()
         {
@@ -83,7 +85,17 @@ namespace CodeRefractor.RuntimeBase.Analyze
 
         public void AddMethodInterpreter(MethodInterpreter metaLinker)
         {
+            InterpreterMapping[metaLinker.Method.ToString()] = Interpreters.Count;
             Interpreters.Add(metaLinker);
+            
+        }
+
+        public MethodInterpreter GetInterpreter(string methodName)
+        {
+            int index;
+            return !InterpreterMapping.TryGetValue(methodName, out index) 
+                ? null 
+                : Interpreters[index];
         }
     }
 }

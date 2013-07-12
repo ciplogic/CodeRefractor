@@ -2,8 +2,10 @@
 
 using System.Collections.Generic;
 using System.Reflection;
+using System.Threading.Tasks;
 using CodeRefractor.Compiler.Backend;
 using CodeRefractor.Compiler.Config;
+using CodeRefractor.Compiler.Optimizations.Inliner;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
@@ -131,22 +133,12 @@ namespace CodeRefractor.Compiler.FrontEnd
         private void Interpret(KeyValuePair<string, MethodBase> method)
         {
             var interpreter = new MethodInterpreter(method.Value);
-            var optimizationPasses = CommandLineParse.OptimizationPasses;
             var methodDefinitionKey = method.Value.ToString();
 
             var labelList = new HashSet<int>();
             Labels.TryGetValue(methodDefinitionKey, out labelList);
             interpreter.SetLabels(labelList);
             interpreter.Process();
-            if (optimizationPasses != null)
-            {
-                var codeWriter = new MethodInterpreterCodeWriter
-                                     {
-                                         Interpreter = interpreter
-                                     };
-                codeWriter.ApplyOptimizations(optimizationPasses);
-            }
-
             AddClassIfNecessary(interpreter.Method).Add(interpreter);
             GlobalMethodPool.Instance.Interpreters[method.Key] = interpreter;
 
@@ -154,7 +146,7 @@ namespace CodeRefractor.Compiler.FrontEnd
             typeData.AddMethodInterpreter(interpreter);
         }
 
-        private ClassInterpreter AddClassIfNecessary(MethodBase operand)
+        private static ClassInterpreter AddClassIfNecessary(MethodBase operand)
         {
             var name = ClassInterpreter.GetClassName(operand.DeclaringType);
             ClassInterpreter result;
@@ -181,6 +173,43 @@ namespace CodeRefractor.Compiler.FrontEnd
                 return;
             GlobalMethodPool.Instance.MethodInfos[methodDesc] = methodBase;
             ComputeDependencies(methodBase);
+        }
+
+        public void OptimizeMethods()
+        {
+            var optimizationPasses = CommandLineParse.OptimizationPasses;
+            Parallel.ForEach(GlobalMethodPool.Instance.MethodInfos, 
+                methodBase =>
+                {
+                    var typeData =
+                        ProgramData.UpdateType(
+                            methodBase.Value.DeclaringType);
+                    var interpreter = typeData.GetInterpreter(methodBase.Key);
+                    if (optimizationPasses == null) return;
+                    var codeWriter = new MethodInterpreterCodeWriter
+                    {
+                        Interpreter = interpreter
+                    };
+                    codeWriter.ApplyLocalOptimizations(
+                        optimizationPasses);
+                }
+                );
+
+            InlineMethods();
+            
+        }
+
+        private void InlineMethods()
+        {
+            var inliner = new SmallFunctionsInliner();
+            foreach (var methodBase in GlobalMethodPool.Instance.MethodInfos)
+            {
+                var typeData = ProgramData.UpdateType(methodBase.Value.DeclaringType);
+                var interpreter = typeData.GetInterpreter(methodBase.Key);
+                
+                inliner.OptimizeOperations(interpreter.MidRepresentation);
+            }
+
         }
     }
 }

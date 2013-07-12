@@ -23,6 +23,7 @@ namespace CodeRefractor.Compiler.Backend
             linker.ComputeDependencies(definition);
             linker.ComputeLabels(definition);
             linker.EvaluateMethods();
+            linker.OptimizeMethods();
             return linker;
         }
 

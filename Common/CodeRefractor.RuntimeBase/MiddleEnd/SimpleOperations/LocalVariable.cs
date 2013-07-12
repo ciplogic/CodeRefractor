@@ -10,6 +10,17 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
             return string.Format("{0}:{1}", Name, FixedType!=null?FixedType.Name:"Unknown");
         }
 
+        public LocalVariable Clone()
+        {
+            var result = new LocalVariable()
+                             {
+                                 FixedType = FixedType,
+                                 Id = Id,
+                                 Kind = Kind
+                             };
+            return result;
+        }
+
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;

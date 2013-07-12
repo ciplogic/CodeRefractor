@@ -5,8 +5,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using CodeRefractor.Compiler.Optimizations;
+using CodeRefractor.Compiler.Optimizations.ConstantDfa;
 using CodeRefractor.Compiler.Optimizations.ConstantFoldingAndPropagation;
 using CodeRefractor.Compiler.Optimizations.ConstantFoldingAndPropagation.ComplexAssignments;
+using CodeRefractor.Compiler.Optimizations.Inliner;
 using CodeRefractor.Compiler.Optimizations.Jumps;
 using CodeRefractor.Compiler.Optimizations.ReachabilityDfa;
 using CodeRefractor.Compiler.Optimizations.SimpleDce;
@@ -109,6 +111,7 @@ namespace CodeRefractor.Compiler.Config
         {
             OptimizationPasses = new OptimizationPass[]
                                      {
+                                         /*
                                          new DeleteVregAssignedAndUsedNextLine(),
                                          new DeleteVregAsLocalAssignedAndUsedPreviousLine(),
                                          new ConstantVariablePropagation(),
@@ -122,12 +125,12 @@ namespace CodeRefractor.Compiler.Config
                                          new ReachabilityLines(),
                                          new DeleteJumpNextLine(),
                                          new DeleteGappingVregAssignment(),
-                                         new OperatorConstantFolding(),
                                          new ConstantVariableBranchOperatorPropagation(),
                                          new EvaluatePureFunctionWithConstantCall(),
                                          new OperatorConstantFolding(),
-                                         /*new DceLocalAssigned(),
-                                         new ConstantDfaAnalysis(),*/
+                                         new DceLocalAssigned(),
+                                         new ConstantDfaAnalysis(),
+                                          new VRegVariablePropagation()*/
                                      }.ToList();
             return OptimizationPasses;
         }

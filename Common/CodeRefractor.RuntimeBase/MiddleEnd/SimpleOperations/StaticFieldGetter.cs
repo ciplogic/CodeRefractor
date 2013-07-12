@@ -1,4 +1,3 @@
-using System;
 using CodeRefractor.RuntimeBase.Analyze;
 
 namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations

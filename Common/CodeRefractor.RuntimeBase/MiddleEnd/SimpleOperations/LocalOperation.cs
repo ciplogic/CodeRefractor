@@ -32,5 +32,14 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
         {
             return string.Format("{0}: {1}", Kind, Value ?? "");
         }
+
+        public LocalOperation Clone()
+        {
+            return new LocalOperation
+            {
+                Kind = Kind,
+                Value = Value
+            };
+        }
     }
 }

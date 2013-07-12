@@ -32,7 +32,7 @@ namespace CodeRefractor.Compiler.Backend
         }
 
 
-        public void ApplyOptimizations(IEnumerable<OptimizationPass> optimizationPasses)
+        public void ApplyLocalOptimizations(IEnumerable<OptimizationPass> optimizationPasses)
         {
             if (optimizationPasses == null)
                 return;

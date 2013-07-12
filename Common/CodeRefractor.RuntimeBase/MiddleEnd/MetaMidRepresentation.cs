@@ -27,7 +27,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             {
                 _method = value;
                 Vars.Variables.Clear();
-                Vars.Variables.AddRange(_method.GetMethodBody().LocalVariables);
+                Vars.Variables.AddRange(GetMethodBody.LocalVariables);
                 int pos = 0;
                 var isConstructor = _method is ConstructorInfo;
                 if (isConstructor || !Method.IsStatic)
@@ -51,6 +51,11 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                     Kind = VariableKind.Argument
                 }));
             }
+        }
+
+        public MethodBody GetMethodBody
+        {
+            get { return _method.GetMethodBody(); }
         }
 
         public void PushInt4(int value, EvaluatorStack evaluator)
@@ -415,7 +420,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 Left = vreg,
                 Right = argument
             };
-            AddOperation(LocalOperation.Kinds.LoadArgument, assignment);
+            AddOperation(LocalOperation.Kinds.Assignment, assignment);
         }
 
         public void LoadField(string fieldName, EvaluatorStack evaluator)
