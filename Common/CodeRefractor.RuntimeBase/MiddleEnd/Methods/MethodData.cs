@@ -18,7 +18,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.Methods
             IsStatic = info.IsStatic;
             Parameters = new List<IdentifierValue>();
             IsVoid = info.GetReturnType() == typeof(void); 
-            IsPure = PureMethodTable.Instance.ComputeMethodPurity(info.ToString());
+            IsPure = PureMethodTable.ComputeMethodPurity(info.ToString());
             
         }
 

@@ -111,7 +111,6 @@ namespace CodeRefractor.Compiler.Config
         {
             OptimizationPasses = new OptimizationPass[]
                                      {
-                                         /*
                                          new DeleteVregAssignedAndUsedNextLine(),
                                          new DeleteVregAsLocalAssignedAndUsedPreviousLine(),
                                          new ConstantVariablePropagation(),
@@ -130,7 +129,7 @@ namespace CodeRefractor.Compiler.Config
                                          new OperatorConstantFolding(),
                                          new DceLocalAssigned(),
                                          new ConstantDfaAnalysis(),
-                                          new VRegVariablePropagation()*/
+                                          new VRegVariablePropagation()
                                      }.ToList();
             return OptimizationPasses;
         }

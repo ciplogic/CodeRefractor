@@ -7,7 +7,5 @@ namespace CodeRefractor.RuntimeBase
         public string Header { get; set; }
 
         public string Code { get; set; }
-
-        public bool IsPure { get; set; }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using CodeRefractor.Compiler.Shared;
+using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.Shared;
 using Mono.Reflection;
 
@@ -15,6 +16,10 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         public MethodInterpreter(MethodBase method)
         {
             Method = method;
+
+            var pureAttribute = method.GetCustomAttribute<PureMethodAttribute>();
+            if (pureAttribute != null)
+                PureMethodTable.AddPureFunction(method);
         }
 
         public override string ToString()

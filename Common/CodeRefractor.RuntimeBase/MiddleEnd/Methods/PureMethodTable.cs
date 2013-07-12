@@ -13,7 +13,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.Methods
                 return StaticInstance;
             }}
 
-        public bool ComputeMethodPurity(string description)
+        public static bool ComputeMethodPurity(string description)
         {
             return Instance.Descriptions.Contains(description);
         }
