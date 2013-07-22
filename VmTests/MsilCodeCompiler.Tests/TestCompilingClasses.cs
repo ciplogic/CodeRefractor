@@ -30,7 +30,7 @@ class Program {
 }
 ";
 
-            Assert.IsTrue(EvaluateCSharpToNative(bodyOfProgram));
+            Assert.IsTrue(TryCompileCSharp(bodyOfProgram));
         }
         [Test]
         public void TestCallCompilation()
@@ -46,7 +46,7 @@ class Program {
 }
 ";
 
-            Assert.IsTrue(EvaluateCSharpToNative(bodyOfProgram));
+            Assert.IsTrue(TryCompileCSharp(bodyOfProgram));
         }
     }
 }

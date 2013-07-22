@@ -40,7 +40,6 @@
   <ItemGroup>
     <Compile Include="OptimizationsTests\TestConstantVariableOperatorPropagationTests.cs" />
     <Compile Include="Serializing\SerializingTests.cs" />
-    <Compile Include="Serializing\TestMinimizer.cs" />
     <Compile Include="Shared\CompilingProgramBase.cs" />
     <Compile Include="TestCompilingClasses.cs" />
     <Compile Include="TestCompilingProgram.cs" />

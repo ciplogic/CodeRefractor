@@ -92,9 +92,6 @@ namespace CodeRefractor.Compiler.Util
             }
             var dir = Directory.GetCurrentDirectory();
             inputAssemblyName = Path.Combine(dir, commandLineParse.ApplicationInputAssembly);
-            Program.CrCrRuntimeLibrary = new CrRuntimeLibrary();
-            Program.CrCrRuntimeLibrary.ScanAssembly(typeof (CrString).Assembly);
-
             var asm = Assembly.LoadFile(inputAssemblyName);
             var definition = asm.EntryPoint;
             var start = Environment.TickCount;

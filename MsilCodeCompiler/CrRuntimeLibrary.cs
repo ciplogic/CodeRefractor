@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using CodeRefactor.OpenRuntime;
 using CodeRefractor.Compiler.FrontEnd;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
@@ -29,7 +30,11 @@ namespace CodeRefractor.Compiler
         public readonly Dictionary<string, MethodBase> UsedCppMethods = new Dictionary<string, MethodBase>();
         public readonly Dictionary<string, MetaLinker> UsedCilMethods = new Dictionary<string, MetaLinker>();
 
-
+        public static void DefaultSetup()
+        {
+            Program.CrCrRuntimeLibrary = new CrRuntimeLibrary();
+            Program.CrCrRuntimeLibrary.ScanAssembly(typeof(CrString).Assembly);
+        }
         public void ScanAssembly(Assembly assembly)
         {
             foreach (var item in assembly.GetTypes())

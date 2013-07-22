@@ -13,6 +13,7 @@ namespace CodeRefractor.Compiler
 
         private static void Main(string[] args)
         {
+            CrRuntimeLibrary.DefaultSetup();
             var commandLineParse = CommandLineParse.Instance;
             commandLineParse.Process(args);
             //MetaLinker.ScanAssembly(typeof(int));

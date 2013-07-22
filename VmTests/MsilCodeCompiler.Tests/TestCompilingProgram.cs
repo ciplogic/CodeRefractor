@@ -9,7 +9,7 @@ namespace MsilCodeCompiler.Tests
         [Test]
         public void TestCompilation()
         {
-            Assert.IsTrue(EvalCSharpMainToNative(@"Console.Write(2);"));
+            Assert.IsTrue(TryCompileCSharp(@"Console.Write(2);"));
         }
 
         [Test]
@@ -36,7 +36,7 @@ namespace MsilCodeCompiler.Tests
             }
             Console.Write(primes);
 ";
-            Assert.IsTrue(EvalCSharpMainToNative(bodyOfMain));
+            Assert.IsTrue(TryCSharpMain(bodyOfMain));
             
         }
     }

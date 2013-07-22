@@ -17,7 +17,7 @@ namespace MsilCodeCompiler.Tests.Shared
 {
     public class CompilingProgramBase
     {
-        protected bool EvalCSharpMainToNative(string bodyOfMain, List<OptimizationPass> optimizationPasses = null)
+        protected bool EvalCSharpMain(string bodyOfMain, List<OptimizationPass> optimizationPasses = null)
         {
             var code = String.Format(@"
 using System;
@@ -28,8 +28,22 @@ class C {{
             return EvaluateCSharpToNative(code, optimizationPasses);
         }
 
+        protected bool TryCSharpMain(string bodyOfMain, List<OptimizationPass> optimizationPasses = null)
+        {
+            var code = String.Format(@"
+using System;
+class C {{ 
+    public static void Main() {{{0}}} 
+}}
+", bodyOfMain);
+            return TryCompileCSharp(code, optimizationPasses);
+        }
+
         private Assembly CompileSource(string source)
         {
+
+            CrRuntimeLibrary.DefaultSetup();
+
             const string dummyName = "dump.cs";
             File.WriteAllText(dummyName, source);
             var currentDirectory = Directory.GetCurrentDirectory();
@@ -52,23 +66,9 @@ class C {{
         } 
         protected bool EvaluateCSharpToNative(string code, List<OptimizationPass> optimizationPasses=null)
         {
+            string expectedInput;
+            var outputCpp = GenerateOutputCppFromCode(code, optimizationPasses, out expectedInput);
             const string applicationNativeExe = "a_test.exe";
-            const string outputCpp = "output.cpp";
-            var assembly = CompileSource(code);
-            Assert.IsNotNull(assembly);
-            var start = Environment.TickCount;
-            var expectedInput = assm.ExecuteCommand();
-            var end = Environment.TickCount - start;
-            Console.WriteLine("Time1: {0}", end);
-            if (optimizationPasses == null)
-                optimizationPasses = DefaultOptimizationPasses();
-
-            var crRuntimeLibrary = new CrRuntimeLibrary();
-            var linker = assembly.EntryPoint.CreateLinkerFromEntryPoint(optimizationPasses);
-
-            
-            var generatedSource = CppCodeGenerator.BuildFullSourceCode(linker, crRuntimeLibrary);
-            generatedSource.ToFile(outputCpp);
             NativeCompilationUtils.CompileAppToNativeExe(outputCpp, applicationNativeExe);
             code.DeleteFile();
 
@@ -78,6 +78,36 @@ class C {{
             Console.WriteLine("Time1: {0}", endCpp);
             applicationNativeExe.DeleteFile();
             return actualOutput == expectedInput;
+        }
+
+        protected bool TryCompileCSharp(string code, List<OptimizationPass> optimizationPasses = null)
+        {
+            string expectedInput;
+            var outputCpp = GenerateOutputCppFromCode(code, optimizationPasses, out expectedInput);
+            var result = File.Exists(outputCpp);
+            code.DeleteFile();
+            return result;
+        }
+
+        private string GenerateOutputCppFromCode(string code, List<OptimizationPass> optimizationPasses, out string expectedInput)
+        {
+            const string outputCpp = "output.cpp";
+            var assembly = CompileSource(code);
+            Assert.IsNotNull(assembly);
+            var start = Environment.TickCount;
+            expectedInput = assm.ExecuteCommand();
+            var end = Environment.TickCount - start;
+            Console.WriteLine("Time1: {0}", end);
+            if (optimizationPasses == null)
+                optimizationPasses = DefaultOptimizationPasses();
+
+            var crRuntimeLibrary = new CrRuntimeLibrary();
+            var linker = assembly.EntryPoint.CreateLinkerFromEntryPoint(optimizationPasses);
+
+
+            var generatedSource = CppCodeGenerator.BuildFullSourceCode(linker, crRuntimeLibrary);
+            generatedSource.ToFile(outputCpp);
+            return outputCpp;
         }
     }
 }

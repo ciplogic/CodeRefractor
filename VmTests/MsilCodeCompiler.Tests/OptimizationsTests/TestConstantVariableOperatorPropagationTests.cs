@@ -21,7 +21,7 @@ namespace MsilCodeCompiler.Tests.OptimizationsTests
             var b = 9.0 - (int)a / 5;
            
             Console.WriteLine(b);";
-            EvalCSharpMainToNative(mainBody, optimizations);
+            TryCSharpMain(mainBody, optimizations);
         }
     }
 }
