@@ -1,18 +1,24 @@
+#region Usings
+
 using System.Collections.Generic;
+
+#endregion
 
 namespace CodeRefractor.RuntimeBase.DataBase
 {
     public class ExpanderTransformer
     {
-        readonly Cursor _cursor = new Cursor();
-        readonly List<string> _stringTable = new List<string>();
-        readonly List<string> _elementsTable = new List<string>();
+        private readonly Cursor _cursor = new Cursor();
+        private readonly List<string> _stringTable = new List<string>();
+        private readonly List<string> _elementsTable = new List<string>();
 
-        readonly Stack<DynNode> _stack = new Stack<DynNode>();
-        DynNode Top()
+        private readonly Stack<DynNode> _stack = new Stack<DynNode>();
+
+        private DynNode Top()
         {
             return _stack.Peek();
         }
+
         public DynNode Expand(byte[] arrayData, bool decompress)
         {
             if (decompress)

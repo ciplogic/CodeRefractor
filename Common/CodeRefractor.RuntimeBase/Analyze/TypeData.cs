@@ -1,8 +1,11 @@
+#region Usings
+
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.Shared;
+
+#endregion
 
 namespace CodeRefractor.RuntimeBase.Analyze
 {
@@ -15,7 +18,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
         public List<FieldDataRef> Fields;
         public Type Info;
         public List<MethodInterpreter> Interpreters;
-        public Dictionary<String,int> InterpreterMapping= new Dictionary<string, int>();
+        public Dictionary<String, int> InterpreterMapping = new Dictionary<string, int>();
 
         public TypeData()
         {
@@ -25,7 +28,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
 
         public override string ToString()
         {
-            return string.Format("MethodName='{0}' Namespace='{1}'",Name, Namespace);
+            return string.Format("MethodName='{0}' Namespace='{1}'", Name, Namespace);
         }
 
         public static TypeData GetTypeData(Type type)
@@ -87,14 +90,13 @@ namespace CodeRefractor.RuntimeBase.Analyze
         {
             InterpreterMapping[metaLinker.Method.ToString()] = Interpreters.Count;
             Interpreters.Add(metaLinker);
-            
         }
 
         public MethodInterpreter GetInterpreter(string methodName)
         {
             int index;
-            return !InterpreterMapping.TryGetValue(methodName, out index) 
-                ? null 
+            return !InterpreterMapping.TryGetValue(methodName, out index)
+                ? null
                 : Interpreters[index];
         }
     }

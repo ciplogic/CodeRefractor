@@ -16,7 +16,7 @@ namespace CodeRefractor.Compiler.Backend
     public static class CppFullFileMethodWriter
     {
         public static MetaLinker CreateLinkerFromEntryPoint(this MethodInfo definition,
-                                                            List<OptimizationPass> optimizationPasses = null)
+            List<OptimizationPass> optimizationPasses = null)
         {
             var linker = new MetaLinker();
             linker.SetEntryPoint(definition);
@@ -28,14 +28,14 @@ namespace CodeRefractor.Compiler.Backend
         }
 
         public static string WriteHeaderMethod(this MethodBase methodBase, bool writeEndColon = true,
-                                               Type mappedType = null)
+            Type mappedType = null)
         {
             var retType = methodBase.GetReturnType().ToCppMangling();
             var sb = new StringBuilder();
             var arguments = methodBase.GetArgumentsAsText();
 
             sb.AppendFormat("{0} {1}({2})",
-                            retType, methodBase.ClangMethodSignature(mappedType), arguments);
+                retType, methodBase.ClangMethodSignature(mappedType), arguments);
             if (writeEndColon)
                 sb.Append(";");
 
@@ -50,7 +50,7 @@ namespace CodeRefractor.Compiler.Backend
             var arguments = methodBase.Method.GetArgumentsAsText();
 
             sb.AppendFormat("typedef {0} (*{1}_type)({2})",
-                            retType, methodDll, arguments);
+                retType, methodDll, arguments);
 
             sb.AppendLine(";");
             sb.AppendFormat("{0}_type {0};", methodDll);

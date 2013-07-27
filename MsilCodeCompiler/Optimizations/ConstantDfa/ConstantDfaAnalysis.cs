@@ -140,17 +140,17 @@ namespace CodeRefractor.Compiler.Optimizations.ConstantDfa
                         if (constant != null)
                         {
                             analysis.States[assignment.Left] = new VariableState
-                                                                   {
-                                                                       Constant = constant,
-                                                                       State = VariableState.ConstantState.Constant
-                                                                   };
+                            {
+                                Constant = constant,
+                                State = VariableState.ConstantState.Constant
+                            };
                         }
                         else
                         {
                             analysis.States[assignment.Left] = new VariableState
-                                                                   {
-                                                                       State = VariableState.ConstantState.NotConstant
-                                                                   };
+                            {
+                                State = VariableState.ConstantState.NotConstant
+                            };
                         }
                         startingConclusions = analysis;
                         break;
@@ -158,9 +158,9 @@ namespace CodeRefractor.Compiler.Optimizations.ConstantDfa
                     case LocalOperation.Kinds.Operator:
                         assignment = (Assignment) operation.Value;
                         analysis.States[assignment.Left] = new VariableState
-                                                               {
-                                                                   State = VariableState.ConstantState.NotConstant
-                                                               };
+                        {
+                            State = VariableState.ConstantState.NotConstant
+                        };
                         break;
                     case LocalOperation.Kinds.BranchOperator:
                         branchOperator = (BranchOperator) operation.Value;

@@ -1,18 +1,24 @@
+#region Usings
+
 using System;
+
+#endregion
 
 namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 {
-    public class ConstValue :IdentifierValue
+    public class ConstValue : IdentifierValue
     {
         private object _value;
+
         public object Value
         {
             get { return _value; }
             set
             {
-                if(value is ConstValue)
+                if (value is ConstValue)
                 {
-                    throw new Exception("Invalid value, you try to set the constant description instead of constant itself");
+                    throw new Exception(
+                        "Invalid value, you try to set the constant description instead of constant itself");
                 }
                 _value = value;
             }
@@ -25,7 +31,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 
         public override Type ComputedType()
         {
-            return Value == null ? typeof(void) : Value.GetType();
+            return Value == null ? typeof (void) : Value.GetType();
         }
 
         public string Description
@@ -37,6 +43,5 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
         {
             return Value.ToString();
         }
-
     }
 }

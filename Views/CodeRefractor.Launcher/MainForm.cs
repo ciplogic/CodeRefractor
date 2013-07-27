@@ -1,13 +1,17 @@
-﻿using System;
+﻿#region Usings
+
+using System;
 using System.Windows.Forms;
 using CodeRefractor.Compiler.Util;
 using CodeRefractor.RuntimeBase.DataBase.SerializeXml;
+
+#endregion
 
 namespace CodeRefractor.Launcher
 {
     public partial class MainForm : Form
     {
-        NativeCompilationUtils.Options _viewModel = new NativeCompilationUtils.Options();
+        private NativeCompilationUtils.Options _viewModel = new NativeCompilationUtils.Options();
         private const string CompilerXml = "compilerOptions.xml";
 
         public MainForm()
@@ -52,7 +56,7 @@ namespace CodeRefractor.Launcher
 
         private static string BrowseForExe()
         {
-            var openDialog = new OpenFileDialog { Filter = "Exe files (*.exe)|*.exe|All files (*.*)|*.*" };
+            var openDialog = new OpenFileDialog {Filter = "Exe files (*.exe)|*.exe|All files (*.*)|*.*"};
             var result = openDialog.ShowDialog();
             var fileName = string.Empty;
             switch (result)
@@ -94,7 +98,6 @@ namespace CodeRefractor.Launcher
 
         private void button4_Click(object sender, EventArgs e)
         {
-
             var fileName = BrowseForExe();
 
             tbxOutputExe.Text = fileName;

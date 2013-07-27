@@ -33,8 +33,9 @@ namespace CodeRefractor.Compiler
         public static void DefaultSetup()
         {
             Program.CrCrRuntimeLibrary = new CrRuntimeLibrary();
-            Program.CrCrRuntimeLibrary.ScanAssembly(typeof(CrString).Assembly);
+            Program.CrCrRuntimeLibrary.ScanAssembly(typeof (CrString).Assembly);
         }
+
         public void ScanAssembly(Assembly assembly)
         {
             foreach (var item in assembly.GetTypes())
@@ -99,14 +100,14 @@ namespace CodeRefractor.Compiler
             _supportedMethods[format] = method;
             var methodList = GetTypesMethodList(declaringType);
             var cppMethodDefinition = new CppMethodDefinition
-                                          {
-                                              DeclaringType = method.DeclaringType,
-                                              MappedType = declaringType,
-                                              AttributeData = methodNativeDescription,
-                                              MethodDefinition = method
-                                          };
+            {
+                DeclaringType = method.DeclaringType,
+                MappedType = declaringType,
+                AttributeData = methodNativeDescription,
+                MethodDefinition = method
+            };
             var pureAttribute = method.GetCustomAttribute<PureMethodAttribute>();
-            if (pureAttribute!=null)
+            if (pureAttribute != null)
                 PureMethodTable.AddPureFunction(method);
             methodList.Add(cppMethodDefinition);
         }

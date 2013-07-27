@@ -1,6 +1,10 @@
+#region Usings
+
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+
+#endregion
 
 namespace CodeRefractor.RuntimeBase.Analyze
 {
@@ -8,6 +12,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
     {
         public string Name;
         public Dictionary<string, TypeData> Types { get; set; }
+
         public AssemblyData()
         {
             Types = new Dictionary<string, TypeData>();
@@ -20,7 +25,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
             AssemblyData result;
             if (programData.AssemblyDatas.TryGetValue(assembly.FullName, out result))
                 return result;
-            result = new AssemblyData() { Name = assembly.FullName, };
+            result = new AssemblyData() {Name = assembly.FullName,};
             programData.AssemblyDatas[result.Name] = result;
             return result;
         }

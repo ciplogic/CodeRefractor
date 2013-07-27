@@ -1,26 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using CodeRefractor.RuntimeBase.DataBase;
+﻿#region Usings
+
 using CodeRefractor.RuntimeBase.DataBase.SerializeXml;
 using NUnit.Framework;
+
+#endregion
 
 namespace MsilCodeCompiler.Tests.Serializing
 {
     [XNode]
-    class DataToSave
+    internal class DataToSave
     {
         public int X;
     }
 
     [TestFixture]
-    class SerializingTests
+    internal class SerializingTests
     {
         [Test]
         public void SimpleSerialize()
         {
-            var data = new DataToSave(){ X = 2};
+            var data = new DataToSave() {X = 2};
             var result = data.Serialize();
             data.X = 3;
             data.Deserialize(result);
@@ -28,4 +27,3 @@ namespace MsilCodeCompiler.Tests.Serializing
         }
     }
 }
-

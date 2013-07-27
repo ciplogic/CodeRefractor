@@ -1,6 +1,10 @@
+#region Usings
+
 using System.Collections.Generic;
 using System.Reflection;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
+
+#endregion
 
 namespace CodeRefractor.RuntimeBase.MiddleEnd.Methods
 {
@@ -17,9 +21,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.Methods
             Info = info;
             IsStatic = info.IsStatic;
             Parameters = new List<IdentifierValue>();
-            IsVoid = info.GetReturnType() == typeof(void); 
+            IsVoid = info.GetReturnType() == typeof (void);
             IsPure = PureMethodTable.ComputeMethodPurity(info.ToString());
-            
         }
 
         public MethodBase Info { get; private set; }
@@ -28,12 +31,12 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.Methods
         {
             var stack = evaluatorStack.Stack;
             var methodParams = Info.GetParameters();
-            foreach (ParameterInfo t in methodParams)
+            foreach (var t in methodParams)
             {
-                Parameters.Insert(0,stack.Pop());
+                Parameters.Insert(0, stack.Pop());
             }
             if (!IsStatic)
-                Parameters.Insert(0,stack.Pop());
+                Parameters.Insert(0, stack.Pop());
         }
     }
 }

@@ -1,7 +1,9 @@
-using System.IO;
-using CodeRefractor.Compiler.Util;
+#region Usings
+
 using MsilCodeCompiler.Tests.Shared;
 using NUnit.Framework;
+
+#endregion
 
 namespace MsilCodeCompiler.Tests
 {
@@ -32,6 +34,7 @@ class Program {
 
             Assert.IsTrue(TryCompileCSharp(bodyOfProgram));
         }
+
         [Test]
         public void TestCallCompilation()
         {

@@ -1,6 +1,10 @@
+#region Usings
+
 using System.Collections.Generic;
 using System.Reflection;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
+
+#endregion
 
 namespace CodeRefractor.RuntimeBase.MiddleEnd
 {

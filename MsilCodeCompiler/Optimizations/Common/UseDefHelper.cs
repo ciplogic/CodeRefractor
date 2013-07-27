@@ -23,7 +23,7 @@ namespace CodeRefractor.Compiler.Optimizations.Common
         }
 
         public static LocalOperation GetNextUsage(this List<LocalOperation> operations, LocalVariable variable,
-                                                  int startPos, out int pos)
+            int startPos, out int pos)
         {
             pos = startPos;
             for (var i = startPos; i < operations.Count; i++)

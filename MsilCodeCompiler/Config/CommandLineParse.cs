@@ -8,7 +8,6 @@ using CodeRefractor.Compiler.Optimizations;
 using CodeRefractor.Compiler.Optimizations.ConstantDfa;
 using CodeRefractor.Compiler.Optimizations.ConstantFoldingAndPropagation;
 using CodeRefractor.Compiler.Optimizations.ConstantFoldingAndPropagation.ComplexAssignments;
-using CodeRefractor.Compiler.Optimizations.Inliner;
 using CodeRefractor.Compiler.Optimizations.Jumps;
 using CodeRefractor.Compiler.Optimizations.ReachabilityDfa;
 using CodeRefractor.Compiler.Optimizations.SimpleDce;
@@ -110,27 +109,27 @@ namespace CodeRefractor.Compiler.Config
         public List<OptimizationPass> BuildOptimizationPasses()
         {
             OptimizationPasses = new OptimizationPass[]
-                                     {
-                                         new DeleteVregAssignedAndUsedNextLine(),
-                                         new DeleteVregAsLocalAssignedAndUsedPreviousLine(),
-                                         new ConstantVariablePropagation(),
-                                         new ConstantVariableOperatorPropagation(),
-                                         new ConstantVariablePropagationInCall(),
-                                         new VRegReindexAssigned(),
-                                         new ConstantVariableBranchOperatorPropagation(),
-                                         new DceVRegAssigned(),
-                                         new RemoveUnreferencedLabels(),
-                                         new ConsecutiveLabels(),
-                                         new ReachabilityLines(),
-                                         new DeleteJumpNextLine(),
-                                         new DeleteGappingVregAssignment(),
-                                         new ConstantVariableBranchOperatorPropagation(),
-                                         new EvaluatePureFunctionWithConstantCall(),
-                                         new OperatorConstantFolding(),
-                                         new DceLocalAssigned(),
-                                         new ConstantDfaAnalysis(),
-                                          new VRegVariablePropagation()
-                                     }.ToList();
+            {
+                new DeleteVregAssignedAndUsedNextLine(),
+                new DeleteVregAsLocalAssignedAndUsedPreviousLine(),
+                new ConstantVariablePropagation(),
+                new ConstantVariableOperatorPropagation(),
+                new ConstantVariablePropagationInCall(),
+                new VRegReindexAssigned(),
+                new ConstantVariableBranchOperatorPropagation(),
+                new DceVRegAssigned(),
+                new RemoveUnreferencedLabels(),
+                new ConsecutiveLabels(),
+                new ReachabilityLines(),
+                new DeleteJumpNextLine(),
+                new DeleteGappingVregAssignment(),
+                new ConstantVariableBranchOperatorPropagation(),
+                new EvaluatePureFunctionWithConstantCall(),
+                new OperatorConstantFolding(),
+                new DceLocalAssigned(),
+                new ConstantDfaAnalysis(),
+                new VRegVariablePropagation()
+            }.ToList();
             return OptimizationPasses;
         }
     }

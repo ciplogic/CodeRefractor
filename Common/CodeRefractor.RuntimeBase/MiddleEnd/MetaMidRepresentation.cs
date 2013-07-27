@@ -1,3 +1,5 @@
+#region Usings
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +12,8 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.ConstTable;
 using CodeRefractor.RuntimeBase.Shared;
 using Mono.Reflection;
+
+#endregion
 
 namespace CodeRefractor.RuntimeBase.MiddleEnd
 {
@@ -28,7 +32,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 _method = value;
                 Vars.Variables.Clear();
                 Vars.Variables.AddRange(GetMethodBody.LocalVariables);
-                int pos = 0;
+                var pos = 0;
                 var isConstructor = _method is ConstructorInfo;
                 if (isConstructor || !Method.IsStatic)
                 {
@@ -119,21 +123,22 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             AddOperation(LocalOperation.Kinds.Assignment, assingment);
         }
 
-        void AddOperation(LocalOperation.Kinds kind, object value = null)
+        private void AddOperation(LocalOperation.Kinds kind, object value = null)
         {
             var result = new LocalOperation
             {
                 Kind = kind,
                 Value = value
             };
-            
+
             LocalOperations.Add(result);
             var assignment = result.Value as Assignment;
             if (assignment != null)
             {
                 if (assignment.Left.FixedType == null)
-                    throw new InvalidOperationException(String.Format("The data introduced in the IR should be well typed. " +
-                        Environment.NewLine + "Operation: {0}", result));
+                    throw new InvalidOperationException(
+                        String.Format("The data introduced in the IR should be well typed. " +
+                                      Environment.NewLine + "Operation: {0}", result));
             }
         }
 
@@ -141,12 +146,12 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         public static bool HandleRuntimeHelpersMethod(MethodBase method)
         {
             var declType = method.DeclaringType;
-            return declType == typeof(RuntimeHelpers);
+            return declType == typeof (RuntimeHelpers);
         }
 
         public void Call(object operand, EvaluatorStack evaluator)
         {
-            var methodInfo = (MethodBase)operand;
+            var methodInfo = (MethodBase) operand;
             var methodData = new MethodData(methodInfo);
 
 
@@ -174,6 +179,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         }
 
         #region Operators
+
         public void Add(EvaluatorStack evaluator)
         {
             SetBinaryOperator(OpcodeOperatorNames.Add, evaluator);
@@ -261,6 +267,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         {
             SetUnaryOperator(OpcodeOperatorNames.Neg, evaluator);
         }
+
         #endregion
 
         #region Compare Operators
@@ -279,6 +286,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         {
             SetBinaryOperator("clt", evaluator);
         }
+
         #endregion
 
         public void SetLabel(int offset)
@@ -313,7 +321,6 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             assignment.Left.FixedType = secondVar.ComputedType();
             AddOperation(LocalOperation.Kinds.SetField, assignment);
         }
-
 
 
         public void StoreStaticField(EvaluatorStack evaluator, FieldInfo fieldInfo)
@@ -358,7 +365,6 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         }
 
 
-
         public void AlwaysBranch(int offset)
         {
             AddOperation(LocalOperation.Kinds.AlwaysBranch, offset);
@@ -375,12 +381,12 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             var secondVar = evaluator.Stack.Pop();
 
             AddOperation(LocalOperation.Kinds.BranchOperator,
-                         new BranchOperator(opcode)
-                         {
-                             JumpTo = jumpTo,
-                             CompareValue = firstVar,
-                             SecondValue = secondVar
-                         });
+                new BranchOperator(opcode)
+                {
+                    JumpTo = jumpTo,
+                    CompareValue = firstVar,
+                    SecondValue = secondVar
+                });
         }
 
         public void BranchIfGreaterOrEqual(int jumpTo, EvaluatorStack evaluator)
@@ -407,11 +413,11 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         {
             BranchTwoOperators(jumpTo, evaluator, OpcodeBranchNames.Bne);
         }
+
         #endregion
 
         public void LoadArgument(int pushedIntValue, EvaluatorStack evaluator)
         {
-
             var argument = Vars.Arguments[pushedIntValue];
             var vreg = SetNewVReg(evaluator);
             vreg.FixedType = argument.ComputedType();
@@ -465,19 +471,19 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         {
             SetUnaryOperator(OpcodeOperatorNames.LoadLen, evaluator);
 
-            evaluator.Top.FixedType = typeof(int);
+            evaluator.Top.FixedType = typeof (int);
         }
 
         public void ConvI4(EvaluatorStack evaluator)
         {
             SetUnaryOperator(OpcodeOperatorNames.ConvI4, evaluator);
-            evaluator.Top.FixedType = typeof(int);
+            evaluator.Top.FixedType = typeof (int);
         }
 
         public void ConvR8(EvaluatorStack evaluator)
         {
             SetUnaryOperator(OpcodeOperatorNames.ConvR8, evaluator);
-            evaluator.Top.FixedType = typeof(double);
+            evaluator.Top.FixedType = typeof (double);
         }
 
         public void LoadReferenceInArray(EvaluatorStack evaluator)
@@ -583,7 +589,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 Left = vreg,
                 Right = new ConstByteArrayValue(rightConstant)
             };
-            vreg.FixedType = typeof(byte[]);
+            vreg.FixedType = typeof (byte[]);
             AddOperation(LocalOperation.Kinds.CopyArrayInitializer, assign);
         }
 
@@ -600,7 +606,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 Left = result,
                 Right = new ConstValue(null)
             };
-            result.FixedType = typeof(object);
+            result.FixedType = typeof (object);
             AddOperation(LocalOperation.Kinds.Assignment, assign);
         }
 
@@ -611,12 +617,12 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
         public void Switch(EvaluatorStack evaluator, Instruction[] instructions)
         {
-            var firstVar = (LocalVariable)evaluator.Stack.Pop();
+            var firstVar = (LocalVariable) evaluator.Stack.Pop();
             var assign = new Assignment()
-                             {
-                                 Left = firstVar,
-                                 Right = new ConstValue(instructions)
-                             };
+            {
+                Left = firstVar,
+                Right = new ConstValue(instructions)
+            };
             AddOperation(LocalOperation.Kinds.Switch, assign);
         }
     }

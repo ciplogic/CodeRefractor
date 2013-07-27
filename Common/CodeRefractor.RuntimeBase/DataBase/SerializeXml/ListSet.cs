@@ -1,12 +1,14 @@
-﻿using System;
+﻿#region Usings
+
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
+
+#endregion
 
 namespace CodeRefractor.RuntimeBase.DataBase
 {
-    class ListSet <T>: List<T>
+    internal class ListSet<T> : List<T>
     {
         public virtual void Serialize(DynNode dataNode)
         {
@@ -21,7 +23,6 @@ namespace CodeRefractor.RuntimeBase.DataBase
                 {
                     SerializeItem(dataNode, child, fieldInfo);
                 }
-                
             }
         }
 
@@ -38,14 +39,12 @@ namespace CodeRefractor.RuntimeBase.DataBase
                 case TypeCode.Int32:
                     dataNode[fieldName] = fieldValue.ToString();
                     break;
-
             }
         }
 
-        
+
         public virtual void Deserialize(DynNode dataNode)
         {
-            
         }
     }
 }

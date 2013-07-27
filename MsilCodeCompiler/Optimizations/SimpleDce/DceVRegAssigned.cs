@@ -128,10 +128,10 @@ namespace CodeRefractor.Compiler.Optimizations.SimpleDce
         }
 
         private static void RemoveCandidatesInBranchOperators(List<LocalOperation> operations,
-                                                              HashSet<int> vregConstants)
+            HashSet<int> vregConstants)
         {
             foreach (var operation in operations.Where(operation =>
-                                                       operation.Kind == LocalOperation.Kinds.BranchOperator))
+                operation.Kind == LocalOperation.Kinds.BranchOperator))
             {
                 var rightBinaryAssignment = operation.Value as BranchOperator;
 
@@ -146,7 +146,7 @@ namespace CodeRefractor.Compiler.Optimizations.SimpleDce
         private static void RemoveCandidatesInOperators(List<LocalOperation> operations, HashSet<int> vregConstants)
         {
             foreach (var operation in operations.Where(operation =>
-                                                       operation.Kind == LocalOperation.Kinds.Operator))
+                operation.Kind == LocalOperation.Kinds.Operator))
             {
                 var localVariable = (Assignment) operation.Value;
 
@@ -167,7 +167,7 @@ namespace CodeRefractor.Compiler.Optimizations.SimpleDce
         }
 
         private static void RemoveCandidateVregIfInExpression(HashSet<int> vregConstants, IdentifierValue right,
-                                                              IdentifierValue left)
+            IdentifierValue left)
         {
             RemoveCandidateVarIfVreg(vregConstants, left);
             RemoveCandidateVarIfVreg(vregConstants, right);
@@ -183,7 +183,7 @@ namespace CodeRefractor.Compiler.Optimizations.SimpleDce
         #endregion
 
         private void OptimizeUnusedVregs(MetaMidRepresentation intermediateCode, HashSet<int> vregConstants,
-                                         List<LocalOperation> operations)
+            List<LocalOperation> operations)
         {
             var liveVRegs =
                 intermediateCode.Vars.VirtRegs.Where(

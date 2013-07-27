@@ -1,15 +1,20 @@
+#region Usings
+
 using System.Collections.Generic;
+
+#endregion
 
 namespace CodeRefractor.RuntimeBase.DataBase
 {
-    class Dict
+    internal class Dict
     {
-        readonly Dictionary<string, int> _words = new Dictionary<string, int>();
+        private readonly Dictionary<string, int> _words = new Dictionary<string, int>();
 
         public bool HasWord(string word)
         {
             return _words.ContainsKey(word);
         }
+
         public int GetWordId(string word)
         {
             int id;
@@ -17,7 +22,11 @@ namespace CodeRefractor.RuntimeBase.DataBase
                 return id;
             return -1;
         }
-        public int Count { get { return _words.Count; } }
+
+        public int Count
+        {
+            get { return _words.Count; }
+        }
 
         internal void AddWord(string newText)
         {

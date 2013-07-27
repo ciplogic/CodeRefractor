@@ -1,11 +1,17 @@
+#region Usings
+
 using System.Collections.Generic;
 using System.Text;
+
+#endregion
 
 namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.ConstTable
 {
     public class ConstByteArrayList
     {
-        public Dictionary<ConstByteArrayData, int> Items = new Dictionary<ConstByteArrayData, int>(new ConstByteArrayData.EqualityComparer());
+        public Dictionary<ConstByteArrayData, int> Items =
+            new Dictionary<ConstByteArrayData, int>(new ConstByteArrayData.EqualityComparer());
+
         public List<ConstByteArrayData> ItemList = new List<ConstByteArrayData>();
         private static ConstByteArrayList StaticInstance = new ConstByteArrayList();
 
@@ -23,16 +29,19 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.ConstTable
             return id;
         }
 
-        public static ConstByteArrayList Instance { get { return StaticInstance; } }
+        public static ConstByteArrayList Instance
+        {
+            get { return StaticInstance; }
+        }
 
         public static string BuildConstantTable()
         {
             var sb = new StringBuilder();
             sb.AppendLine("void RuntimeHelpersBuildConstantTable() {");
-            foreach(var item in Instance.ItemList)
+            foreach (var item in Instance.ItemList)
             {
-            var rightArray = item.Data;
-            var rightArrayItems = string.Join(", ", rightArray);
+                var rightArray = item.Data;
+                var rightArrayItems = string.Join(", ", rightArray);
 
                 sb.AppendFormat("AddConstantByteArray(new byte[{0}] {{ {1} }} );",
                     rightArray.Length,

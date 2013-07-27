@@ -1,5 +1,9 @@
+#region Usings
+
 using System;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
+
+#endregion
 
 namespace CodeRefractor.RuntimeBase.MiddleEnd
 {
@@ -8,6 +12,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         public IdentifierValue Instance;
         public string FieldName;
     }
+
     public class StaticFieldSetter : LocalVariable
     {
         public IdentifierValue Instance;

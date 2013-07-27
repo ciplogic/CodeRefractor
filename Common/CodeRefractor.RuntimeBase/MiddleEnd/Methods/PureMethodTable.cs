@@ -1,5 +1,9 @@
-﻿using System.Collections.Generic;
+﻿#region Usings
+
+using System.Collections.Generic;
 using System.Reflection;
+
+#endregion
 
 namespace CodeRefractor.RuntimeBase.MiddleEnd.Methods
 {
@@ -10,10 +14,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.Methods
 
         public static PureMethodTable Instance
         {
-            get
-            {
-                return StaticInstance;
-            }
+            get { return StaticInstance; }
         }
 
         public static bool ComputeMethodPurity(string description)

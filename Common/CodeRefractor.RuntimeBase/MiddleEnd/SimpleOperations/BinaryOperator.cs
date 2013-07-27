@@ -1,4 +1,8 @@
+#region Usings
+
 using System;
+
+#endregion
 
 namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 {
@@ -12,7 +16,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
         {
             var leftType = Left.ComputedType();
             var rightType = Right.ComputedType();
-            return leftType??rightType;
+            return leftType ?? rightType;
         }
 
         public IdentifierValue Left { get; set; }
@@ -20,7 +24,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 
         public override string ToString()
         {
-            return string.Format("{0} {1} {2}",Left.Name, Name, Right.Name);
+            return string.Format("{0} {1} {2}", Left.Name, Name, Right.Name);
         }
     }
 }

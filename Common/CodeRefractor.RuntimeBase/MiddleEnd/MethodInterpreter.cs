@@ -1,3 +1,5 @@
+#region Usings
+
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -6,6 +8,8 @@ using CodeRefractor.Compiler.Shared;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.Shared;
 using Mono.Reflection;
+
+#endregion
 
 namespace CodeRefractor.RuntimeBase.MiddleEnd
 {
@@ -35,7 +39,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
         public void Process()
         {
-            if(HandlePlatformInvokeMethod(Method))
+            if (HandlePlatformInvokeMethod(Method))
                 return;
 
             var instructions = MethodBodyReader.GetInstructions(Method);
@@ -46,7 +50,6 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             {
                 EvaluateInstuction(instruction, evaluator);
             }
-
         }
 
         private void EvaluateInstuction(Instruction instruction, EvaluatorStack evaluator)
@@ -72,13 +75,13 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                     MidRepresentation.Call(instruction.Operand, evaluator);
                     return;
                 case ObcodeIntValues.NewObj:
-                    {
-                        var consInfo = (ConstructorInfo) instruction.Operand;
-                        MidRepresentation.NewObject(consInfo, evaluator);
-                    }
+                {
+                    var consInfo = (ConstructorInfo) instruction.Operand;
+                    MidRepresentation.NewObject(consInfo, evaluator);
+                }
                     return;
             }
-            
+
             if (HandleStores(opcodeStr, instruction, evaluator))
                 return;
             if (HandleLoads(opcodeStr, instruction, evaluator))
@@ -131,22 +134,22 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             }
             if (opcodeStr == "ldftn")
             {
-                MidRepresentation.LoadFunction(evaluator, (MethodBase)instruction.Operand);
+                MidRepresentation.LoadFunction(evaluator, (MethodBase) instruction.Operand);
                 return;
             }
             if (opcodeStr == "switch")
             {
-                MidRepresentation.Switch(evaluator, (Instruction[])instruction.Operand);
+                MidRepresentation.Switch(evaluator, (Instruction[]) instruction.Operand);
                 return;
             }
             if (opcodeStr == "ldsfld")
             {
-                MidRepresentation.LoadStaticField(evaluator, (FieldInfo)instruction.Operand);
+                MidRepresentation.LoadStaticField(evaluator, (FieldInfo) instruction.Operand);
                 return;
             }
             if (opcodeStr == "stsfld")
             {
-                MidRepresentation.StoreStaticField(evaluator, (FieldInfo)instruction.Operand);
+                MidRepresentation.StoreStaticField(evaluator, (FieldInfo) instruction.Operand);
                 return;
             }
 
@@ -209,13 +212,12 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 || opcodeStr == "ldelem.u2"
                 || opcodeStr == "ldelem.u4"
                 || opcodeStr == "ldelem.u8"
-                
                 )
             {
                 MidRepresentation.LoadReferenceInArray(evaluator);
                 return true;
             }
-                
+
 
             if (opcodeStr == "ldc.i4.s" || opcodeStr == "ldc.i4")
             {
@@ -264,7 +266,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             }
             if (opcodeStr == "ldfld")
             {
-                var operand = (FieldInfo)instruction.Operand;
+                var operand = (FieldInfo) instruction.Operand;
 
                 MidRepresentation.LoadField(operand.Name, evaluator);
                 return true;
@@ -410,6 +412,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 MidRepresentation.Neg(evaluator);
                 return true;
             }
+
             #endregion
 
             #region Compare operators
@@ -445,5 +448,4 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 : new HashSet<int>(labelList);
         }
     }
-
 }

@@ -1,6 +1,10 @@
-﻿using System;
+﻿#region Usings
+
+using System;
 using System.Collections.Generic;
 using System.Reflection;
+
+#endregion
 
 namespace CodeRefractor.RuntimeBase.Shared
 {
@@ -14,9 +18,9 @@ namespace CodeRefractor.RuntimeBase.Shared
             return result;
         }
 
-        public static T GetCustomAttribute<T>(this Type t) where T:Attribute
+        public static T GetCustomAttribute<T>(this Type t) where T : Attribute
         {
-            var customAttributes = t.GetCustomAttributes(typeof (T),false);
+            var customAttributes = t.GetCustomAttributes(typeof (T), false);
             if (customAttributes.Length == 0)
                 return default(T);
             return (T) customAttributes[0];
@@ -24,10 +28,10 @@ namespace CodeRefractor.RuntimeBase.Shared
 
         public static T GetCustomAttribute<T>(this MemberInfo member) where T : Attribute
         {
-            var customAttributes = member.GetCustomAttributes(typeof(T), false);
+            var customAttributes = member.GetCustomAttributes(typeof (T), false);
             if (customAttributes.Length == 0)
                 return default(T);
-            return (T)customAttributes[0];
+            return (T) customAttributes[0];
         }
     }
 }

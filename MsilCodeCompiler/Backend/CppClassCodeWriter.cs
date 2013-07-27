@@ -31,9 +31,9 @@ namespace CodeRefractor.Compiler.Backend
             foreach (var method in classInterpreter.Methods)
             {
                 var codeWriter = new MethodInterpreterCodeWriter
-                                     {
-                                         Interpreter = method
-                                     };
+                {
+                    Interpreter = method
+                };
                 sb.Append(codeWriter.WriteHeaderMethod());
             }
             sb.AppendFormat("}};").AppendLine();

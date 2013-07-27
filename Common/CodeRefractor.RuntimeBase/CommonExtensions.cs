@@ -1,3 +1,5 @@
+#region Usings
+
 using System;
 using System.CodeDom;
 using System.CodeDom.Compiler;
@@ -10,6 +12,8 @@ using System.Runtime.InteropServices;
 using System.Text;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.Shared;
+
+#endregion
 
 namespace CodeRefractor.RuntimeBase
 {
@@ -35,7 +39,7 @@ namespace CodeRefractor.RuntimeBase
             foreach (var attribute in attributes)
             {
                 if (attribute is T)
-                    return (T)attribute;
+                    return (T) attribute;
             }
             return default(T);
         }
@@ -49,6 +53,7 @@ namespace CodeRefractor.RuntimeBase
         {
             return value.ToString(CultureInfo.InvariantCulture);
         }
+
         public static byte[] ToByteArray(this object value, int maxLength = 0)
         {
             var rawsize = Marshal.SizeOf(value);
@@ -57,10 +62,10 @@ namespace CodeRefractor.RuntimeBase
             var rawdata = new byte[rawsize];
             var handle =
                 GCHandle.Alloc(rawdata,
-                               GCHandleType.Pinned);
+                    GCHandleType.Pinned);
             Marshal.StructureToPtr(value,
-                                   handle.AddrOfPinnedObject(),
-                                   false);
+                handle.AddrOfPinnedObject(),
+                false);
             handle.Free();
             if (maxLength >= rawdata.Length)
                 return rawdata;
@@ -68,10 +73,11 @@ namespace CodeRefractor.RuntimeBase
             Array.Copy(rawdata, temp, maxLength);
             return temp;
         }
+
         public static int CorrectedSizeOf(this Type type)
         {
-            if (type == typeof(char))
-                return sizeof(char);
+            if (type == typeof (char))
+                return sizeof (char);
             if (type.IsEnum)
                 return Marshal.SizeOf(Enum.GetUnderlyingType(type));
             return Marshal.SizeOf(type);
@@ -79,10 +85,10 @@ namespace CodeRefractor.RuntimeBase
 
         public static T[] FromByteArray<T>(this byte[] rawValue) where T : struct
         {
-            var type = typeof(T);
+            var type = typeof (T);
             var sizeOfT = type.CorrectedSizeOf();
-            var result = new T[rawValue.Length / sizeOfT];
-            if (type == typeof(char))
+            var result = new T[rawValue.Length/sizeOfT];
+            if (type == typeof (char))
             {
                 var sourceArray = Encoding.Unicode.GetString(rawValue).ToCharArray();
 
@@ -99,7 +105,9 @@ namespace CodeRefractor.RuntimeBase
             var declaringType = method.DeclaringType;
             var mappedtypeAttr = declaringType.GetCustomAttribute<MapTypeAttribute>();
             var mappedType2 = mappedtypeAttr == null ? null : mappedtypeAttr.MappedType;
-            var format = String.Format("{0}.{1}({2})", mappedType2 == null ? declaringType.FullName : mappedType2.FullName, method.Name, method.GetArgumentsAsText());
+            var format = String.Format("{0}.{1}({2})",
+                mappedType2 == null ? declaringType.FullName : mappedType2.FullName, method.Name,
+                method.GetArgumentsAsText());
             return format;
         }
 
@@ -107,14 +115,14 @@ namespace CodeRefractor.RuntimeBase
         {
             var parameterInfos = method.GetParameters();
             var arguments = String.Join(", ",
-                                        parameterInfos.Select(
-                                            param => String.Format("{0} {1}", param.ParameterType.ToCppMangling(), param.Name)));
+                parameterInfos.Select(
+                    param => String.Format("{0} {1}", param.ParameterType.ToCppMangling(), param.Name)));
             if (!method.IsStatic)
             {
                 var thisText = String.Format("const {0}& _this", method.DeclaringType.ToCppName());
                 return parameterInfos.Length == 0
-                           ? thisText
-                           : String.Format("{0}, {1}", thisText, arguments);
+                    ? thisText
+                    : String.Format("{0}, {1}", thisText, arguments);
             }
             return arguments;
         }
@@ -122,40 +130,45 @@ namespace CodeRefractor.RuntimeBase
         public static string ClangMethodSignature(this MethodBase method, Type mappedType = null)
         {
             var declaringType = mappedType ?? method.DeclaringType;
-            var typeNamespace = (declaringType.Namespace??string.Empty).Replace('.', '_');
+            var typeNamespace = (declaringType.Namespace ?? string.Empty).Replace('.', '_');
             var typeName = declaringType.Name;
             var methodName = method.Name;
             if (method is ConstructorInfo)
                 methodName = declaringType.Name + "_ctor";
             return String.Format("{0}_{1}__{2}", typeNamespace, typeName, methodName);
         }
+
         public static bool IsBranchOperation(this LocalOperation operation, bool andLabels = true)
         {
             if (andLabels && operation.Kind == LocalOperation.Kinds.Label)
                 return true;
-            return operation.Kind == LocalOperation.Kinds.AlwaysBranch || operation.Kind == LocalOperation.Kinds.BranchOperator;
+            return operation.Kind == LocalOperation.Kinds.AlwaysBranch ||
+                   operation.Kind == LocalOperation.Kinds.BranchOperator;
         }
 
         public static Type GetReturnType(this MethodBase methodBase)
         {
             var method = methodBase as MethodInfo;
             if (method == null)
-                return typeof(void);
+                return typeof (void);
             return method.ReturnType;
         }
+
         public static bool GetIsStatic(this MethodBase methodBase)
         {
             var method = methodBase as MethodInfo;
             if (method == null)
-                return false;//if constructor
+                return false; //if constructor
             return method.IsStatic;
         }
+
         public static int ToInt(this string value)
         {
             int result;
             Int32.TryParse(value, out result);
             return result;
         }
+
         public static FieldInfo LocateField(this Type type, string fieldName, bool isStatic = false)
         {
             var result = type.GetField(fieldName);
@@ -202,8 +215,8 @@ namespace CodeRefractor.RuntimeBase
             return String.IsNullOrWhiteSpace(standardOutput)
                 ? standardError
                 : String.IsNullOrWhiteSpace(standardError)
-                ? standardOutput
-                : standardOutput + Environment.NewLine + standardError;
+                    ? standardOutput
+                    : standardOutput + Environment.NewLine + standardError;
         }
 
         public static void DeleteFile(this string fileName)
@@ -215,9 +228,9 @@ namespace CodeRefractor.RuntimeBase
             }
             catch (Exception)
             {
-
             }
         }
+
         public static string ToCppMangling(this Type type)
         {
             return IsVoid(type)
@@ -251,13 +264,14 @@ namespace CodeRefractor.RuntimeBase
 
         public static bool IsVoid(this Type type)
         {
-            return type == typeof(void);
+            return type == typeof (void);
         }
 
         public static void ToFile(this string text, string fileName)
         {
             File.WriteAllText(fileName, text);
         }
+
         public static void ToFile(this StringBuilder text, string fileName)
         {
             File.WriteAllText(fileName, text.ToString());

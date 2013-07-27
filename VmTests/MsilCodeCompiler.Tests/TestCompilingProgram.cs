@@ -1,5 +1,9 @@
-﻿using MsilCodeCompiler.Tests.Shared;
+﻿#region Usings
+
+using MsilCodeCompiler.Tests.Shared;
 using NUnit.Framework;
+
+#endregion
 
 namespace MsilCodeCompiler.Tests
 {
@@ -37,7 +41,6 @@ namespace MsilCodeCompiler.Tests
             Console.Write(primes);
 ";
             Assert.IsTrue(TryCSharpMain(bodyOfMain));
-            
         }
     }
 }

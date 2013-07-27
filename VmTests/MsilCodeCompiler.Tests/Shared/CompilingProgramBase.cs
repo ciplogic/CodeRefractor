@@ -1,17 +1,18 @@
+#region Usings
+
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using CodeRefractor.Compiler;
 using CodeRefractor.Compiler.Backend;
-using CodeRefractor.Compiler.Optimizations;
-using CodeRefractor.Compiler.Optimizations.Common;
 using CodeRefractor.Compiler.Util;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Optimizations;
 using NUnit.Framework;
+
+#endregion
 
 namespace MsilCodeCompiler.Tests.Shared
 {
@@ -41,7 +42,6 @@ class C {{
 
         private Assembly CompileSource(string source)
         {
-
             CrRuntimeLibrary.DefaultSetup();
 
             const string dummyName = "dump.cs";
@@ -58,13 +58,14 @@ class C {{
         public static List<OptimizationPass> DefaultOptimizationPasses()
         {
             return new OptimizationPass[]
-                       {
-                           //new VRegConstantFolding(),
-                           //new DceVRegAssigned(),
-                           //new VRegVariablePropagation(),
-                       }.ToList();
-        } 
-        protected bool EvaluateCSharpToNative(string code, List<OptimizationPass> optimizationPasses=null)
+            {
+                //new VRegConstantFolding(),
+                //new DceVRegAssigned(),
+                //new VRegVariablePropagation(),
+            }.ToList();
+        }
+
+        protected bool EvaluateCSharpToNative(string code, List<OptimizationPass> optimizationPasses = null)
         {
             string expectedInput;
             var outputCpp = GenerateOutputCppFromCode(code, optimizationPasses, out expectedInput);
@@ -89,7 +90,8 @@ class C {{
             return result;
         }
 
-        private string GenerateOutputCppFromCode(string code, List<OptimizationPass> optimizationPasses, out string expectedInput)
+        private string GenerateOutputCppFromCode(string code, List<OptimizationPass> optimizationPasses,
+            out string expectedInput)
         {
             const string outputCpp = "output.cpp";
             var assembly = CompileSource(code);

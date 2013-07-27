@@ -1,4 +1,8 @@
+#region Usings
+
 using System;
+
+#endregion
 
 namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 {
@@ -10,6 +14,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
         {
             return FixedType;
         }
+
         public string Name
         {
             get { return FormatVar(); }

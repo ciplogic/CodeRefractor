@@ -1,4 +1,8 @@
+#region Usings
+
 using System;
+
+#endregion
 
 namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 {
@@ -13,7 +17,6 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
             Kind = VariableKind.Local;
             Index = id;
             Parent = parent;
-             
         }
 
         public Type GetElementType()

@@ -1,6 +1,10 @@
+#region Usings
+
 using System;
 
-class NBody
+#endregion
+
+internal class NBody
 {
     public static void Main()
     {

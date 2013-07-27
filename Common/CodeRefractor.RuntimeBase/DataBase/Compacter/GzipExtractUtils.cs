@@ -1,10 +1,14 @@
+#region Usings
+
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 
+#endregion
+
 namespace CodeRefractor.RuntimeBase.DataBase
 {
-    static class GzipExtractUtils
+    internal static class GzipExtractUtils
     {
         public static byte[] Compress(this byte[] sBytes)
         {

@@ -1,6 +1,10 @@
+#region Usings
+
 using System;
 using System.Globalization;
 using System.IO;
+
+#endregion
 
 namespace CodeRefractor.RuntimeBase.DataBase.SerializeXml
 {
@@ -36,7 +40,7 @@ namespace CodeRefractor.RuntimeBase.DataBase.SerializeXml
             {
                 var typeCode = property.PropertyType.ExtractTypeCode();
                 var name = property.Name;
-                var fieldValue = property.GetValue(instance,null);
+                var fieldValue = property.GetValue(instance, null);
                 var resultText = GetTextOfObjectByTypeCode(typeCode, fieldValue);
                 result[name] = resultText;
             }
@@ -44,10 +48,10 @@ namespace CodeRefractor.RuntimeBase.DataBase.SerializeXml
 
         public static bool DeserializeFromFile(this object instance, string fileName)
         {
-            if(!File.Exists(fileName))
+            if (!File.Exists(fileName))
                 return false;
             var dynNode = new DynNode("node");
-            if(!dynNode.FromFile(fileName)) 
+            if (!dynNode.FromFile(fileName))
                 return false;
             instance.Deserialize(dynNode);
             return true;
@@ -80,10 +84,13 @@ namespace CodeRefractor.RuntimeBase.DataBase.SerializeXml
             switch (typeCode)
             {
                 case TypeCode.Int32:
-                    resultText = ((int)fieldValue).ToString(CultureInfo.InvariantCulture);
+                    resultText = ((int) fieldValue).ToString(CultureInfo.InvariantCulture);
+                    break;
+                case TypeCode.Boolean:
+                    resultText = ((bool)fieldValue).ToString(CultureInfo.InvariantCulture);
                     break;
                 case TypeCode.Double:
-                    resultText = ((double)fieldValue).ToString(CultureInfo.InvariantCulture);
+                    resultText = ((double) fieldValue).ToString(CultureInfo.InvariantCulture);
                     break;
                 case TypeCode.String:
                     resultText = fieldValue.ToString();
@@ -98,6 +105,12 @@ namespace CodeRefractor.RuntimeBase.DataBase.SerializeXml
         {
             switch (typeCode)
             {
+                case TypeCode.Boolean:
+                {
+                    bool boolResult;
+                    var canParseBool = bool.TryParse(itemValue, out boolResult);
+                    return canParseBool && boolResult;
+                }
                 case TypeCode.Int32:
                     return int.Parse(itemValue);
                 case TypeCode.Double:

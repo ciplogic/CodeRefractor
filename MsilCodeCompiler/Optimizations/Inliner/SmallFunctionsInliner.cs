@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿#region Usings
+
+using System.Collections.Generic;
 using System.Linq;
 using CodeRefractor.Compiler.Optimizations.Common;
 using CodeRefractor.RuntimeBase.Analyze;
@@ -6,9 +8,11 @@ using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 
+#endregion
+
 namespace CodeRefractor.Compiler.Optimizations.Inliner
 {
-    class SmallFunctionsInliner : ResultingOptimizationPass
+    internal class SmallFunctionsInliner : ResultingOptimizationPass
     {
         public static int MaxLengthInliner = 200;
         public static int MaxLengthChildFunction = 40;
@@ -24,7 +28,7 @@ namespace CodeRefractor.Compiler.Optimizations.Inliner
                 pos++;
                 if (localOperation.Kind != LocalOperation.Kinds.Call) continue;
 
-                methodData = (MethodData)localOperation.Value;
+                methodData = (MethodData) localOperation.Value;
                 var methodBase = methodData.Info;
                 var typeData = ProgramData.UpdateType(methodBase.DeclaringType);
                 interpreter = typeData.GetInterpreter(methodBase.ToString());
@@ -54,11 +58,11 @@ namespace CodeRefractor.Compiler.Optimizations.Inliner
             var mappedVregs = BuildMappedVregs(intermediateCode, methodToInlineInterpreter);
 
             var indexCall = pos - 1;
-            var assignment = (MethodData)intermediateCode.LocalOperations[indexCall].Value;
+            var assignment = (MethodData) intermediateCode.LocalOperations[indexCall].Value;
 
-            var localOperationsToInline = BuildLocalOperationsToInline(methodToInlineInterpreter, 
-                mappedParameters, 
-                mappedVregs, 
+            var localOperationsToInline = BuildLocalOperationsToInline(methodToInlineInterpreter,
+                mappedParameters,
+                mappedVregs,
                 assignment.Result,
                 mappedLocals);
 
@@ -69,8 +73,9 @@ namespace CodeRefractor.Compiler.Optimizations.Inliner
             intermediateCode.LocalOperations.InsertRange(indexCall, localOperationsToInline);
         }
 
-        private static void MergeVRegs(MetaMidRepresentation intermediateCode, MethodInterpreter methodToInlineInterpreter,
-                                       Dictionary<int, int> mappedVregs)
+        private static void MergeVRegs(MetaMidRepresentation intermediateCode,
+            MethodInterpreter methodToInlineInterpreter,
+            Dictionary<int, int> mappedVregs)
         {
             var virtRegs = methodToInlineInterpreter.MidRepresentation.Vars.VirtRegs;
             var vregsToAdd = mappedVregs.Select(id => GetVRegMapped(virtRegs, id)).ToList();
@@ -82,25 +87,25 @@ namespace CodeRefractor.Compiler.Optimizations.Inliner
         {
             var localVariable = virtRegs.First(item => id.Key == item.Id);
             return new LocalVariable
-                       {
-                           Kind = VariableKind.Vreg,
-                           Id = id.Value,
-                           FixedType = localVariable.FixedType
-                       };
+            {
+                Kind = VariableKind.Vreg,
+                Id = id.Value,
+                FixedType = localVariable.FixedType
+            };
         }
 
         private static void MergeLocalVariables(MetaMidRepresentation intermediateCode,
-                                                MethodInterpreter methodToInlineInterpreter, Dictionary<int, LocalVariable> mappedLocals)
+            MethodInterpreter methodToInlineInterpreter, Dictionary<int, LocalVariable> mappedLocals)
         {
             var localVars = methodToInlineInterpreter.MidRepresentation.Vars.LocalVariables;
             var localVarsToAdd = mappedLocals.Select(id => new LocalVariable
-                                                               {
-                                                                   Kind = VariableKind.Local,
-                                                                   Id = id.Value.Id,
-                                                                   FixedType =
-                                                                       localVars.First(item => id.Key == item.Value.Id).Value.
-                                                                       FixedType
-                                                               }).ToList();
+            {
+                Kind = VariableKind.Local,
+                Id = id.Value.Id,
+                FixedType =
+                    localVars.First(item => id.Key == item.Value.Id).Value.
+                        FixedType
+            }).ToList();
             var vars = intermediateCode.Vars;
             foreach (var localVariable in localVarsToAdd)
             {
@@ -111,9 +116,10 @@ namespace CodeRefractor.Compiler.Optimizations.Inliner
         }
 
         #region Instruction mapped
+
         private List<LocalOperation> BuildLocalOperationsToInline(
-            MethodInterpreter interpreter, Dictionary<string, LocalVariable> mappedNames, 
-            Dictionary<int, int> mappedVregs, LocalVariable result, 
+            MethodInterpreter interpreter, Dictionary<string, LocalVariable> mappedNames,
+            Dictionary<int, int> mappedVregs, LocalVariable result,
             Dictionary<int, LocalVariable> mappedLocals)
         {
             var localOperationsToInline = new List<LocalOperation>();
@@ -124,10 +130,10 @@ namespace CodeRefractor.Compiler.Optimizations.Inliner
                 switch (clone.Kind)
                 {
                     case LocalOperation.Kinds.Assignment:
-                        InlineOperation((Assignment)clone.Value, mappedNames, mappedVregs, mappedLocals);
+                        InlineOperation((Assignment) clone.Value, mappedNames, mappedVregs, mappedLocals);
                         break;
                     case LocalOperation.Kinds.Call:
-                        InlineCallInstruction((MethodData)clone.Value, mappedNames, mappedVregs, mappedLocals);
+                        InlineCallInstruction((MethodData) clone.Value, mappedNames, mappedVregs, mappedLocals);
                         break;
                     case LocalOperation.Kinds.Return:
                         if (InlineFinalReturn(localOperationsToInline, result, clone)) continue;
@@ -138,39 +144,41 @@ namespace CodeRefractor.Compiler.Optimizations.Inliner
             return localOperationsToInline;
         }
 
-        private void InlineCallInstruction(MethodData value, Dictionary<string, LocalVariable> mappedNames, Dictionary<int, int> mappedVregs, Dictionary<int, LocalVariable> mappedLocals)
+        private void InlineCallInstruction(MethodData value, Dictionary<string, LocalVariable> mappedNames,
+            Dictionary<int, int> mappedVregs, Dictionary<int, LocalVariable> mappedLocals)
         {
-            for (int i = 0; i < value.Parameters.Count; i++)
+            for (var i = 0; i < value.Parameters.Count; i++)
             {
                 var parameter = value.Parameters[i];
                 var identifier = parameter as LocalVariable;
                 if (identifier == null)
                     continue;
-                value.Parameters[i]= UpdateVregId(mappedVregs, identifier.Clone(), mappedNames, mappedLocals);
+                value.Parameters[i] = UpdateVregId(mappedVregs, identifier.Clone(), mappedNames, mappedLocals);
             }
         }
 
-        private static bool InlineFinalReturn(List<LocalOperation> localOperationsToInline, LocalVariable result, LocalOperation clone)
+        private static bool InlineFinalReturn(List<LocalOperation> localOperationsToInline, LocalVariable result,
+            LocalOperation clone)
         {
             if (result == null)
                 return true;
             var assign = new Assignment()
-                             {
-                                 Left = result,
-                                 Right = (IdentifierValue) clone.Value
-                             };
+            {
+                Left = result,
+                Right = (IdentifierValue) clone.Value
+            };
             localOperationsToInline.Add(new LocalOperation()
-                                            {
-                                                Kind = LocalOperation.Kinds.Assignment,
-                                                Value = assign
-                                            }
+            {
+                Kind = LocalOperation.Kinds.Assignment,
+                Value = assign
+            }
                 );
             return false;
         }
 
-        private void InlineOperation(Assignment value, 
-            Dictionary<string, LocalVariable> mappedNames, 
-            Dictionary<int, int> mappedVregs, 
+        private void InlineOperation(Assignment value,
+            Dictionary<string, LocalVariable> mappedNames,
+            Dictionary<int, int> mappedVregs,
             Dictionary<int, LocalVariable> mappedLocals)
         {
             var leftVar = value.Left;
@@ -182,7 +190,7 @@ namespace CodeRefractor.Compiler.Optimizations.Inliner
             value.Right = UpdateVregId(mappedVregs, rightVar, mappedNames, mappedLocals);
         }
 
-        private static LocalVariable UpdateVregId(Dictionary<int, int> mappedVregs, LocalVariable leftVar, 
+        private static LocalVariable UpdateVregId(Dictionary<int, int> mappedVregs, LocalVariable leftVar,
             Dictionary<string, LocalVariable> argumentNames, Dictionary<int, LocalVariable> mappedLocals)
         {
             switch (leftVar.Kind)
@@ -205,8 +213,9 @@ namespace CodeRefractor.Compiler.Optimizations.Inliner
         #endregion
 
         #region MappingCreation
+
         private static Dictionary<int, int> BuildMappedVregs(
-            MetaMidRepresentation intermediateCode, 
+            MetaMidRepresentation intermediateCode,
             MethodInterpreter interpreter)
         {
             var mappedVregs = new Dictionary<int, int>();
@@ -233,7 +242,9 @@ namespace CodeRefractor.Compiler.Optimizations.Inliner
             }
             return mappedNames;
         }
-        private static Dictionary<string, LocalVariable> BuildMappedParameters(MethodInterpreter interpreter, MethodData methodData)
+
+        private static Dictionary<string, LocalVariable> BuildMappedParameters(MethodInterpreter interpreter,
+            MethodData methodData)
         {
             var mappedNames = new Dictionary<string, LocalVariable>();
             for (var i = 0; i < methodData.Parameters.Count; i++)

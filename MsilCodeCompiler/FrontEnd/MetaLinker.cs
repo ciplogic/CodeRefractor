@@ -46,21 +46,21 @@ namespace CodeRefractor.Compiler.FrontEnd
                     case ObcodeIntValues.CallVirt:
                     case ObcodeIntValues.Call:
                     case ObcodeIntValues.CallInterface:
-                        {
-                            var operand = (MethodBase) instruction.Operand;
-                            if (operand == null)
-                                break;
-                            AddMethodIfNecessary(operand);
+                    {
+                        var operand = (MethodBase) instruction.Operand;
+                        if (operand == null)
                             break;
-                        }
+                        AddMethodIfNecessary(operand);
+                        break;
+                    }
                     case ObcodeIntValues.NewObj:
-                        {
-                            var operand = (ConstructorInfo) instruction.Operand;
-                            if (operand == null)
-                                break;
-                            AddMethodIfNecessary(operand);
+                    {
+                        var operand = (ConstructorInfo) instruction.Operand;
+                        if (operand == null)
                             break;
-                        }
+                        AddMethodIfNecessary(operand);
+                        break;
+                    }
                 }
             }
         }
@@ -92,19 +92,19 @@ namespace CodeRefractor.Compiler.FrontEnd
                     case ObcodeIntValues.BltS:
                     case ObcodeIntValues.BrS:
                     case ObcodeIntValues.Br:
-                        {
-                            var offset = ((Instruction) instruction.Operand).Offset;
-                            AddLabelIfDoesntExist(methodDefinitionKey, offset);
-                        }
+                    {
+                        var offset = ((Instruction) instruction.Operand).Offset;
+                        AddLabelIfDoesntExist(methodDefinitionKey, offset);
+                    }
                         break;
                     case ObcodeIntValues.Switch:
+                    {
+                        var offsets = (Instruction[]) instruction.Operand;
+                        foreach (var offset in offsets)
                         {
-                            var offsets = (Instruction[]) instruction.Operand;
-                            foreach (var offset in offsets)
-                            {
-                                AddLabelIfDoesntExist(methodDefinitionKey, offset.Offset);
-                            }
+                            AddLabelIfDoesntExist(methodDefinitionKey, offset.Offset);
                         }
+                    }
                         break;
                 }
             }
@@ -178,7 +178,7 @@ namespace CodeRefractor.Compiler.FrontEnd
         public void OptimizeMethods()
         {
             var optimizationPasses = CommandLineParse.OptimizationPasses;
-            Parallel.ForEach(GlobalMethodPool.Instance.MethodInfos, 
+            Parallel.ForEach(GlobalMethodPool.Instance.MethodInfos,
                 methodBase =>
                 {
                     var typeData =
@@ -196,7 +196,6 @@ namespace CodeRefractor.Compiler.FrontEnd
                 );
 
             InlineMethods();
-            
         }
 
         private void InlineMethods()
@@ -206,10 +205,9 @@ namespace CodeRefractor.Compiler.FrontEnd
             {
                 var typeData = ProgramData.UpdateType(methodBase.Value.DeclaringType);
                 var interpreter = typeData.GetInterpreter(methodBase.Key);
-                
+
                 inliner.OptimizeOperations(interpreter.MidRepresentation);
             }
-
         }
     }
 }

@@ -1,4 +1,3 @@
-
 namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 {
     public class BranchOperator : Operator
@@ -11,6 +10,5 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
         public int JumpTo { get; set; }
         public IdentifierValue CompareValue { get; set; }
         public IdentifierValue SecondValue { get; set; }
-    
     }
 }

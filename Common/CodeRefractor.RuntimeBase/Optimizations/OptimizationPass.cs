@@ -1,4 +1,8 @@
-﻿using CodeRefractor.RuntimeBase.MiddleEnd;
+﻿#region Usings
+
+using CodeRefractor.RuntimeBase.MiddleEnd;
+
+#endregion
 
 namespace CodeRefractor.RuntimeBase.Optimizations
 {

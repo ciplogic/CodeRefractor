@@ -21,24 +21,24 @@ namespace CodeRefractor.Compiler.Util
         {
             var ngenApp = Path.Combine(DotNetPath, program);
             var proces = new Process
-                             {
-                                 StartInfo = new ProcessStartInfo
-                                                 {
-                                                     FileName = ngenApp,
-                                                     WorkingDirectory =
-                                                         string.IsNullOrEmpty(outputDirectory)
-                                                             ? DotNetPath
-                                                             : outputDirectory,
-                                                     Arguments = arguments,
-                                                     WindowStyle = ProcessWindowStyle.Hidden,
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = ngenApp,
+                    WorkingDirectory =
+                        string.IsNullOrEmpty(outputDirectory)
+                            ? DotNetPath
+                            : outputDirectory,
+                    Arguments = arguments,
+                    WindowStyle = ProcessWindowStyle.Hidden,
 #if DEBUG
-                                                     RedirectStandardOutput = true,
-                                                     RedirectStandardError = true,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
 #endif
-                                                     UseShellExecute = false,
-                                                     CreateNoWindow = true
-                                                 }
-                             };
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                }
+            };
 
             proces.Start();
             proces.WaitForExit();

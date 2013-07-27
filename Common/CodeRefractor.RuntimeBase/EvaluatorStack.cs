@@ -1,5 +1,9 @@
+#region Usings
+
 using System.Collections.Generic;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
+
+#endregion
 
 namespace CodeRefractor.RuntimeBase
 {
@@ -8,6 +12,7 @@ namespace CodeRefractor.RuntimeBase
         public readonly Stack<IdentifierValue> Stack = new Stack<IdentifierValue>();
 
         private int _vRegId;
+
         public LocalVariable SetNewVReg()
         {
             _vRegId++;

@@ -10,6 +10,5 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.ConstTable
             FixedType = typeof (byte);
             Value = ConstByteArrayList.Instance.ItemList[id];
         }
-
     }
 }

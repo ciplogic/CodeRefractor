@@ -1,7 +1,11 @@
+#region Usings
+
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Text;
+
+#endregion
 
 namespace CodeRefractor.RuntimeBase.DataBase
 {
@@ -12,12 +16,12 @@ namespace CodeRefractor.RuntimeBase.DataBase
         public string InnerText { get; set; }
 
         public readonly List<DynNode> Children;
-        public readonly Dictionary<string, string> Atrributes;
+        public readonly Dictionary<string, string> Attributes;
 
         public DynNode(string name)
         {
             Children = new List<DynNode>();
-            Atrributes = new Dictionary<string, string>();
+            Attributes = new Dictionary<string, string>();
             Name = name;
         }
 
@@ -49,7 +53,7 @@ namespace CodeRefractor.RuntimeBase.DataBase
         {
             Contract.Requires(key != null);
             Contract.Requires(value != null);
-            Atrributes[key] = value;
+            Attributes[key] = value;
             return this;
         }
 
@@ -63,7 +67,7 @@ namespace CodeRefractor.RuntimeBase.DataBase
             Contract.Ensures(!string.IsNullOrEmpty(Contract.Result<string>()));
             var sb = new StringBuilder();
             sb.AppendFormat("<{0}", Name);
-            foreach (var atrribute in Atrributes)
+            foreach (var atrribute in Attributes)
             {
                 sb.AppendFormat(" {0}=\"{1}\"", atrribute.Key, atrribute.Value);
             }
@@ -81,7 +85,14 @@ namespace CodeRefractor.RuntimeBase.DataBase
 
         public string this[string key]
         {
-            get { return Atrributes[key]; }
+            get
+            {
+                if (!Attributes.ContainsKey(key))
+                {
+                    Attributes[key] = string.Empty;
+                }
+                return Attributes[key];
+            }
             set { Set(key, value); }
         }
     }

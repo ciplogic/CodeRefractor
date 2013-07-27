@@ -1,10 +1,15 @@
+#region Usings
+
 using System.Reflection;
+
+#endregion
 
 namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 {
     public class NewConstructedObject : IdentifierValue
     {
         private readonly ConstructorInfo _constructorInfo;
+
         public ConstructorInfo Info
         {
             get { return _constructorInfo; }

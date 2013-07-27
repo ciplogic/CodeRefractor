@@ -1,7 +1,11 @@
+#region Usings
+
 using System;
 using System.Diagnostics.Contracts;
 using System.IO;
 using System.Xml;
+
+#endregion
 
 namespace CodeRefractor.RuntimeBase.DataBase
 {
@@ -26,16 +30,17 @@ namespace CodeRefractor.RuntimeBase.DataBase
             if (!File.Exists(fileName))
                 return false;
             var xmlDoc = new XmlDocument();
-
+            var fileText = File.ReadAllText(fileName);
             try
             {
-                xmlDoc.Load(new StreamReader(fileName));
+                xmlDoc.LoadXml(fileText);
             }
             catch (XmlException ex)
             {
                 Console.WriteLine(ex.Message);
                 return false;
             }
+            
             var result = node;
             foreach (XmlNode xmlNode in xmlDoc.ChildNodes)
                 UpdateData(result, xmlNode);
@@ -51,7 +56,7 @@ namespace CodeRefractor.RuntimeBase.DataBase
             foreach (XmlNode xmlNode in node.ChildNodes)
                 UpdateData(result.Add(xmlNode.Name), xmlNode);
             var attributes = node.Attributes;
-            result.Atrributes.Clear();
+            result.Attributes.Clear();
             if (attributes == null)
                 return;
             foreach (XmlAttribute attribute in attributes)

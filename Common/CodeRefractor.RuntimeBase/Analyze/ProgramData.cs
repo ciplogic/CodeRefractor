@@ -1,5 +1,9 @@
+#region Usings
+
 using System;
 using System.Collections.Generic;
+
+#endregion
 
 namespace CodeRefractor.RuntimeBase.Analyze
 {
@@ -7,14 +11,19 @@ namespace CodeRefractor.RuntimeBase.Analyze
     {
         private static readonly ProgramData StaticInstance = new ProgramData();
         public Dictionary<string, AssemblyData> AssemblyDatas { get; set; }
-        public static ProgramData Instance { get { return StaticInstance; } }
 
-        ProgramData()
+        public static ProgramData Instance
+        {
+            get { return StaticInstance; }
+        }
+
+        private ProgramData()
         {
             AssemblyDatas = new Dictionary<string, AssemblyData>();
         }
 
         public AssemblyData CurrentAsembly { get; set; }
+
         public static TypeData LocateType(Type type)
         {
             var fullName = TypeData.ComputeFullName(type.Namespace, type.Name);

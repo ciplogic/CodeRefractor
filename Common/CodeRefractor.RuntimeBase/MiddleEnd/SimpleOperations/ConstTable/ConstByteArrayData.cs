@@ -1,10 +1,13 @@
-using System;
+#region Usings
+
 using System.Collections.Generic;
 using System.IO;
 
+#endregion
+
 namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.ConstTable
 {
-    public struct ConstByteArrayData 
+    public struct ConstByteArrayData
     {
         public readonly byte[] Data;
 
@@ -12,6 +15,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.ConstTable
         {
             Data = values;
         }
+
         public override int GetHashCode()
         {
             if (Data == null)

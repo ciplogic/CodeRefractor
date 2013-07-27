@@ -3,7 +3,6 @@
 using System;
 using System.IO;
 using System.Reflection;
-using CodeRefactor.OpenRuntime;
 using CodeRefractor.Compiler.Backend;
 using CodeRefractor.Compiler.Config;
 using CodeRefractor.RuntimeBase;
@@ -112,7 +111,7 @@ namespace CodeRefractor.Compiler.Util
             var commandLineFormat = "{0} " + CompilerOptions.OptimizationFlags + " {2} -o {1}";
 
             var arguments = String.Format(commandLineFormat, outputCpp, applicationNativeExe,
-                                          CompilerOptions.LinkerOptions);
+                CompilerOptions.LinkerOptions);
             var standardOutput = pathToGpp.ExecuteCommand(arguments);
             if (!String.IsNullOrWhiteSpace(standardOutput))
             {

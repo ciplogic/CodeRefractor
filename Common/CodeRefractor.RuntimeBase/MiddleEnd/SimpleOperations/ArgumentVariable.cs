@@ -7,7 +7,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
         public ArgumentVariable(string name)
         {
             _name = name;
-            Kind= VariableKind.Argument;
+            Kind = VariableKind.Argument;
         }
 
         public override string FormatVar()

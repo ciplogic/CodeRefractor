@@ -25,7 +25,7 @@ namespace CodeRefractor.Compiler.Backend
         {
             var invokeRepresentation = platformInvoke.PlatformInvoke;
             var methodId = PlatformInvokeCodeWriter.Import(invokeRepresentation.LibraryName,
-                                                           invokeRepresentation.MethodName);
+                invokeRepresentation.MethodName);
 
             var sb = new StringBuilder();
 
@@ -144,14 +144,14 @@ namespace CodeRefractor.Compiler.Backend
         private void HandleLoadStaticField(LocalOperation operation, StringBuilder bodySb)
         {
             var assign = (Assignment) operation.Value;
-            var rightData = (StaticFieldGetter)assign.Right;
+            var rightData = (StaticFieldGetter) assign.Right;
             bodySb.AppendFormat("{0} = {1}::{2};", assign.Left.Name, rightData.DeclaringType.Name, rightData.FieldName);
         }
 
         private void HandleSetStaticField(LocalOperation operation, StringBuilder bodySb)
         {
-            var assign = (Assignment)operation.Value;
-            var rightData = (StaticFieldSetter)assign.Left;
+            var assign = (Assignment) operation.Value;
+            var rightData = (StaticFieldSetter) assign.Left;
             bodySb.AppendFormat("{1}::{2} = {0};", assign.Right.Name, rightData.DeclaringType.Name, rightData.FieldName);
         }
 
@@ -182,9 +182,9 @@ namespace CodeRefractor.Compiler.Backend
             var rightArray = rightArrayData.Data;
             sb.AppendFormat("{0} = std::shared_ptr< Array < System::Byte > >(new Array < System::Byte >(" +
                             "{1}, RuntimeHelpers_GetBytes({2}) ) ); ",
-                            left.Name,
-                            rightArray.Length,
-                            right.Id);
+                left.Name,
+                rightArray.Length,
+                right.Id);
         }
 
         private void HandleSetArrayValue(LocalOperation operation, StringBuilder sb)
@@ -193,9 +193,9 @@ namespace CodeRefractor.Compiler.Backend
             var arrayItem = (ArrayVariable) assignment.Left;
             var right = assignment.Right;
             sb.AppendFormat("(*{0})[{1}] = {2}; ",
-                            arrayItem.Parent.Name,
-                            arrayItem.Index.Name,
-                            right.Name);
+                arrayItem.Parent.Name,
+                arrayItem.Index.Name,
+                right.Name);
         }
 
         private void HandleNewArray(LocalOperation operation, StringBuilder bodySb)
@@ -203,9 +203,9 @@ namespace CodeRefractor.Compiler.Backend
             var assignment = (Assignment) operation.Value;
             var arrayData = (NewArrayObject) assignment.Right;
             bodySb.AppendFormat("{0} = std::shared_ptr< Array < {1} > > (new Array < {1} >({2}) ); ",
-                                assignment.Left.Name,
-                                arrayData.TypeArray.ToCppName(),
-                                arrayData.ArrayLength.Name);
+                assignment.Left.Name,
+                arrayData.TypeArray.ToCppName(),
+                arrayData.ArrayLength.Name);
         }
 
         private static void HandleReturn(LocalOperation operation, StringBuilder bodySb)
@@ -224,9 +224,9 @@ namespace CodeRefractor.Compiler.Backend
             var valueSrc = (ArrayVariable) value.Right;
             var parentType = valueSrc.Parent.ComputedType();
             bodySb.AppendFormat(parentType.IsClass
-                                    ? "{0} = (*{1})[{2}];"
-                                    : "{0} = {1}[{2}];",
-                                value.Left.Name, valueSrc.Parent.Name, valueSrc.Index.Name);
+                ? "{0} = (*{1})[{2}];"
+                : "{0} = {1}[{2}];",
+                value.Left.Name, valueSrc.Parent.Name, valueSrc.Index.Name);
         }
 
         private void HandleLoadArgument(LocalOperation operation, StringBuilder bodySb)
@@ -242,7 +242,7 @@ namespace CodeRefractor.Compiler.Backend
             var value = (Assignment) operation.Value;
             var fieldGetterInfo = (FieldGetter) value.Right;
             bodySb.AppendFormat("{0} = {1}->{2};", value.Left.Name, fieldGetterInfo.Instance.Name,
-                                fieldGetterInfo.FieldName);
+                fieldGetterInfo.FieldName);
         }
 
         private void HandleSetField(LocalOperation operation, StringBuilder bodySb)
@@ -344,7 +344,7 @@ namespace CodeRefractor.Compiler.Backend
             else
             {
                 sb.AppendFormat("{1} = {0}", methodInfo.ClangMethodSignature(),
-                                operationData.Result.Name);
+                    operationData.Result.Name);
             }
             var identifierValues = operationData.Parameters;
             var argumentsCall = string.Join(", ", identifierValues.Select(p => p.Name));
@@ -368,7 +368,7 @@ namespace CodeRefractor.Compiler.Backend
             else
             {
                 sb.AppendFormat("{1} = {0}", methodInfo.ClangMethodSignature(),
-                                operationData.Result.Name);
+                    operationData.Result.Name);
             }
             var identifierValues = operationData.Parameters;
             var argumentsCall = string.Join(", ", identifierValues.Select(p => p.Name));
@@ -458,8 +458,8 @@ namespace CodeRefractor.Compiler.Backend
         }
 
         private void WriteCompareBranch(IdentifierValue localVar, IdentifierValue secondVar, StringBuilder sb,
-                                        int jumpAddress,
-                                        string comparisonOperator)
+            int jumpAddress,
+            string comparisonOperator)
         {
             var local = localVar.Name;
             var second = secondVar.Name;
@@ -639,7 +639,7 @@ namespace CodeRefractor.Compiler.Backend
         }
 
         private static void GetBinaryOperandNames(BinaryOperator objList, Assignment localVar, out string right,
-                                                  out string left, out string local)
+            out string left, out string local)
         {
             local = localVar.Left.Name;
             var leftVar = objList.Left as LocalVariable;

@@ -1,30 +1,4 @@
-//
-// ILPattern.cs
-//
-// Author:
-//   Jb Evain (jbevain@novell.com)
-//
-// (C) 2009 - 2010 Novell, Inc. (http://www.novell.com)
-//
-// Permission is hereby granted, free of charge, to any person obtaining
-// a copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to
-// permit persons to whom the Software is furnished to do so, subject to
-// the following conditions:
-//
-// The above copyright notice and this permission notice shall be
-// included in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-//
+#region Usings
 
 using System;
 using System.Collections.Generic;
@@ -32,189 +6,194 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 
-namespace Mono.Reflection {
+#endregion
 
-	public abstract class ILPattern {
+namespace Mono.Reflection
+{
+    public abstract class ILPattern
+    {
+        public static ILPattern Optional(OpCode opcode)
+        {
+            return Optional(OpCode(opcode));
+        }
 
-		public static ILPattern Optional (OpCode opcode)
-		{
-			return Optional (OpCode (opcode));
-		}
+        public static ILPattern Optional(params OpCode[] opcodes)
+        {
+            return Optional(Sequence(opcodes.Select(opcode => OpCode(opcode)).ToArray()));
+        }
 
-		public static ILPattern Optional (params OpCode [] opcodes)
-		{
-			return Optional (Sequence (opcodes.Select (opcode => OpCode (opcode)).ToArray ()));
-		}
+        public static ILPattern Optional(ILPattern pattern)
+        {
+            return new OptionalPattern(pattern);
+        }
 
-		public static ILPattern Optional (ILPattern pattern)
-		{
-			return new OptionalPattern (pattern);
-		}
+        private class OptionalPattern : ILPattern
+        {
+            private ILPattern pattern;
 
-		class OptionalPattern : ILPattern {
+            public OptionalPattern(ILPattern optional)
+            {
+                pattern = optional;
+            }
 
-			ILPattern pattern;
+            public override void Match(MatchContext context)
+            {
+                pattern.TryMatch(context);
+            }
+        }
 
-			public OptionalPattern (ILPattern optional)
-			{
-				this.pattern = optional;
-			}
+        public static ILPattern Sequence(params ILPattern[] patterns)
+        {
+            return new SequencePattern(patterns);
+        }
 
-			public override void Match (MatchContext context)
-			{
-				pattern.TryMatch (context);
-			}
-		}
+        private class SequencePattern : ILPattern
+        {
+            private ILPattern[] patterns;
 
-		public static ILPattern Sequence (params ILPattern [] patterns)
-		{
-			return new SequencePattern (patterns);
-		}
+            public SequencePattern(ILPattern[] patterns)
+            {
+                this.patterns = patterns;
+            }
 
-		class SequencePattern : ILPattern {
+            public override void Match(MatchContext context)
+            {
+                foreach (var pattern in patterns)
+                {
+                    pattern.Match(context);
 
-			ILPattern [] patterns;
+                    if (!context.success)
+                        break;
+                }
+            }
+        }
 
-			public SequencePattern (ILPattern [] patterns)
-			{
-				this.patterns = patterns;
-			}
+        public static ILPattern OpCode(OpCode opcode)
+        {
+            return new OpCodePattern(opcode);
+        }
 
-			public override void Match (MatchContext context)
-			{
-				foreach (var pattern in patterns) {
-					pattern.Match (context);
+        private class OpCodePattern : ILPattern
+        {
+            private OpCode opcode;
 
-					if (!context.success)
-						break;
-				}
-			}
-		}
+            public OpCodePattern(OpCode opcode)
+            {
+                this.opcode = opcode;
+            }
 
-		public static ILPattern OpCode (OpCode opcode)
-		{
-			return new OpCodePattern (opcode);
-		}
+            public override void Match(MatchContext context)
+            {
+                if (context.instruction == null)
+                {
+                    context.success = false;
+                    return;
+                }
 
-		class OpCodePattern : ILPattern {
+                context.success = context.instruction.OpCode == opcode;
+                context.Advance();
+            }
+        }
 
-			OpCode opcode;
+        public static ILPattern Either(ILPattern a, ILPattern b)
+        {
+            return new EitherPattern(a, b);
+        }
 
-			public OpCodePattern (OpCode opcode)
-			{
-				this.opcode = opcode;
-			}
+        private class EitherPattern : ILPattern
+        {
+            private ILPattern a;
+            private ILPattern b;
 
-			public override void Match (MatchContext context)
-			{
-				if (context.instruction == null) {
-					context.success = false;
-					return;
-				}
+            public EitherPattern(ILPattern a, ILPattern b)
+            {
+                this.a = a;
+                this.b = b;
+            }
 
-				context.success = context.instruction.OpCode == opcode;
-				context.Advance ();
-			}
-		}
+            public override void Match(MatchContext context)
+            {
+                if (!a.TryMatch(context))
+                    b.Match(context);
+            }
+        }
 
-		public static ILPattern Either (ILPattern a, ILPattern b)
-		{
-			return new EitherPattern (a, b);
-		}
+        public abstract void Match(MatchContext context);
 
-		class EitherPattern : ILPattern {
+        protected static Instruction GetLastMatchingInstruction(MatchContext context)
+        {
+            if (context.instruction == null)
+                return null;
 
-			ILPattern a;
-			ILPattern b;
+            return context.instruction.Previous;
+        }
 
-			public EitherPattern (ILPattern a, ILPattern b)
-			{
-				this.a = a;
-				this.b = b;
-			}
+        public bool TryMatch(MatchContext context)
+        {
+            var instruction = context.instruction;
+            Match(context);
 
-			public override void Match (MatchContext context)
-			{
-				if (!a.TryMatch (context))
-					b.Match (context);
-			}
-		}
+            if (context.success)
+                return true;
 
-		public abstract void Match (MatchContext context);
+            context.Reset(instruction);
+            return false;
+        }
 
-		protected static Instruction GetLastMatchingInstruction (MatchContext context)
-		{
-			if (context.instruction == null)
-				return null;
+        public static MatchContext Match(MethodBase method, ILPattern pattern)
+        {
+            if (method == null)
+                throw new ArgumentNullException("method");
+            if (pattern == null)
+                throw new ArgumentNullException("pattern");
 
-			return context.instruction.Previous;
-		}
+            var instructions = method.GetInstructions();
+            if (instructions.Count == 0)
+                throw new ArgumentException();
 
-		public bool TryMatch (MatchContext context)
-		{
-			var instruction = context.instruction;
-			Match (context);
+            var context = new MatchContext(instructions[0]);
+            pattern.Match(context);
+            return context;
+        }
+    }
 
-			if (context.success)
-				return true;
+    public sealed class MatchContext
+    {
+        internal Instruction instruction;
+        internal bool success;
 
-			context.Reset (instruction);
-			return false;
-		}
+        private Dictionary<object, object> data = new Dictionary<object, object>();
 
-		public static MatchContext Match (MethodBase method, ILPattern pattern)
-		{
-			if (method == null)
-				throw new ArgumentNullException ("method");
-			if (pattern == null)
-				throw new ArgumentNullException ("pattern");
+        public bool IsMatch
+        {
+            get { return success; }
+            set { success = true; }
+        }
 
-			var instructions = method.GetInstructions ();
-			if (instructions.Count == 0)
-				throw new ArgumentException ();
+        internal MatchContext(Instruction instruction)
+        {
+            Reset(instruction);
+        }
 
-			var context = new MatchContext (instructions [0]);
-			pattern.Match (context);
-			return context;
-		}
-	}
+        public bool TryGetData(object key, out object value)
+        {
+            return data.TryGetValue(key, out value);
+        }
 
-	public sealed class MatchContext {
+        public void AddData(object key, object value)
+        {
+            data.Add(key, value);
+        }
 
-		internal Instruction instruction;
-		internal bool success;
+        internal void Reset(Instruction instruction)
+        {
+            this.instruction = instruction;
+            success = true;
+        }
 
-		Dictionary<object, object> data = new Dictionary<object, object> ();
-
-		public bool IsMatch {
-			get { return success; }
-			set { success = true; }
-		}
-
-		internal MatchContext (Instruction instruction)
-		{
-			Reset (instruction);
-		}
-
-		public bool TryGetData (object key, out object value)
-		{
-			return data.TryGetValue (key, out value);
-		}
-
-		public void AddData (object key, object value)
-		{
-			data.Add (key, value);
-		}
-
-		internal void Reset (Instruction instruction)
-		{
-			this.instruction = instruction;
-			this.success = true;
-		}
-
-		internal void Advance ()
-		{
-			this.instruction = this.instruction.Next;
-		}
-	}
+        internal void Advance()
+        {
+            instruction = instruction.Next;
+        }
+    }
 }

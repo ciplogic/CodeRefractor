@@ -1,20 +1,30 @@
+#region Usings
+
 using System.Text;
+
+#endregion
 
 namespace CodeRefractor.RuntimeBase.DataBase
 {
-    class Cursor
+    internal class Cursor
     {
         #region Fields
+
         public byte[] ArrayData;
         private int _position;
+
         #endregion
 
         #region Private
-        private byte CurrentByte { get { return ArrayData[_position]; } }
+
+        private byte CurrentByte
+        {
+            get { return ArrayData[_position]; }
+        }
 
         private ExiLikeEvent CurrentEvent
         {
-            get { return (ExiLikeEvent)CurrentByte; }
+            get { return (ExiLikeEvent) CurrentByte; }
         }
 
         private byte ReadByte()
@@ -23,6 +33,7 @@ namespace CodeRefractor.RuntimeBase.DataBase
             _position++;
             return current;
         }
+
         #endregion
 
         public string ReadString()
@@ -36,18 +47,19 @@ namespace CodeRefractor.RuntimeBase.DataBase
         public int ReadInt()
         {
             var start = ReadByte();
-            var moreBytessCount = start % 4;
+            var moreBytessCount = start%4;
             if (moreBytessCount == 0)
-                return start / 4;
-            var value = (int)start;
+                return start/4;
+            var value = (int) start;
             var pow = 1;
             for (var i = 0; i < moreBytessCount; i++)
             {
                 pow *= 256;
-                value += pow * ReadByte();
+                value += pow*ReadByte();
             }
-            return value / 4;
+            return value/4;
         }
+
         public ExiLikeEvent Next()
         {
             var current = CurrentEvent;

@@ -1,4 +1,8 @@
+#region Usings
+
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
+
+#endregion
 
 namespace CodeRefractor.RuntimeBase.MiddleEnd
 {

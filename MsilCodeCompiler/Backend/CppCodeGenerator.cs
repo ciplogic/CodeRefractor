@@ -62,9 +62,9 @@ namespace CodeRefractor.Compiler.Backend
             foreach (var metaInterpreter in GlobalMethodPool.Instance.Interpreters)
             {
                 var interpreterCodeWriter = new MethodInterpreterCodeWriter
-                                                {
-                                                    Interpreter = metaInterpreter.Value
-                                                };
+                {
+                    Interpreter = metaInterpreter.Value
+                };
                 sb.AppendLine(interpreterCodeWriter.WriteMethodCode());
             }
             WriteMainBody(linker, sb);
@@ -82,11 +82,11 @@ namespace CodeRefractor.Compiler.Backend
                 foreach (var fieldData in typeData.Fields.Where(field => field.IsStatic))
                 {
                     sb.AppendFormat("{2} {4}::{0}::{1} = {3};",
-                                    typeData.Name,
-                                    fieldData.Name,
-                                    fieldData.TypeData.Info.ToCppName(),
-                                    Activator.CreateInstance(fieldData.TypeData.Info),
-                                    typeData.Namespace
+                        typeData.Name,
+                        fieldData.Name,
+                        fieldData.TypeData.Info.ToCppName(),
+                        Activator.CreateInstance(fieldData.TypeData.Info),
+                        typeData.Namespace
                         ).AppendLine();
                 }
             }
@@ -104,15 +104,16 @@ namespace CodeRefractor.Compiler.Backend
                 }
                 foreach (var fieldData in typeData.Fields.Where(field => field.IsStatic))
                 {
-                    sb.AppendFormat(" static {0} {1};", fieldData.TypeData.Info.ToCppName(), fieldData.Name).AppendLine();
+                    sb.AppendFormat(" static {0} {1};", fieldData.TypeData.Info.ToCppName(), fieldData.Name)
+                        .AppendLine();
                 }
                 sb.AppendFormat("}}; }}").AppendLine();
                 foreach (var item in typeData.Interpreters)
                 {
                     var interpreterCodeWriter = new MethodInterpreterCodeWriter
-                                                    {
-                                                        Interpreter = item
-                                                    };
+                    {
+                        Interpreter = item
+                    };
                     sb.Append(interpreterCodeWriter.WriteHeaderMethod());
                 }
             }
@@ -129,8 +130,8 @@ namespace CodeRefractor.Compiler.Backend
         }
 
         private static void WriteUsedCppRuntimeMethod(CrRuntimeLibrary crCrRuntimeLibrary,
-                                                      KeyValuePair<string, MethodBase> methodBodyAttribute,
-                                                      StringBuilder sb)
+            KeyValuePair<string, MethodBase> methodBodyAttribute,
+            StringBuilder sb)
         {
             var method = methodBodyAttribute.Value;
             var typeData = method.DeclaringType;
