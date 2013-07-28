@@ -30,8 +30,10 @@
         {
             this.button1 = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.cbxPure = new System.Windows.Forms.CheckBox();
             this.cbxCppMethod = new System.Windows.Forms.CheckBox();
+            this.tbxHeader = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -51,6 +53,8 @@
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.tbxHeader);
+            this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.cbxPure);
             this.groupBox1.Controls.Add(this.cbxCppMethod);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
@@ -60,10 +64,19 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Options";
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(6, 39);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(42, 13);
+            this.label1.TabIndex = 3;
+            this.label1.Text = "Header";
+            // 
             // cbxPure
             // 
             this.cbxPure.AutoSize = true;
-            this.cbxPure.Location = new System.Drawing.Point(6, 42);
+            this.cbxPure.Location = new System.Drawing.Point(6, 99);
             this.cbxPure.Name = "cbxPure";
             this.cbxPure.Size = new System.Drawing.Size(48, 17);
             this.cbxPure.TabIndex = 2;
@@ -81,6 +94,15 @@
             this.cbxCppMethod.TabIndex = 1;
             this.cbxCppMethod.Text = "&C++ function";
             this.cbxCppMethod.UseVisualStyleBackColor = true;
+            // 
+            // tbxHeader
+            // 
+            this.tbxHeader.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbxHeader.Location = new System.Drawing.Point(6, 55);
+            this.tbxHeader.Name = "tbxHeader";
+            this.tbxHeader.Size = new System.Drawing.Size(371, 20);
+            this.tbxHeader.TabIndex = 5;
             // 
             // OptionsView
             // 
@@ -104,5 +126,7 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.CheckBox cbxPure;
         private System.Windows.Forms.CheckBox cbxCppMethod;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox tbxHeader;
     }
 }

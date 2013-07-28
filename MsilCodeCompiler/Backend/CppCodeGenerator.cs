@@ -53,7 +53,7 @@ namespace CodeRefractor.Compiler.Backend
 
             var entryPoint = linker.EntryPoint;
             var assemblyData = AssemblyData.GetAssemblyData(entryPoint.DeclaringType.Assembly);
-            var typeDatas = assemblyData.Types.Values.Where(t => t.IsClass && !t.IsArray).ToArray();
+            var typeDatas = assemblyData.Types.Values.Where(t => t.IsClass && !t.IsArray).Cast<ClassTypeData>().ToArray();
 
             WriteForwardTypeDefinitions(sb, typeDatas);
             WriteForwardStructBodies(typeDatas, sb);
@@ -75,7 +75,7 @@ namespace CodeRefractor.Compiler.Backend
             return sb;
         }
 
-        private static void WriteStaticFieldDefinitions(StringBuilder sb, TypeData[] typeDatas)
+        private static void WriteStaticFieldDefinitions(StringBuilder sb, ClassTypeData[] typeDatas)
         {
             foreach (var typeData in typeDatas)
             {
@@ -92,7 +92,7 @@ namespace CodeRefractor.Compiler.Backend
             }
         }
 
-        private static void WriteForwardStructBodies(TypeData[] typeDatas, StringBuilder sb)
+        private static void WriteForwardStructBodies(ClassTypeData[] typeDatas, StringBuilder sb)
         {
             foreach (var typeData in typeDatas)
             {

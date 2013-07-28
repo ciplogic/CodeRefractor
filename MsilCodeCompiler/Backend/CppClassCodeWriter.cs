@@ -11,7 +11,7 @@ namespace CodeRefractor.Compiler.Backend
 {
     internal class CppClassCodeWriter
     {
-        public string WriteCode(ClassInterpreter classInterpreter, TypeData data)
+        public string WriteCode(ClassInterpreter classInterpreter, ClassTypeData data)
         {
             var sb = new StringBuilder();
             var classNs = classInterpreter.DeclaringType;

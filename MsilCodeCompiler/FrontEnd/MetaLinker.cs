@@ -142,7 +142,7 @@ namespace CodeRefractor.Compiler.FrontEnd
             AddClassIfNecessary(interpreter.Method).Add(interpreter);
             GlobalMethodPool.Instance.Interpreters[method.Key] = interpreter;
 
-            var typeData = ProgramData.UpdateType(method.Value.DeclaringType);
+            var typeData = (ClassTypeData)ProgramData.UpdateType(method.Value.DeclaringType);
             typeData.AddMethodInterpreter(interpreter);
         }
 
@@ -182,7 +182,7 @@ namespace CodeRefractor.Compiler.FrontEnd
                 methodBase =>
                 {
                     var typeData =
-                        ProgramData.UpdateType(
+                        (ClassTypeData)ProgramData.UpdateType(
                             methodBase.Value.DeclaringType);
                     var interpreter = typeData.GetInterpreter(methodBase.Key);
                     if (optimizationPasses == null) return;
@@ -203,7 +203,7 @@ namespace CodeRefractor.Compiler.FrontEnd
             var inliner = new SmallFunctionsInliner();
             foreach (var methodBase in GlobalMethodPool.Instance.MethodInfos)
             {
-                var typeData = ProgramData.UpdateType(methodBase.Value.DeclaringType);
+                var typeData = (ClassTypeData)ProgramData.UpdateType(methodBase.Value.DeclaringType);
                 var interpreter = typeData.GetInterpreter(methodBase.Key);
 
                 inliner.OptimizeOperations(interpreter.MidRepresentation);

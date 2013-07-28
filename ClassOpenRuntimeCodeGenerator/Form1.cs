@@ -52,7 +52,7 @@ namespace ClassOpenRuntimeCodeGenerator
                 MessageBox.Show("Error loading type");
                 return;
             }
-            var cb = new CodeBuilder(typeToScan, tbxTargetTypeName.Text);
+            var cb = new CodeBuilder(typeToScan, tbxTargetTypeName.Text, _viewModel);
             tbxOutputSource.Text = cb.GenerateSource();
         }
 

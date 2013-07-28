@@ -30,7 +30,7 @@ namespace CodeRefractor.Compiler.Optimizations.Inliner
 
                 methodData = (MethodData) localOperation.Value;
                 var methodBase = methodData.Info;
-                var typeData = ProgramData.UpdateType(methodBase.DeclaringType);
+                var typeData = (ClassTypeData)ProgramData.UpdateType(methodBase.DeclaringType);
                 interpreter = typeData.GetInterpreter(methodBase.ToString());
                 if (interpreter == null)
                     continue;

@@ -1,9 +1,7 @@
 #region Usings
 
 using System;
-using System.Collections.Generic;
 using CodeRefractor.RuntimeBase.MiddleEnd;
-using CodeRefractor.RuntimeBase.Shared;
 
 #endregion
 
@@ -15,16 +13,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
         public string Name;
         public bool IsClass;
         public bool IsArray;
-        public List<FieldDataRef> Fields;
         public Type Info;
-        public List<MethodInterpreter> Interpreters;
-        public Dictionary<String, int> InterpreterMapping = new Dictionary<string, int>();
-
-        public TypeData()
-        {
-            Fields = new List<FieldDataRef>();
-            Interpreters = new List<MethodInterpreter>();
-        }
 
         public override string ToString()
         {
@@ -44,30 +33,33 @@ namespace CodeRefractor.RuntimeBase.Analyze
             var result = programData.LocateType(fullName);
             if (result != null)
                 return result;
-
-            result = new TypeData
+            if (type.IsClass)
             {
-                Namespace = type.Namespace,
-                Name = type.Name,
-                IsClass = type.IsClass,
-                IsArray = type.IsArray,
-                Info = type
-            };
+                result=new ClassTypeData();
+            }
+            else
+            {
+                result=new TypeData();
+            }
+            PopulateTypeDataFields(type, result);
 
             assemblyData.Types[fullName] = result;
-            var allFields = type.GetAllFields();
-            foreach (var fieldInfo in allFields)
+            if (type.IsClass)
             {
-                var fieldData = new FieldDataRef
-                {
-                    Name = fieldInfo.Name,
-                    TypeData = GetTypeData(fieldInfo.FieldType),
-                    IsStatic = fieldInfo.IsStatic
-                };
-                result.Fields.Add(fieldData);
+                ClassTypeData.PopulateFields(type, (ClassTypeData) result);
             }
             return result;
         }
+
+        private static void PopulateTypeDataFields(Type type, TypeData result)
+        {
+            result.Namespace = type.Namespace;
+            result.Name = type.Name;
+            result.IsClass = type.IsClass;
+            result.IsArray = type.IsArray;
+            result.Info = type;
+        }
+
 
         public string FullName
         {
@@ -86,18 +78,5 @@ namespace CodeRefractor.RuntimeBase.Analyze
                 : string.Format("{0}.{1}", typeNs, name);
         }
 
-        public void AddMethodInterpreter(MethodInterpreter metaLinker)
-        {
-            InterpreterMapping[metaLinker.Method.ToString()] = Interpreters.Count;
-            Interpreters.Add(metaLinker);
-        }
-
-        public MethodInterpreter GetInterpreter(string methodName)
-        {
-            int index;
-            return !InterpreterMapping.TryGetValue(methodName, out index)
-                ? null
-                : Interpreters[index];
-        }
     }
 }

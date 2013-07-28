@@ -25,7 +25,7 @@ namespace CodeRefractor.Compiler.FrontEnd
             Methods.Add(method);
         }
 
-        public string WriteCode(TypeData typeData)
+        public string WriteCode(ClassTypeData typeData)
         {
             return _methodCodeWriter.WriteCode(this, typeData);
         }

@@ -11,5 +11,6 @@ namespace ClassOpenRuntimeCodeGenerator
         public string TargetType;
         public bool IsPure;
         public bool IsCppMethod;
+        public string Header;
     }
 }

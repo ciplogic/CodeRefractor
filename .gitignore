@@ -12,3 +12,6 @@ IlSpy
 *.vshost.exe
 Common/CodeRefactor.OpenRuntime/obj/*
 *.userprefs
+ClassOpenRuntimeCodeGenerator/obj/*
+ClassOpenRuntimeCodeGenerator/bin/*
+*DotSettings.user

@@ -48,7 +48,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
             if (locateType != null)
                 return locateType;
 
-            var result = TypeData.GetTypeData(declaringType);
+            var result = (ClassTypeData)TypeData.GetTypeData(declaringType);
             foreach (var fieldDataRef in result.Fields)
             {
                 var info = fieldDataRef.TypeData.Info;

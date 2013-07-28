@@ -26,6 +26,7 @@ namespace ClassOpenRuntimeCodeGenerator
         {
             cbxCppMethod.Checked = _viewModel.IsCppMethod;
             cbxPure.Checked = _viewModel.IsPure;
+            tbxHeader.Text = _viewModel.Header;
         }
 
         private void button1_Click(object sender, System.EventArgs e)
@@ -42,6 +43,7 @@ namespace ClassOpenRuntimeCodeGenerator
         {
             _viewModel.IsCppMethod = cbxCppMethod.Checked;
             _viewModel.IsPure = cbxPure.Checked;
+            _viewModel.Header = tbxHeader.Text;
         }
     }
 }

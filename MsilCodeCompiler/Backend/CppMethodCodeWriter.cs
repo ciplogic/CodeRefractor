@@ -262,7 +262,7 @@ namespace CodeRefractor.Compiler.Backend
             var cppNameSmart = declaringType.ToCppName();
             var cppName = declaringType.ToCppName(false);
             bodySb.AppendFormat("{1} = {0}(new {2}());", cppNameSmart, value.Left.Name, cppName).AppendLine();
-            var typeData = ProgramData.LocateType(declaringType);
+            var typeData = (ClassTypeData)ProgramData.LocateType(declaringType);
             var typeNs = declaringType.Namespace;
             foreach (var methodInterpreter in typeData.Interpreters)
             {
