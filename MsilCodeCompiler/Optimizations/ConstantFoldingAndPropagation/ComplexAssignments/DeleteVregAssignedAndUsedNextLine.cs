@@ -69,6 +69,9 @@ namespace CodeRefractor.Compiler.Optimizations.ConstantFoldingAndPropagation.Com
                 case LocalOperation.Kinds.Call:
                     HandleCall(assignment.Right, (MethodData) destOperation.Value);
                     break;
+                case LocalOperation.Kinds.Return:
+                    HandleReturn(assignment.Right, (LocalOperation)destOperation);
+                    break;
                 case LocalOperation.Kinds.SetField:
                     HandleSetField(assignment.Right, (Assignment) destOperation.Value);
                     break;
@@ -90,6 +93,11 @@ namespace CodeRefractor.Compiler.Optimizations.ConstantFoldingAndPropagation.Com
                 default:
                     return;
             }
+        }
+
+        private void HandleReturn(IdentifierValue right, LocalOperation assignment)
+        {
+            assignment.Value = right;
         }
 
         private void HandleGetArrayItem(IdentifierValue right, Assignment assignment)

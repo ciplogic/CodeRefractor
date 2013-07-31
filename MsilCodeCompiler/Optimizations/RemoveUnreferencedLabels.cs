@@ -15,8 +15,12 @@ namespace CodeRefractor.Compiler.Optimizations
     {
         public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
         {
-            var candidateLabelTable = new Dictionary<int, int>();
             var operations = intermediateCode.LocalOperations;
+
+            var found = operations.Any(operation => operation.Kind == LocalOperation.Kinds.Label);
+            if(!found)
+                return;
+            var candidateLabelTable = new Dictionary<int, int>();
             var pos = -1;
             foreach (var operation in operations)
             {

@@ -178,22 +178,21 @@ namespace CodeRefractor.Compiler.FrontEnd
         public void OptimizeMethods(bool doInline=false)
         {
             var optimizationPasses = CommandLineParse.OptimizationPasses;
-            Parallel.ForEach(GlobalMethodPool.Instance.MethodInfos,
-                methodBase =>
+            foreach (var methodBase in GlobalMethodPool.Instance.MethodInfos)
+            {
+                var typeData =
+                    (ClassTypeData) ProgramData.UpdateType(
+                        methodBase.Value.DeclaringType);
+                var interpreter = typeData.GetInterpreter(methodBase.Key);
+                if (optimizationPasses == null) return;
+                var codeWriter = new MethodInterpreterCodeWriter
                 {
-                    var typeData =
-                        (ClassTypeData)ProgramData.UpdateType(
-                            methodBase.Value.DeclaringType);
-                    var interpreter = typeData.GetInterpreter(methodBase.Key);
-                    if (optimizationPasses == null) return;
-                    var codeWriter = new MethodInterpreterCodeWriter
-                    {
-                        Interpreter = interpreter
-                    };
-                    codeWriter.ApplyLocalOptimizations(
-                        optimizationPasses);
-                }
-                );
+                    Interpreter = interpreter
+                };
+                codeWriter.ApplyLocalOptimizations(
+                    optimizationPasses);
+            }
+
 
             if (doInline)
                 InlineMethods();

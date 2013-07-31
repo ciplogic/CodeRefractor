@@ -1,6 +1,7 @@
 #region Usings
 
 using System.Collections.Generic;
+using System.Linq;
 using CodeRefractor.Compiler.Optimizations.Common;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
@@ -16,6 +17,11 @@ namespace CodeRefractor.Compiler.Optimizations.ReachabilityDfa
         public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
         {
             var operations = intermediateCode.LocalOperations;
+
+
+            var found = operations.Any(operation => operation.Kind == LocalOperation.Kinds.AlwaysBranch);
+            if (!found)
+                return;
             _labelTable = ReachabilityLines.BuildLabelTable(operations);
             for (var i = 0; i < operations.Count; i++)
             {

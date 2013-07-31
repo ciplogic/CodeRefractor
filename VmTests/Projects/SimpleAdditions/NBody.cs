@@ -4,28 +4,18 @@ using System;
 
 #endregion
 
-class Item
-{
-    private int _itemType;
-
-    public Item(int itemType)
-    {
-        _itemType = itemType;
-    }
-
-    public void SetItem(ref int item)
-    {
-        item = _itemType;
-    }
-}
-
 internal class NBody
 {
     public static void Main()
     {
-        var item = new Item(8);
-        int data = 3;
-        item.SetItem(ref data);
+        var item1 = 2;
+        var data = Data(item1);
         Console.WriteLine(data);
+    }
+
+    private static int Data(int item1)
+    {
+        var data = item1*0;
+        return data;
     }
 }

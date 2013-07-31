@@ -141,19 +141,15 @@ namespace CodeRefractor.Compiler.Config
                 new DeleteVregAssignedAndUsedNextLine(),
                 new DeleteVregAsLocalAssignedAndUsedPreviousLine(),
                 new ConstantVariablePropagation(),
+                new ConstantVariableOperatorPropagation(),
                 new ConstantVariablePropagationInCall(),
-                new VRegReindexAssigned(),
-                new ConstantVariableBranchOperatorPropagation(),
-                new DceVRegAssigned(),
-                new RemoveUnreferencedLabels(),
-                new ConsecutiveLabels(),
-                new ReachabilityLines(),
+
                 new DeleteJumpNextLine(),
-                new DeleteGappingVregAssignment(),
+                new RemoveUnreferencedLabels(), 
+                new ConsecutiveLabels(),
+                
                 new ConstantVariableBranchOperatorPropagation(),
-                new EvaluatePureFunctionWithConstantCall(),
                 new OperatorConstantFolding(),
-                new VRegVariablePropagation()
             }.ToList();
         }
 
@@ -172,7 +168,6 @@ namespace CodeRefractor.Compiler.Config
                 new RemoveUnreferencedLabels(), 
                 new ConsecutiveLabels(),
                 
-                 new ConstantVariableBranchOperatorPropagation(),
                 new ConstantVariableBranchOperatorPropagation(),
                 new OperatorConstantFolding(),
 

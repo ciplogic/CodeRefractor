@@ -1,6 +1,7 @@
 ﻿#region Usings
 
 using System.Collections.Generic;
+using System.Linq;
 using CodeRefractor.Compiler.Optimizations.Common;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.MiddleEnd;
@@ -17,6 +18,9 @@ namespace CodeRefractor.Compiler.Optimizations.Jumps
         {
             var operations = intermediateCode.LocalOperations;
 
+            var found = operations.Any(operation => operation.Kind == LocalOperation.Kinds.Label);
+            if (!found)
+                return;
             for (var i = 0; i < operations.Count - 2; i++)
             {
                 var operation = operations[i];

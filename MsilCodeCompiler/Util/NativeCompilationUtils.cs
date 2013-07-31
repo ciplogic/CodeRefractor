@@ -114,8 +114,7 @@ namespace CodeRefractor.Compiler.Util
                 CompilerOptions.LinkerOptions);
             var standardOutput = pathToGpp.ExecuteCommand(arguments);
             if (!String.IsNullOrWhiteSpace(standardOutput))
-            {
-                    
+            {    
                 throw new InvalidOperationException(String.Format("Errors when compiling: {0}", standardOutput));
             }
             (CompilerOptions.PathOfCompilerTools + "strip").ExecuteCommand(applicationNativeExe);
