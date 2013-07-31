@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using CodeRefractor.Compiler.Shared;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.Shared;
 using Mono.Reflection;
@@ -152,7 +151,24 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 MidRepresentation.StoreStaticField(evaluator, (FieldInfo) instruction.Operand);
                 return;
             }
+            if (opcodeStr == "ldloca.s" || opcodeStr == "ldloca")
+            {
+                //TODO: load the address into evaluation stack
+                var index = (LocalVariableInfo)instruction.Operand;
 
+                MidRepresentation.LoadAddressIntoEvaluationStack(evaluator, index);
+                return;
+            }
+
+
+            if (opcodeStr.StartsWith("stind."))
+            {
+                //TODO: load the address into evaluation stack
+                var index = (LocalVariableInfo)instruction.Operand;
+
+                MidRepresentation.StoresValueFromAddress(evaluator, index);
+                return;
+            }
 
             throw new InvalidOperationException(string.Format("Unknown instruction: {0}", instruction));
         }

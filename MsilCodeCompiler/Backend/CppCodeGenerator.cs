@@ -51,14 +51,33 @@ namespace CodeRefractor.Compiler.Backend
                 WriteUsedCppRuntimeMethod(crCrRuntimeLibrary, methodBodyAttribute, sb);
             }
 
+            WriteClassHeaders(linker, sb);
+
+            WriteMethodBodies(linker, sb);
+
+            sb.AppendLine(PlatformInvokeCodeWriter.LoadDllMethods());
+            sb.AppendLine(ConstByteArrayList.BuildConstantTable());
+
+            return sb;
+        }
+
+        private static void WriteClassHeaders(MetaLinker linker, StringBuilder sb)
+        {
             var entryPoint = linker.EntryPoint;
             var assemblyData = AssemblyData.GetAssemblyData(entryPoint.DeclaringType.Assembly);
-            var typeDatas = assemblyData.Types.Values.Where(t => t.IsClass && !t.IsArray).Cast<ClassTypeData>().ToArray();
+            var typeDatas =
+                assemblyData.Types.Values.Where(t => t.IsClass && !t.IsArray).Cast<ClassTypeData>().ToArray();
 
             WriteForwardTypeDefinitions(sb, typeDatas);
+
+            var enumTypeDatas = assemblyData.Types.Values.Where(t => t.Info.IsSubclassOf(typeof (Enum))).ToArray();
+            WriteEnumBodies(sb, enumTypeDatas);
             WriteForwardStructBodies(typeDatas, sb);
             WriteStaticFieldDefinitions(sb, typeDatas);
+        }
 
+        private static void WriteMethodBodies(MetaLinker linker, StringBuilder sb)
+        {
             foreach (var metaInterpreter in GlobalMethodPool.Instance.Interpreters)
             {
                 var interpreterCodeWriter = new MethodInterpreterCodeWriter
@@ -68,11 +87,20 @@ namespace CodeRefractor.Compiler.Backend
                 sb.AppendLine(interpreterCodeWriter.WriteMethodCode());
             }
             WriteMainBody(linker, sb);
+        }
 
-            sb.AppendLine(PlatformInvokeCodeWriter.LoadDllMethods());
-            sb.AppendLine(ConstByteArrayList.BuildConstantTable());
+        private static void WriteEnumBodies(StringBuilder sb, TypeData[] enumTypeDatas)
+        {
+            sb.Append("namespace Enums");
+            sb.AppendLine("{");
+            foreach (var enumTypeData in enumTypeDatas)
+            {
+                var enumTypeInfo = enumTypeData.Info;
 
-            return sb;
+                sb.AppendFormat("enum {0} {{", enumTypeInfo.Name);
+                sb.AppendLine("};");
+            }
+            sb.AppendLine("}");
         }
 
         private static void WriteStaticFieldDefinitions(StringBuilder sb, ClassTypeData[] typeDatas)

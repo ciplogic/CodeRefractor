@@ -107,7 +107,7 @@ namespace CodeRefractor.Compiler.Config
         private static int _optimizerLevel;
 
 
-        public List<OptimizationPass> BuildOptimizationPasses2()
+        public void BuildOptimizationPasses2()
         {
             OptimizationPasses = new OptimizationPass[]
             {
@@ -131,18 +131,16 @@ namespace CodeRefractor.Compiler.Config
                 new ConstantDfaAnalysis(),
                 new VRegVariablePropagation()
             }.ToList();
-            return OptimizationPasses;
         }
 
 
-        public List<OptimizationPass> BuildOptimizationPasses()
+        public void BuildOptimizationPasses()
         {
             OptimizationPasses = new OptimizationPass[]
             {
                 new DeleteVregAssignedAndUsedNextLine(),
                 new DeleteVregAsLocalAssignedAndUsedPreviousLine(),
                 new ConstantVariablePropagation(),
-                new ConstantVariableOperatorPropagation(),
                 new ConstantVariablePropagationInCall(),
                 new VRegReindexAssigned(),
                 new ConstantVariableBranchOperatorPropagation(),
@@ -155,14 +153,31 @@ namespace CodeRefractor.Compiler.Config
                 new ConstantVariableBranchOperatorPropagation(),
                 new EvaluatePureFunctionWithConstantCall(),
                 new OperatorConstantFolding(),
-                new DceLocalAssigned(),
-                new ConstantDfaAnalysis(),
                 new VRegVariablePropagation()
             }.ToList();
-            return OptimizationPasses;
         }
 
 
+        public void BuildOptimizationPasses0()
+        {
+            OptimizationPasses = new OptimizationPass[]
+            {
+                new DeleteVregAssignedAndUsedNextLine(),
+                new DeleteVregAsLocalAssignedAndUsedPreviousLine(),
+                new ConstantVariablePropagation(),
+                new ConstantVariableOperatorPropagation(),
+                new ConstantVariablePropagationInCall(),
+
+                new DeleteJumpNextLine(),
+                new RemoveUnreferencedLabels(), 
+                new ConsecutiveLabels(),
+                
+                 new ConstantVariableBranchOperatorPropagation(),
+                new ConstantVariableBranchOperatorPropagation(),
+                new OperatorConstantFolding(),
+
+            }.ToList();
+        }
         public int OptimizerLevel
         {
             get { return _optimizerLevel; }
@@ -173,7 +188,7 @@ namespace CodeRefractor.Compiler.Config
                 switch (_optimizerLevel)
                 {
                     case 0:
-                        OptimizationPasses = new List<OptimizationPass>();
+                        BuildOptimizationPasses0();
                         break;
                     case 1:
                         BuildOptimizationPasses();

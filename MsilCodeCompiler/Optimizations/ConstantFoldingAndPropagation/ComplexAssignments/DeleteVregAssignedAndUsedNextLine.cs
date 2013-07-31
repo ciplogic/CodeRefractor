@@ -1,7 +1,6 @@
 ﻿#region Usings
 
 using System.Collections.Generic;
-using System.Linq;
 using CodeRefractor.Compiler.Optimizations.Common;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.MiddleEnd;
@@ -46,10 +45,6 @@ namespace CodeRefractor.Compiler.Optimizations.ConstantFoldingAndPropagation.Com
 
         private void CleanVRegs(MetaMidRepresentation intermediateCode)
         {
-            var liveVRegs =
-                intermediateCode.Vars.VirtRegs.Where(
-                    vreg => vreg.Kind != VariableKind.Vreg || !_vregToBeDeleted.Contains(vreg.Id)).ToList();
-            intermediateCode.Vars.VirtRegs = liveVRegs;
             var pos = 0;
             var liveOperations = new List<LocalOperation>();
             foreach (var op in intermediateCode.LocalOperations)

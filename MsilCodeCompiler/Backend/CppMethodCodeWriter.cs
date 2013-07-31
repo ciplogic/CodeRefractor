@@ -5,15 +5,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using CodeRefractor.Compiler.Shared;
+using CodeRefractor.Compiler.Backend.HandleOperations;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
-using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.ConstTable;
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
-using CodeRefractor.RuntimeBase.Shared;
 using Mono.Reflection;
 
 #endregion
@@ -73,22 +70,22 @@ namespace CodeRefractor.Compiler.Backend
                         break;
 
                     case LocalOperation.Kinds.Operator:
-                        HandleOperator(operation.Value, bodySb);
+                        CppHandleOperators.HandleOperator(operation.Value, bodySb);
                         break;
                     case LocalOperation.Kinds.AlwaysBranch:
                         HandleAlwaysBranchOperator(operation, bodySb);
                         break;
                     case LocalOperation.Kinds.BranchOperator:
-                        HandleBranchOperator(operation, bodySb);
+                        CppHandleBranches.HandleBranchOperator(operation, bodySb);
                         break;
                     case LocalOperation.Kinds.Call:
-                        HandleCall(operation, bodySb);
+                        CppHandleCalls.HandleCall(operation, bodySb);
                         break;
                     case LocalOperation.Kinds.CallRuntime:
-                        HandleCallRuntime(operation, bodySb);
+                        CppHandleCalls.HandleCallRuntime(operation, bodySb);
                         break;
                     case LocalOperation.Kinds.Return:
-                        HandleReturn(operation, bodySb);
+                        CppHandleCalls.HandleReturn(operation, bodySb);
                         break;
                     case LocalOperation.Kinds.NewObject:
                         HandleNewObject(operation, bodySb);
@@ -125,6 +122,12 @@ namespace CodeRefractor.Compiler.Backend
                     case LocalOperation.Kinds.CopyArrayInitializer:
                         HandleCopyArrayInitializer(operation, bodySb);
                         break;
+                    case LocalOperation.Kinds.RefAssignment:
+                        HandleRefAssignment(operation, bodySb);
+                        break;
+                    case LocalOperation.Kinds.DerefAssignment:
+                        HandleDerefAssignment(operation, bodySb);
+                        break;
 
                     case LocalOperation.Kinds.Switch:
                         HandleSwitch(operation, bodySb);
@@ -142,21 +145,37 @@ namespace CodeRefractor.Compiler.Backend
             return bodySb;
         }
 
-        private void HandleLoadStaticField(LocalOperation operation, StringBuilder bodySb)
+        private static void HandleRefAssignment(LocalOperation operation, StringBuilder bodySb)
+        {
+            var assign = (RefAssignment) operation.Value;
+            var leftData = (IdentifierValue) assign.Left;
+            var rightData = (IdentifierValue) assign.Right;
+            bodySb.AppendFormat("{0} = &{1};", leftData.Name, rightData.Name);
+        }
+
+        private static void HandleDerefAssignment(LocalOperation operation, StringBuilder bodySb)
+        {
+            var assign = (RefAssignment) operation.Value;
+            var leftData = (IdentifierValue) assign.Left;
+            var rightData = (IdentifierValue) assign.Right;
+            bodySb.AppendFormat("{0} = *{1};", leftData.Name, rightData.Name);
+        }
+
+        private static void HandleLoadStaticField(LocalOperation operation, StringBuilder bodySb)
         {
             var assign = (Assignment) operation.Value;
             var rightData = (StaticFieldGetter) assign.Right;
             bodySb.AppendFormat("{0} = {1}::{2};", assign.Left.Name, rightData.DeclaringType.Name, rightData.FieldName);
         }
 
-        private void HandleSetStaticField(LocalOperation operation, StringBuilder bodySb)
+        private static void HandleSetStaticField(LocalOperation operation, StringBuilder bodySb)
         {
             var assign = (Assignment) operation.Value;
             var rightData = (StaticFieldSetter) assign.Left;
             bodySb.AppendFormat("{1}::{2} = {0};", assign.Right.Name, rightData.DeclaringType.Name, rightData.FieldName);
         }
 
-        private void HandleSwitch(LocalOperation operation, StringBuilder bodySb)
+        private static void HandleSwitch(LocalOperation operation, StringBuilder bodySb)
         {
             var assign = (Assignment) operation.Value;
             var instructionTable = (Instruction[]) ((ConstValue) assign.Right).Value;
@@ -174,7 +193,7 @@ namespace CodeRefractor.Compiler.Backend
             bodySb.AppendLine("}");
         }
 
-        private void HandleCopyArrayInitializer(LocalOperation operation, StringBuilder sb)
+        private static void HandleCopyArrayInitializer(LocalOperation operation, StringBuilder sb)
         {
             var assignment = (Assignment) operation.Value;
             var left = assignment.Left;
@@ -188,7 +207,7 @@ namespace CodeRefractor.Compiler.Backend
                 right.Id);
         }
 
-        private void HandleSetArrayValue(LocalOperation operation, StringBuilder sb)
+        private static void HandleSetArrayValue(LocalOperation operation, StringBuilder sb)
         {
             var assignment = (Assignment) operation.Value;
             var arrayItem = (ArrayVariable) assignment.Left;
@@ -199,7 +218,7 @@ namespace CodeRefractor.Compiler.Backend
                 right.Name);
         }
 
-        private void HandleNewArray(LocalOperation operation, StringBuilder bodySb)
+        private static void HandleNewArray(LocalOperation operation, StringBuilder bodySb)
         {
             var assignment = (Assignment) operation.Value;
             var arrayData = (NewArrayObject) assignment.Right;
@@ -209,17 +228,7 @@ namespace CodeRefractor.Compiler.Backend
                 arrayData.ArrayLength.Name);
         }
 
-        private static void HandleReturn(LocalOperation operation, StringBuilder bodySb)
-        {
-            var returnValue = operation.Value as IdentifierValue;
-
-            if (returnValue == null)
-                bodySb.Append("return;");
-            else
-                bodySb.AppendFormat("return {0};", returnValue.Name);
-        }
-
-        private void HandleReadArrayItem(LocalOperation operation, StringBuilder bodySb)
+        private static void HandleReadArrayItem(LocalOperation operation, StringBuilder bodySb)
         {
             var value = (Assignment) operation.Value;
             var valueSrc = (ArrayVariable) value.Right;
@@ -254,7 +263,7 @@ namespace CodeRefractor.Compiler.Backend
             bodySb.AppendFormat("{0}->{1} = {2};", fieldSetter.Instance.Name, fieldSetter.FieldName, assign.Right.Name);
         }
 
-        private void HandleNewObject(LocalOperation operation, StringBuilder bodySb)
+        private static void HandleNewObject(LocalOperation operation, StringBuilder bodySb)
         {
             var value = (Assignment) operation.Value;
             var rightValue = (NewConstructedObject) value.Right;
@@ -263,7 +272,7 @@ namespace CodeRefractor.Compiler.Backend
             var cppNameSmart = declaringType.ToCppName();
             var cppName = declaringType.ToCppName(false);
             bodySb.AppendFormat("{1} = {0}(new {2}());", cppNameSmart, value.Left.Name, cppName).AppendLine();
-            var typeData = (ClassTypeData)ProgramData.LocateType(declaringType);
+            var typeData = (ClassTypeData) ProgramData.LocateType(declaringType);
             var typeNs = declaringType.Namespace;
             foreach (var methodInterpreter in typeData.Interpreters)
             {
@@ -293,35 +302,11 @@ namespace CodeRefractor.Compiler.Backend
             return variablesSb;
         }
 
-        private void HandleAlwaysBranchOperator(LocalOperation operation, StringBuilder sb)
+        private static void HandleAlwaysBranchOperator(LocalOperation operation, StringBuilder sb)
         {
             sb.AppendFormat("goto label_{0};", operation.Value);
         }
 
-
-        private void HandleClt(BinaryOperator objList, Assignment localVar, StringBuilder sb)
-        {
-            string right, left, local;
-            GetBinaryOperandNames(objList, localVar, out right, out left, out local);
-
-            sb.AppendFormat("{0} = ({1} < {2})?1:0;", local, left, right);
-        }
-
-        private void HandleCgt(BinaryOperator objList, Assignment localVar, StringBuilder sb)
-        {
-            string right, left, local;
-            GetBinaryOperandNames(objList, localVar, out right, out left, out local);
-
-            sb.AppendFormat("{0} = ({1} > {2})?1:0;", local, left, right);
-        }
-
-        private void HandleCeq(BinaryOperator objList, Assignment localVar, StringBuilder sb)
-        {
-            string right, left, local;
-            GetBinaryOperandNames(objList, localVar, out right, out left, out local);
-
-            sb.AppendFormat("{0} = ({1} == {2})?1:0;", local, left, right);
-        }
 
         private void WriteLabel(StringBuilder sb, int value)
         {
@@ -329,53 +314,6 @@ namespace CodeRefractor.Compiler.Backend
         }
 
         #region Call
-
-        private static void HandleCall(LocalOperation operation, StringBuilder sb)
-        {
-            var operationData = (MethodData) operation.Value;
-
-            var methodInfo = operationData.Info;
-            if (methodInfo.IsConstructor)
-                return; //don't call constructor for now
-            var isVoidMethod = methodInfo.GetReturnType().IsVoid();
-            if (isVoidMethod)
-            {
-                sb.AppendFormat("{0}", methodInfo.ClangMethodSignature());
-            }
-            else
-            {
-                sb.AppendFormat("{1} = {0}", methodInfo.ClangMethodSignature(),
-                    operationData.Result.Name);
-            }
-            var identifierValues = operationData.Parameters;
-            var argumentsCall = string.Join(", ", identifierValues.Select(p => p.Name));
-
-            sb.AppendFormat("({0});", argumentsCall);
-        }
-
-
-        private void HandleCallRuntime(LocalOperation operation, StringBuilder sb)
-        {
-            var operationData = (MethodData) operation.Value;
-
-            var methodInfo = operationData.Info;
-            if (methodInfo.IsConstructor)
-                return; //don't call constructor for now
-            var isVoidMethod = methodInfo.GetReturnType().IsVoid();
-            if (isVoidMethod)
-            {
-                sb.AppendFormat("{0}", methodInfo.ClangMethodSignature());
-            }
-            else
-            {
-                sb.AppendFormat("{1} = {0}", methodInfo.ClangMethodSignature(),
-                    operationData.Result.Name);
-            }
-            var identifierValues = operationData.Parameters;
-            var argumentsCall = string.Join(", ", identifierValues.Select(p => p.Name));
-
-            sb.AppendFormat("({0});", argumentsCall);
-        }
 
         #endregion
 
@@ -386,290 +324,6 @@ namespace CodeRefractor.Compiler.Backend
             sb.Append("{");
         }
 
-
-        private void HandleBranchOperator(object operation, StringBuilder sb)
-        {
-            var localBranch = (LocalOperation) operation;
-            var objList = (BranchOperator) localBranch.Value;
-            var operationName = objList.Name;
-            var jumpAddress = objList.JumpTo;
-            var localVar = objList.CompareValue;
-            var secondVar = objList.SecondValue;
-            switch (operationName)
-            {
-                case OpcodeBranchNames.BrTrue:
-                    HandleBrTrue(localVar, sb, jumpAddress);
-                    break;
-                case OpcodeBranchNames.BrFalse:
-                    HandleBrFalse(localVar, sb, jumpAddress);
-                    break;
-
-                case OpcodeBranchNames.Beq:
-                    HandleBeq(localVar, secondVar, sb, jumpAddress);
-                    break;
-                case OpcodeBranchNames.Bge:
-                    HandleBge(localVar, secondVar, sb, jumpAddress);
-                    break;
-                case OpcodeBranchNames.Bgt:
-                    HandleBgt(localVar, secondVar, sb, jumpAddress);
-                    break;
-                case OpcodeBranchNames.Ble:
-                    HandleBle(localVar, secondVar, sb, jumpAddress);
-                    break;
-                case OpcodeBranchNames.Blt:
-                    HandleBlt(localVar, secondVar, sb, jumpAddress);
-                    break;
-                case OpcodeBranchNames.Bne:
-                    HandleBne(localVar, secondVar, sb, jumpAddress);
-                    break;
-
-                default:
-                    throw new InvalidOperationException(string.Format("Operation '{0}' is not handled", operationName));
-            }
-        }
-
-        private void HandleBne(IdentifierValue localVar, IdentifierValue secondVar, StringBuilder sb, int jumpAddress)
-        {
-            WriteCompareBranch(localVar, secondVar, sb, jumpAddress, "!=");
-        }
-
-        private void HandleBlt(IdentifierValue localVar, IdentifierValue secondVar, StringBuilder sb, int jumpAddress)
-        {
-            WriteCompareBranch(localVar, secondVar, sb, jumpAddress, "<");
-        }
-
-        private void HandleBle(IdentifierValue localVar, IdentifierValue secondVar, StringBuilder sb, int jumpAddress)
-        {
-            WriteCompareBranch(localVar, secondVar, sb, jumpAddress, "<=");
-        }
-
-        private void HandleBgt(IdentifierValue localVar, IdentifierValue secondVar, StringBuilder sb, int jumpAddress)
-        {
-            WriteCompareBranch(localVar, secondVar, sb, jumpAddress, ">");
-        }
-
-        private void HandleBge(IdentifierValue localVar, IdentifierValue secondVar, StringBuilder sb, int jumpAddress)
-        {
-            WriteCompareBranch(localVar, secondVar, sb, jumpAddress, ">=");
-        }
-
-        private void HandleBeq(IdentifierValue localVar, IdentifierValue secondVar, StringBuilder sb, int jumpAddress)
-        {
-            WriteCompareBranch(localVar, secondVar, sb, jumpAddress, "==");
-        }
-
-        private void WriteCompareBranch(IdentifierValue localVar, IdentifierValue secondVar, StringBuilder sb,
-            int jumpAddress,
-            string comparisonOperator)
-        {
-            var local = localVar.Name;
-            var second = secondVar.Name;
-            sb.AppendFormat("if({0}{3}{1}) goto label_{2};", local, second, jumpAddress, comparisonOperator);
-        }
-
-        private void HandleBrFalse(IdentifierValue localVar, StringBuilder sb, int jumpAddress)
-        {
-            var local = localVar.Name;
-            sb.AppendFormat("if(!({0})) goto label_{1};", local, jumpAddress);
-        }
-
-        private void HandleBrTrue(IdentifierValue localVar, StringBuilder sb, int jumpAddress)
-        {
-            var local = localVar.Name;
-            sb.AppendFormat("if({0}) goto label_{1};", local, jumpAddress);
-        }
-
-        private void HandleOperator(object operation, StringBuilder sb)
-        {
-            var localVar = (Assignment) operation;
-            var localOperator = (Operator) localVar.Right;
-            var binaryOperator = localVar.Right as BinaryOperator;
-            var unaryOperator = localVar.Right as UnaryOperator;
-
-            var operationName = localOperator.Name;
-            switch (operationName)
-            {
-                case OpcodeOperatorNames.Add:
-                    HandleAdd(binaryOperator, localVar, sb);
-                    break;
-                case OpcodeOperatorNames.Sub:
-                    HandleSub(binaryOperator, localVar, sb);
-                    break;
-                case OpcodeOperatorNames.Mul:
-                    HandleMul(binaryOperator, localVar, sb);
-                    break;
-                case OpcodeOperatorNames.Div:
-                    HandleDiv(binaryOperator, localVar, sb);
-                    break;
-                case OpcodeOperatorNames.Rem:
-                    HandleRem(binaryOperator, localVar, sb);
-                    break;
-
-                case OpcodeOperatorNames.Ceq:
-                    HandleCeq(binaryOperator, localVar, sb);
-                    break;
-
-                case OpcodeOperatorNames.Cgt:
-                    HandleCgt(binaryOperator, localVar, sb);
-                    break;
-
-                case OpcodeOperatorNames.Clt:
-                    HandleClt(binaryOperator, localVar, sb);
-                    break;
-
-                case OpcodeOperatorNames.And:
-                    HandleAnd(binaryOperator, localVar, sb);
-                    break;
-                case OpcodeOperatorNames.Or:
-                    HandleOr(binaryOperator, localVar, sb);
-                    break;
-                case OpcodeOperatorNames.Xor:
-                    HandleXor(binaryOperator, localVar, sb);
-                    break;
-
-                case OpcodeOperatorNames.Not:
-                    HandleNot(localVar, sb);
-                    break;
-                case OpcodeOperatorNames.Neg:
-                    HandleNeg(localVar, sb);
-                    break;
-
-                case OpcodeOperatorNames.LoadArrayRef:
-                    HandleLoadArrayRef(binaryOperator, localVar, sb);
-                    break;
-
-                case OpcodeOperatorNames.LoadLen:
-                    HandleLoadLen(unaryOperator, localVar, sb);
-                    break;
-
-                case OpcodeOperatorNames.ConvI4:
-                    HandleConvI4(unaryOperator, localVar, sb);
-                    break;
-
-                case OpcodeOperatorNames.ConvR8:
-                    HandleConvR8(unaryOperator, localVar, sb);
-                    break;
-
-                default:
-                    throw new InvalidOperationException(string.Format("Operation '{0}' is not handled", operationName));
-            }
-        }
-
-        private void HandleNeg(Assignment localVar, StringBuilder sb)
-        {
-            var operat = (UnaryOperator) localVar.Right;
-            sb.AppendFormat("{0} = -{1};", localVar.Left.Name, operat.Left.Name);
-        }
-
-        private void HandleConvR8(UnaryOperator unaryOperator, Assignment localVar, StringBuilder sb)
-        {
-            sb.AppendFormat("{0} = (double){1};", localVar.Left.Name, unaryOperator.Left.Name);
-        }
-
-        private void HandleConvI4(UnaryOperator unaryOperator, Assignment localVar, StringBuilder sb)
-        {
-            sb.AppendFormat("{0} = (int){1};", localVar.Left.Name, unaryOperator.Left.Name);
-        }
-
-        private void HandleLoadLen(UnaryOperator unaryOperator, Assignment assignment, StringBuilder sb)
-        {
-            sb.AppendFormat("{0} = {1}->Length;", assignment.Left.Name, unaryOperator.Left.Name);
-        }
-
-        private void HandleLoadArrayRef(BinaryOperator binaryOperator, Assignment localVar, StringBuilder sb)
-        {
-            string right, left, local;
-            GetBinaryOperandNames(binaryOperator, localVar, out right, out left, out local);
-
-            sb.AppendFormat("{0}={1}[{2}];", local, right, left);
-        }
-
-        private void HandleNot(Assignment localVar, StringBuilder sb)
-        {
-            string left, local;
-            GetUnaryOperandNames(localVar, out left, out local);
-            sb.AppendFormat("{0} = !{1};", local, left);
-        }
-
-        private void HandleXor(BinaryOperator objList, Assignment localVar, StringBuilder sb)
-        {
-            string right, left, local;
-            GetBinaryOperandNames(objList, localVar, out right, out left, out local);
-
-            sb.AppendFormat("{0} = {1}^{2};", local, left, right);
-        }
-
-        private void HandleOr(BinaryOperator objList, Assignment localVar, StringBuilder sb)
-        {
-            string right, left, local;
-            GetBinaryOperandNames(objList, localVar, out right, out left, out local);
-
-            sb.AppendFormat("{0} = {1}|{2};", local, left, right);
-        }
-
-        private void HandleAnd(BinaryOperator objList, Assignment localVar, StringBuilder sb)
-        {
-            string right, left, local;
-            GetBinaryOperandNames(objList, localVar, out right, out left, out local);
-
-            sb.AppendFormat("{0} = {1}&{2};", local, left, right);
-        }
-
-        private static void HandleMul(BinaryOperator objList, Assignment localVar, StringBuilder sb)
-        {
-            string right, left, local;
-            GetBinaryOperandNames(objList, localVar, out right, out left, out local);
-
-            sb.AppendFormat("{0} = {1}*{2};", local, left, right);
-        }
-
-        private static void HandleDiv(BinaryOperator objList, Assignment localVar, StringBuilder sb)
-        {
-            string right, left, local;
-            GetBinaryOperandNames(objList, localVar, out right, out left, out local);
-
-            sb.AppendFormat("{0} = {1}/{2};", local, left, right);
-        }
-
-        private static void HandleRem(BinaryOperator objList, Assignment localVar, StringBuilder sb)
-        {
-            string right, left, local;
-            GetBinaryOperandNames(objList, localVar, out right, out left, out local);
-
-            sb.AppendFormat("{0} = {1}%{2};", local, left, right);
-        }
-
-        private static void GetBinaryOperandNames(BinaryOperator objList, Assignment localVar, out string right,
-            out string left, out string local)
-        {
-            local = localVar.Left.Name;
-            var leftVar = objList.Left as LocalVariable;
-            left = leftVar == null ? objList.Left.ToString() : leftVar.Name;
-            var rightVar = objList.Right as LocalVariable;
-            right = rightVar == null ? objList.Right.ToString() : rightVar.Name;
-        }
-
-        private static void GetUnaryOperandNames(Assignment localVar, out string left, out string local)
-        {
-            left = localVar.Left.Name;
-            local = localVar.Right.Name;
-        }
-
-        private static void HandleSub(BinaryOperator objList, Assignment localVar, StringBuilder sb)
-        {
-            string right, left, local;
-            GetBinaryOperandNames(objList, localVar, out right, out left, out local);
-
-            sb.AppendFormat("{0} = {1}-{2};", local, left, right);
-        }
-
-        private static void HandleAdd(BinaryOperator objList, Assignment localVar, StringBuilder sb)
-        {
-            string right, left, local;
-            GetBinaryOperandNames(objList, localVar, out right, out left, out local);
-
-            sb.AppendFormat("{0} = {1}+{2};", local, left, right);
-        }
 
         private void StoreLocal(StringBuilder sb, LocalOperation operation)
         {
@@ -685,7 +339,6 @@ namespace CodeRefractor.Compiler.Backend
             {
                 var rightVar = (LocalVariable) localVar.Right;
                 var right = rightVar.Name;
-
                 sb.AppendFormat("{0} = {1};", left, right);
             }
             else

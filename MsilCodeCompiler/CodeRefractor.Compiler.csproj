@@ -36,10 +36,12 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Backend\CppClassCodeWriter.cs" />
     <Compile Include="Backend\CppCodeGenerator.cs" />
     <Compile Include="Backend\CppFullFileMethodWriter.cs" />
     <Compile Include="Backend\CppMethodCodeWriter.cs" />
+    <Compile Include="Backend\HandleOperations\CppHandleBranches.cs" />
+    <Compile Include="Backend\HandleOperations\CppHandleCalls.cs" />
+    <Compile Include="Backend\HandleOperations\CppHandleCompareBranches.cs" />
     <Compile Include="Backend\MethodInterpreterCodeWriter.cs" />
     <Compile Include="Backend\PlatformInvokeCodeWriter.cs" />
     <Compile Include="Backend\PlatformInvokeDllImports.cs" />

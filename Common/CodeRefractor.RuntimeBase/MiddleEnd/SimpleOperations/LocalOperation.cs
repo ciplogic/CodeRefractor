@@ -4,25 +4,36 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
     {
         public enum Kinds
         {
-            Operator,
             Call,
+
             Return,
             BranchOperator,
-            Label,
             AlwaysBranch,
-            SetField,
+            Label,
+
             NewObject,
             LoadArgument,
-            GetField,
-            Assignment,
-            GetArrayItem,
-            NewArray,
-            SetArrayItem,
-            CopyArrayInitializer,
             CallRuntime,
             Switch,
+
+            GetField,
+            SetField,
             GetStaticField,
-            SetStaticField
+            SetStaticField,
+
+            GetArrayItem,
+            SetArrayItem,
+            NewArray,
+            CopyArrayInitializer,
+
+            Operator,
+
+
+
+            Assignment,
+            
+            RefAssignment,
+            DerefAssignment
         }
 
         public Kinds Kind;

@@ -94,7 +94,7 @@ namespace CodeRefractor.Compiler.Util
             var asm = Assembly.LoadFile(inputAssemblyName);
             var definition = asm.EntryPoint;
             var start = Environment.TickCount;
-            var linker = definition.CreateLinkerFromEntryPoint(commandLineParse.BuildOptimizationPasses2());
+            var linker = definition.CreateLinkerFromEntryPoint();
 
             var sb = CppCodeGenerator.BuildFullSourceCode(linker, Program.CrCrRuntimeLibrary);
             var end = Environment.TickCount - start;
@@ -115,6 +115,7 @@ namespace CodeRefractor.Compiler.Util
             var standardOutput = pathToGpp.ExecuteCommand(arguments);
             if (!String.IsNullOrWhiteSpace(standardOutput))
             {
+                    
                 throw new InvalidOperationException(String.Format("Errors when compiling: {0}", standardOutput));
             }
             (CompilerOptions.PathOfCompilerTools + "strip").ExecuteCommand(applicationNativeExe);

@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using CodeRefractor.Compiler.Backend;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 
@@ -24,13 +23,6 @@ namespace CodeRefractor.Compiler.FrontEnd
         {
             Methods.Add(method);
         }
-
-        public string WriteCode(ClassTypeData typeData)
-        {
-            return _methodCodeWriter.WriteCode(this, typeData);
-        }
-
-        private readonly CppClassCodeWriter _methodCodeWriter = new CppClassCodeWriter();
 
         public override string ToString()
         {

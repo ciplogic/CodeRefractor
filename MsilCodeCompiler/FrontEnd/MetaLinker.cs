@@ -175,7 +175,7 @@ namespace CodeRefractor.Compiler.FrontEnd
             ComputeDependencies(methodBase);
         }
 
-        public void OptimizeMethods()
+        public void OptimizeMethods(bool doInline=false)
         {
             var optimizationPasses = CommandLineParse.OptimizationPasses;
             Parallel.ForEach(GlobalMethodPool.Instance.MethodInfos,
@@ -195,7 +195,8 @@ namespace CodeRefractor.Compiler.FrontEnd
                 }
                 );
 
-            InlineMethods();
+            if (doInline)
+                InlineMethods();
         }
 
         private void InlineMethods()

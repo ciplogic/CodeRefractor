@@ -240,6 +240,8 @@ namespace CodeRefractor.RuntimeBase
 
         public static string ToCppMangling(this string s)
         {
+            if (String.IsNullOrEmpty(s))
+                return String.Empty;
             var fullName = s.Replace(".", "::");
             if (fullName.EndsWith("[]"))
             {
@@ -252,7 +254,11 @@ namespace CodeRefractor.RuntimeBase
         public static string ToCppName(this Type type, bool isSmartPtr = true)
         {
             if (!type.IsClass || !isSmartPtr)
-                return type.FullName.ToCppMangling();
+            {
+                return type.IsSubclassOf(typeof(Enum)) 
+                    ? "int" 
+                    : type.FullName.ToCppMangling();
+            }
             if (type.IsArray)
             {
                 var elementType = type.GetElementType();

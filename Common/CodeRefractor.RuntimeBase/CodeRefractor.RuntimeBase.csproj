@@ -62,6 +62,7 @@
     <Compile Include="MiddleEnd\SimpleOperations\ConstTable\ConstByteArrayData.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\ConstTable\ConstByteArrayValue.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\ConstTable\ConstByteArrayList.cs" />
+    <Compile Include="MiddleEnd\SimpleOperations\RefAssignment.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\StaticFieldGetter.cs" />
     <Compile Include="PureMethodAttribute.cs" />
     <Compile Include="Shared\ObcodeIntValues.cs" />

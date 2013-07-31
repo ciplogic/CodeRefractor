@@ -1,4 +1,4 @@
-namespace CodeRefractor.Compiler.Shared
+namespace CodeRefractor.RuntimeBase.Shared
 {
     public static class OpcodeOperatorNames
     {

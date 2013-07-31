@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using CodeRefractor.Compiler.Shared;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
@@ -341,6 +340,20 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             AddOperation(LocalOperation.Kinds.SetStaticField, assignment);
         }
 
+
+        public void StoresValueFromAddress(EvaluatorStack evaluator, LocalVariableInfo index)
+        {
+            var varAddress = evaluator.Stack.Pop();
+            var varValue = evaluator.Stack.Pop();
+            
+            var assignment = new DerefAssignment
+            {
+                Left = (LocalVariable) varAddress,
+                Right = varValue
+            };
+            
+            AddOperation(LocalOperation.Kinds.DerefAssignment, assignment);
+        }
         #region Branching operators
 
         public void BranchIfTrue(int pushedIntValue, EvaluatorStack evaluator)
@@ -428,6 +441,22 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 Right = argument
             };
             AddOperation(LocalOperation.Kinds.Assignment, assignment);
+        }
+
+
+
+        public void LoadAddressIntoEvaluationStack(EvaluatorStack evaluator, LocalVariableInfo index)
+        {
+            var vreg = SetNewVReg(evaluator);
+            vreg.FixedType = index.LocalType.MakeByRefType();
+
+            var argument = Vars.LocalVariables[index.LocalIndex];
+            var assignment = new RefAssignment()
+            {
+                Left = vreg,
+                Right = argument
+            };
+            AddOperation(LocalOperation.Kinds.RefAssignment, assignment);
         }
 
         public void LoadField(string fieldName, EvaluatorStack evaluator)
