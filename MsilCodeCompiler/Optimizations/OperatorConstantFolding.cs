@@ -4,6 +4,7 @@ using CodeRefractor.Compiler.Optimizations.Common;
 using CodeRefractor.Compiler.Shared;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
+using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
 
 #endregion
 

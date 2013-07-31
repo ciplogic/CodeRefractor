@@ -15,3 +15,5 @@ Common/CodeRefactor.OpenRuntime/obj/*
 ClassOpenRuntimeCodeGenerator/obj/*
 ClassOpenRuntimeCodeGenerator/bin/*
 *DotSettings.user
+Common/CodeRefactor.OpenRuntime/bin/*
+bin/output.cpp

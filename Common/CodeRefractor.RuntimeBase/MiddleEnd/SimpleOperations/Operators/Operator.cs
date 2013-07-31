@@ -1,10 +1,6 @@
-#region Usings
 
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 
-#endregion
-
-namespace CodeRefractor.RuntimeBase.MiddleEnd
+namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators
 {
     public class Operator : IdentifierValue
     {

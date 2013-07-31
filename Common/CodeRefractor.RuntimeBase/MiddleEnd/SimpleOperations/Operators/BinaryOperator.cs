@@ -4,7 +4,7 @@ using System;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
+namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators
 {
     public class BinaryOperator : Operator
     {

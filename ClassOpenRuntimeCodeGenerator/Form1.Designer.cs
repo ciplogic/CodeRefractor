@@ -122,6 +122,7 @@
             this.tbxOutputSource.Location = new System.Drawing.Point(3, 16);
             this.tbxOutputSource.Multiline = true;
             this.tbxOutputSource.Name = "tbxOutputSource";
+            this.tbxOutputSource.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.tbxOutputSource.Size = new System.Drawing.Size(468, 135);
             this.tbxOutputSource.TabIndex = 0;
             // 

@@ -104,6 +104,35 @@ namespace CodeRefractor.Compiler.Config
         public string ApplicationInputAssembly = "SimpleAdditions.exe";
         public string ApplicationNativeExe = string.Empty;
         public static List<OptimizationPass> OptimizationPasses;
+        private static int _optimizerLevel;
+
+
+        public List<OptimizationPass> BuildOptimizationPasses2()
+        {
+            OptimizationPasses = new OptimizationPass[]
+            {
+                new DeleteVregAssignedAndUsedNextLine(),
+                new DeleteVregAsLocalAssignedAndUsedPreviousLine(),
+                new ConstantVariablePropagation(),
+                new ConstantVariableOperatorPropagation(),
+                new ConstantVariablePropagationInCall(),
+                new VRegReindexAssigned(),
+                new ConstantVariableBranchOperatorPropagation(),
+                new DceVRegAssigned(),
+                new RemoveUnreferencedLabels(),
+                new ConsecutiveLabels(),
+                new ReachabilityLines(),
+                new DeleteJumpNextLine(),
+                new DeleteGappingVregAssignment(),
+                new ConstantVariableBranchOperatorPropagation(),
+                new EvaluatePureFunctionWithConstantCall(),
+                new OperatorConstantFolding(),
+                new DceLocalAssigned(),
+                new ConstantDfaAnalysis(),
+                new VRegVariablePropagation()
+            }.ToList();
+            return OptimizationPasses;
+        }
 
 
         public List<OptimizationPass> BuildOptimizationPasses()
@@ -131,6 +160,30 @@ namespace CodeRefractor.Compiler.Config
                 new VRegVariablePropagation()
             }.ToList();
             return OptimizationPasses;
+        }
+
+
+        public int OptimizerLevel
+        {
+            get { return _optimizerLevel; }
+            set
+            {
+                _optimizerLevel = value;
+
+                switch (_optimizerLevel)
+                {
+                    case 0:
+                        OptimizationPasses = new List<OptimizationPass>();
+                        break;
+                    case 1:
+                        BuildOptimizationPasses();
+                        break;
+                    case 2:
+                        BuildOptimizationPasses2();
+                        break;
+                }
+
+            }
         }
     }
 }

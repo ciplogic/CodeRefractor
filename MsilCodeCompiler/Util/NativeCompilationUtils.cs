@@ -94,7 +94,7 @@ namespace CodeRefractor.Compiler.Util
             var asm = Assembly.LoadFile(inputAssemblyName);
             var definition = asm.EntryPoint;
             var start = Environment.TickCount;
-            var linker = definition.CreateLinkerFromEntryPoint(commandLineParse.BuildOptimizationPasses());
+            var linker = definition.CreateLinkerFromEntryPoint(commandLineParse.BuildOptimizationPasses2());
 
             var sb = CppCodeGenerator.BuildFullSourceCode(linker, Program.CrCrRuntimeLibrary);
             var end = Environment.TickCount - start;

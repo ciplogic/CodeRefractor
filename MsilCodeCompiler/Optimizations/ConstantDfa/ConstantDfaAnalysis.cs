@@ -6,6 +6,7 @@ using CodeRefractor.Compiler.Optimizations.Common;
 using CodeRefractor.Compiler.Optimizations.ReachabilityDfa;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
+using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
 
 #endregion
 

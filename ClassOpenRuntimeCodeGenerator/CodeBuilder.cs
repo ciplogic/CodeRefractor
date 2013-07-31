@@ -55,7 +55,7 @@ namespace ClassOpenRuntimeCodeGenerator
             sb.Append("public static ");
             var isVoid = methodInfo.ReturnType == typeof(void);
             sb.Append(isVoid ? "void" : methodInfo.ReturnType.FullName);
-            sb.AppendFormat("{0} (", methodInfo.Name);
+            sb.AppendFormat(" {0} (", methodInfo.Name);
             var methodParameters = methodInfo.GetParameters();
             var parameterList = methodParameters.Select(
                 p => string.Format("{0} {1}",
@@ -65,7 +65,18 @@ namespace ClassOpenRuntimeCodeGenerator
             sb.AppendLine(")");
             sb.AppendLine("{");
             if (!isVoid)
-                sb.AppendLine("\treturn null;");
+            {
+                try
+                {
+                    var defaultT = Activator.CreateInstance(methodInfo.ReturnType);
+                    sb.AppendFormat("\treturn {0};", defaultT);
+                    sb.AppendLine();
+                }
+                catch
+                {
+                    sb.AppendLine("\treturn null;");
+                }
+            }
             sb.AppendLine("}");
         }
     }
