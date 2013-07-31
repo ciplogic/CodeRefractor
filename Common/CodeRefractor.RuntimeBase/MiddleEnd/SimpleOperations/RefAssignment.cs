@@ -5,7 +5,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
     public class RefAssignment
     {
         public LocalVariable Left;
-        public IdentifierValue Right;
+        public LocalVariable Right;
 
         public override string ToString()
         {
@@ -15,7 +15,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
     public class DerefAssignment
     {
         public LocalVariable Left;
-        public IdentifierValue Right;
+        public LocalVariable Right;
 
         public override string ToString()
         {

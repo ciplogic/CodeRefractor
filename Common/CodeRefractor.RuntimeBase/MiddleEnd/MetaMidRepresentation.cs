@@ -349,7 +349,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             var assignment = new DerefAssignment
             {
                 Left = (LocalVariable) varAddress,
-                Right = varValue
+                Right = (LocalVariable)varValue
             };
             
             AddOperation(LocalOperation.Kinds.DerefAssignment, assignment);

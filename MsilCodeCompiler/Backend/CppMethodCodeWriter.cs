@@ -155,7 +155,7 @@ namespace CodeRefractor.Compiler.Backend
 
         private static void HandleDerefAssignment(LocalOperation operation, StringBuilder bodySb)
         {
-            var assign = (RefAssignment) operation.Value;
+            var assign = (DerefAssignment) operation.Value;
             var leftData = (IdentifierValue) assign.Left;
             var rightData = (IdentifierValue) assign.Right;
             bodySb.AppendFormat("{0} = *{1};", leftData.Name, rightData.Name);
