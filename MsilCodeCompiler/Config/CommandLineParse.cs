@@ -150,6 +150,9 @@ namespace CodeRefractor.Compiler.Config
                 
                 new ConstantVariableBranchOperatorPropagation(),
                 new OperatorConstantFolding(),
+                new OperatorPartialConstantFolding(), 
+
+                new DceVRegAssigned(),
             }.ToList();
         }
 
@@ -170,6 +173,8 @@ namespace CodeRefractor.Compiler.Config
                 
                 new ConstantVariableBranchOperatorPropagation(),
                 new OperatorConstantFolding(),
+
+                new DceVRegAssigned(), 
 
             }.ToList();
         }

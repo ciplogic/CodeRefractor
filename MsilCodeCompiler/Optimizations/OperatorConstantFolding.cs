@@ -129,17 +129,17 @@ namespace CodeRefractor.Compiler.Optimizations
             Result = true;
         }
 
-        private object ComputeCeq(ConstValue constLeft, ConstValue constRight)
+        private static object ComputeCeq(ConstValue constLeft, ConstValue constRight)
         {
             return (int) constLeft.Value == (int) constRight.Value ? 1 : 0;
         }
 
-        private object ComputeCgt(ConstValue constLeft, ConstValue constRight)
+        private static object ComputeCgt(ConstValue constLeft, ConstValue constRight)
         {
             return (int) constLeft.Value > (int) constRight.Value ? 1 : 0;
         }
 
-        private object ComputeClt(ConstValue constLeft, ConstValue constRight)
+        private static object ComputeClt(ConstValue constLeft, ConstValue constRight)
         {
             return (int) constLeft.Value < (int) constRight.Value ? 1 : 0;
         }

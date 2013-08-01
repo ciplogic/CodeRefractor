@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using CodeRefractor.Compiler.Optimizations.Common;
+using CodeRefractor.Compiler.Optimizations.ConstantFoldingAndPropagation.ComplexAssignments;
 using CodeRefractor.Compiler.Optimizations.ReachabilityDfa;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
@@ -21,7 +22,7 @@ namespace CodeRefractor.Compiler.Optimizations.ConstantDfa
         public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
         {
             _operations = intermediateCode.LocalOperations;
-            _labelTable = ReachabilityLines.BuildLabelTable(_operations);
+            _labelTable = InstructionsUtils.BuildLabelTable(_operations);
             _pointsOfAnalysis = new DfaPointOfAnalysis[_operations.Count + 1];
 
             var startingConclusions = new DfaPointOfAnalysis();

@@ -40,23 +40,16 @@ namespace CodeRefractor.Compiler.Optimizations.ConstantFoldingAndPropagation.Com
 
                 ProcessOperation(operations[i + 1], assignment);
             }
+            if(_instructionsToBeDeleted.Count==0)
+                return;
             CleanVRegs(intermediateCode);
         }
 
         private void CleanVRegs(MetaMidRepresentation intermediateCode)
         {
-            var pos = 0;
-            var liveOperations = new List<LocalOperation>();
-            foreach (var op in intermediateCode.LocalOperations)
-            {
-                if (!_instructionsToBeDeleted.Contains(pos))
-                    liveOperations.Add(op);
-                pos++;
-            }
-            intermediateCode.LocalOperations = liveOperations;
+            intermediateCode.DeleteInstructions(_instructionsToBeDeleted);
 
             _vregToBeDeleted.Clear();
-            _instructionsToBeDeleted.Clear();
         }
 
         private void ProcessOperation(LocalOperation destOperation, Assignment assignment)

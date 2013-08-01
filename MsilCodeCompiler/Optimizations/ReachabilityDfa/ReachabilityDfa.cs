@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using CodeRefractor.Compiler.Optimizations.Common;
+using CodeRefractor.Compiler.Optimizations.ConstantFoldingAndPropagation.ComplexAssignments;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
@@ -14,30 +15,11 @@ namespace CodeRefractor.Compiler.Optimizations.ReachabilityDfa
     {
         private Dictionary<int, int> _labelTable;
         private HashSet<int> _reached;
-
-        public static Dictionary<int, int> BuildLabelTable(List<LocalOperation> operations)
-        {
-            var labelTable = new Dictionary<int, int>();
-            labelTable.Clear();
-            for (var i = 0; i < operations.Count; i++)
-            {
-                var operation = operations[i];
-                switch (operation.Kind)
-                {
-                    case LocalOperation.Kinds.Label:
-                        var jumpTo = (int) operation.Value;
-                        labelTable[jumpTo] = i;
-                        break;
-                }
-            }
-            return labelTable;
-        }
-
-
+        
         public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
         {
             var operations = intermediateCode.LocalOperations;
-            _labelTable = BuildLabelTable(operations);
+            _labelTable = InstructionsUtils.BuildLabelTable(operations);
             _reached = new HashSet<int>();
             Interpret(0, operations);
             if (_reached.Count == operations.Count) return;

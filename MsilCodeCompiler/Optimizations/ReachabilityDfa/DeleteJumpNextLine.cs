@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using CodeRefractor.Compiler.Optimizations.Common;
+using CodeRefractor.Compiler.Optimizations.ConstantFoldingAndPropagation.ComplexAssignments;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 
@@ -22,7 +23,7 @@ namespace CodeRefractor.Compiler.Optimizations.ReachabilityDfa
             var found = operations.Any(operation => operation.Kind == LocalOperation.Kinds.AlwaysBranch);
             if (!found)
                 return;
-            _labelTable = ReachabilityLines.BuildLabelTable(operations);
+            _labelTable = InstructionsUtils.BuildLabelTable(operations);
             for (var i = 0; i < operations.Count; i++)
             {
                 var operation = operations[i];
