@@ -36,10 +36,10 @@ namespace CodeRefractor.Compiler.Optimizations
                     if (isTrue)
                     {
                         operations[j] = new LocalOperation
-                        {
-                            Kind = LocalOperation.Kinds.AlwaysBranch,
-                            Value = destAssignment.JumpTo
-                        };
+                                            {
+                                                Kind = LocalOperation.Kinds.AlwaysBranch,
+                                                Value = destAssignment.JumpTo
+                                            };
                     }
                     else
                     {

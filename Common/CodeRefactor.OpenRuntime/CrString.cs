@@ -31,7 +31,7 @@ namespace CodeRefactor.OpenRuntime
                 Text[i] = value[i];
         }
 
-        private unsafe int StrLen(byte* data)
+        private static unsafe int StrLen(byte* data)
         {
             var result = 0;
             while (*data != 0)

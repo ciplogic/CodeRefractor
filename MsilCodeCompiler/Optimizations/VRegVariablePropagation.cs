@@ -84,7 +84,7 @@ namespace CodeRefractor.Compiler.Optimizations
             return true;
         }
 
-        private bool TryFoldUnary(UnaryOperator unaryOperator, int id, LocalVariable srcVariable)
+        private static bool TryFoldUnary(UnaryOperator unaryOperator, int id, LocalVariable srcVariable)
         {
             var leftField = unaryOperator.Left as LocalVariable;
             if (leftField == null) return false;
@@ -94,7 +94,7 @@ namespace CodeRefractor.Compiler.Optimizations
             return true;
         }
 
-        private bool TryFoldBinary(BinaryOperator binaryOperator, int id, object srcVariable)
+        private static bool TryFoldBinary(BinaryOperator binaryOperator, int id, object srcVariable)
         {
             var leftField = binaryOperator.Left as LocalVariable;
             var rightField = binaryOperator.Right as LocalVariable;

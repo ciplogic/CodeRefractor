@@ -25,30 +25,36 @@ namespace CodeRefractor.Compiler.Optimizations.ConstantFoldingAndPropagation
                         break;
                     if (destOperation.Kind == LocalOperation.Kinds.BranchOperator)
                         break;
-                    if (destOperation.Kind == LocalOperation.Kinds.Assignment)
+                    switch (destOperation.Kind)
                     {
-                        var destAssignment = (Assignment) destOperation.Value;
-                        if (SameVariable(destAssignment.Left, srcVariableDefinition.Left))
+                        case LocalOperation.Kinds.Assignment:
+                            {
+                                var destAssignment = (Assignment) destOperation.Value;
+                                if (SameVariable(destAssignment.Left, srcVariableDefinition.Left))
+                                    break;
+                                if (!SameVariable(destAssignment.Right as LocalVariable, srcVariableDefinition.Left)) continue;
+                                destAssignment.Right = constValue;
+                                Result = true;
+                            }
                             break;
-                        if (!SameVariable(destAssignment.Right as LocalVariable, srcVariableDefinition.Left)) continue;
-                        destAssignment.Right = constValue;
-                        Result = true;
-                    }
-                    else if (destOperation.Kind == LocalOperation.Kinds.NewArray)
-                    {
-                        var destAssignment = (Assignment) destOperation.Value;
-                        var arrayCreationInfo = (NewArrayObject) destAssignment.Right;
-                        if (!SameVariable(arrayCreationInfo.ArrayLength as LocalVariable, srcVariableDefinition.Left))
-                            continue;
-                        arrayCreationInfo.ArrayLength = constValue;
-                        Result = true;
-                    }
-                    else if (destOperation.Kind == LocalOperation.Kinds.SetField)
-                    {
-                        var destAssignment = (Assignment) destOperation.Value;
-                        if (!SameVariable(destAssignment.Right as LocalVariable, srcVariableDefinition.Left)) continue;
-                        destAssignment.Right = constValue;
-                        Result = true;
+                        case LocalOperation.Kinds.NewArray:
+                            {
+                                var destAssignment = (Assignment) destOperation.Value;
+                                var arrayCreationInfo = (NewArrayObject) destAssignment.Right;
+                                if (!SameVariable(arrayCreationInfo.ArrayLength as LocalVariable, srcVariableDefinition.Left))
+                                    continue;
+                                arrayCreationInfo.ArrayLength = constValue;
+                                Result = true;
+                            }
+                            break;
+                        case LocalOperation.Kinds.SetField:
+                            {
+                                var destAssignment = (Assignment) destOperation.Value;
+                                if (!SameVariable(destAssignment.Right as LocalVariable, srcVariableDefinition.Left)) continue;
+                                destAssignment.Right = constValue;
+                                Result = true;
+                            }
+                            break;
                     }
                 }
             }

@@ -55,7 +55,8 @@
     <Compile Include="Optimizations\ConstantDfa\DfaPointOfAnalysis.cs" />
     <Compile Include="Optimizations\ConstantDfa\VariableState.cs" />
     <Compile Include="Optimizations\ConstantFoldingAndPropagation\ComplexAssignments\DeleteGappingVregAssignment.cs" />
-    <Compile Include="Optimizations\ConstantFoldingAndPropagation\ComplexAssignments\InstructionsUtils.cs" />
+    <Compile Include="Optimizations\ConstantFoldingAndPropagation\ComplexAssignments\DeleteVregAssignedVariableAndUsedNextLine.cs" />
+    <Compile Include="Optimizations\InstructionsUtils.cs" />
     <Compile Include="Optimizations\ConstantFoldingAndPropagation\ConstantVariableBranchOperatorPropagation.cs" />
     <Compile Include="Optimizations\ConstantFoldingAndPropagation\ConstantVariableOperatorPropagation.cs" />
     <Compile Include="Optimizations\ConstantFoldingAndPropagation\ConstantVariablePropagation.cs" />

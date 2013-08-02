@@ -68,7 +68,7 @@ namespace CodeRefractor.Compiler.Config
             ApplicationNativeExe = nameWithoutExtension + "_cr.exe";
         }
 
-        private void ShowHelp()
+        private static void ShowHelp()
         {
             var helpText =
                 @" Code Refractor v {0}
@@ -107,7 +107,7 @@ namespace CodeRefractor.Compiler.Config
         private static int _optimizerLevel;
 
 
-        public List<OptimizationPass> BuildOptimizationPasses2()
+        public static List<OptimizationPass> BuildOptimizationPasses2()
         {
             return new OptimizationPass[]
             {
@@ -122,13 +122,15 @@ namespace CodeRefractor.Compiler.Config
         }
 
 
-        public List<OptimizationPass> BuildOptimizationPasses1()
+        public static List<OptimizationPass> BuildOptimizationPasses1()
         {
             return new OptimizationPass[]
                                          {
                                              new DoubleAssignPropagation(), 
                                              new AssignToReturnPropagation(), 
                                              new DeadStoreLastSequenceRemover(), 
+
+                                             new DceLocalAssigned(), 
                                              
                                              new OperatorPartialConstantFolding(), 
                                          }.ToList();
@@ -136,11 +138,12 @@ namespace CodeRefractor.Compiler.Config
         }
 
 
-        public List<OptimizationPass> BuildOptimizationPasses0()
+        public static List<OptimizationPass> BuildOptimizationPasses0()
         {
             return new OptimizationPass[]
                                          {
                                              new DeleteVregAssignedAndUsedNextLine(), 
+                                             new DeleteVregAssignedVariableAndUsedNextLine(), 
                                              new DeleteVregAsLocalAssignedAndUsedPreviousLine(), 
                                              new ConstantVariablePropagation(), 
                                              new ConstantVariableOperatorPropagation(), 
@@ -157,7 +160,7 @@ namespace CodeRefractor.Compiler.Config
 
         }
 
-        public int OptimizerLevel
+        public static int OptimizerLevel
         {
             get { return _optimizerLevel; }
             set

@@ -1,18 +1,12 @@
-﻿#region Usings
-
 using System.Collections.Generic;
 using CodeRefractor.Compiler.Optimizations.Common;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.MiddleEnd;
-using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
-
-#endregion
 
 namespace CodeRefractor.Compiler.Optimizations.ConstantFoldingAndPropagation.ComplexAssignments
 {
-    internal class DeleteVregAssignedAndUsedNextLine : ResultingOptimizationPass
+    internal class DeleteVregAssignedVariableAndUsedNextLine : ResultingOptimizationPass
     {
         private readonly HashSet<int> _instructionsToBeDeleted = new HashSet<int>();
         private readonly HashSet<int> _vregToBeDeleted = new HashSet<int>();
@@ -32,12 +26,16 @@ namespace CodeRefractor.Compiler.Optimizations.ConstantFoldingAndPropagation.Com
                 if (srcOperation.Kind != LocalOperation.Kinds.Assignment &&
                     srcOperation.Kind != LocalOperation.Kinds.LoadArgument)
                     continue;
-                var assignment = (Assignment) srcOperation.Value;
+                var assignment = srcOperation.GetAssignment();
                 _leftVreg = assignment.Left;
                 if (_leftVreg.Kind != VariableKind.Vreg) continue;
+                var rightItem = assignment.Right as LocalVariable;
+                if (rightItem == null)
+                    continue;
                 _currentId = _leftVreg.Id;
 
-                ProcessOperation(operations[i + 1], assignment);
+                var destOperation = operations[i + 1];
+                ProcessOperation(destOperation, assignment);
             }
             if (_instructionsToBeDeleted.Count == 0)
                 return;
@@ -51,78 +49,85 @@ namespace CodeRefractor.Compiler.Optimizations.ConstantFoldingAndPropagation.Com
             _vregToBeDeleted.Clear();
         }
 
-        private void ProcessOperation(LocalOperation destOperation, Assignment assignment)
+        private void ProcessOperation(LocalOperation destOperation, Assignment srcAssignment)
         {
             switch (destOperation.Kind)
             {
-                case LocalOperation.Kinds.Assignment:
-                    HandleAssignment(assignment.Right, destOperation.GetAssignment());
+                case LocalOperation.Kinds.SetField:
+                    HandleSetField(srcAssignment, (Assignment) destOperation.Value);
                     break;
-                case LocalOperation.Kinds.Call:
-                    HandleCall(assignment.Right, (MethodData) destOperation.Value);
+                case LocalOperation.Kinds.GetField:
+                    HandleGetField(srcAssignment.Right, (Assignment) destOperation.Value);
                     break;
-                case LocalOperation.Kinds.Return:
-                    HandleReturn(assignment.Right, destOperation);
+                case LocalOperation.Kinds.SetArrayItem:
+                    HandleSetArrayItem(srcAssignment, (Assignment) destOperation.Value);
                     break;
-                case LocalOperation.Kinds.Operator:
-                    HandleOperator(assignment.Right, destOperation.GetAssignment());
-                    break;
-                case LocalOperation.Kinds.BranchOperator:
-                    HandleBranchOperator(assignment.Right, (BranchOperator) destOperation.Value);
+                case LocalOperation.Kinds.GetArrayItem:
+                    HandleGetArrayItem(srcAssignment, (Assignment) destOperation.Value);
                     break;
                 default:
                     return;
             }
         }
 
-        private static void HandleReturn(IdentifierValue right, LocalOperation assignment)
+        private void HandleGetArrayItem(Assignment srcAssignment, Assignment assignment)
         {
-            assignment.Value = right;
-        }
-
-        private void HandleBranchOperator(IdentifierValue right, BranchOperator value)
-        {
-            if (VarMatchVreg(value.CompareValue))
-                value.CompareValue = right;
-        }
-
-        private void HandleOperator(IdentifierValue right, Assignment value)
-        {
-            var binaryOperator = value.Right as BinaryOperator;
-            var unaryOperator = value.Right as UnaryOperator;
-            if (unaryOperator != null)
+            var right = srcAssignment.Right;
+            var arrayVariable = (ArrayVariable) assignment.Right;
+            if (VarMatchVreg(arrayVariable.Parent))
             {
-                if (VarMatchVreg(unaryOperator.Left))
-                    unaryOperator.Left = right;
+                arrayVariable.Parent = right;
                 return;
             }
-            if (binaryOperator == null) return;
-            if (VarMatchVreg(binaryOperator.Left))
+            if (VarMatchVreg(arrayVariable.Index))
             {
-                binaryOperator.Left = right;
+                arrayVariable.Index = right;
+                return;
             }
-            if (VarMatchVreg(binaryOperator.Right))
+
+            if (right is LocalVariable && VarMatchVreg(assignment.Left))
             {
-                binaryOperator.Right = right;
+                assignment.Left = right as LocalVariable;
+                return;
             }
         }
 
-        private void HandleCall(IdentifierValue right, MethodData methodData)
+        private void HandleSetArrayItem(Assignment srcAssignment, Assignment assignment)
         {
-            for (var index = 0; index < methodData.Parameters.Count; index++)
+            var right = srcAssignment.Right;
+            var arrayVariable = (ArrayVariable) assignment.Left;
+            if (VarMatchVreg(arrayVariable.Parent))
             {
-                var parameter = methodData.Parameters[index];
-                if (VarMatchVreg(parameter))
-                    methodData.Parameters[index] = right;
+                arrayVariable.Parent = right;
+                return;
+            }
+            if (VarMatchVreg(assignment.Right))
+            {
+                assignment.Right = right;
+                return;
+            }
+            if (VarMatchVreg(arrayVariable.Index))
+            {
+                arrayVariable.Index = right;
             }
         }
 
-        private void HandleAssignment(IdentifierValue right, Assignment assignment)
+        private void HandleGetField(IdentifierValue right, Assignment assignment)
         {
+            var fieldGetter = (FieldGetter) assignment.Right;
+            if (VarMatchVreg(fieldGetter.Instance))
+                fieldGetter.Instance = right;
+        }
+
+        private void HandleSetField(Assignment srcAssignment, Assignment assignment)
+        {
+            var right = srcAssignment.Right;
+            var fieldSetter = (FieldSetter) assignment.Left;
+            if (VarMatchVreg(fieldSetter.Instance))
+                fieldSetter.Instance = right;
             if (VarMatchVreg(assignment.Right))
                 assignment.Right = right;
         }
-
 
         private bool VarMatchVreg(IdentifierValue identifier)
         {

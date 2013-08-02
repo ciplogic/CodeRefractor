@@ -72,21 +72,21 @@ namespace CodeRefractor.Compiler.Optimizations
         }
 
         private void HandleCeq(LocalOperation destOperation, ConstValue constLeft, ConstValue constRight,
-            Assignment destAssignment)
+                               Assignment destAssignment)
         {
             var result = ComputeCeq(constLeft, constRight);
             FoldConstant(destOperation, destAssignment, result);
         }
 
         private void HandleClt(LocalOperation destOperation, ConstValue constLeft, ConstValue constRight,
-            Assignment destAssignment)
+                               Assignment destAssignment)
         {
             var result = ComputeClt(constLeft, constRight);
             FoldConstant(destOperation, destAssignment, result);
         }
 
         private void HandleCgt(LocalOperation destOperation, ConstValue constLeft, ConstValue constRight,
-            Assignment destAssignment)
+                               Assignment destAssignment)
         {
             var result = ComputeCgt(constLeft, constRight);
             FoldConstant(destOperation, destAssignment, result);
@@ -94,14 +94,14 @@ namespace CodeRefractor.Compiler.Optimizations
 
 
         private void HandleAdd(LocalOperation destOperation, ConstValue constLeft, ConstValue constRight,
-            Assignment destAssignment)
+                               Assignment destAssignment)
         {
             var result = ComputeAdd(constLeft, constRight);
             FoldConstant(destOperation, destAssignment, result);
         }
 
         private void HandleSub(LocalOperation destOperation, ConstValue constLeft, ConstValue constRight,
-            Assignment destAssignment)
+                               Assignment destAssignment)
         {
             var result = ComputeSub(constLeft, constRight);
             FoldConstant(destOperation, destAssignment, result);
@@ -109,14 +109,14 @@ namespace CodeRefractor.Compiler.Optimizations
 
 
         private void HandleMul(LocalOperation destOperation, ConstValue constLeft, ConstValue constRight,
-            Assignment destAssignment)
+                               Assignment destAssignment)
         {
             var result = ComputeMul(constLeft, constRight);
             FoldConstant(destOperation, destAssignment, result);
         }
 
         private void HandleRem(LocalOperation destOperation, ConstValue constLeft, ConstValue constRight,
-            Assignment destAssignment)
+                               Assignment destAssignment)
         {
             var result = ComputeRem(constLeft, constRight);
             FoldConstant(destOperation, destAssignment, result);
@@ -170,7 +170,7 @@ namespace CodeRefractor.Compiler.Optimizations
         }
 
         private void HandleDiv(LocalOperation destOperation, ConstValue constLeft, ConstValue constRight,
-            Assignment destAssignment)
+                               Assignment destAssignment)
         {
             var result = ComputeDiv(constLeft, constRight);
             FoldConstant(destOperation, destAssignment, result);

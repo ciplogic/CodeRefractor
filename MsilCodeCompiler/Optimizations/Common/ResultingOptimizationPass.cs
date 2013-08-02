@@ -12,9 +12,16 @@ namespace CodeRefractor.Compiler.Optimizations.Common
         //returns true if it succeed to apply any optimizations
         //Try to return false by default
         //If the code succeeded to optimize something that other optimizations may benefit, return true
-        public abstract void OptimizeOperations(MetaMidRepresentation intermediateCode);
 
         private bool _result;
+
+        public bool Result
+        {
+            get { return _result; }
+            set { _result = value; }
+        }
+
+        public abstract void OptimizeOperations(MetaMidRepresentation intermediateCode);
 
         public override bool Optimize(MetaMidRepresentation intermediateCode)
         {
@@ -27,12 +34,6 @@ namespace CodeRefractor.Compiler.Optimizations.Common
             {
             }
             return _result;
-        }
-
-        public bool Result
-        {
-            get { return _result; }
-            set { _result = value; }
         }
     }
 }

@@ -18,7 +18,7 @@ namespace CodeRefractor.Compiler.Optimizations
             var operations = intermediateCode.LocalOperations;
 
             var found = operations.Any(operation => operation.Kind == LocalOperation.Kinds.Label);
-            if(!found)
+            if (!found)
                 return;
             var candidateLabelTable = new Dictionary<int, int>();
             var pos = -1;

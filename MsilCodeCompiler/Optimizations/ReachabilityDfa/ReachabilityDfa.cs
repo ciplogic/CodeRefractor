@@ -2,7 +2,6 @@
 
 using System.Collections.Generic;
 using CodeRefractor.Compiler.Optimizations.Common;
-using CodeRefractor.Compiler.Optimizations.ConstantFoldingAndPropagation.ComplexAssignments;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
@@ -15,7 +14,7 @@ namespace CodeRefractor.Compiler.Optimizations.ReachabilityDfa
     {
         private Dictionary<int, int> _labelTable;
         private HashSet<int> _reached;
-        
+
         public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
         {
             var operations = intermediateCode.LocalOperations;

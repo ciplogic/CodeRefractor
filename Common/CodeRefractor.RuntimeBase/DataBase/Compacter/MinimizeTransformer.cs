@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using System.Text;
+using CodeRefractor.RuntimeBase.DataBase.Compacter;
 
 #endregion
 
@@ -89,7 +90,7 @@ namespace CodeRefractor.RuntimeBase.DataBase
             return Encoding.UTF8.GetBytes(yourString);
         }
 
-        private byte[] IntAsBytes(int intValue, int byteCount)
+        private static byte[] IntAsBytes(int intValue, int byteCount)
         {
             var intBytes = new List<byte>();
             while (byteCount > 0)

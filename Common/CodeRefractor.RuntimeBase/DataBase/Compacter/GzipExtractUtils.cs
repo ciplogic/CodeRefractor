@@ -6,7 +6,7 @@ using System.IO.Compression;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.DataBase
+namespace CodeRefractor.RuntimeBase.DataBase.Compacter
 {
     internal static class GzipExtractUtils
     {

@@ -35,10 +35,10 @@ namespace CodeRefractor.Compiler.Optimizations.SimpleDce
             OptimizeUnusedLocals(vregConstants, operations, intermediateCode);
         }
 
-        private void RemoveCandidatesInArrays(List<LocalOperation> operations, HashSet<int> vregConstants)
+        private static void RemoveCandidatesInArrays(List<LocalOperation> operations, HashSet<int> vregConstants)
         {
             foreach (var operation in operations.Where(operation =>
-                operation.Kind == LocalOperation.Kinds.SetArrayItem))
+                                                       operation.Kind == LocalOperation.Kinds.SetArrayItem))
             {
                 var assignment = (Assignment) operation.Value;
                 var arrayItem = (ArrayVariable) assignment.Left;
@@ -48,12 +48,40 @@ namespace CodeRefractor.Compiler.Optimizations.SimpleDce
             }
         }
 
+        private void OptimizeUnusedLocals(HashSet<int> localConstants, List<LocalOperation> operations,
+                                          MetaMidRepresentation intermediateCode)
+        {
+            if (localConstants.Count == 0)
+                return;
+
+            foreach (var localUnused in localConstants)
+            {
+                operations.RemoveAll(op =>
+                                         {
+                                             var canRemove = IsRemovableVRegAssignment(localUnused, op);
+                                             Result |= canRemove;
+                                             return canRemove;
+                                         });
+                intermediateCode.Vars.LocalVars.RemoveAll(local => local.Id == localUnused);
+                intermediateCode.Vars.LocalVariables.Remove(localUnused);
+            }
+        }
+
+        private static bool IsRemovableVRegAssignment(int vregConstant, LocalOperation op)
+        {
+            if (op.Kind != LocalOperation.Kinds.Assignment) return false;
+            var assignment = (Assignment) op.Value;
+            var localVariable = assignment.Left;
+            var isRemovableVRegAssignment = localVariable.Kind != VariableKind.Vreg && localVariable.Id == vregConstant;
+            return isRemovableVRegAssignment;
+        }
+
         #region Remove Candidates
 
         private static void RemoveCandidatesInAssign(List<LocalOperation> operations, HashSet<int> vregConstants)
         {
             foreach (var operation in operations.Where(operation =>
-                operation.Kind == LocalOperation.Kinds.Assignment))
+                                                       operation.Kind == LocalOperation.Kinds.Assignment))
             {
                 var operationData = (Assignment) operation.Value;
                 RemoveLocalVarIfLocal(vregConstants, operationData.Right);
@@ -69,7 +97,7 @@ namespace CodeRefractor.Compiler.Optimizations.SimpleDce
         private static void RemoveCandidatesInCalls(List<LocalOperation> operations, HashSet<int> vregConstants)
         {
             foreach (var operation in operations.Where(operation =>
-                operation.Kind == LocalOperation.Kinds.Call))
+                                                       operation.Kind == LocalOperation.Kinds.Call))
             {
                 var operationData = (MethodData) operation.Value;
                 foreach (var vregConstant in operationData.Parameters)
@@ -82,7 +110,7 @@ namespace CodeRefractor.Compiler.Optimizations.SimpleDce
         private static void RemoveCandidatesInLoadLocal(List<LocalOperation> operations, HashSet<int> vregConstants)
         {
             foreach (var operation in operations.Where(operation =>
-                operation.Kind == LocalOperation.Kinds.Assignment))
+                                                       operation.Kind == LocalOperation.Kinds.Assignment))
             {
                 var localAssignment = (Assignment) operation.Value;
 
@@ -92,10 +120,11 @@ namespace CodeRefractor.Compiler.Optimizations.SimpleDce
 
 
         private static void RemoveCandidatesInBranchOperators(List<LocalOperation> operations,
-            HashSet<int> vregConstants)
+                                                              HashSet<int> vregConstants)
         {
             foreach (var operation in operations.Where(operation =>
-                operation.Kind == LocalOperation.Kinds.BranchOperator))
+                                                       operation.Kind == LocalOperation.Kinds.BranchOperator)
+                )
             {
                 var rightBinaryAssignment = operation.Value as BranchOperator;
 
@@ -110,7 +139,7 @@ namespace CodeRefractor.Compiler.Optimizations.SimpleDce
         private static void RemoveCandidatesInOperators(List<LocalOperation> operations, HashSet<int> vregConstants)
         {
             foreach (var operation in operations.Where(operation =>
-                operation.Kind == LocalOperation.Kinds.Operator))
+                                                       operation.Kind == LocalOperation.Kinds.Operator))
             {
                 var localVariable = (Assignment) operation.Value;
 
@@ -131,7 +160,7 @@ namespace CodeRefractor.Compiler.Optimizations.SimpleDce
         }
 
         private static void RemoveCandidateVregIfInExpression(HashSet<int> vregConstants, IdentifierValue right,
-            IdentifierValue left)
+                                                              IdentifierValue left)
         {
             RemoveLocalVarIfLocal(vregConstants, left);
             RemoveLocalVarIfLocal(vregConstants, right);
@@ -145,33 +174,5 @@ namespace CodeRefractor.Compiler.Optimizations.SimpleDce
         }
 
         #endregion
-
-        private void OptimizeUnusedLocals(HashSet<int> localConstants, List<LocalOperation> operations,
-            MetaMidRepresentation intermediateCode)
-        {
-            if (localConstants.Count == 0)
-                return;
-
-            foreach (var localUnused in localConstants)
-            {
-                operations.RemoveAll(op =>
-                {
-                    var canRemove = IsRemovableVRegAssignment(localUnused, op);
-                    Result |= canRemove;
-                    return canRemove;
-                });
-                intermediateCode.Vars.LocalVars.RemoveAll(local => local.Id == localUnused);
-                intermediateCode.Vars.LocalVariables.Remove(localUnused);
-            }
-        }
-
-        private static bool IsRemovableVRegAssignment(int vregConstant, LocalOperation op)
-        {
-            if (op.Kind != LocalOperation.Kinds.Assignment) return false;
-            var assignment = (Assignment) op.Value;
-            var localVariable = assignment.Left;
-            var isRemovableVRegAssignment = localVariable.Kind != VariableKind.Vreg && localVariable.Id == vregConstant;
-            return isRemovableVRegAssignment;
-        }
     }
 }

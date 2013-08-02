@@ -26,7 +26,7 @@ namespace CodeRefractor.RuntimeBase.DataBase
             }
         }
 
-        private void SerializeItem(DynNode dataNode, T child, FieldInfo fieldInfo)
+        private static void SerializeItem(DynNode dataNode, T child, FieldInfo fieldInfo)
         {
             var fieldValue = fieldInfo.GetValue(child);
             var fieldName = fieldInfo.Name;

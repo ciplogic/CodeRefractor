@@ -40,7 +40,7 @@ namespace CodeRefractor.Compiler.Backend
             return sb.ToString();
         }
 
-        public string WriteCode(MetaMidRepresentation midRepresentation)
+        public static string WriteCode(MetaMidRepresentation midRepresentation)
         {
             var operations = midRepresentation.LocalOperations;
             var headerSb = new StringBuilder();
@@ -55,7 +55,7 @@ namespace CodeRefractor.Compiler.Backend
             return finalSb.ToString();
         }
 
-        private StringBuilder ComputeBodySb(List<LocalOperation> operations)
+        private static StringBuilder ComputeBodySb(List<LocalOperation> operations)
         {
             var bodySb = new StringBuilder();
             foreach (var operation in operations)
@@ -239,7 +239,7 @@ namespace CodeRefractor.Compiler.Backend
                 value.Left.Name, valueSrc.Parent.Name, valueSrc.Index.Name);
         }
 
-        private void HandleLoadArgument(LocalOperation operation, StringBuilder bodySb)
+        private static void HandleLoadArgument(LocalOperation operation, StringBuilder bodySb)
         {
             var value = (Assignment) operation.Value;
             var argumentData = (ArgumentVariable) value.Right;
@@ -247,7 +247,7 @@ namespace CodeRefractor.Compiler.Backend
             bodySb.AppendFormat("{0} = {1};", value.Left.Name, argumentData.Name);
         }
 
-        private void HandleLoadField(LocalOperation operation, StringBuilder bodySb)
+        private static void HandleLoadField(LocalOperation operation, StringBuilder bodySb)
         {
             var value = (Assignment) operation.Value;
             var fieldGetterInfo = (FieldGetter) value.Right;
@@ -255,7 +255,7 @@ namespace CodeRefractor.Compiler.Backend
                 fieldGetterInfo.FieldName);
         }
 
-        private void HandleSetField(LocalOperation operation, StringBuilder bodySb)
+        private static void HandleSetField(LocalOperation operation, StringBuilder bodySb)
         {
             var assign = (Assignment) operation.Value;
             var fieldSetter = (FieldSetter) assign.Left;
@@ -308,7 +308,7 @@ namespace CodeRefractor.Compiler.Backend
         }
 
 
-        private void WriteLabel(StringBuilder sb, int value)
+        private static void WriteLabel(StringBuilder sb, int value)
         {
             sb.AppendFormat("label_{0}:", value);
         }
@@ -317,7 +317,7 @@ namespace CodeRefractor.Compiler.Backend
 
         #endregion
 
-        private void WriteSignature(MethodBase method, StringBuilder sb)
+        private static void WriteSignature(MethodBase method, StringBuilder sb)
         {
             var text = method.WriteHeaderMethod(false);
             sb.Append(text);
@@ -325,7 +325,7 @@ namespace CodeRefractor.Compiler.Backend
         }
 
 
-        private void StoreLocal(StringBuilder sb, LocalOperation operation)
+        private static void StoreLocal(StringBuilder sb, LocalOperation operation)
         {
             var localVar = (Assignment) operation.Value;
 

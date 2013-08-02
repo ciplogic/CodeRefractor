@@ -38,7 +38,7 @@ namespace CodeRefractor.Compiler.Optimizations.Jumps
             }
         }
 
-        private void OptimizeConsecutiveLabels(List<LocalOperation> operations, int jumpId, int jumpId2)
+        private static void OptimizeConsecutiveLabels(List<LocalOperation> operations, int jumpId, int jumpId2)
         {
             for (var i = 0; i < operations.Count - 2; i++)
             {

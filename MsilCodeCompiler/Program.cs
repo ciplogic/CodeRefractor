@@ -19,7 +19,7 @@ namespace CodeRefractor.Compiler
             //MetaLinker.ScanAssembly(typeof(int));
             //MetaLinker.ScanAssembly(typeof(Console));
             NativeCompilationUtils.SetCompilerOptions("gcc");
-            commandLineParse.OptimizerLevel = 1;
+            CommandLineParse.OptimizerLevel = 1;
             NativeCompilationUtils.CallCompiler("", "");
             //var standardOutput = applicationNativeExe.ExecuteCommand();
             //Console.WriteLine(standardOutput);

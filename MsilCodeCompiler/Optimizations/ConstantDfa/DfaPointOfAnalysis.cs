@@ -54,9 +54,9 @@ namespace CodeRefractor.Compiler.Optimizations.ConstantDfa
                     if (!tuple.Item2.Equals(variableState))
                     {
                         result.States[tuple.Item1] = new VariableState
-                        {
-                            State = VariableState.ConstantState.NotConstant
-                        };
+                                                         {
+                                                             State = VariableState.ConstantState.NotConstant
+                                                         };
                     }
                 }
                 else

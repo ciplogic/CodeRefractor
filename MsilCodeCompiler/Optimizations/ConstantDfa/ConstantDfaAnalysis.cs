@@ -3,8 +3,6 @@
 using System;
 using System.Collections.Generic;
 using CodeRefractor.Compiler.Optimizations.Common;
-using CodeRefractor.Compiler.Optimizations.ConstantFoldingAndPropagation.ComplexAssignments;
-using CodeRefractor.Compiler.Optimizations.ReachabilityDfa;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
@@ -15,9 +13,9 @@ namespace CodeRefractor.Compiler.Optimizations.ConstantDfa
 {
     internal class ConstantDfaAnalysis : ResultingOptimizationPass
     {
-        private DfaPointOfAnalysis[] _pointsOfAnalysis;
-        private List<LocalOperation> _operations;
         private Dictionary<int, int> _labelTable = new Dictionary<int, int>();
+        private List<LocalOperation> _operations;
+        private DfaPointOfAnalysis[] _pointsOfAnalysis;
 
         public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
         {
@@ -40,11 +38,11 @@ namespace CodeRefractor.Compiler.Optimizations.ConstantDfa
                 switch (operation.Kind)
                 {
                     case LocalOperation.Kinds.Assignment:
-                        assignment = (Assignment) operation.Value;
+                        assignment = operation.GetAssignment();
                         HandleAssignment(i, assignment);
                         break;
                     case LocalOperation.Kinds.Operator:
-                        assignment = (Assignment) operation.Value;
+                        assignment = operation.GetAssignment();
                         HandleOperator(i, assignment);
                         break;
                     case LocalOperation.Kinds.BranchOperator:
@@ -124,8 +122,6 @@ namespace CodeRefractor.Compiler.Optimizations.ConstantDfa
         private void Interpret(int cursor, DfaPointOfAnalysis startingConclusions)
         {
             var canUpdate = true;
-            Assignment assignment;
-            BranchOperator branchOperator;
             if (startingConclusions.Equals(_pointsOfAnalysis[cursor]))
                 return;
             while (canUpdate)
@@ -134,25 +130,26 @@ namespace CodeRefractor.Compiler.Optimizations.ConstantDfa
 
                 var operation = GetOperation(cursor);
                 var analysis = _pointsOfAnalysis[cursor];
+                Assignment assignment;
                 switch (operation.Kind)
                 {
                     case LocalOperation.Kinds.Assignment:
-                        assignment = (Assignment) operation.Value;
+                        assignment = operation.GetAssignment();
                         var constant = assignment.Right as ConstValue;
                         if (constant != null)
                         {
                             analysis.States[assignment.Left] = new VariableState
-                            {
-                                Constant = constant,
-                                State = VariableState.ConstantState.Constant
-                            };
+                                                                   {
+                                                                       Constant = constant,
+                                                                       State = VariableState.ConstantState.Constant
+                                                                   };
                         }
                         else
                         {
                             analysis.States[assignment.Left] = new VariableState
-                            {
-                                State = VariableState.ConstantState.NotConstant
-                            };
+                                                                   {
+                                                                       State = VariableState.ConstantState.NotConstant
+                                                                   };
                         }
                         startingConclusions = analysis;
                         break;
@@ -160,12 +157,12 @@ namespace CodeRefractor.Compiler.Optimizations.ConstantDfa
                     case LocalOperation.Kinds.Operator:
                         assignment = (Assignment) operation.Value;
                         analysis.States[assignment.Left] = new VariableState
-                        {
-                            State = VariableState.ConstantState.NotConstant
-                        };
+                                                               {
+                                                                   State = VariableState.ConstantState.NotConstant
+                                                               };
                         break;
                     case LocalOperation.Kinds.BranchOperator:
-                        branchOperator = (BranchOperator) operation.Value;
+                        var branchOperator = (BranchOperator) operation.Value;
                         Interpret(JumpTo(branchOperator.JumpTo), analysis);
                         break;
                     case LocalOperation.Kinds.Label:

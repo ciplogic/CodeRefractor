@@ -12,9 +12,9 @@ namespace CodeRefractor.Compiler.Optimizations.ConstantFoldingAndPropagation.Com
 {
     internal class DeleteGappingVregAssignment : ResultingOptimizationPass
     {
-        private MetaMidRepresentation _intermediateCode;
-        private int _currentRow;
         private int _currentId;
+        private int _currentRow;
+        private MetaMidRepresentation _intermediateCode;
 
         public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
         {

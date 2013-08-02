@@ -175,7 +175,7 @@ namespace CodeRefractor.Compiler.FrontEnd
             ComputeDependencies(methodBase);
         }
 
-        public void OptimizeMethods(bool doInline=false)
+        public static void OptimizeMethods(bool doInline=false)
         {
             var optimizationPasses = CommandLineParse.OptimizationPasses;
             foreach (var methodBase in GlobalMethodPool.Instance.MethodInfos)
@@ -198,7 +198,7 @@ namespace CodeRefractor.Compiler.FrontEnd
                 InlineMethods();
         }
 
-        private void InlineMethods()
+        private static void InlineMethods()
         {
             var inliner = new SmallFunctionsInliner();
             foreach (var methodBase in GlobalMethodPool.Instance.MethodInfos)

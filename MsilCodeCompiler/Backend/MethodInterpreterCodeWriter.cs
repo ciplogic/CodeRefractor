@@ -22,7 +22,7 @@ namespace CodeRefractor.Compiler.Backend
                 var pInvokeText = CppMethodCodeWriter.WritePlatformInvokeMethod(Interpreter);
                 return pInvokeText;
             }
-            return _methodCodeWriter.WriteCode(Interpreter.MidRepresentation);
+            return CppMethodCodeWriter.WriteCode(Interpreter.MidRepresentation);
         }
 
         public string WriteHeaderMethod()

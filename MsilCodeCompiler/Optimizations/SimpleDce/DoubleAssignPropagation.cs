@@ -1,5 +1,4 @@
 using CodeRefractor.Compiler.Optimizations.Common;
-using CodeRefractor.Compiler.Optimizations.ConstantFoldingAndPropagation.ComplexAssignments;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 
@@ -18,20 +17,20 @@ namespace CodeRefractor.Compiler.Optimizations.SimpleDce
         {
             var localOperations = intermediateCode.LocalOperations;
             var count = localOperations.Count;
-            for(var i=0;i<count-1;i++)
+            for (var i = 0; i < count - 1; i++)
             {
                 var firstInstruction = localOperations[i];
-                if(firstInstruction.Kind!=LocalOperation.Kinds.Assignment)
+                if (firstInstruction.Kind != LocalOperation.Kinds.Assignment)
                     continue;
                 var secondInstruction = localOperations[i + 1];
                 if (secondInstruction.Kind != LocalOperation.Kinds.Assignment)
                     continue;
                 var secondAssign = secondInstruction.GetAssignment();
                 var localVariableSecondAssign = secondAssign.Right as LocalVariable;
-                if(localVariableSecondAssign==null)
+                if (localVariableSecondAssign == null)
                     continue;
                 var firstAssign = firstInstruction.GetAssignment();
-                if(!localVariableSecondAssign.Equals(firstAssign.Left))
+                if (!localVariableSecondAssign.Equals(firstAssign.Left))
                     continue;
                 if (secondAssign.Right == firstAssign.Right)
                     continue;

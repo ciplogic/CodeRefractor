@@ -2,10 +2,16 @@
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 
-namespace CodeRefractor.Compiler.Optimizations.ConstantFoldingAndPropagation.ComplexAssignments
+namespace CodeRefractor.Compiler.Optimizations
 {
     public static class InstructionsUtils
     {
+        public static LocalVariable GetDefinition(this LocalOperation operation)
+        {
+            var assignment = operation.GetAssignment();
+            return assignment == null ? null : assignment.Left;
+        }
+
         public static Assignment GetAssignment(this LocalOperation operation)
         {
             return operation.Value as Assignment;
@@ -21,7 +27,7 @@ namespace CodeRefractor.Compiler.Optimizations.ConstantFoldingAndPropagation.Com
                 switch (operation.Kind)
                 {
                     case LocalOperation.Kinds.Label:
-                        var jumpTo = (int)operation.Value;
+                        var jumpTo = (int) operation.Value;
                         labelTable[jumpTo] = i;
                         break;
                 }
@@ -29,7 +35,8 @@ namespace CodeRefractor.Compiler.Optimizations.ConstantFoldingAndPropagation.Com
             return labelTable;
         }
 
-        public static void DeleteInstructions(this MetaMidRepresentation intermediateCode, HashSet<int> instructionsToBeDeleted)
+        public static void DeleteInstructions(this MetaMidRepresentation intermediateCode,
+                                              HashSet<int> instructionsToBeDeleted)
         {
             var pos = 0;
             var liveOperations = new List<LocalOperation>();

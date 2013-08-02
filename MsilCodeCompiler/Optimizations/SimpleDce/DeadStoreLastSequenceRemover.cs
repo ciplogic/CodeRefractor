@@ -13,30 +13,57 @@ namespace CodeRefractor.Compiler.Optimizations.SimpleDce
     /// from the last sequence of instructions (from the last return to the last found label, jump 
     /// or start of the function
     /// </summary>
-    class DeadStoreLastSequenceRemover : ResultingOptimizationPass
+    internal class DeadStoreLastSequenceRemover : ResultingOptimizationPass
     {
-        private int _startSequence;
         private int _endSequence;
         private List<LocalVariable> _readVariables;
+        private int _startSequence;
+
         public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
         {
             var localOperations = intermediateCode.LocalOperations;
             ComputeSequenceRange(localOperations);
-            
-            _readVariables=new List<LocalVariable>();
-            for(var index = _endSequence;index>=_startSequence;  index--)
+
+            _readVariables = new List<LocalVariable>();
+            for (var index = _endSequence; index >= _startSequence; index--)
             {
                 var instruction = localOperations[index];
                 ProcessInstructionReads(instruction);
                 var isDeadStoreRead = ProcessInstructionWrites(instruction);
-                if(!isDeadStoreRead)
+                if (!isDeadStoreRead)
                     continue;
                 localOperations.RemoveAt(index);
                 Result = true;
                 return;
             }
         }
+
+        private void ComputeSequenceRange(List<LocalOperation> localOperations)
+        {
+            _endSequence = localOperations.Count - 1;
+            var i = _endSequence;
+            var startFound = false;
+            while (i >= 0)
+            {
+                var instruction = localOperations[i];
+
+                switch (instruction.Kind)
+                {
+                    case LocalOperation.Kinds.Label:
+                    case LocalOperation.Kinds.AlwaysBranch:
+                    case LocalOperation.Kinds.BranchOperator:
+                        startFound = true;
+                        break;
+                }
+                if (startFound)
+                    break;
+                i--;
+            }
+            _startSequence = i + 1;
+        }
+
         #region Handle Writes
+
         private bool ProcessInstructionWrites(LocalOperation instruction)
         {
             switch (instruction.Kind)
@@ -49,7 +76,7 @@ namespace CodeRefractor.Compiler.Optimizations.SimpleDce
 
         private bool HandleAssignWrites(LocalOperation instruction)
         {
-            var assign = (Assignment)instruction.Value;
+            var assign = (Assignment) instruction.Value;
             var left = assign.Left;
             var removeRead = RemoveRead(left);
             return !removeRead;
@@ -89,26 +116,27 @@ namespace CodeRefractor.Compiler.Optimizations.SimpleDce
 
         private void HandleAssignReads(LocalOperation instruction)
         {
-            var assign = (Assignment)instruction.Value;
+            var assign = (Assignment) instruction.Value;
             AddRead(assign.Right);
         }
 
         private void HandleReturnReads(LocalOperation instruction)
         {
-            if(instruction.Value==null)return;
-            var returnAssign = (IdentifierValue)instruction.Value;
+            if (instruction.Value == null) return;
+            var returnAssign = (IdentifierValue) instruction.Value;
             AddRead(returnAssign);
         }
 
         #endregion
 
         #region Read/Writes helpers
+
         public void AddRead(IdentifierValue variable)
         {
             var localVariable = variable as LocalVariable;
-            if(localVariable==null)
+            if (localVariable == null)
                 return;
-            if(DoesRead(localVariable))
+            if (DoesRead(localVariable))
                 return;
             _readVariables.Add(localVariable);
         }
@@ -117,7 +145,7 @@ namespace CodeRefractor.Compiler.Optimizations.SimpleDce
         {
             return _readVariables.Any(readVariable => readVariable.Equals(localVariable));
         }
-        
+
         /// <summary>
         /// Returns true if the removal of the read was already in the subsequent reads.
         /// </summary>
@@ -125,38 +153,13 @@ namespace CodeRefractor.Compiler.Optimizations.SimpleDce
         /// <returns></returns>
         public bool RemoveRead(LocalVariable localVariable)
         {
-            if(!DoesRead(localVariable))
+            if (!DoesRead(localVariable))
                 return false;
 
             _readVariables.RemoveAll(readVariable => readVariable.Equals(localVariable));
             return true;
         }
-        
-        #endregion
 
-        private void ComputeSequenceRange(List<LocalOperation> localOperations)
-        {
-            _endSequence = localOperations.Count - 1;
-            var i = _endSequence;
-            bool startFound = false;
-            while (i >= 0)
-            {
-                var instruction = localOperations[i];
-                
-                switch (instruction.Kind)
-                {
-                    case LocalOperation.Kinds.Label:
-                    case LocalOperation.Kinds.AlwaysBranch:
-                    case LocalOperation.Kinds.BranchOperator:
-                        startFound = true;
-                        break;
-                }
-                if(startFound)
-                    break;
-                i--;
-            }
-            _startSequence = i + 1;
-            
-        }
+        #endregion
     }
 }

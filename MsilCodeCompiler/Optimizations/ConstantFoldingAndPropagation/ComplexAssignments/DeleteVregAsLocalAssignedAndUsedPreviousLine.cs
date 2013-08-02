@@ -10,8 +10,8 @@ namespace CodeRefractor.Compiler.Optimizations.ConstantFoldingAndPropagation.Com
 {
     internal class DeleteVregAsLocalAssignedAndUsedPreviousLine : ResultingOptimizationPass
     {
-        private MetaMidRepresentation _intermediateCode;
         private int _currentRow;
+        private MetaMidRepresentation _intermediateCode;
 
         public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
         {
@@ -22,9 +22,9 @@ namespace CodeRefractor.Compiler.Optimizations.ConstantFoldingAndPropagation.Com
                 var srcOperation = operations[i];
                 if (srcOperation.Kind != LocalOperation.Kinds.Assignment)
                     continue;
-                var srcAssign = (Assignment) srcOperation.Value;
+                var srcAssign = srcOperation.GetAssignment();
                 var leftLocal = srcAssign.Left;
-                if (srcAssign.Left.Kind == VariableKind.Vreg) continue;
+                if (leftLocal.Kind == VariableKind.Vreg) continue;
                 var rightVreg = srcAssign.Right as LocalVariable;
                 if (rightVreg == null) continue;
 

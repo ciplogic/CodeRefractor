@@ -41,14 +41,14 @@ namespace CodeRefractor.Compiler.Optimizations.ConstantFoldingAndPropagation
                     continue;
                 var result = methodInfo.Invoke(null, constParams.ToArray());
                 operations[i] = new LocalOperation
-                {
-                    Kind = LocalOperation.Kinds.Assignment,
-                    Value = new Assignment
-                    {
-                        Left = operationData.Result,
-                        Right = new ConstValue(result)
-                    }
-                };
+                                    {
+                                        Kind = LocalOperation.Kinds.Assignment,
+                                        Value = new Assignment
+                                                    {
+                                                        Left = operationData.Result,
+                                                        Right = new ConstValue(result)
+                                                    }
+                                    };
             }
         }
     }

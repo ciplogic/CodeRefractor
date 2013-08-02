@@ -3,7 +3,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using CodeRefractor.Compiler.Optimizations.Common;
-using CodeRefractor.Compiler.Optimizations.ConstantFoldingAndPropagation.ComplexAssignments;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 

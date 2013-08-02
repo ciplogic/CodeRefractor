@@ -8,12 +8,16 @@ namespace CodeRefractor.Compiler.Optimizations.ConstantDfa
 {
     internal class VariableState
     {
+        #region ConstantState enum
+
         public enum ConstantState
         {
             NotDefined,
             Constant,
             NotConstant
         }
+
+        #endregion
 
         public ConstValue Constant;
         public ConstantState State; //0 == not yet defined, 1 = constant, 2 = non constant
