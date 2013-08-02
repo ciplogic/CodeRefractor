@@ -6,6 +6,11 @@ namespace CodeRefractor.Compiler.Optimizations.ConstantFoldingAndPropagation.Com
 {
     public static class InstructionsUtils
     {
+        public static Assignment GetAssignment(this LocalOperation operation)
+        {
+            return operation.Value as Assignment;
+        }
+
         public static Dictionary<int, int> BuildLabelTable(List<LocalOperation> operations)
         {
             var labelTable = new Dictionary<int, int>();

@@ -107,100 +107,73 @@ namespace CodeRefractor.Compiler.Config
         private static int _optimizerLevel;
 
 
-        public void BuildOptimizationPasses2()
+        public List<OptimizationPass> BuildOptimizationPasses2()
         {
-            OptimizationPasses = new OptimizationPass[]
+            return new OptimizationPass[]
             {
-                new DeleteVregAssignedAndUsedNextLine(),
-                new DeleteVregAsLocalAssignedAndUsedPreviousLine(),
-                new ConstantVariablePropagation(),
-                new ConstantVariableOperatorPropagation(),
-                new ConstantVariablePropagationInCall(),
-                new VRegReindexAssigned(),
-                new ConstantVariableBranchOperatorPropagation(),
-                new DceVRegAssigned(),
-                new RemoveUnreferencedLabels(),
-                new ConsecutiveLabels(),
-                new ReachabilityLines(),
-                new DeleteJumpNextLine(),
                 new DeleteGappingVregAssignment(),
-                new ConstantVariableBranchOperatorPropagation(),
-                new EvaluatePureFunctionWithConstantCall(),
-                new OperatorConstantFolding(),
-                new DceLocalAssigned(),
+                
+                new ReachabilityLines(),
                 new ConstantDfaAnalysis(),
+                
+                new EvaluatePureFunctionWithConstantCall(),
                 new VRegVariablePropagation()
             }.ToList();
         }
 
 
-        public void BuildOptimizationPasses()
+        public List<OptimizationPass> BuildOptimizationPasses1()
         {
-            OptimizationPasses = new OptimizationPass[]
-            {
-                new DeleteVregAssignedAndUsedNextLine(),
-                new DeleteVregAsLocalAssignedAndUsedPreviousLine(),
-                new ConstantVariablePropagation(),
-                new ConstantVariableOperatorPropagation(),
-                new ConstantVariablePropagationInCall(),
+            return new OptimizationPass[]
+                                         {
+                                             new DoubleAssignPropagation(), 
+                                             new AssignToReturnPropagation(), 
+                                             new DeadStoreLastSequenceRemover(), 
+                                             
+                                             new OperatorPartialConstantFolding(), 
+                                         }.ToList();
 
-                new DeadStoreLastSequenceRemover(), 
-
-                new DeleteJumpNextLine(),
-                new RemoveUnreferencedLabels(), 
-                new ConsecutiveLabels(),
-
-
-                
-                new ConstantVariableBranchOperatorPropagation(),
-                new OperatorConstantFolding(),
-                new OperatorPartialConstantFolding(), 
-
-                new DceVRegAssigned(),
-            }.ToList();
         }
 
 
-        public void BuildOptimizationPasses0()
+        public List<OptimizationPass> BuildOptimizationPasses0()
         {
-            OptimizationPasses = new OptimizationPass[]
-            {
-                new DeleteVregAssignedAndUsedNextLine(),
-                new DeleteVregAsLocalAssignedAndUsedPreviousLine(),
-                new ConstantVariablePropagation(),
-                new ConstantVariableOperatorPropagation(),
-                new ConstantVariablePropagationInCall(),
+            return new OptimizationPass[]
+                                         {
+                                             new DeleteVregAssignedAndUsedNextLine(), 
+                                             new DeleteVregAsLocalAssignedAndUsedPreviousLine(), 
+                                             new ConstantVariablePropagation(), 
+                                             new ConstantVariableOperatorPropagation(), 
+                                             new ConstantVariablePropagationInCall(), 
+                                             
+                                             new DeleteJumpNextLine(), 
+                                             new RemoveUnreferencedLabels(), 
+                                             new MergeConsecutiveLabels(), 
+                                             
+                                             new ConstantVariableBranchOperatorPropagation(), 
+                                             new OperatorConstantFolding(), 
+                                             new DceVRegAssigned(),
+                                         }.ToList();
 
-                new DeleteJumpNextLine(),
-                new RemoveUnreferencedLabels(), 
-                new ConsecutiveLabels(),
-                
-                new ConstantVariableBranchOperatorPropagation(),
-                new OperatorConstantFolding(),
-
-                new DceVRegAssigned(), 
-
-            }.ToList();
         }
+
         public int OptimizerLevel
         {
             get { return _optimizerLevel; }
             set
             {
                 _optimizerLevel = value;
-
-                switch (_optimizerLevel)
+                var optimizationList = BuildOptimizationPasses0();
+                if (_optimizerLevel >= 1)
                 {
-                    case 0:
-                        BuildOptimizationPasses0();
-                        break;
-                    case 1:
-                        BuildOptimizationPasses();
-                        break;
-                    case 2:
-                        BuildOptimizationPasses2();
-                        break;
+                    optimizationList.AddRange(BuildOptimizationPasses1());
                 }
+                if (_optimizerLevel >= 2)
+                {
+                    optimizationList.AddRange(BuildOptimizationPasses2());
+
+                }
+                OptimizationPasses = optimizationList;
 
             }
         }
