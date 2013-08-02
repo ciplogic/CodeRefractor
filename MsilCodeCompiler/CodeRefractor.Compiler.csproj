@@ -65,7 +65,7 @@
     <Compile Include="Optimizations\ConstantFoldingAndPropagation\ComplexAssignments\DeleteVregAssignedAndUsedNextLine.cs" />
     <Compile Include="Optimizations\ConstantFoldingAndPropagation\EvaluatePureFunctionWithConstantCall.cs" />
     <Compile Include="Optimizations\Inliner\SmallFunctionsInliner.cs" />
-    <Compile Include="Optimizations\Jumps\ConsecutiveLabels.cs" />
+    <Compile Include="Optimizations\Jumps\MergeConsecutiveLabels.cs" />
     <Compile Include="Optimizations\ConstantFoldingAndPropagation\Operator\OperatorPartialConstantFolding.cs" />
     <Compile Include="Optimizations\ReachabilityDfa\DeleteJumpNextLine.cs" />
     <Compile Include="Optimizations\ReachabilityDfa\ReachabilityDfa.cs" />
