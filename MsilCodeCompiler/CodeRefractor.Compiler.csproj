@@ -66,14 +66,15 @@
     <Compile Include="Optimizations\ConstantFoldingAndPropagation\EvaluatePureFunctionWithConstantCall.cs" />
     <Compile Include="Optimizations\Inliner\SmallFunctionsInliner.cs" />
     <Compile Include="Optimizations\Jumps\ConsecutiveLabels.cs" />
-    <Compile Include="Optimizations\OperatorPartialConstantFolding.cs" />
+    <Compile Include="Optimizations\ConstantFoldingAndPropagation\Operator\OperatorPartialConstantFolding.cs" />
     <Compile Include="Optimizations\ReachabilityDfa\DeleteJumpNextLine.cs" />
     <Compile Include="Optimizations\ReachabilityDfa\ReachabilityDfa.cs" />
     <Compile Include="Optimizations\SimpleDce\DceLocalAssigned.cs" />
     <Compile Include="Optimizations\SimpleDce\DceVRegAssigned.cs" />
-    <Compile Include="Optimizations\OperatorConstantFolding.cs" />
+    <Compile Include="Optimizations\ConstantFoldingAndPropagation\Operator\OperatorConstantFolding.cs" />
     <Compile Include="Optimizations\RemoveUnreferencedLabels.cs" />
     <Compile Include="Optimizations\Common\ResultingOptimizationPass.cs" />
+    <Compile Include="Optimizations\SimpleDce\DeadStoreLastSequenceRemover.cs" />
     <Compile Include="Optimizations\SimpleDce\VRegReindexAssigned.cs" />
     <Compile Include="Optimizations\VRegVariablePropagation.cs" />
     <Compile Include="FrontEnd\MetaLinker.cs" />

@@ -144,9 +144,13 @@ namespace CodeRefractor.Compiler.Config
                 new ConstantVariableOperatorPropagation(),
                 new ConstantVariablePropagationInCall(),
 
+                new DeadStoreLastSequenceRemover(), 
+
                 new DeleteJumpNextLine(),
                 new RemoveUnreferencedLabels(), 
                 new ConsecutiveLabels(),
+
+
                 
                 new ConstantVariableBranchOperatorPropagation(),
                 new OperatorConstantFolding(),
