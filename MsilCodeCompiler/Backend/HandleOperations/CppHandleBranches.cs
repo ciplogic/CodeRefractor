@@ -88,6 +88,38 @@ namespace CodeRefractor.Compiler.Backend.HandleOperations
             }
         }
 
+        public static void HandleUnaryOperator(object operation, StringBuilder sb)
+        {
+            var localVar = (Assignment)operation;
+            var localOperator = (Operator)localVar.Right;
+            var unaryOperator = localVar.Right as UnaryOperator;
+
+            var operationName = localOperator.Name;
+            switch (operationName)
+            {
+                case OpcodeOperatorNames.Not:
+                    HandleNot(localVar, sb);
+                    break;
+                case OpcodeOperatorNames.Neg:
+                    HandleNeg(localVar, sb);
+                    break;
+
+                case OpcodeOperatorNames.LoadLen:
+                    HandleLoadLen(unaryOperator, localVar, sb);
+                    break;
+
+                case OpcodeOperatorNames.ConvI4:
+                    HandleConvI4(unaryOperator, localVar, sb);
+                    break;
+
+                case OpcodeOperatorNames.ConvR8:
+                    HandleConvR8(unaryOperator, localVar, sb);
+                    break;
+
+                default:
+                    throw new InvalidOperationException(string.Format("Operation '{0}' is not handled", operationName));
+            }
+        }
 
         private static void HandleClt(BinaryOperator objList, Assignment localVar, StringBuilder sb)
         {

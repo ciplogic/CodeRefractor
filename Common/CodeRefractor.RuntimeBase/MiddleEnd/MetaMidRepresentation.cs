@@ -236,7 +236,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 Left = result,
                 Right = addValue
             };
-            AddOperation(LocalOperation.Kinds.Operator, assign);
+            AddOperation(LocalOperation.Kinds.BinaryOperator, assign);
         }
 
         private void SetUnaryOperator(string operatorName, EvaluatorStack evaluator)
@@ -254,7 +254,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 Right = addValue
             };
             assign.Left.FixedType = addValue.ComputedType();
-            AddOperation(LocalOperation.Kinds.Operator, assign);
+            AddOperation(LocalOperation.Kinds.UnaryOperator, assign);
         }
 
         public void Not(EvaluatorStack evaluator)

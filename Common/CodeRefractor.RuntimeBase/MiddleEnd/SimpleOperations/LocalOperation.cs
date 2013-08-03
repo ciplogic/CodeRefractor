@@ -26,14 +26,15 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
             NewArray,
             CopyArrayInitializer,
 
-            Operator,
+            BinaryOperator,
+            UnaryOperator,
 
 
 
             Assignment,
             
             RefAssignment,
-            DerefAssignment
+            DerefAssignment,
         }
 
         public Kinds Kind;

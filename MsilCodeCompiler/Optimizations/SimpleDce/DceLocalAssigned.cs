@@ -139,7 +139,8 @@ namespace CodeRefractor.Compiler.Optimizations.SimpleDce
         private static void RemoveCandidatesInOperators(List<LocalOperation> operations, HashSet<int> vregConstants)
         {
             foreach (var operation in operations.Where(operation =>
-                                                       operation.Kind == LocalOperation.Kinds.Operator))
+                                                       operation.Kind == LocalOperation.Kinds.BinaryOperator ||
+                                                       operation.Kind == LocalOperation.Kinds.UnaryOperator))
             {
                 var localVariable = (Assignment) operation.Value;
 

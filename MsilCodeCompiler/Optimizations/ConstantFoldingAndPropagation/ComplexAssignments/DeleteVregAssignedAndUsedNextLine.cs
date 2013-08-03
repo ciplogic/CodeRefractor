@@ -64,7 +64,7 @@ namespace CodeRefractor.Compiler.Optimizations.ConstantFoldingAndPropagation.Com
                 case LocalOperation.Kinds.Return:
                     HandleReturn(assignment.Right, destOperation);
                     break;
-                case LocalOperation.Kinds.Operator:
+                case LocalOperation.Kinds.BinaryOperator:
                     HandleOperator(assignment.Right, destOperation.GetAssignment());
                     break;
                 case LocalOperation.Kinds.BranchOperator:

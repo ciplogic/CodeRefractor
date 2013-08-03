@@ -65,7 +65,7 @@ namespace CodeRefractor.Compiler.Optimizations.ConstantFoldingAndPropagation.Com
                 case LocalOperation.Kinds.GetField:
                     HandleGetField(assignment.Right, (Assignment) destOperation.Value);
                     break;
-                case LocalOperation.Kinds.Operator:
+                case LocalOperation.Kinds.BinaryOperator:
                     HandleOperator(assignment.Right, (Assignment) destOperation.Value);
                     break;
                 case LocalOperation.Kinds.BranchOperator:

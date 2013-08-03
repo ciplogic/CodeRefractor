@@ -19,7 +19,7 @@ namespace CodeRefractor.Compiler.Optimizations
         {
             foreach (var destOperation in intermediateCode.LocalOperations)
             {
-                if (destOperation.Kind != LocalOperation.Kinds.Operator)
+                if (destOperation.Kind != LocalOperation.Kinds.BinaryOperator)
                     continue;
 
                 var destAssignment = (Assignment) destOperation.Value;

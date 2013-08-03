@@ -27,7 +27,8 @@ namespace CodeRefractor.Compiler.Optimizations.ConstantFoldingAndPropagation
                         break;
                     if (destOperation.Kind == LocalOperation.Kinds.BranchOperator)
                         break;
-                    if (destOperation.Kind != LocalOperation.Kinds.Operator) continue;
+                    if (destOperation.Kind != LocalOperation.Kinds.BinaryOperator &&
+                        destOperation.Kind != LocalOperation.Kinds.UnaryOperator) continue;
                     var destAssignment = (Assignment) destOperation.Value;
                     if (SameVariable(destAssignment.Left, srcVariableDefinition.Left))
                         break;

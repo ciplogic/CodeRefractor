@@ -28,13 +28,13 @@ namespace CodeRefractor.Compiler.Optimizations
                 var assignValue = ComputeAssignedValue(srcValue);
 
                 var destOperation = intermediateCode.LocalOperations[i + 1];
-                if (!(destOperation.Kind == LocalOperation.Kinds.Operator ||
-                      destOperation.Kind == LocalOperation.Kinds.Assignment))
+                if (!(destOperation.Kind == LocalOperation.Kinds.BinaryOperator ||
+                    destOperation.Kind == LocalOperation.Kinds.UnaryOperator) ||
+                      destOperation.Kind == LocalOperation.Kinds.Assignment)
                     continue;
-                if (destOperation.Kind == LocalOperation.Kinds.Operator)
+                var destLocalVariable = (Assignment)destOperation.Value;
+                if (destOperation.Kind == LocalOperation.Kinds.BinaryOperator)
                 {
-                    var destLocalVariable = (Assignment) destOperation.Value;
-                    var unaryOperator = destLocalVariable.Right as UnaryOperator;
                     var binaryOperator = destLocalVariable.Right as BinaryOperator;
                     if (binaryOperator != null)
                     {
@@ -46,6 +46,10 @@ namespace CodeRefractor.Compiler.Optimizations
                         }
                         continue;
                     }
+                }
+                if (destOperation.Kind == LocalOperation.Kinds.UnaryOperator)
+                {
+                    var unaryOperator = destLocalVariable.Right as UnaryOperator;
                     if (unaryOperator != null)
                     {
                         if (TryFoldUnary(unaryOperator, srcVariableDefinition.Left.Id, srcVariable))
@@ -60,7 +64,7 @@ namespace CodeRefractor.Compiler.Optimizations
                 }
                 if (destOperation.Kind == LocalOperation.Kinds.Assignment)
                 {
-                    var destVariable = (Assignment) destOperation.Value;
+                    var destVariable = (Assignment)destOperation.Value;
                     var vregVar = destVariable.Right as LocalVariable;
                     if (vregVar == null)
                         continue;
@@ -124,7 +128,7 @@ namespace CodeRefractor.Compiler.Optimizations
             ConstValue constVal = null;
             if (destValue == null)
                 constVal = new ConstValue(srcVariable);
-            var assignValue = destValue != null ? (IdentifierValue) destValue : constVal;
+            var assignValue = destValue != null ? (IdentifierValue)destValue : constVal;
             return assignValue;
         }
     }

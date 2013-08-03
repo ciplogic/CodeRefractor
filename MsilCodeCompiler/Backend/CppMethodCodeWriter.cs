@@ -69,8 +69,11 @@ namespace CodeRefractor.Compiler.Backend
                         StoreLocal(bodySb, operation);
                         break;
 
-                    case LocalOperation.Kinds.Operator:
+                    case LocalOperation.Kinds.BinaryOperator:
                         CppHandleOperators.HandleOperator(operation.Value, bodySb);
+                        break;
+                    case LocalOperation.Kinds.UnaryOperator:
+                        CppHandleOperators.HandleUnaryOperator(operation.Value, bodySb);
                         break;
                     case LocalOperation.Kinds.AlwaysBranch:
                         HandleAlwaysBranchOperator(operation, bodySb);

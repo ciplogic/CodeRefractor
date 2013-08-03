@@ -41,7 +41,7 @@ namespace CodeRefractor.Compiler.Optimizations.ConstantDfa
                         assignment = operation.GetAssignment();
                         HandleAssignment(i, assignment);
                         break;
-                    case LocalOperation.Kinds.Operator:
+                    case LocalOperation.Kinds.BinaryOperator:
                         assignment = operation.GetAssignment();
                         HandleOperator(i, assignment);
                         break;
@@ -154,7 +154,7 @@ namespace CodeRefractor.Compiler.Optimizations.ConstantDfa
                         startingConclusions = analysis;
                         break;
 
-                    case LocalOperation.Kinds.Operator:
+                    case LocalOperation.Kinds.BinaryOperator:
                         assignment = (Assignment) operation.Value;
                         analysis.States[assignment.Left] = new VariableState
                                                                {
