@@ -234,7 +234,6 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 return true;
             }
 
-
             if (opcodeStr == "ldc.i4.s" || opcodeStr == "ldc.i4")
             {
                 MidRepresentation.PushInt4(instruction.GetIntOperand(), evaluator);

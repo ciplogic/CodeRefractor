@@ -171,6 +171,10 @@ namespace CodeRefractor.Compiler.FrontEnd
                 return;
             if (GlobalMethodPool.Instance.MethodInfos.ContainsKey(methodDesc))
                 return;
+            var declaringType = methodBase.DeclaringType;
+            var isInGlobalAssemblyCache = declaringType.Assembly.GlobalAssemblyCache;
+            if(isInGlobalAssemblyCache)
+                return;//doesn't run on global assembly cache methods
             GlobalMethodPool.Instance.MethodInfos[methodDesc] = methodBase;
             ComputeDependencies(methodBase);
         }

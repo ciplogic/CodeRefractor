@@ -17,3 +17,4 @@ ClassOpenRuntimeCodeGenerator/bin/*
 *DotSettings.user
 Common/CodeRefactor.OpenRuntime/bin/*
 bin/output.cpp
+bin/*.exe*
