@@ -17,7 +17,7 @@ using Mono.Reflection;
 
 namespace CodeRefractor.Compiler.Backend
 {
-    internal class CppMethodCodeWriter
+    internal static class CppMethodCodeWriter
     {
         public static string WritePlatformInvokeMethod(MethodInterpreter platformInvoke)
         {
@@ -338,9 +338,10 @@ namespace CodeRefractor.Compiler.Backend
                 return;
             }
             var left = localVar.Left.Name;
-            if (localVar.Right is LocalVariable)
+            var localVariable = localVar.Right as LocalVariable;
+            if (localVariable != null)
             {
-                var rightVar = (LocalVariable) localVar.Right;
+                var rightVar = localVariable;
                 var right = rightVar.Name;
                 sb.AppendFormat("{0} = {1};", left, right);
             }

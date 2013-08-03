@@ -42,6 +42,7 @@
     <Compile Include="Backend\HandleOperations\CppHandleBranches.cs" />
     <Compile Include="Backend\HandleOperations\CppHandleCalls.cs" />
     <Compile Include="Backend\HandleOperations\CppHandleCompareBranches.cs" />
+    <Compile Include="Backend\HandleOperations\CppHandleOperators.cs" />
     <Compile Include="Backend\MethodInterpreterCodeWriter.cs" />
     <Compile Include="Backend\PlatformInvokeCodeWriter.cs" />
     <Compile Include="Backend\PlatformInvokeDllImports.cs" />

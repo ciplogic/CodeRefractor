@@ -41,6 +41,10 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 
         public override string FormatVar()
         {
+            if (Value is string)
+            {
+                return string.Format("_str(\"{0}\")", Value);
+            }
             return Value.ToString();
         }
     }

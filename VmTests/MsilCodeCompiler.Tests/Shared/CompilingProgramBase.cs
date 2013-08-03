@@ -104,7 +104,7 @@ class C {{
                 optimizationPasses = DefaultOptimizationPasses();
 
             var crRuntimeLibrary = new CrRuntimeLibrary();
-            var linker = assembly.EntryPoint.CreateLinkerFromEntryPoint(optimizationPasses);
+            var linker = assembly.EntryPoint.CreateLinkerFromEntryPoint();
 
 
             var generatedSource = CppCodeGenerator.BuildFullSourceCode(linker, crRuntimeLibrary);

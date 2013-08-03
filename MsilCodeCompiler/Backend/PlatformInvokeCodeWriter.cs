@@ -10,30 +10,26 @@ namespace CodeRefractor.Compiler.Backend
 {
     internal class PlatformInvokeCodeWriter
     {
-        public List<PlatformInvokeDllImports> Libraries = new List<PlatformInvokeDllImports>();
-        public int MethodCount;
+        private readonly List<PlatformInvokeDllImports> _libraries = new List<PlatformInvokeDllImports>();
+        private int _methodCount;
 
         public static string Import(string dll, string method)
         {
-            Instance.MethodCount++;
-            var id = Instance.MethodCount;
-            var findItem = Instance.Libraries.FirstOrDefault(lib => lib.DllName == dll);
+            StaticInstance._methodCount++;
+            var id = StaticInstance._methodCount;
+            var findItem = StaticInstance._libraries.FirstOrDefault(lib => lib.DllName == dll);
             if (findItem == null)
             {
                 findItem = new PlatformInvokeDllImports(dll);
-                Instance.Libraries.Add(findItem);
+                StaticInstance._libraries.Add(findItem);
             }
             var dllId = string.Format("dll_method_{0}", id);
             findItem.Methods.Add(method, dllId);
             return dllId;
         }
 
-        public static PlatformInvokeCodeWriter StaticInstance = new PlatformInvokeCodeWriter();
+        private static PlatformInvokeCodeWriter StaticInstance = new PlatformInvokeCodeWriter();
 
-        public static PlatformInvokeCodeWriter Instance
-        {
-            get { return StaticInstance; }
-        }
 
         public static string LoadDllMethods()
         {
@@ -41,7 +37,7 @@ namespace CodeRefractor.Compiler.Backend
 
             sb.AppendLine("void mapLibs() {");
             var pos = 0;
-            foreach (var library in Instance.Libraries)
+            foreach (var library in StaticInstance._libraries)
             {
                 sb.AppendFormat("auto lib_{0} = LoadNativeLibrary(L\"{1}\");", pos, library.DllName);
                 sb.AppendLine();

@@ -12,9 +12,6 @@ namespace CodeRefractor.Compiler.Backend
     {
         public MethodInterpreter Interpreter { get; set; }
 
-        private readonly CppMethodCodeWriter _methodCodeWriter = new CppMethodCodeWriter();
-
-
         public string WriteMethodCode()
         {
             if (Interpreter.Kind == MethodKind.PlatformInvoke)
@@ -30,7 +27,6 @@ namespace CodeRefractor.Compiler.Backend
             var methodBase = Interpreter.Method;
             return methodBase.WriteHeaderMethod();
         }
-
 
         public void ApplyLocalOptimizations(IEnumerable<OptimizationPass> optimizationPasses)
         {

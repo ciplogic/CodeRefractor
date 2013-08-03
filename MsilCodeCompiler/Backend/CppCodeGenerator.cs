@@ -9,7 +9,6 @@ using System.Text;
 using CodeRefractor.Compiler.FrontEnd;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
-using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.ConstTable;
 using CodeRefractor.RuntimeBase.Shared;
 
@@ -17,16 +16,8 @@ using CodeRefractor.RuntimeBase.Shared;
 
 namespace CodeRefractor.Compiler.Backend
 {
-    public class CppCodeGenerator
+    public static class CppCodeGenerator
     {
-        //Classes with type IDs
-        public List<TypeData> TypeTable = new List<TypeData>();
-        //Methods to link
-        public List<MetaMidRepresentation> MethodTable = new List<MetaMidRepresentation>();
-        //C++ Runtime methods to link
-        public List<CppMethodBodyAttribute> CppRuntimeTable = new List<CppMethodBodyAttribute>();
-
-
         private static readonly HashSet<string> Includes = new HashSet<string>();
 
         public static bool SetInclude(string include)
@@ -147,7 +138,7 @@ namespace CodeRefractor.Compiler.Backend
             }
         }
 
-        private static void WriteForwardTypeDefinitions(StringBuilder sb, TypeData[] typeDatas)
+        private static void WriteForwardTypeDefinitions(StringBuilder sb, ClassTypeData[] typeDatas)
         {
             foreach (var typeData in typeDatas)
             {
@@ -163,6 +154,8 @@ namespace CodeRefractor.Compiler.Backend
         {
             var method = methodBodyAttribute.Value;
             var typeData = method.DeclaringType;
+            if (typeData == null) 
+                throw new InvalidDataException("Method's declaring type should be valid");
             var mappedType = crCrRuntimeLibrary.ReverseMappedTypes[typeData];
             var methodNativeDescription = method.GetCustomAttribute<CppMethodBodyAttribute>();
             if (methodNativeDescription == null)
@@ -175,7 +168,7 @@ namespace CodeRefractor.Compiler.Backend
             sb.AppendFormat("{{ {0} }}", methodNativeDescription.Code).AppendLine();
         }
 
-        public static void WriteMainBody(MetaLinker linker, StringBuilder sb)
+        private static void WriteMainBody(MetaLinker linker, StringBuilder sb)
         {
             sb.AppendFormat("int main(int argc, char**argv) {{").AppendLine();
             sb.AppendFormat("auto argsAsList = System::getArgumentsAsList(argc, argv);").AppendLine();

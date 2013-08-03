@@ -1,13 +1,11 @@
 ﻿#region Usings
 
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using CodeRefractor.Compiler.FrontEnd;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.MiddleEnd;
-using CodeRefractor.RuntimeBase.Optimizations;
 
 #endregion
 
@@ -15,8 +13,7 @@ namespace CodeRefractor.Compiler.Backend
 {
     public static class CppFullFileMethodWriter
     {
-        public static MetaLinker CreateLinkerFromEntryPoint(this MethodInfo definition,
-            List<OptimizationPass> optimizationPasses = null)
+        public static MetaLinker CreateLinkerFromEntryPoint(this MethodInfo definition)
         {
             var linker = new MetaLinker();
             linker.SetEntryPoint(definition);

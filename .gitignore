@@ -18,3 +18,4 @@ ClassOpenRuntimeCodeGenerator/bin/*
 Common/CodeRefactor.OpenRuntime/bin/*
 bin/output.cpp
 bin/*.exe*
+bin/Output.layout
