@@ -1,7 +1,7 @@
-﻿using System;
+﻿#region Usings
+
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using CodeRefractor.CompilerBackend.Optimizations.ConstantDfa;
 using CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagation;
 using CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagation.ComplexAssignments;
@@ -12,6 +12,8 @@ using CodeRefractor.CompilerBackend.Optimizations.SimpleDce;
 using CodeRefractor.RuntimeBase.Config;
 using CodeRefractor.RuntimeBase.Optimizations;
 
+#endregion
+
 namespace CodeRefractor.CompilerBackend.Optimizations.Util
 {
     public class OptimizationLevels : OptimizationLevelBase
@@ -21,10 +23,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
             return new OptimizationPass[]
                        {
                            new DeleteGappingVregAssignment(),
-                
                            new ReachabilityLines(),
                            new ConstantDfaAnalysis(),
-                
                            new EvaluatePureFunctionWithConstantCall(),
                            new VRegVariablePropagation()
                        }.ToList();
@@ -35,15 +35,12 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
         {
             return new OptimizationPass[]
                        {
-                           new DoubleAssignPropagation(), 
-                           new AssignToReturnPropagation(), 
-                           new DeadStoreLastSequenceRemover(), 
-
-                           new DceLocalAssigned(), 
-                                             
-                           new OperatorPartialConstantFolding(), 
+                           new DoubleAssignPropagation(),
+                           new AssignToReturnPropagation(),
+                           new DeadStoreLastSequenceRemover(),
+                           new DceLocalAssigned(),
+                           new OperatorPartialConstantFolding(),
                        }.ToList();
-
         }
 
 
@@ -51,23 +48,19 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
         {
             return new OptimizationPass[]
                        {
-                           new DeleteVregAssignedAndUsedNextLine(), 
-                           new DeleteVregAssignedVariableAndUsedNextLine(), 
-                           new DeleteVregAsLocalAssignedAndUsedPreviousLine(), 
-                           new ConstantVariablePropagation(), 
-                           new ConstantVariableOperatorPropagation(), 
-                           new ConstantVariablePropagationInCall(), 
-                                             
-                           new DeleteJumpNextLine(), 
-                           new RemoveUnreferencedLabels(), 
-                           new MergeConsecutiveLabels(), 
-                                             
-                           new ConstantVariableBranchOperatorPropagation(), 
-                           new OperatorConstantFolding(), 
+                           new DeleteVregAssignedAndUsedNextLine(),
+                           new DeleteVregAssignedVariableAndUsedNextLine(),
+                           new DeleteVregAsLocalAssignedAndUsedPreviousLine(),
+                           new ConstantVariablePropagation(),
+                           new ConstantVariableOperatorPropagation(),
+                           new ConstantVariablePropagationInCall(),
+                           new DeleteJumpNextLine(),
+                           new RemoveUnreferencedLabels(),
+                           new MergeConsecutiveLabels(),
+                           new ConstantVariableBranchOperatorPropagation(),
+                           new OperatorConstantFolding(),
                            new DceVRegAssigned(),
                        }.ToList();
-
         }
     }
-
 }

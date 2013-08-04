@@ -28,7 +28,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             return dllId;
         }
 
-        private static PlatformInvokeCodeWriter StaticInstance = new PlatformInvokeCodeWriter();
+        private static readonly PlatformInvokeCodeWriter StaticInstance = new PlatformInvokeCodeWriter();
 
 
         public static string LoadDllMethods()

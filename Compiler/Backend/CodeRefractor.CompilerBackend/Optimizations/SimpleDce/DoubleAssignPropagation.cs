@@ -1,15 +1,15 @@
+#region Usings
+
 using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 
+#endregion
+
 namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
 {
     /// <summary>
-    /// This optimization in case of two assignments of the form:
-    /// > var1 = identifier
-    /// > var2 = var1
-    /// will transform the code to be 
-    /// > var2 = identifier
+    ///   This optimization in case of two assignments of the form: > var1 = identifier > var2 = var1 will transform the code to be > var2 = identifier
     /// </summary>
     internal class DoubleAssignPropagation : ResultingOptimizationPass
     {

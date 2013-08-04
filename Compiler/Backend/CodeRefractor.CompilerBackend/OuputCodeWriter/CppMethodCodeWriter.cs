@@ -23,7 +23,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
         {
             var invokeRepresentation = platformInvoke.PlatformInvoke;
             var methodId = PlatformInvokeCodeWriter.Import(invokeRepresentation.LibraryName,
-                invokeRepresentation.MethodName);
+                                                           invokeRepresentation.MethodName);
 
             var sb = new StringBuilder();
 
@@ -205,9 +205,9 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             var rightArray = rightArrayData.Data;
             sb.AppendFormat("{0} = std::shared_ptr< Array < System::Byte > >(new Array < System::Byte >(" +
                             "{1}, RuntimeHelpers_GetBytes({2}) ) ); ",
-                left.Name,
-                rightArray.Length,
-                right.Id);
+                            left.Name,
+                            rightArray.Length,
+                            right.Id);
         }
 
         private static void HandleSetArrayValue(LocalOperation operation, StringBuilder sb)
@@ -216,9 +216,9 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             var arrayItem = (ArrayVariable) assignment.Left;
             var right = assignment.Right;
             sb.AppendFormat("(*{0})[{1}] = {2}; ",
-                arrayItem.Parent.Name,
-                arrayItem.Index.Name,
-                right.Name);
+                            arrayItem.Parent.Name,
+                            arrayItem.Index.Name,
+                            right.Name);
         }
 
         private static void HandleNewArray(LocalOperation operation, StringBuilder bodySb)
@@ -226,9 +226,9 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             var assignment = (Assignment) operation.Value;
             var arrayData = (NewArrayObject) assignment.Right;
             bodySb.AppendFormat("{0} = std::shared_ptr< Array < {1} > > (new Array < {1} >({2}) ); ",
-                assignment.Left.Name,
-                arrayData.TypeArray.ToCppName(),
-                arrayData.ArrayLength.Name);
+                                assignment.Left.Name,
+                                arrayData.TypeArray.ToCppName(),
+                                arrayData.ArrayLength.Name);
         }
 
         private static void HandleReadArrayItem(LocalOperation operation, StringBuilder bodySb)
@@ -237,9 +237,9 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             var valueSrc = (ArrayVariable) value.Right;
             var parentType = valueSrc.Parent.ComputedType();
             bodySb.AppendFormat(parentType.IsClass
-                ? "{0} = (*{1})[{2}];"
-                : "{0} = {1}[{2}];",
-                value.Left.Name, valueSrc.Parent.Name, valueSrc.Index.Name);
+                                    ? "{0} = (*{1})[{2}];"
+                                    : "{0} = {1}[{2}];",
+                                value.Left.Name, valueSrc.Parent.Name, valueSrc.Index.Name);
         }
 
         private static void HandleLoadArgument(LocalOperation operation, StringBuilder bodySb)
@@ -255,7 +255,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             var value = (Assignment) operation.Value;
             var fieldGetterInfo = (FieldGetter) value.Right;
             bodySb.AppendFormat("{0} = {1}->{2};", value.Left.Name, fieldGetterInfo.Instance.Name,
-                fieldGetterInfo.FieldName);
+                                fieldGetterInfo.FieldName);
         }
 
         private static void HandleSetField(LocalOperation operation, StringBuilder bodySb)

@@ -73,9 +73,9 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             foreach (var metaInterpreter in GlobalMethodPool.Instance.Interpreters)
             {
                 var interpreterCodeWriter = new MethodInterpreterCodeWriter
-                {
-                    Interpreter = metaInterpreter.Value
-                };
+                                                {
+                                                    Interpreter = metaInterpreter.Value
+                                                };
                 sb.AppendLine(interpreterCodeWriter.WriteMethodCode());
             }
             WriteMainBody(linker, sb);
@@ -102,11 +102,11 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                 foreach (var fieldData in typeData.Fields.Where(field => field.IsStatic))
                 {
                     sb.AppendFormat("{2} {4}::{0}::{1} = {3};",
-                        typeData.Name,
-                        fieldData.Name,
-                        fieldData.TypeData.Info.ToCppName(),
-                        Activator.CreateInstance(fieldData.TypeData.Info),
-                        typeData.Namespace
+                                    typeData.Name,
+                                    fieldData.Name,
+                                    fieldData.TypeData.Info.ToCppName(),
+                                    Activator.CreateInstance(fieldData.TypeData.Info),
+                                    typeData.Namespace
                         ).AppendLine();
                 }
             }
@@ -131,9 +131,9 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                 foreach (var item in typeData.Interpreters)
                 {
                     var interpreterCodeWriter = new MethodInterpreterCodeWriter
-                    {
-                        Interpreter = item
-                    };
+                                                    {
+                                                        Interpreter = item
+                                                    };
                     sb.Append(interpreterCodeWriter.WriteHeaderMethod());
                 }
             }
@@ -150,12 +150,12 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
         }
 
         private static void WriteUsedCppRuntimeMethod(CrRuntimeLibrary crCrRuntimeLibrary,
-            KeyValuePair<string, MethodBase> methodBodyAttribute,
-            StringBuilder sb)
+                                                      KeyValuePair<string, MethodBase> methodBodyAttribute,
+                                                      StringBuilder sb)
         {
             var method = methodBodyAttribute.Value;
             var typeData = method.DeclaringType;
-            if (typeData == null) 
+            if (typeData == null)
                 throw new InvalidDataException("Method's declaring type should be valid");
             var mappedType = crCrRuntimeLibrary.ReverseMappedTypes[typeData];
             var methodNativeDescription = method.GetCustomAttribute<CppMethodBodyAttribute>();

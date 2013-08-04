@@ -1,8 +1,12 @@
+#region Usings
+
 using CodeRefractor.CompilerBackend.Optimizations.Inliner;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.Config;
 using CodeRefractor.RuntimeBase.FrontEnd;
+
+#endregion
 
 namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 {
@@ -22,7 +26,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             foreach (var methodBase in GlobalMethodPool.Instance.MethodInfos)
             {
                 var typeData =
-                    (ClassTypeData)ProgramData.UpdateType(
+                    (ClassTypeData) ProgramData.UpdateType(
                         methodBase.Value.DeclaringType);
                 var interpreter = typeData.GetInterpreter(methodBase.Key);
                 if (optimizationPasses == null) return;
@@ -45,7 +49,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             var inliner = new SmallFunctionsInliner();
             foreach (var methodBase in GlobalMethodPool.Instance.MethodInfos)
             {
-                var typeData = (ClassTypeData)ProgramData.UpdateType(methodBase.Value.DeclaringType);
+                var typeData = (ClassTypeData) ProgramData.UpdateType(methodBase.Value.DeclaringType);
                 var interpreter = typeData.GetInterpreter(methodBase.Key);
 
                 inliner.OptimizeOperations(interpreter.MidRepresentation);

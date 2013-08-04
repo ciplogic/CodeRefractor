@@ -4,7 +4,6 @@ using System;
 using System.IO;
 using System.Reflection;
 using CodeRefactor.OpenRuntime;
-using CodeRefractor.CompilerBackend;
 using CodeRefractor.CompilerBackend.Optimizations.Util;
 using CodeRefractor.CompilerBackend.OuputCodeWriter;
 using CodeRefractor.RuntimeBase;
@@ -42,7 +41,8 @@ namespace CodeRefractor.Compiler
             Console.WriteLine("Compilation time: {0} ms", end);
 
             sb.ToFile(commandLineParse.OutputCpp);
-            NativeCompilationUtils.CompileAppToNativeExe(commandLineParse.OutputCpp, commandLineParse.ApplicationNativeExe);
+            NativeCompilationUtils.CompileAppToNativeExe(commandLineParse.OutputCpp,
+                                                         commandLineParse.ApplicationNativeExe);
         }
 
         private static void Main(string[] args)
@@ -52,7 +52,7 @@ namespace CodeRefractor.Compiler
             commandLineParse.Process(args);
 
 
-            ProgramData.CrCrRuntimeLibrary.ScanAssembly(typeof(CrString).Assembly);
+            ProgramData.CrCrRuntimeLibrary.ScanAssembly(typeof (CrString).Assembly);
             OptimizationLevelBase.Instance = new OptimizationLevels();
 
             //MetaLinker.ScanAssembly(typeof(int));

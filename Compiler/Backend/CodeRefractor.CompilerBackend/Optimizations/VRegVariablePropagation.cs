@@ -29,10 +29,10 @@ namespace CodeRefractor.CompilerBackend.Optimizations
 
                 var destOperation = intermediateCode.LocalOperations[i + 1];
                 if (!(destOperation.Kind == LocalOperation.Kinds.BinaryOperator ||
-                    destOperation.Kind == LocalOperation.Kinds.UnaryOperator) ||
-                      destOperation.Kind == LocalOperation.Kinds.Assignment)
+                      destOperation.Kind == LocalOperation.Kinds.UnaryOperator) ||
+                    destOperation.Kind == LocalOperation.Kinds.Assignment)
                     continue;
-                var destLocalVariable = (Assignment)destOperation.Value;
+                var destLocalVariable = (Assignment) destOperation.Value;
                 if (destOperation.Kind == LocalOperation.Kinds.BinaryOperator)
                 {
                     var binaryOperator = destLocalVariable.Right as BinaryOperator;
@@ -64,7 +64,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations
                 }
                 if (destOperation.Kind == LocalOperation.Kinds.Assignment)
                 {
-                    var destVariable = (Assignment)destOperation.Value;
+                    var destVariable = (Assignment) destOperation.Value;
                     var vregVar = destVariable.Right as LocalVariable;
                     if (vregVar == null)
                         continue;
@@ -128,7 +128,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations
             ConstValue constVal = null;
             if (destValue == null)
                 constVal = new ConstValue(srcVariable);
-            var assignValue = destValue != null ? (IdentifierValue)destValue : constVal;
+            var assignValue = destValue != null ? (IdentifierValue) destValue : constVal;
             return assignValue;
         }
     }

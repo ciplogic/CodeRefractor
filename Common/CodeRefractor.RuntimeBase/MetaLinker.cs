@@ -42,21 +42,21 @@ namespace CodeRefractor.RuntimeBase
                     case ObcodeIntValues.CallVirt:
                     case ObcodeIntValues.Call:
                     case ObcodeIntValues.CallInterface:
-                    {
-                        var operand = (MethodBase) instruction.Operand;
-                        if (operand == null)
+                        {
+                            var operand = (MethodBase) instruction.Operand;
+                            if (operand == null)
+                                break;
+                            AddMethodIfNecessary(operand);
                             break;
-                        AddMethodIfNecessary(operand);
-                        break;
-                    }
+                        }
                     case ObcodeIntValues.NewObj:
-                    {
-                        var operand = (ConstructorInfo) instruction.Operand;
-                        if (operand == null)
+                        {
+                            var operand = (ConstructorInfo) instruction.Operand;
+                            if (operand == null)
+                                break;
+                            AddMethodIfNecessary(operand);
                             break;
-                        AddMethodIfNecessary(operand);
-                        break;
-                    }
+                        }
                 }
             }
         }
@@ -88,19 +88,19 @@ namespace CodeRefractor.RuntimeBase
                     case ObcodeIntValues.BltS:
                     case ObcodeIntValues.BrS:
                     case ObcodeIntValues.Br:
-                    {
-                        var offset = ((Instruction) instruction.Operand).Offset;
-                        AddLabelIfDoesntExist(methodDefinitionKey, offset);
-                    }
+                        {
+                            var offset = ((Instruction) instruction.Operand).Offset;
+                            AddLabelIfDoesntExist(methodDefinitionKey, offset);
+                        }
                         break;
                     case ObcodeIntValues.Switch:
-                    {
-                        var offsets = (Instruction[]) instruction.Operand;
-                        foreach (var offset in offsets)
                         {
-                            AddLabelIfDoesntExist(methodDefinitionKey, offset.Offset);
+                            var offsets = (Instruction[]) instruction.Operand;
+                            foreach (var offset in offsets)
+                            {
+                                AddLabelIfDoesntExist(methodDefinitionKey, offset.Offset);
+                            }
                         }
-                    }
                         break;
                 }
             }
@@ -138,7 +138,7 @@ namespace CodeRefractor.RuntimeBase
             AddClassIfNecessary(interpreter.Method).Add(interpreter);
             GlobalMethodPool.Instance.Interpreters[method.Key] = interpreter;
 
-            var typeData = (ClassTypeData)ProgramData.UpdateType(method.Value.DeclaringType);
+            var typeData = (ClassTypeData) ProgramData.UpdateType(method.Value.DeclaringType);
             typeData.AddMethodInterpreter(interpreter);
         }
 
@@ -169,8 +169,8 @@ namespace CodeRefractor.RuntimeBase
                 return;
             var declaringType = methodBase.DeclaringType;
             var isInGlobalAssemblyCache = declaringType.Assembly.GlobalAssemblyCache;
-            if(isInGlobalAssemblyCache)
-                return;//doesn't run on global assembly cache methods
+            if (isInGlobalAssemblyCache)
+                return; //doesn't run on global assembly cache methods
             GlobalMethodPool.Instance.MethodInfos[methodDesc] = methodBase;
             ComputeDependencies(methodBase);
         }
