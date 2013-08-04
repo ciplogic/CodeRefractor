@@ -2,11 +2,10 @@
 
 using System;
 using System.Reflection;
-using CodeRefractor.RuntimeBase;
 
 #endregion
 
-namespace CodeRefractor.Compiler
+namespace CodeRefractor.RuntimeBase.Runtime
 {
     public class CppMethodDefinition
     {

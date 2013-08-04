@@ -1,4 +1,4 @@
-namespace CodeRefractor.RuntimeBase.MiddleEnd
+namespace CodeRefractor.RuntimeBase.MiddleEnd.Methods
 {
     public enum MethodKind
     {

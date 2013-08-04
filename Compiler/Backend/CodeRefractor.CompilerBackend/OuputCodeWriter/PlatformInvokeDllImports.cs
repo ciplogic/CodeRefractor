@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace CodeRefractor.Compiler.Backend
+namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 {
     internal class PlatformInvokeDllImports
     {

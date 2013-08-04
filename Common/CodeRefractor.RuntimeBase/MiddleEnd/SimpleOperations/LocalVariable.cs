@@ -12,12 +12,12 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 
         public LocalVariable Clone()
         {
-            var result = new LocalVariable()
-            {
-                FixedType = FixedType,
-                Id = Id,
-                Kind = Kind
-            };
+            var result = new LocalVariable
+                             {
+                                 FixedType = FixedType,
+                                 Id = Id,
+                                 Kind = Kind
+                             };
             return result;
         }
 

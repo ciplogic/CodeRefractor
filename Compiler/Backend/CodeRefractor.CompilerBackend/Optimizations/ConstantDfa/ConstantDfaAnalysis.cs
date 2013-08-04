@@ -2,14 +2,14 @@
 
 using System;
 using System.Collections.Generic;
-using CodeRefractor.Compiler.Optimizations.Common;
+using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
 
 #endregion
 
-namespace CodeRefractor.Compiler.Optimizations.ConstantDfa
+namespace CodeRefractor.CompilerBackend.Optimizations.ConstantDfa
 {
     internal class ConstantDfaAnalysis : ResultingOptimizationPass
     {

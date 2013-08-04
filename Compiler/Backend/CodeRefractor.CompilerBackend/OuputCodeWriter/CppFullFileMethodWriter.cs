@@ -3,13 +3,12 @@
 using System;
 using System.Reflection;
 using System.Text;
-using CodeRefractor.Compiler.FrontEnd;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 
 #endregion
 
-namespace CodeRefractor.Compiler.Backend
+namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 {
     public static class CppFullFileMethodWriter
     {

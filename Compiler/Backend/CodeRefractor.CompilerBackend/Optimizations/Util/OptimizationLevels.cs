@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using CodeRefractor.Compiler.Config;
-using CodeRefractor.Compiler.Optimizations;
-using CodeRefractor.Compiler.Optimizations.ConstantDfa;
-using CodeRefractor.Compiler.Optimizations.ConstantFoldingAndPropagation;
-using CodeRefractor.Compiler.Optimizations.ConstantFoldingAndPropagation.ComplexAssignments;
-using CodeRefractor.Compiler.Optimizations.Jumps;
-using CodeRefractor.Compiler.Optimizations.ReachabilityDfa;
-using CodeRefractor.Compiler.Optimizations.SimpleDce;
+using CodeRefractor.CompilerBackend.Optimizations.ConstantDfa;
+using CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagation;
+using CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagation.ComplexAssignments;
+using CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagation.Operator;
+using CodeRefractor.CompilerBackend.Optimizations.Jumps;
+using CodeRefractor.CompilerBackend.Optimizations.ReachabilityDfa;
+using CodeRefractor.CompilerBackend.Optimizations.SimpleDce;
+using CodeRefractor.RuntimeBase.Config;
 using CodeRefractor.RuntimeBase.Optimizations;
 
 namespace CodeRefractor.CompilerBackend.Optimizations.Util

@@ -25,7 +25,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
             AssemblyData result;
             if (programData.AssemblyDatas.TryGetValue(assembly.FullName, out result))
                 return result;
-            result = new AssemblyData() {Name = assembly.FullName,};
+            result = new AssemblyData {Name = assembly.FullName,};
             programData.AssemblyDatas[result.Name] = result;
             return result;
         }

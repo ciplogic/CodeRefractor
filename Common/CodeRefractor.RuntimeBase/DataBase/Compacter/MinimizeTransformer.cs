@@ -2,11 +2,10 @@
 
 using System.Collections.Generic;
 using System.Text;
-using CodeRefractor.RuntimeBase.DataBase.Compacter;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.DataBase
+namespace CodeRefractor.RuntimeBase.DataBase.Compacter
 {
     public class MinimizeTransformer
     {
@@ -19,8 +18,8 @@ namespace CodeRefractor.RuntimeBase.DataBase
             Process(node);
             var resultArray = Result.ToArray();
             return !compress
-                ? resultArray
-                : GzipExtractUtils.Compress(resultArray);
+                       ? resultArray
+                       : resultArray.Compress();
         }
 
         private static int Bytes(int length)
@@ -50,14 +49,14 @@ namespace CodeRefractor.RuntimeBase.DataBase
                 return;
             }
             CreateOrUpdateItemWithText(node.Name, ExiLikeEvent.ExistingElement, ExiLikeEvent.CreateElement,
-                _elementsDict);
+                                       _elementsDict);
 
             foreach (var attr in node.Attributes)
             {
                 CreateOrUpdateItemWithText(attr.Key, ExiLikeEvent.ExistingAttribute, ExiLikeEvent.CreateAttribute,
-                    _elementsDict);
+                                           _elementsDict);
                 CreateOrUpdateItemWithText(attr.Value, ExiLikeEvent.ExistingAttributeValue,
-                    ExiLikeEvent.CreateAttributeValue, _dict);
+                                           ExiLikeEvent.CreateAttributeValue, _dict);
             }
             foreach (var child in node.Children)
             {
@@ -67,7 +66,7 @@ namespace CodeRefractor.RuntimeBase.DataBase
         }
 
         private void CreateOrUpdateItemWithText(string newText, ExiLikeEvent existingElement,
-            ExiLikeEvent newElementEvent, Dict dict)
+                                                ExiLikeEvent newElementEvent, Dict dict)
         {
             if (_dict.HasWord(newText))
             {

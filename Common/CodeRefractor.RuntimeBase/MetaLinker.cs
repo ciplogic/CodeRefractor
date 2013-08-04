@@ -2,17 +2,15 @@
 
 using System.Collections.Generic;
 using System.Reflection;
-using System.Threading.Tasks;
-using CodeRefractor.Compiler.Config;
-using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
+using CodeRefractor.RuntimeBase.FrontEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.Shared;
 using Mono.Reflection;
 
 #endregion
 
-namespace CodeRefractor.Compiler.FrontEnd
+namespace CodeRefractor.RuntimeBase
 {
     public class MetaLinker
     {

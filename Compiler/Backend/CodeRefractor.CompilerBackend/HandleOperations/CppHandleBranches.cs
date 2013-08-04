@@ -8,7 +8,7 @@ using CodeRefractor.RuntimeBase.Shared;
 
 #endregion
 
-namespace CodeRefractor.Compiler.Backend.HandleOperations
+namespace CodeRefractor.CompilerBackend.HandleOperations
 {
     internal static class CppHandleBranches
     {

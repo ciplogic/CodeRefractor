@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using CodeRefractor.Compiler.Backend.HandleOperations;
+using CodeRefractor.CompilerBackend.HandleOperations;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
@@ -15,7 +15,7 @@ using Mono.Reflection;
 
 #endregion
 
-namespace CodeRefractor.Compiler.Backend
+namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 {
     internal static class CppMethodCodeWriter
     {

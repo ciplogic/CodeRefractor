@@ -1,9 +1,10 @@
-using CodeRefractor.Compiler.Backend;
-using CodeRefractor.Compiler.Config;
-using CodeRefractor.Compiler.Optimizations.Inliner;
+using CodeRefractor.CompilerBackend.Optimizations.Inliner;
+using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
+using CodeRefractor.RuntimeBase.Config;
+using CodeRefractor.RuntimeBase.FrontEnd;
 
-namespace CodeRefractor.Compiler.FrontEnd
+namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 {
     public class MetaLinkerOptimizer
     {

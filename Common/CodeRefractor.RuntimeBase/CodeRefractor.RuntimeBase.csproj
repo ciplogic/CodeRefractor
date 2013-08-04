@@ -45,6 +45,7 @@
     <Compile Include="CilMethodAttribute.cs" />
     <Compile Include="Config\CodeRefractorVersions.cs" />
     <Compile Include="Config\CommandLineParse.cs" />
+    <Compile Include="Config\OptimizationLevelBase.cs" />
     <Compile Include="FrontEnd\ClassInterpreter.cs" />
     <Compile Include="FrontEnd\GlobalMethodPool.cs" />
     <Compile Include="MetaLinker.cs" />

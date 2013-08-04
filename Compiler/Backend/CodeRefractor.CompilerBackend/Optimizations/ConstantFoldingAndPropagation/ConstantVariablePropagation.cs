@@ -5,7 +5,7 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 
 #endregion
 
-namespace CodeRefractor.Compiler.Optimizations.ConstantFoldingAndPropagation
+namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagation
 {
     public class ConstantVariablePropagation : ConstantVariablePropagationBase
     {
@@ -32,7 +32,8 @@ namespace CodeRefractor.Compiler.Optimizations.ConstantFoldingAndPropagation
                                 var destAssignment = (Assignment) destOperation.Value;
                                 if (SameVariable(destAssignment.Left, srcVariableDefinition.Left))
                                     break;
-                                if (!SameVariable(destAssignment.Right as LocalVariable, srcVariableDefinition.Left)) continue;
+                                if (!SameVariable(destAssignment.Right as LocalVariable, srcVariableDefinition.Left))
+                                    continue;
                                 destAssignment.Right = constValue;
                                 Result = true;
                             }
@@ -41,7 +42,9 @@ namespace CodeRefractor.Compiler.Optimizations.ConstantFoldingAndPropagation
                             {
                                 var destAssignment = (Assignment) destOperation.Value;
                                 var arrayCreationInfo = (NewArrayObject) destAssignment.Right;
-                                if (!SameVariable(arrayCreationInfo.ArrayLength as LocalVariable, srcVariableDefinition.Left))
+                                if (
+                                    !SameVariable(arrayCreationInfo.ArrayLength as LocalVariable,
+                                                  srcVariableDefinition.Left))
                                     continue;
                                 arrayCreationInfo.ArrayLength = constValue;
                                 Result = true;
@@ -50,7 +53,8 @@ namespace CodeRefractor.Compiler.Optimizations.ConstantFoldingAndPropagation
                         case LocalOperation.Kinds.SetField:
                             {
                                 var destAssignment = (Assignment) destOperation.Value;
-                                if (!SameVariable(destAssignment.Right as LocalVariable, srcVariableDefinition.Left)) continue;
+                                if (!SameVariable(destAssignment.Right as LocalVariable, srcVariableDefinition.Left))
+                                    continue;
                                 destAssignment.Right = constValue;
                                 Result = true;
                             }

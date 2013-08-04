@@ -1,12 +1,11 @@
 #region Usings
 
 using System;
-using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.DataBase.SerializeXml;
 
 #endregion
 
-namespace CodeRefractor.Compiler.Util
+namespace CodeRefractor.RuntimeBase.Util
 {
     public static class NativeCompilationUtils
     {
@@ -81,10 +80,10 @@ namespace CodeRefractor.Compiler.Util
             var commandLineFormat = "{0} " + CompilerOptions.OptimizationFlags + " {2} -o {1}";
 
             var arguments = String.Format(commandLineFormat, outputCpp, applicationNativeExe,
-                CompilerOptions.LinkerOptions);
+                                          CompilerOptions.LinkerOptions);
             var standardOutput = pathToGpp.ExecuteCommand(arguments);
             if (!String.IsNullOrWhiteSpace(standardOutput))
-            {    
+            {
                 throw new InvalidOperationException(String.Format("Errors when compiling: {0}", standardOutput));
             }
             (CompilerOptions.PathOfCompilerTools + "strip").ExecuteCommand(applicationNativeExe);

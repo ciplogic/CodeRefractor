@@ -1,6 +1,5 @@
 #region Usings
 
-using CodeRefractor.Compiler.Optimizations.ConstantFoldingAndPropagation;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
@@ -8,7 +7,7 @@ using CodeRefractor.RuntimeBase.Shared;
 
 #endregion
 
-namespace CodeRefractor.Compiler.Optimizations
+namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagation
 {
     public class ConstantVariableBranchOperatorPropagation : ConstantVariablePropagationBase
     {

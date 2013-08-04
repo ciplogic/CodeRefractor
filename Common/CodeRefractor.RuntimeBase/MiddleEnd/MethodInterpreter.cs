@@ -74,10 +74,10 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                     MidRepresentation.Call(instruction.Operand, evaluator);
                     return;
                 case ObcodeIntValues.NewObj:
-                {
-                    var consInfo = (ConstructorInfo) instruction.Operand;
-                    MidRepresentation.NewObject(consInfo, evaluator);
-                }
+                    {
+                        var consInfo = (ConstructorInfo) instruction.Operand;
+                        MidRepresentation.NewObject(consInfo, evaluator);
+                    }
                     return;
             }
 
@@ -154,7 +154,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             if (opcodeStr == "ldloca.s" || opcodeStr == "ldloca")
             {
                 //TODO: load the address into evaluation stack
-                var index = (LocalVariableInfo)instruction.Operand;
+                var index = (LocalVariableInfo) instruction.Operand;
 
                 MidRepresentation.LoadAddressIntoEvaluationStack(evaluator, index);
                 return;
@@ -164,7 +164,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             if (opcodeStr.StartsWith("stind."))
             {
                 //TODO: load the address into evaluation stack
-                var index = (LocalVariableInfo)instruction.Operand;
+                var index = (LocalVariableInfo) instruction.Operand;
 
                 MidRepresentation.StoresValueFromAddress(evaluator, index);
                 return;
@@ -459,8 +459,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         public void SetLabels(IEnumerable<int> labelList)
         {
             _hashedLabels = labelList == null
-                ? new HashSet<int>()
-                : new HashSet<int>(labelList);
+                                ? new HashSet<int>()
+                                : new HashSet<int>(labelList);
         }
     }
 }

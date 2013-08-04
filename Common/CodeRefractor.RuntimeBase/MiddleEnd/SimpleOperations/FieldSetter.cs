@@ -1,11 +1,10 @@
 #region Usings
 
 using System;
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.MiddleEnd
+namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 {
     public class FieldSetter : LocalVariable
     {

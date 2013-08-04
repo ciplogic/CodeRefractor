@@ -1,7 +1,7 @@
 ﻿#region Usings
 
 using System.Collections.Generic;
-using CodeRefractor.Compiler.Optimizations.Common;
+using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
@@ -10,7 +10,7 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
 
 #endregion
 
-namespace CodeRefractor.Compiler.Optimizations.ConstantFoldingAndPropagation.ComplexAssignments
+namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagation.ComplexAssignments
 {
     internal class DeleteVregAssignedAndUsedNextLine : ResultingOptimizationPass
     {

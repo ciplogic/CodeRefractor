@@ -1,10 +1,14 @@
-﻿using System;
+﻿#region Usings
+
+using System;
 using System.Text;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
 using CodeRefractor.RuntimeBase.Shared;
 
-namespace CodeRefractor.Compiler.Backend.HandleOperations
+#endregion
+
+namespace CodeRefractor.CompilerBackend.HandleOperations
 {
     internal static class CppHandleOperators
     {
@@ -86,8 +90,8 @@ namespace CodeRefractor.Compiler.Backend.HandleOperations
 
         public static void HandleUnaryOperator(object operation, StringBuilder sb)
         {
-            var localVar = (Assignment)operation;
-            var localOperator = (Operator)localVar.Right;
+            var localVar = (Assignment) operation;
+            var localOperator = (Operator) localVar.Right;
             var unaryOperator = localVar.Right as UnaryOperator;
 
             var operationName = localOperator.Name;
@@ -226,7 +230,7 @@ namespace CodeRefractor.Compiler.Backend.HandleOperations
         }
 
         private static void GetBinaryOperandNames(BinaryOperator objList, Assignment localVar, out string right,
-            out string left, out string local)
+                                                  out string left, out string local)
         {
             local = localVar.Left.Name;
             var leftVar = objList.Left as LocalVariable;

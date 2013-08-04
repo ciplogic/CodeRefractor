@@ -6,7 +6,7 @@ using CodeRefractor.RuntimeBase.MiddleEnd;
 
 #endregion
 
-namespace CodeRefractor.Compiler.FrontEnd
+namespace CodeRefractor.RuntimeBase.FrontEnd
 {
     public class GlobalMethodPool
     {

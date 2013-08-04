@@ -6,17 +6,16 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using CodeRefractor.Compiler;
-using CodeRefractor.Compiler.Backend;
-using CodeRefractor.Compiler.FrontEnd;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
+using CodeRefractor.RuntimeBase.FrontEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.ConstTable;
+using CodeRefractor.RuntimeBase.Runtime;
 using CodeRefractor.RuntimeBase.Shared;
 
 #endregion
 
-namespace CodeRefractor.CompilerBackend
+namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 {
     public static class CppCodeGenerator
     {

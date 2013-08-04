@@ -40,7 +40,7 @@ namespace CodeRefractor.RuntimeBase.DataBase
                 Console.WriteLine(ex.Message);
                 return false;
             }
-            
+
             var result = node;
             foreach (XmlNode xmlNode in xmlDoc.ChildNodes)
                 UpdateData(result, xmlNode);

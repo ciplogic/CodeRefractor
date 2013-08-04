@@ -1,11 +1,10 @@
 #region Usings
 
 using System.Collections.Generic;
-using CodeRefractor.RuntimeBase.DataBase.Compacter;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.DataBase
+namespace CodeRefractor.RuntimeBase.DataBase.Compacter
 {
     public class ExpanderTransformer
     {

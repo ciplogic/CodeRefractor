@@ -2,13 +2,13 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using CodeRefractor.Compiler.Optimizations.Common;
+using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 
 #endregion
 
-namespace CodeRefractor.Compiler.Optimizations.ReachabilityDfa
+namespace CodeRefractor.CompilerBackend.Optimizations.ReachabilityDfa
 {
     public class DeleteJumpNextLine : ResultingOptimizationPass
     {

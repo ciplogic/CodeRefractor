@@ -3,7 +3,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using CodeRefractor.Compiler.Optimizations.Common;
+using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
@@ -11,7 +11,7 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
 
 #endregion
 
-namespace CodeRefractor.Compiler.Optimizations.SimpleDce
+namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
 {
     public class DceLocalAssigned : ResultingOptimizationPass
     {

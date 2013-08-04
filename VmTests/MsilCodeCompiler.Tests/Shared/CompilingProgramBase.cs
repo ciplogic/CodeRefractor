@@ -6,11 +6,12 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using CodeRefractor.Compiler;
-using CodeRefractor.Compiler.Backend;
-using CodeRefractor.Compiler.Util;
 using CodeRefractor.CompilerBackend;
+using CodeRefractor.CompilerBackend.OuputCodeWriter;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Optimizations;
+using CodeRefractor.RuntimeBase.Runtime;
+using CodeRefractor.RuntimeBase.Util;
 using NUnit.Framework;
 
 #endregion

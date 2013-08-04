@@ -37,23 +37,23 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 if (isConstructor || !Method.IsStatic)
                 {
                     Vars.Arguments.Add(new ArgumentVariable("_this")
-                    {
-                        FixedType = Method.DeclaringType
-                    });
+                                           {
+                                               FixedType = Method.DeclaringType
+                                           });
                 }
                 Vars.Arguments.AddRange(_method.GetParameters().Select(param => new ArgumentVariable(param.Name)
-                {
-                    FixedType = param.ParameterType,
-                    Id = pos++
-                }));
+                                                                                    {
+                                                                                        FixedType = param.ParameterType,
+                                                                                        Id = pos++
+                                                                                    }));
 
                 pos = 0;
-                Vars.LocalVars.AddRange(Vars.Variables.Select(v => new LocalVariable()
-                {
-                    FixedType = v.LocalType,
-                    Id = pos++,
-                    Kind = VariableKind.Argument
-                }));
+                Vars.LocalVars.AddRange(Vars.Variables.Select(v => new LocalVariable
+                                                                       {
+                                                                           FixedType = v.LocalType,
+                                                                           Id = pos++,
+                                                                           Kind = VariableKind.Argument
+                                                                       }));
             }
         }
 
@@ -70,11 +70,11 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         private void AssignValueToStack(object value, EvaluatorStack evaluator)
         {
             var result = SetNewVReg(evaluator);
-            var assign = new Assignment()
-            {
-                Left = result,
-                Right = new ConstValue(value)
-            };
+            var assign = new Assignment
+                             {
+                                 Left = result,
+                                 Right = new ConstValue(value)
+                             };
             result.FixedType = value.GetType();
             AddOperation(LocalOperation.Kinds.Assignment, assign);
         }
@@ -90,18 +90,18 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         {
             var topVariable = evaluator.Stack.Peek();
             var newLocal = new LocalVariable
-            {
-                Kind = VariableKind.Local,
-                Id = value
-            };
+                               {
+                                   Kind = VariableKind.Local,
+                                   Id = value
+                               };
 
             evaluator.Stack.Pop();
             Vars.LocalVariables[value] = newLocal;
             var assingment = new Assignment
-            {
-                Left = newLocal,
-                Right = topVariable
-            };
+                                 {
+                                     Left = newLocal,
+                                     Right = topVariable
+                                 };
 
             newLocal.FixedType = topVariable.ComputedType();
             AddOperation(LocalOperation.Kinds.Assignment, assingment);
@@ -114,10 +114,10 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             var vreg = SetNewVReg(evaluator);
 
             var assingment = new Assignment
-            {
-                Left = vreg,
-                Right = locVar
-            };
+                                 {
+                                     Left = vreg,
+                                     Right = locVar
+                                 };
 
             vreg.FixedType = locVar.ComputedType();
             AddOperation(LocalOperation.Kinds.Assignment, assingment);
@@ -126,10 +126,10 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         private void AddOperation(LocalOperation.Kinds kind, object value = null)
         {
             var result = new LocalOperation
-            {
-                Kind = kind,
-                Value = value
-            };
+                             {
+                                 Kind = kind,
+                                 Value = value
+                             };
 
             LocalOperations.Add(result);
             var assignment = result.Value as Assignment;
@@ -225,17 +225,17 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             var secondVar = evaluator.Stack.Pop();
             var firstVar = evaluator.Stack.Pop();
             var addValue = new BinaryOperator(operatorName)
-            {
-                Left = firstVar,
-                Right = secondVar
-            };
+                               {
+                                   Left = firstVar,
+                                   Right = secondVar
+                               };
             var result = SetNewVReg(evaluator);
             result.FixedType = addValue.ComputedType();
-            var assign = new Assignment()
-            {
-                Left = result,
-                Right = addValue
-            };
+            var assign = new Assignment
+                             {
+                                 Left = result,
+                                 Right = addValue
+                             };
             AddOperation(LocalOperation.Kinds.BinaryOperator, assign);
         }
 
@@ -243,16 +243,16 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         {
             var firstVar = evaluator.Stack.Pop();
             var addValue = new UnaryOperator(operatorName)
-            {
-                Left = firstVar,
-                FixedType = firstVar.ComputedType()
-            };
+                               {
+                                   Left = firstVar,
+                                   FixedType = firstVar.ComputedType()
+                               };
             var result = SetNewVReg(evaluator);
-            var assign = new Assignment()
-            {
-                Left = result,
-                Right = addValue
-            };
+            var assign = new Assignment
+                             {
+                                 Left = result,
+                                 Right = addValue
+                             };
             assign.Left.FixedType = addValue.ComputedType();
             AddOperation(LocalOperation.Kinds.UnaryOperator, assign);
         }
@@ -309,15 +309,15 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             var secondVar = evaluator.Stack.Pop();
             var firstVar = evaluator.Stack.Pop();
             var fieldName = fieldInfo.Name;
-            var assignment = new Assignment()
-            {
-                Left = new FieldSetter()
-                {
-                    Instance = firstVar,
-                    FieldName = fieldName
-                },
-                Right = secondVar
-            };
+            var assignment = new Assignment
+                                 {
+                                     Left = new FieldSetter
+                                                {
+                                                    Instance = firstVar,
+                                                    FieldName = fieldName
+                                                },
+                                     Right = secondVar
+                                 };
             assignment.Left.FixedType = secondVar.ComputedType();
             AddOperation(LocalOperation.Kinds.SetField, assignment);
         }
@@ -327,15 +327,15 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         {
             var firstVar = evaluator.Stack.Pop();
             var fieldName = fieldInfo.Name;
-            var assignment = new Assignment()
-            {
-                Left = new StaticFieldSetter()
-                {
-                    DeclaringType = fieldInfo.DeclaringType,
-                    FieldName = fieldName
-                },
-                Right = firstVar
-            };
+            var assignment = new Assignment
+                                 {
+                                     Left = new StaticFieldSetter
+                                                {
+                                                    DeclaringType = fieldInfo.DeclaringType,
+                                                    FieldName = fieldName
+                                                },
+                                     Right = firstVar
+                                 };
             assignment.Left.FixedType = firstVar.ComputedType();
             AddOperation(LocalOperation.Kinds.SetStaticField, assignment);
         }
@@ -345,37 +345,38 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         {
             var varAddress = evaluator.Stack.Pop();
             var varValue = evaluator.Stack.Pop();
-            
+
             var assignment = new DerefAssignment
-            {
-                Left = (LocalVariable) varAddress,
-                Right = (LocalVariable)varValue
-            };
-            
+                                 {
+                                     Left = (LocalVariable) varAddress,
+                                     Right = (LocalVariable) varValue
+                                 };
+
             AddOperation(LocalOperation.Kinds.DerefAssignment, assignment);
         }
+
         #region Branching operators
 
         public void BranchIfTrue(int pushedIntValue, EvaluatorStack evaluator)
         {
             var firstVar = evaluator.Stack.Pop();
             AddOperation(LocalOperation.Kinds.BranchOperator,
-                new BranchOperator(OpcodeBranchNames.BrTrue)
-                {
-                    JumpTo = pushedIntValue,
-                    CompareValue = firstVar
-                });
+                         new BranchOperator(OpcodeBranchNames.BrTrue)
+                             {
+                                 JumpTo = pushedIntValue,
+                                 CompareValue = firstVar
+                             });
         }
 
         public void BranchIfFalse(int pushedIntValue, EvaluatorStack evaluator)
         {
             var firstVar = evaluator.Stack.Pop();
             AddOperation(LocalOperation.Kinds.BranchOperator,
-                new BranchOperator(OpcodeBranchNames.BrFalse)
-                {
-                    JumpTo = pushedIntValue,
-                    CompareValue = firstVar
-                });
+                         new BranchOperator(OpcodeBranchNames.BrFalse)
+                             {
+                                 JumpTo = pushedIntValue,
+                                 CompareValue = firstVar
+                             });
         }
 
 
@@ -395,12 +396,12 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             var secondVar = evaluator.Stack.Pop();
 
             AddOperation(LocalOperation.Kinds.BranchOperator,
-                new BranchOperator(opcode)
-                {
-                    JumpTo = jumpTo,
-                    CompareValue = firstVar,
-                    SecondValue = secondVar
-                });
+                         new BranchOperator(opcode)
+                             {
+                                 JumpTo = jumpTo,
+                                 CompareValue = firstVar,
+                                 SecondValue = secondVar
+                             });
         }
 
         public void BranchIfGreaterOrEqual(int jumpTo, EvaluatorStack evaluator)
@@ -435,14 +436,13 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             var argument = Vars.Arguments[pushedIntValue];
             var vreg = SetNewVReg(evaluator);
             vreg.FixedType = argument.ComputedType();
-            var assignment = new Assignment()
-            {
-                Left = vreg,
-                Right = argument
-            };
+            var assignment = new Assignment
+                                 {
+                                     Left = vreg,
+                                     Right = argument
+                                 };
             AddOperation(LocalOperation.Kinds.Assignment, assignment);
         }
-
 
 
         public void LoadAddressIntoEvaluationStack(EvaluatorStack evaluator, LocalVariableInfo index)
@@ -451,11 +451,11 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             vreg.FixedType = index.LocalType.MakeByRefType();
 
             var argument = Vars.LocalVariables[index.LocalIndex];
-            var assignment = new RefAssignment()
-            {
-                Left = vreg,
-                Right = argument
-            };
+            var assignment = new RefAssignment
+                                 {
+                                     Left = vreg,
+                                     Right = argument
+                                 };
             AddOperation(LocalOperation.Kinds.RefAssignment, assignment);
         }
 
@@ -467,14 +467,14 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             vreg.FixedType = firstVar.ComputedType().LocateField(fieldName).FieldType;
             ProgramData.UpdateType(vreg.FixedType);
             var assignment = new Assignment
-            {
-                Left = vreg,
-                Right = new FieldGetter()
-                {
-                    FieldName = fieldName,
-                    Instance = firstVar
-                }
-            };
+                                 {
+                                     Left = vreg,
+                                     Right = new FieldGetter
+                                                 {
+                                                     FieldName = fieldName,
+                                                     Instance = firstVar
+                                                 }
+                                 };
             AddOperation(LocalOperation.Kinds.GetField, assignment);
         }
 
@@ -486,14 +486,14 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             vreg.FixedType = declaringType.LocateField(fieldName).FieldType;
             var typeData = ProgramData.UpdateType(declaringType);
             var assignment = new Assignment
-            {
-                Left = vreg,
-                Right = new StaticFieldGetter()
-                {
-                    FieldName = fieldName,
-                    DeclaringType = typeData
-                }
-            };
+                                 {
+                                     Left = vreg,
+                                     Right = new StaticFieldGetter
+                                                 {
+                                                     FieldName = fieldName,
+                                                     DeclaringType = typeData
+                                                 }
+                                 };
             AddOperation(LocalOperation.Kinds.GetStaticField, assignment);
         }
 
@@ -524,11 +524,11 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             var result = SetNewVReg(evaluator);
             result.FixedType = firstVar.FixedType.GetElementType();
             var arrayVariable = new ArrayVariable(firstVar, secondVar);
-            var assignment = new Assignment()
-            {
-                Left = result,
-                Right = arrayVariable
-            };
+            var assignment = new Assignment
+                                 {
+                                     Left = result,
+                                     Right = arrayVariable
+                                 };
             result.FixedType = arrayVariable.GetElementType();
             AddOperation(LocalOperation.Kinds.GetArrayItem, assignment);
         }
@@ -537,11 +537,11 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         {
             var variable = evaluator.Stack.Peek();
             var vreg = SetNewVReg(evaluator);
-            var assign = new Assignment()
-            {
-                Left = vreg,
-                Right = variable
-            };
+            var assign = new Assignment
+                             {
+                                 Left = vreg,
+                                 Right = variable
+                             };
             vreg.FixedType = variable.ComputedType();
             AddOperation(LocalOperation.Kinds.Assignment, assign);
         }
@@ -552,11 +552,11 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             var result = SetNewVReg(evaluator);
 
             result.FixedType = constructorInfo.DeclaringType;
-            var assignment = new Assignment()
-            {
-                Left = result,
-                Right = new NewConstructedObject(constructorInfo)
-            };
+            var assignment = new Assignment
+                                 {
+                                     Left = result,
+                                     Right = new NewConstructedObject(constructorInfo)
+                                 };
             ProgramData.UpdateType(constructorInfo.DeclaringType);
             AddOperation(LocalOperation.Kinds.NewObject, assignment);
         }
@@ -566,14 +566,14 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             var arrayLength = evaluator.Stack.Pop();
             var result = SetNewVReg(evaluator);
             var assignment = new Assignment
-            {
-                Left = result,
-                Right = new NewArrayObject()
-                {
-                    TypeArray = typeArray,
-                    ArrayLength = arrayLength
-                }
-            };
+                                 {
+                                     Left = result,
+                                     Right = new NewArrayObject
+                                                 {
+                                                     TypeArray = typeArray,
+                                                     ArrayLength = arrayLength
+                                                 }
+                                 };
             result.FixedType = typeArray.MakeArrayType();
             AddOperation(LocalOperation.Kinds.NewArray, assignment);
         }
@@ -596,10 +596,10 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             var array = evaluator.Pop();
             var arrayVariable = new ArrayVariable(array, index);
             var assignment = new Assignment
-            {
-                Left = arrayVariable,
-                Right = value
-            };
+                                 {
+                                     Left = arrayVariable,
+                                     Right = value
+                                 };
             arrayVariable.FixedType = value.ComputedType();
             AddOperation(LocalOperation.Kinds.SetArrayItem, assignment);
         }
@@ -614,11 +614,11 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             var srcBytes = value.ToByteArray();
             var vreg = SetNewVReg(evaluator);
             var rightConstant = ConstByteArrayList.RegisterConstant(srcBytes);
-            var assign = new Assignment()
-            {
-                Left = vreg,
-                Right = new ConstByteArrayValue(rightConstant)
-            };
+            var assign = new Assignment
+                             {
+                                 Left = vreg,
+                                 Right = new ConstByteArrayValue(rightConstant)
+                             };
             vreg.FixedType = typeof (byte[]);
             AddOperation(LocalOperation.Kinds.CopyArrayInitializer, assign);
         }
@@ -631,11 +631,11 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         private void AssignNullToStack(EvaluatorStack evaluator)
         {
             var result = SetNewVReg(evaluator);
-            var assign = new Assignment()
-            {
-                Left = result,
-                Right = new ConstValue(null)
-            };
+            var assign = new Assignment
+                             {
+                                 Left = result,
+                                 Right = new ConstValue(null)
+                             };
             result.FixedType = typeof (object);
             AddOperation(LocalOperation.Kinds.Assignment, assign);
         }
@@ -648,11 +648,11 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         public void Switch(EvaluatorStack evaluator, Instruction[] instructions)
         {
             var firstVar = (LocalVariable) evaluator.Stack.Pop();
-            var assign = new Assignment()
-            {
-                Left = firstVar,
-                Right = new ConstValue(instructions)
-            };
+            var assign = new Assignment
+                             {
+                                 Left = firstVar,
+                                 Right = new ConstValue(instructions)
+                             };
             AddOperation(LocalOperation.Kinds.Switch, assign);
         }
     }

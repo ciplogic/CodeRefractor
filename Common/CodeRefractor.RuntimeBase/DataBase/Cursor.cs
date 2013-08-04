@@ -1,6 +1,7 @@
 #region Usings
 
 using System.Text;
+using CodeRefractor.RuntimeBase.DataBase.Compacter;
 
 #endregion
 

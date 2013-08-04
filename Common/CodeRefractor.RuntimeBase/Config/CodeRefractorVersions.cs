@@ -1,4 +1,4 @@
-namespace CodeRefractor.Compiler.Config
+namespace CodeRefractor.RuntimeBase.Config
 {
     public static class CodeRefractorVersions
     {

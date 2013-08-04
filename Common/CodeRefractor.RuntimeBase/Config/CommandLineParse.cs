@@ -3,33 +3,13 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using CodeRefractor.Compiler.Util;
-using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Optimizations;
+using CodeRefractor.RuntimeBase.Util;
 
 #endregion
 
-namespace CodeRefractor.Compiler.Config
+namespace CodeRefractor.RuntimeBase.Config
 {
-    public class OptimizationLevelBase
-    {
-        public virtual List<OptimizationPass> BuildOptimizationPasses0()
-        {
-            throw new NotImplementedException();
-        }
-
-        public virtual List<OptimizationPass> BuildOptimizationPasses2()
-        {
-            throw new NotImplementedException();
-        }
-
-        public virtual List<OptimizationPass> BuildOptimizationPasses1()
-        {
-            throw new NotImplementedException();
-        }
-
-        public static OptimizationLevelBase Instance;
-    }
     public class CommandLineParse
     {
         public static readonly CommandLineParse StaticInstance = new CommandLineParse();
@@ -131,10 +111,8 @@ namespace CodeRefractor.Compiler.Config
                 if (_optimizerLevel >= 2)
                 {
                     optimizationList.AddRange(OptimizationLevelBase.Instance.BuildOptimizationPasses2());
-
                 }
                 OptimizationPasses = optimizationList;
-
             }
         }
     }

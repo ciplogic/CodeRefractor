@@ -9,7 +9,7 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 
 #endregion
 
-namespace CodeRefractor.Compiler.Backend.HandleOperations
+namespace CodeRefractor.CompilerBackend.HandleOperations
 {
     internal static class CppHandleCalls
     {
@@ -38,7 +38,7 @@ namespace CodeRefractor.Compiler.Backend.HandleOperations
             else
             {
                 sb.AppendFormat("{1} = {0}", methodInfo.ClangMethodSignature(),
-                    operationData.Result.Name);
+                                operationData.Result.Name);
             }
             var identifierValues = operationData.Parameters;
             var argumentsCall = String.Join(", ", identifierValues.Select(p => p.Name));
@@ -61,7 +61,7 @@ namespace CodeRefractor.Compiler.Backend.HandleOperations
             else
             {
                 sb.AppendFormat("{1} = {0}", methodInfo.ClangMethodSignature(),
-                    operationData.Result.Name);
+                                operationData.Result.Name);
             }
             var identifierValues = operationData.Parameters;
             var argumentsCall = String.Join(", ", identifierValues.Select(p => p.Name));

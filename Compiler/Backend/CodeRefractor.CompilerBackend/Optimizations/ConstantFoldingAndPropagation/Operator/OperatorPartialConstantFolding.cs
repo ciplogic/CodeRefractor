@@ -1,17 +1,17 @@
-using CodeRefractor.Compiler.Optimizations.Common;
+#region Usings
+
+using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
 using CodeRefractor.RuntimeBase.Shared;
 
-namespace CodeRefractor.Compiler.Optimizations
+#endregion
+
+namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagation.Operator
 {
     /// <summary>
-    /// This class reduces operators that are operated with simple constants to
-    /// an equivalent assignment:
-    /// a = b*0 => a = 0
-    /// a = b*1 => a = b
-    /// etc.
+    ///   This class reduces operators that are operated with simple constants to an equivalent assignment: a = b*0 => a = 0 a = b*1 => a = b etc.
     /// </summary>
     public class OperatorPartialConstantFolding : ResultingOptimizationPass
     {
@@ -23,7 +23,7 @@ namespace CodeRefractor.Compiler.Optimizations
                     continue;
 
                 var destAssignment = (Assignment) destOperation.Value;
-                var baseOperator = (Operator) destAssignment.Right;
+                var baseOperator = (RuntimeBase.MiddleEnd.SimpleOperations.Operators.Operator) destAssignment.Right;
                 ConstValue constLeft = null;
                 ConstValue constRight = null;
 

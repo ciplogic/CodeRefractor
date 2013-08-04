@@ -7,7 +7,7 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 
 #endregion
 
-namespace CodeRefractor.Compiler.Optimizations.ConstantDfa
+namespace CodeRefractor.CompilerBackend.Optimizations.ConstantDfa
 {
     internal class DfaPointOfAnalysis
     {

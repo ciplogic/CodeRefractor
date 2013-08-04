@@ -2,11 +2,12 @@
 
 using System.Collections.Generic;
 using CodeRefractor.RuntimeBase.MiddleEnd;
+using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.Optimizations;
 
 #endregion
 
-namespace CodeRefractor.Compiler.Backend
+namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 {
     public class MethodInterpreterCodeWriter
     {

@@ -2,7 +2,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using CodeRefractor.Compiler.Optimizations.Common;
+using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
@@ -10,12 +10,12 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 
 #endregion
 
-namespace CodeRefractor.Compiler.Optimizations.Inliner
+namespace CodeRefractor.CompilerBackend.Optimizations.Inliner
 {
     internal class SmallFunctionsInliner : ResultingOptimizationPass
     {
         public static int MaxLengthInliner = 200;
-        public static int MaxLengthChildFunction = 40;
+        public static int MaxLengthChildFunction = 5;
 
         public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
         {

@@ -1,11 +1,15 @@
+#region Usings
+
 using System;
 using System.Collections.Generic;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.Shared;
 
+#endregion
+
 namespace CodeRefractor.RuntimeBase.Analyze
 {
-    public class ClassTypeData:TypeData
+    public class ClassTypeData : TypeData
     {
         public List<FieldDataRef> Fields;
         public List<MethodInterpreter> Interpreters;
@@ -14,7 +18,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
         public ClassTypeData()
         {
             Fields = new List<FieldDataRef>();
-            Interpreters = new List<MethodInterpreter>();            
+            Interpreters = new List<MethodInterpreter>();
         }
 
         public static void PopulateFields(Type type, ClassTypeData result)
@@ -23,11 +27,11 @@ namespace CodeRefractor.RuntimeBase.Analyze
             foreach (var fieldInfo in allFields)
             {
                 var fieldData = new FieldDataRef
-                {
-                    Name = fieldInfo.Name,
-                    TypeData = GetTypeData(fieldInfo.FieldType),
-                    IsStatic = fieldInfo.IsStatic
-                };
+                                    {
+                                        Name = fieldInfo.Name,
+                                        TypeData = GetTypeData(fieldInfo.FieldType),
+                                        IsStatic = fieldInfo.IsStatic
+                                    };
                 result.Fields.Add(fieldData);
             }
         }
@@ -42,8 +46,8 @@ namespace CodeRefractor.RuntimeBase.Analyze
         {
             int index;
             return !InterpreterMapping.TryGetValue(methodName, out index)
-                ? null
-                : Interpreters[index];
+                       ? null
+                       : Interpreters[index];
         }
     }
 }

@@ -1,7 +1,6 @@
 #region Usings
 
 using System;
-using CodeRefractor.RuntimeBase.MiddleEnd;
 
 #endregion
 
@@ -35,11 +34,11 @@ namespace CodeRefractor.RuntimeBase.Analyze
                 return result;
             if (type.IsClass)
             {
-                result=new ClassTypeData();
+                result = new ClassTypeData();
             }
             else
             {
-                result=new TypeData();
+                result = new TypeData();
             }
             PopulateTypeDataFields(type, result);
 
@@ -74,9 +73,8 @@ namespace CodeRefractor.RuntimeBase.Analyze
         public static string ComputeFullName(string typeNs, string name)
         {
             return string.IsNullOrEmpty(typeNs)
-                ? name
-                : string.Format("{0}.{1}", typeNs, name);
+                       ? name
+                       : string.Format("{0}.{1}", typeNs, name);
         }
-
     }
 }

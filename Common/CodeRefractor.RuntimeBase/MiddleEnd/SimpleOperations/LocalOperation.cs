@@ -30,9 +30,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
             UnaryOperator,
 
 
-
             Assignment,
-            
+
             RefAssignment,
             DerefAssignment,
         }
@@ -48,10 +47,10 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
         public LocalOperation Clone()
         {
             return new LocalOperation
-            {
-                Kind = Kind,
-                Value = Value
-            };
+                       {
+                           Kind = Kind,
+                           Value = Value
+                       };
         }
     }
 }

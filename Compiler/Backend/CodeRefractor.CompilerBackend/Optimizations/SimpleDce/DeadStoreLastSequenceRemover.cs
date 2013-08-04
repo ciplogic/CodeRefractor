@@ -1,17 +1,19 @@
-﻿using System;
+﻿#region Usings
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using CodeRefractor.Compiler.Optimizations.Common;
+using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 
-namespace CodeRefractor.Compiler.Optimizations.SimpleDce
+#endregion
+
+namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
 {
     /// <summary>
-    /// This optimization will remove all assignments that are not used subsequently
-    /// from the last sequence of instructions (from the last return to the last found label, jump 
-    /// or start of the function
+    ///   This optimization will remove all assignments that are not used subsequently from the last sequence of instructions (from the last return to the last found label, jump or start of the function
     /// </summary>
     internal class DeadStoreLastSequenceRemover : ResultingOptimizationPass
     {
@@ -147,10 +149,10 @@ namespace CodeRefractor.Compiler.Optimizations.SimpleDce
         }
 
         /// <summary>
-        /// Returns true if the removal of the read was already in the subsequent reads.
+        ///   Returns true if the removal of the read was already in the subsequent reads.
         /// </summary>
-        /// <param name="localVariable"></param>
-        /// <returns></returns>
+        /// <param name="localVariable"> </param>
+        /// <returns> </returns>
         public bool RemoveRead(LocalVariable localVariable)
         {
             if (!DoesRead(localVariable))

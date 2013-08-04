@@ -17,10 +17,10 @@ namespace CodeRefractor.RuntimeBase
         {
             _vRegId++;
             var newLocal = new LocalVariable
-            {
-                Kind = VariableKind.Vreg,
-                Id = _vRegId
-            };
+                               {
+                                   Kind = VariableKind.Vreg,
+                                   Id = _vRegId
+                               };
             Stack.Push(newLocal);
             return newLocal;
         }

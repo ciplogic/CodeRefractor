@@ -6,7 +6,7 @@ using System.Text;
 
 #endregion
 
-namespace CodeRefractor.Compiler.Backend
+namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 {
     internal class PlatformInvokeCodeWriter
     {

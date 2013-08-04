@@ -1,6 +1,6 @@
 #region Usings
 
-using CodeRefractor.Compiler.Optimizations.Common;
+using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
@@ -8,7 +8,7 @@ using CodeRefractor.RuntimeBase.Shared;
 
 #endregion
 
-namespace CodeRefractor.Compiler.Optimizations
+namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagation.Operator
 {
     public class OperatorConstantFolding : ResultingOptimizationPass
     {
@@ -21,7 +21,7 @@ namespace CodeRefractor.Compiler.Optimizations
                     continue;
 
                 var destAssignment = (Assignment) destOperation.Value;
-                var baseOperator = (Operator) destAssignment.Right;
+                var baseOperator = (RuntimeBase.MiddleEnd.SimpleOperations.Operators.Operator) destAssignment.Right;
                 ConstValue constLeft = null;
                 ConstValue constRight = null;
 

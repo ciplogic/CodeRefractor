@@ -1,8 +1,8 @@
-using CodeRefractor.Compiler.Optimizations.Common;
+using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 
-namespace CodeRefractor.Compiler.Optimizations.SimpleDce
+namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
 {
     /// <summary>
     /// This optimization in case of two assignments of the form:

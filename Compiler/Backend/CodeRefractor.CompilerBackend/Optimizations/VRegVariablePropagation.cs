@@ -1,13 +1,13 @@
 ﻿#region Usings
 
-using CodeRefractor.Compiler.Optimizations.Common;
+using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
 
 #endregion
 
-namespace CodeRefractor.Compiler.Optimizations
+namespace CodeRefractor.CompilerBackend.Optimizations
 {
     public class VRegVariablePropagation : ResultingOptimizationPass
     {

@@ -62,10 +62,10 @@ namespace CodeRefractor.RuntimeBase
             var rawdata = new byte[rawsize];
             var handle =
                 GCHandle.Alloc(rawdata,
-                    GCHandleType.Pinned);
+                               GCHandleType.Pinned);
             Marshal.StructureToPtr(value,
-                handle.AddrOfPinnedObject(),
-                false);
+                                   handle.AddrOfPinnedObject(),
+                                   false);
             handle.Free();
             if (maxLength >= rawdata.Length)
                 return rawdata;
@@ -106,8 +106,8 @@ namespace CodeRefractor.RuntimeBase
             var mappedtypeAttr = declaringType.GetCustomAttribute<MapTypeAttribute>();
             var mappedType2 = mappedtypeAttr == null ? null : mappedtypeAttr.MappedType;
             var format = String.Format("{0}.{1}({2})",
-                mappedType2 == null ? declaringType.FullName : mappedType2.FullName, method.Name,
-                method.GetArgumentsAsText());
+                                       mappedType2 == null ? declaringType.FullName : mappedType2.FullName, method.Name,
+                                       method.GetArgumentsAsText());
             return format;
         }
 
@@ -115,14 +115,15 @@ namespace CodeRefractor.RuntimeBase
         {
             var parameterInfos = method.GetParameters();
             var arguments = String.Join(", ",
-                parameterInfos.Select(
-                    param => String.Format("{0} {1}", param.ParameterType.ToCppMangling(), param.Name)));
+                                        parameterInfos.Select(
+                                            param =>
+                                            String.Format("{0} {1}", param.ParameterType.ToCppMangling(), param.Name)));
             if (!method.IsStatic)
             {
                 var thisText = String.Format("const {0}& _this", method.DeclaringType.ToCppName());
                 return parameterInfos.Length == 0
-                    ? thisText
-                    : String.Format("{0}, {1}", thisText, arguments);
+                           ? thisText
+                           : String.Format("{0}, {1}", thisText, arguments);
             }
             return arguments;
         }
@@ -197,26 +198,26 @@ namespace CodeRefractor.RuntimeBase
         public static string ExecuteCommand(this string pathToGpp, string arguments = "")
         {
             var p = new Process
-            {
-                StartInfo =
-                {
-                    FileName = pathToGpp,
-                    Arguments = arguments,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    UseShellExecute = false
-                }
-            };
+                        {
+                            StartInfo =
+                                {
+                                    FileName = pathToGpp,
+                                    Arguments = arguments,
+                                    RedirectStandardOutput = true,
+                                    RedirectStandardError = true,
+                                    UseShellExecute = false
+                                }
+                        };
             p.Start();
             p.WaitForExit();
 
             var standardOutput = p.StandardOutput.ReadToEnd();
             var standardError = p.StandardError.ReadToEnd();
             return String.IsNullOrWhiteSpace(standardOutput)
-                ? standardError
-                : String.IsNullOrWhiteSpace(standardError)
-                    ? standardOutput
-                    : standardOutput + Environment.NewLine + standardError;
+                       ? standardError
+                       : String.IsNullOrWhiteSpace(standardError)
+                             ? standardOutput
+                             : standardOutput + Environment.NewLine + standardError;
         }
 
         public static void DeleteFile(this string fileName)
@@ -234,8 +235,8 @@ namespace CodeRefractor.RuntimeBase
         public static string ToCppMangling(this Type type)
         {
             return IsVoid(type)
-                ? "void"
-                : type.FullName.ToCppMangling();
+                       ? "void"
+                       : type.FullName.ToCppMangling();
         }
 
         public static string ToCppMangling(this string s)
@@ -255,9 +256,9 @@ namespace CodeRefractor.RuntimeBase
         {
             if (!type.IsClass || !isSmartPtr)
             {
-                return type.IsSubclassOf(typeof(Enum)) 
-                    ? "int" 
-                    : type.FullName.ToCppMangling();
+                return type.IsSubclassOf(typeof (Enum))
+                           ? "int"
+                           : type.FullName.ToCppMangling();
             }
             if (type.IsArray)
             {

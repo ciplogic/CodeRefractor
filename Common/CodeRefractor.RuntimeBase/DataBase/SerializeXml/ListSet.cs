@@ -6,7 +6,7 @@ using System.Reflection;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.DataBase
+namespace CodeRefractor.RuntimeBase.DataBase.SerializeXml
 {
     internal class ListSet<T> : List<T>
     {

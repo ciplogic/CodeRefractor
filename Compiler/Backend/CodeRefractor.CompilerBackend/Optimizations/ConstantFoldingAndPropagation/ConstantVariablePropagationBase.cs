@@ -1,12 +1,12 @@
 #region Usings
 
 using System.Collections.Generic;
-using CodeRefractor.Compiler.Optimizations.Common;
+using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 
 #endregion
 
-namespace CodeRefractor.Compiler.Optimizations.ConstantFoldingAndPropagation
+namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagation
 {
     public abstract class ConstantVariablePropagationBase : ResultingOptimizationPass
     {

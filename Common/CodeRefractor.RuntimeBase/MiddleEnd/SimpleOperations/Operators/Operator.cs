@@ -1,5 +1,3 @@
-
-
 namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators
 {
     public class Operator : IdentifierValue

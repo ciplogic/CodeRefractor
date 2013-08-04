@@ -3,15 +3,13 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using CodeRefractor.Compiler.FrontEnd;
-using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.Shared;
 
 #endregion
 
-namespace CodeRefractor.Compiler
+namespace CodeRefractor.RuntimeBase.Runtime
 {
     public class CrRuntimeLibrary
     {
@@ -99,12 +97,12 @@ namespace CodeRefractor.Compiler
             _supportedMethods[format] = method;
             var methodList = GetTypesMethodList(declaringType);
             var cppMethodDefinition = new CppMethodDefinition
-            {
-                DeclaringType = method.DeclaringType,
-                MappedType = declaringType,
-                AttributeData = methodNativeDescription,
-                MethodDefinition = method
-            };
+                                          {
+                                              DeclaringType = method.DeclaringType,
+                                              MappedType = declaringType,
+                                              AttributeData = methodNativeDescription,
+                                              MethodDefinition = method
+                                          };
             var pureAttribute = method.GetCustomAttribute<PureMethodAttribute>();
             if (pureAttribute != null)
                 PureMethodTable.AddPureFunction(method);

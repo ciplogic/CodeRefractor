@@ -6,7 +6,7 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 
 #endregion
 
-namespace CodeRefractor.Compiler.Optimizations.ConstantFoldingAndPropagation
+namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagation
 {
     public class ConstantVariablePropagationInCall : ConstantVariablePropagationBase
     {

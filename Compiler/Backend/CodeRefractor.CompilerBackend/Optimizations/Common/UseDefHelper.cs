@@ -3,12 +3,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using CodeRefractor.RuntimeBase;
-using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 
 #endregion
 
-namespace CodeRefractor.Compiler.Optimizations.Common
+namespace CodeRefractor.CompilerBackend.Optimizations.Common
 {
     public static class UseDefHelper
     {
