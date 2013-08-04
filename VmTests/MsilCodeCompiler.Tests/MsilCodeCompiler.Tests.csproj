@@ -50,6 +50,10 @@
       <Project>{10CEF783-53C3-42A7-940A-73773A2AF24F}</Project>
       <Name>CodeRefractor.RuntimeBase</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Compiler\Backend\CodeRefractor.CompilerBackend\CodeRefractor.CompilerBackend.csproj">
+      <Project>{F6805C3F-DF9C-424A-A27F-2BBFF2707221}</Project>
+      <Name>CodeRefractor.CompilerBackend</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\MsilCodeCompiler\CodeRefractor.Compiler.csproj">
       <Project>{EE8B9057-95F4-4AB9-BC91-F0ED3D56FE38}</Project>
       <Name>CodeRefractor.Compiler</Name>

@@ -3,9 +3,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
-using CodeRefractor.Compiler.Backend;
 using CodeRefractor.Compiler.Config;
-using CodeRefractor.Compiler.Optimizations.Inliner;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
@@ -167,7 +165,7 @@ namespace CodeRefractor.Compiler.FrontEnd
             var methodDesc = methodBase.ToString();
 
             var methodRuntimeInfo = methodBase.GetMethodDescriptor();
-            if (Program.CrCrRuntimeLibrary.UseMethod(methodRuntimeInfo))
+            if (ProgramData.CrCrRuntimeLibrary.UseMethod(methodRuntimeInfo))
                 return;
             if (GlobalMethodPool.Instance.MethodInfos.ContainsKey(methodDesc))
                 return;
@@ -177,41 +175,6 @@ namespace CodeRefractor.Compiler.FrontEnd
                 return;//doesn't run on global assembly cache methods
             GlobalMethodPool.Instance.MethodInfos[methodDesc] = methodBase;
             ComputeDependencies(methodBase);
-        }
-
-        public static void OptimizeMethods(bool doInline=false)
-        {
-            var optimizationPasses = CommandLineParse.OptimizationPasses;
-            foreach (var methodBase in GlobalMethodPool.Instance.MethodInfos)
-            {
-                var typeData =
-                    (ClassTypeData) ProgramData.UpdateType(
-                        methodBase.Value.DeclaringType);
-                var interpreter = typeData.GetInterpreter(methodBase.Key);
-                if (optimizationPasses == null) return;
-                var codeWriter = new MethodInterpreterCodeWriter
-                {
-                    Interpreter = interpreter
-                };
-                codeWriter.ApplyLocalOptimizations(
-                    optimizationPasses);
-            }
-
-
-            if (doInline)
-                InlineMethods();
-        }
-
-        private static void InlineMethods()
-        {
-            var inliner = new SmallFunctionsInliner();
-            foreach (var methodBase in GlobalMethodPool.Instance.MethodInfos)
-            {
-                var typeData = (ClassTypeData)ProgramData.UpdateType(methodBase.Value.DeclaringType);
-                var interpreter = typeData.GetInterpreter(methodBase.Key);
-
-                inliner.OptimizeOperations(interpreter.MidRepresentation);
-            }
         }
     }
 }

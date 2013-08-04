@@ -36,57 +36,8 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Backend\CppCodeGenerator.cs" />
-    <Compile Include="Backend\CppFullFileMethodWriter.cs" />
-    <Compile Include="Backend\CppMethodCodeWriter.cs" />
-    <Compile Include="Backend\HandleOperations\CppHandleBranches.cs" />
-    <Compile Include="Backend\HandleOperations\CppHandleCalls.cs" />
-    <Compile Include="Backend\HandleOperations\CppHandleCompareBranches.cs" />
-    <Compile Include="Backend\HandleOperations\CppHandleOperators.cs" />
-    <Compile Include="Backend\MethodInterpreterCodeWriter.cs" />
-    <Compile Include="Backend\PlatformInvokeCodeWriter.cs" />
-    <Compile Include="Backend\PlatformInvokeDllImports.cs" />
-    <Compile Include="Config\CodeRefractorVersions.cs" />
-    <Compile Include="Config\CommandLineParse.cs" />
-    <Compile Include="CppMethodDefinition.cs" />
-    <Compile Include="FrontEnd\ClassInterpreter.cs" />
-    <Compile Include="FrontEnd\GlobalMethodPool.cs" />
-    <Compile Include="Optimizations\Common\UseDefHelper.cs" />
-    <Compile Include="Optimizations\ConstantDfa\ConstantDfaAnalysis.cs" />
-    <Compile Include="Optimizations\ConstantDfa\DfaPointOfAnalysis.cs" />
-    <Compile Include="Optimizations\ConstantDfa\VariableState.cs" />
-    <Compile Include="Optimizations\ConstantFoldingAndPropagation\ComplexAssignments\DeleteGappingVregAssignment.cs" />
-    <Compile Include="Optimizations\ConstantFoldingAndPropagation\ComplexAssignments\DeleteVregAssignedVariableAndUsedNextLine.cs" />
-    <Compile Include="Optimizations\InstructionsUtils.cs" />
-    <Compile Include="Optimizations\ConstantFoldingAndPropagation\ConstantVariableBranchOperatorPropagation.cs" />
-    <Compile Include="Optimizations\ConstantFoldingAndPropagation\ConstantVariableOperatorPropagation.cs" />
-    <Compile Include="Optimizations\ConstantFoldingAndPropagation\ConstantVariablePropagation.cs" />
-    <Compile Include="Optimizations\ConstantFoldingAndPropagation\ConstantVariablePropagationBase.cs" />
-    <Compile Include="Optimizations\ConstantFoldingAndPropagation\ConstantVariablePropagationInCall.cs" />
-    <Compile Include="Optimizations\ConstantFoldingAndPropagation\ComplexAssignments\DeleteVregAsLocalAssignedAndUsedPreviousLine.cs" />
-    <Compile Include="Optimizations\ConstantFoldingAndPropagation\ComplexAssignments\DeleteVregAssignedAndUsedNextLine.cs" />
-    <Compile Include="Optimizations\ConstantFoldingAndPropagation\EvaluatePureFunctionWithConstantCall.cs" />
-    <Compile Include="Optimizations\Inliner\SmallFunctionsInliner.cs" />
-    <Compile Include="Optimizations\Jumps\MergeConsecutiveLabels.cs" />
-    <Compile Include="Optimizations\ConstantFoldingAndPropagation\Operator\OperatorPartialConstantFolding.cs" />
-    <Compile Include="Optimizations\ReachabilityDfa\DeleteJumpNextLine.cs" />
-    <Compile Include="Optimizations\ReachabilityDfa\ReachabilityDfa.cs" />
-    <Compile Include="Optimizations\SimpleDce\AssignToReturnPropagation.cs" />
-    <Compile Include="Optimizations\SimpleDce\DceLocalAssigned.cs" />
-    <Compile Include="Optimizations\SimpleDce\DceVRegAssigned.cs" />
-    <Compile Include="Optimizations\ConstantFoldingAndPropagation\Operator\OperatorConstantFolding.cs" />
-    <Compile Include="Optimizations\RemoveUnreferencedLabels.cs" />
-    <Compile Include="Optimizations\Common\ResultingOptimizationPass.cs" />
-    <Compile Include="Optimizations\SimpleDce\DeadStoreLastSequenceRemover.cs" />
-    <Compile Include="Optimizations\SimpleDce\DoubleAssignPropagation.cs" />
-    <Compile Include="Optimizations\SimpleDce\VRegReindexAssigned.cs" />
-    <Compile Include="Optimizations\VRegVariablePropagation.cs" />
-    <Compile Include="FrontEnd\MetaLinker.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="CrRuntimeLibrary.cs" />
-    <Compile Include="Util\DotNetUtils.cs" />
-    <Compile Include="Util\NativeCompilationUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Common\CodeRefactor.OpenRuntime\CodeRefactor.OpenRuntime.csproj">
@@ -97,11 +48,20 @@
       <Project>{10CEF783-53C3-42A7-940A-73773A2AF24F}</Project>
       <Name>CodeRefractor.RuntimeBase</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Compiler\Backend\CodeRefractor.CompilerBackend\CodeRefractor.CompilerBackend.csproj">
+      <Project>{F6805C3F-DF9C-424A-A27F-2BBFF2707221}</Project>
+      <Name>CodeRefractor.CompilerBackend</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Compiler\CodeRefractor.Compiler.FrontEnd\CodeRefractor.Compiler.FrontEnd.csproj">
+      <Project>{BA823367-EE17-4FE3-AD12-AD2F8AA65C60}</Project>
+      <Name>CodeRefractor.Compiler.FrontEnd</Name>
+    </ProjectReference>
     <ProjectReference Include="..\mono.reflection-master\Mono.Reflection.csproj">
       <Project>{97B010AB-0756-46DC-B75A-7A6C4F6FF28D}</Project>
       <Name>Mono.Reflection</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

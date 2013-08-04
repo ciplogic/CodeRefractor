@@ -3,9 +3,9 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using CodeRefactor.OpenRuntime;
 using CodeRefractor.Compiler.FrontEnd;
 using CodeRefractor.RuntimeBase;
+using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.Shared;
 
@@ -32,8 +32,7 @@ namespace CodeRefractor.Compiler
 
         public static void DefaultSetup()
         {
-            Program.CrCrRuntimeLibrary = new CrRuntimeLibrary();
-            Program.CrCrRuntimeLibrary.ScanAssembly(typeof (CrString).Assembly);
+            ProgramData.CrCrRuntimeLibrary = new CrRuntimeLibrary();
         }
 
         public void ScanAssembly(Assembly assembly)

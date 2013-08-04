@@ -88,7 +88,7 @@ namespace CodeRefractor.Launcher
             var destExe = tbxOutputExe.Text;
             try
             {
-                NativeCompilationUtils.CallCompiler(sourceAssembly, destExe);
+                Compiler.Program.CallCompiler(sourceAssembly, destExe);
             }
             catch (Exception ex)
             {

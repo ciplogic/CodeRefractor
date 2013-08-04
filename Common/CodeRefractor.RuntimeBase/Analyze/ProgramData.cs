@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using CodeRefractor.Compiler;
 
 #endregion
 
@@ -11,6 +12,9 @@ namespace CodeRefractor.RuntimeBase.Analyze
     {
         private static readonly ProgramData StaticInstance = new ProgramData();
         public Dictionary<string, AssemblyData> AssemblyDatas { get; set; }
+
+
+        public static CrRuntimeLibrary CrCrRuntimeLibrary;
 
         public static ProgramData Instance
         {

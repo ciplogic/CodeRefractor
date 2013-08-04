@@ -1,10 +1,6 @@
 #region Usings
 
 using System;
-using System.IO;
-using System.Reflection;
-using CodeRefractor.Compiler.Backend;
-using CodeRefractor.Compiler.Config;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.DataBase.SerializeXml;
 
@@ -76,32 +72,6 @@ namespace CodeRefractor.Compiler.Util
                     CompilerOptions = new ClangOptions();
                     break;
             }
-        }
-
-        public static void CallCompiler(string inputAssemblyName, string outputExeName)
-        {
-            var commandLineParse = CommandLineParse.Instance;
-            if (!string.IsNullOrEmpty(inputAssemblyName))
-            {
-                commandLineParse.ApplicationInputAssembly = inputAssemblyName;
-            }
-            if (!string.IsNullOrEmpty(outputExeName))
-            {
-                commandLineParse.ApplicationNativeExe = outputExeName;
-            }
-            var dir = Directory.GetCurrentDirectory();
-            inputAssemblyName = Path.Combine(dir, commandLineParse.ApplicationInputAssembly);
-            var asm = Assembly.LoadFile(inputAssemblyName);
-            var definition = asm.EntryPoint;
-            var start = Environment.TickCount;
-            var linker = definition.CreateLinkerFromEntryPoint();
-
-            var sb = CppCodeGenerator.BuildFullSourceCode(linker, Program.CrCrRuntimeLibrary);
-            var end = Environment.TickCount - start;
-            Console.WriteLine("Compilation time: {0} ms", end);
-
-            sb.ToFile(commandLineParse.OutputCpp);
-            CompileAppToNativeExe(commandLineParse.OutputCpp, commandLineParse.ApplicationNativeExe);
         }
 
         public static void CompileAppToNativeExe(string outputCpp, string applicationNativeExe)

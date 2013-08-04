@@ -43,6 +43,13 @@
     <Compile Include="Analyze\FieldDataRef.cs" />
     <Compile Include="Analyze\ProgramData.cs" />
     <Compile Include="CilMethodAttribute.cs" />
+    <Compile Include="Config\CodeRefractorVersions.cs" />
+    <Compile Include="Config\CommandLineParse.cs" />
+    <Compile Include="FrontEnd\ClassInterpreter.cs" />
+    <Compile Include="FrontEnd\GlobalMethodPool.cs" />
+    <Compile Include="MetaLinker.cs" />
+    <Compile Include="Runtime\CppMethodDefinition.cs" />
+    <Compile Include="Runtime\CrRuntimeLibrary.cs" />
     <Compile Include="DataBase\Cursor.cs" />
     <Compile Include="DataBase\Dict.cs" />
     <Compile Include="DataBase\DynNode.cs" />
@@ -95,6 +102,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Shared\OpcodeBranchNames.cs" />
     <Compile Include="Shared\OpcodeOperatorNames.cs" />
+    <Compile Include="Util\DotNetUtils.cs" />
+    <Compile Include="Util\NativeCompilationUtils.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -3,14 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using CodeRefractor.Compiler.Optimizations;
-using CodeRefractor.Compiler.Optimizations.ConstantDfa;
-using CodeRefractor.Compiler.Optimizations.ConstantFoldingAndPropagation;
-using CodeRefractor.Compiler.Optimizations.ConstantFoldingAndPropagation.ComplexAssignments;
-using CodeRefractor.Compiler.Optimizations.Jumps;
-using CodeRefractor.Compiler.Optimizations.ReachabilityDfa;
-using CodeRefractor.Compiler.Optimizations.SimpleDce;
 using CodeRefractor.Compiler.Util;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Optimizations;
@@ -19,7 +11,26 @@ using CodeRefractor.RuntimeBase.Optimizations;
 
 namespace CodeRefractor.Compiler.Config
 {
-    internal class CommandLineParse
+    public class OptimizationLevelBase
+    {
+        public virtual List<OptimizationPass> BuildOptimizationPasses0()
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual List<OptimizationPass> BuildOptimizationPasses2()
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual List<OptimizationPass> BuildOptimizationPasses1()
+        {
+            throw new NotImplementedException();
+        }
+
+        public static OptimizationLevelBase Instance;
+    }
+    public class CommandLineParse
     {
         public static readonly CommandLineParse StaticInstance = new CommandLineParse();
         public readonly List<string> Arguments = new List<string>();
@@ -106,74 +117,20 @@ namespace CodeRefractor.Compiler.Config
         public static List<OptimizationPass> OptimizationPasses;
         private static int _optimizerLevel;
 
-
-        public static List<OptimizationPass> BuildOptimizationPasses2()
-        {
-            return new OptimizationPass[]
-            {
-                new DeleteGappingVregAssignment(),
-                
-                new ReachabilityLines(),
-                new ConstantDfaAnalysis(),
-                
-                new EvaluatePureFunctionWithConstantCall(),
-                new VRegVariablePropagation()
-            }.ToList();
-        }
-
-
-        public static List<OptimizationPass> BuildOptimizationPasses1()
-        {
-            return new OptimizationPass[]
-                                         {
-                                             new DoubleAssignPropagation(), 
-                                             new AssignToReturnPropagation(), 
-                                             new DeadStoreLastSequenceRemover(), 
-
-                                             new DceLocalAssigned(), 
-                                             
-                                             new OperatorPartialConstantFolding(), 
-                                         }.ToList();
-
-        }
-
-
-        public static List<OptimizationPass> BuildOptimizationPasses0()
-        {
-            return new OptimizationPass[]
-                                         {
-                                             new DeleteVregAssignedAndUsedNextLine(), 
-                                             new DeleteVregAssignedVariableAndUsedNextLine(), 
-                                             new DeleteVregAsLocalAssignedAndUsedPreviousLine(), 
-                                             new ConstantVariablePropagation(), 
-                                             new ConstantVariableOperatorPropagation(), 
-                                             new ConstantVariablePropagationInCall(), 
-                                             
-                                             new DeleteJumpNextLine(), 
-                                             new RemoveUnreferencedLabels(), 
-                                             new MergeConsecutiveLabels(), 
-                                             
-                                             new ConstantVariableBranchOperatorPropagation(), 
-                                             new OperatorConstantFolding(), 
-                                             new DceVRegAssigned(),
-                                         }.ToList();
-
-        }
-
         public static int OptimizerLevel
         {
             get { return _optimizerLevel; }
             set
             {
                 _optimizerLevel = value;
-                var optimizationList = BuildOptimizationPasses0();
+                var optimizationList = OptimizationLevelBase.Instance.BuildOptimizationPasses0();
                 if (_optimizerLevel >= 1)
                 {
-                    optimizationList.AddRange(BuildOptimizationPasses1());
+                    optimizationList.AddRange(OptimizationLevelBase.Instance.BuildOptimizationPasses1());
                 }
                 if (_optimizerLevel >= 2)
                 {
-                    optimizationList.AddRange(BuildOptimizationPasses2());
+                    optimizationList.AddRange(OptimizationLevelBase.Instance.BuildOptimizationPasses2());
 
                 }
                 OptimizationPasses = optimizationList;

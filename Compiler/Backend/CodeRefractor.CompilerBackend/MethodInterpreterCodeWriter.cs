@@ -8,7 +8,7 @@ using CodeRefractor.RuntimeBase.Optimizations;
 
 namespace CodeRefractor.Compiler.Backend
 {
-    internal class MethodInterpreterCodeWriter
+    public class MethodInterpreterCodeWriter
     {
         public MethodInterpreter Interpreter { get; set; }
 
