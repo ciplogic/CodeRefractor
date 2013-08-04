@@ -52,10 +52,6 @@
       <Project>{F6805C3F-DF9C-424A-A27F-2BBFF2707221}</Project>
       <Name>CodeRefractor.CompilerBackend</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Compiler\CodeRefractor.Compiler.FrontEnd\CodeRefractor.Compiler.FrontEnd.csproj">
-      <Project>{BA823367-EE17-4FE3-AD12-AD2F8AA65C60}</Project>
-      <Name>CodeRefractor.Compiler.FrontEnd</Name>
-    </ProjectReference>
     <ProjectReference Include="..\mono.reflection-master\Mono.Reflection.csproj">
       <Project>{97B010AB-0756-46DC-B75A-7A6C4F6FF28D}</Project>
       <Name>Mono.Reflection</Name>
