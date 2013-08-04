@@ -1,35 +1,29 @@
 #region Usings
 
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using CodeRefractor.CompilerBackend.Linker;
 
 #endregion
 
 namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 {
-    internal class PlatformInvokeCodeWriter
+    internal static class PlatformInvokeCodeWriter
     {
-        private readonly List<PlatformInvokeDllImports> _libraries = new List<PlatformInvokeDllImports>();
-        private int _methodCount;
-
         public static string Import(string dll, string method)
         {
-            StaticInstance._methodCount++;
-            var id = StaticInstance._methodCount;
-            var findItem = StaticInstance._libraries.FirstOrDefault(lib => lib.DllName == dll);
+            LinkingData.LibraryMethodCount++;
+            var id = LinkingData.LibraryMethodCount;
+            var findItem = LinkingData.Libraries.FirstOrDefault(lib => lib.DllName == dll);
             if (findItem == null)
             {
                 findItem = new PlatformInvokeDllImports(dll);
-                StaticInstance._libraries.Add(findItem);
+                LinkingData.Libraries.Add(findItem);
             }
             var dllId = string.Format("dll_method_{0}", id);
             findItem.Methods.Add(method, dllId);
             return dllId;
         }
-
-        private static readonly PlatformInvokeCodeWriter StaticInstance = new PlatformInvokeCodeWriter();
-
 
         public static string LoadDllMethods()
         {
@@ -37,7 +31,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 
             sb.AppendLine("void mapLibs() {");
             var pos = 0;
-            foreach (var library in StaticInstance._libraries)
+            foreach (var library in LinkingData.Libraries)
             {
                 sb.AppendFormat("auto lib_{0} = LoadNativeLibrary(L\"{1}\");", pos, library.DllName);
                 sb.AppendLine();

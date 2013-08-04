@@ -29,5 +29,6 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
         {
             return FormatVar();
         }
+
     }
 }

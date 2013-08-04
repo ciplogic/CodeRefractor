@@ -3,6 +3,7 @@
 using System;
 using System.Linq;
 using System.Text;
+using CodeRefractor.CompilerBackend.Linker;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
@@ -41,7 +42,12 @@ namespace CodeRefractor.CompilerBackend.HandleOperations
                                 operationData.Result.Name);
             }
             var identifierValues = operationData.Parameters;
-            var argumentsCall = String.Join(", ", identifierValues.Select(p => p.Name));
+
+            var argumentsCall = String.Join(", ", identifierValues.Select(p =>
+                                                                              {
+                                                                                  var computeValue = p.ComputedValue();
+                                                                                  return computeValue;
+                                                                              }));
 
             sb.AppendFormat("({0});", argumentsCall);
         }

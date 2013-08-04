@@ -1,7 +1,6 @@
 #region Usings
 
 using CodeRefractor.CompilerBackend.Optimizations.Inliner;
-using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.Config;
 using CodeRefractor.RuntimeBase.FrontEnd;
@@ -10,16 +9,8 @@ using CodeRefractor.RuntimeBase.FrontEnd;
 
 namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 {
-    public class MetaLinkerOptimizer
+    public static class MetaLinkerOptimizer
     {
-        private readonly MetaLinker _metaLinker;
-
-        public MetaLinkerOptimizer(MetaLinker metaLinker)
-        {
-            _metaLinker = metaLinker;
-        }
-
-
         public static void OptimizeMethods(bool doInline = false)
         {
             var optimizationPasses = CommandLineParse.OptimizationPasses;

@@ -1,4 +1,24 @@
 #include <vector>
+#include <string>
+#include <iostream>
+
+static std::vector<std::wstring> _stringTable;
+
+void buildStringTable();
+void mapLibs();
+void RuntimeHelpersBuildConstantTable();
+
+void initializeRuntime()
+{
+	buildStringTable();
+	mapLibs();
+	RuntimeHelpersBuildConstantTable();
+}
+
+const std::wstring& _str(int index)
+{
+	return _stringTable[index];
+}
 
 static std::vector<System::Byte*> _constTables;
 System::Byte* RuntimeHelpers_GetBytes(int id)
@@ -49,3 +69,8 @@ std::shared_ptr< Array < System::String> > System::getArgumentsAsList (int argc,
 	return result;
 }
 
+
+void System_Console__WriteLine(const std::wstring& value)
+{
+	std::wcout<<value<<std::endl;	
+}

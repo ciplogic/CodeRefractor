@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using CodeRefractor.CompilerBackend.Linker;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.FrontEnd;
@@ -19,20 +20,11 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 {
     public static class CppCodeGenerator
     {
-        private static readonly HashSet<string> Includes = new HashSet<string>();
-
-        public static bool SetInclude(string include)
-        {
-            if (Includes.Contains(include))
-                return false;
-            Includes.Add(include);
-            return true;
-        }
 
         public static StringBuilder BuildFullSourceCode(MetaLinker linker, CrRuntimeLibrary crCrRuntimeLibrary)
         {
             var sb = new StringBuilder();
-            Includes.Clear();
+            LinkingData.Includes.Clear();
 
             sb.AppendLine("#include \"sloth.h\"");
             sb.AppendLine("#include \"runtime_base.partcpp\"");
@@ -49,6 +41,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 
             sb.AppendLine(PlatformInvokeCodeWriter.LoadDllMethods());
             sb.AppendLine(ConstByteArrayList.BuildConstantTable());
+            sb.AppendLine(LinkingData.Instance.Strings.BuildStringTable());
 
             return sb;
         }
@@ -162,7 +155,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             if (methodNativeDescription == null)
                 throw new InvalidDataException(
                     "Cpp runtime method is called but is not marked with CppMethodBody attribute");
-            if (SetInclude(methodNativeDescription.Header))
+            if (LinkingData.SetInclude(methodNativeDescription.Header))
                 sb.AppendFormat("#include \"{0}\"", methodNativeDescription.Header).AppendLine();
             var methodHeaderText = method.WriteHeaderMethod(false, mappedType);
             sb.Append(methodHeaderText);
@@ -171,8 +164,10 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 
         private static void WriteMainBody(MetaLinker linker, StringBuilder sb)
         {
+            sb.AppendLine("void initializeRuntime();");
             sb.AppendFormat("int main(int argc, char**argv) {{").AppendLine();
             sb.AppendFormat("auto argsAsList = System::getArgumentsAsList(argc, argv);").AppendLine();
+            sb.AppendLine("initializeRuntime();");
             var entryPoint = linker.EntryPoint;
             if (entryPoint.ReturnType != typeof (void))
                 sb.Append("return ");
