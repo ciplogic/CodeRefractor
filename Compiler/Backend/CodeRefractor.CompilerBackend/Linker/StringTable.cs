@@ -27,8 +27,11 @@ namespace CodeRefractor.CompilerBackend.Linker
             sb.AppendLine("void buildStringTable() {");
             foreach (var strItem in Table)
             {
-                sb.AppendFormat("_stringTable.push_back(std::wstring (L{0}));", strItem.ToEscapedString());
-                sb.AppendLine();
+                string escapedString = strItem.ToEscapedString();
+                sb.AppendFormat("_stringLength.push_back({0});", escapedString.Length)
+                    .AppendLine();
+                sb.AppendFormat("_stringTable.push_back(L{0});", escapedString)
+                    .AppendLine();
             }
             sb.AppendLine("}");
             return sb.ToString();

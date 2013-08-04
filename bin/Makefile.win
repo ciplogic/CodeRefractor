@@ -1,17 +1,17 @@
 # Project: Output
 # Makefile created by Dev-C++ 5.4.1
 
-CPP      = g++.exe -D__DEBUG__
-CC       = gcc.exe -D__DEBUG__
+CPP      = g++.exe
+CC       = gcc.exe
 WINDRES  = windres.exe
 OBJ      = output.o
 LINKOBJ  = output.o
-LIBS     = -L"C:/Oss/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib" -static-libgcc -s   -g3 -s
-INCS     = -I"C:/Oss/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include"
-CXXINCS  = -I"C:/Oss/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include"
+LIBS     = -L"C:/oss/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib" -static-libgcc   -s
+INCS     = -I"C:/oss/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include"
+CXXINCS  = -I"C:/oss/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include"
 BIN      = Output.exe
-CXXFLAGS = $(CXXINCS) -O2 -std=c++11 -ffast-math -O3 -march=native -mtune=native -Ofast -std=gnu++11 -g3
-CFLAGS   = $(INCS) -ffast-math -O3 -march=native -mtune=native -Ofast -std=gnu++11 -g3
+CXXFLAGS = $(CXXINCS) -O2 -std=c++11 -std=c++11 -march=native -mtune=native -Ofast -std=gnu++11
+CFLAGS   = $(INCS) -std=c++11 -march=native -mtune=native -Ofast -std=gnu++11
 RM       = rm -f
 
 .PHONY: all all-before all-after clean clean-custom
@@ -25,5 +25,5 @@ clean: clean-custom
 $(BIN): $(OBJ)
 	$(CPP) $(LINKOBJ) -o $(BIN) $(LIBS)
 
-output.o: output.cpp sloth.h CodeRefactorRuntime/System_Primitives.h  CodeRefactorRuntime/System_Console.h  CodeRefactorRuntime/System_Primitives.h runtime_base.partcpp
+output.o: output.cpp
 	$(CPP) -c output.cpp -o output.o $(CXXFLAGS)

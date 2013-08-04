@@ -1,8 +1,7 @@
 #include <vector>
 #include <string>
-#include <iostream>
-
-static std::vector<std::wstring> _stringTable;
+static std::vector<int> _stringLength;
+static std::vector<wchar_t*> _stringTable;
 
 void buildStringTable();
 void mapLibs();
@@ -15,7 +14,7 @@ void initializeRuntime()
 	RuntimeHelpersBuildConstantTable();
 }
 
-const std::wstring& _str(int index)
+const wchar_t* _str(int index)
 {
 	return _stringTable[index];
 }
@@ -70,7 +69,7 @@ std::shared_ptr< Array < System::String> > System::getArgumentsAsList (int argc,
 }
 
 
-void System_Console__WriteLine(const std::wstring& value)
+void System_Console__WriteLine(const wchar_t* value)
 {
-	std::wcout<<value<<std::endl;	
+	wprintf(L"%ls\n", value);	
 }
