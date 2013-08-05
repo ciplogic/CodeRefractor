@@ -6,12 +6,12 @@ CC       = gcc.exe
 WINDRES  = windres.exe
 OBJ      = output.o
 LINKOBJ  = output.o
-LIBS     = -L"C:/oss/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib" -static-libgcc   -s
-INCS     = -I"C:/oss/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include"
-CXXINCS  = -I"C:/oss/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include"
+LIBS     = -L"C:/Oss/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib32" -static-libgcc   -s
+INCS     = -I"C:/Oss/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include"
+CXXINCS  = -I"C:/Oss/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include"
 BIN      = Output.exe
-CXXFLAGS = $(CXXINCS) -O2 -std=c++11 -std=c++11 -march=native -mtune=native -Ofast -std=gnu++11
-CFLAGS   = $(INCS) -std=c++11 -march=native -mtune=native -Ofast -std=gnu++11
+CXXFLAGS = $(CXXINCS) -O2 -std=c++11 -march=native -mtune=native -Ofast -std=gnu++11
+CFLAGS   = $(INCS) -march=native -mtune=native -Ofast -std=gnu++11
 RM       = rm -f
 
 .PHONY: all all-before all-after clean clean-custom

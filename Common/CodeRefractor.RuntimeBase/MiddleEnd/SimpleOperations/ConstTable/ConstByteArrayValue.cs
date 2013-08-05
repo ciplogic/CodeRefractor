@@ -1,3 +1,5 @@
+using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
+
 namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.ConstTable
 {
     public class ConstByteArrayValue : ConstValue

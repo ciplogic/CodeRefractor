@@ -1,4 +1,4 @@
-namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
+namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers
 {
     public class LocalVariable : IdentifierValue
     {

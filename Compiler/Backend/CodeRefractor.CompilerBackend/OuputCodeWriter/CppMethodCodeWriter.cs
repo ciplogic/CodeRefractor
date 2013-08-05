@@ -11,6 +11,7 @@ using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.ConstTable;
+using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 using Mono.Reflection;
 
 #endregion
@@ -108,9 +109,6 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                         HandleLoadStaticField(operation, bodySb);
                         break;
 
-                    case LocalOperation.Kinds.LoadArgument:
-                        HandleLoadArgument(operation, bodySb);
-                        break;
                     case LocalOperation.Kinds.GetArrayItem:
                         HandleReadArrayItem(operation, bodySb);
                         break;

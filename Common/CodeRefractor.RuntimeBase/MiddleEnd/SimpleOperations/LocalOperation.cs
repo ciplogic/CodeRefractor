@@ -12,7 +12,6 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
             Label,
 
             NewObject,
-            LoadArgument,
             CallRuntime,
             Switch,
 

@@ -6,6 +6,7 @@ using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
+using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
 
 #endregion
@@ -29,8 +30,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
             {
                 var srcOperation = operations[i];
                 _currentRow = i;
-                if (srcOperation.Kind != LocalOperation.Kinds.Assignment &&
-                    srcOperation.Kind != LocalOperation.Kinds.LoadArgument)
+                if (srcOperation.Kind != LocalOperation.Kinds.Assignment)
                     continue;
                 var assignment = (Assignment) srcOperation.Value;
                 _leftVreg = assignment.Left;

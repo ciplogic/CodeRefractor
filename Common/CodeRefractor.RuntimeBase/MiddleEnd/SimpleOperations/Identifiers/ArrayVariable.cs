@@ -4,7 +4,7 @@ using System;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
+namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers
 {
     public class ArrayVariable : LocalVariable
     {
