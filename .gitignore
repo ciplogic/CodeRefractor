@@ -19,3 +19,7 @@ Common/CodeRefactor.OpenRuntime/bin/*
 bin/output.cpp
 bin/*.exe*
 bin/Output.layout
+Compiler/Backend/CodeRefractor.CompilerBackend/bin/*.dll
+Compiler/Backend/CodeRefractor.CompilerBackend/obj/*
+Compiler/Backend/CodeRefractor.CompilerBackend/bin/Debug/*
+bin/output.o
