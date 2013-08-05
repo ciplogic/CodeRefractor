@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Text;
 using CodeRefractor.RuntimeBase;
@@ -6,35 +7,67 @@ namespace CodeRefractor.CompilerBackend.Linker
 {
     class StringTable
     {
-        public Dictionary<string, int> StringsDictionary = new Dictionary<string, int>();
-        public List<string> Table = new List<string>();
+        private readonly Dictionary<string, int> _stringsDictionary = new Dictionary<string, int>();
+        private readonly List<string> _table = new List<string>();
         public int GetStringId(string text)
         {
             int result;
-            if (!StringsDictionary.TryGetValue(text, out result))
+            if (!_stringsDictionary.TryGetValue(text, out result))
             {
-                result = Table.Count;
-                StringsDictionary[text] = result;
-                Table.Add(text);
+                result = _table.Count;
+                _stringsDictionary[text] = result;
+                _table.Add(text);
             }
             return result;
         }
 
+        static short[] TextData(string text)
+        {
+            var result = new short[text.Length + 1];
+            for (var i = 0; i < text.Length; i++)
+            {
+                result[i] = (short)text[i];
+            }
+            result[text.Length] = 0;
+            return result;
+        }
 
         public string BuildStringTable()
         {
             var sb = new StringBuilder();
+            var jumpSb = new StringBuilder();
             sb.AppendLine("void buildStringTable() {");
-            foreach (var strItem in Table)
+
+            var stringDataBuilder = new List<string>();
+
+            var jump = 0;
+            foreach (var strItem in _table)
             {
-                string escapedString = strItem.ToEscapedString();
-                sb.AppendFormat("_stringLength.push_back({0});", escapedString.Length)
+                sb.AppendFormat("_AddJumpAndLength({0}, {1});", jump, strItem.Length)
                     .AppendLine();
-                sb.AppendFormat("_stringTable.push_back(L{0});", escapedString)
-                    .AppendLine();
+                var itemTextData = TextData(strItem);
+                AddTextToStringTable(stringDataBuilder, itemTextData, strItem);
+
+                jump += strItem.Length + 1;
             }
-            sb.AppendLine("}");
+
+
+            sb.AppendLine("} // buildStringTable");
+
+            var stringTableContent = String.Join(", ", stringDataBuilder);
+            sb.AppendFormat("const wchar_t _stringTable[{0}] = {{", jump).AppendLine();
+            sb.AppendLine(stringTableContent);
+            sb.AppendLine("}; // _stringTable ");
+
             return sb.ToString();
+        }
+
+        private void AddTextToStringTable(List<string> stringDataBuilder, short[] itemTextData, string strItem)
+        {
+            var itemsText = String.Join(", ", itemTextData);
+            var commentedString = String.Format("/* {0} */", strItem.ToEscapedString());
+            var resultItem = String.Format("{0} {1}", itemsText, commentedString);
+            stringDataBuilder.Add(resultItem);
         }
     }
 }

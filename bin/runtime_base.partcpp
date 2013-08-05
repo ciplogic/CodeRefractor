@@ -1,7 +1,7 @@
 #include <vector>
 #include <string>
 static std::vector<int> _stringLength;
-static std::vector<wchar_t*> _stringTable;
+static std::vector<int> _stringJumps;
 
 void buildStringTable();
 void mapLibs();
@@ -13,10 +13,17 @@ void initializeRuntime()
 	mapLibs();
 	RuntimeHelpersBuildConstantTable();
 }
-
+extern const wchar_t _stringTable[];
 const wchar_t* _str(int index)
 {
-	return _stringTable[index];
+	auto jumpTo = _stringJumps[index];
+	return &(_stringTable[jumpTo]);
+}
+
+void _AddJumpAndLength(int jump, int length)
+{
+	_stringJumps.push_back(jump);
+	_stringLength.push_back(length);
 }
 
 static std::vector<System::Byte*> _constTables;
