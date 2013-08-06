@@ -175,11 +175,11 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
                                                        operation.Kind == LocalOperation.Kinds.BinaryOperator ||
                                                        operation.Kind == LocalOperation.Kinds.UnaryOperator))
             {
-                var localVariable = (Assignment) operation.Value;
+                var localVariable = (OperatorBase) operation.Value;
 
-                var rightBinaryAssignment = localVariable.Right as BinaryOperator;
-                var unaryAssignment = localVariable.Right as UnaryOperator;
-                RemoveCandidateVarIfVreg(vregConstants, localVariable.Left);
+                var rightBinaryAssignment = localVariable as BinaryOperator;
+                var unaryAssignment = localVariable as UnaryOperator;
+                RemoveCandidateVarIfVreg(vregConstants, localVariable.AssignedTo);
                 if (unaryAssignment != null)
                 {
                     RemoveCandidateVarIfVreg(vregConstants, unaryAssignment.Left as LocalVariable);

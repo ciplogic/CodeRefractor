@@ -30,12 +30,12 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                         break;
                     if (destOperation.Kind != LocalOperation.Kinds.BinaryOperator &&
                         destOperation.Kind != LocalOperation.Kinds.UnaryOperator) continue;
-                    var destAssignment = (Assignment) destOperation.Value;
-                    if (SameVariable(destAssignment.Left, srcVariableDefinition.Left))
+                    var destAssignment = (OperatorBase) destOperation.Value;
+                    if (SameVariable(destAssignment.AssignedTo, srcVariableDefinition.Left))
                         break;
 
-                    var rightBinaryAssignment = destAssignment.Right as BinaryOperator;
-                    var unaryAssignment = destAssignment.Right as UnaryOperator;
+                    var rightBinaryAssignment = destAssignment as BinaryOperator;
+                    var unaryAssignment = destAssignment as UnaryOperator;
 
                     if (unaryAssignment != null) continue;
                     if (rightBinaryAssignment == null) continue;

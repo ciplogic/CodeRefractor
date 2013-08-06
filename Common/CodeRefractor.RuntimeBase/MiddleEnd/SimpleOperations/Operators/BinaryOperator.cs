@@ -7,13 +7,13 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
 namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators
 {
-    public class BinaryOperator : Operator
+    public class BinaryOperator : OperatorBase
     {
         public BinaryOperator(string name) : base(name)
         {
         }
 
-        public override Type ComputedType()
+        public Type ComputedType()
         {
             var leftType = Left.ComputedType();
             var rightType = Right.ComputedType();

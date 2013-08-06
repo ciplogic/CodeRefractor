@@ -86,7 +86,7 @@
     <Compile Include="MiddleEnd\MetaMidRepresentation.cs" />
     <Compile Include="MiddleEnd\Methods\MethodData.cs" />
     <Compile Include="MiddleEnd\MethodInterpreter.cs" />
-    <Compile Include="MiddleEnd\SimpleOperations\Operators\Operator.cs" />
+    <Compile Include="MiddleEnd\SimpleOperations\Operators\OperatorBase.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\Identifiers\ArgumentVariable.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\Identifiers\ArrayVariable.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\Assignment.cs" />

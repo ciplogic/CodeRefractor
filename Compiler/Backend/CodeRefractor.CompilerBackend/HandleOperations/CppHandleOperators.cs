@@ -15,73 +15,73 @@ namespace CodeRefractor.CompilerBackend.HandleOperations
     {
         public static void HandleOperator(object operation, StringBuilder sb)
         {
-            var localVar = (Assignment) operation;
-            var localOperator = (Operator) localVar.Right;
-            var binaryOperator = localVar.Right as BinaryOperator;
-            var unaryOperator = localVar.Right as UnaryOperator;
+            var instructionOperator = (OperatorBase)operation;
+            var localOperator = instructionOperator;
+            var binaryOperator = instructionOperator as BinaryOperator;
+            var unaryOperator = instructionOperator as UnaryOperator;
 
             var operationName = localOperator.Name;
             switch (operationName)
             {
                 case OpcodeOperatorNames.Add:
-                    HandleAdd(binaryOperator, localVar, sb);
+                    HandleAdd(binaryOperator, sb);
                     break;
                 case OpcodeOperatorNames.Sub:
-                    HandleSub(binaryOperator, localVar, sb);
+                    HandleSub(binaryOperator, sb);
                     break;
                 case OpcodeOperatorNames.Mul:
-                    HandleMul(binaryOperator, localVar, sb);
+                    HandleMul(binaryOperator, sb);
                     break;
                 case OpcodeOperatorNames.Div:
-                    HandleDiv(binaryOperator, localVar, sb);
+                    HandleDiv(binaryOperator, sb);
                     break;
                 case OpcodeOperatorNames.Rem:
-                    HandleRem(binaryOperator, localVar, sb);
+                    HandleRem(binaryOperator, sb);
                     break;
 
                 case OpcodeOperatorNames.Ceq:
-                    HandleCeq(binaryOperator, localVar, sb);
+                    HandleCeq(binaryOperator, sb);
                     break;
 
                 case OpcodeOperatorNames.Cgt:
-                    HandleCgt(binaryOperator, localVar, sb);
+                    HandleCgt(binaryOperator, sb);
                     break;
 
                 case OpcodeOperatorNames.Clt:
-                    HandleClt(binaryOperator, localVar, sb);
+                    HandleClt(binaryOperator, sb);
                     break;
 
                 case OpcodeOperatorNames.And:
-                    HandleAnd(binaryOperator, localVar, sb);
+                    HandleAnd(binaryOperator, sb);
                     break;
                 case OpcodeOperatorNames.Or:
-                    HandleOr(binaryOperator, localVar, sb);
+                    HandleOr(binaryOperator, sb);
                     break;
                 case OpcodeOperatorNames.Xor:
-                    HandleXor(binaryOperator, localVar, sb);
+                    HandleXor(binaryOperator, sb);
                     break;
 
                 case OpcodeOperatorNames.Not:
-                    HandleNot(localVar, sb);
+                    HandleNot(unaryOperator, sb);
                     break;
                 case OpcodeOperatorNames.Neg:
-                    HandleNeg(localVar, sb);
+                    HandleNeg(unaryOperator, sb);
                     break;
 
                 case OpcodeOperatorNames.LoadArrayRef:
-                    HandleLoadArrayRef(binaryOperator, localVar, sb);
+                    HandleLoadArrayRef(binaryOperator, sb);
                     break;
 
                 case OpcodeOperatorNames.LoadLen:
-                    HandleLoadLen(unaryOperator, localVar, sb);
+                    HandleLoadLen(unaryOperator, sb);
                     break;
 
                 case OpcodeOperatorNames.ConvI4:
-                    HandleConvI4(unaryOperator, localVar, sb);
+                    HandleConvI4(unaryOperator, sb);
                     break;
 
                 case OpcodeOperatorNames.ConvR8:
-                    HandleConvR8(unaryOperator, localVar, sb);
+                    HandleConvR8(unaryOperator, sb);
                     break;
 
                 default:
@@ -89,13 +89,13 @@ namespace CodeRefractor.CompilerBackend.HandleOperations
             }
         }
 
-        public static void HandleUnaryOperator(object operation, StringBuilder sb)
+        public static void HandleUnaryOperator(UnaryOperator operation, StringBuilder sb)
         {
-            var localVar = (Assignment) operation;
-            var localOperator = (Operator) localVar.Right;
-            var unaryOperator = localVar.Right as UnaryOperator;
+            var localVar = operation;
+            
+            var unaryOperator = localVar;
 
-            var operationName = localOperator.Name;
+            var operationName = localVar.Name;
             switch (operationName)
             {
                 case OpcodeOperatorNames.Not:
@@ -106,15 +106,15 @@ namespace CodeRefractor.CompilerBackend.HandleOperations
                     break;
 
                 case OpcodeOperatorNames.LoadLen:
-                    HandleLoadLen(unaryOperator, localVar, sb);
+                    HandleLoadLen(unaryOperator, sb);
                     break;
 
                 case OpcodeOperatorNames.ConvI4:
-                    HandleConvI4(unaryOperator, localVar, sb);
+                    HandleConvI4(unaryOperator, sb);
                     break;
 
                 case OpcodeOperatorNames.ConvR8:
-                    HandleConvR8(unaryOperator, localVar, sb);
+                    HandleConvR8(unaryOperator, sb);
                     break;
 
                 default:
@@ -122,142 +122,142 @@ namespace CodeRefractor.CompilerBackend.HandleOperations
             }
         }
 
-        private static void HandleClt(BinaryOperator objList, Assignment localVar, StringBuilder sb)
+        private static void HandleClt(BinaryOperator localVar, StringBuilder sb)
         {
             string right, left, local;
-            GetBinaryOperandNames(objList, localVar, out right, out left, out local);
+            GetBinaryOperandNames(localVar, out right, out left, out local);
 
             sb.AppendFormat("{0} = ({1} < {2})?1:0;", local, left, right);
         }
 
-        private static void HandleCgt(BinaryOperator objList, Assignment localVar, StringBuilder sb)
+        private static void HandleCgt(BinaryOperator localVar, StringBuilder sb)
         {
             string right, left, local;
-            GetBinaryOperandNames(objList, localVar, out right, out left, out local);
+            GetBinaryOperandNames(localVar, out right, out left, out local);
 
             sb.AppendFormat("{0} = ({1} > {2})?1:0;", local, left, right);
         }
 
-        private static void HandleCeq(BinaryOperator objList, Assignment localVar, StringBuilder sb)
+        private static void HandleCeq(BinaryOperator localVar, StringBuilder sb)
         {
             string right, left, local;
-            GetBinaryOperandNames(objList, localVar, out right, out left, out local);
+            GetBinaryOperandNames(localVar, out right, out left, out local);
 
             sb.AppendFormat("{0} = ({1} == {2})?1:0;", local, left, right);
         }
 
-        private static void HandleNeg(Assignment localVar, StringBuilder sb)
+        private static void HandleNeg(UnaryOperator localVar, StringBuilder sb)
         {
-            var operat = (UnaryOperator) localVar.Right;
+            var operat = localVar;
             sb.AppendFormat("{0} = -{1};", localVar.Left.Name, operat.Left.Name);
         }
 
-        private static void HandleConvR8(UnaryOperator unaryOperator, Assignment localVar, StringBuilder sb)
+        private static void HandleConvR8(UnaryOperator unaryOperator, StringBuilder sb)
         {
-            sb.AppendFormat("{0} = (double){1};", localVar.Left.Name, unaryOperator.Left.Name);
+            sb.AppendFormat("{0} = (double){1};", unaryOperator.AssignedTo.Name, unaryOperator.Left.Name);
         }
 
-        private static void HandleConvI4(UnaryOperator unaryOperator, Assignment localVar, StringBuilder sb)
+        private static void HandleConvI4(UnaryOperator unaryOperator, StringBuilder sb)
         {
-            sb.AppendFormat("{0} = (int){1};", localVar.Left.Name, unaryOperator.Left.Name);
+            sb.AppendFormat("{0} = (int){1};", unaryOperator.AssignedTo.Name, unaryOperator.Left.Name);
         }
 
-        private static void HandleLoadLen(UnaryOperator unaryOperator, Assignment assignment, StringBuilder sb)
+        private static void HandleLoadLen(UnaryOperator unaryOperator, StringBuilder sb)
         {
-            sb.AppendFormat("{0} = {1}->Length;", assignment.Left.Name, unaryOperator.Left.Name);
+            sb.AppendFormat("{0} = {1}->Length;", unaryOperator.AssignedTo.Name, unaryOperator.Left.Name);
         }
 
-        private static void HandleLoadArrayRef(BinaryOperator binaryOperator, Assignment localVar, StringBuilder sb)
+        private static void HandleLoadArrayRef(BinaryOperator binaryOperator, StringBuilder sb)
         {
             string right, left, local;
-            GetBinaryOperandNames(binaryOperator, localVar, out right, out left, out local);
+            GetBinaryOperandNames(binaryOperator, out right, out left, out local);
 
             sb.AppendFormat("{0}={1}[{2}];", local, right, left);
         }
 
-        private static void HandleNot(Assignment localVar, StringBuilder sb)
+        private static void HandleNot(UnaryOperator localVar, StringBuilder sb)
         {
-            string left, local;
-            GetUnaryOperandNames(localVar, out left, out local);
+            var local = localVar.AssignedTo.Name;
+            string left;
+            GetUnaryOperandNames(localVar, out left);
             sb.AppendFormat("{0} = !{1};", local, left);
         }
 
-        private static void HandleXor(BinaryOperator objList, Assignment localVar, StringBuilder sb)
+        private static void HandleXor(BinaryOperator localVar, StringBuilder sb)
         {
             string right, left, local;
-            GetBinaryOperandNames(objList, localVar, out right, out left, out local);
+            GetBinaryOperandNames(localVar, out right, out left, out local);
 
             sb.AppendFormat("{0} = {1}^{2};", local, left, right);
         }
 
-        private static void HandleOr(BinaryOperator objList, Assignment localVar, StringBuilder sb)
+        private static void HandleOr(BinaryOperator localVar, StringBuilder sb)
         {
             string right, left, local;
-            GetBinaryOperandNames(objList, localVar, out right, out left, out local);
+            GetBinaryOperandNames(localVar, out right, out left, out local);
 
             sb.AppendFormat("{0} = {1}|{2};", local, left, right);
         }
 
-        private static void HandleAnd(BinaryOperator objList, Assignment localVar, StringBuilder sb)
+        private static void HandleAnd(BinaryOperator localVar, StringBuilder sb)
         {
             string right, left, local;
-            GetBinaryOperandNames(objList, localVar, out right, out left, out local);
+            GetBinaryOperandNames(localVar, out right, out left, out local);
 
             sb.AppendFormat("{0} = {1}&{2};", local, left, right);
         }
 
-        private static void HandleMul(BinaryOperator objList, Assignment localVar, StringBuilder sb)
+        private static void HandleMul(BinaryOperator localVar, StringBuilder sb)
         {
             string right, left, local;
-            GetBinaryOperandNames(objList, localVar, out right, out left, out local);
+            GetBinaryOperandNames(localVar, out right, out left, out local);
 
             sb.AppendFormat("{0} = {1}*{2};", local, left, right);
         }
 
-        private static void HandleDiv(BinaryOperator objList, Assignment localVar, StringBuilder sb)
+        private static void HandleDiv(BinaryOperator localVar, StringBuilder sb)
         {
             string right, left, local;
-            GetBinaryOperandNames(objList, localVar, out right, out left, out local);
+            GetBinaryOperandNames(localVar, out right, out left, out local);
 
             sb.AppendFormat("{0} = {1}/{2};", local, left, right);
         }
 
-        private static void HandleRem(BinaryOperator objList, Assignment localVar, StringBuilder sb)
+        private static void HandleRem(BinaryOperator localVar, StringBuilder sb)
         {
             string right, left, local;
-            GetBinaryOperandNames(objList, localVar, out right, out left, out local);
+            GetBinaryOperandNames(localVar, out right, out left, out local);
 
             sb.AppendFormat("{0} = {1}%{2};", local, left, right);
         }
 
-        private static void GetBinaryOperandNames(BinaryOperator objList, Assignment localVar, out string right,
+        private static void GetBinaryOperandNames(BinaryOperator localVar, out string right,
                                                   out string left, out string local)
         {
-            local = localVar.Left.Name;
-            var leftVar = objList.Left as LocalVariable;
-            left = leftVar == null ? objList.Left.ToString() : leftVar.Name;
-            var rightVar = objList.Right as LocalVariable;
-            right = rightVar == null ? objList.Right.ToString() : rightVar.Name;
+            local = localVar.AssignedTo.Name;
+            var leftVar = localVar.Left as LocalVariable;
+            left = leftVar == null ? localVar.Left.ToString() : leftVar.Name;
+            var rightVar = localVar.Right as LocalVariable;
+            right = rightVar == null ? localVar.Right.ToString() : rightVar.Name;
         }
 
-        private static void GetUnaryOperandNames(Assignment localVar, out string left, out string local)
+        private static void GetUnaryOperandNames(UnaryOperator localVar, out string left)
         {
             left = localVar.Left.Name;
-            local = localVar.Right.Name;
         }
 
-        private static void HandleSub(BinaryOperator objList, Assignment localVar, StringBuilder sb)
+        private static void HandleSub(BinaryOperator localVar, StringBuilder sb)
         {
             string right, left, local;
-            GetBinaryOperandNames(objList, localVar, out right, out left, out local);
+            GetBinaryOperandNames(localVar, out right, out left, out local);
 
             sb.AppendFormat("{0} = {1}-{2};", local, left, right);
         }
 
-        private static void HandleAdd(BinaryOperator objList, Assignment localVar, StringBuilder sb)
+        private static void HandleAdd(BinaryOperator localVar, StringBuilder sb)
         {
             string right, left, local;
-            GetBinaryOperandNames(objList, localVar, out right, out left, out local);
+            GetBinaryOperandNames(localVar, out right, out left, out local);
 
             sb.AppendFormat("{0} = {1}+{2};", local, left, right);
         }

@@ -13,20 +13,29 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
 {
     public class OperatorConstantFolding : ResultingOptimizationPass
     {
+        private MetaMidRepresentation _intermediateCode;
+        private OperatorBase _baseOperator;
+        private int _pos;
+
         public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
         {
+            _intermediateCode = intermediateCode;
+            var pos = -1;
             foreach (var destOperation in intermediateCode.LocalOperations)
             {
+                pos++;
+                _pos = pos;
                 if (destOperation.Kind != LocalOperation.Kinds.BinaryOperator
                     && destOperation.Kind != LocalOperation.Kinds.UnaryOperator)
                     continue;
 
-                var destAssignment = (Assignment) destOperation.Value;
-                var baseOperator = (RuntimeBase.MiddleEnd.SimpleOperations.Operators.Operator) destAssignment.Right;
+                //var pos = (Assignment) destOperation.Value;
+                var baseOperator = (OperatorBase)destOperation.Value;
+                _baseOperator = baseOperator;
                 ConstValue constLeft = null;
                 ConstValue constRight = null;
 
-                var rightBinaryAssignment = destAssignment.Right as BinaryOperator;
+                var rightBinaryAssignment = baseOperator as BinaryOperator;
                 if (rightBinaryAssignment != null)
                 {
                     constLeft = rightBinaryAssignment.Left as ConstValue;
@@ -34,7 +43,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                     if (constLeft == null || constRight == null)
                         continue;
                 }
-                var unaryAssignment = destAssignment.Right as UnaryOperator;
+                var unaryAssignment = baseOperator as UnaryOperator;
                 if (unaryAssignment != null)
                 {
                     constLeft = unaryAssignment.Left as ConstValue;
@@ -44,90 +53,92 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                 switch (baseOperator.Name)
                 {
                     case OpcodeOperatorNames.Add:
-                        HandleAdd(destOperation, constLeft, constRight, destAssignment);
+                        HandleAdd(constLeft, constRight);
                         break;
                     case OpcodeOperatorNames.Sub:
-                        HandleSub(destOperation, constLeft, constRight, destAssignment);
+                        HandleSub(constLeft, constRight);
                         break;
                     case OpcodeOperatorNames.Mul:
-                        HandleMul(destOperation, constLeft, constRight, destAssignment);
+                        HandleMul(constLeft, constRight);
                         break;
                     case OpcodeOperatorNames.Div:
-                        HandleDiv(destOperation, constLeft, constRight, destAssignment);
+                        HandleDiv(constLeft, constRight);
                         break;
                     case OpcodeOperatorNames.Rem:
-                        HandleRem(destOperation, constLeft, constRight, destAssignment);
+                        HandleRem(constLeft, constRight);
                         break;
                     case OpcodeOperatorNames.Cgt:
-                        HandleCgt(destOperation, constLeft, constRight, destAssignment);
+                        HandleCgt(constLeft, constRight);
                         break;
 
                     case OpcodeOperatorNames.Clt:
-                        HandleClt(destOperation, constLeft, constRight, destAssignment);
+                        HandleClt(constLeft, constRight);
                         break;
 
                     case OpcodeOperatorNames.Ceq:
-                        HandleCeq(destOperation, constLeft, constRight, destAssignment);
+                        HandleCeq(constLeft, constRight);
                         break;
                 }
             }
         }
 
-        private void HandleCeq(LocalOperation destOperation, ConstValue constLeft, ConstValue constRight,
-                               Assignment destAssignment)
+        private void HandleCeq(ConstValue constLeft, ConstValue constRight)
         {
             var result = ComputeCeq(constLeft, constRight);
-            FoldConstant(destOperation, destAssignment, result);
+            FoldConstant(result);
         }
 
-        private void HandleClt(LocalOperation destOperation, ConstValue constLeft, ConstValue constRight,
-                               Assignment destAssignment)
+        private void HandleClt(ConstValue constLeft, ConstValue constRight)
         {
             var result = ComputeClt(constLeft, constRight);
-            FoldConstant(destOperation, destAssignment, result);
+            FoldConstant(result);
         }
 
-        private void HandleCgt(LocalOperation destOperation, ConstValue constLeft, ConstValue constRight,
-                               Assignment destAssignment)
+        private void HandleCgt(ConstValue constLeft, ConstValue constRight)
         {
             var result = ComputeCgt(constLeft, constRight);
-            FoldConstant(destOperation, destAssignment, result);
+            FoldConstant(result);
         }
 
 
-        private void HandleAdd(LocalOperation destOperation, ConstValue constLeft, ConstValue constRight,
-                               Assignment destAssignment)
+        private void HandleAdd(ConstValue constLeft, ConstValue constRight)
         {
             var result = ComputeAdd(constLeft, constRight);
-            FoldConstant(destOperation, destAssignment, result);
+            FoldConstant(result);
         }
 
-        private void HandleSub(LocalOperation destOperation, ConstValue constLeft, ConstValue constRight,
-                               Assignment destAssignment)
+        private void HandleSub(ConstValue constLeft, ConstValue constRight)
         {
             var result = ComputeSub(constLeft, constRight);
-            FoldConstant(destOperation, destAssignment, result);
+            FoldConstant(result);
         }
 
 
-        private void HandleMul(LocalOperation destOperation, ConstValue constLeft, ConstValue constRight,
-                               Assignment destAssignment)
+        private void HandleMul(ConstValue constLeft, ConstValue constRight)
         {
             var result = ComputeMul(constLeft, constRight);
-            FoldConstant(destOperation, destAssignment, result);
+            FoldConstant(result);
         }
 
-        private void HandleRem(LocalOperation destOperation, ConstValue constLeft, ConstValue constRight,
-                               Assignment destAssignment)
+        private void HandleRem(ConstValue constLeft, ConstValue constRight)
         {
             var result = ComputeRem(constLeft, constRight);
-            FoldConstant(destOperation, destAssignment, result);
+            FoldConstant(result);
         }
 
-        private void FoldConstant(LocalOperation destOperation, Assignment destAssignment, object result)
+        private void FoldConstant(object result)
         {
-            destOperation.Kind = LocalOperation.Kinds.Assignment;
-            destAssignment.Right = new ConstValue(result);
+            var resultAssignment = new Assignment
+                                       {
+                                                   Left = _baseOperator.AssignedTo,
+                                                   Right = new ConstValue(result)
+                                               };
+            _intermediateCode.LocalOperations[_pos] = 
+                new LocalOperation
+                    {
+                        Kind = LocalOperation.Kinds.Assignment,
+                        Value = resultAssignment
+                };
             Result = true;
         }
 
@@ -171,11 +182,10 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
             return (int) constLeft.Value%(int) constRight.Value;
         }
 
-        private void HandleDiv(LocalOperation destOperation, ConstValue constLeft, ConstValue constRight,
-                               Assignment destAssignment)
+        private void HandleDiv(ConstValue constLeft, ConstValue constRight)
         {
             var result = ComputeDiv(constLeft, constRight);
-            FoldConstant(destOperation, destAssignment, result);
+            FoldConstant(result);
         }
     }
 }

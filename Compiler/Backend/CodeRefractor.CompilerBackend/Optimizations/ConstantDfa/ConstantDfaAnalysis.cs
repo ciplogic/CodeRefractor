@@ -43,8 +43,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantDfa
                         HandleAssignment(i, assignment);
                         break;
                     case LocalOperation.Kinds.BinaryOperator:
-                        assignment = operation.GetAssignment();
-                        HandleOperator(i, assignment);
+                        HandleOperator(i, (OperatorBase) operation.Value);
                         break;
                     case LocalOperation.Kinds.BranchOperator:
                         var branchOperator = (BranchOperator) operation.Value;
@@ -82,10 +81,10 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantDfa
             }
         }
 
-        private void HandleOperator(int i, Assignment assignment)
+        private void HandleOperator(int i, OperatorBase assignment)
         {
-            var binary = assignment.Right as BinaryOperator;
-            var unary = assignment.Right as UnaryOperator;
+            var binary = assignment as BinaryOperator;
+            var unary = assignment as UnaryOperator;
             if (unary != null)
             {
                 var analysis = _pointsOfAnalysis[i];

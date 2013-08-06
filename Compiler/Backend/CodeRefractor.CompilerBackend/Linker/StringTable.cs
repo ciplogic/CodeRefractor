@@ -35,7 +35,6 @@ namespace CodeRefractor.CompilerBackend.Linker
         public string BuildStringTable()
         {
             var sb = new StringBuilder();
-            var jumpSb = new StringBuilder();
             sb.AppendLine("void buildStringTable() {");
 
             var stringDataBuilder = new List<string>();
@@ -62,7 +61,7 @@ namespace CodeRefractor.CompilerBackend.Linker
             return sb.ToString();
         }
 
-        private void AddTextToStringTable(List<string> stringDataBuilder, short[] itemTextData, string strItem)
+        private static void AddTextToStringTable(List<string> stringDataBuilder, short[] itemTextData, string strItem)
         {
             var itemsText = String.Join(", ", itemTextData);
             var commentedString = String.Format("/* {0} */", strItem.ToEscapedString());

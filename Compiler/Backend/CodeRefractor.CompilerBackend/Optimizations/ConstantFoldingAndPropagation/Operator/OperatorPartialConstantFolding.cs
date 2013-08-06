@@ -1,5 +1,6 @@
 #region Usings
 
+using System.Collections.Generic;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
@@ -16,19 +17,25 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
     /// </summary>
     public class OperatorPartialConstantFolding : ResultingOptimizationPass
     {
+        private List<LocalOperation> _localOperations;
+        private int _pos;
+
         public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
         {
-            foreach (var destOperation in intermediateCode.LocalOperations)
+            _localOperations = intermediateCode.LocalOperations;
+            _pos = 0;
+            foreach (var destOperation in _localOperations)
             {
+                _pos++;
                 if (destOperation.Kind != LocalOperation.Kinds.BinaryOperator)
                     continue;
 
-                var destAssignment = (Assignment) destOperation.Value;
-                var baseOperator = (RuntimeBase.MiddleEnd.SimpleOperations.Operators.Operator) destAssignment.Right;
+                var destAssignment = (OperatorBase)destOperation.Value;
+                var baseOperator = destAssignment;
                 ConstValue constLeft = null;
                 ConstValue constRight = null;
 
-                var rightBinaryAssignment = destAssignment.Right as BinaryOperator;
+                var rightBinaryAssignment = destAssignment as BinaryOperator;
                 if (rightBinaryAssignment != null)
                 {
                     constLeft = rightBinaryAssignment.Left as ConstValue;
@@ -39,81 +46,81 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                 switch (baseOperator.Name)
                 {
                     case OpcodeOperatorNames.Mul:
-                        HandleMul(constLeft, constRight, destAssignment, destOperation);
+                        HandleMul(constLeft, constRight, destOperation);
                         break;
                     case OpcodeOperatorNames.Div:
-                        HandleDiv(constLeft, constRight, destAssignment, destOperation);
+                        HandleDiv(constLeft, constRight, destOperation);
                         break;
                 }
             }
         }
 
+        void FoldAssign(IdentifierValue constResult)
+        {
+            _localOperations[_pos] = new LocalOperation()
+            {
+                Kind = LocalOperation.Kinds.Assignment,
+                Value = constResult
+            };
+        }
 
-        private void HandleMul(ConstValue constLeft, ConstValue constRight, Assignment destAssignment,
+        private void HandleMul(ConstValue constLeft, ConstValue constRight,
                                LocalOperation destOperation)
         {
-            var binaryOperator = (BinaryOperator) destAssignment.Right;
+            var binaryOperator = (BinaryOperator)destOperation.Value;
 
-            if (constRight != null && (int) constRight.Value == 1)
+            if (constRight != null && (int)constRight.Value == 1)
             {
-                destAssignment.Right = binaryOperator.Left;
-                destOperation.Kind = LocalOperation.Kinds.Assignment;
+                FoldAssign(binaryOperator.Left);
                 Result = true;
                 return;
             }
             var constValue = constLeft ?? constRight;
-            if (constValue != null && constValue.Value is int && (int) constValue.Value == 0)
+            if (constValue != null && constValue.Value is int && (int)constValue.Value == 0)
             {
-                destAssignment.Right = constValue;
+                FoldAssign(constValue);
                 destOperation.Kind = LocalOperation.Kinds.Assignment;
                 Result = true;
             }
-            if (constLeft != null && constLeft.Value is double && (double) constValue.Value == 0.0)
+            if (constLeft != null && constLeft.Value is double && (double)constValue.Value == 0.0)
             {
-                destAssignment.Right = constValue;
-                destOperation.Kind = LocalOperation.Kinds.Assignment;
+                FoldAssign(constValue);
                 Result = true;
                 return;
             }
-            if (constLeft != null && constValue.Value is float && (float) constValue.Value == 0.0)
+            if (constLeft != null && constValue.Value is float && (float)constValue.Value == 0.0)
             {
-                destAssignment.Right = constValue;
-                destOperation.Kind = LocalOperation.Kinds.Assignment;
+                FoldAssign(constValue);
                 Result = true;
                 return;
             }
         }
 
-        private void HandleDiv(ConstValue constLeft, ConstValue constRight, Assignment destAssignment,
+        private void HandleDiv(ConstValue constLeft, ConstValue constRight,
                                LocalOperation destOperation)
         {
-            var binaryOperator = (BinaryOperator) destAssignment.Right;
+            var binaryOperator = (BinaryOperator)destOperation.Value;
 
-            if (constRight != null && (int) constRight.Value == 1)
+            if (constRight != null && (int)constRight.Value == 1)
             {
-                destAssignment.Right = binaryOperator.Left;
-                destOperation.Kind = LocalOperation.Kinds.Assignment;
                 Result = true;
                 return;
             }
-            if (constLeft != null && constLeft.Value is int && (int) constLeft.Value == 0)
+            if (constLeft != null && constLeft.Value is int && (int)constLeft.Value == 0)
             {
-                destAssignment.Right = binaryOperator.Left;
-                destOperation.Kind = LocalOperation.Kinds.Assignment;
+                FoldAssign(binaryOperator.Left);
                 Result = true;
                 return;
             }
-            if (constLeft != null && constLeft.Value is double && (double) constLeft.Value == 0.0)
+            if (constLeft != null && constLeft.Value is double && (double)constLeft.Value == 0.0)
             {
-                destAssignment.Right = binaryOperator.Left;
-                destOperation.Kind = LocalOperation.Kinds.Assignment;
+                FoldAssign(binaryOperator.Left);
                 Result = true;
                 return;
             }
-            if (constLeft != null && constLeft.Value is float && (float) constLeft.Value == 0.0)
+            if (constLeft != null && constLeft.Value is float && (float)constLeft.Value == 0.0)
             {
-                destAssignment.Right = binaryOperator.Left;
-                destOperation.Kind = LocalOperation.Kinds.Assignment;
+                FoldAssign(binaryOperator.Left);
                 Result = true;
                 return;
             }

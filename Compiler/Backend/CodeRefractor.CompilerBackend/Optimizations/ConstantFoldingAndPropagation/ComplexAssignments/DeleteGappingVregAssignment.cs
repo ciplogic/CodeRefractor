@@ -67,7 +67,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                     HandleGetField(assignment.Right, (Assignment) destOperation.Value);
                     break;
                 case LocalOperation.Kinds.BinaryOperator:
-                    HandleOperator(assignment.Right, (Assignment) destOperation.Value);
+                    HandleOperator(assignment.Right, (OperatorBase) destOperation.Value);
                     break;
                 case LocalOperation.Kinds.BranchOperator:
                     HandleBranchOperator(assignment.Right, (BranchOperator) destOperation.Value);
@@ -135,10 +135,10 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                 value.CompareValue = right;
         }
 
-        private void HandleOperator(IdentifierValue right, Assignment value)
+        private void HandleOperator(IdentifierValue right, OperatorBase value)
         {
-            var binaryOperator = value.Right as BinaryOperator;
-            var unaryOperator = value.Right as UnaryOperator;
+            var binaryOperator = value as BinaryOperator;
+            var unaryOperator = value as UnaryOperator;
             if (unaryOperator != null)
             {
                 if (VarMatchVreg(unaryOperator.Left))

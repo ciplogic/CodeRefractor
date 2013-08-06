@@ -2,7 +2,7 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
 namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators
 {
-    public class BranchOperator : Operator
+    public class BranchOperator : OperatorBase
     {
         public BranchOperator(string name)
             : base(name)

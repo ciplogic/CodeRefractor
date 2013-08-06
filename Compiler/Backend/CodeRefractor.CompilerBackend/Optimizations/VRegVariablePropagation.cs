@@ -33,10 +33,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations
                       destOperation.Kind == LocalOperation.Kinds.UnaryOperator) ||
                     destOperation.Kind == LocalOperation.Kinds.Assignment)
                     continue;
-                var destLocalVariable = (Assignment) destOperation.Value;
                 if (destOperation.Kind == LocalOperation.Kinds.BinaryOperator)
                 {
-                    var binaryOperator = destLocalVariable.Right as BinaryOperator;
+                    var binaryOperator = destOperation.Value as BinaryOperator;
                     if (binaryOperator != null)
                     {
                         if (TryFoldBinary(binaryOperator, srcVariableDefinition.Left.Id, srcValue))
@@ -50,7 +49,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations
                 }
                 if (destOperation.Kind == LocalOperation.Kinds.UnaryOperator)
                 {
-                    var unaryOperator = destLocalVariable.Right as UnaryOperator;
+                    var unaryOperator = destOperation.Value as UnaryOperator;
                     if (unaryOperator != null)
                     {
                         if (TryFoldUnary(unaryOperator, srcVariableDefinition.Left.Id, srcVariable))

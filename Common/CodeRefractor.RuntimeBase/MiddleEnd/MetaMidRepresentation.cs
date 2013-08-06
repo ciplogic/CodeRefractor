@@ -225,36 +225,30 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         {
             var secondVar = evaluator.Stack.Pop();
             var firstVar = evaluator.Stack.Pop();
-            var addValue = new BinaryOperator(operatorName)
-                               {
-                                   Left = firstVar,
-                                   Right = secondVar
-                               };
+            
             var result = SetNewVReg(evaluator);
-            result.FixedType = addValue.ComputedType();
-            var assign = new Assignment
+            var assign = new BinaryOperator(operatorName)
                              {
-                                 Left = result,
-                                 Right = addValue
+                                 AssignedTo = result,
+                                 Left = firstVar,
+                                 Right = secondVar
                              };
+            result.FixedType = assign.ComputedType();
             AddOperation(LocalOperation.Kinds.BinaryOperator, assign);
         }
 
         private void SetUnaryOperator(string operatorName, EvaluatorStack evaluator)
         {
             var firstVar = evaluator.Stack.Pop();
-            var addValue = new UnaryOperator(operatorName)
-                               {
-                                   Left = firstVar,
-                                   FixedType = firstVar.ComputedType()
-                               };
             var result = SetNewVReg(evaluator);
-            var assign = new Assignment
-                             {
-                                 Left = result,
-                                 Right = addValue
-                             };
-            assign.Left.FixedType = addValue.ComputedType();
+            
+
+            var assign = new UnaryOperator(operatorName)
+            {
+                AssignedTo = result,
+                Left = firstVar,
+            };
+            assign.AssignedTo.FixedType = firstVar.ComputedType();
             AddOperation(LocalOperation.Kinds.UnaryOperator, assign);
         }
 

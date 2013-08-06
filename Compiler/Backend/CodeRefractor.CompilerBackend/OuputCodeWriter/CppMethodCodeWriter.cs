@@ -12,6 +12,7 @@ using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.ConstTable;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
+using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
 using Mono.Reflection;
 
 #endregion
@@ -74,7 +75,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                         CppHandleOperators.HandleOperator(operation.Value, bodySb);
                         break;
                     case LocalOperation.Kinds.UnaryOperator:
-                        CppHandleOperators.HandleUnaryOperator(operation.Value, bodySb);
+                        CppHandleOperators.HandleUnaryOperator((UnaryOperator)operation.Value, bodySb);
                         break;
                     case LocalOperation.Kinds.AlwaysBranch:
                         HandleAlwaysBranchOperator(operation, bodySb);
