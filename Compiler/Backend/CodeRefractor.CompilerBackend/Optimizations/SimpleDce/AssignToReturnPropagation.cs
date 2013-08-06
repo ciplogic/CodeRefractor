@@ -30,7 +30,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
                 return;
 
             var firstAssign = assignBeforeReturn.GetAssignment();
-            if (!localVariableSecondAssign.Equals(firstAssign.Left))
+            if (!localVariableSecondAssign.Equals(firstAssign.AssignedTo))
                 return;
             if (returnInstruction.Value == firstAssign.Right)
                 return;

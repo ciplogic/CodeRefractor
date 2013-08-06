@@ -80,7 +80,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
         private bool HandleAssignWrites(LocalOperation instruction)
         {
             var assign = (Assignment) instruction.Value;
-            var left = assign.Left;
+            var left = assign.AssignedTo;
             var removeRead = RemoveRead(left);
             return !removeRead;
         }

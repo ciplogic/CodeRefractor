@@ -175,10 +175,12 @@ namespace CodeRefractor.RuntimeBase
             var result = type.GetField(fieldName);
             if (result != null)
                 return result;
-            var fields = type.GetFields(BindingFlags.Instance |
-                                        BindingFlags.NonPublic |
-                                        BindingFlags.FlattenHierarchy |
-                                        BindingFlags.Public);
+            var bindingFlags = BindingFlags.NonPublic | BindingFlags.FlattenHierarchy | BindingFlags.Public;
+            if (!isStatic)
+                bindingFlags |= BindingFlags.Instance;
+            else
+                bindingFlags |= BindingFlags.Static;
+            var fields = type.GetFields(bindingFlags);
             result = fields.FirstOrDefault(field => field.Name == fieldName);
             return result;
         }

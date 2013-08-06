@@ -31,7 +31,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                     if (destOperation.Kind != LocalOperation.Kinds.BinaryOperator &&
                         destOperation.Kind != LocalOperation.Kinds.UnaryOperator) continue;
                     var destAssignment = (OperatorBase) destOperation.Value;
-                    if (SameVariable(destAssignment.AssignedTo, srcVariableDefinition.Left))
+                    if (SameVariable(destAssignment.AssignedTo, srcVariableDefinition.AssignedTo))
                         break;
 
                     var rightBinaryAssignment = destAssignment as BinaryOperator;
@@ -39,13 +39,13 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
 
                     if (unaryAssignment != null) continue;
                     if (rightBinaryAssignment == null) continue;
-                    if (SameVariable(rightBinaryAssignment.Left as LocalVariable, srcVariableDefinition.Left))
+                    if (SameVariable(rightBinaryAssignment.Left as LocalVariable, srcVariableDefinition.AssignedTo))
                     {
                         rightBinaryAssignment.Left = constValue;
                         Result = true;
                         continue;
                     }
-                    if (SameVariable(rightBinaryAssignment.Right as LocalVariable, srcVariableDefinition.Left))
+                    if (SameVariable(rightBinaryAssignment.Right as LocalVariable, srcVariableDefinition.AssignedTo))
                     {
                         rightBinaryAssignment.Right = constValue;
                         Result = true;

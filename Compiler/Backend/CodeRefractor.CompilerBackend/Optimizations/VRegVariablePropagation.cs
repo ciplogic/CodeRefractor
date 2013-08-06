@@ -38,7 +38,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations
                     var binaryOperator = destOperation.Value as BinaryOperator;
                     if (binaryOperator != null)
                     {
-                        if (TryFoldBinary(binaryOperator, srcVariableDefinition.Left.Id, srcValue))
+                        if (TryFoldBinary(binaryOperator, srcVariableDefinition.AssignedTo.Id, srcValue))
                         {
                             intermediateCode.LocalOperations.RemoveAt(i);
                             Result = true;
@@ -52,7 +52,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations
                     var unaryOperator = destOperation.Value as UnaryOperator;
                     if (unaryOperator != null)
                     {
-                        if (TryFoldUnary(unaryOperator, srcVariableDefinition.Left.Id, srcVariable))
+                        if (TryFoldUnary(unaryOperator, srcVariableDefinition.AssignedTo.Id, srcVariable))
                         {
                             intermediateCode.LocalOperations.RemoveAt(i);
                             Result = true;
@@ -68,7 +68,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations
                     var vregVar = destVariable.Right as LocalVariable;
                     if (vregVar == null)
                         continue;
-                    if (vregVar.Kind != VariableKind.Vreg || vregVar.Id != srcVariableDefinition.Left.Id)
+                    if (vregVar.Kind != VariableKind.Vreg || vregVar.Id != srcVariableDefinition.AssignedTo.Id)
                         continue;
                     destVariable.Right = assignValue;
                     intermediateCode.LocalOperations.RemoveAt(i);

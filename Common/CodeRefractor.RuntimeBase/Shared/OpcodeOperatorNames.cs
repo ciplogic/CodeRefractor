@@ -5,6 +5,8 @@ namespace CodeRefractor.RuntimeBase.Shared
         public const string Neg = "neg";
         public const string LoadArrayRef = "ldelem.ref";
         public const string ConvI4 = "conv.i4";
+        public const string ConvI8 = "conv.i8";
+        public const string ConvR4 = "conv.r4";
         public const string ConvR8 = "conv.r8";
 
         public const string LoadLen = "ldlen";

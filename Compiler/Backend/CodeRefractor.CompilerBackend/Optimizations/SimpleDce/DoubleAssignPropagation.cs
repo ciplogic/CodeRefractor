@@ -31,7 +31,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
                 if (localVariableSecondAssign == null)
                     continue;
                 var firstAssign = firstInstruction.GetAssignment();
-                if (!localVariableSecondAssign.Equals(firstAssign.Left))
+                if (!localVariableSecondAssign.Equals(firstAssign.AssignedTo))
                     continue;
                 if (secondAssign.Right == firstAssign.Right)
                     continue;

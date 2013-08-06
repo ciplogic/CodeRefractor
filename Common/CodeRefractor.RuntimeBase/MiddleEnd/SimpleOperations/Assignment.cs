@@ -9,12 +9,12 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 {
     public class Assignment
     {
-        public LocalVariable Left;
+        public LocalVariable AssignedTo;
         public IdentifierValue Right;
 
         public override string ToString()
         {
-            return String.Format("{0} = {1}", Left.Name, Right);
+            return String.Format("{0} = {1}", AssignedTo.Name, Right);
         }
     }
 }

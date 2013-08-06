@@ -138,7 +138,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantDfa
                         var constant = assignment.Right as ConstValue;
                         if (constant != null)
                         {
-                            analysis.States[assignment.Left] = new VariableState
+                            analysis.States[assignment.AssignedTo] = new VariableState
                                                                    {
                                                                        Constant = constant,
                                                                        State = VariableState.ConstantState.Constant
@@ -146,7 +146,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantDfa
                         }
                         else
                         {
-                            analysis.States[assignment.Left] = new VariableState
+                            analysis.States[assignment.AssignedTo] = new VariableState
                                                                    {
                                                                        State = VariableState.ConstantState.NotConstant
                                                                    };
@@ -156,7 +156,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantDfa
 
                     case LocalOperation.Kinds.BinaryOperator:
                         assignment = (Assignment) operation.Value;
-                        analysis.States[assignment.Left] = new VariableState
+                        analysis.States[assignment.AssignedTo] = new VariableState
                                                                {
                                                                    State = VariableState.ConstantState.NotConstant
                                                                };

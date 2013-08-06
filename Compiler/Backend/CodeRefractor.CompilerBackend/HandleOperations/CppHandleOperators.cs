@@ -80,6 +80,10 @@ namespace CodeRefractor.CompilerBackend.HandleOperations
                     HandleConvI4(unaryOperator, sb);
                     break;
 
+                case OpcodeOperatorNames.ConvI8:
+                    HandleConvI8(unaryOperator, sb);
+                    break;
+
                 case OpcodeOperatorNames.ConvR8:
                     HandleConvR8(unaryOperator, sb);
                     break;
@@ -111,6 +115,13 @@ namespace CodeRefractor.CompilerBackend.HandleOperations
 
                 case OpcodeOperatorNames.ConvI4:
                     HandleConvI4(unaryOperator, sb);
+                    break;
+                case OpcodeOperatorNames.ConvI8:
+                    HandleConvI8(unaryOperator, sb);
+                    break;
+
+                case OpcodeOperatorNames.ConvR4:
+                    HandleConvR4(unaryOperator, sb);
                     break;
 
                 case OpcodeOperatorNames.ConvR8:
@@ -151,6 +162,10 @@ namespace CodeRefractor.CompilerBackend.HandleOperations
             var operat = localVar;
             sb.AppendFormat("{0} = -{1};", localVar.Left.Name, operat.Left.Name);
         }
+        private static void HandleConvR4(UnaryOperator unaryOperator, StringBuilder sb)
+        {
+            sb.AppendFormat("{0} = (float){1};", unaryOperator.AssignedTo.Name, unaryOperator.Left.Name);
+        }
 
         private static void HandleConvR8(UnaryOperator unaryOperator, StringBuilder sb)
         {
@@ -160,6 +175,11 @@ namespace CodeRefractor.CompilerBackend.HandleOperations
         private static void HandleConvI4(UnaryOperator unaryOperator, StringBuilder sb)
         {
             sb.AppendFormat("{0} = (int){1};", unaryOperator.AssignedTo.Name, unaryOperator.Left.Name);
+        }
+
+        private static void HandleConvI8(UnaryOperator unaryOperator, StringBuilder sb)
+        {
+            sb.AppendFormat("{0} = (int64){1};", unaryOperator.AssignedTo.Name, unaryOperator.Left.Name);
         }
 
         private static void HandleLoadLen(UnaryOperator unaryOperator, StringBuilder sb)

@@ -30,8 +30,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                 if (srcOperation.Kind != LocalOperation.Kinds.Assignment)
                     continue;
                 var srcAssign = (Assignment) srcOperation.Value;
-                var leftLocal = srcAssign.Left;
-                if (srcAssign.Left.Kind != VariableKind.Vreg) continue;
+                var leftLocal = srcAssign.AssignedTo;
+                if (srcAssign.AssignedTo.Kind != VariableKind.Vreg) continue;
                 var rightVreg = srcAssign.Right as LocalVariable;
                 if (rightVreg == null) continue;
 
@@ -97,15 +97,15 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                 return;
             }
 
-            if (right is LocalVariable && VarMatchVreg(assignment.Left))
+            if (right is LocalVariable && VarMatchVreg(assignment.AssignedTo))
             {
-                assignment.Left = right as LocalVariable;
+                assignment.AssignedTo = right as LocalVariable;
             }
         }
 
         private void HandleSetArrayItem(IdentifierValue right, Assignment assignment)
         {
-            var arrayVariable = (ArrayVariable) assignment.Left;
+            var arrayVariable = (ArrayVariable) assignment.AssignedTo;
             if (VarMatchVreg(arrayVariable.Parent))
             {
                 arrayVariable.Parent = right;
@@ -158,7 +158,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
 
         private void HandleSetField(IdentifierValue right, Assignment assignment)
         {
-            var fieldSetter = (FieldSetter) assignment.Left;
+            var fieldSetter = (FieldSetter) assignment.AssignedTo;
             if (VarMatchVreg(fieldSetter.Instance))
                 fieldSetter.Instance = right;
         }

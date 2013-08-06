@@ -29,7 +29,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                         break;
                     if (destOperation.Kind != LocalOperation.Kinds.BranchOperator) continue;
                     var destAssignment = (BranchOperator) destOperation.Value;
-                    if (!SameVariable(destAssignment.CompareValue as LocalVariable, srcVariableDefinition.Left))
+                    if (!SameVariable(destAssignment.CompareValue as LocalVariable, srcVariableDefinition.AssignedTo))
                         break;
                     Result = true;
                     var isTrue = ((int) constValue.Value != 0) ^ (destAssignment.Name != OpcodeBranchNames.BrTrue);

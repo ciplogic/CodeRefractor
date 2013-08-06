@@ -33,7 +33,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                 if (srcOperation.Kind != LocalOperation.Kinds.Assignment)
                     continue;
                 var assignment = (Assignment) srcOperation.Value;
-                _leftVreg = assignment.Left;
+                _leftVreg = assignment.AssignedTo;
                 if (_leftVreg.Kind != VariableKind.Vreg) continue;
                 _currentId = _leftVreg.Id;
 

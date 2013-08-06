@@ -31,9 +31,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                         case LocalOperation.Kinds.Assignment:
                             {
                                 var destAssignment = (Assignment) destOperation.Value;
-                                if (SameVariable(destAssignment.Left, srcVariableDefinition.Left))
+                                if (SameVariable(destAssignment.AssignedTo, srcVariableDefinition.AssignedTo))
                                     break;
-                                if (!SameVariable(destAssignment.Right as LocalVariable, srcVariableDefinition.Left))
+                                if (!SameVariable(destAssignment.Right as LocalVariable, srcVariableDefinition.AssignedTo))
                                     continue;
                                 destAssignment.Right = constValue;
                                 Result = true;
@@ -45,7 +45,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                                 var arrayCreationInfo = (NewArrayObject) destAssignment.Right;
                                 if (
                                     !SameVariable(arrayCreationInfo.ArrayLength as LocalVariable,
-                                                  srcVariableDefinition.Left))
+                                                  srcVariableDefinition.AssignedTo))
                                     continue;
                                 arrayCreationInfo.ArrayLength = constValue;
                                 Result = true;
@@ -54,7 +54,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                         case LocalOperation.Kinds.SetField:
                             {
                                 var destAssignment = (Assignment) destOperation.Value;
-                                if (!SameVariable(destAssignment.Right as LocalVariable, srcVariableDefinition.Left))
+                                if (!SameVariable(destAssignment.Right as LocalVariable, srcVariableDefinition.AssignedTo))
                                     continue;
                                 destAssignment.Right = constValue;
                                 Result = true;

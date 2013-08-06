@@ -104,6 +104,16 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 MidRepresentation.ConvI4(evaluator);
                 return;
             }
+            if (opcodeStr == "conv.i8")
+            {
+                MidRepresentation.ConvI8(evaluator);
+                return;
+            }
+            if (opcodeStr == "conv.r4")
+            {
+                MidRepresentation.ConvR4(evaluator);
+                return;
+            }
             if (opcodeStr == "conv.r8")
             {
                 MidRepresentation.ConvR8(evaluator);
@@ -112,6 +122,11 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             if (opcodeStr == "dup")
             {
                 MidRepresentation.Dup(evaluator);
+                return;
+            }
+            if (opcodeStr == "pop")
+            {
+                MidRepresentation.Pop(evaluator);
                 return;
             }
 
@@ -196,6 +211,14 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             {
                 var pushedIntValue = opcodeStr.Remove(0, "stloc.".Length).ToInt();
                 MidRepresentation.CopyStackIntoLocalVariable(pushedIntValue, evaluator);
+                return true;
+            } 
+            
+            if (opcodeStr.StartsWith("starg."))
+            {
+                var parameter = (ParameterInfo) instruction.Operand;
+                var pushedIntValue = parameter.Position;
+                MidRepresentation.CopyStackIntoArgument(pushedIntValue, evaluator);
                 return true;
             }
 

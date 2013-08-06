@@ -42,7 +42,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
                                                        operation.Kind == LocalOperation.Kinds.SetArrayItem))
             {
                 var assignment = (Assignment) operation.Value;
-                var arrayItem = (ArrayVariable) assignment.Left;
+                var arrayItem = (ArrayVariable) assignment.AssignedTo;
                 RemoveLocalVarIfLocal(vregConstants, arrayItem.Index);
                 RemoveLocalVarIfLocal(vregConstants, arrayItem.Parent);
                 RemoveLocalVarIfLocal(vregConstants, assignment.Right);
@@ -72,7 +72,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
         {
             if (op.Kind != LocalOperation.Kinds.Assignment) return false;
             var assignment = (Assignment) op.Value;
-            var localVariable = assignment.Left;
+            var localVariable = assignment.AssignedTo;
             var isRemovableVRegAssignment = localVariable.Kind != VariableKind.Vreg && localVariable.Id == vregConstant;
             return isRemovableVRegAssignment;
         }
@@ -91,7 +91,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
             {
                 var operationData = (Assignment) operation.Value;
 
-                RemoveLocalVarIfLocal(vregConstants, operationData.Left);
+                RemoveLocalVarIfLocal(vregConstants, operationData.AssignedTo);
             }
         }
 

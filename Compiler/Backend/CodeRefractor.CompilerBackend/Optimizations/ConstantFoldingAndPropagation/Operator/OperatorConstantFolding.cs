@@ -130,7 +130,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
         {
             var resultAssignment = new Assignment
                                        {
-                                                   Left = _baseOperator.AssignedTo,
+                                                   AssignedTo = _baseOperator.AssignedTo,
                                                    Right = new ConstValue(result)
                                                };
             _intermediateCode.LocalOperations[_pos] = 

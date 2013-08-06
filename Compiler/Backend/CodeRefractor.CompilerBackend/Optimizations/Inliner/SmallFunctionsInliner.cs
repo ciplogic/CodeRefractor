@@ -173,7 +173,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Inliner
                 return true;
             var assign = new Assignment
                              {
-                                 Left = result,
+                                 AssignedTo = result,
                                  Right = (IdentifierValue) clone.Value
                              };
             localOperationsToInline.Add(new LocalOperation
@@ -190,8 +190,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Inliner
                                             Dictionary<int, int> mappedVregs,
                                             Dictionary<int, LocalVariable> mappedLocals)
         {
-            var leftVar = value.Left;
-            value.Left = UpdateVregId(mappedVregs, leftVar, mappedNames, mappedLocals);
+            var leftVar = value.AssignedTo;
+            value.AssignedTo = UpdateVregId(mappedVregs, leftVar, mappedNames, mappedLocals);
 
             var rightVar = value.Right as LocalVariable;
             if (rightVar == null)

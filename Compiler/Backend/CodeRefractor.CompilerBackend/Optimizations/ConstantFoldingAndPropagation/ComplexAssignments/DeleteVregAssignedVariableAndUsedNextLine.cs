@@ -31,7 +31,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                 if (srcOperation.Kind != LocalOperation.Kinds.Assignment)
                     continue;
                 var assignment = srcOperation.GetAssignment();
-                _leftVreg = assignment.Left;
+                _leftVreg = assignment.AssignedTo;
                 if (_leftVreg.Kind != VariableKind.Vreg) continue;
                 var rightItem = assignment.Right as LocalVariable;
                 if (rightItem == null)
@@ -89,9 +89,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                 return;
             }
 
-            if (right is LocalVariable && VarMatchVreg(assignment.Left))
+            if (right is LocalVariable && VarMatchVreg(assignment.AssignedTo))
             {
-                assignment.Left = right as LocalVariable;
+                assignment.AssignedTo = right as LocalVariable;
                 return;
             }
         }
@@ -99,7 +99,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
         private void HandleSetArrayItem(Assignment srcAssignment, Assignment assignment)
         {
             var right = srcAssignment.Right;
-            var arrayVariable = (ArrayVariable) assignment.Left;
+            var arrayVariable = (ArrayVariable) assignment.AssignedTo;
             if (VarMatchVreg(arrayVariable.Parent))
             {
                 arrayVariable.Parent = right;
@@ -126,7 +126,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
         private void HandleSetField(Assignment srcAssignment, Assignment assignment)
         {
             var right = srcAssignment.Right;
-            var fieldSetter = (FieldSetter) assignment.Left;
+            var fieldSetter = (FieldSetter) assignment.AssignedTo;
             if (VarMatchVreg(fieldSetter.Instance))
                 fieldSetter.Instance = right;
             if (VarMatchVreg(assignment.Right))

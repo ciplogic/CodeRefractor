@@ -50,7 +50,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
         private static void AddUsagesOfSetField(LocalOperation operation, List<LocalVariable> result)
         {
             var assignment = (Assignment) operation.Value;
-            var arrayVar = (FieldSetter) assignment.Left;
+            var arrayVar = (FieldSetter) assignment.AssignedTo;
             result.AddUsage(arrayVar.Instance);
             result.AddUsage(assignment.Right);
         }
@@ -58,7 +58,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
         private static void AddUsagesOfSetArrayItem(LocalOperation operation, List<LocalVariable> result)
         {
             var assignment = (Assignment) operation.Value;
-            var arrayVar = (ArrayVariable) assignment.Left;
+            var arrayVar = (ArrayVariable) assignment.AssignedTo;
             result.AddUsage(arrayVar.Parent);
             result.AddUsage(arrayVar.Index);
             result.AddUsage(assignment.Right);

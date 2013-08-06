@@ -46,7 +46,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                                         Kind = LocalOperation.Kinds.Assignment,
                                         Value = new Assignment
                                                     {
-                                                        Left = operationData.Result,
+                                                        AssignedTo = operationData.Result,
                                                         Right = new ConstValue(result)
                                                     }
                                     };

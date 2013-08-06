@@ -32,7 +32,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
             var result = programData.LocateType(fullName);
             if (result != null)
                 return result;
-            if (type.IsClass)
+            if ((type.IsClass || type.IsValueType) &&!type.IsSubclassOf(typeof(Enum)))
             {
                 result = new ClassTypeData();
             }

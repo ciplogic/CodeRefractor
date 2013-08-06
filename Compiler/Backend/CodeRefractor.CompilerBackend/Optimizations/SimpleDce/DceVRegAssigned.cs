@@ -54,7 +54,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
             foreach (var operation in setFields)
             {
                 var operationData = (Assignment) operation.Value;
-                var fieldSetter = (ArrayVariable) operationData.Left;
+                var fieldSetter = (ArrayVariable) operationData.AssignedTo;
                 RemoveCandidateVarIfVreg(vregConstants, operationData.Right as LocalVariable);
                 RemoveCandidateVarIfVreg(vregConstants, fieldSetter.Parent);
 
@@ -95,7 +95,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
             foreach (var operation in setFields)
             {
                 var operationData = (Assignment) operation.Value;
-                var fieldSetter = (FieldSetter) operationData.Left;
+                var fieldSetter = (FieldSetter) operationData.AssignedTo;
                 RemoveCandidateVarIfVreg(vregConstants, operationData.Right as LocalVariable);
                 RemoveCandidateVarIfVreg(vregConstants, fieldSetter.Instance);
             }
@@ -118,7 +118,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
         {
             if (op.Kind != LocalOperation.Kinds.Assignment) return true;
             var assignment = (Assignment) op.Value;
-            var localVariable = assignment.Left;
+            var localVariable = assignment.AssignedTo;
             var isRemovableVRegAssignment = localVariable.Kind == VariableKind.Vreg &&
                                             vregConstants.Contains(localVariable.Id);
             return !isRemovableVRegAssignment;

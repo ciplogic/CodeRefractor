@@ -24,7 +24,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                 if (srcOperation.Kind != LocalOperation.Kinds.Assignment)
                     continue;
                 var srcAssign = srcOperation.GetAssignment();
-                var leftLocal = srcAssign.Left;
+                var leftLocal = srcAssign.AssignedTo;
                 if (leftLocal.Kind == VariableKind.Vreg) continue;
                 var rightVreg = srcAssign.Right as LocalVariable;
                 if (rightVreg == null) continue;
@@ -34,8 +34,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                 var destAssignment = destOperation.Value as Assignment;
                 if (destAssignment == null)
                     continue;
-                if (destAssignment.Left.Kind != VariableKind.Vreg || rightVreg.Id != destAssignment.Left.Id) continue;
-                destAssignment.Left = leftLocal;
+                if (destAssignment.AssignedTo.Kind != VariableKind.Vreg || rightVreg.Id != destAssignment.AssignedTo.Id) continue;
+                destAssignment.AssignedTo = leftLocal;
                 DeletVreg();
             }
         }

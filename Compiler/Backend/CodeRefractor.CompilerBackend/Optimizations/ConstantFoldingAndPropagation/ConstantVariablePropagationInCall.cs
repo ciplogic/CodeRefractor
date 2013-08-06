@@ -30,7 +30,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                         break;
                     if (destOperation.Kind != LocalOperation.Kinds.Call) continue;
                     var callData = (MethodData) destOperation.Value;
-                    if (SameVariable(callData.Result, srcVariableDefinition.Left))
+                    if (SameVariable(callData.Result, srcVariableDefinition.AssignedTo))
                         break;
                     var pos = -1;
                     bool found;
@@ -40,7 +40,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                         foreach (var identifierValue in callData.Parameters)
                         {
                             pos++;
-                            if (!SameVariable(srcVariableDefinition.Left, identifierValue as LocalVariable)) continue;
+                            if (!SameVariable(srcVariableDefinition.AssignedTo, identifierValue as LocalVariable)) continue;
                             found = true;
                             break;
                         }
