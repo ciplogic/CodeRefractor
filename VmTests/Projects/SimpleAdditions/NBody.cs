@@ -52,7 +52,6 @@ namespace Game{
             /* openGL is not part of SDL, rather it runs in a window handled
                by SDL. here we set up some openGL state
             */
-            setOpenGL();
             //initialize game
             game=new GameClass();
             /* finP is the property get/setter for the boolean fin in the game
@@ -121,43 +120,6 @@ namespace Game{
         }
  
  
-        /* The initial openGL state is set in the following two functions. The resize
-           function handles setup of the projection properties. The setOpenGL calls resize,
-           then sets model view properties
-        */
-        private void setOpenGL(){
-            resize(w, h);
-            Gl.glMatrixMode(Gl.GL_MODELVIEW);
-            Gl.glLoadIdentity();
-            Gl.glEnable(Gl.GL_DOUBLEBUFFER);
-            Gl.glEnable(Gl.GL_DEPTH_TEST);
-            Gl.glShadeModel(Gl.GL_SMOOTH);
-            Gl.glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-            Gl.glClearDepth(1.0f);
-            Gl.glDepthFunc(Gl.GL_LEQUAL);
-            Gl.glHint(Gl.GL_PERSPECTIVE_CORRECTION_HINT, Gl.GL_NICEST);
-        }
- 
- 
-        //called from setOpenGL
-        private void resize(int width, int height){
-            if(height==0)height=1;//avoid divide by zero
-            /* For some reason my system is squashing the cube. To rectify
-               the situation I have altered the width/height ratio by
-               0.09. I think the problem is either that I am running
-               dual monitors with different resolutions, or Tao.SDL is
-               playing funny. The same nehe cube runs true when run
-               SDL on C++.
-            */
-            float ratio=(float)(width/height)+0.09f;
-            Gl.glViewport(0, 0, width, height);
-            Gl.glMatrixMode(Gl.GL_PROJECTION);
-            Gl.glLoadIdentity();
-            Glu.gluPerspective(55.0f, ratio, 0.1f, 50.0f);
-            Gl.glMatrixMode(Gl.GL_MODELVIEW);
-            Gl.glLoadIdentity();
-        }
- 
         /* tick is called once every loop. Here it paints the screen
            the glClearColor defined in the setOpenGL function then calls
            the game class. The game class decides what will be drawn and
@@ -165,13 +127,9 @@ namespace Game{
            Once the drawing is finished the buffers are swapped.
         */
         private void tick(long delay){
-            Gl.glClear(Gl.GL_COLOR_BUFFER_BIT | Gl.GL_DEPTH_BUFFER_BIT);
-            Gl.glLoadIdentity();
  
             game.tick(delay);
  
-            Gl.glFlush();
-            Sdl.SDL_GL_SwapBuffers();
         }
  
         [STAThread]
@@ -276,60 +234,7 @@ namespace Game
            path to openGL, and indeed, a freer and more helpful community of programmers
         */
         private void draw(){
-            Gl.glTranslatef(0.0f, 0.0f, -10.0f);
-            Gl.glRotatef(xrot+=0.03f, 1.0f, 0.0f, 0.0f);
-            Gl.glRotatef(yrot+=0.03f, 0.0f, 1.0f, 0.0f);
-            Gl.glBegin(Gl.GL_QUADS);
- 
-            // Front Face
-            Gl.glNormal3f(0.0f, 0.0f, 1.0f);
-            Gl.glColor3f(0.2f, 0.5f, 0.2f);
-            Gl.glVertex3f(-1.0f, -1.0f, 1.0f);
-            Gl.glVertex3f( 1.0f, -1.0f, 1.0f);
-            Gl.glVertex3f( 1.0f, 1.0f, 1.0f);
-            Gl.glVertex3f(-1.0f, 1.0f, 1.0f);
- 
-            // Back Face
-            Gl.glNormal3f(0.0f, 0.0f, -1.0f);
-            Gl.glColor3f(0.5f, 0.2f, 0.5f);
-            Gl.glVertex3f(-1.0f, -1.0f, -1.0f);
-            Gl.glVertex3f(-1.0f, 1.0f, -1.0f);
-            Gl.glVertex3f( 1.0f, 1.0f, -1.0f);
-            Gl.glVertex3f( 1.0f, -1.0f, -1.0f);
- 
-            // Top Face
-            Gl.glNormal3f(0.0f, 1.0f, 0.0f);
-            Gl.glColor3f(0.7f, 0.5f, 0.2f);
-            Gl.glVertex3f(-1.0f, 1.0f, -1.0f);
-            Gl.glVertex3f(-1.0f, 1.0f, 1.0f);
-            Gl.glVertex3f( 1.0f, 1.0f, 1.0f);
-            Gl.glVertex3f( 1.0f, 1.0f, -1.0f);
- 
-            // Bottom Face
-            Gl.glNormal3f(0.0f, -1.0f, 0.0f);
-            Gl.glColor3f(0.2f, 0.2f, 0.8f);
-            Gl.glVertex3f(-1.0f, -1.0f, -1.0f);
-            Gl.glVertex3f( 1.0f, -1.0f, -1.0f);
-            Gl.glVertex3f( 1.0f, -1.0f, 1.0f);
-            Gl.glVertex3f(-1.0f, -1.0f, 1.0f);
- 
-            // Right face
-            Gl.glNormal3f(1.0f, 0.0f, 0.0f);
-            Gl.glColor3f(0.2f, 0.5f, 0.5f);
-            Gl.glVertex3f( 1.0f, -1.0f, -1.0f);
-            Gl.glVertex3f( 1.0f, 1.0f, -1.0f);
-            Gl.glVertex3f( 1.0f, 1.0f, 1.0f);
-            Gl.glVertex3f( 1.0f, -1.0f, 1.0f);
- 
-            // Left Face
-            Gl.glNormal3f(-1.0f, 0.0f, 0.0f);
-            Gl.glColor3f(0.8f, 0.2f, 0.6f);
-            Gl.glVertex3f(-1.0f, -1.0f, -1.0f);
-            Gl.glVertex3f(-1.0f, -1.0f, 1.0f);
-            Gl.glVertex3f(-1.0f, 1.0f, 1.0f);
-            Gl.glVertex3f(-1.0f, 1.0f, -1.0f);
- 
-            Gl.glEnd();
+           
         }
  
  
