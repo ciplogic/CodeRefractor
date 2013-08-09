@@ -84,6 +84,7 @@
     <Compile Include="Optimizations\VRegVariablePropagation.cs" />
     <Compile Include="OuputCodeWriter\PlatformInvokeCodeWriter.cs" />
     <Compile Include="OuputCodeWriter\PlatformInvokeDllImports.cs" />
+    <Compile Include="OuputCodeWriter\PlatformInvokeDllMethod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

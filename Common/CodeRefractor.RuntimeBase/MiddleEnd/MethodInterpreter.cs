@@ -196,6 +196,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 return false;
             PlatformInvoke.LibraryName = pinvokeAttribute.Value;
             PlatformInvoke.MethodName = method.Name;
+            PlatformInvoke.CallingConvention = pinvokeAttribute.CallingConvention;
+            PlatformInvoke.EntryPoint = pinvokeAttribute.EntryPoint;
             Kind = MethodKind.PlatformInvoke;
             return true;
         }

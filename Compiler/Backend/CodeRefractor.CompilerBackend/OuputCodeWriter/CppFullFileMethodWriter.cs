@@ -38,20 +38,5 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             sb.AppendLine();
             return sb.ToString();
         }
-
-        public static string WritePInvokeDefinition(this MethodInterpreter methodBase, string methodDll)
-        {
-            var retType = methodBase.Method.GetReturnType().ToCppMangling();
-            var sb = new StringBuilder();
-            var arguments = methodBase.Method.GetArgumentsAsText();
-
-            sb.AppendFormat("typedef {0} (*{1}_type)({2})",
-                            retType, methodDll, arguments);
-
-            sb.AppendLine(";");
-            sb.AppendFormat("{0}_type {0};", methodDll);
-            sb.AppendLine();
-            return sb.ToString();
-        }
     }
 }

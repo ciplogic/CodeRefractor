@@ -10,6 +10,7 @@ using CodeRefractor.CompilerBackend.Linker;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.FrontEnd;
+using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.ConstTable;
 using CodeRefractor.RuntimeBase.Runtime;
 using CodeRefractor.RuntimeBase.Shared;
@@ -63,14 +64,24 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 
         private static void WriteMethodBodies(MetaLinker linker, StringBuilder sb)
         {
-            foreach (var metaInterpreter in GlobalMethodPool.Instance.Interpreters)
+            foreach (var metaInterpreter in GlobalMethodPool.Instance.Interpreters
+                .Where(m => m.Value.Kind == MethodKind.PlatformInvoke))
+            {
+                var interpreterCodeWriter = new MethodInterpreterCodeWriter
+                {
+                    Interpreter = metaInterpreter.Value
+                };
+                sb.AppendLine(interpreterCodeWriter.WritePInvokeMethodCode());
+            }
+            foreach (var metaInterpreter in GlobalMethodPool.Instance.Interpreters
+                .Where(m => m.Value.Kind != MethodKind.PlatformInvoke))
             {
                 var interpreterCodeWriter = new MethodInterpreterCodeWriter
                                                 {
                                                     Interpreter = metaInterpreter.Value
                                                 };
                 sb.AppendLine(interpreterCodeWriter.WriteMethodCode());
-            }
+            } 
             WriteMainBody(linker, sb);
         }
 

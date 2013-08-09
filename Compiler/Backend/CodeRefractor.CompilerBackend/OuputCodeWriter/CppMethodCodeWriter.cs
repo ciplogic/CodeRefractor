@@ -21,26 +21,6 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 {
     internal static class CppMethodCodeWriter
     {
-        public static string WritePlatformInvokeMethod(MethodInterpreter platformInvoke)
-        {
-            var invokeRepresentation = platformInvoke.PlatformInvoke;
-            var methodId = PlatformInvokeCodeWriter.Import(invokeRepresentation.LibraryName,
-                                                           invokeRepresentation.MethodName);
-
-            var sb = new StringBuilder();
-
-            sb.AppendFormat(platformInvoke.WritePInvokeDefinition(methodId));
-
-            sb.Append(platformInvoke.Method.WriteHeaderMethod(false));
-            sb.AppendLine("{");
-            var identifierValues = platformInvoke.Method.GetParameters();
-            var argumentsCall = string.Join(", ", identifierValues.Select(p => p.Name));
-
-            sb.AppendFormat("{0}({1});", methodId, argumentsCall);
-            sb.AppendLine();
-            sb.AppendLine("}");
-            return sb.ToString();
-        }
 
         public static string WriteCode(MetaMidRepresentation midRepresentation)
         {

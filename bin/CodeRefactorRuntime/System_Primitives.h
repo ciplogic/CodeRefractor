@@ -13,6 +13,7 @@ typedef	long long int Int64;
 typedef wchar_t		Char;
 typedef float		Single;
 typedef double		Double;
+typedef void*		IntPtr;
 }
 
 template <class T> struct Array 

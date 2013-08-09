@@ -15,12 +15,12 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 
         public string WriteMethodCode()
         {
-            if (Interpreter.Kind == MethodKind.PlatformInvoke)
-            {
-                var pInvokeText = CppMethodCodeWriter.WritePlatformInvokeMethod(Interpreter);
-                return pInvokeText;
-            }
             return CppMethodCodeWriter.WriteCode(Interpreter.MidRepresentation);
+        }
+
+        internal string WritePInvokeMethodCode()
+        {
+            return Interpreter.WritePlatformInvokeMethod();
         }
 
         public string WriteHeaderMethod()
