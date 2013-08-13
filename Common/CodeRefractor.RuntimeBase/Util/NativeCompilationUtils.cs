@@ -89,4 +89,4 @@ namespace CodeRefractor.RuntimeBase.Util
             (CompilerOptions.PathOfCompilerTools + "strip").ExecuteCommand(applicationNativeExe);
         }
     }
-}
+}   

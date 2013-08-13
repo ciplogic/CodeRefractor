@@ -14,6 +14,17 @@ typedef wchar_t		Char;
 typedef float		Single;
 typedef double		Double;
 typedef void*		IntPtr;
+
+static void* IntPtr_Zero = 0;
+
+
+}
+
+System::Boolean System_IntPtr__op_Equality(
+	const System::IntPtr&src, 
+	const System::IntPtr&dest)
+{
+	return src == dest;
 }
 
 template <class T> struct Array 

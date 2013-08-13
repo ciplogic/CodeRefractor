@@ -34,9 +34,20 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
 
             RemoveCandidatesInBranchOperators(operations, vregConstants);
 
-            OptimizeUnusedVregs(intermediateCode, vregConstants, operations);
+            OptimizeUnusedVregs(intermediateCode, vregConstants);
         }
 
+
+        private static void OptimizeUnusedVregs(MetaMidRepresentation intermediateCode, HashSet<int> vregConstants)
+        {
+            if (vregConstants.Count == 0)
+                return;
+            var liveVRegs =
+            intermediateCode.Vars.VirtRegs.Where(
+                vreg => vreg.Kind != VariableKind.Vreg || !vregConstants.Contains(vreg.Id)).ToList();
+            intermediateCode.Vars.VirtRegs = liveVRegs;
+        }
+        #region Remove candidates
         private static void RemoveCandidatesInReturn(List<LocalOperation> operations, HashSet<int> vregConstants)
         {
             var setFields = operations
@@ -53,8 +64,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
                 .Where(operation => operation.Kind == LocalOperation.Kinds.SetArrayItem).ToArray();
             foreach (var operation in setFields)
             {
-                var operationData = (Assignment) operation.Value;
-                var fieldSetter = (ArrayVariable) operationData.AssignedTo;
+                var operationData = (Assignment)operation.Value;
+                var fieldSetter = (ArrayVariable)operationData.AssignedTo;
                 RemoveCandidateVarIfVreg(vregConstants, operationData.Right as LocalVariable);
                 RemoveCandidateVarIfVreg(vregConstants, fieldSetter.Parent);
 
@@ -69,8 +80,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
                 .Where(operation => operation.Kind == LocalOperation.Kinds.GetArrayItem).ToArray();
             foreach (var operation in setFields)
             {
-                var assignment = (Assignment) operation.Value;
-                var arrayVar = (ArrayVariable) assignment.Right;
+                var assignment = (Assignment)operation.Value;
+                var arrayVar = (ArrayVariable)assignment.Right;
                 RemoveCandidateVarIfVreg(vregConstants, arrayVar.Index);
                 RemoveCandidateVarIfVreg(vregConstants, arrayVar.Parent);
             }
@@ -82,8 +93,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
                 .Where(operation => operation.Kind == LocalOperation.Kinds.GetField).ToArray();
             foreach (var operation in setFields)
             {
-                var assignment = (Assignment) operation.Value;
-                var fieldSetter = (FieldGetter) assignment.Right;
+                var assignment = (Assignment)operation.Value;
+                var fieldSetter = (FieldGetter)assignment.Right;
                 RemoveCandidateVarIfVreg(vregConstants, fieldSetter.Instance);
             }
         }
@@ -94,49 +105,26 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
                 .Where(operation => operation.Kind == LocalOperation.Kinds.SetField).ToArray();
             foreach (var operation in setFields)
             {
-                var operationData = (Assignment) operation.Value;
-                var fieldSetter = (FieldSetter) operationData.AssignedTo;
+                var operationData = (Assignment)operation.Value;
+                var fieldSetter = (FieldSetter)operationData.AssignedTo;
                 RemoveCandidateVarIfVreg(vregConstants, operationData.Right as LocalVariable);
                 RemoveCandidateVarIfVreg(vregConstants, fieldSetter.Instance);
             }
         }
 
-        private static void OptimizeUnusedVregs(MetaMidRepresentation intermediateCode, HashSet<int> vregConstants,
-                                                List<LocalOperation> operations)
-        {
-            var liveVRegs =
-                intermediateCode.Vars.VirtRegs.Where(
-                    vreg => vreg.Kind != VariableKind.Vreg || !vregConstants.Contains(vreg.Id)).ToList();
-            intermediateCode.Vars.VirtRegs = liveVRegs;
-
-            var liveOperations =
-                operations.Where(operation => IsLiveOperation(operation, vregConstants)).ToList();
-            intermediateCode.LocalOperations = liveOperations;
-        }
-
-        private static bool IsLiveOperation(LocalOperation op, HashSet<int> vregConstants)
-        {
-            if (op.Kind != LocalOperation.Kinds.Assignment) return true;
-            var assignment = (Assignment) op.Value;
-            var localVariable = assignment.AssignedTo;
-            var isRemovableVRegAssignment = localVariable.Kind == VariableKind.Vreg &&
-                                            vregConstants.Contains(localVariable.Id);
-            return !isRemovableVRegAssignment;
-        }
-
-        #region Remove Candidates
 
         private static void RemoveCandidatesInCalls(List<LocalOperation> operations, HashSet<int> vregConstants)
         {
             var calls = operations
-                .Where(operation => operation.Kind == LocalOperation.Kinds.Call).ToArray();
-            foreach (var operation in calls)
+                .Where(operation => operation.Kind == LocalOperation.Kinds.Call)
+                .Select(operation=>(MethodData)operation.Value).ToArray();
+            foreach (var operationData in calls)
             {
-                var operationData = (MethodData) operation.Value;
                 foreach (var vregConstant in operationData.Parameters)
                 {
                     RemoveCandidateVarIfVreg(vregConstants, vregConstant as LocalVariable);
                 }
+                RemoveCandidateVarIfVreg(vregConstants, operationData.Result);
             }
         }
 
@@ -146,8 +134,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
                 .Where(operation => operation.Kind == LocalOperation.Kinds.Assignment).ToArray();
             foreach (var operation in assignments)
             {
-                var localAssignment = (Assignment) operation.Value;
+                var localAssignment = (Assignment)operation.Value;
 
+                RemoveCandidateVarIfVreg(vregConstants, localAssignment.AssignedTo);
                 RemoveCandidateVarIfVreg(vregConstants, localAssignment.Right);
             }
         }
@@ -175,7 +164,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
                                                        operation.Kind == LocalOperation.Kinds.BinaryOperator ||
                                                        operation.Kind == LocalOperation.Kinds.UnaryOperator))
             {
-                var localVariable = (OperatorBase) operation.Value;
+                var localVariable = (OperatorBase)operation.Value;
 
                 var rightBinaryAssignment = localVariable as BinaryOperator;
                 var unaryAssignment = localVariable as UnaryOperator;

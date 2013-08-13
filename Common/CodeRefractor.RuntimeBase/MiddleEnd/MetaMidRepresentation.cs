@@ -58,6 +58,11 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             }
         }
 
+        public override string ToString()
+        {
+            return String.Format("Interpreter for '{0}'", _method);
+        }
+
         public MethodBody GetMethodBody
         {
             get { return _method.GetMethodBody(); }
