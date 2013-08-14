@@ -29,6 +29,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
             RemoveCandidatesInSetFields(operations, vregConstants);
             RemoveCandidatesInReturn(operations, vregConstants);
 
+            RemoveCandidatesInCreateArray(operations, vregConstants);
             RemoveCandidatesInGetArrayItem(operations, vregConstants);
             RemoveCandidatesInSetArrayItem(operations, vregConstants);
 
@@ -57,6 +58,20 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
                 RemoveCandidateVarIfVreg(vregConstants, operation.Value as LocalVariable);
             }
         }
+
+        private static void RemoveCandidatesInCreateArray(List<LocalOperation> operations, HashSet<int> vregConstants)
+        {
+            var setFields = operations
+                .Where(operation => operation.Kind == LocalOperation.Kinds.NewArray).ToArray();
+            foreach (var operation in setFields)
+            {
+                var assignment = (Assignment)operation.Value;
+                var arrayVar = (NewArrayObject)assignment.Right;
+                RemoveCandidateVarIfVreg(vregConstants, assignment.AssignedTo);
+                RemoveCandidateVarIfVreg(vregConstants, arrayVar.ArrayLength);
+            }
+        }
+
 
         private static void RemoveCandidatesInSetArrayItem(List<LocalOperation> operations, HashSet<int> vregConstants)
         {
@@ -91,10 +106,13 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
         {
             var setFields = operations
                 .Where(operation => operation.Kind == LocalOperation.Kinds.GetField).ToArray();
+            if(setFields.Length==0)
+                return;
             foreach (var operation in setFields)
             {
                 var assignment = (Assignment)operation.Value;
                 var fieldSetter = (FieldGetter)assignment.Right;
+                RemoveCandidateVarIfVreg(vregConstants, assignment.AssignedTo);
                 RemoveCandidateVarIfVreg(vregConstants, fieldSetter.Instance);
             }
         }

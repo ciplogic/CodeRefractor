@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Text;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
@@ -61,6 +62,25 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         public override string ToString()
         {
             return String.Format("Interpreter for '{0}'", _method);
+        }
+
+        public string Code
+        {
+            get {
+                return GetCode();
+            }
+        }
+
+        private string GetCode()
+        {
+            var sb = new StringBuilder();
+            
+            sb.AppendFormat("Code: ").AppendLine();
+            foreach (var localOperation in LocalOperations)
+            {
+                sb.AppendLine(localOperation.ToString());
+            }
+            return sb.ToString();
         }
 
         public MethodBody GetMethodBody
@@ -615,17 +635,6 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                                  };
             result.FixedType = typeArray.MakeArrayType();
             AddOperation(LocalOperation.Kinds.NewArray, assignment);
-        }
-
-        public LocalOperation LastOperation
-        {
-            get
-            {
-                var count = LocalOperations.Count;
-                if (count == 0)
-                    return null;
-                return LocalOperations[count - 1];
-            }
         }
 
         public void SetArrayElementValue(EvaluatorStack evaluator)

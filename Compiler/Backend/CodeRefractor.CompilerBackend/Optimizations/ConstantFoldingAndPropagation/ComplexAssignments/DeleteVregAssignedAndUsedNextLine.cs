@@ -22,6 +22,12 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
         private MetaMidRepresentation _intermediateCode;
         private LocalVariable _leftVreg;
 
+        static readonly HashSet<LocalOperation.Kinds> SupportedAssignments = new HashSet<LocalOperation.Kinds>()
+        {
+            LocalOperation.Kinds.Assignment,
+        };
+
+
         public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
         {
             var operations = intermediateCode.LocalOperations;
@@ -30,13 +36,14 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
             {
                 var srcOperation = operations[i];
                 _currentRow = i;
-                if (srcOperation.Kind != LocalOperation.Kinds.Assignment)
+                var opKind = srcOperation.Kind;
+                if (!SupportedAssignments.Contains(opKind))
                     continue;
-                var assignment = (Assignment) srcOperation.Value;
-                _leftVreg = assignment.AssignedTo;
+                _leftVreg = srcOperation.GetUseDefinition();
+
                 if (_leftVreg.Kind != VariableKind.Vreg) continue;
                 _currentId = _leftVreg.Id;
-
+                var assignment = srcOperation.GetAssignment();
                 ProcessOperation(operations[i + 1], assignment);
             }
             if (_instructionsToBeDeleted.Count == 0)
@@ -48,7 +55,6 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
         {
             intermediateCode.DeleteInstructions(_instructionsToBeDeleted);
 
-            _vregToBeDeleted.Clear();
         }
 
         private void ProcessOperation(LocalOperation destOperation, Assignment assignment)
@@ -62,9 +68,10 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                     HandleCall(assignment.Right, (MethodData) destOperation.Value);
                     break;
                 case LocalOperation.Kinds.Return:
-                    HandleReturn(assignment.Right, destOperation);
+                    HandleReturn((IdentifierValue) destOperation.Value, destOperation);
                     break;
                 case LocalOperation.Kinds.BinaryOperator:
+                case LocalOperation.Kinds.UnaryOperator:
                     HandleOperator(assignment.Right, (OperatorBase)destOperation.Value);
                     break;
                 case LocalOperation.Kinds.BranchOperator:

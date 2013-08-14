@@ -38,6 +38,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
                            new DoubleAssignPropagation(),
                            new AssignToReturnPropagation(),
                            new DeadStoreLastSequenceRemover(),
+                           new DeadStoreAssignment(), 
                            new DceLocalAssigned(),
                            new OperatorPartialConstantFolding(),
                        }.ToList();

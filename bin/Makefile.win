@@ -25,5 +25,5 @@ clean: clean-custom
 $(BIN): $(OBJ)
 	$(CPP) $(LINKOBJ) -o $(BIN) $(LIBS)
 
-output.o: output.cpp
+output.o: output.cpp sloth.h CodeRefactorRuntime/System_Primitives.h  CodeRefactorRuntime/System_Console.h  CodeRefactorRuntime/System_Primitives.h runtime_base.partcpp
 	$(CPP) -c output.cpp -o output.o $(CXXFLAGS)

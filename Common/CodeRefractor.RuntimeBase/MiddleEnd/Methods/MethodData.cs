@@ -1,5 +1,6 @@
 #region Usings
 
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
@@ -38,6 +39,13 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.Methods
             }
             if (!IsStatic)
                 Parameters.Insert(0, stack.Pop());
+        }
+
+        public override string ToString()
+        {
+            return String.Format(Result!=null 
+                ? "Call {0} = {1};" 
+                : "Call {0};", Result.Name, Info);
         }
     }
 }

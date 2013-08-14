@@ -23,3 +23,5 @@ Compiler/Backend/CodeRefractor.CompilerBackend/bin/*.dll
 Compiler/Backend/CodeRefractor.CompilerBackend/obj/*
 Compiler/Backend/CodeRefractor.CompilerBackend/bin/Debug/*
 bin/output.o
+CodeRefactorCppDebugging/Debug/*
+*.user
