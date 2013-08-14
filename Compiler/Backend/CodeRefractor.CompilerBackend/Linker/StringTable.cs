@@ -54,8 +54,9 @@ namespace CodeRefractor.CompilerBackend.Linker
             sb.AppendLine("} // buildStringTable");
 
             var stringTableContent = String.Join(", "+Environment.NewLine, stringDataBuilder);
-            sb.AppendFormat("const wchar_t _stringTable[{0}] = {{", jump).AppendLine();
-            sb.AppendLine(stringTableContent);
+            var length = jump == 0 ? 1 : jump;
+            sb.AppendFormat("const wchar_t _stringTable[{0}] = {{", length).AppendLine();
+            sb.AppendLine(jump == 0 ? "0" : stringTableContent);
             sb.AppendLine("}; // _stringTable ");
 
             return sb.ToString();
