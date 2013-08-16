@@ -101,7 +101,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
         {
             var binaryOperator = (BinaryOperator)destOperation.Value;
 
-            if (constRight != null && (int)constRight.Value == 1)
+            if (constRight != null && constRight.Value is int && (int)constRight.Value == 1)
             {
                 Result = true;
                 return;

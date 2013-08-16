@@ -22,7 +22,6 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
         {
             return new OptimizationPass[]
                        {
-                           new DeleteGappingVregAssignment(),
                            new ReachabilityLines(),
                            new ConstantDfaAnalysis(),
                            new EvaluatePureFunctionWithConstantCall(),
@@ -35,23 +34,6 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
         {
             return new OptimizationPass[]
                        {
-                           new DoubleAssignPropagation(),
-                           new AssignToReturnPropagation(),
-                           new DeadStoreLastSequenceRemover(),
-                           new DeadStoreAssignment(), 
-                           new DceLocalAssigned(),
-                           new OperatorPartialConstantFolding(),
-                       }.ToList();
-        }
-
-
-        public override List<OptimizationPass> BuildOptimizationPasses0()
-        {
-            return new OptimizationPass[]
-                       {
-                           new DeleteVregAssignedAndUsedNextLine(),
-                           new DeleteVregAssignedVariableAndUsedNextLine(),
-                           new DeleteVregAsLocalAssignedAndUsedPreviousLine(),
                            new ConstantVariablePropagation(),
                            new ConstantVariableOperatorPropagation(),
                            new ConstantVariablePropagationInCall(),
@@ -60,7 +42,23 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
                            new MergeConsecutiveLabels(),
                            new ConstantVariableBranchOperatorPropagation(),
                            new OperatorConstantFolding(),
-                           new DceVRegAssigned(),
+                           new DceVRegUnused(),
+
+                           new DoubleAssignPropagation(),
+                           new AssignToReturnPropagation(),
+                           new DeadStoreLastSequenceRemover(),
+                           new DeadStoreAssignment(), 
+                           new DceLocalAssigned(),
+                           new OperatorPartialConstantFolding(),
+                           new OneDefUsedNextLinePropagation(), 
+                       }.ToList();
+        }
+
+
+        public override List<OptimizationPass> BuildOptimizationPasses0()
+        {
+            return new OptimizationPass[]
+                       {
                        }.ToList();
         }
     }

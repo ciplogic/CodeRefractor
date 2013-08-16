@@ -62,7 +62,7 @@ class C {{
             return new OptimizationPass[]
             {
                 //new VRegConstantFolding(),
-                //new DceVRegAssigned(),
+                //new DceVRegUnused(),
                 //new VRegVariablePropagation(),
             }.ToList();
         }

@@ -160,7 +160,7 @@ namespace CodeRefractor.CompilerBackend.HandleOperations
         private static void HandleNeg(UnaryOperator localVar, StringBuilder sb)
         {
             var operat = localVar;
-            sb.AppendFormat("{0} = -{1};", localVar.Left.Name, operat.Left.Name);
+            sb.AppendFormat("{0} = -{1};", localVar.AssignedTo.Name, operat.Left.Name);
         }
         private static void HandleConvR4(UnaryOperator unaryOperator, StringBuilder sb)
         {

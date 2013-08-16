@@ -31,7 +31,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
             for (var index = _endSequence; index >= _startSequence; index--)
             {
                 var instruction = localOperations[index];
-                ProcessInstructionReads(instruction);
+                if(!ProcessInstructionReads(instruction))
+                    return;
                 var isDeadStoreRead = ProcessInstructionWrites(instruction);
                 if (!isDeadStoreRead)
                     continue;
@@ -89,7 +90,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
 
         #region Handle Reads
 
-        private void ProcessInstructionReads(LocalOperation instruction)
+        private bool ProcessInstructionReads(LocalOperation instruction)
         {
             switch (instruction.Kind)
             {
@@ -104,8 +105,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
                     break;
 
                 default:
-                    throw new NotImplementedException("Instruction not supported, skipped the optimization pass");
+                    return false;
             }
+            return true;
         }
 
         private void HandleCallReads(LocalOperation instruction)

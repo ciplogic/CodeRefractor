@@ -14,7 +14,7 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
 
 namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
 {
-    public class DceVRegAssigned : ResultingOptimizationPass
+    public class DceVRegUnused : ResultingOptimizationPass
     {
         public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
         {
@@ -28,6 +28,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
             RemoveCandidatesInGetFields(operations, vregConstants);
             RemoveCandidatesInSetFields(operations, vregConstants);
             RemoveCandidatesInReturn(operations, vregConstants);
+
+
+            RemoveCandidatesInCreateObject(operations, vregConstants);
 
             RemoveCandidatesInCreateArray(operations, vregConstants);
             RemoveCandidatesInGetArrayItem(operations, vregConstants);
@@ -43,6 +46,10 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
         {
             if (vregConstants.Count == 0)
                 return;
+            if (vregConstants.Contains(189))
+            {
+                
+            }
             var liveVRegs =
             intermediateCode.Vars.VirtRegs.Where(
                 vreg => vreg.Kind != VariableKind.Vreg || !vregConstants.Contains(vreg.Id)).ToList();
@@ -56,6 +63,19 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
             foreach (var operation in setFields)
             {
                 RemoveCandidateVarIfVreg(vregConstants, operation.Value as LocalVariable);
+            }
+        }
+
+        private static void RemoveCandidatesInCreateObject(List<LocalOperation> operations, HashSet<int> vregConstants)
+        {
+            var newObjectOps = operations
+                .Where(operation => operation.Kind == LocalOperation.Kinds.NewObject).ToArray();
+            if(newObjectOps.Length==0)
+                return;
+            foreach (var operation in newObjectOps)
+            {
+                var assignment = (Assignment)operation.Value;
+                RemoveCandidateVarIfVreg(vregConstants, assignment.AssignedTo);
             }
         }
 

@@ -27,6 +27,10 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
                     &&  opKind != LocalOperation.Kinds.UnaryOperator)
                     continue;
                 toRemove.Add(pos);
+                if (variableDefinition.Id == 189)
+                {
+                    
+                }
             }
             if(toRemove.Count==0)
                 return;
