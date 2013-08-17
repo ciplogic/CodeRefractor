@@ -158,7 +158,7 @@ namespace CodeRefractor.RuntimeBase
 
         private void AddMethodIfNecessary(MethodBase methodBase)
         {
-            if (MetaMidRepresentation.HandleRuntimeHelpersMethod(methodBase))
+            if (MetaMidRepresentationOperationFactory.HandleRuntimeHelpersMethod(methodBase))
                 return;
             var methodDesc = methodBase.ToString();
 

@@ -49,6 +49,7 @@
     <Compile Include="FrontEnd\ClassInterpreter.cs" />
     <Compile Include="FrontEnd\GlobalMethodPool.cs" />
     <Compile Include="MetaLinker.cs" />
+    <Compile Include="MiddleEnd\MetaMidRepresentationOperationFactory.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\FunctionPointerStore.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\StaticFieldSetter.cs" />
     <Compile Include="Runtime\CppMethodDefinition.cs" />
