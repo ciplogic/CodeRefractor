@@ -1,6 +1,7 @@
 ﻿using System;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.MiddleEnd;
+using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
 namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagation.ComplexAssignments
 {
@@ -18,10 +19,15 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                     continue;
                 var variableDefinition = op.GetUseDefinition();
                 if(variableDefinition==null)
+                    continue; 
+                
+                if (variableDefinition.Kind != VariableKind.Vreg)
                     continue;
 
                 var destOperation = localOperations[pos];
                 if (!destOperation.OperationUses(variableDefinition))
+                    continue;
+                if(!(assignment.Right is LocalVariable)&&!(assignment.Right is ConstValue))
                     continue;
                 try
                 {
@@ -36,43 +42,6 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
 
             }
             
-        }
-    }
-
-    class OneDefUsedPreviousLinePropagation : ResultingOptimizationPass
-    {
-        public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
-        {
-            var pos = -1;
-            var localOperations = intermediateCode.LocalOperations;
-            foreach (var op in localOperations)
-            {
-                pos++;
-                if(pos==0)
-                    continue;
-                var assignment = op.GetAssignment();
-                if (assignment == null)
-                    continue;
-                var variableDefinition = op.GetUseDefinition();
-                if (variableDefinition == null)
-                    continue;
-
-                var destOperation = localOperations[pos];
-                if (!destOperation.OperationUses(variableDefinition))
-                    continue;
-                try
-                {
-                    destOperation.SwitchUsageWithDefinition(variableDefinition, assignment.Right);
-                    Result = true;
-                    return;
-                }
-                catch (Exception)
-                {
-                    continue;
-                }
-
-            }
-
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿#region Usings
 
 using System.Collections.Generic;
+using System.Linq;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
@@ -13,6 +14,13 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
 {
     internal class EvaluatePureFunctionWithConstantCall : ResultingOptimizationPass
     {
+        public override bool CheckPreconditions(MetaMidRepresentation midRepresentation)
+        {
+            var operations = midRepresentation.LocalOperations;
+
+            return operations.Any(op => op.Kind == LocalOperation.Kinds.Call);
+        }
+
         public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
         {
             var operations = intermediateCode.LocalOperations;
@@ -22,35 +30,44 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                 if (operation.Kind != LocalOperation.Kinds.Call)
                     continue;
 
-                var operationData = (MethodData) operation.Value;
+                var operationData = (MethodData)operation.Value;
                 if (!operationData.IsPure || !operationData.IsStatic)
                     continue;
                 var methodInfo = operationData.Info;
                 var constParams = new List<object>();
-                var paramsAreConst = true;
-                foreach (var parameter in operationData.Parameters)
-                {
-                    var constParam = parameter as ConstValue;
-                    if (constParam == null)
-                    {
-                        paramsAreConst = false;
-                        break;
-                    }
-                    constParams.Add(constParam.Value);
-                }
+                var paramsAreConst = CheckIfParamAreConst(operationData, constParams);
                 if (!paramsAreConst)
                     continue;
                 var result = methodInfo.Invoke(null, constParams.ToArray());
                 operations[i] = new LocalOperation
-                                    {
-                                        Kind = LocalOperation.Kinds.Assignment,
-                                        Value = new Assignment
-                                                    {
-                                                        AssignedTo = operationData.Result,
-                                                        Right = new ConstValue(result)
-                                                    }
-                                    };
+                {
+                    Kind = LocalOperation.Kinds.Assignment,
+                    Value = new Assignment
+                    {
+                        AssignedTo = operationData.Result,
+                        Right = new ConstValue(result)
+                    }
+                };
             }
+        }
+
+        private static bool CheckIfParamAreConst(MethodData operationData, List<object> constParams)
+        {
+            var paramsAreConst = true;
+            foreach (var parameter in operationData.Parameters)
+            {
+                var constParam = parameter as ConstValue;
+                if (constParam != null)
+                {
+                    constParams.Add(constParam.Value);
+                }
+                else
+                {
+                    paramsAreConst = false;
+                    break;
+                }
+            }
+            return paramsAreConst;
         }
     }
 }

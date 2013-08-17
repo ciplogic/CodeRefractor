@@ -22,10 +22,15 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
         {
             return new OptimizationPass[]
                        {
+                           
+                           new OneDefUsedNextLinePropagation(), //??
+                           new DeadStoreAssignment(), // ??
+                           new OneDefUsedPreviousLinePropagation(), //??
+                           
+                        
                            new ReachabilityLines(),
-                           new ConstantDfaAnalysis(),
-                           new EvaluatePureFunctionWithConstantCall(),
-                           new VRegVariablePropagation()
+                           new ConstantDfaAnalysis()
+
                        }.ToList();
         }
 
@@ -33,25 +38,14 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
         public override List<OptimizationPass> BuildOptimizationPasses1()
         {
             return new OptimizationPass[]
-                       {
-                           new ConstantVariablePropagation(),
-                           new ConstantVariableOperatorPropagation(),
-                           new ConstantVariablePropagationInCall(),
-                           new DeleteJumpNextLine(),
-                           new RemoveUnreferencedLabels(),
-                           new MergeConsecutiveLabels(),
-                           new ConstantVariableBranchOperatorPropagation(),
-                           new OperatorConstantFolding(),
-                           new DceVRegUnused(),
-
-                           new DoubleAssignPropagation(),
-                           new AssignToReturnPropagation(),
-                           new DeadStoreLastSequenceRemover(),
-                           new DeadStoreAssignment(), 
-                           new DceLocalAssigned(),
-                           new OperatorPartialConstantFolding(),
-                           new OneDefUsedNextLinePropagation(), 
-                       }.ToList();
+            {
+                new ConstantVariableBranchOperatorPropagation(),  
+      
+                
+                new DeleteJumpNextLine(),
+                new RemoveUnreferencedLabels(),
+                new MergeConsecutiveLabels(),
+            }.ToList();
         }
 
 
@@ -59,6 +53,24 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
         {
             return new OptimizationPass[]
                        {
+                           new OperatorPartialConstantFolding(),
+
+                           new OperatorConstantFolding(),
+                            
+                           new EvaluatePureFunctionWithConstantCall(),
+                           new DceVRegUnused(),
+                           new AssignToReturnPropagation(),
+                           new DeadStoreLastSequenceRemover(),
+                           new DceLocalAssigned(),
+                           
+                           new ConstantVariablePropagation(),
+                           new ConstantVariableOperatorPropagation(),
+                           new ConstantVariablePropagationInCall(),
+                           
+                           new VRegVariablePropagation(),
+                           
+                           new DoubleAssignPropagation(),
+                           
                        }.ToList();
         }
     }

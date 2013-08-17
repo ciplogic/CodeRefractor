@@ -1,5 +1,6 @@
 #region Usings
 
+using System;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
@@ -29,7 +30,6 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                     && destOperation.Kind != LocalOperation.Kinds.UnaryOperator)
                     continue;
 
-                //var pos = (Assignment) destOperation.Value;
                 var baseOperator = (OperatorBase)destOperation.Value;
                 _baseOperator = baseOperator;
                 ConstValue constLeft = null;
@@ -78,9 +78,23 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                     case OpcodeOperatorNames.Ceq:
                         HandleCeq(constLeft, constRight);
                         break;
+
+
+                    case OpcodeOperatorNames.And:
+                        HandleAnd(constLeft, constRight);
+                        break;
+                    case OpcodeOperatorNames.Or:
+                        HandleOr(constLeft, constRight);
+                        break;
+                    case OpcodeOperatorNames.Xor:
+                        HandleXor(constLeft, constRight);
+                        break;
+                    default:
+                        throw new Exception("cannot evaluate this type");
                 }
             }
         }
+
 
         private void HandleCeq(ConstValue constLeft, ConstValue constRight)
         {
@@ -100,7 +114,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
             FoldConstant(result);
         }
 
-
+        #region Compute math operations
+        
         private void HandleAdd(ConstValue constLeft, ConstValue constRight)
         {
             var result = ComputeAdd(constLeft, constRight);
@@ -125,6 +140,73 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
             var result = ComputeRem(constLeft, constRight);
             FoldConstant(result);
         }
+
+        private static object ComputeAdd(ConstValue constLeft, ConstValue constRight)
+        {
+            return (int)constLeft.Value + (int)constRight.Value;
+        }
+
+        private static object ComputeSub(ConstValue constLeft, ConstValue constRight)
+        {
+            return (int)constLeft.Value - (int)constRight.Value;
+        }
+
+        private static object ComputeMul(ConstValue constLeft, ConstValue constRight)
+        {
+            return (int)constLeft.Value * (int)constRight.Value;
+        }
+
+        private static object ComputeDiv(ConstValue constLeft, ConstValue constRight)
+        {
+            return (int)constLeft.Value / (int)constRight.Value;
+        }
+
+        private static object ComputeRem(ConstValue constLeft, ConstValue constRight)
+        {
+            return (int)constLeft.Value % (int)constRight.Value;
+        }
+
+        private void HandleDiv(ConstValue constLeft, ConstValue constRight)
+        {
+            var result = ComputeDiv(constLeft, constRight);
+            FoldConstant(result);
+        }
+        #endregion
+
+        #region Evaluate bit operations
+
+        private void HandleXor(ConstValue constLeft, ConstValue constRight)
+        {
+            var result = ComputeXor(constLeft, constRight);
+            FoldConstant(result);
+        }
+
+        private void HandleAnd(ConstValue constLeft, ConstValue constRight)
+        {
+            var result = ComputeAnd(constLeft, constRight);
+            FoldConstant(result);
+        }
+
+        private void HandleOr(ConstValue constLeft, ConstValue constRight)
+        {
+            var result = ComputeOr(constLeft, constRight);
+            FoldConstant(result);
+        }
+
+        private static object ComputeOr(ConstValue constLeft, ConstValue constRight)
+        {
+            return (int)constLeft.Value | (int)constRight.Value;
+        }
+        private static object ComputeAnd(ConstValue constLeft, ConstValue constRight)
+        {
+            return (int)constLeft.Value & (int)constRight.Value;
+        }
+
+        private static object ComputeXor(ConstValue constLeft, ConstValue constRight)
+        {
+            return (int)constLeft.Value ^ (int)constRight.Value;
+        }
+        #endregion
 
         private void FoldConstant(object result)
         {
@@ -157,35 +239,5 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
             return (int) constLeft.Value < (int) constRight.Value ? 1 : 0;
         }
 
-        private static object ComputeAdd(ConstValue constLeft, ConstValue constRight)
-        {
-            return (int) constLeft.Value + (int) constRight.Value;
-        }
-
-        private static object ComputeSub(ConstValue constLeft, ConstValue constRight)
-        {
-            return (int) constLeft.Value - (int) constRight.Value;
-        }
-
-        private static object ComputeMul(ConstValue constLeft, ConstValue constRight)
-        {
-            return (int) constLeft.Value*(int) constRight.Value;
-        }
-
-        private static object ComputeDiv(ConstValue constLeft, ConstValue constRight)
-        {
-            return (int) constLeft.Value/(int) constRight.Value;
-        }
-
-        private static object ComputeRem(ConstValue constLeft, ConstValue constRight)
-        {
-            return (int) constLeft.Value%(int) constRight.Value;
-        }
-
-        private void HandleDiv(ConstValue constLeft, ConstValue constRight)
-        {
-            var result = ComputeDiv(constLeft, constRight);
-            FoldConstant(result);
-        }
     }
 }

@@ -44,6 +44,7 @@
     <Compile Include="Linker\LinkingData.cs" />
     <Compile Include="Linker\StringTable.cs" />
     <Compile Include="Optimizations\ConstantFoldingAndPropagation\ComplexAssignments\OneDefUsedNextLinePropagation.cs" />
+    <Compile Include="Optimizations\ConstantFoldingAndPropagation\ComplexAssignments\OneDefUsedPreviousLinePropagation.cs" />
     <Compile Include="Optimizations\SimpleDce\DeadStoreAssignment.cs" />
     <Compile Include="OuputCodeWriter\CppCodeGenerator.cs" />
     <Compile Include="OuputCodeWriter\CppFullFileMethodWriter.cs" />

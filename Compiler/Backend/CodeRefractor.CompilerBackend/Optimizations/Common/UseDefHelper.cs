@@ -136,6 +136,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
             switch (kind)
             {
                 case LocalOperation.Kinds.Assignment:
+                case LocalOperation.Kinds.NewObject:
+                case LocalOperation.Kinds.NewArray:
                     var assign = operation.GetAssignment();
                     return assign.AssignedTo;
                 case LocalOperation.Kinds.BinaryOperator:
@@ -173,6 +175,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
         public static void SwitchUsageWithDefinition(this LocalOperation op, LocalVariable usageVariable,
             IdentifierValue definitionIdentifier)
         {
+            if (!(definitionIdentifier is LocalVariable) && !(definitionIdentifier is ConstValue))
+                return;
             switch (op.Kind)
             {
                 case LocalOperation.Kinds.Assignment:

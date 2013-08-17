@@ -40,6 +40,8 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                 didOptimize = false;
                 foreach (var optimizationPass in optimizationsList)
                 {
+                    if(!optimizationPass.CheckPreconditions(Interpreter.MidRepresentation))
+                        continue;
                     didOptimize = optimizationPass.Optimize(Interpreter.MidRepresentation);
                     if (didOptimize)
                         break;

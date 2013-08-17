@@ -23,6 +23,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
 
         public abstract void OptimizeOperations(MetaMidRepresentation intermediateCode);
 
+
         public override bool Optimize(MetaMidRepresentation intermediateCode)
         {
             _result = false;

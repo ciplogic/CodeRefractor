@@ -45,7 +45,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                     {
                         operations.RemoveAt(j);
                     }
-                    break;
+                    return;
                 }
             }
         }

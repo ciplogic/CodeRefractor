@@ -12,5 +12,11 @@ namespace CodeRefractor.RuntimeBase.Optimizations
         //Try to return false by default
         //If the code succeeded to optimize something that other optimizations may benefit, return true
         public abstract bool Optimize(MetaMidRepresentation intermediateCode);
+
+
+        public virtual bool CheckPreconditions(MetaMidRepresentation midRepresentation)
+        {
+            return true;
+        }
     }
 }
