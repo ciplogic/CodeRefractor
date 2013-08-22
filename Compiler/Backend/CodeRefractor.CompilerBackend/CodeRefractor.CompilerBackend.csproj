@@ -40,9 +40,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Linker\LinkerInterpretersTable.cs" />
     <Compile Include="Linker\LinkerUtils.cs" />
     <Compile Include="Linker\LinkingData.cs" />
     <Compile Include="Linker\StringTable.cs" />
+    <Compile Include="Optimizations\ConstantFoldingAndPropagation\AnalyzeFunctionPurity.cs" />
     <Compile Include="Optimizations\ConstantFoldingAndPropagation\ComplexAssignments\OneDefUsedNextLinePropagation.cs" />
     <Compile Include="Optimizations\ConstantFoldingAndPropagation\ComplexAssignments\OneDefUsedPreviousLinePropagation.cs" />
     <Compile Include="Optimizations\SimpleDce\DeadStoreAssignment.cs" />
@@ -95,6 +97,9 @@
       <Project>{97B010AB-0756-46DC-B75A-7A6C4F6FF28D}</Project>
       <Name>Mono.Reflection</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Optimizations\Purity\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

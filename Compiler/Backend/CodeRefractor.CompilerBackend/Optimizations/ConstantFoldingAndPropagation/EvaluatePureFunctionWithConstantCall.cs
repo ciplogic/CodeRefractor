@@ -1,12 +1,14 @@
 ﻿#region Usings
 
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
+using CodeRefractor.CompilerBackend.Linker;
 
 #endregion
 
@@ -31,6 +33,17 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                     continue;
 
                 var operationData = (MethodData)operation.Value;
+                var methodInterpreter = LinkerInterpretersTable.GetMethod(operationData.Info);
+                if (AnalyzeFunctionPurity.ReadPurity(methodInterpreter))
+                {
+                    operationData.IsPure = true;
+                }
+                else
+                {
+                    var computeIsPure = AnalyzeFunctionPurity.ComputeFunctionPurity(methodInterpreter.LocalOperations);
+                    if (computeIsPure)
+                        operationData.IsPure = true;
+                }
                 if (!operationData.IsPure || !operationData.IsStatic)
                     continue;
                 var methodInfo = operationData.Info;

@@ -39,6 +39,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
         {
             return new OptimizationPass[]
             {
+                new AnalyzeFunctionPurity(),
                 new ConstantVariableBranchOperatorPropagation(),  
       
                 

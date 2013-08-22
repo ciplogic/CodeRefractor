@@ -12,12 +12,10 @@ namespace CodeRefractor.CompilerBackend.Linker
         public int GetStringId(string text)
         {
             int result;
-            if (!_stringsDictionary.TryGetValue(text, out result))
-            {
-                result = _table.Count;
-                _stringsDictionary[text] = result;
-                _table.Add(text);
-            }
+            if (_stringsDictionary.TryGetValue(text, out result)) return result;
+            result = _table.Count;
+            _stringsDictionary[text] = result;
+            _table.Add(text);
             return result;
         }
 

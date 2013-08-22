@@ -1,5 +1,6 @@
 #region Usings
 
+using CodeRefractor.CompilerBackend.Linker;
 using CodeRefractor.CompilerBackend.Optimizations.Inliner;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.Config;
@@ -17,10 +18,18 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             foreach (var methodBase in GlobalMethodPool.Instance.MethodInfos)
             {
                 var typeData =
-                    (ClassTypeData) ProgramData.UpdateType(
+                    (ClassTypeData)ProgramData.UpdateType(
                         methodBase.Value.DeclaringType);
                 var interpreter = typeData.GetInterpreter(methodBase.Key);
                 if (optimizationPasses == null) return;
+                LinkerInterpretersTable.Register(interpreter.MidRepresentation);
+            }
+            foreach (var methodBase in GlobalMethodPool.Instance.MethodInfos)
+            {
+                var typeData =
+                    (ClassTypeData)ProgramData.UpdateType(
+                        methodBase.Value.DeclaringType);
+                var interpreter = typeData.GetInterpreter(methodBase.Key);
                 var codeWriter = new MethodInterpreterCodeWriter
                                      {
                                          Interpreter = interpreter

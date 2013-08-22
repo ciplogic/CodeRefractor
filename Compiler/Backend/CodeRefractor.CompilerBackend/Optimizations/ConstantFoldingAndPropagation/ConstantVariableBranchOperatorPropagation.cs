@@ -1,5 +1,6 @@
 #region Usings
 
+using System.Collections.Generic;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
@@ -21,33 +22,38 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                 var constValue = GetConstantFromOperation(operations, i, out srcVariableDefinition);
                 if (constValue == null)
                     continue;
-
-                for (var j = i + 1; j < operations.Count; j++)
-                {
-                    var destOperation = operations[j];
-                    if (destOperation.Kind == LocalOperation.Kinds.Label)
-                        break;
-                    if (destOperation.Kind != LocalOperation.Kinds.BranchOperator) continue;
-                    var destAssignment = (BranchOperator) destOperation.Value;
-                    if (!SameVariable(destAssignment.CompareValue as LocalVariable, srcVariableDefinition.AssignedTo))
-                        break;
-                    Result = true;
-                    var isTrue = ((int) constValue.Value != 0) ^ (destAssignment.Name != OpcodeBranchNames.BrTrue);
-                    if (isTrue)
-                    {
-                        operations[j] = new LocalOperation
-                                            {
-                                                Kind = LocalOperation.Kinds.AlwaysBranch,
-                                                Value = destAssignment.JumpTo
-                                            };
-                    }
-                    else
-                    {
-                        operations.RemoveAt(j);
-                    }
-                    return;
-                }
+                if (HandleBranchCases(i, operations, srcVariableDefinition, constValue)) return;
             }
+        }
+
+        private bool HandleBranchCases(int i, List<LocalOperation> operations, Assignment srcVariableDefinition, ConstValue constValue)
+        {
+            for (var j = i + 1; j < operations.Count; j++)
+            {
+                var destOperation = operations[j];
+                if (destOperation.Kind == LocalOperation.Kinds.Label)
+                    break;
+                if (destOperation.Kind != LocalOperation.Kinds.BranchOperator) continue;
+                var destAssignment = (BranchOperator) destOperation.Value;
+                if (!SameVariable(destAssignment.CompareValue as LocalVariable, srcVariableDefinition.AssignedTo))
+                    break;
+                Result = true;
+                var isTrue = ((int) constValue.Value != 0) ^ (destAssignment.Name != OpcodeBranchNames.BrTrue);
+                if (isTrue)
+                {
+                    operations[j] = new LocalOperation
+                    {
+                        Kind = LocalOperation.Kinds.AlwaysBranch,
+                        Value = destAssignment.JumpTo
+                    };
+                }
+                else
+                {
+                    operations.RemoveAt(j);
+                }
+                return true;
+            }
+            return false;
         }
     }
 }

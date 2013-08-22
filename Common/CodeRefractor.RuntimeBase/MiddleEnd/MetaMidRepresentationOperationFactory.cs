@@ -165,7 +165,6 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             AddOperation(LocalOperation.Kinds.SetField, assignment);
         }
 
-
         public void LoadReferenceInArray()
         {
             var secondVar = _evaluator.Stack.Pop();
