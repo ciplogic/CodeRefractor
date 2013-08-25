@@ -56,6 +56,7 @@
     <Compile Include="HandleOperations\CppHandleCalls.cs" />
     <Compile Include="HandleOperations\CppHandleCompareBranches.cs" />
     <Compile Include="HandleOperations\CppHandleOperators.cs" />
+    <Compile Include="OuputCodeWriter\DelegateManager.cs" />
     <Compile Include="OuputCodeWriter\MetaLinkerOptimizer.cs" />
     <Compile Include="OuputCodeWriter\MethodInterpreterCodeWriter.cs" />
     <Compile Include="Optimizations\Common\ResultingOptimizationPass.cs" />
