@@ -5,6 +5,7 @@ using CodeRefractor.CompilerBackend.Optimizations.Inliner;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.Config;
 using CodeRefractor.RuntimeBase.FrontEnd;
+using CodeRefractor.RuntimeBase.Runtime;
 
 #endregion
 
@@ -23,6 +24,11 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                 var interpreter = typeData.GetInterpreter(methodBase.Key);
                 if (optimizationPasses == null) return;
                 LinkerInterpretersTable.Register(interpreter.MidRepresentation);
+            }
+
+            foreach (var usedMethod in CrRuntimeLibrary.Instance.UsedCppMethods)
+            {
+                LinkerInterpretersTable.Instance.RegisterRuntimeMethod(usedMethod);
             }
             foreach (var methodBase in GlobalMethodPool.Instance.MethodInfos)
             {

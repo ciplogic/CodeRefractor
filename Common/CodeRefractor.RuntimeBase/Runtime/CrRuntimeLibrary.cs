@@ -28,9 +28,15 @@ namespace CodeRefractor.RuntimeBase.Runtime
         public readonly Dictionary<string, MethodBase> UsedCppMethods = new Dictionary<string, MethodBase>();
         public readonly Dictionary<string, MetaLinker> UsedCilMethods = new Dictionary<string, MetaLinker>();
 
+        private static readonly CrRuntimeLibrary StaticInstance = new CrRuntimeLibrary();
+        public static CrRuntimeLibrary Instance
+        {
+            get { return StaticInstance; }
+        }
+
         public static void DefaultSetup()
         {
-            ProgramData.CrCrRuntimeLibrary = new CrRuntimeLibrary();
+            ProgramData.CrCrRuntimeLibrary = Instance;
         }
 
         public void ScanAssembly(Assembly assembly)

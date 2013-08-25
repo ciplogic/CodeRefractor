@@ -45,8 +45,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                     case LocalOperation.Kinds.Call:
 
                         var operationData = (MethodData)localOperation.Value;
-                        var methodInterpreter = LinkerInterpretersTable.GetMethod(operationData.Info);
-                        if (!ReadPurity(methodInterpreter))
+                        var readPurity = LinkerInterpretersTable.ReadPurity(operationData.Info);
+                        if (!readPurity)
                             return false;
                         break;
 

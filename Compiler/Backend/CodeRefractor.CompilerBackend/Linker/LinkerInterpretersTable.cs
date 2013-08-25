@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagation;
+using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.CompilerBackend.OuputCodeWriter;
 using System.Reflection;
+using CodeRefractor.RuntimeBase.Shared;
 
 namespace CodeRefractor.CompilerBackend.Linker
 {
@@ -14,8 +17,10 @@ namespace CodeRefractor.CompilerBackend.Linker
         {
             Instance = new LinkerInterpretersTable();
         }
-        public Dictionary<string, MetaMidRepresentation> Methods = 
+        public Dictionary<string, MetaMidRepresentation> Methods =
             new Dictionary<string, MetaMidRepresentation>();
+        public Dictionary<string, MethodBase> RuntimeMethods =
+            new Dictionary<string, MethodBase>();
         public static LinkerInterpretersTable Instance { get; private set; }
         public static void Register(MetaMidRepresentation method)
         {
@@ -27,10 +32,25 @@ namespace CodeRefractor.CompilerBackend.Linker
         {
             var methodName = midrepresentation.WriteHeaderMethod(false);
             MetaMidRepresentation result;
-            if (!Instance.Methods.TryGetValue(methodName, out result)) 
-                return null;
-            return result;
+            return !Instance.Methods.TryGetValue(methodName, out result) ? null : result;
         }
 
+        public static bool ReadPurity(MethodBase methodBase)
+        {
+            var method = GetMethod(methodBase);
+            if(method!=null)
+            {
+                return AnalyzeFunctionPurity.ReadPurity(method);
+            }
+
+            var methodRuntimeInfo = methodBase.GetMethodDescriptor();
+            var runtimeMethod = Instance.RuntimeMethods[methodRuntimeInfo];
+            return runtimeMethod.GetCustomAttribute<PureMethodAttribute>() != null;
+        }
+
+        public void RegisterRuntimeMethod(KeyValuePair<string, MethodBase> usedMethod)
+        {
+            RuntimeMethods[usedMethod.Key] = usedMethod.Value;
+        }
     }
 }
