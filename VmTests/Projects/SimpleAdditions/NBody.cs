@@ -1,16 +1,19 @@
 using System;
 
-class NBody
+namespace SimpleAdditions
 {
-    public static double Sum(double a, double b)
+    class NBody
     {
-        return a + Math.Sin(b);
-    }
-    public static void Main()
-    {
-        var a = 2.0;
-        var b = 3.0;
-        var c =Sum(a, b);
-        Console.WriteLine(c);
+        public static double Sum(double a, double b)
+        {
+            return a + Math.Sin(b);
+        }
+        public static void Main()
+        {
+            var a = 2;
+            var b = 3;
+            var c =Sum(a, b);
+            Console.WriteLine(c);
+        }
     }
 }

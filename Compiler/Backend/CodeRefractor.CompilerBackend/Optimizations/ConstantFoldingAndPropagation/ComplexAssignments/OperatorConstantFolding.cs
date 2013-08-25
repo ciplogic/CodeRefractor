@@ -89,10 +89,29 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                     case OpcodeOperatorNames.Xor:
                         HandleXor(constLeft, constRight);
                         break;
+
+
+                    case OpcodeOperatorNames.ConvR8:
+                        HandleConvDouble(constLeft);
+                        break;
+                    case OpcodeOperatorNames.ConvR4:
+                        HandleConvFloat(constLeft);
+                        break;
                     default:
                         throw new Exception("cannot evaluate this type");
                 }
             }
+        }
+
+        private void HandleConvDouble(ConstValue constLeft)
+        {
+            var result = ComputeDouble(constLeft);
+            FoldConstant(result);
+        }
+        private void HandleConvFloat(ConstValue constLeft)
+        {
+            var result = ComputeFloat(constLeft);
+            FoldConstant(result);
         }
 
 
@@ -223,7 +242,17 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                 };
             Result = true;
         }
+        
+        private static object ComputeDouble(ConstValue constLeft)
+        {
+            return Convert.ToDouble(constLeft.Value);
+        }
 
+        private static object ComputeFloat(ConstValue constLeft)
+        {
+            return Convert.ToSingle(constLeft.Value);
+        }
+        
         private static object ComputeCeq(ConstValue constLeft, ConstValue constRight)
         {
             return (int) constLeft.Value == (int) constRight.Value ? 1 : 0;

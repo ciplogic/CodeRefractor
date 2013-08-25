@@ -18,10 +18,5 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators
             get { return _name; }
             set { _name = value; }
         }
-
-        public string FormatVar()
-        {
-            return _name;
-        }
     }
 }

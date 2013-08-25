@@ -6,6 +6,7 @@ using CodeRefractor.CompilerBackend.Optimizations.ConstantDfa;
 using CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagation;
 using CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagation.ComplexAssignments;
 using CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagation.Operator;
+using CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagation.SimpleAssignment;
 using CodeRefractor.CompilerBackend.Optimizations.Jumps;
 using CodeRefractor.CompilerBackend.Optimizations.ReachabilityDfa;
 using CodeRefractor.CompilerBackend.Optimizations.SimpleDce;
@@ -54,6 +55,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
         {
             return new OptimizationPass[]
                        {
+                           new AssignmentVregWithConstNextLineFolding(), 
                            new OperatorPartialConstantFolding(),
 
                            new OperatorConstantFolding(),
