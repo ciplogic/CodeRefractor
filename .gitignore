@@ -25,3 +25,4 @@ Compiler/Backend/CodeRefractor.CompilerBackend/bin/Debug/*
 bin/output.o
 CodeRefactorCppDebugging/Debug/*
 *.user
+*.~lock*
