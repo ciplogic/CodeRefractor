@@ -4,16 +4,24 @@ namespace SimpleAdditions
 {
     class NBody
     {
-        public static double Sum(double a, double b)
+        CallEvent _onEvent;
+        void Logic()
         {
-            return a + Math.Sin(b);
+            _onEvent = EventHandle;
+
+            _onEvent(2);
         }
         public static void Main()
         {
-            var a = 2;
-            var b = 3;
-            var c =Sum(a, b);
-            Console.WriteLine(c);
+            var nBody = new NBody();
+            nBody.Logic();
+        }
+
+        private void EventHandle(int a)
+        {
+            Console.Write("Works");
+
+            Console.Write(a);
         }
     }
 }

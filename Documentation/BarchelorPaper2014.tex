@@ -1,0 +1,726 @@
+% This file was converted to LaTeX by Writer2LaTeX ver. 1.2
+% see http://writer2latex.sourceforge.net for more info
+\documentclass[letterpaper]{article}
+\usepackage[ascii]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb,amsfonts,textcomp}
+\usepackage{color}
+\usepackage{array}
+\usepackage{hhline}
+\usepackage{hyperref}
+\hypersetup{pdftex, colorlinks=true, linkcolor=blue, citecolor=blue, filecolor=blue, urlcolor=blue, pdftitle=, pdfauthor=, pdfsubject=, pdfkeywords=}
+% Outline numbering
+\setcounter{secnumdepth}{0}
+% Page layout (geometry)
+\setlength\voffset{-1in}
+\setlength\hoffset{-1in}
+\setlength\topmargin{0.7874in}
+\setlength\oddsidemargin{0.7874in}
+\setlength\textheight{9.4251995in}
+\setlength\textwidth{6.9251995in}
+\setlength\footskip{0.0cm}
+\setlength\headheight{0cm}
+\setlength\headsep{0cm}
+% Footnote rule
+\setlength{\skip\footins}{0.0469in}
+\renewcommand\footnoterule{\vspace*{-0.0071in}\setlength\leftskip{0pt}\setlength\rightskip{0pt plus 1fil}\noindent\textcolor{black}{\rule{0.25\columnwidth}{0.0071in}}\vspace*{0.0398in}}
+% Pages styles
+\makeatletter
+\newcommand\ps@Standard{
+  \renewcommand\@oddhead{}
+  \renewcommand\@evenhead{}
+  \renewcommand\@oddfoot{}
+  \renewcommand\@evenfoot{}
+  \renewcommand\thepage{\arabic{page}}
+}
+\makeatother
+\pagestyle{Standard}
+\title{}
+\author{}
+\date{2013-08-22}
+\begin{document}
+\clearpage\setcounter{page}{1}\pagestyle{Standard}
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+
+\bigskip
+
+{\centering\sffamily\bfseries
+Code Refractor 
+\par}
+
+{\centering
+Compilation and optimization of 
+\par}
+
+{\centering
+Stack Virtual Machines
+\par}
+
+
+\bigskip
+
+\clearpage
+Abstract
+
+
+\bigskip
+
+Virtual machines implement various techniques like interpretation, Just-in-time (JIT) compilation or Ahead-Of-Time (AOT)
+compilation. This project proposes a method of AOT compilation using the host CIL virtual machine (also known as .Net
+{\texttrademark} virtual machine) and using a standard C++ compiler (C++ 11) to give the same semantics and in the mean
+time to also improve performance offering a full compilation step, and in the very same time to remove the dependency
+to the host virtual machine. 
+
+
+\bigskip
+
+A similar technique could be implemented in a JVM (Java Virtual Machine), but CIL is in more ways advanced, because the
+CIL opcodes do not specify types, and the CIL Virtual Machine (VM) will have to infer based on context. \ 
+
+
+\bigskip
+
+\section{}
+\clearpage\section[0. Introduction]{0. Introduction}
+
+\bigskip
+
+An advanced (optimizing) compiler is split into following steps:
+
+{}- scanning (sometimes named tokenization)
+
+{}- parsing (which generates an AST tree)
+
+{}- semantic analysis
+
+{}- transformation of AST tree to intermediate representation (known as IR) which defines all operations of the source
+program into a small steps, that can be easily understood what they do
+
+{}- optimization steps which consist into various visitors of the IR and they rewrite the IR into an equivalent, but a
+bit more efficient more form of the defined operations
+
+{}- at last the IR is visited and written into a ``low level representation'' like Assembly language, or binary form. A
+critical part of this part, is to find a good way to use the minimum resources (mostly CPU registers)
+
+
+\bigskip
+
+This project will show a way to write an optimizing compiler against virtual machines, and focusing for correctness,
+performance and simplicity of understanding of the code. Also, in this introduction, the reader is informed how a
+virtual machine works, and how to map most operations into a low level implementation.
+
+
+\bigskip
+
+A virtual machine like Java (JVM = Java Virtual Machine) or .Net executes ``on demand'' an intermediate form (look
+earlier for IR), named ``bytecode''. This bytecode describes the original semantic of the original Java written
+language (in Java world) or C\# (Vb.Net, Boo, F\#, etc. in .Net technologies). 
+
+
+\bigskip
+
+If any user wants to get a better performing application, would likely want to get an efficient compiler to evaluate its
+program. Historically there are many approaches in literature:
+
+{}- HotSpot: is a JIT compiler which will compile ``hot'' parts of the program. This is great for some programs which
+benefit from this dynamic evaluation, but sometimes the startup time is a direct consequence of this approach, as some
+parts of the code are interpreted and profiled before knowing which parts are hot
+
+{}- another approach is done by Excelsior Jet, which (even is not fully documented how it works, being a proprietary
+product), but it looks that it compiles every bytecodes into an intermediate reprezentation, and based on your feature
+choice based on the bought edition, you will have enabled more or less optimizations. It also looks that their static
+compiler is written in Java (the controls look like written in Swing, and at least once in the evaluation version, I've
+got Java exception in compilation)
+
+{}- RoboVM and GCJ both read the Java bytecodes and rewrite it directly into an optimizing compiler backend (RoboVM into
+LLVM bytecodes, GCJ into GCC's GIMPLE bytecodes)
+
+{}- Mono has two Ahead-of-time compilers, one is their made LinearIR (their ``optimizing framework'') which is fast, and
+another one slow, which writes into LLVM bytecodes
+
+
+\bigskip
+
+For practical reasons, if a person wants to implement a full virtual machine specification, will have to implement tens
+to hundreds of bytecode instructions that are defined by the virtual machine, to make possible to execute average or a
+bit bigger than ``Hello world'' but also it shouldn't implement all (but as not all instructions are implemented it
+will make it a non-conformant virtual machine).
+
+
+\bigskip
+
+This thesis describes the implementation of a nonconforming Ahead-of-time compiler for CIL instruction set virtual
+machine of instruction set, and will try to use practical approaches to make it easy to be studied, extended and to
+make possible to give both a good performance of the final code and a fairly decent compatibility, regardless of
+virtual machine versions.
+
+\clearpage\section{1. AOT description and evaluation}
+
+\bigskip
+
+There are many parts in implementing a virtual machine, but before starting this, is better to describe what a virtual
+machine does in between the bytecode and the final executing code.
+
+
+\bigskip
+
+\subsection[1.1. Stack based Virtual Machines Overview]{1.1. Stack based Virtual Machines Overview}
+\subsubsection[1.1.1. Execution model]{1.1.1. Execution model}
+A Java and .Net VMs would do the following:
+
+{}- would start reading your entry method
+
+{}- right after that will read the bytecode as operations
+
+{}- depending of the design, will start executing that method up-to when will hit another method,
+
+{}- if this method was never compiled before, this method will be read too and executed recursively
+
+{}- if the method is compiled before, the method is executed normally, and the virtual machine will put guards around
+areas that can give exceptions or execute another method (named trampolines)
+
+
+\bigskip
+
+\subsubsection{1.1.2. Memory model}
+Virtual machines do implement a garbage collector, which means, through other things that memory is cleared (collected)
+periodically if is not reachable from other pointers. 
+
+
+\bigskip
+
+\subsubsection[1.1.3. Compilation model]{1.1.3. Compilation model}
+All stack based virtual machines, if they compile the method, they will compile not the bytecode directly, but they will
+make more optimizations on the intermediate reprezentation (IR). Also this form is later converted into binary object
+code, and this code is executed. These optimizations are limited in scope because the compilation happens interactively
+with running application. This mostly means, that the Register Allocation step is not optimal (for example in HotSpt
+Client version is using Linear Scan Allocator)
+
+
+\bigskip
+
+\subsubsection{1.1.4. ``Stack Based'' versus ``Register based'' instruction set}
+This means that operations between various entities are defined using an ``evaluator stack'' which means that
+instructions to be executed, they have to to read the last states (or to write them) before being able to define them.
+
+In a stack based code, even for simplest operations like:
+
+int a = 5; 
+
+int b = 3;
+
+int c = a + b;
+
+The code at the bytecode level is:
+
+1. push int 5
+
+2. pop value from stack into ``a''
+
+3. push int 3
+
+4. pop value from stack into ``b''
+
+5. push 'a'
+
+6. push 'b'
+
+7. add top two values on stack
+
+8. pop value from stack into ``c''
+
+
+\bigskip
+
+
+\bigskip
+
+A register based virtual machine has a already allocated number or local variables, named ``registers'' and the
+assignments of the operations, will not use stack as evaluator state, but the instructions will use the register index
+as source of data. 
+
+In a ``register based'' VM the code would be like following:
+
+1. set reg\_0 5
+
+2. set into 'a' reg\_0
+
+3. set reg\_1 3 
+
+4. set 'b from' reg\_1
+
+5. set reg\_2 from 'a'
+
+6. set reg\_3 from 'b'
+
+7. add reg\_4 reg\_2 reg\_3
+
+8. set 'c' from reg\_4
+
+
+\bigskip
+
+Even the number of instructions is the same in this simple problem, a precompiler can optimize the register usage of the
+register based, and rewrite as following:
+
+1. set reg\_0 5
+
+2. set reg\_1 3 
+
+3. add reg\_2 reg\_0 reg\_1
+
+4. set 'c' from reg\_2
+
+which will remove the usages of ``a'' and ``b'' as not being necessary, and even instruction 3 can be removed (and
+evaluate reg\_2 as value 8).
+
+
+\bigskip
+
+This is an important part as performance and optimization steps are concerned, if the stack VM can be rewritten as a
+Register based virtual machine, the optimizations can be applied more easily, because the instruction set contains more
+information to track the data.
+
+
+\bigskip
+
+
+\bigskip
+
+\subsubsection{1.1.5. Specified instruction set}
+Both Java and .Net (CIL) have publicly defined instruction set. They can be understood from public made documentation.
+This is great for implementers and makes a case of making easier to test a virtual machine compatibility. 
+
+
+\bigskip
+
+\subsection{}
+\clearpage\subsection[1.2. Evaluation and implementation directions ]{1.2. Evaluation and implementation directions }
+\subsubsection[1.2.1. Evaluating the execution model]{1.2.1. Evaluating the execution model}
+
+\bigskip
+
+Both Java and Net create a method graph of Callers and Callees, and all the logic can be extracted with reflection (a
+Java or .Net API to scan the runtime information) or with bytecode manipulation libraries. 
+
+
+\bigskip
+
+So the Code Refractor as first compile step, will get the assembly file which needs to be scanned, and will read the
+bytecodes especially the calls ones. This ``linker'' will scan bytecodes, and every time will find a new call
+instruction, will track and if finds a new function, will scan it too, up-to the moment will create the closure of all
+functions. 
+
+A note-worthy implementation detail is that the ``new object'' instruction includes an (implicit) constructor call (if
+this constructor is with no parameters), and this code is also scanned.
+
+
+\bigskip
+
+\subsubsection[1.2.2. Evaluating the memory model ]{1.2.2. Evaluating the memory model }
+\subsubsection[An advanced (and fast final code) compilation and memory model is a very hard problem, garbage collectors
+are as of today improved. Similarly, just a good register allocation, as the Register Allocation (RA) is an NP{}-hard
+problem, is not solvable and can be redefined as a coloring problem (which is again NP{}-hard). ]{An advanced (and fast
+final code) compilation and memory model is a very hard problem, garbage collectors are as of today improved.
+Similarly, just a good register allocation, as the Register Allocation (RA) is an NP-hard problem, is not solvable and
+can be redefined as a coloring problem (which is again NP-hard). }
+The garbage collector can be implemented with C++'s ``smart-pointer'' class. This class defines a number to count all
+references to an instance of an object. When the references are zero, the object instance is automatically deleted.
+
+\subsubsection{}
+\subsubsection[1.2.3 Evaluating the compilation model]{1.2.3 Evaluating the compilation model}
+It is easier and practical to reuse solutions already existent. The very often used solution for AOT compilers for
+virtual machines is LLVM or another compiler intermediate representation (like in case of GCJ, using GIMPLE form), but
+they also require to implement a full runtime, which again is hard to be made practical.
+
+As a solution to approximate the original virtual source, a C++ compiler can reflect fairly well the original bytecode
+(look to a later chapter where is defined how the C++ language reflects some of the semantics of the virtual machine,
+without introducing a memory or performance overhead. C++ has also another good side effect, C++ is supported in all
+GCC and major LLVM platforms, or even in platforms like Windows RT, so it is possible (given enough changes and
+platform support) to get access to all platforms which offer a C++ compiler, which includes embedded platforms, cars,
+etc.
+
+\subsubsection[1.2.4 Evaluating the Stack Based VM model]{1.2.4 Evaluating the Stack Based VM model}
+All operations in the .Net machine as they work against a stack which stores the states, it has to be implemented with
+main stack operations: 
+
+Push
+
+Pop
+
+Top / Peek
+
+
+\bigskip
+
+Introducing for a simple addition a full stack class, would make performance horrendous, but C++ (and C) pushes all
+(simple) variables to the CPU stack (which is very fast, as is implemented in the hardware of the CPU), so the solution
+is that every time we have a push of a value, we define a variable on stack to keep this variable, which is pushed on
+the process' stack, and when a Pop operation is called, this variable is read and will reset the counter to keep the
+correctness of the implementation.
+
+The another advantage with this implementation that it will change the virtual machine to be a Register-based VM, which
+at the end gives a lot of optimization opportunities. 
+
+
+\bigskip
+
+\subsubsection{1.2.5. Optimization overview }
+First of all, I will want to make a small comment about the word ``optimization'' which in many ways is considered to
+give an ``optimum'' of a starting program. In fact optimizations will never give the optimum program because:
+
+{}- optimum can be defined by more criteria, as most compilers (including Code Refractor one) optimize for runtime
+performance, will have some tradeoffs. One of them, is that it occupies more CPU stack (a memory tradeoff)
+
+{}- the algorithm in the first place, that is defined in the user's code may be optimal, and the compiler has to
+guarantee that will create the code with the same result
+
+{}- other factors, like but not limited to: some optimization passes in literature are not implemented as they are too
+complex to be made
+
+Based on this, I would define an 
+
+An \textbf{optimization step} is an algorithm which starts with the intermediate representation (IR) and will rewrite it
+to another IR (which is equivalent with the original IR's side effects and results) in case some conditions are met for
+that specific algorithm, which is in a form more advantageous as resources or strides to enable another optimization
+steps.
+
+Definition: the \textbf{compiler optimizations} is the application of all optimization steps until no optimization step
+is possible to an IR.
+
+Optimizations can be thought in some categories:
+
+{}- simplifications (like math simplifications)
+
+{}- propagation (like transitivity properties)
+
+{}- analysis steps (which would try to prove that some properties keep hold). If so, they do make possible that another
+optimization step to use these properties.
+
+{}- data flow optimizations (this will be a large section of the optimizations)
+
+{}- etc.
+
+
+\bigskip
+
+\clearpage\section{2. Code Refractor -- implementation of an AOT virtual machines}
+\subsection{2.1. Small overview of CodeRefractor}
+CodeRefractor does the following:
+
+{}- reads the entry point of an assembly
+
+{}- a pre-scan of the method call tree is created
+
+{}- a second scan will take all methods and will transform their CIL bytecodes into intermediate representation
+
+{}- the compiler optimizations are performed for every method
+
+{}- the intermediate representation is written into C++
+
+
+\bigskip
+
+\subsection{2.2. Intermediary representation of Code Refractor}
+As the logic of most code is method based, CR does store the intermediate representation per every method as two parts:
+
+{}- variable parts which are themselves split into:
+
+* local variables
+
+* virtual registers
+
+* arguments (method's parameters)
+
+{}- local operations which will use either the local variables or will call another methods
+
+The local operations, are themselves split into:
+
+{}- assignments
+
+{}- operators:
+
+* binary operators
+
+* unary operators
+
+{}- conditional operators
+
+{}- creation of arrays and objects
+
+{}- accessing array elements or fields
+
+{}- call of a separate methods
+
+{}- branch operations
+
+{}- labels
+
+
+\bigskip
+
+These operations are in fact a more compact form of the original CIL operations, and as a difference, the IR operation
+will keep unify the bytecodes that do a common semantic as a single operation kind, instead of having an individual
+bytecode for every operation.
+
+This means that if you make an \textbf{optimization step} that works against operators, it is easier to specify first a
+group of operations to target, and after that, the operations are inspected to see the specific operator you want to
+target.
+
+Describing a simple optimization step with a code sample:
+
+
+\bigskip
+
+\ \ \ \ \textcolor{blue}{internal}\textcolor{black}{ }\textcolor{blue}{class}\textcolor{black}{
+}\textcolor[rgb]{0.16862746,0.5686275,0.6862745}{MergeConsecutiveLabels}\textcolor{black}{ :
+}\textcolor[rgb]{0.16862746,0.5686275,0.6862745}{ResultingOptimizationPass}
+
+{\color{black}
+\ \ \ \ \{}
+
+\textcolor{black}{\ \ \ \ \ \ \ \ }\textcolor{blue}{public}\textcolor{black}{
+}\textcolor{blue}{override}\textcolor{black}{ }\textcolor{blue}{void}\textcolor{black}{
+OptimizeOperations(}\textcolor[rgb]{0.16862746,0.5686275,0.6862745}{MetaMidRepresentation}\textcolor{black}{
+intermediateCode)}
+
+{\color{black}
+\ \ \ \ \ \ \ \ \{}
+
+\textcolor{black}{\ \ \ \ \ \ \ \ \ \ \ \ }\textcolor{blue}{var}\textcolor{black}{ operations =
+intermediateCode.LocalOperations;}
+
+
+\bigskip
+
+\textcolor{black}{\ \ \ \ \ \ \ \ \ \ \ \ }\textcolor{blue}{var}\textcolor{black}{ found = operations.Any(operation
+={\textgreater} operation.Kind ==
+}\textcolor[rgb]{0.16862746,0.5686275,0.6862745}{LocalOperation}\textcolor{black}{.}\textcolor[rgb]{0.16862746,0.5686275,0.6862745}{Kinds}\textcolor{black}{.Label);}
+
+\textcolor{black}{\ \ \ \ \ \ \ \ \ \ \ \ }\textcolor{blue}{if}\textcolor{black}{ (!found)}
+
+\textcolor{black}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\textcolor{blue}{return}\textcolor{black}{;}
+
+\textcolor{black}{\ \ \ \ \ \ \ \ \ \ \ \ }\textcolor{blue}{for}\textcolor{black}{
+(}\textcolor{blue}{var}\textcolor{black}{ i = 0; i {\textless} operations.Count - 2; i++)}
+
+{\color{black}
+\ \ \ \ \ \ \ \ \ \ \ \ \{}
+
+\textcolor{black}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\textcolor{blue}{var}\textcolor{black}{ operation = operations[i];}
+
+\textcolor{black}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\textcolor{blue}{if}\textcolor{black}{ (operation.Kind !=
+}\textcolor[rgb]{0.16862746,0.5686275,0.6862745}{LocalOperation}\textcolor{black}{.}\textcolor[rgb]{0.16862746,0.5686275,0.6862745}{Kinds}\textcolor{black}{.Label)}
+
+\textcolor{black}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\textcolor{blue}{continue}\textcolor{black}{;}
+
+
+\bigskip
+
+\textcolor{black}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\textcolor{blue}{var}\textcolor{black}{ operation2 = operations[i +
+1];}
+
+\textcolor{black}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\textcolor{blue}{if}\textcolor{black}{ (operation2.Kind !=
+}\textcolor[rgb]{0.16862746,0.5686275,0.6862745}{LocalOperation}\textcolor{black}{.}\textcolor[rgb]{0.16862746,0.5686275,0.6862745}{Kinds}\textcolor{black}{.Label)}
+
+\textcolor{black}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\textcolor{blue}{continue}\textcolor{black}{;}
+
+\textcolor{black}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\textcolor{blue}{var}\textcolor{black}{ jumpId =
+(}\textcolor{blue}{int}\textcolor{black}{) operation.Value;}
+
+\textcolor{black}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\textcolor{blue}{var}\textcolor{black}{ jumpId2 =
+(}\textcolor{blue}{int}\textcolor{black}{) operation2.Value;}
+
+{\color{black}
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ OptimizeConsecutiveLabels(operations, jumpId, jumpId2);}
+
+{\color{black}
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ operations.RemoveAt(i + 1);}
+
+\textcolor{black}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Result = }\textcolor{blue}{true}\textcolor{black}{;}
+
+{\color{black}
+\ \ \ \ \ \ \ \ \ \ \ \ \}}
+
+{\color{black}
+\ \ \ \ \ \ \ \ \}}
+
+
+\bigskip
+
+\textcolor{black}{\ \ \ \ \ \ \ \ }\textcolor{blue}{private}\textcolor{black}{
+}\textcolor{blue}{static}\textcolor{black}{ }\textcolor{blue}{void}\textcolor{black}{
+OptimizeConsecutiveLabels(}\textcolor[rgb]{0.16862746,0.5686275,0.6862745}{List}\textcolor{black}{{\textless}}\textcolor[rgb]{0.16862746,0.5686275,0.6862745}{LocalOperation}\textcolor{black}{{\textgreater}
+operations, }\textcolor{blue}{int}\textcolor{black}{ jumpId, }\textcolor{blue}{int}\textcolor{black}{ jumpId2)}
+
+{\color{black}
+\ \ \ \ \ \ \ \ \{}
+
+\textcolor{black}{\ \ \ \ \ \ \ \ \ \ \ \ }\textcolor{blue}{for}\textcolor{black}{
+(}\textcolor{blue}{var}\textcolor{black}{ i = 0; i {\textless} operations.Count - 2; i++)}
+
+{\color{black}
+\ \ \ \ \ \ \ \ \ \ \ \ \{}
+
+\textcolor{black}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\textcolor{blue}{var}\textcolor{black}{ operation = operations[i];}
+
+\textcolor{black}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\textcolor{blue}{if}\textcolor{black}{
+(operation.IsBranchOperation())}
+
+\textcolor{black}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\textcolor{blue}{continue}\textcolor{black}{;}
+
+\textcolor{black}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\textcolor{blue}{switch}\textcolor{black}{ (operation.Kind)}
+
+{\color{black}
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+
+\textcolor{black}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\textcolor{blue}{case}\textcolor{black}{
+}\textcolor[rgb]{0.16862746,0.5686275,0.6862745}{LocalOperation}\textcolor{black}{.}\textcolor[rgb]{0.16862746,0.5686275,0.6862745}{Kinds}\textcolor{black}{.AlwaysBranch:}
+
+\textcolor{black}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\textcolor{blue}{var}\textcolor{black}{ jumpTo =
+(}\textcolor{blue}{int}\textcolor{black}{) operation.Value;}
+
+\textcolor{black}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\textcolor{blue}{if}\textcolor{black}{ (jumpId2 ==
+jumpTo)}
+
+{\color{black}
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ operation.Value = jumpId;}
+
+\textcolor{black}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\textcolor{blue}{break}\textcolor{black}{;}
+
+\textcolor{black}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\textcolor{blue}{case}\textcolor{black}{
+}\textcolor[rgb]{0.16862746,0.5686275,0.6862745}{LocalOperation}\textcolor{black}{.}\textcolor[rgb]{0.16862746,0.5686275,0.6862745}{Kinds}\textcolor{black}{.BranchOperator:}
+
+\textcolor{black}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\textcolor{blue}{var}\textcolor{black}{
+destAssignment = (}\textcolor[rgb]{0.16862746,0.5686275,0.6862745}{BranchOperator}\textcolor{black}{) operation.Value;}
+
+\textcolor{black}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\textcolor{blue}{if}\textcolor{black}{
+(destAssignment.JumpTo == jumpId2)}
+
+{\color{black}
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ destAssignment.JumpTo = jumpId;}
+
+\textcolor{black}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\textcolor{blue}{break}\textcolor{black}{;}
+
+{\color{black}
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+
+{\color{black}
+\ \ \ \ \ \ \ \ \ \ \ \ \}}
+
+{\color{black}
+\ \ \ \ \ \ \ \ \}}
+
+{\color{black}
+\ \ \ \ \}}
+
+This \textit{optimization step} will find if there are two consecutive instructions defined as label (target of jump
+instructions), and if they are found, the labels are merged into one, and all jumps that are targeting the deleted
+label, they will be redirected to the adjacent label.
+
+
+\bigskip
+
+Before starting optimizations, it is really great to know which optimization steps do make sense, as not all
+optimizations do have the same effect, but in short some rules can be easily discovered:
+
+{}- when a program executes less instructions, is more likely it will run faster
+
+{}- when the code that is not accessible in any execution path and is removed, this is also powerful as it possibly
+enable another optimizations
+
+{}- when you replace a variable with a constant value (when possible) is faster as execution time
+
+{}- removing calls, and replacing it with the equivalent code will save at least the performance of the final code
+
+{}- removing pointer assignments, this is crucial as an assignment requires more smart pointer incrementation and
+updating is expensive
+
+
+\bigskip
+
+Some performance improvements (yet they are not optimization steps, as they don't work against the IR) can be done
+without any semantic analysis of the final code:
+
+{}- platform native libraries which are imported, can be merged as data structures as a compilation step. This will
+reduce the impact of reloading every pointer to function and reloading/searching for a DLL if is loaded already
+
+{}- duplicate array data initialization (that sometimes is initialized only with zeroes) can be merged, and the same can
+be done in all strings over the application
+
+{}- the string type can contain in a linear data set the length and the string data. This improves the memory accessing
+pattern, as there is no required L1/L2 cache misses if the string length is separated from the data
+
+
+\bigskip
+
+\clearpage
+3. Optimization and optimization steps in the CR
+
+
+\bigskip
+\end{document}

@@ -7,6 +7,7 @@ void buildStringTable();
 void mapLibs();
 void RuntimeHelpersBuildConstantTable();
 
+
 void initializeRuntime()
 {
 	buildStringTable();
