@@ -44,6 +44,8 @@ namespace CodeRefractor.CompilerBackend.Linker
             }
 
             var methodRuntimeInfo = methodBase.GetMethodDescriptor();
+            if (!Instance.RuntimeMethods.ContainsKey(methodRuntimeInfo))
+                return false;
             var runtimeMethod = Instance.RuntimeMethods[methodRuntimeInfo];
             return runtimeMethod.GetCustomAttribute<PureMethodAttribute>() != null;
         }

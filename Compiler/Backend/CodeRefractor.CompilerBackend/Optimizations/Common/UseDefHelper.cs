@@ -63,7 +63,6 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
                     AddUsagesOfSetArrayItem(operation, result);
                     break;
 
-
                 case LocalOperation.Kinds.GetField:
                     AddUsagesOfGetField(operation, result);
                     break;
@@ -74,6 +73,16 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
                 case LocalOperation.Kinds.Call:
                     AddUsagesOfCall(operation, result);
                     break;
+                case LocalOperation.Kinds.Return:    
+                    AddUsagesOfReturn(operation, result);
+                    break;
+
+                case LocalOperation.Kinds.Label:
+                case LocalOperation.Kinds.NewObject:
+                case LocalOperation.Kinds.AlwaysBranch:
+                    break;
+                default:
+                    throw new NotImplementedException();
             }
             return result;
         }
@@ -88,6 +97,13 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
             }
         }
 
+        private static void AddUsagesOfReturn(LocalOperation operation, List<LocalVariable> result)
+        {
+            var returnedValue = operation.Get<IdentifierValue>();
+
+            result.AddUsage(returnedValue);
+            
+        }
         private static void AddUsagesOfGetField(LocalOperation operation, List<LocalVariable> result)
         {
             var assignment = (Assignment)operation.Value;
@@ -110,6 +126,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
             var arrayVar = (NewArrayObject)assignment.Right;
             result.AddUsage(arrayVar.ArrayLength);
         }
+
         private static void AddUsagesOfGetArrayItem(LocalOperation operation, List<LocalVariable> result)
         {
             var assignment = (Assignment)operation.Value;
@@ -145,6 +162,19 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
             usages.Add(localVar);
         }
 
+        public static HashSet<int> GetVariableDefinitions(this MetaMidRepresentation midRepresentation, LocalVariable variable)
+        {
+            var result = new HashSet<int>();
+            var pos = -1;
+            foreach (var localOperation in midRepresentation.LocalOperations)
+            {
+                pos++;
+                var definition = localOperation.GetUseDefinition();
+                if (variable.Equals(definition))
+                    result.Add(pos);
+            }
+            return result;
+        } 
         public static LocalVariable GetUseDefinition(this LocalOperation operation)
         {
             var kind = operation.Kind;
@@ -195,103 +225,184 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
             switch (op.Kind)
             {
                 case LocalOperation.Kinds.Assignment:
-                    var opAssignment = (Assignment) op.Value;
-                    if (usageVariable.Equals(opAssignment.Right))
-                    {
-                        opAssignment.Right = definitionIdentifier;
-                    }
+                    SwitchUsageInAssignment(op, usageVariable, definitionIdentifier);
                     break;
                 case LocalOperation.Kinds.BinaryOperator:
-                    var opBinaryOperator = (BinaryOperator)op.Value;
-                    if (usageVariable.Equals(opBinaryOperator.Right))
-                    {
-                        opBinaryOperator.Right = definitionIdentifier;
-                    }
-                    if (usageVariable.Equals(opBinaryOperator.Left))
-                    {
-                        opBinaryOperator.Left = definitionIdentifier;
-                    }
+                    SwitchUsageInBinaryOperator(op, usageVariable, definitionIdentifier);
                     break;
                 case LocalOperation.Kinds.UnaryOperator:
-                    var opUnaryOperator = (UnaryOperator)op.Value;
-                    if (usageVariable.Equals(opUnaryOperator.Left))
-                    {
-                        opUnaryOperator.Left = definitionIdentifier;
-                    }
+                    SwitchUsageInUnaryOperator(op, usageVariable, definitionIdentifier);
                     break;
                 case LocalOperation.Kinds.BranchOperator:
-                    var opBranchOperator = (BranchOperator)op.Value;
-                    if (usageVariable.Equals(opBranchOperator.CompareValue))
-                    {
-                        opBranchOperator.CompareValue = definitionIdentifier;
-                    }
+                    SwitchUsageInBranchOperator(op, usageVariable, definitionIdentifier);
                     break;
                 case LocalOperation.Kinds.GetField:
-                    var opGetField = (Assignment)op.Value;
-                    var getFieldData = (FieldGetter)opGetField.Right;
-                    if (usageVariable.Equals(getFieldData.Instance))
-                    {
-                        getFieldData.Instance = definitionIdentifier;
-                    }
+                    SwichUsageInGetField(op, usageVariable, definitionIdentifier);
                     break;
                 case LocalOperation.Kinds.SetField:
-                    var opSetField = (Assignment)op.Value;
-                    var setFieldData = (FieldSetter)opSetField.AssignedTo;
-                    if (usageVariable.Equals(setFieldData.Instance))
-                    {
-                        setFieldData.Instance = definitionIdentifier;
-                    }
-                    if (usageVariable.Equals(opSetField.Right))
-                    {
-                        opSetField.Right = definitionIdentifier;
-                    }
+                    SwitchUsageInSetField(op, usageVariable, definitionIdentifier);
                     break;
                 case LocalOperation.Kinds.SetArrayItem:
-                    var opSetArrayItem = (Assignment)op.Value;
-                    var setArrayData = (ArrayVariable)opSetArrayItem.AssignedTo;
-                    if (usageVariable.Equals(setArrayData.Parent))
-                    {
-                        setArrayData.Parent = definitionIdentifier;
-                    }
-                    if (usageVariable.Equals(setArrayData.Index))
-                    {
-                        setArrayData.Index = definitionIdentifier;
-                    }
-                    if (usageVariable.Equals(opSetArrayItem.Right))
-                    {
-                        opSetArrayItem.Right = definitionIdentifier;
-                    }
+                    SwitchUsageInSetArrayItem(op, usageVariable, definitionIdentifier);
                     break;
                 case LocalOperation.Kinds.GetArrayItem:
-                    var opGetArrayItem = (Assignment)op.Value;
-                    var getArrayData = (ArrayVariable)opGetArrayItem.Right;
-                    if (usageVariable.Equals(getArrayData.Parent))
-                    {
-                        getArrayData.Parent = definitionIdentifier;
-                    }
-                    if (usageVariable.Equals(getArrayData.Index))
-                    {
-                        getArrayData.Index = definitionIdentifier;
-                    }
-                    if (usageVariable.Equals(opGetArrayItem.AssignedTo))
-                    {
-                        opGetArrayItem.AssignedTo = (LocalVariable) definitionIdentifier;
-                    }
+                    SwitchUsageInGetArrayItem(op, usageVariable, definitionIdentifier);
                     break;
 
                 case LocalOperation.Kinds.Call:
-                    var methodData = op.Get<MethodData>();
-                    for (var index = 0; index < methodData.Parameters.Count; index++)
-                    {
-                        var identifierValue = methodData.Parameters[index];
-                        if (usageVariable.Equals(identifierValue))
-                        {
-                            methodData.Parameters[index] = definitionIdentifier;
-                        }
-                    }
+                    SwitchUsageInCall(op, usageVariable, definitionIdentifier);
+                    break;
+
+                case LocalOperation.Kinds.NewArray:
+                    SwitchUsageInNewArray(op, usageVariable, definitionIdentifier);
+                    break;
+                case LocalOperation.Kinds.Return:
+                    SwitchUsageInReturn(op, usageVariable, definitionIdentifier);
+                    break;
+                case LocalOperation.Kinds.AlwaysBranch:
+                case LocalOperation.Kinds.Label:
+                case LocalOperation.Kinds.NewObject:
                     break;
                 default:
                     throw new NotImplementedException("Switch usage is not implemented for this operation kind");
+            }
+        }
+
+        private static void SwitchUsageInReturn(LocalOperation op, LocalVariable usageVariable,
+                                                IdentifierValue definitionIdentifier)
+        {
+            var returnValue = op.Get<IdentifierValue>();
+            if (usageVariable.Equals(returnValue))
+            {
+                op.Value = definitionIdentifier;
+            }
+        }
+
+        private static void SwitchUsageInNewArray(LocalOperation op, LocalVariable usageVariable,
+                                                  IdentifierValue definitionIdentifier)
+        {
+            var arrayVar = (NewArrayObject) op.GetAssignment().Right;
+            if (usageVariable.Equals(arrayVar.ArrayLength))
+                arrayVar.ArrayLength = definitionIdentifier;
+        }
+
+        private static void SwitchUsageInCall(LocalOperation op, LocalVariable usageVariable,
+                                              IdentifierValue definitionIdentifier)
+        {
+            var methodData = op.Get<MethodData>();
+            for (var index = 0; index < methodData.Parameters.Count; index++)
+            {
+                var identifierValue = methodData.Parameters[index];
+                if (usageVariable.Equals(identifierValue))
+                    methodData.Parameters[index] = definitionIdentifier;
+            }
+        }
+
+        private static void SwitchUsageInGetArrayItem(LocalOperation op, LocalVariable usageVariable,
+                                                      IdentifierValue definitionIdentifier)
+        {
+            var opGetArrayItem = (Assignment) op.Value;
+            var getArrayData = (ArrayVariable) opGetArrayItem.Right;
+            if (usageVariable.Equals(getArrayData.Parent))
+            {
+                getArrayData.Parent = definitionIdentifier;
+            }
+            if (usageVariable.Equals(getArrayData.Index))
+            {
+                getArrayData.Index = definitionIdentifier;
+            }
+            if (usageVariable.Equals(opGetArrayItem.AssignedTo))
+            {
+                opGetArrayItem.AssignedTo = (LocalVariable) definitionIdentifier;
+            }
+        }
+
+        private static void SwitchUsageInSetArrayItem(LocalOperation op, LocalVariable usageVariable,
+                                                      IdentifierValue definitionIdentifier)
+        {
+            var opSetArrayItem = (Assignment) op.Value;
+            var setArrayData = (ArrayVariable) opSetArrayItem.AssignedTo;
+            if (usageVariable.Equals(setArrayData.Parent))
+            {
+                setArrayData.Parent = definitionIdentifier;
+            }
+            if (usageVariable.Equals(setArrayData.Index))
+            {
+                setArrayData.Index = definitionIdentifier;
+            }
+            if (usageVariable.Equals(opSetArrayItem.Right))
+            {
+                opSetArrayItem.Right = definitionIdentifier;
+            }
+        }
+
+        private static void SwitchUsageInSetField(LocalOperation op, LocalVariable usageVariable,
+                                                  IdentifierValue definitionIdentifier)
+        {
+            var opSetField = (Assignment) op.Value;
+            var setFieldData = (FieldSetter) opSetField.AssignedTo;
+            if (usageVariable.Equals(setFieldData.Instance))
+            {
+                setFieldData.Instance = definitionIdentifier;
+            }
+            if (usageVariable.Equals(opSetField.Right))
+            {
+                opSetField.Right = definitionIdentifier;
+            }
+        }
+
+        private static void SwichUsageInGetField(LocalOperation op, LocalVariable usageVariable,
+                                                 IdentifierValue definitionIdentifier)
+        {
+            var opGetField = (Assignment) op.Value;
+            var getFieldData = (FieldGetter) opGetField.Right;
+            if (usageVariable.Equals(getFieldData.Instance))
+            {
+                getFieldData.Instance = definitionIdentifier;
+            }
+        }
+
+        private static void SwitchUsageInBranchOperator(LocalOperation op, LocalVariable usageVariable,
+                                                        IdentifierValue definitionIdentifier)
+        {
+            var opBranchOperator = (BranchOperator) op.Value;
+            if (usageVariable.Equals(opBranchOperator.CompareValue))
+            {
+                opBranchOperator.CompareValue = definitionIdentifier;
+            }
+        }
+
+        private static void SwitchUsageInUnaryOperator(LocalOperation op, LocalVariable usageVariable,
+                                                       IdentifierValue definitionIdentifier)
+        {
+            var opUnaryOperator = (UnaryOperator) op.Value;
+            if (usageVariable.Equals(opUnaryOperator.Left))
+            {
+                opUnaryOperator.Left = definitionIdentifier;
+            }
+        }
+
+        private static void SwitchUsageInBinaryOperator(LocalOperation op, LocalVariable usageVariable,
+                                                        IdentifierValue definitionIdentifier)
+        {
+            var opBinaryOperator = (BinaryOperator) op.Value;
+            if (usageVariable.Equals(opBinaryOperator.Right))
+            {
+                opBinaryOperator.Right = definitionIdentifier;
+            }
+            if (usageVariable.Equals(opBinaryOperator.Left))
+            {
+                opBinaryOperator.Left = definitionIdentifier;
+            }
+        }
+
+        private static void SwitchUsageInAssignment(LocalOperation op, LocalVariable usageVariable,
+                                                    IdentifierValue definitionIdentifier)
+        {
+            var opAssignment = (Assignment) op.Value;
+            if (usageVariable.Equals(opAssignment.Right))
+            {
+                opAssignment.Right = definitionIdentifier;
             }
         }
     }

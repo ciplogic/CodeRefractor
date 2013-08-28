@@ -42,6 +42,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 
         public T Get<T>()
         {
+            if (Value == null)
+                return default(T);
             return (T) Value;
         }
 

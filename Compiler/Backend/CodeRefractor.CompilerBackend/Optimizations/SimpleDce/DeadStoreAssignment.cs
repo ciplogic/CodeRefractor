@@ -18,17 +18,18 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
 
                 var opKind = op.Kind;
                 if (opKind != LocalOperation.Kinds.Assignment
-                    && opKind != LocalOperation.Kinds.BinaryOperator
+                   && opKind != LocalOperation.Kinds.BinaryOperator
                     && opKind != LocalOperation.Kinds.UnaryOperator)
                     continue;
                 var variableDefinition = op.GetUseDefinition();
                 if(variableDefinition==null)
                     continue;
 
-                var usagePos = localOperations.GetVariableUsages(variableDefinition);
-                if (usagePos.Count != 0)
-                    continue;
-                toRemove.Add(pos);
+                var usagePos = intermediateCode.GetVariableUsages(variableDefinition);
+                if (usagePos.Count == 0)
+                {
+                    toRemove.Add(pos);
+                }
             }
             if(toRemove.Count==0)
                 return;

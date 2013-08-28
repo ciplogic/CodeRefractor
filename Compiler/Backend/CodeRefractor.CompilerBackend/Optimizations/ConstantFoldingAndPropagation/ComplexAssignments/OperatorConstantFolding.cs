@@ -22,15 +22,16 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
         {
             _intermediateCode = intermediateCode;
             var pos = -1;
-            foreach (var destOperation in intermediateCode.LocalOperations)
+            for (var index = 0; index < intermediateCode.LocalOperations.Count; index++)
             {
+                var destOperation = intermediateCode.LocalOperations[index];
                 pos++;
                 _pos = pos;
                 if (destOperation.Kind != LocalOperation.Kinds.BinaryOperator
                     && destOperation.Kind != LocalOperation.Kinds.UnaryOperator)
                     continue;
 
-                var baseOperator = (OperatorBase)destOperation.Value;
+                var baseOperator = (OperatorBase) destOperation.Value;
                 _baseOperator = baseOperator;
                 ConstValue constLeft = null;
                 ConstValue constRight = null;

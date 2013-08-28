@@ -44,15 +44,12 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
         {
             return new OptimizationPass[]
             {
-                new AnalyzeFunctionPurity(),
                 
-                new DeadStoreAssignment(), // ??
-                new OneAssignmentDeadStoreAssignment(), // ??
-      
+                new OneAssignmentDeadStoreAssignment(), //??
+                           // new AssignmentVregWithConstNextLineFolding(),  //?? 
                 
-                new DeleteJumpNextLine(),
-                new RemoveUnreferencedLabels(),
-                new MergeConsecutiveLabels(),
+                new DeadStoreAssignment(), // ?? 
+                
             }.ToList();
         }
 
@@ -61,13 +58,15 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
         {
             return new OptimizationPass[]
                        {
-                           new AssignmentVregWithConstNextLineFolding(), 
+                                      
+                           new DceVRegUnused(),
+                         
                            new OperatorPartialConstantFolding(),
                            new OperatorConstantFolding(),
                            new ConstantVariableBranchOperatorPropagation(),  
-                            
+                 
+
                            new EvaluatePureFunctionWithConstantCall(),
-                           new DceVRegUnused(),
                            new AssignToReturnPropagation(),
                            new DeadStoreLastSequenceRemover(),
                            new DceLocalAssigned(),
@@ -80,6 +79,16 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
                            
                            new DoubleAssignPropagation(),
                            
+      
+                new AnalyzeFunctionPurity(),
+                           
+                new DeleteJumpNextLine(),
+                new RemoveUnreferencedLabels(),
+                new MergeConsecutiveLabels(),
+                           
+                           
+                new DeadStoreAssignment(), 
+                 new OneAssignmentDeadStoreAssignment(),
                        }.ToList();
         }
     }
