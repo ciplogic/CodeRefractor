@@ -49,6 +49,7 @@
     <Compile Include="Optimizations\ConstantFoldingAndPropagation\ComplexAssignments\OneDefUsedPreviousLinePropagation.cs" />
     <Compile Include="Optimizations\ConstantFoldingAndPropagation\SimpleAssignment\AssignmentVregWithConstNextLineFolding.cs" />
     <Compile Include="Optimizations\SimpleDce\DeadStoreAssignment.cs" />
+    <Compile Include="Optimizations\SimpleDce\OneAssignmentDeadStoreAssignment.cs" />
     <Compile Include="OuputCodeWriter\CppCodeGenerator.cs" />
     <Compile Include="OuputCodeWriter\CppFullFileMethodWriter.cs" />
     <Compile Include="OuputCodeWriter\CppMethodCodeWriter.cs" />
@@ -71,7 +72,7 @@
     <Compile Include="Optimizations\ConstantFoldingAndPropagation\ConstantVariablePropagationInCall.cs" />
     <Compile Include="Optimizations\ConstantFoldingAndPropagation\EvaluatePureFunctionWithConstantCall.cs" />
     <Compile Include="Optimizations\ConstantFoldingAndPropagation\ComplexAssignments\OperatorConstantFolding.cs" />
-    <Compile Include="Optimizations\ConstantFoldingAndPropagation\Operator\OperatorPartialConstantFolding.cs" />
+    <Compile Include="Optimizations\ConstantFoldingAndPropagation\ComplexAssignments\OperatorPartialConstantFolding.cs" />
     <Compile Include="Optimizations\Inliner\SmallFunctionsInliner.cs" />
     <Compile Include="Optimizations\InstructionsUtils.cs" />
     <Compile Include="Optimizations\Jumps\MergeConsecutiveLabels.cs" />

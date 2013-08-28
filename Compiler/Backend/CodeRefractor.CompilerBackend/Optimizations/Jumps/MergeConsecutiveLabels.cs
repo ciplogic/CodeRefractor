@@ -43,7 +43,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Jumps
             for (var i = 0; i < operations.Count - 2; i++)
             {
                 var operation = operations[i];
-                if (operation.IsBranchOperation())
+                if (!operation.IsBranchOperation())
                     continue;
                 switch (operation.Kind)
                 {

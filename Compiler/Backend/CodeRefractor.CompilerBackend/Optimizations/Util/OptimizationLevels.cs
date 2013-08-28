@@ -19,13 +19,17 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
 {
     public class OptimizationLevels : OptimizationLevelBase
     {
-        public override List<OptimizationPass> BuildOptimizationPasses2()
+        public override List<OptimizationPass> BuildOptimizationPasses0()
+        {
+            return new OptimizationPass[0].ToList();
+        }
+
+        public override List<OptimizationPass> BuildOptimizationPasses3()
         {
             return new OptimizationPass[]
                        {
                            
                            new OneDefUsedNextLinePropagation(), //??
-                           new DeadStoreAssignment(), // ??
                            new OneDefUsedPreviousLinePropagation(), //??
                            
                         
@@ -36,12 +40,14 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
         }
 
 
-        public override List<OptimizationPass> BuildOptimizationPasses1()
+        public override List<OptimizationPass> BuildOptimizationPasses2()
         {
             return new OptimizationPass[]
             {
                 new AnalyzeFunctionPurity(),
-                new ConstantVariableBranchOperatorPropagation(),  
+                
+                new DeadStoreAssignment(), // ??
+                new OneAssignmentDeadStoreAssignment(), // ??
       
                 
                 new DeleteJumpNextLine(),
@@ -51,14 +57,14 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
         }
 
 
-        public override List<OptimizationPass> BuildOptimizationPasses0()
+        public override List<OptimizationPass> BuildOptimizationPasses1()
         {
             return new OptimizationPass[]
                        {
                            new AssignmentVregWithConstNextLineFolding(), 
                            new OperatorPartialConstantFolding(),
-
                            new OperatorConstantFolding(),
+                           new ConstantVariableBranchOperatorPropagation(),  
                             
                            new EvaluatePureFunctionWithConstantCall(),
                            new DceVRegUnused(),

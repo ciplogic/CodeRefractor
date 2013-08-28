@@ -13,24 +13,29 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
 
         public static bool ReadPurity(MetaMidRepresentation intermediateCode)
         {
-            object isPureData;
+            if (intermediateCode == null)
+                return false;
             var additionalData = intermediateCode.AuxiliaryObjects;
+
+            object isPureData; 
             return additionalData.TryGetValue(IsPureString, out isPureData);
         }
         public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
         {
             if (ReadPurity(intermediateCode))
                 return;
-            var operations = intermediateCode.LocalOperations;
-            var functionIsPure = ComputeFunctionPurity(operations);
+            var functionIsPure = ComputeFunctionPurity(intermediateCode);
             var additionalData = intermediateCode.AuxiliaryObjects;
             if (!functionIsPure) return;
             additionalData[IsPureString] = true;
             Result = true;
         }
 
-        public static bool ComputeFunctionPurity(List<LocalOperation> operations)
+        public static bool ComputeFunctionPurity(MetaMidRepresentation intermediateCode)
         {
+            if(intermediateCode==null)
+                return false;
+            var operations = intermediateCode.LocalOperations;
             foreach (var localOperation in operations)
             {
                 switch (localOperation.Kind)

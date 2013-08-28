@@ -5,6 +5,7 @@ using System.Linq;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
+using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
 
 #endregion
 
@@ -26,13 +27,30 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ReachabilityDfa
             for (var i = 0; i < operations.Count; i++)
             {
                 var operation = operations[i];
-                if (operation.Kind != LocalOperation.Kinds.AlwaysBranch)
-                    continue;
-                var jumpLabel = JumpTo((int) operation.Value);
-
-                if (jumpLabel != i + 1) continue;
-                Result = true;
-                operations.RemoveAt(i);
+                switch (operation.Kind)
+                {
+                    case LocalOperation.Kinds.AlwaysBranch:
+                        var jumpLabel = JumpTo((int) operation.Value);
+                        
+                        if (jumpLabel != i + 1)
+                            continue;
+                        
+                        Result = true;
+                        operations.RemoveAt(i);
+                        return;
+                    case LocalOperation.Kinds.BranchOperator:
+                        
+                        var destAssignment = (BranchOperator) operation.Value;
+                        var jumpTo = JumpTo(destAssignment.JumpTo);
+                        if (jumpTo != i + 1)
+                            continue;
+                        
+                        Result = true;
+                        operations.RemoveAt(i);
+                        return;
+                    default:
+                        continue;
+                }
             }
         }
 

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.MiddleEnd;
+using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
@@ -69,8 +70,22 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
                 case LocalOperation.Kinds.SetField:
                     AddUsagesOfSetField(operation, result);
                     break;
+
+                case LocalOperation.Kinds.Call:
+                    AddUsagesOfCall(operation, result);
+                    break;
             }
             return result;
+        }
+
+        private static void AddUsagesOfCall(LocalOperation operation, List<LocalVariable> result)
+        {
+            var assignment = (MethodData)operation.Value;
+            var parameters = assignment.Parameters;
+            foreach (var parameter in parameters)
+            {
+                result.AddUsage(parameter);
+            }
         }
 
         private static void AddUsagesOfGetField(LocalOperation operation, List<LocalVariable> result)
@@ -261,6 +276,18 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
                     if (usageVariable.Equals(opGetArrayItem.AssignedTo))
                     {
                         opGetArrayItem.AssignedTo = (LocalVariable) definitionIdentifier;
+                    }
+                    break;
+
+                case LocalOperation.Kinds.Call:
+                    var methodData = op.Get<MethodData>();
+                    for (var index = 0; index < methodData.Parameters.Count; index++)
+                    {
+                        var identifierValue = methodData.Parameters[index];
+                        if (usageVariable.Equals(identifierValue))
+                        {
+                            methodData.Parameters[index] = definitionIdentifier;
+                        }
                     }
                     break;
                 default:

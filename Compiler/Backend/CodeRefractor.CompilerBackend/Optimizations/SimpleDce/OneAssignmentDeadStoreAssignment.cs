@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
+using System.Linq;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 
 namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
 {
-    class DeadStoreAssignment : ResultingOptimizationPass
+    class OneAssignmentDeadStoreAssignment : ResultingOptimizationPass
     {
         public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
         {
@@ -17,20 +18,20 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
                 pos++;
 
                 var opKind = op.Kind;
-                if (opKind != LocalOperation.Kinds.Assignment
-                    && opKind != LocalOperation.Kinds.BinaryOperator
-                    && opKind != LocalOperation.Kinds.UnaryOperator)
+                if (opKind != LocalOperation.Kinds.Assignment)
                     continue;
                 var variableDefinition = op.GetUseDefinition();
-                if(variableDefinition==null)
+                if (variableDefinition == null)
                     continue;
 
                 var usagePos = localOperations.GetVariableUsages(variableDefinition);
-                if (usagePos.Count != 0)
+                if (usagePos.Count != 1)
                     continue;
+                var assignment = op.GetAssignment();
+                localOperations[usagePos.First()].SwitchUsageWithDefinition(assignment.AssignedTo, assignment.Right);
                 toRemove.Add(pos);
             }
-            if(toRemove.Count==0)
+            if (toRemove.Count == 0)
                 return;
             intermediateCode.DeleteInstructions(toRemove);
             Result = true;

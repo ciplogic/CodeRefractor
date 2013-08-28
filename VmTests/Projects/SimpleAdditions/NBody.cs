@@ -1,27 +1,12 @@
 using System;
 
-namespace SimpleAdditions
+class NBody
 {
-    class NBody
+    public static void Main()
     {
-        CallEvent _onEvent;
-        void Logic()
-        {
-            _onEvent = EventHandle;
-
-            _onEvent(2);
-        }
-        public static void Main()
-        {
-            var nBody = new NBody();
-            nBody.Logic();
-        }
-
-        private void EventHandle(int a)
-        {
-            Console.Write("Works");
-
-            Console.Write(a);
-        }
+        var a = true;
+        var b = true;
+        var c = a && b;
+        Console.WriteLine(c ? 1 : 0);
     }
 }

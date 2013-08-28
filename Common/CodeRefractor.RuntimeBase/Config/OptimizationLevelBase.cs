@@ -15,6 +15,11 @@ namespace CodeRefractor.RuntimeBase.Config
             throw new NotImplementedException();
         }
 
+        public virtual List<OptimizationPass> BuildOptimizationPasses3()
+        {
+            throw new NotImplementedException();
+        }
+
         public virtual List<OptimizationPass> BuildOptimizationPasses2()
         {
             throw new NotImplementedException();

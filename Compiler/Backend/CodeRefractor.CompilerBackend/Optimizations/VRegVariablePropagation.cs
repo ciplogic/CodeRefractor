@@ -127,7 +127,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations
             var destValue = srcVariable as LocalVariable;
             ConstValue constVal = null;
             if (destValue == null)
-                constVal = new ConstValue(srcVariable);
+                constVal = (ConstValue)srcVariable;
             var assignValue = destValue != null ? (IdentifierValue) destValue : constVal;
             return assignValue;
         }

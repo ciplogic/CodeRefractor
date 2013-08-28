@@ -1,7 +1,6 @@
 ﻿#region Usings
 
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.MiddleEnd;
@@ -40,7 +39,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                 }
                 else
                 {
-                    var computeIsPure = AnalyzeFunctionPurity.ComputeFunctionPurity(methodInterpreter.LocalOperations);
+                    var computeIsPure = AnalyzeFunctionPurity.ComputeFunctionPurity(methodInterpreter);
                     if (computeIsPure)
                         operationData.IsPure = true;
                 }

@@ -1,6 +1,6 @@
 #region Usings
 
-using System.Collections.Generic;
+using System;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
@@ -18,30 +18,18 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
             var operations = intermediateCode.LocalOperations;
             for (var i = 0; i < operations.Count - 1; i++)
             {
-                Assignment srcVariableDefinition;
-                var constValue = GetConstantFromOperation(operations, i, out srcVariableDefinition);
-                if (constValue == null)
-                    continue;
-                if (HandleBranchCases(i, operations, srcVariableDefinition, constValue)) return;
-            }
-        }
-
-        private bool HandleBranchCases(int i, List<LocalOperation> operations, Assignment srcVariableDefinition, ConstValue constValue)
-        {
-            for (var j = i + 1; j < operations.Count; j++)
-            {
-                var destOperation = operations[j];
-                if (destOperation.Kind == LocalOperation.Kinds.Label)
-                    break;
+                var destOperation = operations[i];
                 if (destOperation.Kind != LocalOperation.Kinds.BranchOperator) continue;
-                var destAssignment = (BranchOperator) destOperation.Value;
-                if (!SameVariable(destAssignment.CompareValue as LocalVariable, srcVariableDefinition.AssignedTo))
-                    break;
+                var destAssignment = (BranchOperator)destOperation.Value;
+                var constValue = destAssignment.CompareValue as ConstValue;
+                if(constValue==null)
+                    return;
                 Result = true;
-                var isTrue = ((int) constValue.Value != 0) ^ (destAssignment.Name != OpcodeBranchNames.BrTrue);
+                var expressionValue = Convert.ToInt32(constValue.Value) != 0;
+                var isTrue = (expressionValue ) ^ (destAssignment.Name != OpcodeBranchNames.BrTrue);
                 if (isTrue)
                 {
-                    operations[j] = new LocalOperation
+                    operations[i] = new LocalOperation
                     {
                         Kind = LocalOperation.Kinds.AlwaysBranch,
                         Value = destAssignment.JumpTo
@@ -49,11 +37,10 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                 }
                 else
                 {
-                    operations.RemoveAt(j);
+                    operations.RemoveAt(i);
                 }
-                return true;
+                return;
             }
-            return false;
         }
     }
 }
