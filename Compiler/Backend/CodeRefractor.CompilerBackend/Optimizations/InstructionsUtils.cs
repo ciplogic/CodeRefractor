@@ -3,7 +3,6 @@
 using System.Collections.Generic;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
 #endregion
 
@@ -11,12 +10,6 @@ namespace CodeRefractor.CompilerBackend.Optimizations
 {
     public static class InstructionsUtils
     {
-        public static LocalVariable GetDefinition(this LocalOperation operation)
-        {
-            var assignment = operation.GetAssignment();
-            return assignment == null ? null : assignment.AssignedTo;
-        }
-
         public static Assignment GetAssignment(this LocalOperation operation)
         {
             return operation.Value as Assignment;

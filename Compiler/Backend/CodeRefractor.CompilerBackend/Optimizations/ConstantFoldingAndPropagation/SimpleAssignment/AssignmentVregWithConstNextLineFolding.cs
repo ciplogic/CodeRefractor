@@ -18,10 +18,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                     continue;
 
                 var assignment = localOperation.GetAssignment();
-
-                var constValue = assignment.Right as ConstValue;
-                if (constValue == null)
-                    continue;
+                var constValue = assignment.Right ;
                 var destOperation = operations[index + 1];
                 if (!destOperation.OperationUses(assignment.AssignedTo)) continue;
                 destOperation.SwitchUsageWithDefinition(assignment.AssignedTo, constValue);

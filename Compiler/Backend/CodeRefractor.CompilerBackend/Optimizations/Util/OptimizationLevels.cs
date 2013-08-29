@@ -46,7 +46,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
             {
                 
                 new OneAssignmentDeadStoreAssignment(), //??
-                           // new AssignmentVregWithConstNextLineFolding(),  //?? 
+                           //  //?? 
                 
                 new DeadStoreAssignment(), // ?? 
                 
@@ -89,6 +89,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
                            
                 new DeadStoreAssignment(), 
                  new OneAssignmentDeadStoreAssignment(),
+                 new AssignmentWithVregPrevLineFolding(),
+                 new AssignmentVregWithConstNextLineFolding(), 
                        }.ToList();
         }
     }

@@ -48,6 +48,7 @@
     <Compile Include="Optimizations\ConstantFoldingAndPropagation\ComplexAssignments\OneDefUsedNextLinePropagation.cs" />
     <Compile Include="Optimizations\ConstantFoldingAndPropagation\ComplexAssignments\OneDefUsedPreviousLinePropagation.cs" />
     <Compile Include="Optimizations\ConstantFoldingAndPropagation\SimpleAssignment\AssignmentVregWithConstNextLineFolding.cs" />
+    <Compile Include="Optimizations\ConstantFoldingAndPropagation\SimpleAssignment\AssignmentWithVregPrevLineFolding.cs" />
     <Compile Include="Optimizations\SimpleDce\DeadStoreAssignment.cs" />
     <Compile Include="Optimizations\SimpleDce\OneAssignmentDeadStoreAssignment.cs" />
     <Compile Include="OuputCodeWriter\CppCodeGenerator.cs" />
