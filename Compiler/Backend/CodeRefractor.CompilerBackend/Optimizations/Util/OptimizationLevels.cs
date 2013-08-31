@@ -86,6 +86,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
                 new AnalyzeFunctionIsGetter(),
                 new AnalyzeFunctionIsSetter(),
                 new AnalyzeFunctionIsEmpty(),
+                new AnalyzeParametersAreEscaping(), 
 
                 new InlineGetterAndSetterMethods(), 
                            

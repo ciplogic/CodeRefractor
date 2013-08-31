@@ -50,6 +50,7 @@
     <Compile Include="FrontEnd\GlobalMethodPool.cs" />
     <Compile Include="MetaLinker.cs" />
     <Compile Include="MiddleEnd\MetaMidRepresentationOperationFactory.cs" />
+    <Compile Include="MiddleEnd\MidRepresentationUtils.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\FunctionPointerStore.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\IClonableOperation.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\StaticFieldSetter.cs" />

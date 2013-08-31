@@ -19,13 +19,11 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Inliner
                 if (localOperation.Kind != LocalOperation.Kinds.Call) continue;
 
                 var methodData = (MethodData) localOperation.Value;
-                var methodBase = methodData.Info;
-                var typeData = (ClassTypeData) ProgramData.UpdateType(methodBase.DeclaringType);
-                var interpreter = typeData.GetInterpreter(methodBase.ToString());
+                var interpreter = LinkerUtils.GetInterpreter(methodData);
                 if (interpreter == null)
                     continue;
 
-                var methodInterpreter = LinkerInterpretersTable.GetMethod(methodData.Info);
+                var methodInterpreter = methodData.Info.GetMethod();
                 if (AnalyzeFunctionIsGetter.ReadProperty(methodInterpreter)
                     || AnalyzeFunctionIsSetter.ReadProperty(methodInterpreter)
                     || AnalyzeFunctionIsEmpty.ReadProperty(methodInterpreter)

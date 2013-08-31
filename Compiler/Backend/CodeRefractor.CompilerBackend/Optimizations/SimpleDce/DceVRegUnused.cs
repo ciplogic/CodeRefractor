@@ -126,10 +126,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
                 return;
             foreach (var operation in setFields)
             {
-                var assignment = (Assignment)operation.Value;
-                var fieldSetter = (FieldGetter)assignment.Right;
+                var assignment = (FieldGetter)operation.Value;
                 RemoveCandidateVarIfVreg(vregConstants, assignment.AssignedTo);
-                RemoveCandidateVarIfVreg(vregConstants, fieldSetter.Instance);
+                RemoveCandidateVarIfVreg(vregConstants, assignment.Instance);
             }
         }
 

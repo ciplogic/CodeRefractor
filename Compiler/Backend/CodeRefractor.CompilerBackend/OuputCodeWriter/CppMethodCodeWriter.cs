@@ -232,9 +232,8 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 
         private static void HandleLoadField(LocalOperation operation, StringBuilder bodySb)
         {
-            var value = (Assignment) operation.Value;
-            var fieldGetterInfo = (FieldGetter) value.Right;
-            bodySb.AppendFormat("{0} = {1}->{2};", value.AssignedTo.Name, fieldGetterInfo.Instance.Name,
+            var fieldGetterInfo = (FieldGetter)operation.Value;
+            bodySb.AppendFormat("{0} = {1}->{2};", fieldGetterInfo.AssignedTo.Name, fieldGetterInfo.Instance.Name,
                                 fieldGetterInfo.FieldName);
         }
 

@@ -18,7 +18,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
         public List<LocalOperation> LocalOperations = new List<LocalOperation>();
 
-        public Dictionary<string, object> AuxiliaryObjects =new Dictionary<string, object>();
+        public readonly Dictionary<string, object> AuxiliaryObjects =new Dictionary<string, object>();
         private MethodBase _method;
 
         public MethodBase Method

@@ -28,17 +28,9 @@ namespace CodeRefractor.CompilerBackend.Linker
             var methodName = method.Method.WriteHeaderMethod(false);
             Instance.Methods[methodName] = method;
         }
-
-        public static MetaMidRepresentation GetMethod(MethodBase midrepresentation)
-        {
-            var methodName = midrepresentation.WriteHeaderMethod(false);
-            MetaMidRepresentation result;
-            return !Instance.Methods.TryGetValue(methodName, out result) ? null : result;
-        }
-
         public static bool ReadPurity(MethodBase methodBase)
         {
-            var method = GetMethod(methodBase);
+            var method = methodBase.GetMethod();
             if(method!=null)
             {
                 return AnalyzeFunctionPurity.ReadPurity(method);

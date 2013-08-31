@@ -32,7 +32,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
                     continue;
 
                 var operationData = (MethodData)operation.Value;
-                var methodInterpreter = LinkerInterpretersTable.GetMethod(operationData.Info);
+                var methodInterpreter = LinkerUtils.GetMethod(operationData.Info);
                 if (AnalyzeFunctionPurity.ReadPurity(methodInterpreter))
                 {
                     operationData.IsPure = true;

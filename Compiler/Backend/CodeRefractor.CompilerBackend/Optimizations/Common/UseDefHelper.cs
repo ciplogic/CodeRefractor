@@ -106,8 +106,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
         }
         private static void AddUsagesOfGetField(LocalOperation operation, List<LocalVariable> result)
         {
-            var assignment = (Assignment)operation.Value;
-            var arrayVar = (FieldGetter)assignment.Right;
+            var arrayVar = (FieldGetter)operation.Value;
             result.AddUsage(arrayVar.Instance);
         }
         private static void AddUsagesOfSetField(LocalOperation operation, List<LocalVariable> result)
@@ -354,8 +353,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
         private static void SwichUsageInGetField(LocalOperation op, LocalVariable usageVariable,
                                                  IdentifierValue definitionIdentifier)
         {
-            var opGetField = (Assignment) op.Value;
-            var getFieldData = (FieldGetter) opGetField.Right;
+            var getFieldData = (FieldGetter)op.Value;
             if (usageVariable.Equals(getFieldData.Instance))
             {
                 getFieldData.Instance = definitionIdentifier;

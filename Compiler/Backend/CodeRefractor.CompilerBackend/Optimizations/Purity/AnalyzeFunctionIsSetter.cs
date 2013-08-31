@@ -10,21 +10,15 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
 
         public static bool ReadProperty(MetaMidRepresentation intermediateCode)
         {
-            if (intermediateCode == null)
-                return false;
-            var additionalData = intermediateCode.AuxiliaryObjects;
-
-            object isPureData;
-            return additionalData.TryGetValue(SearchForString, out isPureData);
+            return intermediateCode.ReadAdditionalBool(SearchForString);
         }
         public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
         {
             if (ReadProperty(intermediateCode))
                 return;
             var functionIsPure = ComputeFunctionPurity(intermediateCode);
-            var additionalData = intermediateCode.AuxiliaryObjects;
             if (!functionIsPure) return;
-            additionalData[SearchForString] = true;
+            intermediateCode.SetAdditionalValue(SearchForString, true);
             Result = true;
         }
 

@@ -505,15 +505,13 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             var vreg = SetNewVReg();
             vreg.FixedType = firstVar.ComputedType().LocateField(fieldName).FieldType;
             ProgramData.UpdateType(vreg.FixedType);
-            var assignment = new Assignment
-            {
-                AssignedTo = vreg,
-                Right = new FieldGetter
-                {
-                    FieldName = fieldName,
-                    Instance = firstVar
-                }
-            };
+            var assignment = new FieldGetter
+                                 {
+                                     AssignedTo = vreg,
+                                     FieldName = fieldName,
+                                     Instance = firstVar
+
+                                 };
             AddOperation(LocalOperation.Kinds.GetField, assignment);
         }
 
