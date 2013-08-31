@@ -12,7 +12,7 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
 
 namespace CodeRefractor.CompilerBackend.Optimizations.Jumps
 {
-    internal class MergeConsecutiveLabels : ResultingOptimizationPass
+    internal class MergeConsecutiveLabels : ResultingInFunctionOptimizationPass
     {
         public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
         {

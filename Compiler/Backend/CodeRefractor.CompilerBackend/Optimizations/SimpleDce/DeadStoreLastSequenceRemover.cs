@@ -16,7 +16,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
     /// <summary>
     ///   This optimization will remove all assignments that are not used subsequently from the last sequence of instructions (from the last return to the last found label, jump or start of the function
     /// </summary>
-    internal class DeadStoreLastSequenceRemover : ResultingOptimizationPass
+    internal class DeadStoreLastSequenceRemover : ResultingInFunctionOptimizationPass
     {
         private int _endSequence;
         private List<LocalVariable> _readVariables;

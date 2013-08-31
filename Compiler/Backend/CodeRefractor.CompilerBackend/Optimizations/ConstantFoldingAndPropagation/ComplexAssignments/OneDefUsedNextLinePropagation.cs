@@ -5,7 +5,7 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
 namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagation.ComplexAssignments
 {
-    class OneDefUsedNextLinePropagation : ResultingOptimizationPass
+    class OneDefUsedNextLinePropagation : ResultingInFunctionOptimizationPass
     {
         public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
         {

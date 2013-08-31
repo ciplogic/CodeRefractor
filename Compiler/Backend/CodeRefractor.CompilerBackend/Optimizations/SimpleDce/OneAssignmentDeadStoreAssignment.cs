@@ -6,7 +6,7 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
 namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
 {
-    class OneAssignmentDeadStoreAssignment : ResultingOptimizationPass
+    class OneAssignmentDeadStoreAssignment : ResultingInFunctionOptimizationPass
     {
         public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
         {

@@ -30,5 +30,9 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers
             return FormatVar();
         }
 
+        public virtual IdentifierValue Clone()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

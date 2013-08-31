@@ -44,12 +44,17 @@
     <Compile Include="Linker\LinkerUtils.cs" />
     <Compile Include="Linker\LinkingData.cs" />
     <Compile Include="Linker\StringTable.cs" />
-    <Compile Include="Optimizations\ConstantFoldingAndPropagation\AnalyzeFunctionPurity.cs" />
+    <Compile Include="Optimizations\Inliner\InlineGetterAndSetterMethods.cs" />
+    <Compile Include="Optimizations\Purity\AnalyzeFunctionIsEmpty.cs" />
+    <Compile Include="Optimizations\Purity\AnalyzeFunctionIsGetter.cs" />
+    <Compile Include="Optimizations\Purity\AnalyzeFunctionIsSetter.cs" />
+    <Compile Include="Optimizations\Purity\AnalyzeFunctionPurity.cs" />
     <Compile Include="Optimizations\ConstantFoldingAndPropagation\ComplexAssignments\OneDefUsedNextLinePropagation.cs" />
     <Compile Include="Optimizations\ConstantFoldingAndPropagation\ComplexAssignments\OneDefUsedPreviousLinePropagation.cs" />
     <Compile Include="Optimizations\ConstantFoldingAndPropagation\SimpleAssignment\AssignmentVregWithConstNextLineFolding.cs" />
     <Compile Include="Optimizations\ConstantFoldingAndPropagation\SimpleAssignment\AssignmentWithVregPrevLineFolding.cs" />
     <Compile Include="Optimizations\SimpleDce\DeadStoreAssignment.cs" />
+    <Compile Include="Optimizations\SimpleDce\DeleteCallToConstructorOfObject.cs" />
     <Compile Include="Optimizations\SimpleDce\OneAssignmentDeadStoreAssignment.cs" />
     <Compile Include="OuputCodeWriter\CppCodeGenerator.cs" />
     <Compile Include="OuputCodeWriter\CppFullFileMethodWriter.cs" />
@@ -71,7 +76,7 @@
     <Compile Include="Optimizations\ConstantFoldingAndPropagation\ConstantVariablePropagation.cs" />
     <Compile Include="Optimizations\ConstantFoldingAndPropagation\ConstantVariablePropagationBase.cs" />
     <Compile Include="Optimizations\ConstantFoldingAndPropagation\ConstantVariablePropagationInCall.cs" />
-    <Compile Include="Optimizations\ConstantFoldingAndPropagation\EvaluatePureFunctionWithConstantCall.cs" />
+    <Compile Include="Optimizations\Purity\EvaluatePureFunctionWithConstantCall.cs" />
     <Compile Include="Optimizations\ConstantFoldingAndPropagation\ComplexAssignments\OperatorConstantFolding.cs" />
     <Compile Include="Optimizations\ConstantFoldingAndPropagation\ComplexAssignments\OperatorPartialConstantFolding.cs" />
     <Compile Include="Optimizations\Inliner\SmallFunctionsInliner.cs" />
@@ -102,9 +107,7 @@
       <Name>Mono.Reflection</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Optimizations\Purity\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

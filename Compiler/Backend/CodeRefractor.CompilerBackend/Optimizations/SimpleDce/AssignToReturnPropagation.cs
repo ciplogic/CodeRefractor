@@ -16,10 +16,16 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
     /// will transform the code to be 
     /// > var2 = identifier
     /// </summary>
-    internal class AssignToReturnPropagation : ResultingOptimizationPass
+    internal class AssignToReturnPropagation : ResultingInFunctionOptimizationPass
     {
+        public override bool CheckPreconditions(MetaMidRepresentation midRepresentation)
+        {
+            var localOperations = midRepresentation.LocalOperations;
+            return localOperations.Count >= 2;
+        }
         public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
         {
+
             var localOperations = intermediateCode.LocalOperations;
             var count = localOperations.Count;
             var assignBeforeReturn = localOperations[count - 2];

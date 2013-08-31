@@ -10,7 +10,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers
             return string.Format("{0}:{1}", Name, FixedType != null ? FixedType.Name : "Unknown");
         }
 
-        public LocalVariable Clone()
+        public override IdentifierValue Clone()
         {
             var result = new LocalVariable
                              {

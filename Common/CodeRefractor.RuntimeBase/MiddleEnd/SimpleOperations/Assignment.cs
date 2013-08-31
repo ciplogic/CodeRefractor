@@ -7,7 +7,7 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
 namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 {
-    public class Assignment
+    public class Assignment : IClonableOperation
     {
         public LocalVariable AssignedTo;
         public IdentifierValue Right;
@@ -15,6 +15,15 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
         public override string ToString()
         {
             return String.Format("{0} = {1}", AssignedTo.Name, Right);
+        }
+
+        public object Clone()
+        {
+            return new Assignment
+                       {
+                           AssignedTo = (LocalVariable) AssignedTo.Clone(),
+                           Right = Right.Clone()
+                       };
         }
     }
 }

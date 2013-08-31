@@ -29,10 +29,11 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             return methodBase.WriteHeaderMethod();
         }
 
-        public void ApplyLocalOptimizations(IEnumerable<OptimizationPass> optimizationPasses)
+        public bool ApplyLocalOptimizations(IEnumerable<OptimizationPass> optimizationPasses)
         {
             if (optimizationPasses == null)
-                return;
+                return false;
+            var result = false;
             var optimizationsList = new List<OptimizationPass>(optimizationPasses);
             var didOptimize = true;
             while (didOptimize)
@@ -44,9 +45,13 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                         continue;
                     didOptimize = optimizationPass.Optimize(Interpreter.MidRepresentation);
                     if (didOptimize)
+                    {
+                        result = true;
                         break;
+                    }
                 }
             }
+            return result;
         }
     }
 }

@@ -10,7 +10,7 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
 
 namespace CodeRefractor.CompilerBackend.Optimizations
 {
-    public class VRegVariablePropagation : ResultingOptimizationPass
+    public class VRegVariablePropagation : ResultingInFunctionOptimizationPass
     {
         public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
         {

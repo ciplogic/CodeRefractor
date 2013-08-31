@@ -12,7 +12,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
     /// <summary>
     ///   This optimization in case of two assignments of the form: > var1 = identifier > var2 = var1 will transform the code to be > var2 = identifier
     /// </summary>
-    internal class DoubleAssignPropagation : ResultingOptimizationPass
+    internal class DoubleAssignPropagation : ResultingInFunctionOptimizationPass
     {
         public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
         {

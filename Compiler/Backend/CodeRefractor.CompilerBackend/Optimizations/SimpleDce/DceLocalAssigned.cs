@@ -14,7 +14,7 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
 
 namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
 {
-    public class DceLocalAssigned : ResultingOptimizationPass
+    public class DceLocalAssigned : ResultingInFunctionOptimizationPass
     {
         public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
         {

@@ -14,7 +14,7 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
 
 namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
 {
-    public class DceVRegUnused : ResultingOptimizationPass
+    public class DceVRegUnused : ResultingInFunctionOptimizationPass
     {
         public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
         {
@@ -46,10 +46,6 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
         {
             if (vregConstants.Count == 0)
                 return;
-            if (vregConstants.Contains(189))
-            {
-                
-            }
             var liveVRegs =
             intermediateCode.Vars.VirtRegs.Where(
                 vreg => vreg.Kind != VariableKind.Vreg || !vregConstants.Contains(vreg.Id)).ToList();

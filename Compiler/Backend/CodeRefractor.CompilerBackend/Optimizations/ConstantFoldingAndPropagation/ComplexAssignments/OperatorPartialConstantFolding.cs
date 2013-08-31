@@ -10,12 +10,12 @@ using CodeRefractor.RuntimeBase.Shared;
 
 #endregion
 
-namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagation.Operator
+namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagation.ComplexAssignments
 {
     /// <summary>
     ///   This class reduces operators that are operated with simple constants to an equivalent assignment: a = b*0 => a = 0 a = b*1 => a = b etc.
     /// </summary>
-    public class OperatorPartialConstantFolding : ResultingOptimizationPass
+    public class OperatorPartialConstantFolding : ResultingInFunctionOptimizationPass
     {
         private List<LocalOperation> _localOperations;
         private int _pos;

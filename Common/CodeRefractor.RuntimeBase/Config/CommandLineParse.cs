@@ -20,6 +20,17 @@ namespace CodeRefractor.RuntimeBase.Config
             get { return StaticInstance; }
         }
 
+        static CommandLineParse()
+        {
+            InitializeOptimizationKindList(OptimizationKind.InFunction);
+            InitializeOptimizationKindList(OptimizationKind.Global);
+        }
+
+        private static void InitializeOptimizationKindList(OptimizationKind optimizationKind)
+        {
+            SortedOptimizations[optimizationKind] = new List<OptimizationPass>();
+        }
+
         public void Process(string[] args)
         {
             Arguments.AddRange(args);
@@ -95,6 +106,8 @@ namespace CodeRefractor.RuntimeBase.Config
         public string ApplicationInputAssembly = "SimpleAdditions.exe";
         public string ApplicationNativeExe = string.Empty;
         public static List<OptimizationPass> OptimizationPasses;
+        public static Dictionary<OptimizationKind, List<OptimizationPass> >SortedOptimizations 
+            = new Dictionary<OptimizationKind, List<OptimizationPass>>();
         private static int _optimizerLevel;
 
         public static int OptimizerLevel
@@ -113,6 +126,21 @@ namespace CodeRefractor.RuntimeBase.Config
                     optimizationList.AddRange(OptimizationLevelBase.Instance.BuildOptimizationPasses2());
                 }
                 OptimizationPasses = optimizationList;
+                SortOptimizations();
+            }
+        }
+
+        private static void SortOptimizations()
+        {
+            foreach (var optimizationPass in OptimizationPasses)
+            {
+                List<OptimizationPass> list;
+                if(!SortedOptimizations.TryGetValue(optimizationPass.Kind, out list))
+                {
+                    list = new List<OptimizationPass>();
+                    SortedOptimizations[optimizationPass.Kind] = list;
+                }
+                list.Add(optimizationPass);
             }
         }
     }

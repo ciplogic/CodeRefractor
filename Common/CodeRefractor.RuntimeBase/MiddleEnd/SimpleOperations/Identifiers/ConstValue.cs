@@ -29,6 +29,11 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers
             Value = value;
         }
 
+        public override IdentifierValue Clone()
+        {
+            return new ConstValue(Value);
+        }
+
         public override Type ComputedType()
         {
             return Value == null ? typeof (void) : Value.GetType();

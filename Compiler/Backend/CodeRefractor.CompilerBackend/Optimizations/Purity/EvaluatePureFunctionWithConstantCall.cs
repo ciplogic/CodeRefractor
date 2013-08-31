@@ -11,9 +11,9 @@ using CodeRefractor.CompilerBackend.Linker;
 
 #endregion
 
-namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagation
+namespace CodeRefractor.CompilerBackend.Optimizations.Purity
 {
-    internal class EvaluatePureFunctionWithConstantCall : ResultingOptimizationPass
+    internal class EvaluatePureFunctionWithConstantCall : ResultingGlobalOptimizationPass
     {
         public override bool CheckPreconditions(MetaMidRepresentation midRepresentation)
         {

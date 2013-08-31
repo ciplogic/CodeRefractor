@@ -1,13 +1,12 @@
-﻿using System.Collections.Generic;
-using CodeRefractor.CompilerBackend.Optimizations.Common;
+﻿using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.CompilerBackend.Linker;
 
-namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagation
+namespace CodeRefractor.CompilerBackend.Optimizations.Purity
 {
-    public class AnalyzeFunctionPurity : ResultingOptimizationPass
+    public class AnalyzeFunctionPurity : ResultingGlobalOptimizationPass
     {
         public const string IsPureString = "IsPure";
 
@@ -43,12 +42,10 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                     case LocalOperation.Kinds.SetStaticField:
                     case LocalOperation.Kinds.GetStaticField:
                     case LocalOperation.Kinds.CallRuntime:
-
                     case LocalOperation.Kinds.SetField:
                         return false;
                         
                     case LocalOperation.Kinds.Call:
-
                         var operationData = (MethodData)localOperation.Value;
                         var readPurity = LinkerInterpretersTable.ReadPurity(operationData.Info);
                         if (!readPurity)

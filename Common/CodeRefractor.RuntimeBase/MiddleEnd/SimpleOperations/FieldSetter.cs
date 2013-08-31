@@ -10,5 +10,14 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
     {
         public IdentifierValue Instance;
         public string FieldName;
+
+        public override IdentifierValue Clone()
+        {
+            return new FieldSetter
+            {
+                Instance = Instance.Clone(),
+                FieldName = FieldName
+            };
+        }
     }
 }

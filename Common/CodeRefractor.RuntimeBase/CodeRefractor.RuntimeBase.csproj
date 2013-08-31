@@ -51,7 +51,9 @@
     <Compile Include="MetaLinker.cs" />
     <Compile Include="MiddleEnd\MetaMidRepresentationOperationFactory.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\FunctionPointerStore.cs" />
+    <Compile Include="MiddleEnd\SimpleOperations\IClonableOperation.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\StaticFieldSetter.cs" />
+    <Compile Include="Optimizations\OptimizationKind.cs" />
     <Compile Include="Runtime\CppMethodDefinition.cs" />
     <Compile Include="Runtime\CrRuntimeLibrary.cs" />
     <Compile Include="DataBase\Cursor.cs" />

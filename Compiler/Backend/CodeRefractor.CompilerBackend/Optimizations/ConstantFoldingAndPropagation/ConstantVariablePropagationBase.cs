@@ -9,7 +9,7 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
 namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagation
 {
-    public abstract class ConstantVariablePropagationBase : ResultingOptimizationPass
+    public abstract class ConstantVariablePropagationBase : ResultingInFunctionOptimizationPass
     {
         protected static ConstValue GetConstantFromOperation(List<LocalOperation> operations, int i,
                                                              out Assignment srcVariableDefinition)

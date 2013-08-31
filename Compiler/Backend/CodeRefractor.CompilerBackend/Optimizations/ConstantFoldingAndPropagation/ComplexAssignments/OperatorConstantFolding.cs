@@ -12,7 +12,7 @@ using CodeRefractor.RuntimeBase.Shared;
 
 namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagation.ComplexAssignments
 {
-    public class OperatorConstantFolding : ResultingOptimizationPass
+    public class OperatorConstantFolding : ResultingInFunctionOptimizationPass
     {
         private MetaMidRepresentation _intermediateCode;
         private OperatorBase _baseOperator;

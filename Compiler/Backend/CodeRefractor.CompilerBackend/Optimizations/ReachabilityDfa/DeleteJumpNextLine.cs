@@ -11,7 +11,7 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
 
 namespace CodeRefractor.CompilerBackend.Optimizations.ReachabilityDfa
 {
-    public class DeleteJumpNextLine : ResultingOptimizationPass
+    public class DeleteJumpNextLine : ResultingInFunctionOptimizationPass
     {
         private Dictionary<int, int> _labelTable;
 

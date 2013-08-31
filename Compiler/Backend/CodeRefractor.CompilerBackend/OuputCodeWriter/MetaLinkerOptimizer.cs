@@ -5,6 +5,7 @@ using CodeRefractor.CompilerBackend.Optimizations.Inliner;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.Config;
 using CodeRefractor.RuntimeBase.FrontEnd;
+using CodeRefractor.RuntimeBase.Optimizations;
 using CodeRefractor.RuntimeBase.Runtime;
 
 #endregion
@@ -15,14 +16,12 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
     {
         public static void OptimizeMethods(bool doInline = false)
         {
-            var optimizationPasses = CommandLineParse.OptimizationPasses;
             foreach (var methodBase in GlobalMethodPool.Instance.MethodInfos)
             {
                 var typeData =
                     (ClassTypeData)ProgramData.UpdateType(
                         methodBase.Value.DeclaringType);
                 var interpreter = typeData.GetInterpreter(methodBase.Key);
-                if (optimizationPasses == null) return;
                 LinkerInterpretersTable.Register(interpreter.MidRepresentation);
             }
 
@@ -30,20 +29,38 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             {
                 LinkerInterpretersTable.Instance.RegisterRuntimeMethod(usedMethod);
             }
-            foreach (var methodBase in GlobalMethodPool.Instance.MethodInfos)
+            bool doOptimize;
+            do
             {
-                var typeData =
-                    (ClassTypeData)ProgramData.UpdateType(
-                        methodBase.Value.DeclaringType);
-                var interpreter = typeData.GetInterpreter(methodBase.Key);
-                var codeWriter = new MethodInterpreterCodeWriter
-                                     {
-                                         Interpreter = interpreter
-                                     };
-                codeWriter.ApplyLocalOptimizations(
-                    optimizationPasses);
-            }
+                doOptimize = false;
+                foreach (var methodBase in GlobalMethodPool.Instance.MethodInfos)
+                {
+                    var typeData =
+                        (ClassTypeData) ProgramData.UpdateType(
+                            methodBase.Value.DeclaringType);
+                    var interpreter = typeData.GetInterpreter(methodBase.Key);
+                    var codeWriter = new MethodInterpreterCodeWriter
+                                         {
+                                             Interpreter = interpreter
+                                         };
+                    doOptimize = codeWriter.ApplyLocalOptimizations(
+                        CommandLineParse.SortedOptimizations[OptimizationKind.InFunction]);
+                }
+                foreach (var methodBase in GlobalMethodPool.Instance.MethodInfos)
+                {
+                    var typeData =
+                        (ClassTypeData) ProgramData.UpdateType(
+                            methodBase.Value.DeclaringType);
+                    var interpreter = typeData.GetInterpreter(methodBase.Key);
+                    var codeWriter = new MethodInterpreterCodeWriter
+                                         {
+                                             Interpreter = interpreter
+                                         };
 
+                    doOptimize = codeWriter.ApplyLocalOptimizations(
+                        CommandLineParse.SortedOptimizations[OptimizationKind.Global]);
+                }
+            } while (doOptimize); 
 
             if (doInline)
                 InlineMethods();

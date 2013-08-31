@@ -5,9 +5,10 @@ using System.Linq;
 using CodeRefractor.CompilerBackend.Optimizations.ConstantDfa;
 using CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagation;
 using CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagation.ComplexAssignments;
-using CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagation.Operator;
 using CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagation.SimpleAssignment;
+using CodeRefractor.CompilerBackend.Optimizations.Inliner;
 using CodeRefractor.CompilerBackend.Optimizations.Jumps;
+using CodeRefractor.CompilerBackend.Optimizations.Purity;
 using CodeRefractor.CompilerBackend.Optimizations.ReachabilityDfa;
 using CodeRefractor.CompilerBackend.Optimizations.SimpleDce;
 using CodeRefractor.RuntimeBase.Config;
@@ -80,7 +81,13 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
                            new DoubleAssignPropagation(),
                            
       
+                           new DeleteCallToConstructorOfObject(), 
                 new AnalyzeFunctionPurity(),
+                new AnalyzeFunctionIsGetter(),
+                new AnalyzeFunctionIsSetter(),
+                new AnalyzeFunctionIsEmpty(),
+
+                new InlineGetterAndSetterMethods(), 
                            
                 new DeleteJumpNextLine(),
                 new RemoveUnreferencedLabels(),

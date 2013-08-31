@@ -5,7 +5,7 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 
 namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
 {
-    class DeadStoreAssignment : ResultingOptimizationPass
+    class DeadStoreAssignment : ResultingInFunctionOptimizationPass
     {
         public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
         {

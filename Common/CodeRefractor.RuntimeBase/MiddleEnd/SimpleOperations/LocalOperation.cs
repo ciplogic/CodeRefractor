@@ -54,10 +54,11 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 
         public LocalOperation Clone()
         {
+            var value = (IClonableOperation)Value;
             return new LocalOperation
                        {
                            Kind = Kind,
-                           Value = Value
+                           Value = value.Clone()
                        };
         }
     }

@@ -14,5 +14,10 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers
         {
             return _name;
         }
+
+        public override IdentifierValue Clone()
+        {
+            return new ArgumentVariable(Name);
+        }
     }
 }

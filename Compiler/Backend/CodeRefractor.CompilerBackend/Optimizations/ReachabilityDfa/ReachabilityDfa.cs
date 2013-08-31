@@ -10,7 +10,7 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
 
 namespace CodeRefractor.CompilerBackend.Optimizations.ReachabilityDfa
 {
-    public class ReachabilityLines : ResultingOptimizationPass
+    public class ReachabilityLines : ResultingInFunctionOptimizationPass
     {
         private Dictionary<int, int> _labelTable;
         private HashSet<int> _reached;

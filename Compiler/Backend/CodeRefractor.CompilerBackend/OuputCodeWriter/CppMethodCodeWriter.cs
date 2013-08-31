@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using CodeRefractor.CompilerBackend.HandleOperations;
+using CodeRefractor.CompilerBackend.Optimizations.Purity;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
@@ -260,6 +261,8 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             {
                 var constructorInfo = methodInterpreter.Method as ConstructorInfo;
                 if (constructorInfo == null)
+                    continue;
+                if(AnalyzeFunctionIsEmpty.ComputeProperty(methodInterpreter.MidRepresentation))
                     continue;
                 if (constructorInfo.ToString() == rightValue.Info.ToString())
                 {

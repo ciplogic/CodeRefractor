@@ -7,17 +7,17 @@ using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
+using CodeRefractor.RuntimeBase.Optimizations;
 
 #endregion
 
 namespace CodeRefractor.CompilerBackend.Optimizations.ConstantDfa
 {
-    internal class ConstantDfaAnalysis : ResultingOptimizationPass
+    internal class ConstantDfaAnalysis : ResultingInFunctionOptimizationPass
     {
         private Dictionary<int, int> _labelTable = new Dictionary<int, int>();
         private List<LocalOperation> _operations;
         private DfaPointOfAnalysis[] _pointsOfAnalysis;
-
         public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
         {
             _operations = intermediateCode.LocalOperations;

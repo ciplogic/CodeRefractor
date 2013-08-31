@@ -7,6 +7,20 @@ using CodeRefractor.RuntimeBase.Optimizations;
 
 namespace CodeRefractor.CompilerBackend.Optimizations.Common
 {
+    public abstract class ResultingInFunctionOptimizationPass : ResultingOptimizationPass
+    {
+        public ResultingInFunctionOptimizationPass()
+            : base(OptimizationKind.InFunction)
+        {
+        }
+    }
+    public abstract class ResultingGlobalOptimizationPass : ResultingOptimizationPass
+    {
+        public ResultingGlobalOptimizationPass()
+            : base(OptimizationKind.Global)
+        {
+        }
+    }
     public abstract class ResultingOptimizationPass : OptimizationPass
     {
         //returns true if it succeed to apply any optimizations
@@ -14,6 +28,10 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
         //If the code succeeded to optimize something that other optimizations may benefit, return true
 
         private bool _result;
+
+        protected ResultingOptimizationPass(OptimizationKind kind) : base(kind)
+        {
+        }
 
         public bool Result
         {
