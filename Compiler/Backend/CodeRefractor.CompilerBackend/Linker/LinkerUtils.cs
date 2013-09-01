@@ -35,7 +35,7 @@ namespace CodeRefractor.CompilerBackend.Linker
             return GetInterpreter(methodBase);
         }
 
-        private static MethodInterpreter GetInterpreter(this MethodBase methodBase)
+        public static MethodInterpreter GetInterpreter(this MethodBase methodBase)
         {
             var typeData = (ClassTypeData) ProgramData.UpdateType(methodBase.DeclaringType);
             var interpreter = typeData.GetInterpreter(methodBase.ToString());

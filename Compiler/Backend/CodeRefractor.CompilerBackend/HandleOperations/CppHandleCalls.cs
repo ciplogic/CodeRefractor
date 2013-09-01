@@ -31,7 +31,11 @@ namespace CodeRefractor.CompilerBackend.HandleOperations
 
             var methodInfo = operationData.Info;
             if (methodInfo.IsConstructor)
-                return; //don't call constructor for now
+            {
+                var ctorInterpreter = methodInfo.GetInterpreter();
+                if(ctorInterpreter==null)
+                    return;
+            }
             var isVoidMethod = methodInfo.GetReturnType().IsVoid();
             if (isVoidMethod)
             {
@@ -43,6 +47,10 @@ namespace CodeRefractor.CompilerBackend.HandleOperations
                                 operationData.Result.Name);
             }
             var identifierValues = operationData.Parameters;
+            if(methodInfo.IsConstructor)
+            {
+                identifierValues.Insert(0, operationData.Result);
+            }
 
             var argumentsCall = String.Join(", ", identifierValues.Select(p =>
                                                                               {

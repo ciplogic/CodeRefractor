@@ -15,11 +15,11 @@ namespace CodeRefractor.RuntimeBase
     public class MetaLinker
     {
         public readonly Dictionary<string, HashSet<int>> Labels = new Dictionary<string, HashSet<int>>();
-        public MethodInfo EntryPoint;
+        public MethodInfo MethodInfo;
 
         public void SetEntryPoint(MethodInfo entryMethod)
         {
-            EntryPoint = entryMethod;
+            MethodInfo = entryMethod;
         }
 
         public void ComputeDependencies(MethodBase definition)

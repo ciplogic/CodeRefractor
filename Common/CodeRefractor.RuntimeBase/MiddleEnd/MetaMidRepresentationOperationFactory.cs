@@ -539,13 +539,18 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             var result = SetNewVReg();
 
             result.FixedType = constructorInfo.DeclaringType;
+            var constructedObject = new NewConstructedObject(constructorInfo);
             var assignment = new Assignment
             {
                 AssignedTo = result,
-                Right = new NewConstructedObject(constructorInfo)
+                Right = constructedObject
             };
             ProgramData.UpdateType(constructorInfo.DeclaringType);
             AddOperation(LocalOperation.Kinds.NewObject, assignment);
+
+            var methodData = new MethodData(constructedObject.Info);
+            methodData.Result = assignment.AssignedTo;
+            AddOperation(LocalOperation.Kinds.Call, methodData);
         }
 
         public void NewArray(Type typeArray)

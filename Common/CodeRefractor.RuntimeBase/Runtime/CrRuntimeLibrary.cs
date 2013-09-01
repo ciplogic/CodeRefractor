@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
@@ -19,6 +20,7 @@ namespace CodeRefractor.RuntimeBase.Runtime
         private readonly Dictionary<string, MetaLinker> _supportedCilMethods = new Dictionary<string, MetaLinker>();
         private readonly Dictionary<string, MethodBase> _supportedMethods = new Dictionary<string, MethodBase>();
         public readonly Dictionary<Type, Type> MappedTypes = new Dictionary<Type, Type>();
+        public readonly Dictionary<Type, MapTypeAttribute> TypeAttribute = new Dictionary<Type, MapTypeAttribute>();
         public readonly Dictionary<Type, Type> ReverseMappedTypes = new Dictionary<Type, Type>();
 
         private readonly Dictionary<Type, List<CppMethodDefinition>> _crMethods =
@@ -27,6 +29,7 @@ namespace CodeRefractor.RuntimeBase.Runtime
 
         public readonly Dictionary<string, MethodBase> UsedCppMethods = new Dictionary<string, MethodBase>();
         public readonly Dictionary<string, MetaLinker> UsedCilMethods = new Dictionary<string, MetaLinker>();
+        public readonly Dictionary<Type, Type> UsedTypes = new Dictionary<Type, Type>();
 
         private static readonly CrRuntimeLibrary StaticInstance = new CrRuntimeLibrary();
         public static CrRuntimeLibrary Instance
@@ -44,19 +47,15 @@ namespace CodeRefractor.RuntimeBase.Runtime
             foreach (var item in assembly.GetTypes())
             {
                 var mapTypeAttr = item.GetCustomAttribute<MapTypeAttribute>();
-                if (mapTypeAttr != null)
-                {
-                    MappedTypes[mapTypeAttr.MappedType] = item;
-                    ReverseMappedTypes[item] = mapTypeAttr.MappedType;
-                }
-                ScanType(item);
+                if (mapTypeAttr == null) continue;
+                TypeAttribute[item] = mapTypeAttr; 
+                MappedTypes[mapTypeAttr.MappedType] = item;
+                ReverseMappedTypes[item] = mapTypeAttr.MappedType;
             }
 
-            foreach (var item in assembly.GetTypes())
+            foreach (var item in MappedTypes.Values)
             {
-                var mapTypeAttr = item.GetCustomAttribute<MapTypeAttribute>();
-                if (mapTypeAttr == null)
-                    continue;
+                ScanType(item);
                 ScanTypeForCilMethods(item);
             }
         }
@@ -126,11 +125,51 @@ namespace CodeRefractor.RuntimeBase.Runtime
                 if (!_supportedCilMethods.TryGetValue(methodDefinition, out cilLinkerMethod))
                     return false;
                 UsedCilMethods.Add(methodDefinition, cilLinkerMethod);
-                cilLinkerMethod.ComputeDependencies(cilLinkerMethod.EntryPoint);
+                cilLinkerMethod.ComputeDependencies(cilLinkerMethod.MethodInfo);
                 return true;
             }
             UsedCppMethods.Add(methodDefinition, method);
             return true;
+        }
+
+        public void RemapUsedTypes()
+        {
+            foreach (var usedCppMethod in UsedCppMethods.Values)
+            {
+                var declaredType = usedCppMethod.DeclaringType;
+                ScanMethodTypes(usedCppMethod);
+                UseRuntimeType(declaredType);
+            }
+            foreach (var usedCppMethod in UsedCilMethods.Values)
+            {
+                var declaredType = usedCppMethod.MethodInfo.DeclaringType;
+                ScanMethodTypes(usedCppMethod.MethodInfo);
+                UseRuntimeType(declaredType);
+            }
+
+        }
+
+        private void ScanMethodTypes(MethodBase methodInfo)
+        {
+            var args = methodInfo.GetParameters().ToArray();
+            foreach (var arg in args)
+            {
+                UseClrType(arg.ParameterType);
+                UseRuntimeType(arg.ParameterType);
+            }
+        }
+
+        public void UseRuntimeType(Type typeToUse)
+        {
+            if(!ReverseMappedTypes.ContainsKey(typeToUse))
+                return;
+            UsedTypes[typeToUse] = ReverseMappedTypes[typeToUse];
+        }
+        public void UseClrType(Type typeToUse)
+        {
+            if (!MappedTypes.ContainsKey(typeToUse))
+                return;
+            UsedTypes[MappedTypes[typeToUse]] = typeToUse;
         }
     }
 }

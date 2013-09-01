@@ -252,21 +252,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             var localValue = rightValue.Info;
             var declaringType = localValue.DeclaringType;
             var cppName = declaringType.ToCppName(false);
-            bodySb.AppendFormat("{0} = std::make_shared<{1}>();", value.AssignedTo.Name, cppName).AppendLine();
-            var typeData = (ClassTypeData) ProgramData.LocateType(declaringType);
-            var typeNs = declaringType.Namespace;
-            foreach (var methodInterpreter in typeData.Interpreters)
-            {
-                var constructorInfo = methodInterpreter.Method as ConstructorInfo;
-                if (constructorInfo == null)
-                    continue;
-                if(AnalyzeFunctionIsEmpty.ComputeProperty(methodInterpreter.MidRepresentation))
-                    continue;
-                if (constructorInfo.ToString() == rightValue.Info.ToString())
-                {
-                    bodySb.AppendFormat("{0}_{2}__{2}_ctor({1});", typeNs, value.AssignedTo.Name, declaringType.Name);
-                }
-            }
+            bodySb.AppendFormat("{0} = std::make_shared<{1}>();", value.AssignedTo.Name, cppName);
         }
 
         private static StringBuilder ComputeVariableSb(MetaMidRepresentation midRepresentation)

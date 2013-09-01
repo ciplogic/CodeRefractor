@@ -28,8 +28,10 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             LinkingData.Includes.Clear();
 
             sb.AppendLine("#include \"sloth.h\"");
-            sb.AppendLine("#include \"runtime_base.partcpp\"");
+            crCrRuntimeLibrary.RemapUsedTypes();
+            WriteUsedRuntimeTypes(crCrRuntimeLibrary, sb);
 
+            sb.AppendLine("#include \"runtime_base.partcpp\"");
 
             foreach (var methodBodyAttribute in crCrRuntimeLibrary.UsedCppMethods)
             {
@@ -47,9 +49,33 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             return sb;
         }
 
+        private static void WriteUsedRuntimeTypes(CrRuntimeLibrary crCrRuntimeLibrary, StringBuilder sb)
+        {
+            var usedTypes = crCrRuntimeLibrary.UsedTypes;
+            foreach (var usedType in usedTypes)
+            {
+                var typeData = usedType.Value;
+                var runtimeType = usedType.Key;
+                sb.AppendFormat("namespace {0} {{", typeData.Namespace).AppendLine();
+                sb.AppendFormat("struct {0} {{", typeData.Name).AppendLine();
+                var mappedAttribute = crCrRuntimeLibrary.TypeAttribute[runtimeType];
+                sb.AppendLine(mappedAttribute.Code);
+                foreach (var fieldData in runtimeType.GetFields(BindingFlags.Instance).Where(field => !field.IsStatic))
+                {
+                    sb.AppendFormat(" {0} {1};", fieldData.FieldType.ToCppName(), fieldData.Name).AppendLine();
+                }
+                foreach (var fieldData in typeData.GetFields(BindingFlags.Static).Where(field => field.IsStatic))
+                {
+                    sb.AppendFormat(" static {0} {1};", fieldData.FieldType.ToCppName(), fieldData.Name)
+                        .AppendLine();
+                }
+                sb.AppendFormat("}}; }}").AppendLine();
+            }
+        }
+
         private static void WriteClassHeaders(MetaLinker linker, StringBuilder sb)
         {
-            var entryPoint = linker.EntryPoint;
+            var entryPoint = linker.MethodInfo;
             var assemblyData = AssemblyData.GetAssemblyData(entryPoint.DeclaringType.Assembly);
             var typeDatas =
                 assemblyData.Types.Values.Where(t => t.IsClass && !t.IsArray).Cast<ClassTypeData>().ToArray();
@@ -179,7 +205,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             sb.AppendFormat("int main(int argc, char**argv) {{").AppendLine();
             sb.AppendFormat("auto argsAsList = System::getArgumentsAsList(argc, argv);").AppendLine();
             sb.AppendLine("initializeRuntime();");
-            var entryPoint = linker.EntryPoint;
+            var entryPoint = linker.MethodInfo;
             if (entryPoint.ReturnType != typeof (void))
                 sb.Append("return ");
             var parameterInfos = entryPoint.GetParameters();
