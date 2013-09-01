@@ -31,11 +31,11 @@ namespace CodeRefactor.OpenRuntime
             WriteLine((double) value);
         }
 
-        [CppMethodBody(Header = "stdio.h", Code = "printf(\"%ls\", value.get());")]
+        [CppMethodBody(Header = "stdio.h", Code = "printf(\"%ls\", value.get()->get());")]
         public static void Write(string value)
         {
         }
-        [CppMethodBody(Header = "stdio.h", Code = "printf(\"%ls\\n\", value.get());")]
+        [CppMethodBody(Header = "stdio.h", Code = "printf(\"%ls\\n\", value.get()->get());")]
         public static void WriteLine(string value)
         {
         }

@@ -39,6 +39,7 @@
     <Compile Include="CrConsole.cs" />
     <Compile Include="CrMath.cs" />
     <Compile Include="CrString.cs" />
+    <Compile Include="CrStringBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

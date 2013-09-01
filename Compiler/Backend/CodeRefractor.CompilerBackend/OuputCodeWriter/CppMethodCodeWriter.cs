@@ -205,7 +205,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
         {
             var assignment = (Assignment) operation.Value;
             var arrayData = (NewArrayObject) assignment.Right;
-            bodySb.AppendFormat("{0} = std::shared_ptr< Array < {1} > > (new Array < {1} >({2}) ); ",
+            bodySb.AppendFormat("{0} = std::make_shared< Array < {1} > >({2}); ",
                                 assignment.AssignedTo.Name,
                                 arrayData.TypeArray.ToCppName(),
                                 arrayData.ArrayLength.Name);
@@ -251,9 +251,8 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             var rightValue = (NewConstructedObject) value.Right;
             var localValue = rightValue.Info;
             var declaringType = localValue.DeclaringType;
-            var cppNameSmart = declaringType.ToCppName();
             var cppName = declaringType.ToCppName(false);
-            bodySb.AppendFormat("{1} = {0}(new {2}());", cppNameSmart, value.AssignedTo.Name, cppName).AppendLine();
+            bodySb.AppendFormat("{0} = std::make_shared<{1}>();", value.AssignedTo.Name, cppName).AppendLine();
             var typeData = (ClassTypeData) ProgramData.LocateType(declaringType);
             var typeNs = declaringType.Namespace;
             foreach (var methodInterpreter in typeData.Interpreters)
