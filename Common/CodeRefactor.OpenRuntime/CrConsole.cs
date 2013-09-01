@@ -31,8 +31,12 @@ namespace CodeRefactor.OpenRuntime
             WriteLine((double) value);
         }
 
-        [CppMethodBody(Header = "stdio.h", Code = "printf(\"%ls\", value);")]
-        public static void Write(CrString value)
+        [CppMethodBody(Header = "stdio.h", Code = "printf(\"%ls\", value.get());")]
+        public static void Write(string value)
+        {
+        }
+        [CppMethodBody(Header = "stdio.h", Code = "printf(\"%ls\\n\", value.get());")]
+        public static void WriteLine(string value)
         {
         }
 

@@ -15,10 +15,13 @@ void initializeRuntime()
 	RuntimeHelpersBuildConstantTable();
 }
 extern const wchar_t _stringTable[];
-const wchar_t* _str(int index)
+std::shared_ptr<System::String> _str(int index)
 {
 	auto jumpTo = _stringJumps[index];
-	return &(_stringTable[jumpTo]);
+	auto len = _stringLength[index];
+	auto resultData = &(_stringTable[jumpTo]);
+	auto result = new System::String (len, resultData);
+	return std::shared_ptr<System::String>(result);
 }
 
 void _AddJumpAndLength(int jump, int length)
@@ -67,13 +70,14 @@ void* LoadNativeMethod(void* module, const char* methodName)
 #include <stdio.h>
 #include <math.h>
 
-std::shared_ptr< Array < System::String> > System::getArgumentsAsList (int argc, char**argv)
+std::shared_ptr<Array < std::shared_ptr<System::String> > > System::getArgumentsAsList (int argc, char**argv)
 {
-	auto result = std::shared_ptr< Array < System::String> >(new Array < System::String> (argc));
+	auto result = new Array <std::shared_ptr<System::String> > (argc);
 	for(auto i=0;i<argc;i++){
-		(*result)[i] = System::String(argv[i]);
+		std::shared_ptr<System::String> newString (new System::String(argv[i])); 
+		(*result)[i] = newString;
 	}
-	return result;
+	return std::shared_ptr< Array <std::shared_ptr<System::String> > >(result);
 }
 
 

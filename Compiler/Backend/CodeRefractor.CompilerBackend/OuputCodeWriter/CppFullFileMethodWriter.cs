@@ -26,7 +26,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
         public static string WriteHeaderMethod(this MethodBase methodBase, bool writeEndColon = true,
                                                Type mappedType = null)
         {
-            var retType = methodBase.GetReturnType().ToCppMangling();
+            var retType = methodBase.GetReturnType().ToCppName();
             var sb = new StringBuilder();
             var arguments = methodBase.GetArgumentsAsText();
 

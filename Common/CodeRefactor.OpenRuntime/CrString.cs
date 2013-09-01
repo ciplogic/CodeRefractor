@@ -6,7 +6,10 @@ using CodeRefractor.RuntimeBase;
 
 namespace CodeRefactor.OpenRuntime
 {
-    [MapType(typeof (string))]
+    [MapType(typeof (string),
+        Code=@"
+public:
+    ")]
     public class CrString
     {
         public int Lengh;

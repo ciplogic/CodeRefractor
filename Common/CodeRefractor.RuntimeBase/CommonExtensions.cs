@@ -117,7 +117,7 @@ namespace CodeRefractor.RuntimeBase
             var arguments = String.Join(", ",
                                         parameterInfos.Select(
                                             param =>
-                                            String.Format("{0} {1}", param.ParameterType.ToCppMangling(), param.Name)));
+                                            String.Format("{0} {1}", param.ParameterType.ToCppName(param.ParameterType.IsClass), param.Name)));
             if (!method.IsStatic)
             {
                 var thisText = String.Format("const {0}& _this", method.DeclaringType.ToCppName());

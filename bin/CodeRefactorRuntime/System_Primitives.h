@@ -14,6 +14,7 @@ typedef wchar_t		Char;
 typedef float		Single;
 typedef double		Double;
 typedef void*		IntPtr;
+typedef void		Void;
 
 static void* IntPtr_Zero = 0;
 
