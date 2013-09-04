@@ -140,7 +140,13 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 OperationFactory.NewArray((Type)instruction.Operand);
                 return;
             }
-            if (opcodeStr == "stelem.ref")
+            if (opcodeStr == "stelem.ref"
+                 || opcodeStr == "stelem.i2"
+                  || opcodeStr == "stelem.i4"
+                   || opcodeStr == "stelem.i8"
+                  || opcodeStr == "stelem.r4"
+                   || opcodeStr == "stelem.r8"
+                || opcodeStr=="stelem.i2")
             {
                 OperationFactory.SetArrayElementValue();
                 return;
@@ -178,7 +184,13 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 OperationFactory.LoadAddressIntoEvaluationStack(index);
                 return;
             }
+            if (opcodeStr == "ldflda.s" || opcodeStr == "ldflda")
+            {
+                var fieldInfo = (FieldInfo)instruction.Operand;
 
+                OperationFactory.LoadFieldAddressIntoEvaluationStack(fieldInfo);
+                return;
+            }
 
             if (opcodeStr.StartsWith("stind."))
             {

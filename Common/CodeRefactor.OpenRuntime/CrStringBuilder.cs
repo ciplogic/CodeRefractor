@@ -10,10 +10,10 @@ namespace CodeRefactor.OpenRuntime
         char[] _data = new char[10];
         private int _writtenLength;
         [CilMethod]
-        public void Append(string str)
+        public void Append(string value)
         {
-            ExpectAddLength(str.Length);
-            CopyStrToEnd(str);
+            ExpectAddLength(value.Length);
+            CopyStrToEnd(value);
         }
 
         private void CopyStrToEnd(string str)

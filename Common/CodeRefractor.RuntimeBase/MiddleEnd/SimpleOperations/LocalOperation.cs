@@ -34,7 +34,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
             RefAssignment,
             DerefAssignment,
 
-            LoadFunction
+            LoadFunction,
+            FieldRefAssignment
         }
 
         public Kinds Kind;

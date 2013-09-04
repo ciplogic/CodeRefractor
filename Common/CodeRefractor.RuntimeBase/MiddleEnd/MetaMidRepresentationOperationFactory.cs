@@ -497,7 +497,21 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             };
             AddOperation(LocalOperation.Kinds.RefAssignment, assignment);
         }
+        public void LoadFieldAddressIntoEvaluationStack(FieldInfo fieldInfo)
+        {
 
+            var firstVar = (LocalVariable)_evaluator.Stack.Pop();
+            var vreg = SetNewVReg();
+            vreg.FixedType = fieldInfo.FieldType.MakeByRefType();
+
+            var assignment = new FieldRefAssignment
+            {
+                Left = vreg,
+                Right = firstVar,
+                Field = fieldInfo
+            };
+            AddOperation(LocalOperation.Kinds.FieldRefAssignment, assignment);
+        }
         public void LoadField(string fieldName)
         {
             var firstVar = _evaluator.Stack.Pop();

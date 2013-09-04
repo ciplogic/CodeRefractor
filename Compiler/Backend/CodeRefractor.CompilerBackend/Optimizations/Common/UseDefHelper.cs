@@ -80,6 +80,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
                 case LocalOperation.Kinds.Label:
                 case LocalOperation.Kinds.NewObject:
                 case LocalOperation.Kinds.AlwaysBranch:
+                case LocalOperation.Kinds.FieldRefAssignment:
                     break;
                 default:
                     throw new NotImplementedException();

@@ -3,6 +3,7 @@
 using System;
 using System.CodeDom;
 using System.CodeDom.Compiler;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -100,6 +101,15 @@ namespace CodeRefractor.RuntimeBase
         }
 
 
+        static Type GetMappedType(this Type type)
+        {
+
+            var mappedtypeAttr = type.GetCustomAttribute<MapTypeAttribute>();
+            if (mappedtypeAttr == null)
+                return type;
+            return mappedtypeAttr.MappedType;
+        }
+
         public static string GetMethodDescriptor(this MethodBase method)
         {
             var declaringType = method.DeclaringType;
@@ -115,17 +125,22 @@ namespace CodeRefractor.RuntimeBase
         {
             var parameterInfos = method.GetParameters();
             var arguments = String.Join(", ",
-                                        parameterInfos.Select(
-                                            param =>
-                                            String.Format("{0} {1}", param.ParameterType.ToCppName(param.ParameterType.IsClass), param.Name)));
+                                        GetParamAsPrettyList(parameterInfos));
             if (!method.IsStatic)
             {
-                var thisText = String.Format("const {0}& _this", method.DeclaringType.ToCppName());
+                var thisText = String.Format("const {0}& _this", method.DeclaringType.GetMappedType().ToCppName());
                 return parameterInfos.Length == 0
                            ? thisText
                            : String.Format("{0}, {1}", thisText, arguments);
             }
             return arguments;
+        }
+
+        private static IEnumerable<string> GetParamAsPrettyList(ParameterInfo[] parameterInfos)
+        {
+            return parameterInfos.Select(
+                param =>
+                String.Format("{0} {1}", param.ParameterType.GetMappedType().ToCppName(param.ParameterType.IsClass), param.Name));
         }
 
         public static string ClangMethodSignature(this MethodBase method, Type mappedType = null)
@@ -241,15 +256,16 @@ namespace CodeRefractor.RuntimeBase
                        : type.FullName.ToCppMangling();
         }
 
-        public static string ToCppMangling(this string s)
+        public static string ToCppMangling(this string s, string nameSpace = "")
         {
             if (String.IsNullOrEmpty(s))
                 return String.Empty;
-            var fullName = s.Replace(".", "::");
-            if (fullName.EndsWith("[]"))
+            nameSpace=nameSpace.Replace(".", "_");
+            var fullName = nameSpace+"::"+s;
+            if (s.EndsWith("[]"))
             {
-                fullName = fullName.Remove(fullName.Length - 2, 2);
-                fullName = String.Format("std::shared_ptr <Array<{0} > > &", fullName);
+                s = s.Remove(fullName.Length - 2, 2);
+                fullName = String.Format("std::shared_ptr <Array<{0}::{1}> > &", nameSpace,s);
             }
             return fullName;
         }
@@ -260,7 +276,7 @@ namespace CodeRefractor.RuntimeBase
             {
                 return type.IsSubclassOf(typeof (Enum))
                            ? "int"
-                           : type.FullName.ToCppMangling();
+                           : type.Name.ToCppMangling(type.Namespace);
             }
             if (type.IsArray)
             {
@@ -268,7 +284,7 @@ namespace CodeRefractor.RuntimeBase
                 var fullTypeName = elementType.ToCppName();
                 return String.Format("std::shared_ptr< Array < {0} > >", fullTypeName);
             }
-            return String.Format("std::shared_ptr<{0}>", type.FullName.ToCppMangling());
+            return String.Format("std::shared_ptr<{0}>", type.Name.ToCppMangling(type.Namespace));
         }
 
         public static bool IsVoid(this Type type)

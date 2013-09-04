@@ -56,7 +56,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             {
                 var typeData = usedType.Value;
                 var runtimeType = usedType.Key;
-                sb.AppendFormat("namespace {0} {{", typeData.Namespace).AppendLine();
+                sb.AppendFormat("namespace {0} {{", typeData.Namespace.Replace('.', '_')).AppendLine();
                 sb.AppendFormat("struct {0} {{", typeData.Name).AppendLine();
                 var mappedAttribute = crCrRuntimeLibrary.TypeAttribute[runtimeType];
                 sb.AppendLine(mappedAttribute.Code);

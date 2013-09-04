@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using CodeRefractor.CompilerBackend.HandleOperations;
+using CodeRefractor.CompilerBackend.Linker;
 using CodeRefractor.CompilerBackend.Optimizations.Purity;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
@@ -112,6 +113,9 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                         HandleDerefAssignment(operation, bodySb);
                         break;
 
+                    case LocalOperation.Kinds.FieldRefAssignment:
+                        HandleFieldRefAssignment(operation, bodySb);
+                        break;
                     case LocalOperation.Kinds.Switch:
                         HandleSwitch(operation, bodySb);
                         break;
@@ -134,6 +138,15 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             var leftData = (IdentifierValue) assign.Left;
             var rightData = (IdentifierValue) assign.Right;
             bodySb.AppendFormat("{0} = &{1};", leftData.Name, rightData.Name);
+        }
+
+        private static void HandleFieldRefAssignment(LocalOperation operation, StringBuilder bodySb)
+        {
+            var assign = (FieldRefAssignment) operation.Value;
+            var leftData = assign.Left;
+            var rightData = assign.Right;
+            var fieldName = assign.Field.Name;
+            bodySb.AppendFormat("{0} = &{1}->{2};", leftData.Name, rightData.Name, fieldName);
         }
 
         private static void HandleDerefAssignment(LocalOperation operation, StringBuilder bodySb)
@@ -313,7 +326,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             }
             else
             {
-                sb.AppendFormat("{0} = {1};", left, localVar.Right);
+                sb.AppendFormat("{0} = {1};", left, localVar.Right.ComputedValue());
             }
         }
     }
