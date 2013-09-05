@@ -14,7 +14,6 @@ namespace CodeRefractor.RuntimeBase
 {
     public class MetaLinker
     {
-        public readonly Dictionary<string, HashSet<int>> Labels = new Dictionary<string, HashSet<int>>();
         public MethodInfo MethodInfo;
 
         public void SetEntryPoint(MethodInfo entryMethod)
@@ -22,16 +21,16 @@ namespace CodeRefractor.RuntimeBase
             MethodInfo = entryMethod;
         }
 
-        public void ComputeDependencies(MethodBase definition)
+        public static HashSet<int> ComputeDependencies(MethodBase definition)
         {
-            ComputeLabels(definition);
+            var result = ComputeLabels(definition);
             AddClassIfNecessary(definition);
             var methodDefinitionKey = definition.ToString();
             GlobalMethodPool.Instance.MethodInfos[methodDefinitionKey] = definition;
 
             var body = definition.GetMethodBody();
             if (body == null)
-                return;
+                return result;
             var instructions = MethodBodyReader.GetInstructions(definition);
 
             foreach (var instruction in instructions)
@@ -59,14 +58,16 @@ namespace CodeRefractor.RuntimeBase
                         }
                 }
             }
+            return result;
         }
 
-        public void ComputeLabels(MethodBase definition)
+        public static HashSet<int> ComputeLabels(MethodBase definition)
         {
+            var labels = new HashSet<int>();
             var methodDefinitionKey = definition.ToString();
             var body = definition.GetMethodBody();
             if (body == null)
-                return;
+                return labels;
             var instructions = MethodBodyReader.GetInstructions(definition);
 
             foreach (var instruction in instructions)
@@ -90,7 +91,7 @@ namespace CodeRefractor.RuntimeBase
                     case ObcodeIntValues.Br:
                         {
                             var offset = ((Instruction) instruction.Operand).Offset;
-                            AddLabelIfDoesntExist(methodDefinitionKey, offset);
+                            AddLabelIfDoesntExist(offset, labels);
                         }
                         break;
                     case ObcodeIntValues.Switch:
@@ -98,23 +99,19 @@ namespace CodeRefractor.RuntimeBase
                             var offsets = (Instruction[]) instruction.Operand;
                             foreach (var offset in offsets)
                             {
-                                AddLabelIfDoesntExist(methodDefinitionKey, offset.Offset);
+                                AddLabelIfDoesntExist(offset.Offset, labels);
                             }
                         }
                         break;
                 }
             }
+            return labels;
         }
 
-        private void AddLabelIfDoesntExist(string methodDefinitionKey, int offset)
+        private static void AddLabelIfDoesntExist(int offset, HashSet<int> labels)
         {
-            HashSet<int> labelList;
-            if (!Labels.TryGetValue(methodDefinitionKey, out labelList))
-            {
-                labelList = new HashSet<int>();
-                Labels[methodDefinitionKey] = labelList;
-            }
-            labelList.Add(offset);
+           
+            labels.Add(offset);
         }
 
 
@@ -122,18 +119,17 @@ namespace CodeRefractor.RuntimeBase
         {
             foreach (var methodBase in GlobalMethodPool.Instance.MethodInfos)
             {
-                Interpret(methodBase);
+                Interpret(methodBase, new Dictionary<string, HashSet<int>>());
             }
         }
 
-        private void Interpret(KeyValuePair<string, MethodBase> method)
+        private void Interpret(KeyValuePair<string, MethodBase> method, Dictionary<string, HashSet<int>> labels)
         {
             var interpreter = new MethodInterpreter(method.Value);
             var methodDefinitionKey = method.Value.ToString();
 
             var labelList = new HashSet<int>();
-            Labels.TryGetValue(methodDefinitionKey, out labelList);
-            interpreter.SetLabels(labelList);
+            labels.TryGetValue(methodDefinitionKey, out labelList);
             interpreter.Process();
             AddClassIfNecessary(interpreter.Method).Add(interpreter);
             GlobalMethodPool.Instance.Interpreters[method.Key] = interpreter;
@@ -156,7 +152,7 @@ namespace CodeRefractor.RuntimeBase
             return classInfo;
         }
 
-        private void AddMethodIfNecessary(MethodBase methodBase)
+        private static void AddMethodIfNecessary(MethodBase methodBase)
         {
             if (MetaMidRepresentationOperationFactory.HandleRuntimeHelpersMethod(methodBase))
                 return;

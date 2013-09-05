@@ -70,10 +70,20 @@ namespace CodeRefractor.RuntimeBase.Runtime
                 var format = methodInfo.GetMethodDescriptor();
                 var linker = new MetaLinker();
                 linker.SetEntryPoint(methodInfo);
-                linker.ComputeLabels(methodInfo);
+                MetaLinker.ComputeDependencies(methodInfo);
                 linker.EvaluateMethods();
                 _supportedCilMethods[format] = linker;
             }
+        }
+
+        public Type GetReverseType(Type type)
+        {
+            Type result;
+            if(!ReverseMappedTypes.TryGetValue(type, out result))
+            {
+                return null;
+            }
+            return result;
         }
 
         private List<CppMethodDefinition> GetTypesMethodList(Type type)
@@ -125,7 +135,7 @@ namespace CodeRefractor.RuntimeBase.Runtime
                 if (!_supportedCilMethods.TryGetValue(methodDefinition, out cilLinkerMethod))
                     return false;
                 UsedCilMethods.Add(methodDefinition, cilLinkerMethod);
-                cilLinkerMethod.ComputeDependencies(cilLinkerMethod.MethodInfo);
+                MetaLinker.ComputeDependencies(cilLinkerMethod.MethodInfo);
                 return true;
             }
             UsedCppMethods.Add(methodDefinition, method);

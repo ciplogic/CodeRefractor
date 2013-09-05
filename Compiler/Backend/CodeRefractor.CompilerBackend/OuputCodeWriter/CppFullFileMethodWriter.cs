@@ -16,22 +16,20 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
         {
             var linker = new MetaLinker();
             linker.SetEntryPoint(definition);
-            linker.ComputeDependencies(definition);
-            linker.ComputeLabels(definition);
+            MetaLinker .ComputeDependencies(definition);
             linker.EvaluateMethods();
             MetaLinkerOptimizer.OptimizeMethods();
             return linker;
         }
 
-        public static string WriteHeaderMethod(this MethodBase methodBase, bool writeEndColon = true,
-                                               Type mappedType = null)
+        public static string WriteHeaderMethod(this MethodBase methodBase, bool writeEndColon = true)
         {
             var retType = methodBase.GetReturnType().ToCppName();
             var sb = new StringBuilder();
             var arguments = methodBase.GetArgumentsAsText();
 
             sb.AppendFormat("{0} {1}({2})",
-                            retType, methodBase.ClangMethodSignature(mappedType), arguments);
+                            retType, methodBase.ClangMethodSignature(), arguments);
             if (writeEndColon)
                 sb.Append(";");
 

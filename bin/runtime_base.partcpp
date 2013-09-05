@@ -7,6 +7,11 @@ void buildStringTable();
 void mapLibs();
 void RuntimeHelpersBuildConstantTable();
 
+int System_String__get_Length(const std::shared_ptr<System::String>& text){
+	System::String* ptr = text.get();
+	
+	return ptr->Length;
+}
 
 void initializeRuntime()
 {

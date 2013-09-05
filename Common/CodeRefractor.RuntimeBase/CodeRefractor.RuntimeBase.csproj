@@ -39,6 +39,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Analyze\AssemblyData.cs" />
+    <Compile Include="Analyze\ClassHierarchyAnalysis.cs" />
     <Compile Include="Analyze\ClassTypeData.cs" />
     <Compile Include="Analyze\FieldDataRef.cs" />
     <Compile Include="Analyze\ProgramData.cs" />

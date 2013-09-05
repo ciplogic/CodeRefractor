@@ -365,6 +365,12 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 return;
             }
             methodData.ExtractNeededValuesFromStack(_evaluator);
+            if (!methodData.IsStatic && methodData.Parameters.Count > 0)
+            {
+                methodData.Info = ClassHierarchyAnalysis.GetBestVirtualMatch(methodData.Info,
+                                                                             methodData.Parameters[0].ComputedType());
+
+            }
             if (!methodData.IsVoid)
             {
                 var vreg = SetNewVReg();
@@ -394,7 +400,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         }
 
 
-        public void StoresValueFromAddress(LocalVariableInfo index)
+        public void StoresValueFromAddress()
         {
             var varAddress = _evaluator.Stack.Pop();
             var varValue = _evaluator.Stack.Pop();

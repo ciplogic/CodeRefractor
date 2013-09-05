@@ -27,7 +27,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.Methods
             IsPure = PureMethodTable.ComputeMethodPurity(info.ToString());
         }
 
-        public MethodBase Info { get; private set; }
+        public MethodBase Info { get; set; }
 
         public void ExtractNeededValuesFromStack(EvaluatorStack evaluatorStack)
         {

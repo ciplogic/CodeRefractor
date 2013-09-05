@@ -40,7 +40,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 
             WriteClassHeaders(linker, sb);
 
-            WriteMethodBodies(linker, sb);
+            WriteMethodBodies(linker, sb, crCrRuntimeLibrary);
 
             sb.AppendLine(PlatformInvokeCodeWriter.LoadDllMethods());
             sb.AppendLine(ConstByteArrayList.BuildConstantTable());
@@ -60,7 +60,8 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                 sb.AppendFormat("struct {0} {{", typeData.Name).AppendLine();
                 var mappedAttribute = crCrRuntimeLibrary.TypeAttribute[runtimeType];
                 sb.AppendLine(mappedAttribute.Code);
-                foreach (var fieldData in runtimeType.GetFields(BindingFlags.Instance).Where(field => !field.IsStatic))
+                var fields = GetFieldsOfType(runtimeType);
+                foreach (var fieldData in fields)
                 {
                     sb.AppendFormat(" {0} {1};", fieldData.FieldType.ToCppName(), fieldData.Name).AppendLine();
                 }
@@ -71,6 +72,13 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                 }
                 sb.AppendFormat("}}; }}").AppendLine();
             }
+        }
+
+        private static List<FieldInfo> GetFieldsOfType(Type runtimeType)
+        {
+            var fields = runtimeType.GetFields(BindingFlags.Instance).Where(field => !field.IsStatic).ToList();
+            fields.AddRange(runtimeType.GetFields(BindingFlags.Instance | BindingFlags.NonPublic).Where(field => !field.IsStatic));
+            return fields;
         }
 
         private static void WriteClassHeaders(MetaLinker linker, StringBuilder sb)
@@ -88,7 +96,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             WriteStaticFieldDefinitions(sb, typeDatas);
         }
 
-        private static void WriteMethodBodies(MetaLinker linker, StringBuilder sb)
+        private static void WriteMethodBodies(MetaLinker linker, StringBuilder sb, CrRuntimeLibrary crCrRuntimeLibrary)
         {
             foreach (var metaInterpreter in GlobalMethodPool.Instance.Interpreters
                 .Where(m => m.Value.Kind == MethodKind.PlatformInvoke))
@@ -106,7 +114,16 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                                                 {
                                                     Interpreter = metaInterpreter.Value
                                                 };
-                sb.AppendLine(interpreterCodeWriter.WriteMethodCode());
+                sb.AppendLine(interpreterCodeWriter.WriteMethodSignature(crCrRuntimeLibrary));
+            } 
+            foreach (var metaInterpreter in GlobalMethodPool.Instance.Interpreters
+                .Where(m => m.Value.Kind != MethodKind.PlatformInvoke))
+            {
+                var interpreterCodeWriter = new MethodInterpreterCodeWriter
+                {
+                    Interpreter = metaInterpreter.Value
+                };
+                sb.AppendLine(interpreterCodeWriter.WriteMethodCode(crCrRuntimeLibrary));
             } 
             WriteMainBody(linker, sb);
         }
@@ -194,7 +211,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                     "Cpp runtime method is called but is not marked with CppMethodBody attribute");
             if (LinkingData.SetInclude(methodNativeDescription.Header))
                 sb.AppendFormat("#include \"{0}\"", methodNativeDescription.Header).AppendLine();
-            var methodHeaderText = method.WriteHeaderMethod(false, mappedType);
+            var methodHeaderText = method.WriteHeaderMethod(false);
             sb.Append(methodHeaderText);
             sb.AppendFormat("{{ {0} }}", methodNativeDescription.Code).AppendLine();
         }

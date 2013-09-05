@@ -44,7 +44,10 @@ namespace CodeRefactor.OpenRuntime
     ")]
     public class CrString
     {
-        public int Lengh;
+        public int Lengh
+        {
+            get { return Text.Length; }
+        }
         public char[] Text;
 
         public unsafe CrString(byte* data)
@@ -54,13 +57,11 @@ namespace CodeRefactor.OpenRuntime
             for (var i = 0; i < len; i++)
                 Text[i] = (char) data[i];
             Text[len] = '\0';
-            Lengh = len;
         }
 
         public CrString(char[] value)
         {
             var length = value.Length;
-            Lengh = length - 1;
             Text = new char[length];
             for (var i = 0; i <= length; i++)
                 Text[i] = value[i];

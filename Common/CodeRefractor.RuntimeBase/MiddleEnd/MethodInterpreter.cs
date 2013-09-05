@@ -44,7 +44,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 return;
 
             var instructions = MethodBodyReader.GetInstructions(Method);
-
+            _hashedLabels = MetaLinker.ComputeLabels(Method);
             MidRepresentation.Method = Method;
             var evaluator = new EvaluatorStack();
             OperationFactory = new MetaMidRepresentationOperationFactory(MidRepresentation, evaluator);
@@ -197,7 +197,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 //TODO: load the address into evaluation stack
                 var index = (LocalVariableInfo) instruction.Operand;
 
-                OperationFactory.StoresValueFromAddress(index);
+                OperationFactory.StoresValueFromAddress();
                 return;
             }
 
@@ -497,13 +497,6 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             #endregion
 
             return false;
-        }
-
-        public void SetLabels(IEnumerable<int> labelList)
-        {
-            _hashedLabels = labelList == null
-                                ? new HashSet<int>()
-                                : new HashSet<int>(labelList);
         }
     }
 }

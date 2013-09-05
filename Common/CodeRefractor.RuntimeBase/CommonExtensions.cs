@@ -12,6 +12,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
+using CodeRefractor.RuntimeBase.Runtime;
 using CodeRefractor.RuntimeBase.Shared;
 
 #endregion
@@ -143,8 +144,9 @@ namespace CodeRefractor.RuntimeBase
                 String.Format("{0} {1}", param.ParameterType.GetMappedType().ToCppName(param.ParameterType.IsClass), param.Name));
         }
 
-        public static string ClangMethodSignature(this MethodBase method, Type mappedType = null)
+        public static string ClangMethodSignature(this MethodBase method)
         {
+            var mappedType = CrRuntimeLibrary.Instance.GetReverseType(method.DeclaringType);
             var declaringType = mappedType ?? method.DeclaringType;
             var typeNamespace = (declaringType.Namespace ?? string.Empty).Replace('.', '_');
             var typeName = declaringType.Name;
@@ -272,6 +274,7 @@ namespace CodeRefractor.RuntimeBase
 
         public static string ToCppName(this Type type, bool isSmartPtr = true)
         {
+            type = CrRuntimeLibrary.Instance.GetReverseType(type) ?? type;
             if (!type.IsClass || !isSmartPtr)
             {
                 return type.IsSubclassOf(typeof (Enum))

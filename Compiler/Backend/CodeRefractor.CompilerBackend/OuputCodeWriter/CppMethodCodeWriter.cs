@@ -15,6 +15,7 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.ConstTable;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
+using CodeRefractor.RuntimeBase.Runtime;
 using Mono.Reflection;
 
 #endregion
@@ -23,15 +24,16 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 {
     internal static class CppMethodCodeWriter
     {
-
-        public static string WriteCode(MetaMidRepresentation midRepresentation)
+        
+        public static string WriteCode(MetaMidRepresentation midRepresentation, CrRuntimeLibrary crCrRuntimeLibrary)
         {
             var operations = midRepresentation.LocalOperations;
             var headerSb = new StringBuilder();
-            WriteSignature(midRepresentation.Method, headerSb);
+            WriteSignature(midRepresentation.Method, headerSb, crCrRuntimeLibrary);
 
-            var bodySb = ComputeBodySb(operations);
-            var variablesSb = ComputeVariableSb(midRepresentation);
+            headerSb.Append("{");
+            var bodySb = ComputeBodySb(operations, crCrRuntimeLibrary);
+            var variablesSb = ComputeVariableSb(midRepresentation, crCrRuntimeLibrary);
             var finalSb = new StringBuilder();
             finalSb.AppendLine(headerSb.ToString());
             finalSb.AppendLine(variablesSb.ToString());
@@ -39,7 +41,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             return finalSb.ToString();
         }
 
-        private static StringBuilder ComputeBodySb(List<LocalOperation> operations)
+        private static StringBuilder ComputeBodySb(List<LocalOperation> operations, CrRuntimeLibrary crCrRuntimeLibrary)
         {
             var bodySb = new StringBuilder();
             foreach (var operation in operations)
@@ -268,7 +270,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             bodySb.AppendFormat("{0} = std::make_shared<{1}>();", value.AssignedTo.Name, cppName);
         }
 
-        private static StringBuilder ComputeVariableSb(MetaMidRepresentation midRepresentation)
+        private static StringBuilder ComputeVariableSb(MetaMidRepresentation midRepresentation, CrRuntimeLibrary crCrRuntimeLibrary)
         {
             var variablesSb = new StringBuilder();
             foreach (var variableInfo in midRepresentation.Vars.LocalVars)
@@ -299,11 +301,11 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 
         #endregion
 
-        private static void WriteSignature(MethodBase method, StringBuilder sb)
+        internal static void WriteSignature(MethodBase method, StringBuilder sb,CrRuntimeLibrary crCrRuntimeLibrary, bool writeEndColon=false)
         {
-            var text = method.WriteHeaderMethod(false);
+            var mappedType = crCrRuntimeLibrary.GetReverseType(method.DeclaringType);
+            var text = method.WriteHeaderMethod(writeEndColon);
             sb.Append(text);
-            sb.Append("{");
         }
 
 
