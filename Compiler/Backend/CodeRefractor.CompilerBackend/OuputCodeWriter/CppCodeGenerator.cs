@@ -204,7 +204,6 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             var typeData = method.DeclaringType;
             if (typeData == null)
                 throw new InvalidDataException("Method's declaring type should be valid");
-            var mappedType = crCrRuntimeLibrary.ReverseMappedTypes[typeData];
             var methodNativeDescription = method.GetCustomAttribute<CppMethodBodyAttribute>();
             if (methodNativeDescription == null)
                 throw new InvalidDataException(

@@ -114,17 +114,24 @@ namespace CodeRefractor.RuntimeBase
         public void Interpret()
         {
             var method = MethodInfo;
-            var interpreter = new MethodInterpreter(method);
-            var methodDefinitionKey = method.ToString();
+            Interpreter = new MethodInterpreter(method);
 
-            interpreter.LabelList = ComputeLabels(interpreter.Method);
-            interpreter.Process();
-            AddClassIfNecessary(interpreter.Method).Add(interpreter);
-            GlobalMethodPool.Instance.Interpreters[methodDefinitionKey] = interpreter;
+            Interpreter.LabelList = ComputeLabels(Interpreter.Method);
+            Interpreter.Process();
+            AddClassIfNecessary(Interpreter.Method).Add(Interpreter);
 
             var typeData = (ClassTypeData) ProgramData.UpdateType(method.DeclaringType);
-            typeData.AddMethodInterpreter(interpreter);
+            typeData.AddMethodInterpreter(Interpreter);
         }
+
+        public void AddToGlobalMethods()
+        {
+            var method = MethodInfo;
+            var methodDefinitionKey = method.ToString();
+            GlobalMethodPool.Instance.Interpreters[methodDefinitionKey] = Interpreter;
+        }
+
+        public MethodInterpreter Interpreter { get; set; }
 
         private static ClassInterpreter AddClassIfNecessary(MethodBase operand)
         {
@@ -146,8 +153,7 @@ namespace CodeRefractor.RuntimeBase
                 return;
             var methodDesc = methodBase.ToString();
 
-            var methodRuntimeInfo = methodBase.GetMethodDescriptor();
-            if (ProgramData.CrCrRuntimeLibrary.UseMethod(methodRuntimeInfo))
+            if (ProgramData.CrCrRuntimeLibrary.UseMethod(methodBase))
                 return;
             if (GlobalMethodPool.Instance.MethodInfos.ContainsKey(methodDesc))
                 return;

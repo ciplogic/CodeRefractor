@@ -87,6 +87,16 @@ namespace CodeRefractor.RuntimeBase.Runtime
             return result;
         }
 
+
+        public Type GetMappedType(Type type)
+        {
+            Type result;
+            if (!MappedTypes.TryGetValue(type, out result))
+            {
+                return null;
+            }
+            return result;
+        }
         private List<CppMethodDefinition> GetTypesMethodList(Type type)
         {
             List<CppMethodDefinition> result;
@@ -125,21 +135,32 @@ namespace CodeRefractor.RuntimeBase.Runtime
             methodList.Add(cppMethodDefinition);
         }
 
-        public bool UseMethod(string methodDefinition)
+        public bool UseMethod(MethodBase methodDefinition)
         {
-            if (UsedCppMethods.ContainsKey(methodDefinition)) return true;
-            if (UsedCilMethods.ContainsKey(methodDefinition)) return true;
+            var description = methodDefinition.GetMethodDescriptor();
+            if (UsedCppMethods.ContainsKey(description)) return true;
+            if (UsedCilMethods.ContainsKey(description)) return true;
+            var mappedType = GetMappedType(methodDefinition.DeclaringType);
+            if (mappedType == null)
+                return false;
+            if(!ScanForMethod(description))
+                ScanMethodFunctions(mappedType);
+            return ScanForMethod(description);
+        }
+
+        private bool ScanForMethod(string description)
+        {
             MethodBase method;
-            if (!_supportedMethods.TryGetValue(methodDefinition, out method))
+            if (!_supportedMethods.TryGetValue(description, out method))
             {
                 MetaLinker cilLinkerMethod;
-                if (!_supportedCilMethods.TryGetValue(methodDefinition, out cilLinkerMethod))
+                if (!_supportedCilMethods.TryGetValue(description, out cilLinkerMethod))
                     return false;
-                UsedCilMethods.Add(methodDefinition, cilLinkerMethod);
+                UsedCilMethods.Add(description, cilLinkerMethod);
                 MetaLinker.ComputeDependencies(cilLinkerMethod.MethodInfo);
                 return true;
             }
-            UsedCppMethods.Add(methodDefinition, method);
+            UsedCppMethods.Add(description, method);
             return true;
         }
 

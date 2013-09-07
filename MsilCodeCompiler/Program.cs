@@ -41,6 +41,7 @@ namespace CodeRefractor.Compiler
             var definition = asm.EntryPoint;
             var start = Environment.TickCount;
             var linker = definition.CreateLinkerFromEntryPoint();
+            linker.AddToGlobalMethods();
             var sb = CppCodeGenerator.BuildFullSourceCode(linker, ProgramData.CrCrRuntimeLibrary);
             var end = Environment.TickCount - start;
             Console.WriteLine("Compilation time: {0} ms", end);

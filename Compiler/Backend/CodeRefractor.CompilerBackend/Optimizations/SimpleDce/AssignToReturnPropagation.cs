@@ -25,7 +25,6 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
         }
         public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
         {
-
             var localOperations = intermediateCode.LocalOperations;
             var count = localOperations.Count;
             var assignBeforeReturn = localOperations[count - 2];
