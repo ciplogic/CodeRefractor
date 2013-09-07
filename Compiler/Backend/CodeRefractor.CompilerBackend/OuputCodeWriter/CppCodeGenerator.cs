@@ -222,7 +222,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             sb.AppendFormat("int main(int argc, char**argv) {{").AppendLine();
             sb.AppendFormat("auto argsAsList = System::getArgumentsAsList(argc, argv);").AppendLine();
             sb.AppendLine("initializeRuntime();");
-            var entryPoint = linker.MethodInfo;
+            var entryPoint = linker.MethodInfo as MethodInfo;
             if (entryPoint.ReturnType != typeof (void))
                 sb.Append("return ");
             var parameterInfos = entryPoint.GetParameters();

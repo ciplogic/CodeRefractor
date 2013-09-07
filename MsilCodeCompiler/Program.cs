@@ -20,6 +20,12 @@ namespace CodeRefractor.Compiler
     {
         public static void CallCompiler(string inputAssemblyName, string outputExeName)
         {
+
+            CrRuntimeLibrary.Instance.UseType(typeof (string));
+            //var getArgumentsDefinition = typeof(CrStartLib).GetMethod("GetArguments");
+            //var extraArgument = getArgumentsDefinition.CreateLinkerFromEntryPoint();
+
+
             var commandLineParse = CommandLineParse.Instance;
             if (!String.IsNullOrEmpty(inputAssemblyName))
             {
@@ -35,7 +41,6 @@ namespace CodeRefractor.Compiler
             var definition = asm.EntryPoint;
             var start = Environment.TickCount;
             var linker = definition.CreateLinkerFromEntryPoint();
-
             var sb = CppCodeGenerator.BuildFullSourceCode(linker, ProgramData.CrCrRuntimeLibrary);
             var end = Environment.TickCount - start;
             Console.WriteLine("Compilation time: {0} ms", end);
@@ -58,7 +63,7 @@ namespace CodeRefractor.Compiler
             //MetaLinker.ScanAssembly(typeof(int));
             //MetaLinker.ScanAssembly(typeof(Console));
             NativeCompilationUtils.SetCompilerOptions("gcc");
-            CommandLineParse.OptimizerLevel =0;
+            CommandLineParse.OptimizerLevel =1;
             CallCompiler("", "");
             //var standardOutput = applicationNativeExe.ExecuteCommand();
             //Console.WriteLine(standardOutput);

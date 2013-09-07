@@ -121,6 +121,11 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                     case LocalOperation.Kinds.Switch:
                         HandleSwitch(operation, bodySb);
                         break;
+                        
+                    case LocalOperation.Kinds.SizeOf:
+                        HandleSizeOf(operation, bodySb);
+                        break;
+
                     default:
                         throw new InvalidOperationException(
                             string.Format(
@@ -132,6 +137,14 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             }
             bodySb.AppendLine("}");
             return bodySb;
+        }
+
+        private static void HandleSizeOf(LocalOperation operation, StringBuilder bodySb)
+        {
+            var assign = (SizeOfAssignment)operation.Value;
+            var leftData = (IdentifierValue)assign.AssignedTo;
+            var rightData = assign.Right.ToCppName();
+            bodySb.AppendFormat("{0} = sizeof({1});", leftData.Name, rightData);
         }
 
         private static void HandleRefAssignment(LocalOperation operation, StringBuilder bodySb)

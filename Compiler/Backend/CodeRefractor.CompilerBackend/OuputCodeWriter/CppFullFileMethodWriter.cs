@@ -16,8 +16,8 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
         {
             var linker = new MetaLinker();
             linker.SetEntryPoint(definition);
-            MetaLinker .ComputeDependencies(definition);
-            linker.EvaluateMethods();
+            MetaLinker.ComputeDependencies(definition);
+            linker.Interpret();
             MetaLinkerOptimizer.OptimizeMethods();
             return linker;
         }

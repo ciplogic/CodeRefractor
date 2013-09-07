@@ -44,12 +44,14 @@ namespace CodeRefactor.OpenRuntime
     ")]
     public class CrString
     {
+        [CilMethod]
         public int Lengh
         {
             get { return Text.Length; }
         }
         public char[] Text;
 
+        [CilMethod]
         public unsafe CrString(byte* data)
         {
             var len = StrLen(data);
@@ -59,6 +61,7 @@ namespace CodeRefactor.OpenRuntime
             Text[len] = '\0';
         }
 
+        [CilMethod]
         public CrString(char[] value)
         {
             var length = value.Length;

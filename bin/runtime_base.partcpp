@@ -7,11 +7,6 @@ void buildStringTable();
 void mapLibs();
 void RuntimeHelpersBuildConstantTable();
 
-int System_String__get_Length(const std::shared_ptr<System::String>& text){
-	System::String* ptr = text.get();
-	
-	return ptr->Length;
-}
 
 void initializeRuntime()
 {
@@ -25,7 +20,7 @@ std::shared_ptr<System::String> _str(int index)
 	auto jumpTo = _stringJumps[index];
 	auto len = _stringLength[index];
 	auto resultData = &(_stringTable[jumpTo]);
-	auto result = new System::String (len, resultData);
+	auto result = new System::String (len, resultData); 
 	return std::shared_ptr<System::String>(result);
 }
 

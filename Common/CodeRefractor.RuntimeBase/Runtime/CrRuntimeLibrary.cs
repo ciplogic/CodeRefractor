@@ -53,11 +53,12 @@ namespace CodeRefractor.RuntimeBase.Runtime
                 ReverseMappedTypes[item] = mapTypeAttr.MappedType;
             }
 
-            foreach (var item in MappedTypes.Values)
-            {
-                ScanType(item);
-                ScanTypeForCilMethods(item);
-            }
+        }
+
+        private void ScanMethodFunctions(Type item)
+        {
+            ScanType(item);
+            ScanTypeForCilMethods(item);
         }
 
         private void ScanTypeForCilMethods(Type item)
@@ -70,8 +71,8 @@ namespace CodeRefractor.RuntimeBase.Runtime
                 var format = methodInfo.GetMethodDescriptor();
                 var linker = new MetaLinker();
                 linker.SetEntryPoint(methodInfo);
-                MetaLinker.ComputeDependencies(methodInfo);
-                linker.EvaluateMethods();
+                //MetaLinker.ComputeDependencies(methodInfo);
+                linker.Interpret();
                 _supportedCilMethods[format] = linker;
             }
         }
@@ -180,6 +181,11 @@ namespace CodeRefractor.RuntimeBase.Runtime
             if (!MappedTypes.ContainsKey(typeToUse))
                 return;
             UsedTypes[MappedTypes[typeToUse]] = typeToUse;
+        }
+
+        public void UseType(Type type)
+        {
+            UseClrType(type);
         }
     }
 }

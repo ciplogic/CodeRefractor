@@ -34,6 +34,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
         public MethodKind Kind { get; set; }
 
+        public HashSet<int> LabelList { get; set; }
+
         public readonly MetaMidRepresentation MidRepresentation = new MetaMidRepresentation();
         public readonly PlatformInvokeRepresentation PlatformInvoke = new PlatformInvokeRepresentation();
         private HashSet<int> _hashedLabels;
@@ -103,6 +105,12 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 return;
             }
 
+
+            if (opcodeStr == "conv.i")
+            {
+                OperationFactory.ConvI();
+                return;
+            }
             if (opcodeStr == "conv.i4")
             {
                 OperationFactory.ConvI4();
@@ -166,6 +174,11 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 OperationFactory.Switch((Instruction[])instruction.Operand);
                 return;
             }
+            if (opcodeStr == "sizeof")
+            {
+                OperationFactory.SizeOf((Type)instruction.Operand);
+                return;
+            }
             if (opcodeStr == "ldsfld")
             {
                 OperationFactory.LoadStaticField((FieldInfo)instruction.Operand);
@@ -195,9 +208,14 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             if (opcodeStr.StartsWith("stind."))
             {
                 //TODO: load the address into evaluation stack
-                var index = (LocalVariableInfo) instruction.Operand;
-
                 OperationFactory.StoresValueFromAddress();
+                return;
+            }
+
+            if (opcodeStr.StartsWith("ldind."))
+            {
+                //TODO: load the address into evaluation stack
+                OperationFactory.LoadValueFromAddress();
                 return;
             }
 

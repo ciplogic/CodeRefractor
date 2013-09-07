@@ -14,23 +14,22 @@ namespace CodeRefractor.RuntimeBase
 {
     public class MetaLinker
     {
-        public MethodInfo MethodInfo;
+        public MethodBase MethodInfo;
 
-        public void SetEntryPoint(MethodInfo entryMethod)
+        public void SetEntryPoint(MethodBase entryMethod)
         {
             MethodInfo = entryMethod;
         }
 
-        public static HashSet<int> ComputeDependencies(MethodBase definition)
+        public static void ComputeDependencies(MethodBase definition)
         {
-            var result = ComputeLabels(definition);
             AddClassIfNecessary(definition);
             var methodDefinitionKey = definition.ToString();
             GlobalMethodPool.Instance.MethodInfos[methodDefinitionKey] = definition;
 
             var body = definition.GetMethodBody();
             if (body == null)
-                return result;
+                return;
             var instructions = MethodBodyReader.GetInstructions(definition);
 
             foreach (var instruction in instructions)
@@ -58,13 +57,11 @@ namespace CodeRefractor.RuntimeBase
                         }
                 }
             }
-            return result;
         }
 
         public static HashSet<int> ComputeLabels(MethodBase definition)
         {
             var labels = new HashSet<int>();
-            var methodDefinitionKey = definition.ToString();
             var body = definition.GetMethodBody();
             if (body == null)
                 return labels;
@@ -114,27 +111,18 @@ namespace CodeRefractor.RuntimeBase
             labels.Add(offset);
         }
 
-
-        public void EvaluateMethods()
+        public void Interpret()
         {
-            foreach (var methodBase in GlobalMethodPool.Instance.MethodInfos)
-            {
-                Interpret(methodBase, new Dictionary<string, HashSet<int>>());
-            }
-        }
+            var method = MethodInfo;
+            var interpreter = new MethodInterpreter(method);
+            var methodDefinitionKey = method.ToString();
 
-        private void Interpret(KeyValuePair<string, MethodBase> method, Dictionary<string, HashSet<int>> labels)
-        {
-            var interpreter = new MethodInterpreter(method.Value);
-            var methodDefinitionKey = method.Value.ToString();
-
-            var labelList = new HashSet<int>();
-            labels.TryGetValue(methodDefinitionKey, out labelList);
+            interpreter.LabelList = ComputeLabels(interpreter.Method);
             interpreter.Process();
             AddClassIfNecessary(interpreter.Method).Add(interpreter);
-            GlobalMethodPool.Instance.Interpreters[method.Key] = interpreter;
+            GlobalMethodPool.Instance.Interpreters[methodDefinitionKey] = interpreter;
 
-            var typeData = (ClassTypeData) ProgramData.UpdateType(method.Value.DeclaringType);
+            var typeData = (ClassTypeData) ProgramData.UpdateType(method.DeclaringType);
             typeData.AddMethodInterpreter(interpreter);
         }
 

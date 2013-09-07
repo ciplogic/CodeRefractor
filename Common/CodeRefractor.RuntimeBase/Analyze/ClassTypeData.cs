@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.Shared;
 
@@ -27,11 +28,11 @@ namespace CodeRefractor.RuntimeBase.Analyze
             foreach (var fieldInfo in allFields)
             {
                 var fieldData = new FieldDataRef
-                                    {
-                                        Name = fieldInfo.Name,
-                                        TypeData = GetTypeData(fieldInfo.FieldType),
-                                        IsStatic = fieldInfo.IsStatic
-                                    };
+                {
+                    Name = fieldInfo.Name,
+                    TypeData = GetTypeData(fieldInfo.FieldType),
+                    IsStatic = fieldInfo.IsStatic
+                };
                 result.Fields.Add(fieldData);
             }
         }
@@ -42,12 +43,16 @@ namespace CodeRefractor.RuntimeBase.Analyze
             Interpreters.Add(metaLinker);
         }
 
-        public MethodInterpreter GetInterpreter(string methodName)
+        public MethodInterpreter GetInterpreter(MethodBase methodBase)
         {
+            var methodName = methodBase.ToString();
             int index;
-            return !InterpreterMapping.TryGetValue(methodName, out index)
-                       ? null
-                       : Interpreters[index];
+            if (InterpreterMapping.TryGetValue(methodName, out index))
+                return Interpreters[index];
+            var linker = new MetaLinker();
+            linker.SetEntryPoint(methodBase);
+            linker.Interpret();
+            return GetInterpreter(methodBase);
         }
     }
 }

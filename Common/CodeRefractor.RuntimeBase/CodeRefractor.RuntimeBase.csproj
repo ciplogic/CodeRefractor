@@ -52,8 +52,10 @@
     <Compile Include="MetaLinker.cs" />
     <Compile Include="MiddleEnd\MetaMidRepresentationOperationFactory.cs" />
     <Compile Include="MiddleEnd\MidRepresentationUtils.cs" />
+    <Compile Include="MiddleEnd\SimpleOperations\DerefAssignment.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\FunctionPointerStore.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\IClonableOperation.cs" />
+    <Compile Include="MiddleEnd\SimpleOperations\SizeOfAssignment.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\StaticFieldSetter.cs" />
     <Compile Include="Optimizations\OptimizationKind.cs" />
     <Compile Include="Runtime\CppMethodDefinition.cs" />

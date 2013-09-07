@@ -21,7 +21,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                 var typeData =
                     (ClassTypeData)ProgramData.UpdateType(
                         methodBase.Value.DeclaringType);
-                var interpreter = typeData.GetInterpreter(methodBase.Key);
+                var interpreter = typeData.GetInterpreter(methodBase.Value);
                 LinkerInterpretersTable.Register(interpreter.MidRepresentation);
             }
 
@@ -38,7 +38,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                     var typeData =
                         (ClassTypeData) ProgramData.UpdateType(
                             methodBase.Value.DeclaringType);
-                    var interpreter = typeData.GetInterpreter(methodBase.Key);
+                    var interpreter = typeData.GetInterpreter(methodBase.Value);
                     var codeWriter = new MethodInterpreterCodeWriter
                                          {
                                              Interpreter = interpreter
@@ -51,7 +51,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                     var typeData =
                         (ClassTypeData) ProgramData.UpdateType(
                             methodBase.Value.DeclaringType);
-                    var interpreter = typeData.GetInterpreter(methodBase.Key);
+                    var interpreter = typeData.GetInterpreter(methodBase.Value);
                     var codeWriter = new MethodInterpreterCodeWriter
                                          {
                                              Interpreter = interpreter
@@ -73,7 +73,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             foreach (var methodBase in GlobalMethodPool.Instance.MethodInfos)
             {
                 var typeData = (ClassTypeData) ProgramData.UpdateType(methodBase.Value.DeclaringType);
-                var interpreter = typeData.GetInterpreter(methodBase.Key);
+                var interpreter = typeData.GetInterpreter(methodBase.Value);
 
                 inliner.OptimizeOperations(interpreter.MidRepresentation);
             }

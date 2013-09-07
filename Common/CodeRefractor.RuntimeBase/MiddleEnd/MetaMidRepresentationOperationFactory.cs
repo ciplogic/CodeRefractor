@@ -204,6 +204,12 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             AddOperation(LocalOperation.Kinds.UnaryOperator, assign);
         }
 
+        public void ConvI()
+        {
+            SetUnaryOperator(OpcodeOperatorNames.ConvI4);
+            _evaluator.Top.FixedType = typeof(int);
+        }
+
         public void ConvI4()
         {
             SetUnaryOperator(OpcodeOperatorNames.ConvI4);
@@ -505,7 +511,6 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         }
         public void LoadFieldAddressIntoEvaluationStack(FieldInfo fieldInfo)
         {
-
             var firstVar = (LocalVariable)_evaluator.Stack.Pop();
             var vreg = SetNewVReg();
             vreg.FixedType = fieldInfo.FieldType.MakeByRefType();
@@ -662,6 +667,34 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 Right = new ConstValue(instructions)
             };
             AddOperation(LocalOperation.Kinds.Switch, assign);
+        }
+
+        public void SizeOf(Type operand)
+        {
+            var result = SetNewVReg();
+            var assign = new SizeOfAssignment
+            {
+                AssignedTo = result,
+                Right = operand
+            };
+            result.FixedType = typeof(int);
+            AddOperation(LocalOperation.Kinds.SizeOf, assign);
+        }
+
+        public void LoadValueFromAddress()
+        {
+            var firstVar = (LocalVariable)_evaluator.Stack.Pop();
+
+
+            var result = SetNewVReg();
+            var assignment = new DerefAssignment
+            {
+                Left = result,
+                Right = firstVar
+            };
+            var ptrType = firstVar.ComputedType();
+            result.FixedType = ptrType.GetElementType();
+            AddOperation(LocalOperation.Kinds.DerefAssignment, assignment);
         }
     }
 }
