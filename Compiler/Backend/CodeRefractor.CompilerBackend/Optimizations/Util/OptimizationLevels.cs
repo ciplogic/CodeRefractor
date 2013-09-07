@@ -34,7 +34,6 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
                            new OneDefUsedPreviousLinePropagation(), //??
                            
                         
-                           new ReachabilityLines(),
                            new ConstantDfaAnalysis()
 
                        }.ToList();
@@ -82,23 +81,24 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
                            
       
                            new DeleteCallToConstructorOfObject(), 
-                new AnalyzeFunctionPurity(),
-                new AnalyzeFunctionIsGetter(),
-                new AnalyzeFunctionIsSetter(),
-                new AnalyzeFunctionIsEmpty(),
-                new AnalyzeParametersAreEscaping(), 
+                            new AnalyzeFunctionPurity(),
+                            new AnalyzeFunctionIsGetter(),
+                            new AnalyzeFunctionIsSetter(),
+                            new AnalyzeFunctionIsEmpty(),
+                            new AnalyzeParametersAreEscaping(), 
 
-                new InlineGetterAndSetterMethods(), 
+                            new InlineGetterAndSetterMethods(), 
                            
-                new DeleteJumpNextLine(),
-                new RemoveUnreferencedLabels(),
-                new MergeConsecutiveLabels(),
+                            new DeleteJumpNextLine(),
+                            new RemoveUnreferencedLabels(),
+                            new MergeConsecutiveLabels(),
                            
                            
-                new DeadStoreAssignment(), 
-                 new OneAssignmentDeadStoreAssignment(),
-                 new AssignmentWithVregPrevLineFolding(),
-                 new AssignmentVregWithConstNextLineFolding(), 
+                            new DeadStoreAssignment(), 
+                             new OneAssignmentDeadStoreAssignment(),
+                             new AssignmentWithVregPrevLineFolding(),
+                             new AssignmentVregWithConstNextLineFolding(), 
+                           new ReachabilityLines(),
                        }.ToList();
         }
     }

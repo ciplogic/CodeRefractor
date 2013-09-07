@@ -47,11 +47,7 @@ namespace CodeRefractor.CompilerBackend.HandleOperations
                                 operationData.Result.Name);
             }
             var identifierValues = operationData.Parameters;
-            if(methodInfo.IsConstructor)
-            {
-                identifierValues.Insert(0, operationData.Result);
-            }
-
+            
             var argumentsCall = String.Join(", ", identifierValues.Select(p =>
                                                                               {
                                                                                   var computeValue = p.ComputedValue();

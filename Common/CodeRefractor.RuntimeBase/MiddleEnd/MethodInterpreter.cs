@@ -44,7 +44,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         {
             if (HandlePlatformInvokeMethod(Method))
                 return;
-
+            if(Method.GetMethodBody()==null)
+                return;
             var instructions = MethodBodyReader.GetInstructions(Method);
             _hashedLabels = MetaLinker.ComputeLabels(Method);
             MidRepresentation.Method = Method;

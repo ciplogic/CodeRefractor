@@ -33,12 +33,23 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.Methods
         {
             var stack = evaluatorStack.Stack;
             var methodParams = Info.GetParameters();
+            if (Info.IsConstructor)
+            {
+                Parameters.Insert(0, stack.Pop());
+                foreach (var t in methodParams)
+                {
+                    Parameters.Insert(1, stack.Pop());
+                }
+   
+                return;
+            }
             foreach (var t in methodParams)
             {
                 Parameters.Insert(0, stack.Pop());
             }
             if (!IsStatic)
                 Parameters.Insert(0, stack.Pop());
+
         }
 
         public override string ToString()

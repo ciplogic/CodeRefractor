@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using CodeRefractor.RuntimeBase.Analyze;
@@ -364,6 +365,11 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             var methodData = new MethodData(methodInfo);
 
 
+            CallMethodData(methodInfo, methodData);
+        }
+
+        private void CallMethodData(MethodBase methodInfo, MethodData methodData)
+        {
             if (HandleRuntimeHelpersMethod(_representation.Method))
             {
                 methodData.ExtractNeededValuesFromStack(_evaluator);
@@ -375,16 +381,17 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             {
                 methodData.Info = ClassHierarchyAnalysis.GetBestVirtualMatch(methodData.Info,
                                                                              methodData.Parameters[0].ComputedType());
-
             }
+            
             if (!methodData.IsVoid)
             {
                 var vreg = SetNewVReg();
-                vreg.FixedType = methodInfo.GetReturnType();
+                    vreg.FixedType = methodInfo.GetReturnType();
                 methodData.Result = vreg;
             }
             methodData.FixedType = methodInfo.GetReturnType();
             AddOperation(LocalOperation.Kinds.Call, methodData);
+           
         }
 
 
@@ -561,8 +568,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
         public void NewObject(ConstructorInfo constructorInfo)
         {
-            var result = SetNewVReg();
 
+            var result = SetNewVReg();
             result.FixedType = constructorInfo.DeclaringType;
             var constructedObject = new NewConstructedObject(constructorInfo);
             var assignment = new Assignment
@@ -572,10 +579,16 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             };
             ProgramData.UpdateType(constructorInfo.DeclaringType);
             AddOperation(LocalOperation.Kinds.NewObject, assignment);
-
             var methodData = new MethodData(constructedObject.Info);
-            methodData.Result = assignment.AssignedTo;
-            AddOperation(LocalOperation.Kinds.Call, methodData);
+            CallMethodData(constructedObject.Info, methodData);
+            var vreg = SetNewVReg();
+            vreg.FixedType = methodData.Info.DeclaringType;
+            var assign = new Assignment()
+            {
+                AssignedTo = vreg,
+                Right = methodData.Parameters.First()
+            };
+            AddOperation(LocalOperation.Kinds.Assignment, assign);
         }
 
         public void NewArray(Type typeArray)
@@ -661,10 +674,11 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         public void Switch(Instruction[] instructions)
         {
             var firstVar = (LocalVariable)_evaluator.Stack.Pop();
+            var offsets = instructions.Select(inst => inst.Offset).ToArray();
             var assign = new Assignment
             {
                 AssignedTo = firstVar,
-                Right = new ConstValue(instructions)
+                Right = new ConstValue(offsets)
             };
             AddOperation(LocalOperation.Kinds.Switch, assign);
         }

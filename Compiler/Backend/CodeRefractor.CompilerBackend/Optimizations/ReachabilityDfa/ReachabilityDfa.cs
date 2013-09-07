@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
+using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
+using Mono.Reflection;
 
 #endregion
 
@@ -61,6 +63,14 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ReachabilityDfa
                         var jumpTo = (int) operation.Value;
                         Interpret(JumpTo(jumpTo), operations);
                         return;
+                        case LocalOperation.Kinds.Switch:
+                        var switchAssign = operation.GetAssignment();
+                        var jumps = (int[])((ConstValue)switchAssign.Right).Value;
+                        foreach(var jump in jumps)
+                        {
+                            Interpret(JumpTo(jump), operations);
+                        }
+                        break;
                 }
                 cursor++;
                 canUpdate = !_reached.Contains(cursor) && cursor < operations.Count;
