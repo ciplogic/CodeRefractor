@@ -44,9 +44,9 @@ namespace CodeRefactor.OpenRuntime
     ")]
     public class CrString
     {
-        [CilMethod]
         public int Lengh
         {
+            [CilMethod]
             get { return Text.Length; }
         }
         public char[] Text;

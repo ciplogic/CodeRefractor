@@ -370,12 +370,14 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
         private void CallMethodData(MethodBase methodInfo, MethodData methodData)
         {
-            if (HandleRuntimeHelpersMethod(_representation.Method))
+            if (HandleRuntimeHelpersMethod(methodInfo))
             {
                 methodData.ExtractNeededValuesFromStack(_evaluator);
                 AddOperation(LocalOperation.Kinds.CallRuntime, methodData);
                 return;
             }
+            if(methodInfo.IsConstructor && methodInfo.DeclaringType==typeof(object))
+                return;
             methodData.ExtractNeededValuesFromStack(_evaluator);
             if (!methodData.IsStatic && methodData.Parameters.Count > 0)
             {

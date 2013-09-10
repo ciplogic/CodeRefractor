@@ -71,6 +71,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
                     break;
 
                 case LocalOperation.Kinds.Call:
+                case LocalOperation.Kinds.CallRuntime:
                     AddUsagesOfCall(operation, result);
                     break;
                 case LocalOperation.Kinds.Return:    
@@ -254,6 +255,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
                     break;
 
                 case LocalOperation.Kinds.Call:
+                case LocalOperation.Kinds.CallRuntime:
                     SwitchUsageInCall(op, usageVariable, definitionIdentifier);
                     break;
 

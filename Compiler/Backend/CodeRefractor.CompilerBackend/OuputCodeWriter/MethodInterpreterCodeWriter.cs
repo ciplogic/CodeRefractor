@@ -5,7 +5,6 @@ using System.Text;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.Optimizations;
-using CodeRefractor.RuntimeBase.Runtime;
 
 #endregion
 
@@ -15,14 +14,14 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
     {
         public MethodInterpreter Interpreter { get; set; }
 
-        public string WriteMethodCode(CrRuntimeLibrary crCrRuntimeLibrary)
+        public string WriteMethodCode()
         {
-            return CppMethodCodeWriter.WriteCode(Interpreter.MidRepresentation, crCrRuntimeLibrary);
+            return CppMethodCodeWriter.WriteCode(Interpreter.MidRepresentation);
         }
-        public string WriteMethodSignature(CrRuntimeLibrary crCrRuntimeLibrary)
+        public string WriteMethodSignature()
         {
             var sb = new StringBuilder();
-            CppMethodCodeWriter.WriteSignature(Interpreter.MidRepresentation.Method,sb, crCrRuntimeLibrary, true);
+            CppMethodCodeWriter.WriteSignature(Interpreter.MidRepresentation.Method,sb, true);
             return sb.ToString();
         }
 

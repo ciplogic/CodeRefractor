@@ -10,6 +10,7 @@ using CodeRefractor.CompilerBackend.Linker;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.FrontEnd;
+using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.ConstTable;
 using CodeRefractor.RuntimeBase.Runtime;
@@ -22,31 +23,67 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
     public static class CppCodeGenerator
     {
 
-        public static StringBuilder BuildFullSourceCode(MetaLinker linker, CrRuntimeLibrary crCrRuntimeLibrary)
+        public static StringBuilder BuildFullSourceCode(MetaLinker linker)
         {
+            var closure = linker.GetMethodClosure(linker.Interpreter);
             var sb = new StringBuilder();
             LinkingData.Includes.Clear();
 
             sb.AppendLine("#include \"sloth.h\"");
-            crCrRuntimeLibrary.RemapUsedTypes();
-            WriteUsedRuntimeTypes(crCrRuntimeLibrary, sb);
+            CrRuntimeLibrary.Instance.RemapUsedTypes();
+            WriteUsedRuntimeTypes(CrRuntimeLibrary.Instance, sb);
+
+            WriteClosureHeaders(closure, sb);
 
             sb.AppendLine("#include \"runtime_base.partcpp\"");
 
-            foreach (var methodBodyAttribute in crCrRuntimeLibrary.UsedCppMethods)
-            {
-                WriteUsedCppRuntimeMethod(crCrRuntimeLibrary, methodBodyAttribute, sb);
-            }
 
-            WriteClassHeaders(linker, sb);
-
-            WriteMethodBodies(linker, sb, crCrRuntimeLibrary);
+            WriteClosureMethods(closure, sb);
 
             sb.AppendLine(PlatformInvokeCodeWriter.LoadDllMethods());
             sb.AppendLine(ConstByteArrayList.BuildConstantTable());
             sb.AppendLine(LinkingData.Instance.Strings.BuildStringTable());
 
             return sb;
+        }
+
+        private static void WriteClosureMethods(List<MethodInterpreter> closure, StringBuilder sb)
+        {
+            WriteClosureBodies(closure, sb);
+        }
+
+        private static void WriteClosureHeaders(List<MethodInterpreter> closure, StringBuilder sb)
+        {
+            foreach (var interpreter in closure)
+            {
+                var codeWriter = new MethodInterpreterCodeWriter
+                    {
+                        Interpreter = interpreter
+                    };
+                sb.AppendLine(codeWriter.WriteMethodSignature());
+            }
+        }
+
+        private static void WriteClosureBodies(List<MethodInterpreter> closure, StringBuilder sb)
+        {
+            foreach (var methodBodyAttribute in CrRuntimeLibrary.Instance.UsedCppMethods)
+            {
+                WriteUsedCppRuntimeMethod(methodBodyAttribute, sb);
+            }
+            sb.AppendLine("///---Begin closure code --- ");
+            foreach (var interpreter in closure)
+            {
+                var methodDesc = interpreter.Method.GetMethodDescriptor();
+                if(CrRuntimeLibrary.Instance.UsedCppMethods.ContainsKey(methodDesc))
+                    continue;
+                var codeWriter = new MethodInterpreterCodeWriter
+                    {
+                        Interpreter = interpreter
+                    };
+
+                sb.AppendLine(codeWriter.WriteMethodCode());
+            }
+            sb.AppendLine("///---End closure code --- ");
         }
 
         private static void WriteUsedRuntimeTypes(CrRuntimeLibrary crCrRuntimeLibrary, StringBuilder sb)
@@ -59,7 +96,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                 sb.AppendFormat("namespace {0} {{", typeData.Namespace.Replace('.', '_')).AppendLine();
                 sb.AppendFormat("struct {0} {{", typeData.Name).AppendLine();
                 var mappedAttribute = crCrRuntimeLibrary.TypeAttribute[runtimeType];
-                sb.AppendLine(mappedAttribute.Code);
+                //sb.AppendLine(mappedAttribute.Code);
                 var fields = GetFieldsOfType(runtimeType);
                 foreach (var fieldData in fields)
                 {
@@ -76,7 +113,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 
         private static List<FieldInfo> GetFieldsOfType(Type runtimeType)
         {
-            var fields = runtimeType.GetFields(BindingFlags.Instance).Where(field => !field.IsStatic).ToList();
+            var fields = runtimeType.GetFields(BindingFlags.Instance|BindingFlags.Public).Where(field => !field.IsStatic).ToList();
             fields.AddRange(runtimeType.GetFields(BindingFlags.Instance | BindingFlags.NonPublic).Where(field => !field.IsStatic));
             return fields;
         }
@@ -114,7 +151,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                                                 {
                                                     Interpreter = metaInterpreter.Value
                                                 };
-                sb.AppendLine(interpreterCodeWriter.WriteMethodSignature(crCrRuntimeLibrary));
+                sb.AppendLine(interpreterCodeWriter.WriteMethodSignature());
             } 
             foreach (var metaInterpreter in GlobalMethodPool.Instance.Interpreters
                 .Where(m => m.Value.Kind != MethodKind.PlatformInvoke))
@@ -123,7 +160,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                 {
                     Interpreter = metaInterpreter.Value
                 };
-                sb.AppendLine(interpreterCodeWriter.WriteMethodCode(crCrRuntimeLibrary));
+                sb.AppendLine(interpreterCodeWriter.WriteMethodCode());
             } 
             WriteMainBody(linker, sb);
         }
@@ -196,8 +233,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             }
         }
 
-        private static void WriteUsedCppRuntimeMethod(CrRuntimeLibrary crCrRuntimeLibrary,
-                                                      KeyValuePair<string, MethodBase> methodBodyAttribute,
+        private static void WriteUsedCppRuntimeMethod(KeyValuePair<string, MethodBase> methodBodyAttribute,
                                                       StringBuilder sb)
         {
             var method = methodBodyAttribute.Value;

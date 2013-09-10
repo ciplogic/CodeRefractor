@@ -63,7 +63,10 @@ namespace CodeRefractor.RuntimeBase.Runtime
 
         private void ScanTypeForCilMethods(Type item)
         {
-            foreach (var methodInfo in item.GetMethods())
+            var methodsToScan = new List<MethodBase>();
+            methodsToScan.AddRange(item.GetMethods());
+            methodsToScan.AddRange(item.GetConstructors());
+            foreach (var methodInfo in methodsToScan)
             {
                 var methodNativeDescription = methodInfo.GetCustomAttribute<CilMethodAttribute>();
                 if (methodNativeDescription == null)

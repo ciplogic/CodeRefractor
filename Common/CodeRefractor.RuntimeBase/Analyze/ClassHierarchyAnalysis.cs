@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
@@ -11,7 +12,11 @@ namespace CodeRefractor.RuntimeBase.Analyze
         {
             if (method.DeclaringType == instance)
                 return method;
-            var methods = instance.GetMethods(BindingFlags.Instance | BindingFlags.Public)
+            var methodsToSearch = new List<MethodBase>();
+            methodsToSearch.AddRange(instance.GetMethods(BindingFlags.Instance | BindingFlags.Public));
+            methodsToSearch.AddRange(instance.GetMethods(BindingFlags.Static | BindingFlags.Public));
+            methodsToSearch.AddRange(instance.GetConstructors());
+            var methods = methodsToSearch
                 .Where(m => method.Name==m.Name)
                 .ToArray();
             var searchParams = method.GetParameters();

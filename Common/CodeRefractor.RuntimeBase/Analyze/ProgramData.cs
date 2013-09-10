@@ -47,6 +47,9 @@ namespace CodeRefractor.RuntimeBase.Analyze
 
         public static TypeData UpdateType(Type declaringType)
         {
+            var mappedType = CrRuntimeLibrary.Instance.GetMappedType(declaringType);
+            if (mappedType != null)
+                declaringType = mappedType;
             var fullName = TypeData.ComputeFullName(declaringType.Namespace, declaringType.Name);
             var locateType = Instance.LocateType(fullName);
             if (locateType != null)

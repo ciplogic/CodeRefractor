@@ -42,7 +42,7 @@ namespace CodeRefractor.Compiler
             var start = Environment.TickCount;
             var linker = definition.CreateLinkerFromEntryPoint();
             linker.AddToGlobalMethods();
-            var sb = CppCodeGenerator.BuildFullSourceCode(linker, ProgramData.CrCrRuntimeLibrary);
+            var sb = CppCodeGenerator.BuildFullSourceCode(linker);
             var end = Environment.TickCount - start;
             Console.WriteLine("Compilation time: {0} ms", end);
 
@@ -64,7 +64,7 @@ namespace CodeRefractor.Compiler
             //MetaLinker.ScanAssembly(typeof(int));
             //MetaLinker.ScanAssembly(typeof(Console));
             NativeCompilationUtils.SetCompilerOptions("gcc");
-            CommandLineParse.OptimizerLevel =1;
+            CommandLineParse.OptimizerLevel =0;
             CallCompiler("", "");
             //var standardOutput = applicationNativeExe.ExecuteCommand();
             //Console.WriteLine(standardOutput);

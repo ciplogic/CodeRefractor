@@ -1,10 +1,13 @@
 #region Usings
 
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.FrontEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd;
+using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
+using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.Shared;
 using Mono.Reflection;
 
@@ -55,6 +58,53 @@ namespace CodeRefractor.RuntimeBase
                             AddMethodIfNecessary(operand);
                             break;
                         }
+                }
+            }
+        }
+
+        public List<MethodInterpreter> GetMethodClosure(MethodInterpreter entryPoints)
+        {
+            var result = new Dictionary<string, MethodInterpreter>{{entryPoints.ToString(), entryPoints}};
+            UpdateMethodEntryClosure(entryPoints, result);
+            return result.Values.ToList();
+        }
+
+
+        public List<MethodInterpreter> GetMethodsClosure(List<MethodInterpreter> entryPoints)
+        {
+
+            var result = new Dictionary<string, MethodInterpreter>();
+            foreach (var entryPoint in entryPoints)
+            {
+                result[entryPoint.ToString()] = entryPoint;
+            }
+            foreach (var entryPoint in entryPoints)
+            {
+                UpdateMethodEntryClosure(entryPoint, result);
+            }
+            return result.Values.ToList();
+        }
+
+        private static void UpdateMethodEntryClosure(MethodInterpreter entryPoint, Dictionary<string, MethodInterpreter> result)
+        {
+            foreach (var localOperation in entryPoint.MidRepresentation.LocalOperations)
+            {
+                switch (localOperation.Kind)
+                {
+                    case LocalOperation.Kinds.Call:
+                        var methodData = (MethodData) localOperation.Value;
+                        var info = methodData.Info;
+                        if(info.DeclaringType==typeof(object))
+                            continue;
+                        var descInfo = info.ToString();
+                        if (result.ContainsKey(descInfo))
+                            continue;
+                        var interpreter = ClassTypeData.GetInterpreterStatic(info);
+                        if(interpreter==null)
+                            continue;
+                        result[descInfo] = interpreter;
+                        UpdateMethodEntryClosure(interpreter, result);
+                        break;
                 }
             }
         }

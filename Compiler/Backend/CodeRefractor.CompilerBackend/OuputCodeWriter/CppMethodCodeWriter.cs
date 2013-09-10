@@ -25,15 +25,15 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
     internal static class CppMethodCodeWriter
     {
         
-        public static string WriteCode(MetaMidRepresentation midRepresentation, CrRuntimeLibrary crCrRuntimeLibrary)
+        public static string WriteCode(MetaMidRepresentation midRepresentation)
         {
             var operations = midRepresentation.LocalOperations;
             var headerSb = new StringBuilder();
-            WriteSignature(midRepresentation.Method, headerSb, crCrRuntimeLibrary);
+            WriteSignature(midRepresentation.Method, headerSb);
 
             headerSb.Append("{");
-            var bodySb = ComputeBodySb(operations, crCrRuntimeLibrary);
-            var variablesSb = ComputeVariableSb(midRepresentation, crCrRuntimeLibrary);
+            var bodySb = ComputeBodySb(operations);
+            var variablesSb = ComputeVariableSb(midRepresentation, CrRuntimeLibrary.Instance);
             var finalSb = new StringBuilder();
             finalSb.AppendLine(headerSb.ToString());
             finalSb.AppendLine(variablesSb.ToString());
@@ -41,7 +41,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             return finalSb.ToString();
         }
 
-        private static StringBuilder ComputeBodySb(List<LocalOperation> operations, CrRuntimeLibrary crCrRuntimeLibrary)
+        private static StringBuilder ComputeBodySb(List<LocalOperation> operations)
         {
             var bodySb = new StringBuilder();
             foreach (var operation in operations)
@@ -211,8 +211,8 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             var right = (ConstByteArrayValue) assignment.Right;
             var rightArrayData = (ConstByteArrayData) right.Value;
             var rightArray = rightArrayData.Data;
-            sb.AppendFormat("{0} = std::shared_ptr< Array < System::Byte > >(new Array < System::Byte >(" +
-                            "{1}, RuntimeHelpers_GetBytes({2}) ) ); ",
+            sb.AppendFormat("{0} = std::make_shared< Array < System::Byte > >(" +
+                            "{1}, RuntimeHelpers_GetBytes({2}) ); ",
                             left.Name,
                             rightArray.Length,
                             right.Id);
@@ -314,9 +314,9 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 
         #endregion
 
-        internal static void WriteSignature(MethodBase method, StringBuilder sb,CrRuntimeLibrary crCrRuntimeLibrary, bool writeEndColon=false)
+        internal static void WriteSignature(MethodBase method, StringBuilder sb, bool writeEndColon=false)
         {
-            var mappedType = crCrRuntimeLibrary.GetReverseType(method.DeclaringType);
+            var mappedType = CrRuntimeLibrary.Instance.GetReverseType(method.DeclaringType);
             var text = method.WriteHeaderMethod(writeEndColon);
             sb.Append(text);
         }

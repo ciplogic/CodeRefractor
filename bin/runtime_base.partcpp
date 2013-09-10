@@ -1,5 +1,6 @@
 #include <vector>
 #include <string>
+#include <memory>
 static std::vector<int> _stringLength;
 static std::vector<int> _stringJumps;
 
@@ -20,8 +21,11 @@ std::shared_ptr<System::String> _str(int index)
 	auto jumpTo = _stringJumps[index];
 	auto len = _stringLength[index];
 	auto resultData = &(_stringTable[jumpTo]);
-	auto result = new System::String (len, resultData); 
-	return std::shared_ptr<System::String>(result);
+	auto value = std::make_shared<Array < System::Char >>(len, resultData);
+	
+	auto result = std::make_shared<System::String>(); 
+	System_String__String_ctor(result, value);
+	return result;
 }
 
 void _AddJumpAndLength(int jump, int length)
@@ -74,8 +78,8 @@ std::shared_ptr<Array < std::shared_ptr<System::String> > > System::getArguments
 {
 	auto result = new Array <std::shared_ptr<System::String> > (argc);
 	for(auto i=0;i<argc;i++){
-		std::shared_ptr<System::String> newString (new System::String(argv[i])); 
-		(*result)[i] = newString;
+		//std::shared_ptr<System::String> newString (new System::String(argv[i])); 
+		//(*result)[i] = newString;
 	}
 	return std::shared_ptr< Array <std::shared_ptr<System::String> > >(result);
 }

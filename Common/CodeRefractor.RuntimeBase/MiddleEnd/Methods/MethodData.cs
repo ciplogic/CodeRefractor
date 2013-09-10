@@ -37,16 +37,11 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.Methods
             {
                 Parameters.Insert(0, stack.Pop());
                 foreach (var t in methodParams)
-                {
                     Parameters.Insert(1, stack.Pop());
-                }
-   
                 return;
             }
             foreach (var t in methodParams)
-            {
                 Parameters.Insert(0, stack.Pop());
-            }
             if (!IsStatic)
                 Parameters.Insert(0, stack.Pop());
 

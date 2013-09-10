@@ -38,6 +38,7 @@
   <ItemGroup>
     <Compile Include="CrConsole.cs" />
     <Compile Include="CrMath.cs" />
+    <Compile Include="CrRuntimeHelpers.cs" />
     <Compile Include="CrStartLib.cs" />
     <Compile Include="CrString.cs" />
     <Compile Include="CrStringBuilder.cs" />

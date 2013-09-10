@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using CodeRefractor.RuntimeBase.MiddleEnd;
+using CodeRefractor.RuntimeBase.Runtime;
 using CodeRefractor.RuntimeBase.Shared;
 
 #endregion
@@ -45,6 +46,8 @@ namespace CodeRefractor.RuntimeBase.Analyze
 
         public MethodInterpreter GetInterpreter(MethodBase methodBase)
         {
+            GetDeclaringTypeAsMapped(ref methodBase);
+         
             var methodName = methodBase.ToString();
             int index;
             if (InterpreterMapping.TryGetValue(methodName, out index))
@@ -53,6 +56,26 @@ namespace CodeRefractor.RuntimeBase.Analyze
             linker.SetEntryPoint(methodBase);
             linker.Interpret();
             return GetInterpreter(methodBase);
+        }
+
+        public static MethodInterpreter GetInterpreterStatic(MethodBase methodBase)
+        {
+            var declaringType = GetDeclaringTypeAsMapped(ref methodBase);
+            var typeData = (ClassTypeData)ProgramData.UpdateType(declaringType);
+            return typeData.GetInterpreter(methodBase);
+        }
+
+        private static Type GetDeclaringTypeAsMapped(ref MethodBase methodBase)
+        {
+            var declaringType = methodBase.DeclaringType;
+
+            var mappedType = CrRuntimeLibrary.Instance.GetMappedType(declaringType);
+            if (mappedType != null)
+            {
+                declaringType = mappedType;
+                methodBase = ClassHierarchyAnalysis.GetBestVirtualMatch(methodBase, declaringType);
+            }
+            return declaringType;
         }
     }
 }
