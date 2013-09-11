@@ -712,5 +712,10 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             result.FixedType = ptrType.GetElementType();
             AddOperation(LocalOperation.Kinds.DerefAssignment, assignment);
         }
+
+        public void InitObject()
+        {
+            //TODO: make a mem-clear of the structure that is referenced
+        }
     }
 }

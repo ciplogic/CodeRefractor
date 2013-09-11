@@ -85,7 +85,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
 
                 case LocalOperation.Kinds.FieldRefAssignment:
                 case LocalOperation.Kinds.CopyArrayInitializer:
-                
+                case LocalOperation.Kinds.GetStaticField:
                     break;
                 default:
                     throw new NotImplementedException();
@@ -188,6 +188,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
                 case LocalOperation.Kinds.Assignment:
                 case LocalOperation.Kinds.NewObject:
                 case LocalOperation.Kinds.NewArray:
+                case LocalOperation.Kinds.CopyArrayInitializer:
+                case LocalOperation.Kinds.GetStaticField:
                     var assign = operation.GetAssignment();
                     return assign.AssignedTo;
                 case LocalOperation.Kinds.BinaryOperator:
@@ -196,7 +198,6 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
                 case LocalOperation.Kinds.UnaryOperator:
                     var unOp = (UnaryOperator)operation.Value;
                     return unOp.AssignedTo;
-
                 default:
                     return null;
             }

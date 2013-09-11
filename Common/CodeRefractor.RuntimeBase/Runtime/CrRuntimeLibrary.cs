@@ -159,6 +159,8 @@ namespace CodeRefractor.RuntimeBase.Runtime
                 MetaLinker cilLinkerMethod;
                 if (!_supportedCilMethods.TryGetValue(description, out cilLinkerMethod))
                     return false;
+                if (UsedCilMethods.ContainsKey(description))
+                    return false;
                 UsedCilMethods.Add(description, cilLinkerMethod);
                 MetaLinker.ComputeDependencies(cilLinkerMethod.MethodInfo);
                 return true;

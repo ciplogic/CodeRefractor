@@ -23,6 +23,10 @@ namespace CodeRefractor.CompilerBackend.Linker
         public Dictionary<string, MethodBase> RuntimeMethods =
             new Dictionary<string, MethodBase>();
         public static LinkerInterpretersTable Instance { get; private set; }
+        public void Clear()
+        {
+            Methods.Clear();
+        }
         public static void Register(MetaMidRepresentation method)
         {
             var methodName = method.Method.WriteHeaderMethod(false);

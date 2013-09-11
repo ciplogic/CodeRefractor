@@ -220,6 +220,12 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 return;
             }
 
+            if (opcodeStr.StartsWith("initobj"))
+            {
+                //TODO: load the address into evaluation stack
+                OperationFactory.InitObject();
+                return;
+            }
             throw new InvalidOperationException(string.Format("Unknown instruction: {0}", instruction));
         }
 

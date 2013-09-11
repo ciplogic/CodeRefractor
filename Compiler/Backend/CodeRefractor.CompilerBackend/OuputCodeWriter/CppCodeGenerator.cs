@@ -26,13 +26,15 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
         public static StringBuilder BuildFullSourceCode(MetaLinker linker)
         {
             var closure = linker.GetMethodClosure(linker.Interpreter);
+            var typeClosure = linker.GetTypesClosure(closure);
             var sb = new StringBuilder();
             LinkingData.Includes.Clear();
 
             sb.AppendLine("#include \"sloth.h\"");
             CrRuntimeLibrary.Instance.RemapUsedTypes();
-            WriteUsedRuntimeTypes(CrRuntimeLibrary.Instance, sb);
+            //WriteUsedRuntimeTypes(CrRuntimeLibrary.Instance, sb);
 
+            WriteClosureStructBodies(typeClosure.ToArray(), sb);
             WriteClosureHeaders(closure, sb);
 
             sb.AppendLine("#include \"runtime_base.partcpp\"");
@@ -60,7 +62,43 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                     {
                         Interpreter = interpreter
                     };
+                if (interpreter.Kind != MethodKind.Default)
+                    continue;
                 sb.AppendLine(codeWriter.WriteMethodSignature());
+            }
+
+        }
+
+        private static void WriteClosureStructBodies(Type[] typeDatas, StringBuilder sb)
+        {
+            foreach (var typeData in typeDatas)
+            {
+                var type = CrRuntimeLibrary.Instance.GetReverseType(typeData) ?? typeData;
+                var ns = type.Namespace ?? "";
+                sb.AppendFormat("namespace {0} {{ ", ns.Replace('.', '_'));
+                sb.AppendFormat("struct {0}; }}", type.Name).AppendLine();
+            }
+            foreach (var typeData in typeDatas)
+            {
+                var type = CrRuntimeLibrary.Instance.GetReverseType(typeData) ?? typeData;
+                var mappedType = CrRuntimeLibrary.Instance.GetMappedType(type) ?? typeData;
+                var ns = type.Namespace??"";
+                sb.AppendFormat("namespace {0} {{", ns.Replace('.', '_')).AppendLine();
+                sb.AppendFormat("struct {0} {{", type.Name).AppendLine();
+                var fieldInfos = mappedType.GetFields(BindingFlags.Instance).ToList();
+                fieldInfos.AddRange(mappedType.GetFields(BindingFlags.NonPublic|BindingFlags.Instance));
+                foreach (var fieldData in fieldInfos.Where(field => !field.IsStatic))
+                {
+                    sb.AppendFormat(" {0} {1};", fieldData.FieldType.ToCppName(), fieldData.Name).AppendLine();
+                }
+                var staticFields = mappedType.GetFields(BindingFlags.Static).ToList();
+                staticFields.AddRange(mappedType.GetFields(BindingFlags.Static|BindingFlags.NonPublic));
+                foreach (var fieldData in staticFields.Where(field => field.IsStatic))
+                {
+                    sb.AppendFormat(" static {0} {1};", fieldData.FieldType.ToCppName(), fieldData.Name)
+                        .AppendLine();
+                }
+                sb.AppendFormat("}}; }}").AppendLine();
             }
         }
 
@@ -81,6 +119,8 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                         Interpreter = interpreter
                     };
 
+                if (interpreter.Kind != MethodKind.Default)
+                    continue;
                 sb.AppendLine(codeWriter.WriteMethodCode());
             }
             sb.AppendLine("///---End closure code --- ");

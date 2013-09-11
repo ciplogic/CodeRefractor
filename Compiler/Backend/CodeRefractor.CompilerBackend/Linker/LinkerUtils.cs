@@ -37,6 +37,9 @@ namespace CodeRefractor.CompilerBackend.Linker
 
         public static MethodInterpreter GetInterpreter(this MethodBase methodBase)
         {
+            var isGacType = methodBase.DeclaringType.Assembly.GlobalAssemblyCache;
+            if(isGacType)
+                return null;
             var typeData = (ClassTypeData) ProgramData.UpdateType(methodBase.DeclaringType);
             var interpreter = typeData.GetInterpreter(methodBase);
             return interpreter;

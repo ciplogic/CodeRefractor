@@ -1,5 +1,6 @@
 #region Usings
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -94,7 +95,8 @@ namespace CodeRefractor.RuntimeBase
                     case LocalOperation.Kinds.Call:
                         var methodData = (MethodData) localOperation.Value;
                         var info = methodData.Info;
-                        if(info.DeclaringType==typeof(object))
+                        if(info.DeclaringType==typeof(object)
+                            || info.DeclaringType == typeof(IntPtr))
                             continue;
                         var descInfo = info.ToString();
                         if (result.ContainsKey(descInfo))
@@ -213,6 +215,38 @@ namespace CodeRefractor.RuntimeBase
                 return; //doesn't run on global assembly cache methods
             GlobalMethodPool.Instance.MethodInfos[methodDesc] = methodBase;
             ComputeDependencies(methodBase);
+        }
+
+        public List<Type> GetTypesClosure(List<MethodInterpreter> closure)
+        {
+            var typesSet = new HashSet<Type>();
+            foreach (var interpreter in closure)
+            {
+                var method = interpreter.Method;
+                foreach (var parameter in method.GetParameters())
+                {
+                    typesSet.Add(parameter.ParameterType);
+                }
+                typesSet.Add(method.DeclaringType);
+            }
+            bool isAdded;
+            do
+            {
+                var toAdd = new HashSet<Type>(typesSet);
+                foreach (var type in typesSet)
+                {
+                    var fields = type.GetFields(BindingFlags.Instance).ToList();
+                    fields.AddRange(type.GetFields(BindingFlags.NonPublic | BindingFlags.Instance));
+                    foreach (var fieldInfo in fields)
+                    {
+                        toAdd.Add(fieldInfo.FieldType);
+                    }
+                }
+                isAdded = (toAdd.Count != typesSet.Count);
+                typesSet = toAdd;
+
+            } while (isAdded);
+            return typesSet.Where(t=>!t.IsPrimitive).ToList();
         }
     }
 }
