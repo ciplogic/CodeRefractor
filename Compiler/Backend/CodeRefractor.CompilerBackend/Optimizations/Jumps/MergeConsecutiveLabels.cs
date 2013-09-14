@@ -18,17 +18,17 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Jumps
         {
             var operations = intermediateCode.LocalOperations;
 
-            var found = operations.Any(operation => operation.Kind == LocalOperation.Kinds.Label);
+            var found = operations.Any(operation => operation.Kind == OperationKind.Label);
             if (!found)
                 return;
             for (var i = 0; i < operations.Count - 2; i++)
             {
                 var operation = operations[i];
-                if (operation.Kind != LocalOperation.Kinds.Label)
+                if (operation.Kind != OperationKind.Label)
                     continue;
 
                 var operation2 = operations[i + 1];
-                if (operation2.Kind != LocalOperation.Kinds.Label)
+                if (operation2.Kind != OperationKind.Label)
                     continue;
                 var jumpId = (int) operation.Value;
                 var jumpId2 = (int) operation2.Value;
@@ -47,12 +47,12 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Jumps
                     continue;
                 switch (operation.Kind)
                 {
-                    case LocalOperation.Kinds.AlwaysBranch:
+                    case OperationKind.AlwaysBranch:
                         var jumpTo = (int) operation.Value;
                         if (jumpId2 == jumpTo)
                             operation.Value = jumpId;
                         break;
-                    case LocalOperation.Kinds.BranchOperator:
+                    case OperationKind.BranchOperator:
                         var destAssignment = (BranchOperator) operation.Value;
                         if (destAssignment.JumpTo == jumpId2)
                             destAssignment.JumpTo = jumpId;

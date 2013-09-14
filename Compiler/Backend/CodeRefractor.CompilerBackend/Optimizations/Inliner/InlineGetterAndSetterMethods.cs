@@ -16,10 +16,10 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Inliner
             {
                 var localOperation = intermediateCode.LocalOperations[index];
                 
-                if (localOperation.Kind != LocalOperation.Kinds.Call) continue;
+                if (localOperation.Kind != OperationKind.Call) continue;
 
                 var methodData = (MethodData) localOperation.Value;
-                var interpreter = LinkerUtils.GetInterpreter(methodData);
+                var interpreter = methodData.GetInterpreter();
                 if (interpreter == null)
                     continue;
 

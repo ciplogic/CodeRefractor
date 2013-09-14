@@ -26,7 +26,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
         public static StringBuilder BuildFullSourceCode(MetaLinker linker)
         {
             var closure = linker.GetMethodClosure(linker.Interpreter);
-            var typeClosure = linker.GetTypesClosure(closure);
+            var typeClosure = ClosureLinker.GetTypesClosure(closure);
             var sb = new StringBuilder();
             LinkingData.Includes.Clear();
 
@@ -85,9 +85,9 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                 var ns = type.Namespace??"";
                 sb.AppendFormat("namespace {0} {{", ns.Replace('.', '_')).AppendLine();
                 sb.AppendFormat("struct {0} {{", type.Name).AppendLine();
-                var fieldInfos = mappedType.GetFields(BindingFlags.Instance).ToList();
+                var fieldInfos = mappedType.GetFields().ToList();
                 fieldInfos.AddRange(mappedType.GetFields(BindingFlags.NonPublic|BindingFlags.Instance));
-                foreach (var fieldData in fieldInfos.Where(field => !field.IsStatic))
+                foreach (var fieldData in fieldInfos)
                 {
                     sb.AppendFormat(" {0} {1};", fieldData.FieldType.ToCppName(), fieldData.Name).AppendLine();
                 }
@@ -108,6 +108,19 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             {
                 WriteUsedCppRuntimeMethod(methodBodyAttribute, sb);
             }
+
+            foreach (var interpreter in closure)
+            {
+                var codeWriter = new MethodInterpreterCodeWriter
+                {
+                    Interpreter = interpreter
+                };
+
+                if (interpreter.Kind != MethodKind.PlatformInvoke)
+                    continue;
+                sb.AppendLine(codeWriter.WritePInvokeMethodCode());
+            }
+
             sb.AppendLine("///---Begin closure code --- ");
             foreach (var interpreter in closure)
             {

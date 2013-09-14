@@ -25,11 +25,11 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         }
 
 
-        private void AddOperation(LocalOperation.Kinds kind, object value = null)
+        private void AddOperation(OperationKind operationKind, object value = null)
         {
             var result = new LocalOperation
             {
-                Kind = kind,
+                Kind = operationKind,
                 Value = value
             };
 
@@ -59,7 +59,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 Right = new ConstValue(value)
             };
             result.FixedType = value.GetType();
-            AddOperation(LocalOperation.Kinds.Assignment, assign);
+            AddOperation(OperationKind.Assignment, assign);
         }
 
         public void CopyLocalVariableIntoStack(int value)
@@ -75,7 +75,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                                  };
 
             vreg.FixedType = locVar.ComputedType();
-            AddOperation(LocalOperation.Kinds.Assignment, assingment);
+            AddOperation(OperationKind.Assignment, assingment);
         }
 
 
@@ -104,7 +104,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 AssignedTo = vreg,
                 Right = argument
             };
-            AddOperation(LocalOperation.Kinds.Assignment, assignment);
+            AddOperation(OperationKind.Assignment, assignment);
         }
 
         public void CopyStackIntoArgument(int value)
@@ -125,7 +125,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             };
 
             newLocal.FixedType = topVariable.ComputedType();
-            AddOperation(LocalOperation.Kinds.Assignment, assingment);
+            AddOperation(OperationKind.Assignment, assingment);
         }
         public void CopyStackIntoLocalVariable(int value)
         {
@@ -145,7 +145,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             };
 
             newLocal.FixedType = topVariable.ComputedType();
-            AddOperation(LocalOperation.Kinds.Assignment, assingment);
+            AddOperation(OperationKind.Assignment, assingment);
         }
 
         public void StoreField(FieldInfo fieldInfo)
@@ -163,7 +163,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 Right = secondVar
             };
             assignment.AssignedTo.FixedType = secondVar.ComputedType();
-            AddOperation(LocalOperation.Kinds.SetField, assignment);
+            AddOperation(OperationKind.SetField, assignment);
         }
 
         public void LoadReferenceInArray()
@@ -180,13 +180,13 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 Right = arrayVariable
             };
             result.FixedType = arrayVariable.GetElementType();
-            AddOperation(LocalOperation.Kinds.GetArrayItem, assignment);
+            AddOperation(OperationKind.GetArrayItem, assignment);
         }
 
         public void Return(bool isVoid)
         {
             var returnValue = isVoid ? null : _evaluator.Stack.Pop();
-            AddOperation(LocalOperation.Kinds.Return, returnValue);
+            AddOperation(OperationKind.Return, returnValue);
         }
 
 
@@ -202,7 +202,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 Left = firstVar,
             };
             assign.AssignedTo.FixedType = firstVar.ComputedType();
-            AddOperation(LocalOperation.Kinds.UnaryOperator, assign);
+            AddOperation(OperationKind.UnaryOperator, assign);
         }
 
         public void ConvI()
@@ -264,7 +264,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 Right = variable
             };
             vreg.FixedType = variable.ComputedType();
-            AddOperation(LocalOperation.Kinds.Assignment, assign);
+            AddOperation(OperationKind.Assignment, assign);
         }
         public void Pop()
         {
@@ -286,12 +286,12 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 Right = secondVar
             };
             result.FixedType = assign.ComputedType();
-            AddOperation(LocalOperation.Kinds.BinaryOperator, assign);
+            AddOperation(OperationKind.BinaryOperator, assign);
         }
 
         public void SetLabel(int offset)
         {
-            AddOperation(LocalOperation.Kinds.Label, offset);
+            AddOperation(OperationKind.Label, offset);
         }
         public void Cgt()
         {
@@ -373,7 +373,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             if (HandleRuntimeHelpersMethod(methodInfo))
             {
                 methodData.ExtractNeededValuesFromStack(_evaluator);
-                AddOperation(LocalOperation.Kinds.CallRuntime, methodData);
+                AddOperation(OperationKind.CallRuntime, methodData);
                 return;
             }
             if(methodInfo.IsConstructor && methodInfo.DeclaringType==typeof(object))
@@ -392,7 +392,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 methodData.Result = vreg;
             }
             methodData.FixedType = methodInfo.GetReturnType();
-            AddOperation(LocalOperation.Kinds.Call, methodData);
+            AddOperation(OperationKind.Call, methodData);
            
         }
 
@@ -411,7 +411,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 Right = firstVar
             };
             assignment.AssignedTo.FixedType = firstVar.ComputedType();
-            AddOperation(LocalOperation.Kinds.SetStaticField, assignment);
+            AddOperation(OperationKind.SetStaticField, assignment);
         }
 
 
@@ -426,7 +426,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 Right = (LocalVariable)varValue
             };
 
-            AddOperation(LocalOperation.Kinds.DerefAssignment, assignment);
+            AddOperation(OperationKind.DerefAssignment, assignment);
         }
 
         #region Branching operators
@@ -434,7 +434,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         public void BranchIfTrue(int pushedIntValue)
         {
             var firstVar = _evaluator.Stack.Pop();
-            AddOperation(LocalOperation.Kinds.BranchOperator,
+            AddOperation(OperationKind.BranchOperator,
                          new BranchOperator(OpcodeBranchNames.BrTrue)
                          {
                              JumpTo = pushedIntValue,
@@ -445,7 +445,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         public void BranchIfFalse(int pushedIntValue)
         {
             var firstVar = _evaluator.Stack.Pop();
-            AddOperation(LocalOperation.Kinds.BranchOperator,
+            AddOperation(OperationKind.BranchOperator,
                          new BranchOperator(OpcodeBranchNames.BrFalse)
                          {
                              JumpTo = pushedIntValue,
@@ -456,7 +456,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
         public void AlwaysBranch(int offset)
         {
-            AddOperation(LocalOperation.Kinds.AlwaysBranch, offset);
+            AddOperation(OperationKind.AlwaysBranch, offset);
         }
 
         public void BranchIfEqual(int jumpTo)
@@ -469,7 +469,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             var firstVar = _evaluator.Stack.Pop();
             var secondVar = _evaluator.Stack.Pop();
 
-            AddOperation(LocalOperation.Kinds.BranchOperator,
+            AddOperation(OperationKind.BranchOperator,
                          new BranchOperator(opcode)
                          {
                              JumpTo = jumpTo,
@@ -516,7 +516,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 Left = vreg,
                 Right = argument
             };
-            AddOperation(LocalOperation.Kinds.RefAssignment, assignment);
+            AddOperation(OperationKind.RefAssignment, assignment);
         }
         public void LoadFieldAddressIntoEvaluationStack(FieldInfo fieldInfo)
         {
@@ -530,7 +530,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 Right = firstVar,
                 Field = fieldInfo
             };
-            AddOperation(LocalOperation.Kinds.FieldRefAssignment, assignment);
+            AddOperation(OperationKind.FieldRefAssignment, assignment);
         }
         public void LoadField(string fieldName)
         {
@@ -546,7 +546,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                                      Instance = firstVar
 
                                  };
-            AddOperation(LocalOperation.Kinds.GetField, assignment);
+            AddOperation(OperationKind.GetField, assignment);
         }
 
         public void LoadStaticField(FieldInfo operand)
@@ -565,7 +565,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                     DeclaringType = typeData
                 }
             };
-            AddOperation(LocalOperation.Kinds.GetStaticField, assignment);
+            AddOperation(OperationKind.GetStaticField, assignment);
         }
 
         public void NewObject(ConstructorInfo constructorInfo)
@@ -580,7 +580,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 Right = constructedObject
             };
             ProgramData.UpdateType(constructorInfo.DeclaringType);
-            AddOperation(LocalOperation.Kinds.NewObject, assignment);
+            AddOperation(OperationKind.NewObject, assignment);
             var methodData = new MethodData(constructedObject.Info);
             CallMethodData(constructedObject.Info, methodData);
             var vreg = SetNewVReg();
@@ -590,7 +590,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 AssignedTo = vreg,
                 Right = methodData.Parameters.First()
             };
-            AddOperation(LocalOperation.Kinds.Assignment, assign);
+            AddOperation(OperationKind.Assignment, assign);
         }
 
         public void NewArray(Type typeArray)
@@ -607,7 +607,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 }
             };
             result.FixedType = typeArray.MakeArrayType();
-            AddOperation(LocalOperation.Kinds.NewArray, assignment);
+            AddOperation(OperationKind.NewArray, assignment);
         }
 
         public void SetArrayElementValue()
@@ -622,7 +622,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 Right = value
             };
             arrayVariable.FixedType = value.ComputedType();
-            AddOperation(LocalOperation.Kinds.SetArrayItem, assignment);
+            AddOperation(OperationKind.SetArrayItem, assignment);
         }
 
         public void SetToken(FieldInfo operand)
@@ -641,7 +641,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 Right = new ConstByteArrayValue(rightConstant)
             };
             vreg.FixedType = typeof(byte[]);
-            AddOperation(LocalOperation.Kinds.CopyArrayInitializer, assign);
+            AddOperation(OperationKind.CopyArrayInitializer, assign);
         }
 
         public void LoadNull()
@@ -658,7 +658,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 Right = new ConstValue(null)
             };
             result.FixedType = typeof(object);
-            AddOperation(LocalOperation.Kinds.Assignment, assign);
+            AddOperation(OperationKind.Assignment, assign);
         }
 
         public void LoadFunction(MethodBase operand)
@@ -670,7 +670,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 FunctionPointer = operand
             };
 
-            AddOperation(LocalOperation.Kinds.LoadFunction, store);
+            AddOperation(OperationKind.LoadFunction, store);
         }
 
         public void Switch(Instruction[] instructions)
@@ -682,7 +682,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 AssignedTo = firstVar,
                 Right = new ConstValue(offsets)
             };
-            AddOperation(LocalOperation.Kinds.Switch, assign);
+            AddOperation(OperationKind.Switch, assign);
         }
 
         public void SizeOf(Type operand)
@@ -694,7 +694,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 Right = operand
             };
             result.FixedType = typeof(int);
-            AddOperation(LocalOperation.Kinds.SizeOf, assign);
+            AddOperation(OperationKind.SizeOf, assign);
         }
 
         public void LoadValueFromAddress()
@@ -710,7 +710,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             };
             var ptrType = firstVar.ComputedType();
             result.FixedType = ptrType.GetElementType();
-            AddOperation(LocalOperation.Kinds.DerefAssignment, assignment);
+            AddOperation(OperationKind.DerefAssignment, assignment);
         }
 
         public void InitObject()

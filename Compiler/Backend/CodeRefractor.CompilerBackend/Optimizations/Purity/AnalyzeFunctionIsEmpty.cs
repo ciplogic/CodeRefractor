@@ -31,7 +31,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
             {
                 switch (localOperation.Kind)
                 {
-                    case LocalOperation.Kinds.Return:
+                    case OperationKind.Return:
                         break;
                     default:
                         return false;

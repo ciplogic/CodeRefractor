@@ -28,7 +28,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
             var localOperations = intermediateCode.LocalOperations;
             var count = localOperations.Count;
             var assignBeforeReturn = localOperations[count - 2];
-            if (assignBeforeReturn.Kind != LocalOperation.Kinds.Assignment)
+            if (assignBeforeReturn.Kind != OperationKind.Assignment)
                 return;
             var returnInstruction = localOperations[count - 1];
             var value = (IdentifierValue) returnInstruction.Value;

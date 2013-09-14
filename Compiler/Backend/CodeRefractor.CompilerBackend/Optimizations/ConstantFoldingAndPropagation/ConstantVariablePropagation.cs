@@ -22,13 +22,13 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                 for (var j = i + 1; j < operations.Count; j++)
                 {
                     var destOperation = operations[j];
-                    if (destOperation.Kind == LocalOperation.Kinds.Label)
+                    if (destOperation.Kind == OperationKind.Label)
                         break;
-                    if (destOperation.Kind == LocalOperation.Kinds.BranchOperator)
+                    if (destOperation.Kind == OperationKind.BranchOperator)
                         break;
                     switch (destOperation.Kind)
                     {
-                        case LocalOperation.Kinds.Assignment:
+                        case OperationKind.Assignment:
                             {
                                 var destAssignment = (Assignment) destOperation.Value;
                                 if (SameVariable(destAssignment.AssignedTo, srcVariableDefinition.AssignedTo))
@@ -39,7 +39,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                                 Result = true;
                             }
                             break;
-                        case LocalOperation.Kinds.NewArray:
+                        case OperationKind.NewArray:
                             {
                                 var destAssignment = (Assignment) destOperation.Value;
                                 var arrayCreationInfo = (NewArrayObject) destAssignment.Right;
@@ -51,7 +51,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                                 Result = true;
                             }
                             break;
-                        case LocalOperation.Kinds.SetField:
+                        case OperationKind.SetField:
                             {
                                 var destAssignment = (Assignment) destOperation.Value;
                                 if (!SameVariable(destAssignment.Right as LocalVariable, srcVariableDefinition.AssignedTo))

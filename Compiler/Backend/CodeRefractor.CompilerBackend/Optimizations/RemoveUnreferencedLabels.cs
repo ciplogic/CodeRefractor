@@ -17,7 +17,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations
         {
             var operations = intermediateCode.LocalOperations;
 
-            var found = operations.Any(operation => operation.Kind == LocalOperation.Kinds.Label);
+            var found = operations.Any(operation => operation.Kind == OperationKind.Label);
             if (!found)
                 return;
             var candidateLabelTable = new Dictionary<int, int>();
@@ -25,19 +25,19 @@ namespace CodeRefractor.CompilerBackend.Optimizations
             foreach (var operation in operations)
             {
                 pos++;
-                if (operation.Kind == LocalOperation.Kinds.Label)
+                if (operation.Kind == OperationKind.Label)
                     candidateLabelTable[(int) operation.Value] = pos;
             }
 
             foreach (var operation in operations)
             {
-                if (operation.Kind == LocalOperation.Kinds.BranchOperator)
+                if (operation.Kind == OperationKind.BranchOperator)
                 {
                     var destAssignment = (BranchOperator) operation.Value;
                     candidateLabelTable.Remove(destAssignment.JumpTo);
                     continue;
                 }
-                if (operation.Kind == LocalOperation.Kinds.AlwaysBranch)
+                if (operation.Kind == OperationKind.AlwaysBranch)
                 {
                     candidateLabelTable.Remove((int) operation.Value);
                 }

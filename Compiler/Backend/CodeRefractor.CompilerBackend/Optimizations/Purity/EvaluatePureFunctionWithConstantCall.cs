@@ -19,7 +19,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
         {
             var operations = midRepresentation.LocalOperations;
 
-            return operations.Any(op => op.Kind == LocalOperation.Kinds.Call);
+            return operations.Any(op => op.Kind == OperationKind.Call);
         }
 
         public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
@@ -28,7 +28,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
             for (var i = 0; i < operations.Count - 1; i++)
             {
                 var operation = operations[i];
-                if (operation.Kind != LocalOperation.Kinds.Call)
+                if (operation.Kind != OperationKind.Call)
                     continue;
 
                 var operationData = (MethodData)operation.Value;
@@ -53,7 +53,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
                 var result = methodInfo.Invoke(null, constParams.ToArray());
                 operations[i] = new LocalOperation
                 {
-                    Kind = LocalOperation.Kinds.Assignment,
+                    Kind = OperationKind.Assignment,
                     Value = new Assignment
                     {
                         AssignedTo = operationData.Result,

@@ -53,9 +53,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
 
                 switch (instruction.Kind)
                 {
-                    case LocalOperation.Kinds.Label:
-                    case LocalOperation.Kinds.AlwaysBranch:
-                    case LocalOperation.Kinds.BranchOperator:
+                    case OperationKind.Label:
+                    case OperationKind.AlwaysBranch:
+                    case OperationKind.BranchOperator:
                         startFound = true;
                         break;
                 }
@@ -72,7 +72,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
         {
             switch (instruction.Kind)
             {
-                case LocalOperation.Kinds.Assignment:
+                case OperationKind.Assignment:
                     return HandleAssignWrites(instruction);
             }
             return false;
@@ -94,13 +94,13 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
         {
             switch (instruction.Kind)
             {
-                case LocalOperation.Kinds.Return:
+                case OperationKind.Return:
                     HandleReturnReads(instruction);
                     break;
-                case LocalOperation.Kinds.Assignment:
+                case OperationKind.Assignment:
                     HandleAssignReads(instruction);
                     break;
-                case LocalOperation.Kinds.Call:
+                case OperationKind.Call:
                     HandleCallReads(instruction);
                     break;
 

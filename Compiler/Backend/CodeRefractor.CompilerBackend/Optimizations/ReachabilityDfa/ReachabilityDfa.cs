@@ -55,15 +55,15 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ReachabilityDfa
                 var operation = operations[cursor];
                 switch (operation.Kind)
                 {
-                    case LocalOperation.Kinds.BranchOperator:
+                    case OperationKind.BranchOperator:
                         var branchOperator = (BranchOperator) operation.Value;
                         Interpret(JumpTo(branchOperator.JumpTo), operations);
                         break;
-                    case LocalOperation.Kinds.AlwaysBranch:
+                    case OperationKind.AlwaysBranch:
                         var jumpTo = (int) operation.Value;
                         Interpret(JumpTo(jumpTo), operations);
                         return;
-                        case LocalOperation.Kinds.Switch:
+                        case OperationKind.Switch:
                         var switchAssign = operation.GetAssignment();
                         var jumps = (int[])((ConstValue)switchAssign.Right).Value;
                         foreach(var jump in jumps)

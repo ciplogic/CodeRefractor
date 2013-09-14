@@ -20,7 +20,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ReachabilityDfa
             var operations = intermediateCode.LocalOperations;
 
 
-            var found = operations.Any(operation => operation.Kind == LocalOperation.Kinds.AlwaysBranch);
+            var found = operations.Any(operation => operation.Kind == OperationKind.AlwaysBranch);
             if (!found)
                 return;
             _labelTable = InstructionsUtils.BuildLabelTable(operations);
@@ -29,7 +29,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ReachabilityDfa
                 var operation = operations[i];
                 switch (operation.Kind)
                 {
-                    case LocalOperation.Kinds.AlwaysBranch:
+                    case OperationKind.AlwaysBranch:
                         var jumpLabel = JumpTo((int) operation.Value);
                         
                         if (jumpLabel != i + 1)
@@ -38,7 +38,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ReachabilityDfa
                         Result = true;
                         operations.RemoveAt(i);
                         return;
-                    case LocalOperation.Kinds.BranchOperator:
+                    case OperationKind.BranchOperator:
                         
                         var destAssignment = (BranchOperator) operation.Value;
                         var jumpTo = JumpTo(destAssignment.JumpTo);

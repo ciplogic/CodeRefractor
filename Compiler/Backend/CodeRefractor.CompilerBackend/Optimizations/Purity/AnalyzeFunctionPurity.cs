@@ -39,26 +39,26 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
             {
                 switch (localOperation.Kind)
                 {
-                    case LocalOperation.Kinds.SetStaticField:
-                    case LocalOperation.Kinds.GetStaticField:
-                    case LocalOperation.Kinds.CallRuntime:
-                    case LocalOperation.Kinds.SetField:
+                    case OperationKind.SetStaticField:
+                    case OperationKind.GetStaticField:
+                    case OperationKind.CallRuntime:
+                    case OperationKind.SetField:
                         return false;
                         
-                    case LocalOperation.Kinds.Call:
+                    case OperationKind.Call:
                         var operationData = (MethodData)localOperation.Value;
                         var readPurity = LinkerInterpretersTable.ReadPurity(operationData.Info);
                         if (!readPurity)
                             return false;
                         break;
 
-                    case LocalOperation.Kinds.BranchOperator:
-                    case LocalOperation.Kinds.AlwaysBranch:
-                    case LocalOperation.Kinds.UnaryOperator:
-                    case LocalOperation.Kinds.BinaryOperator:
-                    case LocalOperation.Kinds.Assignment:
-                    case LocalOperation.Kinds.Label:
-                    case LocalOperation.Kinds.Return:
+                    case OperationKind.BranchOperator:
+                    case OperationKind.AlwaysBranch:
+                    case OperationKind.UnaryOperator:
+                    case OperationKind.BinaryOperator:
+                    case OperationKind.Assignment:
+                    case OperationKind.Label:
+                    case OperationKind.Return:
                         break;
                     default:
                         return false;

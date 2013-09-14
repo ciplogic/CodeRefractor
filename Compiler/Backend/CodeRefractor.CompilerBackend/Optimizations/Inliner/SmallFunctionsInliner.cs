@@ -33,7 +33,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Inliner
             foreach (var localOperation in intermediateCode.LocalOperations)
             {
                 pos++;
-                if (localOperation.Kind != LocalOperation.Kinds.Call) continue;
+                if (localOperation.Kind != OperationKind.Call) continue;
 
                 methodData = (MethodData) localOperation.Value;
                 var methodBase = methodData.Info;
@@ -140,7 +140,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Inliner
             var localOperations = interpreter.MidRepresentation.LocalOperations.ToList();
             foreach (var localOperation in localOperations)
             {
-                if(localOperation.Kind==LocalOperation.Kinds.Return)
+                if(localOperation.Kind==OperationKind.Return)
                 {
                     HandleReturn(result, localOperationsToInline, localOperation);
                     break;
@@ -165,7 +165,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Inliner
                                };
             var assignmentReturn = new LocalOperation
                                        {
-                                           Kind = LocalOperation.Kinds.Assignment,
+                                           Kind = OperationKind.Assignment,
                                            Value = assignOp
                                        };
             localOperationsToInline.Add(assignmentReturn);

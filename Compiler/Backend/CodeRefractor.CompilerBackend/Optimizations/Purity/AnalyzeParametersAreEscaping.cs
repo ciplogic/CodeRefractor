@@ -19,13 +19,13 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
             {
                 switch (op.Kind)
                 {
-                    case LocalOperation.Kinds.Assignment:
+                    case OperationKind.Assignment:
                         var right = op.GetAssignment().Right as LocalVariable;
                         if(right == null || right.Kind != VariableKind.Argument)continue;
                         escaping[right.Id] = true; 
                         break;
 
-                    case LocalOperation.Kinds.Call:
+                    case OperationKind.Call:
                         var methodData = (MethodData)op.Value;
                         var calledMethod = methodData.Info.GetMethod();
                         var otherMethodData = (Dictionary<int, bool>)calledMethod.GetAdditionalProperty(EscapeName);

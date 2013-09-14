@@ -9,6 +9,7 @@ using CodeRefractor.RuntimeBase.FrontEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
+using CodeRefractor.RuntimeBase.Runtime;
 using CodeRefractor.RuntimeBase.Shared;
 using Mono.Reflection;
 
@@ -71,28 +72,14 @@ namespace CodeRefractor.RuntimeBase
         }
 
 
-        public List<MethodInterpreter> GetMethodsClosure(List<MethodInterpreter> entryPoints)
-        {
-
-            var result = new Dictionary<string, MethodInterpreter>();
-            foreach (var entryPoint in entryPoints)
-            {
-                result[entryPoint.ToString()] = entryPoint;
-            }
-            foreach (var entryPoint in entryPoints)
-            {
-                UpdateMethodEntryClosure(entryPoint, result);
-            }
-            return result.Values.ToList();
-        }
-
         private static void UpdateMethodEntryClosure(MethodInterpreter entryPoint, Dictionary<string, MethodInterpreter> result)
         {
-            foreach (var localOperation in entryPoint.MidRepresentation.LocalOperations)
+            var operations = entryPoint.MidRepresentation.LocalOperations;
+            foreach (var localOperation in operations.Where(op=>op.Kind==OperationKind.Call))
             {
                 switch (localOperation.Kind)
                 {
-                    case LocalOperation.Kinds.Call:
+                    case OperationKind.Call:
                         var methodData = (MethodData) localOperation.Value;
                         var info = methodData.Info;
                         if(info.DeclaringType==typeof(object)
@@ -215,38 +202,6 @@ namespace CodeRefractor.RuntimeBase
                 return; //doesn't run on global assembly cache methods
             GlobalMethodPool.Instance.MethodInfos[methodDesc] = methodBase;
             ComputeDependencies(methodBase);
-        }
-
-        public List<Type> GetTypesClosure(List<MethodInterpreter> closure)
-        {
-            var typesSet = new HashSet<Type>();
-            foreach (var interpreter in closure)
-            {
-                var method = interpreter.Method;
-                foreach (var parameter in method.GetParameters())
-                {
-                    typesSet.Add(parameter.ParameterType);
-                }
-                typesSet.Add(method.DeclaringType);
-            }
-            bool isAdded;
-            do
-            {
-                var toAdd = new HashSet<Type>(typesSet);
-                foreach (var type in typesSet)
-                {
-                    var fields = type.GetFields(BindingFlags.Instance).ToList();
-                    fields.AddRange(type.GetFields(BindingFlags.NonPublic | BindingFlags.Instance));
-                    foreach (var fieldInfo in fields)
-                    {
-                        toAdd.Add(fieldInfo.FieldType);
-                    }
-                }
-                isAdded = (toAdd.Count != typesSet.Count);
-                typesSet = toAdd;
-
-            } while (isAdded);
-            return typesSet.Where(t=>!t.IsPrimitive).ToList();
         }
     }
 }

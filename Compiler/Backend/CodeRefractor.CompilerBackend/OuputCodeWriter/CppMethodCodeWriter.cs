@@ -48,81 +48,81 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             {
                 switch (operation.Kind)
                 {
-                    case LocalOperation.Kinds.Label:
+                    case OperationKind.Label:
                         WriteLabel(bodySb, (int) operation.Value);
                         break;
-                    case LocalOperation.Kinds.Assignment:
+                    case OperationKind.Assignment:
                         StoreLocal(bodySb, operation);
                         break;
 
-                    case LocalOperation.Kinds.BinaryOperator:
+                    case OperationKind.BinaryOperator:
                         CppHandleOperators.HandleOperator(operation.Value, bodySb);
                         break;
-                    case LocalOperation.Kinds.UnaryOperator:
+                    case OperationKind.UnaryOperator:
                         CppHandleOperators.HandleUnaryOperator((UnaryOperator)operation.Value, bodySb);
                         break;
-                    case LocalOperation.Kinds.AlwaysBranch:
+                    case OperationKind.AlwaysBranch:
                         HandleAlwaysBranchOperator(operation, bodySb);
                         break;
-                    case LocalOperation.Kinds.BranchOperator:
+                    case OperationKind.BranchOperator:
                         CppHandleBranches.HandleBranchOperator(operation, bodySb);
                         break;
-                    case LocalOperation.Kinds.Call:
+                    case OperationKind.Call:
                         CppHandleCalls.HandleCall(operation, bodySb);
                         break;
-                    case LocalOperation.Kinds.CallRuntime:
+                    case OperationKind.CallRuntime:
                         CppHandleCalls.HandleCallRuntime(operation, bodySb);
                         break;
-                    case LocalOperation.Kinds.Return:
+                    case OperationKind.Return:
                         CppHandleCalls.HandleReturn(operation, bodySb);
                         break;
-                    case LocalOperation.Kinds.NewObject:
+                    case OperationKind.NewObject:
                         HandleNewObject(operation, bodySb);
                         break;
-                    case LocalOperation.Kinds.SetField:
+                    case OperationKind.SetField:
                         HandleSetField(operation, bodySb);
                         break;
 
-                    case LocalOperation.Kinds.GetField:
+                    case OperationKind.GetField:
                         HandleLoadField(operation, bodySb);
                         break;
-                    case LocalOperation.Kinds.SetStaticField:
+                    case OperationKind.SetStaticField:
                         HandleSetStaticField(operation, bodySb);
                         break;
 
-                    case LocalOperation.Kinds.GetStaticField:
+                    case OperationKind.GetStaticField:
                         HandleLoadStaticField(operation, bodySb);
                         break;
 
-                    case LocalOperation.Kinds.GetArrayItem:
+                    case OperationKind.GetArrayItem:
                         HandleReadArrayItem(operation, bodySb);
                         break;
-                    case LocalOperation.Kinds.NewArray:
+                    case OperationKind.NewArray:
                         HandleNewArray(operation, bodySb);
                         break;
 
-                    case LocalOperation.Kinds.SetArrayItem:
+                    case OperationKind.SetArrayItem:
                         HandleSetArrayValue(operation, bodySb);
                         break;
 
-                    case LocalOperation.Kinds.CopyArrayInitializer:
+                    case OperationKind.CopyArrayInitializer:
                         HandleCopyArrayInitializer(operation, bodySb);
                         break;
-                    case LocalOperation.Kinds.RefAssignment:
+                    case OperationKind.RefAssignment:
                         HandleRefAssignment(operation, bodySb);
                         break;
-                    case LocalOperation.Kinds.DerefAssignment:
+                    case OperationKind.DerefAssignment:
                         HandleDerefAssignment(operation, bodySb);
                         break;
 
-                    case LocalOperation.Kinds.FieldRefAssignment:
+                    case OperationKind.FieldRefAssignment:
                         HandleFieldRefAssignment(operation, bodySb);
                         break;
-                    case LocalOperation.Kinds.Switch:
+                    case OperationKind.Switch:
                         HandleSwitch(operation, bodySb);
                         break;
                         
-                    case LocalOperation.Kinds.SizeOf:
+                    case OperationKind.SizeOf:
                         HandleSizeOf(operation, bodySb);
                         break;
 
