@@ -1,7 +1,9 @@
 #region Usings
 
+using System;
 using System.Collections.Generic;
 using System.Text;
+using CodeRefractor.CompilerBackend.OuputCodeWriter.Platform;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.Optimizations;
@@ -20,6 +22,11 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
         }
         public string WriteMethodSignature()
         {
+            if(Interpreter.MidRepresentation.Method==null)
+            {
+                Console.WriteLine("Should not be null");
+                return "";
+            }
             var sb = new StringBuilder();
             CppMethodCodeWriter.WriteSignature(Interpreter.MidRepresentation.Method,sb, true);
             return sb.ToString();

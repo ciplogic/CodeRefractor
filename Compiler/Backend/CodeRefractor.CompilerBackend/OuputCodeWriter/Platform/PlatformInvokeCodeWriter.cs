@@ -10,7 +10,7 @@ using CodeRefractor.RuntimeBase.MiddleEnd;
 
 #endregion
 
-namespace CodeRefractor.CompilerBackend.OuputCodeWriter
+namespace CodeRefractor.CompilerBackend.OuputCodeWriter.Platform
 {
     internal static class PlatformInvokeCodeWriter
     {
@@ -88,7 +88,10 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             sb.AppendLine("{");
             var identifierValues = platformInvoke.Method.GetParameters();
             var argumentsCall = String.Join(", ", identifierValues.Select(p => p.Name));
-
+            if (!platformInvoke.Method.GetReturnType().IsVoid())
+            {
+                sb.Append("return ");
+            }
             sb.AppendFormat("{0}({1});", methodId, argumentsCall);
             sb.AppendLine();
             sb.AppendLine("}");

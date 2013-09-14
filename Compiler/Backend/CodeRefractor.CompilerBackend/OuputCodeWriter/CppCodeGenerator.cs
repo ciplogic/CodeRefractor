@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using CodeRefractor.CompilerBackend.Linker;
+using CodeRefractor.CompilerBackend.OuputCodeWriter.Platform;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.FrontEnd;
@@ -26,7 +27,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
         public static StringBuilder BuildFullSourceCode(MetaLinker linker)
         {
             var closure = linker.GetMethodClosure(linker.Interpreter);
-            var typeClosure = ClosureLinker.GetTypesClosure(closure);
+            var typeClosure = TypesClosureLinker.GetTypesClosure(closure);
             var sb = new StringBuilder();
             LinkingData.Includes.Clear();
 
@@ -42,6 +43,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 
             WriteClosureMethods(closure, sb);
 
+            WriteMainBody(linker, sb);
             sb.AppendLine(PlatformInvokeCodeWriter.LoadDllMethods());
             sb.AppendLine(ConstByteArrayList.BuildConstantTable());
             sb.AppendLine(LinkingData.Instance.Strings.BuildStringTable());

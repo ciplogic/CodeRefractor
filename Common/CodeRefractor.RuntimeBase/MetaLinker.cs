@@ -75,26 +75,27 @@ namespace CodeRefractor.RuntimeBase
         private static void UpdateMethodEntryClosure(MethodInterpreter entryPoint, Dictionary<string, MethodInterpreter> result)
         {
             var operations = entryPoint.MidRepresentation.LocalOperations;
-            foreach (var localOperation in operations.Where(op=>op.Kind==OperationKind.Call))
+            var localOperations = operations.Where(op => op.Kind == OperationKind.Call).ToArray();
+            var toAdd = new List<MethodInterpreter>();
+            foreach (var localOperation in localOperations)
             {
-                switch (localOperation.Kind)
-                {
-                    case OperationKind.Call:
-                        var methodData = (MethodData) localOperation.Value;
-                        var info = methodData.Info;
-                        if(info.DeclaringType==typeof(object)
-                            || info.DeclaringType == typeof(IntPtr))
-                            continue;
-                        var descInfo = info.ToString();
-                        if (result.ContainsKey(descInfo))
-                            continue;
-                        var interpreter = ClassTypeData.GetInterpreterStatic(info);
-                        if(interpreter==null)
-                            continue;
-                        result[descInfo] = interpreter;
-                        UpdateMethodEntryClosure(interpreter, result);
-                        break;
-                }
+                var methodData = (MethodData) localOperation.Value;
+                var info = methodData.Info;
+                if (info.DeclaringType == typeof (object)
+                    || info.DeclaringType == typeof (IntPtr))
+                    continue;
+                var descInfo = info.GetMethodDescriptor();
+                if (result.ContainsKey(descInfo))
+                    continue;
+                var interpreter = ClassTypeData.GetInterpreterStatic(info);
+                if (interpreter == null)
+                    continue;
+                result[descInfo] = interpreter;
+                toAdd.Add(interpreter);
+            }
+            foreach (var interpreter in toAdd)
+            {
+                UpdateMethodEntryClosure(interpreter, result);
             }
         }
 

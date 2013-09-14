@@ -279,7 +279,7 @@ namespace CodeRefractor.RuntimeBase
 
         public static string ToCppName(this Type type, bool isSmartPtr = true)
         {
-            type = CrRuntimeLibrary.Instance.GetReverseType(type) ?? type;
+            type = type.ReversedType();
             if (!type.IsClass || !isSmartPtr)
             {
                 return type.IsSubclassOf(typeof (Enum))
@@ -291,6 +291,11 @@ namespace CodeRefractor.RuntimeBase
                 var elementType = type.GetElementType();
                 var fullTypeName = elementType.ToCppName();
                 return String.Format("std::shared_ptr< Array < {0} > >", fullTypeName);
+            }
+            if (type.IsByRef)
+            {
+                var elementType = type.GetElementType();
+                return String.Format("{0}*", elementType.Name.ToCppMangling(elementType.Namespace));
             }
             return String.Format("std::shared_ptr<{0}>", type.Name.ToCppMangling(type.Namespace));
         }

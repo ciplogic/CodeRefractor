@@ -6,20 +6,11 @@ using CodeRefractor.RuntimeBase.MiddleEnd;
 
 namespace CodeRefractor.RuntimeBase
 {
-    public static class ClosureLinker
+    public static class TypesClosureLinker
     {
         public static List<Type> GetTypesClosure(List<MethodInterpreter> closure)
         {
-            var typesSet = new HashSet<Type>();
-            foreach (var interpreter in closure)
-            {
-                var method = interpreter.Method;
-                foreach (var parameter in method.GetParameters())
-                {
-                    typesSet.Add(parameter.ParameterType);
-                }
-                typesSet.Add(method.DeclaringType);
-            }
+            var typesSet = ScanMethodParameters(closure);
             bool isAdded;
             do
             {
@@ -33,7 +24,10 @@ namespace CodeRefractor.RuntimeBase
                     fields.AddRange(mappedType.GetFields(BindingFlags.NonPublic | BindingFlags.Instance));
                     foreach (var fieldInfo in fields)
                     {
-                        toAdd.Add(fieldInfo.FieldType);
+                        var fieldType = fieldInfo.FieldType;
+                        if (fieldType.IsByRef)
+                            fieldType = fieldType.GetElementType();
+                        toAdd.Add(fieldType);
                     }
                 }
                 isAdded = (toAdd.Count != typesSet.Count);
@@ -44,6 +38,24 @@ namespace CodeRefractor.RuntimeBase
             SortTypeDependencies(typesClosure);
 
             return typesClosure;
+        }
+
+        private static HashSet<Type> ScanMethodParameters(List<MethodInterpreter> closure)
+        {
+            var typesSet = new HashSet<Type>();
+            foreach (var interpreter in closure)
+            {
+                var method = interpreter.Method;
+                foreach (var parameter in method.GetParameters())
+                {
+                    var parameterType = parameter.ParameterType;
+                    if (parameterType.IsByRef)
+                        parameterType = parameterType.GetElementType();
+                    typesSet.Add(parameterType);
+                }
+                typesSet.Add(method.DeclaringType);
+            }
+            return typesSet;
         }
 
         private static void SortTypeDependencies(List<Type> typesClosure)

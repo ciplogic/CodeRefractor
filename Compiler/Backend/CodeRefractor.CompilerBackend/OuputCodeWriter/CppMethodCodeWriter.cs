@@ -316,6 +316,8 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 
         internal static void WriteSignature(MethodBase method, StringBuilder sb, bool writeEndColon=false)
         {
+            if(method==null)
+                return;
             var mappedType = CrRuntimeLibrary.Instance.GetReverseType(method.DeclaringType);
             var text = method.WriteHeaderMethod(writeEndColon);
             sb.Append(text);

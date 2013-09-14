@@ -537,7 +537,12 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             var firstVar = _evaluator.Stack.Pop();
 
             var vreg = SetNewVReg();
-            vreg.FixedType = firstVar.ComputedType().LocateField(fieldName).FieldType;
+            var computedType = firstVar.ComputedType();
+            if(computedType.IsByRef)
+            {
+                computedType = computedType.GetElementType();
+            }
+            vreg.FixedType = computedType.LocateField(fieldName).FieldType;
             ProgramData.UpdateType(vreg.FixedType);
             var assignment = new FieldGetter
                                  {
