@@ -280,6 +280,10 @@ namespace CodeRefractor.RuntimeBase
 
         public static string ToCppName(this Type type, bool isSmartPtr = true)
         {
+            if(type==null)
+            {
+                return "void*";
+            }
             type = type.ReversedType();
             if (!type.IsClass || !isSmartPtr)
             {

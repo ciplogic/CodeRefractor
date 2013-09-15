@@ -82,6 +82,9 @@ namespace CodeRefractor.RuntimeBase.Runtime
 
         public Type GetReverseType(Type type)
         {
+            if (type == null)
+                return null;
+
             Type result;
             if(!ReverseMappedTypes.TryGetValue(type, out result))
             {

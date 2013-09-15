@@ -601,6 +601,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 AssignedTo = vreg,
                 Right = methodData.Parameters.First()
             };
+            
             AddOperation(OperationKind.Assignment, assign);
         }
 
@@ -663,10 +664,12 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         private void AssignNullToStack()
         {
             var result = SetNewVReg();
+            var nullConst = new ConstValue(null);
+            nullConst.FixedType = typeof(object);
             var assign = new Assignment
             {
                 AssignedTo = result,
-                Right = new ConstValue(null)
+                Right = nullConst
             };
             result.FixedType = typeof(object);
             AddOperation(OperationKind.Assignment, assign);

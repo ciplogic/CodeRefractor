@@ -46,6 +46,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers
 
         public override string FormatVar()
         {
+            if (Value == null)
+                return "nullptr";
             return Value.ToString();
         }
     }

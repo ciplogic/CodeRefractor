@@ -121,7 +121,10 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                     case OperationKind.Switch:
                         HandleSwitch(operation, bodySb);
                         break;
-                        
+
+                    case OperationKind.LoadFunction:
+                        HandleLoadFunction(operation, bodySb);
+                        break;
                     case OperationKind.SizeOf:
                         HandleSizeOf(operation, bodySb);
                         break;
@@ -137,6 +140,15 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             }
             bodySb.AppendLine("}");
             return bodySb;
+        }
+
+        private static void HandleLoadFunction(LocalOperation operation, StringBuilder bodySb)
+        {
+            var assign = (FunctionPointerStore)operation.Value;
+            var leftData = assign.AssignedTo;
+            var rightData = assign.FunctionPointer.ToString();
+            bodySb.AppendFormat("{0}=&({1});", leftData.Name, rightData);
+            
         }
 
         private static void HandleSizeOf(LocalOperation operation, StringBuilder bodySb)
