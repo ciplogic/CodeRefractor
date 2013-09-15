@@ -24,7 +24,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                     (ClassTypeData)ProgramData.UpdateType(
                         methodBase.Value.DeclaringType);
                 var interpreter = typeData.GetInterpreter(methodBase.Value);
-                if(interpreter.Kind==MethodKind.PlatformInvoke)
+                if(interpreter.Kind!=MethodKind.Default)
                     continue;
                 LinkerInterpretersTable.Register(interpreter.MidRepresentation);
             }

@@ -24,7 +24,7 @@ std::shared_ptr<System::String> _str(int index)
 	auto value = std::make_shared<Array < System::Char >>(len, resultData);
 	
 	auto result = std::make_shared<System::String>(); 
-	System_String__String_ctor(result, value);
+	//System_String__String_ctor(result, value);
 	return result;
 }
 

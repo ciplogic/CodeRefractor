@@ -267,6 +267,7 @@ namespace CodeRefractor.RuntimeBase
         {
             if (String.IsNullOrEmpty(s))
                 return String.Empty;
+            nameSpace = nameSpace ?? "";
             nameSpace=nameSpace.Replace(".", "_");
             var fullName = nameSpace+"::"+s;
             if (s.EndsWith("[]"))

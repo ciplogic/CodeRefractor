@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using CodeRefractor.RuntimeBase.MiddleEnd;
+using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.Runtime;
 using CodeRefractor.RuntimeBase.Shared;
 
@@ -52,6 +53,13 @@ namespace CodeRefractor.RuntimeBase.Analyze
             int index;
             if (InterpreterMapping.TryGetValue(methodName, out index))
                 return Interpreters[index];
+            if(DelegateManager.IsTypeDelegate(methodBase.DeclaringType))
+            {
+                return new MethodInterpreter(methodBase)
+                    {
+                        Kind = MethodKind.Delegate
+                    };
+            }
             var linker = new MetaLinker();
             linker.SetEntryPoint(methodBase);
             linker.Interpret();

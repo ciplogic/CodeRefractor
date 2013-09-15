@@ -1,4 +1,7 @@
-﻿namespace CodeRefractor.CompilerBackend.OuputCodeWriter
+﻿using System;
+using System.Collections.Generic;
+
+namespace CodeRefractor.RuntimeBase.Analyze
 {
     class DelegateManager
     {
@@ -58,5 +61,17 @@ void CustomDelegateVoid_Int32_Int32::Register(std::function<void(int, int)> stdF
 	functions.push_back(stdFn);
 }
 ";
+
+        public static void RegisterType(Type declaringType)
+        {
+            Instance._delegateTypes.Add(declaringType);
+        }
+        public static DelegateManager Instance = new DelegateManager();
+        readonly HashSet<Type> _delegateTypes =new HashSet<Type>();
+
+        public static bool IsTypeDelegate(Type declaringType)
+        {
+            return (Instance._delegateTypes.Contains(declaringType));
+        }
     }
 }

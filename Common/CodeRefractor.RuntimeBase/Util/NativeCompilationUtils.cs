@@ -13,7 +13,7 @@ namespace CodeRefractor.RuntimeBase.Util
         {
             public ClangOptions()
             {
-                PathOfCompilerTools = @"c:\Oss\clang_llvm-3.2\bin\";
+                PathOfCompilerTools = @"C:\Oss\Llvm\3_4_svn\bin\";
                 CompilerExe = "clang++.exe";
                 OptimizationFlags = "-O2 ";
             }

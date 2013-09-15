@@ -384,7 +384,14 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 methodData.Info = ClassHierarchyAnalysis.GetBestVirtualMatch(methodData.Info,
                                                                              methodData.Parameters[0].ComputedType());
             }
-            
+            var declaringType = methodData.Info.DeclaringType;
+            if(declaringType.IsSubclassOf(typeof(Delegate)))
+            {
+                var signature = declaringType.GetMethod("Invoke");
+                DelegateManager.RegisterType(declaringType);
+            }
+
+
             if (!methodData.IsVoid)
             {
                 var vreg = SetNewVReg();
@@ -575,7 +582,6 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
         public void NewObject(ConstructorInfo constructorInfo)
         {
-
             var result = SetNewVReg();
             result.FixedType = constructorInfo.DeclaringType;
             var constructedObject = new NewConstructedObject(constructorInfo);

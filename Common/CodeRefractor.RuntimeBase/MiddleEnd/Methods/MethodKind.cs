@@ -4,6 +4,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.Methods
     {
         Default,
         RuntimeLibrary,
-        PlatformInvoke
+        PlatformInvoke,
+        Delegate
     }
 }

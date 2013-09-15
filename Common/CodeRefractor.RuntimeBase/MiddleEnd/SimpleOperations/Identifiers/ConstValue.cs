@@ -46,9 +46,6 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers
 
         public override string FormatVar()
         {
-            if (Value is string)
-            {
-            }
             return Value.ToString();
         }
     }
