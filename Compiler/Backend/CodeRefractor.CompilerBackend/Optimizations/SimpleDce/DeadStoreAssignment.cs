@@ -17,9 +17,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
                 pos++;
 
                 var opKind = op.Kind;
-                if (opKind != LocalOperation.Kinds.Assignment
-                   && opKind != LocalOperation.Kinds.BinaryOperator
-                    && opKind != LocalOperation.Kinds.UnaryOperator)
+                if (opKind != OperationKind.Assignment
+                   && opKind != OperationKind.BinaryOperator
+                    && opKind != OperationKind.UnaryOperator)
                     continue;
                 var variableDefinition = op.GetUseDefinition();
                 if(variableDefinition==null)

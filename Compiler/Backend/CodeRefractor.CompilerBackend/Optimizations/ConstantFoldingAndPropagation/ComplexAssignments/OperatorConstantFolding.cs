@@ -27,8 +27,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                 var destOperation = intermediateCode.LocalOperations[index];
                 pos++;
                 _pos = pos;
-                if (destOperation.Kind != LocalOperation.Kinds.BinaryOperator
-                    && destOperation.Kind != LocalOperation.Kinds.UnaryOperator)
+                if (destOperation.Kind != OperationKind.BinaryOperator
+                    && destOperation.Kind != OperationKind.UnaryOperator)
                     continue;
 
                 var baseOperator = (OperatorBase) destOperation.Value;
@@ -238,7 +238,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
             _intermediateCode.LocalOperations[_pos] = 
                 new LocalOperation
                     {
-                        Kind = LocalOperation.Kinds.Assignment,
+                        Kind= OperationKind.Assignment,
                         Value = resultAssignment
                 };
             Result = true;

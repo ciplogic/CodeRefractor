@@ -14,7 +14,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
             for (var index = 0; index < operations.Count-1; index++)
             {
                 var localOperation = operations[index];
-                if (localOperation.Kind != LocalOperation.Kinds.Assignment)
+                if (localOperation.Kind != OperationKind.Assignment)
                     continue;
 
                 var assignment = localOperation.GetAssignment();

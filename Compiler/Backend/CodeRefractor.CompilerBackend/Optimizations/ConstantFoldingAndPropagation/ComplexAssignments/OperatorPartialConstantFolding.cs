@@ -27,7 +27,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
             foreach (var destOperation in _localOperations)
             {
                 _pos++;
-                if (destOperation.Kind != LocalOperation.Kinds.BinaryOperator)
+                if (destOperation.Kind != OperationKind.BinaryOperator)
                     continue;
 
                 var destAssignment = (OperatorBase)destOperation.Value;
@@ -59,7 +59,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
         {
             _localOperations[_pos] = new LocalOperation()
             {
-                Kind = LocalOperation.Kinds.Assignment,
+                Kind = OperationKind.Assignment,
                 Value = constResult
             };
         }
@@ -79,7 +79,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
             if (constValue != null && constValue.Value is int && (int)constValue.Value == 0)
             {
                 FoldAssign(constValue);
-                destOperation.Kind = LocalOperation.Kinds.Assignment;
+                destOperation.Kind = OperationKind.Assignment;
                 Result = true;
             }
             if (constLeft != null && constLeft.Value is double && (double)constValue.Value == 0.0)

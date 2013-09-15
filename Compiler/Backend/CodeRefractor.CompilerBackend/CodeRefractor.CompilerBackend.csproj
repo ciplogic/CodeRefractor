@@ -93,9 +93,9 @@
     <Compile Include="Optimizations\SimpleDce\DoubleAssignPropagation.cs" />
     <Compile Include="Optimizations\Util\OptimizationLevels.cs" />
     <Compile Include="Optimizations\VRegVariablePropagation.cs" />
-    <Compile Include="OuputCodeWriter\PlatformInvokeCodeWriter.cs" />
-    <Compile Include="OuputCodeWriter\PlatformInvokeDllImports.cs" />
-    <Compile Include="OuputCodeWriter\PlatformInvokeDllMethod.cs" />
+    <Compile Include="OuputCodeWriter\Platform\PlatformInvokeCodeWriter.cs" />
+    <Compile Include="OuputCodeWriter\Platform\PlatformInvokeDllImports.cs" />
+    <Compile Include="OuputCodeWriter\Platform\PlatformInvokeDllMethod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

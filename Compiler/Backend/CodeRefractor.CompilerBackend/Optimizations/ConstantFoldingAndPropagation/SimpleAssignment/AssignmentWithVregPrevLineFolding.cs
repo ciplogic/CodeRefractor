@@ -15,7 +15,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
             for (var index = 1; index < operations.Count - 1; index++)
             {
                 var localOperation = operations[index];
-                if (localOperation.Kind != LocalOperation.Kinds.Assignment)
+                if (localOperation.Kind != OperationKind.Assignment)
                     continue;
 
                 var assignment = localOperation.GetAssignment();
@@ -28,8 +28,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                 if (destOperationDefiniton == null || !destOperationDefiniton.Equals(vregAssignment)) continue;
                 switch (destOperation.Kind)
                 {
-                    case LocalOperation.Kinds.UnaryOperator:
-                    case LocalOperation.Kinds.BinaryOperator:
+                    case OperationKind.UnaryOperator:
+                    case OperationKind.BinaryOperator:
                         var operatorData = (OperatorBase)destOperation.Value;
                         operatorData.AssignedTo = assignment.AssignedTo;
                         break;

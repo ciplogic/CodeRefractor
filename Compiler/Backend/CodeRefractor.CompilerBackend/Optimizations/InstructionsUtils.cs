@@ -24,7 +24,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations
                 var operation = operations[i];
                 switch (operation.Kind)
                 {
-                    case LocalOperation.Kinds.Label:
+                    case OperationKind.Label:
                         var jumpTo = (int) operation.Value;
                         labelTable[jumpTo] = i;
                         break;

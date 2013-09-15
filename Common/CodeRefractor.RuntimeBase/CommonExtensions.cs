@@ -102,7 +102,7 @@ namespace CodeRefractor.RuntimeBase
         }
 
 
-        static Type GetMappedType(this Type type)
+        public static Type GetMappedType(this Type type)
         {
 
             var mappedtypeAttr = type.GetCustomAttribute<MapTypeAttribute>();
@@ -144,6 +144,11 @@ namespace CodeRefractor.RuntimeBase
                 String.Format("{0} {1}", param.ParameterType.GetMappedType().ToCppName(param.ParameterType.IsClass), param.Name));
         }
 
+        public static Type ReversedType(this Type type)
+        {
+            return CrRuntimeLibrary.Instance.GetReverseType(type) ?? type;
+        }
+
         public static string ClangMethodSignature(this MethodBase method)
         {
             var mappedType = CrRuntimeLibrary.Instance.GetReverseType(method.DeclaringType);
@@ -158,10 +163,10 @@ namespace CodeRefractor.RuntimeBase
 
         public static bool IsBranchOperation(this LocalOperation operation, bool andLabels = true)
         {
-            if (andLabels && operation.Kind == LocalOperation.Kinds.Label)
+            if (andLabels && operation.Kind == OperationKind.Label)
                 return true;
-            return operation.Kind == LocalOperation.Kinds.AlwaysBranch ||
-                   operation.Kind == LocalOperation.Kinds.BranchOperator;
+            return operation.Kind == OperationKind.AlwaysBranch ||
+                   operation.Kind == OperationKind.BranchOperator;
         }
 
         public static Type GetReturnType(this MethodBase methodBase)
@@ -255,7 +260,7 @@ namespace CodeRefractor.RuntimeBase
         {
             return IsVoid(type)
                        ? "void"
-                       : type.FullName.ToCppMangling();
+                       : type.Name.ToCppMangling(type.Namespace);
         }
 
         public static string ToCppMangling(this string s, string nameSpace = "")
@@ -274,7 +279,7 @@ namespace CodeRefractor.RuntimeBase
 
         public static string ToCppName(this Type type, bool isSmartPtr = true)
         {
-            type = CrRuntimeLibrary.Instance.GetReverseType(type) ?? type;
+            type = type.ReversedType();
             if (!type.IsClass || !isSmartPtr)
             {
                 return type.IsSubclassOf(typeof (Enum))
@@ -286,6 +291,11 @@ namespace CodeRefractor.RuntimeBase
                 var elementType = type.GetElementType();
                 var fullTypeName = elementType.ToCppName();
                 return String.Format("std::shared_ptr< Array < {0} > >", fullTypeName);
+            }
+            if (type.IsByRef)
+            {
+                var elementType = type.GetElementType();
+                return String.Format("{0}*", elementType.Name.ToCppMangling(elementType.Namespace));
             }
             return String.Format("std::shared_ptr<{0}>", type.Name.ToCppMangling(type.Namespace));
         }

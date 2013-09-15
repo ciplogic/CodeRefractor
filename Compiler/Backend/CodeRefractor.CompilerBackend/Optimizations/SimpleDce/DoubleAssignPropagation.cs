@@ -21,10 +21,10 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
             for (var i = 0; i < count - 1; i++)
             {
                 var firstInstruction = localOperations[i];
-                if (firstInstruction.Kind != LocalOperation.Kinds.Assignment)
+                if (firstInstruction.Kind != OperationKind.Assignment)
                     continue;
                 var secondInstruction = localOperations[i + 1];
-                if (secondInstruction.Kind != LocalOperation.Kinds.Assignment)
+                if (secondInstruction.Kind != OperationKind.Assignment)
                     continue;
                 var secondAssign = secondInstruction.GetAssignment();
                 var localVariableSecondAssign = secondAssign.Right as LocalVariable;

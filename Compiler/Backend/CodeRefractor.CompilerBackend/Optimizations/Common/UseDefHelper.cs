@@ -37,55 +37,55 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
             var result = new List<LocalVariable>();
             switch (operation.Kind)
             {
-                case LocalOperation.Kinds.Assignment:
+                case OperationKind.Assignment:
                     result.AddUsage(((Assignment)operation.Value).Right);
                     break;
-                case LocalOperation.Kinds.UnaryOperator:
+                case OperationKind.UnaryOperator:
                     var unaryOperator = ((UnaryOperator)operation.Value);
                     result.AddUsage(unaryOperator.Left);
                     break;
-                case LocalOperation.Kinds.BranchOperator:
+                case OperationKind.BranchOperator:
                     var branchOperator = ((BranchOperator)operation.Value);
                     result.AddUsage(branchOperator.CompareValue);
                     break;
-                case LocalOperation.Kinds.BinaryOperator:
+                case OperationKind.BinaryOperator:
                     var binaryOperator = ((BinaryOperator)operation.Value);
                     result.AddUsage(binaryOperator.Left);
                     result.AddUsage(binaryOperator.Right);
                     break;
-                case LocalOperation.Kinds.NewArray:
+                case OperationKind.NewArray:
                     AddUsagesOfNewArray(operation, result);
                     break;
-                case LocalOperation.Kinds.GetArrayItem:
+                case OperationKind.GetArrayItem:
                     AddUsagesOfGetArrayItem(operation, result);
                     break;
-                case LocalOperation.Kinds.SetArrayItem:
+                case OperationKind.SetArrayItem:
                     AddUsagesOfSetArrayItem(operation, result);
                     break;
 
-                case LocalOperation.Kinds.GetField:
+                case OperationKind.GetField:
                     AddUsagesOfGetField(operation, result);
                     break;
-                case LocalOperation.Kinds.SetField:
+                case OperationKind.SetField:
                     AddUsagesOfSetField(operation, result);
                     break;
 
-                case LocalOperation.Kinds.Call:
-                case LocalOperation.Kinds.CallRuntime:
+                case OperationKind.Call:
+                case OperationKind.CallRuntime:
                     AddUsagesOfCall(operation, result);
                     break;
-                case LocalOperation.Kinds.Return:    
+                case OperationKind.Return:    
                     AddUsagesOfReturn(operation, result);
                     break;
 
-                case LocalOperation.Kinds.Label:
-                case LocalOperation.Kinds.NewObject:
-                case LocalOperation.Kinds.AlwaysBranch:
+                case OperationKind.Label:
+                case OperationKind.NewObject:
+                case OperationKind.AlwaysBranch:
                     break;
 
-                case LocalOperation.Kinds.FieldRefAssignment:
-                case LocalOperation.Kinds.CopyArrayInitializer:
-                case LocalOperation.Kinds.GetStaticField:
+                case OperationKind.FieldRefAssignment:
+                case OperationKind.CopyArrayInitializer:
+                case OperationKind.GetStaticField:
                     break;
                 default:
                     throw new NotImplementedException();
@@ -185,17 +185,17 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
             var kind = operation.Kind;
             switch (kind)
             {
-                case LocalOperation.Kinds.Assignment:
-                case LocalOperation.Kinds.NewObject:
-                case LocalOperation.Kinds.NewArray:
-                case LocalOperation.Kinds.CopyArrayInitializer:
-                case LocalOperation.Kinds.GetStaticField:
+                case OperationKind.Assignment:
+                case OperationKind.NewObject:
+                case OperationKind.NewArray:
+                case OperationKind.CopyArrayInitializer:
+                case OperationKind.GetStaticField:
                     var assign = operation.GetAssignment();
                     return assign.AssignedTo;
-                case LocalOperation.Kinds.BinaryOperator:
+                case OperationKind.BinaryOperator:
                     var binOp = (BinaryOperator)operation.Value;
                     return binOp.AssignedTo;
-                case LocalOperation.Kinds.UnaryOperator:
+                case OperationKind.UnaryOperator:
                     var unOp = (UnaryOperator)operation.Value;
                     return unOp.AssignedTo;
                 default:
@@ -230,48 +230,48 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
                 return;
             switch (op.Kind)
             {
-                case LocalOperation.Kinds.Assignment:
+                case OperationKind.Assignment:
                     SwitchUsageInAssignment(op, usageVariable, definitionIdentifier);
                     break;
-                case LocalOperation.Kinds.BinaryOperator:
+                case OperationKind.BinaryOperator:
                     SwitchUsageInBinaryOperator(op, usageVariable, definitionIdentifier);
                     break;
-                case LocalOperation.Kinds.UnaryOperator:
+                case OperationKind.UnaryOperator:
                     SwitchUsageInUnaryOperator(op, usageVariable, definitionIdentifier);
                     break;
-                case LocalOperation.Kinds.BranchOperator:
+                case OperationKind.BranchOperator:
                     SwitchUsageInBranchOperator(op, usageVariable, definitionIdentifier);
                     break;
-                case LocalOperation.Kinds.GetField:
+                case OperationKind.GetField:
                     SwichUsageInGetField(op, usageVariable, definitionIdentifier);
                     break;
-                case LocalOperation.Kinds.SetField:
+                case OperationKind.SetField:
                     SwitchUsageInSetField(op, usageVariable, definitionIdentifier);
                     break;
-                case LocalOperation.Kinds.SetArrayItem:
+                case OperationKind.SetArrayItem:
                     SwitchUsageInSetArrayItem(op, usageVariable, definitionIdentifier);
                     break;
-                case LocalOperation.Kinds.GetArrayItem:
+                case OperationKind.GetArrayItem:
                     SwitchUsageInGetArrayItem(op, usageVariable, definitionIdentifier);
                     break;
 
-                case LocalOperation.Kinds.Call:
-                case LocalOperation.Kinds.CallRuntime:
+                case OperationKind.Call:
+                case OperationKind.CallRuntime:
                     SwitchUsageInCall(op, usageVariable, definitionIdentifier);
                     break;
 
-                case LocalOperation.Kinds.NewArray:
+                case OperationKind.NewArray:
                     SwitchUsageInNewArray(op, usageVariable, definitionIdentifier);
                     break;
-                case LocalOperation.Kinds.Return:
+                case OperationKind.Return:
                     SwitchUsageInReturn(op, usageVariable, definitionIdentifier);
                     break;
-                case LocalOperation.Kinds.AlwaysBranch:
-                case LocalOperation.Kinds.Label:
-                case LocalOperation.Kinds.NewObject:
+                case OperationKind.AlwaysBranch:
+                case OperationKind.Label:
+                case OperationKind.NewObject:
                     break;
                 default:
-                    throw new NotImplementedException("Switch usage is not implemented for this operation kind");
+                    throw new NotImplementedException("Switch usage is not implemented for this operation OperationKind");
             }
         }
 

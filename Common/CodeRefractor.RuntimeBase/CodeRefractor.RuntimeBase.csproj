@@ -44,6 +44,7 @@
     <Compile Include="Analyze\FieldDataRef.cs" />
     <Compile Include="Analyze\ProgramData.cs" />
     <Compile Include="CilMethodAttribute.cs" />
+    <Compile Include="TypesClosureLinker.cs" />
     <Compile Include="Config\CodeRefractorVersions.cs" />
     <Compile Include="Config\CommandLineParse.cs" />
     <Compile Include="Config\OptimizationLevelBase.cs" />
@@ -55,6 +56,7 @@
     <Compile Include="MiddleEnd\SimpleOperations\DerefAssignment.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\FunctionPointerStore.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\IClonableOperation.cs" />
+    <Compile Include="MiddleEnd\SimpleOperations\OperationKind.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\SizeOfAssignment.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\StaticFieldSetter.cs" />
     <Compile Include="Optimizations\OptimizationKind.cs" />

@@ -15,7 +15,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
             {
                 var op = localOperations[pos];
                 var nextOp = localOperations[pos+1];
-                if (nextOp.Kind != LocalOperation.Kinds.Assignment)
+                if (nextOp.Kind != OperationKind.Assignment)
                     continue;
                 var nextAssignment = nextOp.GetAssignment();
                 var nextVariable = nextAssignment.Right as LocalVariable;
@@ -34,14 +34,14 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                 bool appliedOptimization = true;
                 switch (op.Kind)
                 {
-                    case LocalOperation.Kinds.NewObject:
-                    case LocalOperation.Kinds.Assignment:
-                    case LocalOperation.Kinds.NewArray:
+                    case OperationKind.NewObject:
+                    case OperationKind.Assignment:
+                    case OperationKind.NewArray:
                         var newAssignment = op.GetAssignment();
                         newAssignment.AssignedTo = nextAssignment.AssignedTo;
                         break;
-                    case LocalOperation.Kinds.BinaryOperator:
-                    case LocalOperation.Kinds.UnaryOperator:
+                    case OperationKind.BinaryOperator:
+                    case OperationKind.UnaryOperator:
                         var newOperator = (OperatorBase)op.Value;
                         newOperator.AssignedTo = nextAssignment.AssignedTo;
                         break;

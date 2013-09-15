@@ -38,14 +38,14 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantDfa
                 var operation = _operations[i];
                 switch (operation.Kind)
                 {
-                    case LocalOperation.Kinds.Assignment:
+                    case OperationKind.Assignment:
                         assignment = operation.GetAssignment();
                         HandleAssignment(i, assignment);
                         break;
-                    case LocalOperation.Kinds.BinaryOperator:
+                    case OperationKind.BinaryOperator:
                         HandleOperator(i, (OperatorBase) operation.Value);
                         break;
-                    case LocalOperation.Kinds.BranchOperator:
+                    case OperationKind.BranchOperator:
                         var branchOperator = (BranchOperator) operation.Value;
                         HandleBranchOperator(i, branchOperator);
                         break;
@@ -133,7 +133,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantDfa
                 Assignment assignment;
                 switch (operation.Kind)
                 {
-                    case LocalOperation.Kinds.Assignment:
+                    case OperationKind.Assignment:
                         assignment = operation.GetAssignment();
                         var constant = assignment.Right as ConstValue;
                         if (constant != null)
@@ -154,24 +154,24 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantDfa
                         startingConclusions = analysis;
                         break;
 
-                    case LocalOperation.Kinds.BinaryOperator:
+                    case OperationKind.BinaryOperator:
                         assignment = (Assignment) operation.Value;
                         analysis.States[assignment.AssignedTo] = new VariableState
                                                                {
                                                                    State = VariableState.ConstantState.NotConstant
                                                                };
                         break;
-                    case LocalOperation.Kinds.BranchOperator:
+                    case OperationKind.BranchOperator:
                         var branchOperator = (BranchOperator) operation.Value;
                         Interpret(JumpTo(branchOperator.JumpTo), analysis);
                         break;
-                    case LocalOperation.Kinds.Label:
+                    case OperationKind.Label:
                         break;
-                    case LocalOperation.Kinds.Call:
+                    case OperationKind.Call:
                         break;
-                    case LocalOperation.Kinds.Return:
+                    case OperationKind.Return:
                         return;
-                    case LocalOperation.Kinds.AlwaysBranch:
+                    case OperationKind.AlwaysBranch:
                         var jumpTo = (int) operation.Value;
                         Interpret(JumpTo(jumpTo), analysis);
                         return;

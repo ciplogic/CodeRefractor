@@ -24,12 +24,12 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                 for (var j = i + 1; j < operations.Count; j++)
                 {
                     var destOperation = operations[j];
-                    if (destOperation.Kind == LocalOperation.Kinds.Label)
+                    if (destOperation.Kind == OperationKind.Label)
                         break;
-                    if (destOperation.Kind == LocalOperation.Kinds.BranchOperator)
+                    if (destOperation.Kind == OperationKind.BranchOperator)
                         break;
-                    if (destOperation.Kind != LocalOperation.Kinds.BinaryOperator &&
-                        destOperation.Kind != LocalOperation.Kinds.UnaryOperator) continue;
+                    if (destOperation.Kind != OperationKind.BinaryOperator &&
+                        destOperation.Kind != OperationKind.UnaryOperator) continue;
                     var destAssignment = (OperatorBase) destOperation.Value;
                     if (SameVariable(destAssignment.AssignedTo, srcVariableDefinition.AssignedTo))
                         break;

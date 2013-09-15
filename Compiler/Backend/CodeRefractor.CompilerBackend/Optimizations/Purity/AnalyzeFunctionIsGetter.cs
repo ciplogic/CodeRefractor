@@ -32,11 +32,11 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
             {
                 switch (localOperation.Kind)
                 {
-                    case LocalOperation.Kinds.GetField:
-                    case LocalOperation.Kinds.Assignment:
-                    case LocalOperation.Kinds.AlwaysBranch:
-                    case LocalOperation.Kinds.Label:
-                    case LocalOperation.Kinds.Return:
+                    case OperationKind.GetField:
+                    case OperationKind.Assignment:
+                    case OperationKind.AlwaysBranch:
+                    case OperationKind.Label:
+                    case OperationKind.Return:
                         break;
                     default:
                         return false;

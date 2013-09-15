@@ -17,8 +17,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations
             for (var i = 0; i < intermediateCode.LocalOperations.Count - 1; i++)
             {
                 var srcOperation = intermediateCode.LocalOperations[i];
-                if (srcOperation.Kind != LocalOperation.Kinds.Assignment
-                    && srcOperation.Kind != LocalOperation.Kinds.NewObject) continue;
+                if (srcOperation.Kind != OperationKind.Assignment
+                    && srcOperation.Kind != OperationKind.NewObject) continue;
 
                 var srcVariableDefinition = srcOperation.Value as Assignment;
                 if (srcVariableDefinition == null)
@@ -29,11 +29,11 @@ namespace CodeRefractor.CompilerBackend.Optimizations
                 var assignValue = ComputeAssignedValue(srcValue);
 
                 var destOperation = intermediateCode.LocalOperations[i + 1];
-                if (!(destOperation.Kind == LocalOperation.Kinds.BinaryOperator ||
-                      destOperation.Kind == LocalOperation.Kinds.UnaryOperator) ||
-                    destOperation.Kind == LocalOperation.Kinds.Assignment)
+                if (!(destOperation.Kind == OperationKind.BinaryOperator ||
+                      destOperation.Kind == OperationKind.UnaryOperator) ||
+                    destOperation.Kind == OperationKind.Assignment)
                     continue;
-                if (destOperation.Kind == LocalOperation.Kinds.BinaryOperator)
+                if (destOperation.Kind == OperationKind.BinaryOperator)
                 {
                     var binaryOperator = destOperation.Value as BinaryOperator;
                     if (binaryOperator != null)
@@ -47,7 +47,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations
                         continue;
                     }
                 }
-                if (destOperation.Kind == LocalOperation.Kinds.UnaryOperator)
+                if (destOperation.Kind == OperationKind.UnaryOperator)
                 {
                     var unaryOperator = destOperation.Value as UnaryOperator;
                     if (unaryOperator != null)
@@ -62,7 +62,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations
                     }
                     continue;
                 }
-                if (destOperation.Kind == LocalOperation.Kinds.Assignment)
+                if (destOperation.Kind == OperationKind.Assignment)
                 {
                     var destVariable = (Assignment) destOperation.Value;
                     var vregVar = destVariable.Right as LocalVariable;

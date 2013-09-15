@@ -19,7 +19,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
             for (var i = 0; i < operations.Count - 1; i++)
             {
                 var destOperation = operations[i];
-                if (destOperation.Kind != LocalOperation.Kinds.BranchOperator) continue;
+                if (destOperation.Kind != OperationKind.BranchOperator) continue;
                 var destAssignment = (BranchOperator)destOperation.Value;
                 var constValue = destAssignment.CompareValue as ConstValue;
                 if(constValue==null)
@@ -31,7 +31,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                 {
                     operations[i] = new LocalOperation
                     {
-                        Kind = LocalOperation.Kinds.AlwaysBranch,
+                        Kind = OperationKind.AlwaysBranch,
                         Value = destAssignment.JumpTo
                     };
                 }

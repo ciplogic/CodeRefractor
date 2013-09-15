@@ -2,44 +2,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 {
     public class LocalOperation
     {
-        public enum Kinds
-        {
-            Call,
-
-            Return,
-            BranchOperator,
-            AlwaysBranch,
-            Label,
-
-            NewObject,
-            CallRuntime,
-            Switch,
-
-            GetField,
-            SetField,
-            GetStaticField,
-            SetStaticField,
-
-            GetArrayItem,
-            SetArrayItem,
-            NewArray,
-            CopyArrayInitializer,
-
-            BinaryOperator,
-            UnaryOperator,
-
-
-            Assignment,
-
-            RefAssignment,
-            DerefAssignment,
-
-            LoadFunction,
-            FieldRefAssignment,
-            SizeOf
-        }
-
-        public Kinds Kind;
+        public OperationKind Kind;
         public object Value;
 
         public T Get<T>()

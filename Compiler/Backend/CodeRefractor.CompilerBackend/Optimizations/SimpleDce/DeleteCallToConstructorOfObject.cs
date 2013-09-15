@@ -13,7 +13,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
             for (var index = 0; index < localOps.Count; index++)
             {
                 var op = localOps[index];
-                if (op.Kind != LocalOperation.Kinds.Call)
+                if (op.Kind != OperationKind.Call)
                     continue;
                 var methodData = (MethodData) op.Value;
                 var info = methodData.Info;

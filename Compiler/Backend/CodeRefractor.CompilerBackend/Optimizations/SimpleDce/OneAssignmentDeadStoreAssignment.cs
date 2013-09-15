@@ -13,7 +13,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
             foreach (var op in localOperations)
             {
                 var opKind = op.Kind;
-                if (opKind != LocalOperation.Kinds.Assignment)
+                if (opKind != OperationKind.Assignment)
                     continue;
                 var variableDefinition = op.GetUseDefinition();
                 if (variableDefinition == null)

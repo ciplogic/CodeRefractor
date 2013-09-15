@@ -16,7 +16,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
         {
             var srcOperation = operations[i];
             srcVariableDefinition = null;
-            return srcOperation.Kind != LocalOperation.Kinds.Assignment
+            return srcOperation.Kind != OperationKind.Assignment
                        ? null
                        : ConstantFromOperation(out srcVariableDefinition, srcOperation);
         }

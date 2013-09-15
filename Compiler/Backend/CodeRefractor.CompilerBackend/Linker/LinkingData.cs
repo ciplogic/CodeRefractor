@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 using CodeRefractor.CompilerBackend.OuputCodeWriter;
+using CodeRefractor.CompilerBackend.OuputCodeWriter.Platform;
 
 namespace CodeRefractor.CompilerBackend.Linker
 {
