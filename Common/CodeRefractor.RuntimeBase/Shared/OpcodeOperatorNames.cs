@@ -2,6 +2,7 @@ namespace CodeRefractor.RuntimeBase.Shared
 {
     public static class OpcodeOperatorNames
     {
+        public const string ConvU1 = "conv.u1";
         public const string Neg = "neg";
         public const string LoadArrayRef = "ldelem.ref";
         public const string ConvI4 = "conv.i4";

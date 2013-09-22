@@ -168,6 +168,8 @@ namespace CodeRefractor.RuntimeBase.Runtime
                 MetaLinker.ComputeDependencies(cilLinkerMethod.MethodInfo);
                 return true;
             }
+            if (UsedCppMethods.ContainsKey(description))
+                return false;
             UsedCppMethods.Add(description, method);
             return true;
         }

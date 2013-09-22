@@ -34,6 +34,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 
         LoadFunction,
         FieldRefAssignment,
-        SizeOf
+        SizeOf,
+        AddressOfArrayItem
     }
 }

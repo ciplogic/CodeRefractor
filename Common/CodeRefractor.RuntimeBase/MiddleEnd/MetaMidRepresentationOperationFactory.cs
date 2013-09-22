@@ -216,6 +216,11 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             SetUnaryOperator(OpcodeOperatorNames.ConvI4);
             _evaluator.Top.FixedType = typeof (int);
         }
+        public void ConvU1()
+        {
+            SetUnaryOperator(OpcodeOperatorNames.ConvU1);
+            _evaluator.Top.FixedType = typeof(byte);
+        }
 
         public void Not()
         {
@@ -730,6 +735,23 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         public void InitObject()
         {
             //TODO: make a mem-clear of the structure that is referenced
+        }
+
+        public void LoadAddressOfArrayItemIntoStack(Type operand)
+        {
+            var indexVar = _evaluator.Stack.Pop();
+            var arrayVar = (LocalVariable)_evaluator.Stack.Pop();
+
+            var result = SetNewVReg();
+            var assignment = new RefArrayItemAssignment
+            {
+                Left = result,
+                Index = indexVar,
+                ArrayVar = arrayVar
+            };
+            assignment.Left.FixedType = operand.MakeByRefType();
+            AddOperation(OperationKind.AddressOfArrayItem, assignment);
+
         }
     }
 }

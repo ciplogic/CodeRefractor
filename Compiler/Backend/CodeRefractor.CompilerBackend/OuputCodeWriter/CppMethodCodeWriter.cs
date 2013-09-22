@@ -108,6 +108,10 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                     case OperationKind.CopyArrayInitializer:
                         HandleCopyArrayInitializer(operation, bodySb);
                         break;
+                       
+                    case OperationKind.AddressOfArrayItem:
+                        HandleGetAddressOfArrayItem(operation, bodySb);
+                        break;
                     case OperationKind.RefAssignment:
                         HandleRefAssignment(operation, bodySb);
                         break;
@@ -140,6 +144,12 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             }
             bodySb.AppendLine("}");
             return bodySb;
+        }
+
+        private static void HandleGetAddressOfArrayItem(LocalOperation operation, StringBuilder bodySb)
+        {
+            var value = (RefArrayItemAssignment) operation.Value;
+            bodySb.AppendFormat("{0} = & ({1}[{2}])", value.Left.Name, value.ArrayVar.Name, value.Index.Name);
         }
 
         private static void HandleLoadFunction(LocalOperation operation, StringBuilder bodySb)

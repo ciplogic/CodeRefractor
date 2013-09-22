@@ -105,31 +105,9 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 OperationFactory.Return(isVoid);
                 return;
             }
-
-
-            if (opcodeStr == "conv.i")
+            if (opcodeStr.StartsWith("conv."))
             {
-                OperationFactory.ConvI();
-                return;
-            }
-            if (opcodeStr == "conv.i4")
-            {
-                OperationFactory.ConvI4();
-                return;
-            }
-            if (opcodeStr == "conv.i8")
-            {
-                OperationFactory.ConvI8();
-                return;
-            }
-            if (opcodeStr == "conv.r4")
-            {
-                OperationFactory.ConvR4();
-                return;
-            }
-            if (opcodeStr == "conv.r8")
-            {
-                OperationFactory.ConvR8();
+                if (ConversionOperations(opcodeStr)) return;
                 return;
             }
             if (opcodeStr == "dup")
@@ -150,6 +128,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 return;
             }
             if (opcodeStr == "stelem.ref"
+                 || opcodeStr == "stelem.i1"
                  || opcodeStr == "stelem.i2"
                   || opcodeStr == "stelem.i4"
                    || opcodeStr == "stelem.i8"
@@ -206,6 +185,12 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 return;
             }
 
+            if (opcodeStr == "ldelema")
+            {
+                OperationFactory.LoadAddressOfArrayItemIntoStack((Type) instruction.Operand);
+                return;
+            }
+
             if (opcodeStr.StartsWith("stind."))
             {
                 //TODO: load the address into evaluation stack
@@ -227,6 +212,41 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 return;
             }
             throw new InvalidOperationException(string.Format("Unknown instruction: {0}", instruction));
+        }
+
+        private bool ConversionOperations(string opcodeStr)
+        {
+            if (opcodeStr == "conv.u1")
+            {
+                OperationFactory.ConvU1();
+                return true;
+            }
+            if (opcodeStr == "conv.i")
+            {
+                OperationFactory.ConvI();
+                return true;
+            }
+            if (opcodeStr == "conv.i4")
+            {
+                OperationFactory.ConvI4();
+                return true;
+            }
+            if (opcodeStr == "conv.i8")
+            {
+                OperationFactory.ConvI8();
+                return true;
+            }
+            if (opcodeStr == "conv.r4")
+            {
+                OperationFactory.ConvR4();
+                return true;
+            }
+            if (opcodeStr == "conv.r8")
+            {
+                OperationFactory.ConvR8();
+                return true;
+            }
+            return false;
         }
 
         private bool HandlePlatformInvokeMethod(MethodBase method)

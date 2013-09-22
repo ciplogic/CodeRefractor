@@ -45,6 +45,7 @@
     <Compile Include="Analyze\FieldDataRef.cs" />
     <Compile Include="Analyze\ProgramData.cs" />
     <Compile Include="CilMethodAttribute.cs" />
+    <Compile Include="MiddleEnd\SimpleOperations\RefArrayItemAssignment.cs" />
     <Compile Include="TypesClosureLinker.cs" />
     <Compile Include="Config\CodeRefractorVersions.cs" />
     <Compile Include="Config\CommandLineParse.cs" />
