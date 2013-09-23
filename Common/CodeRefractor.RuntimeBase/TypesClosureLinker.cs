@@ -25,6 +25,8 @@ namespace CodeRefractor.RuntimeBase
                     foreach (var fieldInfo in fields)
                     {
                         var fieldType = fieldInfo.FieldType;
+                        if(fieldType.IsSubclassOf(typeof(Array)))
+                            continue;
                         if (fieldType.IsByRef)
                             fieldType = fieldType.GetElementType();
                         toAdd.Add(fieldType);
@@ -49,6 +51,9 @@ namespace CodeRefractor.RuntimeBase
                 foreach (var parameter in method.GetParameters())
                 {
                     var parameterType = parameter.ParameterType;
+
+                    if (parameterType.IsSubclassOf(typeof(Array)))
+                        continue;
                     if (parameterType.IsByRef)
                         parameterType = parameterType.GetElementType();
                     typesSet.Add(parameterType);

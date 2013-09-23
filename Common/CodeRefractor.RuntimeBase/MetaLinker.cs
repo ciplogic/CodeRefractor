@@ -64,7 +64,7 @@ namespace CodeRefractor.RuntimeBase
             }
         }
 
-        public List<MethodInterpreter> GetMethodClosure(MethodInterpreter entryPoints)
+        public static List<MethodInterpreter> GetMethodClosure(MethodInterpreter entryPoints)
         {
             var result = new Dictionary<string, MethodInterpreter>{{entryPoints.ToString(), entryPoints}};
             UpdateMethodEntryClosure(entryPoints, result);
