@@ -29,3 +29,6 @@ CodeRefactorCppDebugging/Debug/*
 Documentation/BarchelorPaper2014.ddf
 
 CodeRefactorCppDebugging\Release*/
+CodeRefactorCppDebugging/Release/*
+ipch/*
+CodeRefractor.*sdf
