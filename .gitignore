@@ -27,3 +27,5 @@ CodeRefactorCppDebugging/Debug/*
 *.user
 *.~lock*
 Documentation/BarchelorPaper2014.ddf
+
+CodeRefactorCppDebugging\Release*/
