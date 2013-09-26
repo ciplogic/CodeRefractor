@@ -47,6 +47,7 @@
     <Compile Include="Optimizations\Common\ResultingGlobalOptimizationPass.cs" />
     <Compile Include="Optimizations\Common\ResultingInFunctionOptimizationPass.cs" />
     <Compile Include="Optimizations\ConstantFoldingAndPropagation\ComplexAssignments\BlockOptimizationPass.cs" />
+    <Compile Include="Optimizations\ConstantFoldingAndPropagation\ComplexAssignments\FoldVariablesDefinitionsOptimizationPass.cs" />
     <Compile Include="Optimizations\ConstantFoldingAndPropagation\ComplexAssignments\PropagationVariablesOptimizationPass.cs" />
     <Compile Include="Optimizations\Inliner\InlineGetterAndSetterMethods.cs" />
     <Compile Include="Optimizations\Purity\AnalyzeFunctionIsEmpty.cs" />

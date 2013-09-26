@@ -12,14 +12,15 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
         {
             var toRemove = new HashSet<int>();
             var localOperations = intermediateCode.LocalOperations;
-            var definitions = new HashSet<LocalVariable>();
+            var definitions = new Dictionary<LocalVariable, int>();
 
-            foreach (var op in localOperations)
+            for (int index = 0; index < localOperations.Count; index++)
             {
+                var op = localOperations[index];
                 var variableDefinition = op.GetUseDefinition();
-                if(variableDefinition==null)
+                if (variableDefinition == null)
                     continue;
-                definitions.Add(variableDefinition);
+                definitions[variableDefinition] = index;
             }
 
             foreach (var op in localOperations)
@@ -30,6 +31,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
                     definitions.Remove(localVariable);
                 }
             }
+            if (definitions.Count == 0)
+                return;
+
             for (var index = 0; index < localOperations.Count; index++)
             {
                 var op = localOperations[index];
@@ -39,10 +43,10 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
                     && opKind != OperationKind.UnaryOperator)
                     continue;
                 var variableDefinition = op.GetUseDefinition();
-                if (definitions.Contains(variableDefinition))
+                if (definitions.ContainsKey(variableDefinition))
                     toRemove.Add(index);
             }
-            if(toRemove.Count==0)
+            if (toRemove.Count == 0)
                 return;
             intermediateCode.DeleteInstructions(toRemove);
             Result = true;

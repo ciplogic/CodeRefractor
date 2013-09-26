@@ -23,8 +23,6 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                 if (!destOperation.OperationUses(assignment.AssignedTo)) continue;
                 destOperation.SwitchUsageWithDefinition(assignment.AssignedTo, constValue);
                 Result = true;
-                if (assignment.AssignedTo.Kind != VariableKind.Vreg) continue;
-                operations.RemoveAt(index);
                 break;
             }
         }

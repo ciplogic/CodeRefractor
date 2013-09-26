@@ -24,13 +24,14 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
         {
             _localOperations = intermediateCode.LocalOperations;
             _pos = 0;
-            foreach (var destOperation in _localOperations)
+            for (int index = 0; index < _localOperations.Count; index++)
             {
+                var destOperation = _localOperations[index];
                 _pos++;
                 if (destOperation.Kind != OperationKind.BinaryOperator)
                     continue;
 
-                var destAssignment = (OperatorBase)destOperation.Value;
+                var destAssignment = (OperatorBase) destOperation.Value;
                 var baseOperator = destAssignment;
                 ConstValue constLeft = null;
                 ConstValue constRight = null;

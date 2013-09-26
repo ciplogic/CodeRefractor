@@ -22,9 +22,10 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
         {
             _intermediateCode = intermediateCode;
             var pos = -1;
-            for (var index = 0; index < intermediateCode.LocalOperations.Count; index++)
+            var localOperations = intermediateCode.LocalOperations;
+            for (var index = 0; index < localOperations.Count; index++)
             {
-                var destOperation = intermediateCode.LocalOperations[index];
+                var destOperation = localOperations[index];
                 pos++;
                 _pos = pos;
                 if (destOperation.Kind != OperationKind.BinaryOperator
@@ -91,6 +92,10 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                         HandleXor(constLeft, constRight);
                         break;
 
+                    case OpcodeOperatorNames.Neg:
+                        HandleNeg(constLeft);
+                        break;
+
 
                     case OpcodeOperatorNames.ConvR8:
                         HandleConvDouble(constLeft);
@@ -102,6 +107,19 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                         throw new Exception("cannot evaluate this type");
                 }
             }
+        }
+
+        private void HandleNeg(ConstValue constLeft)
+        {
+            object result = null;
+            if(constLeft.Value is double)
+            {
+                result = -(double)constLeft.Value;
+            }
+            if (result == null)
+                throw new NotImplementedException();
+       
+            FoldConstant(result);
         }
 
         private void HandleConvDouble(ConstValue constLeft)

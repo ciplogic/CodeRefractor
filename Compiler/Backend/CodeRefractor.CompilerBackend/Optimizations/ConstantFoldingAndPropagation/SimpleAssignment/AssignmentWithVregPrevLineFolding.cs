@@ -12,7 +12,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
         {
             var operations = intermediateCode.LocalOperations;
 
-            for (var index = 1; index < operations.Count - 1; index++)
+            for (var index = operations.Count - 1; index >=1 ; index--)
             {
                 var localOperation = operations[index];
                 if (localOperation.Kind != OperationKind.Assignment)
@@ -38,7 +38,6 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                 }
                 Result = true;
                 operations.RemoveAt(index);
-                return;
             }
         }
     }
