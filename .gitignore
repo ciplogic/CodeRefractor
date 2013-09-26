@@ -16,7 +16,6 @@ ClassOpenRuntimeCodeGenerator/obj/*
 ClassOpenRuntimeCodeGenerator/bin/*
 *DotSettings.user
 Common/CodeRefactor.OpenRuntime/bin/*
-bin/output.cpp
 bin/*.exe*
 bin/Output.layout
 Compiler/Backend/CodeRefractor.CompilerBackend/bin/*.dll
@@ -32,3 +31,5 @@ CodeRefactorCppDebugging\Release*/
 CodeRefactorCppDebugging/Release/*
 ipch/*
 CodeRefractor.*sdf
+bin/CodeRefactorCppDebugging.ilk
+Compiler/Backend/CodeRefractor.CompilerBackend/bin/Release/*

@@ -30,8 +30,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
             return new OptimizationPass[]
                        {
                            
-                           new OneDefUsedNextLinePropagation(), //??
-                           new OneDefUsedPreviousLinePropagation(), //??
+                           //new OneDefUsedNextLinePropagation(), //??
+                           //new OneDefUsedPreviousLinePropagation(), //??
                            
                         
                            new ConstantDfaAnalysis()
@@ -48,7 +48,6 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
                 new OneAssignmentDeadStoreAssignment(), //??
                            //  //?? 
                 
-                new DeadStoreAssignment(), // ?? 
                 
             }.ToList();
         }
@@ -60,7 +59,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
                        {
                                       
                            new DceVRegUnused(),
-                         
+                        
+                           new PropagationVariablesOptimizationPass(), 
+
                            new OperatorPartialConstantFolding(),
                            new OperatorConstantFolding(),
                            new ConstantVariableBranchOperatorPropagation(),  

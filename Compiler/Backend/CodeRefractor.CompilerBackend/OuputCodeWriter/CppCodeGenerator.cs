@@ -27,6 +27,13 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
         public static StringBuilder BuildFullSourceCode(MetaLinker linker)
         {
             var closure = MetaLinker.GetMethodClosure(linker.Interpreter);
+            var toOptimizeList = closure
+                .Where(c=>c.Kind==MethodKind.Default
+                    && c.MidRepresentation.LocalOperations.Count>1)
+                .Select(cl => cl.MidRepresentation)
+                .ToList();
+            MetaLinkerOptimizer.ApplyOptimizations(false, toOptimizeList);
+            closure = MetaLinker.GetMethodClosure(linker.Interpreter);
             var typeClosure = TypesClosureLinker.GetTypesClosure(closure);
             var sb = new StringBuilder();
             LinkingData.Includes.Clear();

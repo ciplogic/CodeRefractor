@@ -1,10 +1,13 @@
 #region Usings
 
+using System.Collections.Generic;
+using System.Linq;
 using CodeRefractor.CompilerBackend.Linker;
 using CodeRefractor.CompilerBackend.Optimizations.Inliner;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.Config;
 using CodeRefractor.RuntimeBase.FrontEnd;
+using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.Optimizations;
 using CodeRefractor.RuntimeBase.Runtime;
@@ -33,32 +36,38 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             {
                 LinkerInterpretersTable.Instance.RegisterRuntimeMethod(usedMethod);
             }
+            var methodsToOptimize = LinkerInterpretersTable.Instance.Methods;
+            ApplyOptimizations(doInline, methodsToOptimize.Values.ToList());
+        }
+
+        public static void ApplyOptimizations(bool doInline, List<MetaMidRepresentation> methodsToOptimize)
+        {
             bool doOptimize;
             do
             {
                 doOptimize = false;
-                foreach (var methodBase in LinkerInterpretersTable.Instance.Methods.Values)
+                foreach (var methodBase in methodsToOptimize)
                 {
                     var interpreter = methodBase.GetInterpreter();
                     var codeWriter = new MethodInterpreterCodeWriter
-                                         {
-                                             Interpreter = interpreter
-                                         };
+                        {
+                            Interpreter = interpreter
+                        };
                     doOptimize = codeWriter.ApplyLocalOptimizations(
                         CommandLineParse.SortedOptimizations[OptimizationKind.InFunction]);
                 }
-                foreach (var methodBase in LinkerInterpretersTable.Instance.Methods.Values)
+                foreach (var methodBase in methodsToOptimize)
                 {
                     var interpreter = methodBase.GetInterpreter();
                     var codeWriter = new MethodInterpreterCodeWriter
-                                         {
-                                             Interpreter = interpreter
-                                         };
+                        {
+                            Interpreter = interpreter
+                        };
 
                     doOptimize = codeWriter.ApplyLocalOptimizations(
                         CommandLineParse.SortedOptimizations[OptimizationKind.Global]);
                 }
-            } while (doOptimize); 
+            } while (doOptimize);
 
             if (doInline)
                 InlineMethods();
