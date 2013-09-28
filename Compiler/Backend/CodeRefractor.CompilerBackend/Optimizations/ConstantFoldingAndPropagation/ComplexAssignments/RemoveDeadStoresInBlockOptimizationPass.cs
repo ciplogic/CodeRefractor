@@ -42,7 +42,6 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
         private static bool TryRemoveLine(int i, List<LocalOperation> localOperations)
         {
             var kind = localOperations[i].Kind;
-            bool canApply = false;
             switch (kind)
             {
                 case OperationKind.Assignment:

@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EvalIl", "EvalIl", "{A0B28E32-7BB3-4465-9B77-8BCF06C68581}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeRefractor.Compiler", "MsilCodeCompiler\CodeRefractor.Compiler.csproj", "{EE8B9057-95F4-4AB9-BC91-F0ED3D56FE38}"

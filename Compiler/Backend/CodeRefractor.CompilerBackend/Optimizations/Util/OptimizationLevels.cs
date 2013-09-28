@@ -60,6 +60,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
                                       
                            new DceVRegUnused(),
                         
+                           new AssignmentWithVregPrevLineFolding(), 
                            new PropagationVariablesOptimizationPass(), 
                            new RemoveDeadStoresInBlockOptimizationPass(), 
                            new FoldVariablesDefinitionsOptimizationPass(), 
