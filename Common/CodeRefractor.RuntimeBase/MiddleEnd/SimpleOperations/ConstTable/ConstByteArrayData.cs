@@ -53,7 +53,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.ConstTable
             public int GetHashCode(ConstByteArrayData obj)
             {
                 if (obj.Data == null)
-                    throw new InvalidDataException("Constant byte array should be initialized");
+                    return -1;
                 var result = 121;
                 for (var i = 0; i < obj.Data.Length; i++)
                     result ^= obj.Data[i]*54 + result;
