@@ -38,6 +38,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                 }
                 Result = true;
                 operations.RemoveAt(index);
+                return;
             }
         }
     }

@@ -15,8 +15,6 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
 
         readonly Dictionary<LocalVariable, int> _usagesDictionary = new Dictionary<LocalVariable, int>();
 
-
-
         public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
         {
             var localOperations = intermediateCode.LocalOperations;
@@ -78,7 +76,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
             }
         }
 
-        private void RemoveNonUniqueDefinitions(Dictionary<LocalVariable, int> dictionaryPositions)
+        private static void RemoveNonUniqueDefinitions(Dictionary<LocalVariable, int> dictionaryPositions)
         {
             var toRemove = new HashSet<LocalVariable>();
             

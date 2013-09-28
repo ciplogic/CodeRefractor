@@ -25,7 +25,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators
 
         public override string ToString()
         {
-            return string.Format("{0} {1} {2}", Left.Name, Name, Right.Name);
+            return string.Format("{3} = {0} {1} {2}", Left.Name, Name, Right.Name, AssignedTo.Name);
         }
     }
 }

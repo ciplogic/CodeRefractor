@@ -61,12 +61,13 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
                            new DceVRegUnused(),
                         
                            new PropagationVariablesOptimizationPass(), 
+                           new RemoveDeadStoresInBlockOptimizationPass(), 
                            new FoldVariablesDefinitionsOptimizationPass(), 
                            new OperatorPartialConstantFolding(),
                            new OperatorConstantFolding(),
                            new ConstantVariableBranchOperatorPropagation(),
                            new AssignmentVregWithConstNextLineFolding(), 
-                 
+                             
 
                            new EvaluatePureFunctionWithConstantCall(),
                            new AssignToReturnPropagation(),
@@ -98,9 +99,11 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
                            
                             new DeadStoreAssignment(), 
                              new OneAssignmentDeadStoreAssignment(),
-                             //new AssignmentWithVregPrevLineFolding(),
-                             //new AssignmentVregWithConstNextLineFolding(), 
+                           //new AssignmentWithVregPrevLineFolding(),
+                           //new AssignmentVregWithConstNextLineFolding(), 
                            new ReachabilityLines(),
+                           new PropagationVariablesOptimizationPass(), 
+                             
                        }.ToList();
         }
     }
