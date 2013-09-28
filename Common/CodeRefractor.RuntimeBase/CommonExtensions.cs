@@ -33,6 +33,22 @@ namespace CodeRefractor.RuntimeBase
             return fullName;
         }
 
+        public static void AddRange<T>( this HashSet<T> collection, IEnumerable<T> toAdd )
+        {
+            foreach (var item in toAdd)
+            {
+                collection.Add(item);
+            }
+        }
+
+        public static void AddRange<T>(this SortedSet<T> collection, IEnumerable<T> toAdd)
+        {
+            foreach (var item in toAdd)
+            {
+                collection.Add(item);
+            }
+        }
+
         public static T GetCustomAttribute<T>(this MethodInfo method, bool inherited = false)
         {
             var attributes = method.GetCustomAttributes(inherited);

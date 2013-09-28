@@ -6,6 +6,7 @@ using CodeRefractor.CompilerBackend.Optimizations.ConstantDfa;
 using CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagation;
 using CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagation.ComplexAssignments;
 using CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagation.SimpleAssignment;
+using CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering;
 using CodeRefractor.CompilerBackend.Optimizations.Inliner;
 using CodeRefractor.CompilerBackend.Optimizations.Jumps;
 using CodeRefractor.CompilerBackend.Optimizations.Purity;
@@ -103,7 +104,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
                            //new AssignmentWithVregPrevLineFolding(),
                            //new AssignmentVregWithConstNextLineFolding(), 
                            new ReachabilityLines(),
-                           new PropagationVariablesOptimizationPass(), 
+                           new PropagationVariablesOptimizationPass(),
+                           new InFunctionLoweringVars()
                              
                        }.ToList();
         }
