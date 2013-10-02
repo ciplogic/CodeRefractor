@@ -4,6 +4,8 @@ using System;
 using System.Linq;
 using System.Text;
 using CodeRefractor.CompilerBackend.Linker;
+using CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering;
+using CodeRefractor.CompilerBackend.OuputCodeWriter;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
@@ -33,7 +35,7 @@ namespace CodeRefractor.CompilerBackend.HandleOperations
             if (methodInfo.IsConstructor)
             {
                 var ctorInterpreter = methodInfo.GetInterpreter();
-                if(ctorInterpreter==null)
+                if (ctorInterpreter == null)
                     return;
             }
             var isVoidMethod = methodInfo.GetReturnType().IsVoid();
@@ -47,14 +49,56 @@ namespace CodeRefractor.CompilerBackend.HandleOperations
                                 operationData.Result.Name);
             }
             var identifierValues = operationData.Parameters;
-            
-            var argumentsCall = String.Join(", ", identifierValues.Select(p =>
-                                                                              {
-                                                                                  var computeValue = p.ComputedValue();
-                                                                                  return computeValue;
-                                                                              }));
 
-            sb.AppendFormat("({0});", argumentsCall);
+            var escapingData = CppFullFileMethodWriter.BuildEscapingBools(methodInfo, methodInfo.GetParameters());
+            if (escapingData == null)
+            {
+                var argumentsCall = String.Join(", ", identifierValues.Select(p =>
+                    {
+                        var computeValue = p.ComputedValue();
+                        return computeValue;
+                    }));
+
+                sb.AppendFormat("({0});", argumentsCall);
+                return;
+            }
+            sb.Append("(");
+
+            var pos = 0;
+            bool isFirst = true;
+            foreach (var value in identifierValues)
+            {
+                if (isFirst)
+                    isFirst = false;
+                else
+                    sb.Append(", ");
+                var localValue = value as LocalVariable;
+                bool isEscaping = escapingData[pos];
+                pos++;
+            
+                if(localValue==null)
+                {
+                    sb.Append(value.ComputedValue());
+                    continue;
+                }
+                switch (localValue.NonEscaping)
+                {
+                    case NonEscapingMode.Smart:
+                        if (!isEscaping && localValue.ComputedType().IsClass)
+                            sb.AppendFormat("{0}.get()", localValue.Name);
+                        else
+                            sb.Append(localValue.Name);
+                        continue;
+                    case NonEscapingMode.Stack:
+                        sb.AppendFormat("&{0}", localValue.Name);
+                        continue;
+
+                    case NonEscapingMode.Pointer:
+                        sb.AppendFormat("{0}.get()", localValue.Name);
+                        continue;
+                }
+            }
+            sb.Append(");");
         }
 
         public static void HandleCallRuntime(LocalOperation operation, StringBuilder sb)

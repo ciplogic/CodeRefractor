@@ -25,8 +25,8 @@ namespace CodeRefractor.RuntimeBase
                     foreach (var fieldInfo in fields)
                     {
                         var fieldType = fieldInfo.FieldType;
-                        if(fieldType.IsSubclassOf(typeof(Array)))
-                            continue;
+                        if (fieldType.IsSubclassOf(typeof(Array)))
+                            fieldType = fieldType.GetElementType();
                         if (fieldType.IsByRef)
                             fieldType = fieldType.GetElementType();
                         toAdd.Add(fieldType);

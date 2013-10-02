@@ -2,9 +2,9 @@
 namespace SimpleAdditions { struct NBody; }
 namespace SimpleAdditions { struct NBodySystem; }
 namespace System { struct Console; }
+namespace System { struct Math; }
 namespace SimpleAdditions { struct Body; }
 namespace SimpleAdditions { struct Pair; }
-namespace System { struct Math; }
 namespace SimpleAdditions {
 struct NBody {
 }; }
@@ -18,6 +18,9 @@ struct NBodySystem {
 }; }
 namespace System {
 struct Console {
+}; }
+namespace System {
+struct Math {
 }; }
 namespace SimpleAdditions {
 struct Body {
@@ -34,27 +37,22 @@ struct Pair {
  std::shared_ptr<SimpleAdditions::Body> bi;
  std::shared_ptr<SimpleAdditions::Body> bj;
 }; }
-namespace System {
-struct Math {
-}; }
 System::Void SimpleAdditions_NBody__Main();
 
-System::Void SimpleAdditions_NBodySystem__NBodySystem_ctor(const std::shared_ptr<SimpleAdditions::NBodySystem>& _this);
+System::Void SimpleAdditions_NBodySystem__NBodySystem_ctor(SimpleAdditions::NBodySystem * _this);
 
-System::Double SimpleAdditions_NBodySystem__Energy(const std::shared_ptr<SimpleAdditions::NBodySystem>& _this);
+System::Double SimpleAdditions_NBodySystem__Energy(SimpleAdditions::NBodySystem * _this);
 
-System::Void System_Console__WriteLine(System::Double value);
+System::Void System_Console__WriteLine(System::Double  value);
 
-System::Void SimpleAdditions_NBodySystem__Advance(const std::shared_ptr<SimpleAdditions::NBodySystem>& _this, System::Double dt);
+System::Void SimpleAdditions_NBodySystem__Advance(SimpleAdditions::NBodySystem * _this, System::Double  dt);
 
-System::Void SimpleAdditions_Body__Body_ctor(const std::shared_ptr<SimpleAdditions::Body>& _this);
-
-System::Void SimpleAdditions_Pair__Pair_ctor(const std::shared_ptr<SimpleAdditions::Pair>& _this);
-
-System::Double System_Math__Sqrt(System::Double d);
+System::Double System_Math__Sqrt(System::Double  d);
 
 #include "runtime_base.partcpp"
 #include "math.h"
+System::Double System_Math__Cos(System::Double a)
+{ return cos(a); }
 System::Double System_Math__Sqrt(System::Double d)
 { return sqrt(d); }
 #include "stdio.h"
@@ -64,30 +62,29 @@ System::Void System_Console__WriteLine(System::Double value)
 System::Void SimpleAdditions_NBody__Main()
 {
 System::Int32 local_3;
-std::shared_ptr<SimpleAdditions::NBodySystem> vreg_5;
 System::Double vreg_8;
 System::Int32 vreg_18;
 System::Double vreg_20;
 
-vreg_5 = std::make_shared<SimpleAdditions::NBodySystem>();
-SimpleAdditions_NBodySystem__NBodySystem_ctor(vreg_5);
-vreg_8 = SimpleAdditions_NBodySystem__Energy(vreg_5);
+SimpleAdditions::NBodySystem  vreg_5;
+SimpleAdditions_NBodySystem__NBodySystem_ctor(&vreg_5);
+vreg_8 = SimpleAdditions_NBodySystem__Energy(&vreg_5);
 System_Console__WriteLine(vreg_8);
 local_3 = 0;
 goto label_74;
 label_54:
-SimpleAdditions_NBodySystem__Advance(vreg_5, 0.01);
+SimpleAdditions_NBodySystem__Advance(&vreg_5, 0.01);
 local_3 = local_3+1;
 label_74:
 vreg_18 = (local_3 < 5000000)?1:0;
 if(vreg_18) goto label_54;
-vreg_20 = SimpleAdditions_NBodySystem__Energy(vreg_5);
+vreg_20 = SimpleAdditions_NBodySystem__Energy(&vreg_5);
 System_Console__WriteLine(vreg_20);
 return;
 }
 
 
-System::Void SimpleAdditions_NBodySystem__NBodySystem_ctor(const std::shared_ptr<SimpleAdditions::NBodySystem>& _this)
+System::Void SimpleAdditions_NBodySystem__NBodySystem_ctor(SimpleAdditions::NBodySystem * _this)
 {
 System::Int32 local_0;
 System::Int32 local_1;
@@ -95,7 +92,7 @@ System::Int32 local_2;
 System::Double local_4;
 System::Double local_5;
 System::Double local_6;
-System::Boolean local_15;
+System::Int32 local_15;
 System::Int32 local_17;
 std::shared_ptr< Array < std::shared_ptr<SimpleAdditions::Body> > > vreg_4;
 std::shared_ptr<SimpleAdditions::Body> vreg_7;
@@ -103,34 +100,34 @@ std::shared_ptr<SimpleAdditions::Body> vreg_14;
 std::shared_ptr<SimpleAdditions::Body> vreg_33;
 std::shared_ptr<SimpleAdditions::Body> vreg_52;
 std::shared_ptr<SimpleAdditions::Body> vreg_71;
-std::shared_ptr< Array < std::shared_ptr<SimpleAdditions::Body> > > vreg_91;
+Array < std::shared_ptr<SimpleAdditions::Body> > * vreg_91;
 System::Int32 vreg_92;
 System::Int32 vreg_93;
-std::shared_ptr< Array < std::shared_ptr<SimpleAdditions::Body> > > vreg_95;
+Array < std::shared_ptr<SimpleAdditions::Body> > * vreg_95;
 System::Int32 vreg_96;
 System::Int32 vreg_97;
 System::Int32 vreg_99;
 System::Int32 vreg_100;
 System::Int32 vreg_102;
 std::shared_ptr< Array < std::shared_ptr<SimpleAdditions::Pair> > > vreg_103;
-std::shared_ptr< Array < std::shared_ptr<SimpleAdditions::Pair> > > vreg_110;
+Array < std::shared_ptr<SimpleAdditions::Pair> > * vreg_110;
 System::Int32 vreg_111;
 std::shared_ptr<SimpleAdditions::Pair> vreg_115;
-std::shared_ptr< Array < std::shared_ptr<SimpleAdditions::Body> > > vreg_119;
+Array < std::shared_ptr<SimpleAdditions::Body> > * vreg_119;
 std::shared_ptr<SimpleAdditions::Body> vreg_121;
-std::shared_ptr< Array < std::shared_ptr<SimpleAdditions::Body> > > vreg_124;
+Array < std::shared_ptr<SimpleAdditions::Body> > * vreg_124;
 std::shared_ptr<SimpleAdditions::Body> vreg_126;
 System::Int32 vreg_131;
-std::shared_ptr< Array < std::shared_ptr<SimpleAdditions::Body> > > vreg_133;
+Array < std::shared_ptr<SimpleAdditions::Body> > * vreg_133;
 System::Int32 vreg_134;
 System::Int32 vreg_135;
 System::Int32 vreg_141;
-std::shared_ptr< Array < std::shared_ptr<SimpleAdditions::Body> > > vreg_143;
+Array < std::shared_ptr<SimpleAdditions::Body> > * vreg_143;
 System::Int32 vreg_144;
 System::Int32 vreg_145;
 System::Int32 vreg_147;
-std::shared_ptr< Array < std::shared_ptr<SimpleAdditions::Body> > > vreg_154;
-std::shared_ptr<SimpleAdditions::Body> vreg_158;
+Array < std::shared_ptr<SimpleAdditions::Body> > * vreg_154;
+SimpleAdditions::Body * vreg_158;
 System::Double vreg_159;
 System::Double vreg_161;
 System::Double vreg_163;
@@ -146,8 +143,8 @@ System::Double vreg_178;
 System::Int32 vreg_183;
 System::Int32 vreg_185;
 System::Int32 vreg_186;
-std::shared_ptr< Array < std::shared_ptr<SimpleAdditions::Body> > > vreg_190;
-std::shared_ptr<SimpleAdditions::Body> vreg_192;
+Array < std::shared_ptr<SimpleAdditions::Body> > * vreg_190;
+SimpleAdditions::Body * vreg_192;
 System::Double vreg_195;
 System::Double vreg_197;
 System::Double vreg_200;
@@ -156,12 +153,10 @@ System::Double vreg_205;
 System::Double vreg_207;
 
 vreg_4 = std::make_shared< Array < std::shared_ptr<SimpleAdditions::Body> > >(5); 
-vreg_7 = std::make_shared<SimpleAdditions::Body>();
-SimpleAdditions_Body__Body_ctor(vreg_7);
+vreg_7 = std::make_shared<SimpleAdditions::Body >();
 vreg_7->mass = 39.4784176043574;
 (*vreg_4)[0] = vreg_7; 
-vreg_14 = std::make_shared<SimpleAdditions::Body>();
-SimpleAdditions_Body__Body_ctor(vreg_14);
+vreg_14 = std::make_shared<SimpleAdditions::Body >();
 vreg_14->x = 4.84143144246472;
 vreg_14->y = -1.16032004402743;
 vreg_14->z = -0.103622044471123;
@@ -170,8 +165,7 @@ vreg_14->vy = 2.81198684491626;
 vreg_14->vz = -0.0252183616598876;
 vreg_14->mass = 0.0376936748703895;
 (*vreg_4)[1] = vreg_14; 
-vreg_33 = std::make_shared<SimpleAdditions::Body>();
-SimpleAdditions_Body__Body_ctor(vreg_33);
+vreg_33 = std::make_shared<SimpleAdditions::Body >();
 vreg_33->x = 8.34336671824458;
 vreg_33->y = 4.1247985641243;
 vreg_33->z = -0.403523417114321;
@@ -180,8 +174,7 @@ vreg_33->vy = 1.82566237123041;
 vreg_33->vz = 0.00841576137658415;
 vreg_33->mass = 0.0112863261319688;
 (*vreg_4)[2] = vreg_33; 
-vreg_52 = std::make_shared<SimpleAdditions::Body>();
-SimpleAdditions_Body__Body_ctor(vreg_52);
+vreg_52 = std::make_shared<SimpleAdditions::Body >();
 vreg_52->x = 12.8943695621391;
 vreg_52->y = -15.1111514016986;
 vreg_52->z = -0.223307578892656;
@@ -190,8 +183,7 @@ vreg_52->vy = 0.868713018169608;
 vreg_52->vz = -0.0108326374013636;
 vreg_52->mass = 0.00172372405705971;
 (*vreg_4)[3] = vreg_52; 
-vreg_71 = std::make_shared<SimpleAdditions::Body>();
-SimpleAdditions_Body__Body_ctor(vreg_71);
+vreg_71 = std::make_shared<SimpleAdditions::Body >();
 vreg_71->x = 15.3796971148509;
 vreg_71->y = -25.919314609988;
 vreg_71->z = 0.179258772950371;
@@ -201,10 +193,10 @@ vreg_71->vz = -0.0347559555040781;
 vreg_71->mass = 0.00203368686992463;
 (*vreg_4)[4] = vreg_71; 
 _this->bodies = vreg_4;
-vreg_91 = _this->bodies;
+vreg_91 = _this->bodies.get();
 vreg_92 = vreg_91->Length;
 vreg_93 = (int)vreg_92;
-vreg_95 = _this->bodies;
+vreg_95 = _this->bodies.get();
 vreg_96 = vreg_95->Length;
 vreg_97 = (int)vreg_96;
 vreg_99 = vreg_97-1;
@@ -219,22 +211,21 @@ label_591:
 local_2 = local_1+1;
 goto label_648;
 label_597:
-vreg_110 = _this->pairs;
+vreg_110 = _this->pairs.get();
 vreg_111 = local_0;
 local_0 = local_0+1;
-vreg_115 = std::make_shared<SimpleAdditions::Pair>();
-SimpleAdditions_Pair__Pair_ctor(vreg_115);
-vreg_119 = _this->bodies;
+vreg_115 = std::make_shared<SimpleAdditions::Pair >();
+vreg_119 = _this->bodies.get();
 vreg_121 = (*vreg_119)[local_1];
 vreg_115->bi = vreg_121;
-vreg_124 = _this->bodies;
+vreg_124 = _this->bodies.get();
 vreg_126 = (*vreg_124)[local_2];
 vreg_115->bj = vreg_126;
 (*vreg_110)[vreg_111] = vreg_115; 
 local_2 = local_2+1;
 label_648:
 vreg_131 = local_2;
-vreg_133 = _this->bodies;
+vreg_133 = _this->bodies.get();
 vreg_134 = vreg_133->Length;
 vreg_135 = (int)vreg_134;
 local_15 = (vreg_131 < vreg_135)?1:0;
@@ -242,7 +233,7 @@ if(local_15) goto label_597;
 local_1 = local_1+1;
 label_669:
 vreg_141 = local_1;
-vreg_143 = _this->bodies;
+vreg_143 = _this->bodies.get();
 vreg_144 = vreg_143->Length;
 vreg_145 = (int)vreg_144;
 vreg_147 = vreg_145-1;
@@ -251,11 +242,11 @@ if(local_15) goto label_591;
 local_4 = 0;
 local_5 = 0;
 local_6 = 0;
-vreg_154 = _this->bodies;
+vreg_154 = _this->bodies.get();
 local_17 = 0;
 goto label_810;
 label_735:
-vreg_158 = (*vreg_154)[local_17];
+vreg_158 = ((*vreg_154)[local_17]).get();
 vreg_159 = local_4;
 vreg_161 = vreg_158->vx;
 vreg_163 = vreg_158->mass;
@@ -278,8 +269,8 @@ vreg_185 = vreg_154->Length;
 vreg_186 = (int)vreg_185;
 local_15 = (vreg_183 < vreg_186)?1:0;
 if(local_15) goto label_735;
-vreg_190 = _this->bodies;
-vreg_192 = (*vreg_190)[0];
+vreg_190 = _this->bodies.get();
+vreg_192 = ((*vreg_190)[0]).get();
 vreg_195 = -local_4;
 vreg_197 = vreg_195/39.4784176043574;
 vreg_192->vx = vreg_197;
@@ -293,7 +284,7 @@ return;
 }
 
 
-System::Double SimpleAdditions_NBodySystem__Energy(const std::shared_ptr<SimpleAdditions::NBodySystem>& _this)
+System::Double SimpleAdditions_NBodySystem__Energy(SimpleAdditions::NBodySystem * _this)
 {
 System::Double local_0;
 System::Int32 local_1;
@@ -302,8 +293,8 @@ System::Double local_5;
 System::Double local_6;
 System::Double local_7;
 System::Boolean local_9;
-std::shared_ptr< Array < std::shared_ptr<SimpleAdditions::Body> > > vreg_4;
-std::shared_ptr<SimpleAdditions::Body> vreg_6;
+Array < std::shared_ptr<SimpleAdditions::Body> > * vreg_4;
+SimpleAdditions::Body * vreg_6;
 System::Double vreg_7;
 System::Double vreg_10;
 System::Double vreg_11;
@@ -319,8 +310,8 @@ System::Double vreg_26;
 System::Double vreg_27;
 System::Double vreg_28;
 System::Double vreg_29;
-std::shared_ptr< Array < std::shared_ptr<SimpleAdditions::Body> > > vreg_35;
-std::shared_ptr<SimpleAdditions::Body> vreg_37;
+Array < std::shared_ptr<SimpleAdditions::Body> > * vreg_35;
+SimpleAdditions::Body * vreg_37;
 System::Double vreg_39;
 System::Double vreg_41;
 System::Double vreg_44;
@@ -339,11 +330,11 @@ System::Double vreg_69;
 System::Double vreg_70;
 System::Double vreg_71;
 System::Int32 vreg_76;
-std::shared_ptr< Array < std::shared_ptr<SimpleAdditions::Body> > > vreg_78;
+Array < std::shared_ptr<SimpleAdditions::Body> > * vreg_78;
 System::Int32 vreg_79;
 System::Int32 vreg_80;
 System::Int32 vreg_86;
-std::shared_ptr< Array < std::shared_ptr<SimpleAdditions::Body> > > vreg_88;
+Array < std::shared_ptr<SimpleAdditions::Body> > * vreg_88;
 System::Int32 vreg_89;
 System::Int32 vreg_90;
 
@@ -351,8 +342,8 @@ local_0 = 0;
 local_1 = 0;
 goto label_221;
 label_18:
-vreg_4 = _this->bodies;
-vreg_6 = (*vreg_4)[local_1];
+vreg_4 = _this->bodies.get();
+vreg_6 = ((*vreg_4)[local_1]).get();
 vreg_7 = local_0;
 vreg_10 = vreg_6->mass;
 vreg_11 = 0.5*vreg_10;
@@ -372,8 +363,8 @@ local_0 = vreg_7+vreg_29;
 local_3 = local_1+1;
 goto label_199;
 label_95:
-vreg_35 = _this->bodies;
-vreg_37 = (*vreg_35)[local_3];
+vreg_35 = _this->bodies.get();
+vreg_37 = ((*vreg_35)[local_3]).get();
 vreg_39 = vreg_6->x;
 vreg_41 = vreg_37->x;
 local_5 = vreg_39-vreg_41;
@@ -398,7 +389,7 @@ local_0 = vreg_53-vreg_71;
 local_3 = local_3+1;
 label_199:
 vreg_76 = local_3;
-vreg_78 = _this->bodies;
+vreg_78 = _this->bodies.get();
 vreg_79 = vreg_78->Length;
 vreg_80 = (int)vreg_79;
 local_9 = (vreg_76 < vreg_80)?1:0;
@@ -406,7 +397,7 @@ if(local_9) goto label_95;
 local_1 = local_1+1;
 label_221:
 vreg_86 = local_1;
-vreg_88 = _this->bodies;
+vreg_88 = _this->bodies.get();
 vreg_89 = vreg_88->Length;
 vreg_90 = (int)vreg_89;
 local_9 = (vreg_86 < vreg_90)?1:0;
@@ -414,8 +405,7 @@ if(local_9) goto label_18;
 return local_0;
 }
 
-
-System::Void SimpleAdditions_NBodySystem__Advance(const std::shared_ptr<SimpleAdditions::NBodySystem>& _this, System::Double dt)
+System::Void SimpleAdditions_NBodySystem__Advance(SimpleAdditions::NBodySystem * _this, System::Double  dt)
 {
 System::Double local_3;
 System::Double local_4;
@@ -425,9 +415,9 @@ System::Double local_7;
 System::Int32 local_10;
 System::Boolean local_11;
 Array < std::shared_ptr<SimpleAdditions::Pair> > * vreg_2;
-SimpleAdditions::Pair* vreg_6;
-SimpleAdditions::Body* vreg_8;
-SimpleAdditions::Body* vreg_10;
+SimpleAdditions::Pair * vreg_6;
+SimpleAdditions::Body * vreg_8;
+SimpleAdditions::Body * vreg_10;
 System::Double vreg_12;
 System::Double vreg_14;
 System::Double vreg_17;
@@ -481,7 +471,7 @@ System::Int32 vreg_106;
 System::Int32 vreg_108;
 System::Int32 vreg_109;
 Array < std::shared_ptr<SimpleAdditions::Body> > * vreg_113;
-SimpleAdditions::Body* vreg_117;
+SimpleAdditions::Body * vreg_117;
 System::Double vreg_120;
 System::Double vreg_123;
 System::Double vreg_124;
@@ -502,7 +492,7 @@ vreg_2 = _this->pairs.get();
 local_10 = 0;
 goto label_269;
 label_18:
-vreg_6 = (*vreg_2)[local_10].get();
+vreg_6 = ((*vreg_2)[local_10]).get();
 vreg_8 = vreg_6->bi.get();
 vreg_10 = vreg_6->bj.get();
 vreg_12 = vreg_8->x;
@@ -576,7 +566,7 @@ vreg_113 = _this->bodies.get();
 local_10 = 0;
 goto label_384;
 label_300:
-vreg_117 = (*vreg_113)[local_10].get();
+vreg_117 = ((*vreg_113)[local_10]).get();
 vreg_120 = vreg_117->x;
 vreg_123 = vreg_117->vx;
 vreg_124 = dt*vreg_123;
@@ -599,20 +589,6 @@ vreg_147 = vreg_113->Length;
 vreg_148 = (int)vreg_147;
 local_11 = (vreg_145 < vreg_148)?1:0;
 if(local_11) goto label_300;
-return;
-}
-
-
-System::Void SimpleAdditions_Body__Body_ctor(const std::shared_ptr<SimpleAdditions::Body>& _this)
-{
-
-return;
-}
-
-
-System::Void SimpleAdditions_Pair__Pair_ctor(const std::shared_ptr<SimpleAdditions::Pair>& _this)
-{
-
 return;
 }
 

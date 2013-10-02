@@ -4,6 +4,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers
     {
         public VariableKind Kind;
         public int Id;
+        public NonEscapingMode NonEscaping;
 
         public override string ToString()
         {

@@ -4,6 +4,7 @@ using System.Linq;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.MiddleEnd;
+using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
@@ -11,10 +12,11 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
 {
     class InFunctionLoweringVars : ResultingInFunctionOptimizationPass
     {
+
         public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
         {
             var candidateVariables = new HashSet<LocalVariable>();
-            var toAdd = intermediateCode.Vars.LocalVariables.Values.Where(varId =>!varId.ComputedType().IsPrimitive);
+            var toAdd = intermediateCode.Vars.LocalVariables.Values.Where(varId => !varId.ComputedType().IsPrimitive);
             candidateVariables.AddRange(toAdd);
             toAdd = intermediateCode.Vars.VirtRegs.Where(varId => !varId.ComputedType().IsPrimitive);
             candidateVariables.AddRange(toAdd);
@@ -22,10 +24,31 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
             foreach (var op in localOp)
             {
                 var usages = op.GetUsages();
-                foreach (var localVariable in usages)
+                foreach (var localVariable in usages.Where(candidateVariables.Contains))
                 {
-                    if (candidateVariables.Contains(localVariable))
-                        RemoveCandidatesIfEscapes(localVariable, candidateVariables, op);
+                    RemoveCandidatesIfEscapes(localVariable, candidateVariables, op);
+                }
+            }
+            if (candidateVariables.Count == 0)
+                return;
+            foreach (var variable in candidateVariables)
+                variable.NonEscaping = NonEscapingMode.Pointer;
+            AllocateVariablesOnStack(localOp, candidateVariables);
+        }
+
+        private static void AllocateVariablesOnStack(List<LocalOperation> localOp, HashSet<LocalVariable> candidateVariables)
+        {
+            foreach (var op in localOp)
+            {
+                switch (op.Kind)
+                {
+                    case OperationKind.NewArray:
+                    case OperationKind.NewObject:
+
+                        var definition = op.GetUseDefinition();
+                        if (definition != null && candidateVariables.Contains(definition))
+                            definition.NonEscaping = NonEscapingMode.Stack;
+                        break;
                 }
             }
         }
@@ -34,10 +57,10 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
         {
             switch (op.Kind)
             {
-                case OperationKind.Assignment:                    
+                case OperationKind.Assignment:
                 case OperationKind.Return:
                 case OperationKind.Call:
-                    candidateVariables.Remove(localVariable);
+                    HandleCall(localVariable, candidateVariables, op);
                     break;
                 case OperationKind.BinaryOperator:
                 case OperationKind.UnaryOperator:
@@ -45,12 +68,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
                 case OperationKind.GetArrayItem:
                 case OperationKind.GetField:
                     break;
-                    //hard to handle, remove them for now
                 case OperationKind.SetArrayItem:
                     HandleSetArrayItem(candidateVariables, op);
                     break;
-
-                    
                 case OperationKind.SetField:
                     HandleSetArrayItem(candidateVariables, op);
                     break;
@@ -59,9 +79,29 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
             }
         }
 
+        private static void HandleCall(LocalVariable localVariable, HashSet<LocalVariable> candidateVariables, LocalOperation op)
+        {
+            var methodData = (MethodData)op.Value;
+            var escapeData = AnalyzeParametersAreEscaping.GetEscapingParameterData(methodData);
+            if (escapeData == null)
+            {
+                candidateVariables.Remove(localVariable);
+                return;
+            }
+            for (int index = 0; index < methodData.Parameters.Count; index++)
+            {
+                var parameter = methodData.Parameters[index];
+                bool isEscaping;
+                if (!escapeData.TryGetValue(index, out isEscaping) || !parameter.Equals(localVariable)) 
+                    continue;
+                if (isEscaping)
+                    candidateVariables.Remove(localVariable);
+            }
+        }
+
         private static void HandleSetArrayItem(ICollection<LocalVariable> candidateVariables, LocalOperation op)
         {
-            var assignSetArray = (Assignment) op.Value;
+            var assignSetArray = (Assignment)op.Value;
             var right = assignSetArray.Right as LocalVariable;
             if (right != null)
             {

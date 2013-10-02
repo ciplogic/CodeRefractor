@@ -198,6 +198,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
                 case OperationKind.UnaryOperator:
                     var unOp = (UnaryOperator)operation.Value;
                     return unOp.AssignedTo;
+                case OperationKind.Call:
+                    var value = (MethodData)operation.Value;
+                    return value.Result;
                 default:
                     return null;
             }

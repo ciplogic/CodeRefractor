@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Text;
 using CodeRefractor.CompilerBackend.HandleOperations;
 using CodeRefractor.CompilerBackend.Linker;
+using CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering;
 using CodeRefractor.CompilerBackend.Optimizations.Purity;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
@@ -266,10 +267,23 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             var value = (Assignment) operation.Value;
             var valueSrc = (ArrayVariable) value.Right;
             var parentType = valueSrc.Parent.ComputedType();
-            bodySb.AppendFormat(parentType.IsClass
-                                    ? "{0} = (*{1})[{2}];"
-                                    : "{0} = {1}[{2}];",
-                                value.AssignedTo.Name, valueSrc.Parent.Name, valueSrc.Index.Name);
+            switch (value.AssignedTo.NonEscaping)
+            {
+                case NonEscapingMode.Smart:
+                    bodySb.AppendFormat(parentType.IsClass
+                                            ? "{0} = (*{1})[{2}];"
+                                            : "{0} = {1}[{2}];",
+                                        value.AssignedTo.Name, valueSrc.Parent.Name, valueSrc.Index.Name);
+                    return;
+                case NonEscapingMode.Pointer:
+                    bodySb.AppendFormat(parentType.IsClass
+                                            ? "{0} = ((*{1})[{2}]).get();"
+                                            : "{0} = ({1}[{2}]).get();",
+                                        value.AssignedTo.Name, valueSrc.Parent.Name, valueSrc.Index.Name);
+                    
+                    return;
+                
+            }
         }
 
         private static void HandleLoadArgument(LocalOperation operation, StringBuilder bodySb)
@@ -283,8 +297,19 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
         private static void HandleLoadField(LocalOperation operation, StringBuilder bodySb)
         {
             var fieldGetterInfo = (FieldGetter)operation.Value;
-            bodySb.AppendFormat("{0} = {1}->{2};", fieldGetterInfo.AssignedTo.Name, fieldGetterInfo.Instance.Name,
-                                fieldGetterInfo.FieldName);
+            var assignedTo = (LocalVariable)fieldGetterInfo.AssignedTo;
+            switch (assignedTo.NonEscaping)
+            {
+                case NonEscapingMode.Smart:
+                    bodySb.AppendFormat("{0} = {1}->{2};", assignedTo.Name, fieldGetterInfo.Instance.Name,
+                                        fieldGetterInfo.FieldName);
+                    break;
+
+                case NonEscapingMode.Pointer:
+                    bodySb.AppendFormat("{0} = {1}->{2}.get();", assignedTo.Name, fieldGetterInfo.Instance.Name,
+                                        fieldGetterInfo.FieldName);
+                    break;
+            }
         }
 
         private static void HandleSetField(LocalOperation operation, StringBuilder bodySb)
@@ -300,9 +325,19 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             var value = (Assignment) operation.Value;
             var rightValue = (NewConstructedObject) value.Right;
             var localValue = rightValue.Info;
+
             var declaringType = localValue.DeclaringType;
-            var cppName = declaringType.ToCppName(false);
-            bodySb.AppendFormat("{0} = std::make_shared<{1}>();", value.AssignedTo.Name, cppName);
+            var cppName = declaringType.ToCppName(NonEscapingMode.Stack);
+            switch (value.AssignedTo.NonEscaping)
+            {
+                case NonEscapingMode.Stack:
+                    bodySb.AppendFormat("{1} {0};", value.AssignedTo.Name, cppName);
+
+                    break;
+                default:
+                    bodySb.AppendFormat("{0} = std::make_shared<{1}>();", value.AssignedTo.Name, cppName);
+                    break;
+            }
         }
 
         private static StringBuilder ComputeVariableSb(MetaMidRepresentation midRepresentation, CrRuntimeLibrary crCrRuntimeLibrary)
@@ -310,15 +345,32 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             var variablesSb = new StringBuilder();
             foreach (var variableInfo in midRepresentation.Vars.LocalVars)
             {
-                variablesSb.AppendFormat("{0} local_{1};", variableInfo.ComputedType().ToCppName(), variableInfo.Id);
-                variablesSb.AppendLine();
+                AddVariableContent(variablesSb, "{0} local_{1};", variableInfo);
             }
             foreach (var localVariable in midRepresentation.Vars.VirtRegs)
             {
-                variablesSb.AppendFormat("{0} vreg_{1};", localVariable.ComputedType().ToCppName(), localVariable.Id);
-                variablesSb.AppendLine();
+                AddVariableContent(variablesSb, "{0} vreg_{1};", localVariable);
             }
             return variablesSb;
+        }
+
+        private static void AddVariableContent(StringBuilder variablesSb, string format, LocalVariable localVariable)
+        {
+            if(localVariable.NonEscaping==NonEscapingMode.Stack)
+                return;
+            if(localVariable.Id==158)
+            {
+                
+            }
+            if (localVariable.NonEscaping == NonEscapingMode.Pointer)
+            {
+                var cppName = localVariable.ComputedType().ToCppName(localVariable.NonEscaping);
+                variablesSb.AppendFormat(format, cppName, localVariable.Id);
+                variablesSb.AppendLine();
+                return;
+            }
+            variablesSb.AppendFormat(format, localVariable.ComputedType().ToCppName(localVariable.NonEscaping), localVariable.Id);
+            variablesSb.AppendLine();
         }
 
         private static void HandleAlwaysBranchOperator(LocalOperation operation, StringBuilder sb)
@@ -340,8 +392,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
         {
             if(method==null)
                 return;
-            var mappedType = CrRuntimeLibrary.Instance.GetReverseType(method.DeclaringType);
-            var text = method.WriteHeaderMethod(writeEndColon);
+            var text = method.WriteHeaderMethodWithEscaping(writeEndColon);
             sb.Append(text);
         }
 

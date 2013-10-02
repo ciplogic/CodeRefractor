@@ -71,13 +71,19 @@ namespace CodeRefractor.RuntimeBase.Runtime
                 var methodNativeDescription = methodInfo.GetCustomAttribute<CilMethodAttribute>();
                 if (methodNativeDescription == null)
                     continue;
-                var format = methodInfo.GetMethodDescriptor();
+                var format = GetMethodDescription(methodInfo);
                 var linker = new MetaLinker();
                 linker.SetEntryPoint(methodInfo);
                 //MetaLinker.ComputeDependencies(methodInfo);
                 linker.Interpret();
                 _supportedCilMethods[format] = linker;
             }
+        }
+
+        public static string GetMethodDescription(MethodBase methodInfo)
+        {
+            var reverseType = methodInfo.DeclaringType.ReversedType();
+            return string.Format("{0}::{1}",reverseType, methodInfo);
         }
 
         public Type GetReverseType(Type type)
@@ -124,7 +130,7 @@ namespace CodeRefractor.RuntimeBase.Runtime
         {
             var methodNativeDescription = method.GetCustomAttribute<CppMethodBodyAttribute>();
             if (methodNativeDescription == null) return;
-            var format = method.GetMethodDescriptor();
+            var format = GetMethodDescription(method);
             _supportedCppMethods[format] = methodNativeDescription;
             _supportedMethods[format] = method;
             var methodList = GetTypesMethodList(declaringType);
@@ -143,7 +149,7 @@ namespace CodeRefractor.RuntimeBase.Runtime
 
         public bool UseMethod(MethodBase methodDefinition)
         {
-            var description = methodDefinition.GetMethodDescriptor();
+            var description = GetMethodDescription(methodDefinition);
             if (UsedCppMethods.ContainsKey(description)) return true;
             if (UsedCilMethods.ContainsKey(description)) return true;
             var mappedType = GetMappedType(methodDefinition.DeclaringType);

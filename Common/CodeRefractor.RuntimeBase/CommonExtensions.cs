@@ -12,6 +12,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
+using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.RuntimeBase.Runtime;
 using CodeRefractor.RuntimeBase.Shared;
 
@@ -127,37 +128,14 @@ namespace CodeRefractor.RuntimeBase
             return mappedtypeAttr.MappedType;
         }
 
-        public static string GetMethodDescriptor(this MethodBase method)
-        {
-            var declaringType = method.DeclaringType;
-            var mappedtypeAttr = declaringType.GetCustomAttribute<MapTypeAttribute>();
-            var mappedType2 = mappedtypeAttr == null ? null : mappedtypeAttr.MappedType;
-            var format = String.Format("{0}.{1}({2})",
-                                       mappedType2 == null ? declaringType.FullName : mappedType2.FullName, method.Name,
-                                       method.GetArgumentsAsText());
-            return format;
-        }
-
-        public static string GetArgumentsAsText(this MethodBase method)
-        {
-            var parameterInfos = method.GetParameters();
-            var arguments = String.Join(", ",
-                                        GetParamAsPrettyList(parameterInfos));
-            if (!method.IsStatic)
-            {
-                var thisText = String.Format("const {0}& _this", method.DeclaringType.GetMappedType().ToCppName());
-                return parameterInfos.Length == 0
-                           ? thisText
-                           : String.Format("{0}, {1}", thisText, arguments);
-            }
-            return arguments;
-        }
-
-        private static IEnumerable<string> GetParamAsPrettyList(ParameterInfo[] parameterInfos)
+        public static IEnumerable<string> GetParamAsPrettyList(ParameterInfo[] parameterInfos)
         {
             return parameterInfos.Select(
                 param =>
-                String.Format("{0} {1}", param.ParameterType.GetMappedType().ToCppName(param.ParameterType.IsClass), param.Name));
+                String.Format("{0} {1}", param.ParameterType.GetMappedType().ToCppName(
+                param.ParameterType.IsClass
+                    ?NonEscapingMode.Smart
+                    :NonEscapingMode.Smart), param.Name));
         }
 
         public static Type ReversedType(this Type type)
@@ -288,30 +266,53 @@ namespace CodeRefractor.RuntimeBase
             var fullName = nameSpace+"::"+s;
             if (s.EndsWith("[]"))
             {
-                s = s.Remove(fullName.Length - 2, 2);
+                s = s.Remove(s.Length - 2, 2);
                 fullName = String.Format("std::shared_ptr <Array<{0}::{1}> > &", nameSpace,s);
             }
             return fullName;
         }
 
-        public static string ToCppName(this Type type, bool isSmartPtr = true)
+        public static string ToCppName(this Type type, NonEscapingMode isSmartPtr = NonEscapingMode.Smart)
         {
             if(type==null)
             {
                 return "void*";
             }
             type = type.ReversedType();
-            if (!type.IsClass || !isSmartPtr)
-            {
-                return type.IsSubclassOf(typeof (Enum))
-                           ? "int"
-                           : type.Name.ToCppMangling(type.Namespace);
-            }
             if (type.IsArray)
             {
                 var elementType = type.GetElementType();
                 var fullTypeName = elementType.ToCppName();
-                return String.Format("std::shared_ptr< Array < {0} > >", fullTypeName);
+                switch (isSmartPtr)
+                {
+                    case NonEscapingMode.Smart:
+                        return String.Format("std::shared_ptr< Array < {0} > >", fullTypeName);
+                    case NonEscapingMode.Pointer:
+                        return String.Format("Array < {0} > *", fullTypeName);
+                    case NonEscapingMode.Stack:
+                        return String.Format("Array < {0} > ", fullTypeName);
+                }
+
+            }
+            if (type.IsClass || isSmartPtr != NonEscapingMode.Smart)
+            {
+                if(type.IsPrimitive || type.IsValueType)
+                    isSmartPtr = NonEscapingMode.Stack;
+                switch (isSmartPtr)
+                {
+                    case NonEscapingMode.Smart:
+                        return String.Format("std::shared_ptr<{0}>", type.Name.ToCppMangling(type.Namespace));
+                    case NonEscapingMode.Pointer:
+                        return String.Format("{0} *", type.Name.ToCppMangling(type.Namespace));
+                    case NonEscapingMode.Stack:
+                        return String.Format("{0} ", type.Name.ToCppMangling(type.Namespace));
+                }
+            }
+            if (!type.IsClass || isSmartPtr!=NonEscapingMode.Smart)
+            {
+                return type.IsSubclassOf(typeof (Enum))
+                           ? "int"
+                           : type.Name.ToCppMangling(type.Namespace);
             }
             if (type.IsByRef)
             {

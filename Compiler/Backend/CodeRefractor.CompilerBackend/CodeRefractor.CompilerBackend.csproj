@@ -58,7 +58,7 @@
     <Compile Include="Optimizations\Purity\AnalyzeFunctionPurity.cs" />
     <Compile Include="Optimizations\ConstantFoldingAndPropagation\SimpleAssignment\AssignmentVregWithConstNextLineFolding.cs" />
     <Compile Include="Optimizations\ConstantFoldingAndPropagation\SimpleAssignment\AssignmentWithVregPrevLineFolding.cs" />
-    <Compile Include="Optimizations\Purity\AnalyzeParametersAreEscaping.cs" />
+    <Compile Include="Optimizations\EscapeAndLowering\AnalyzeParametersAreEscaping.cs" />
     <Compile Include="Optimizations\SimpleDce\DeadStoreAssignment.cs" />
     <Compile Include="Optimizations\SimpleDce\DeleteCallToConstructorOfObject.cs" />
     <Compile Include="Optimizations\SimpleDce\OneAssignmentDeadStoreAssignment.cs" />
@@ -69,6 +69,7 @@
     <Compile Include="HandleOperations\CppHandleCalls.cs" />
     <Compile Include="HandleOperations\CppHandleCompareBranches.cs" />
     <Compile Include="HandleOperations\CppHandleOperators.cs" />
+    <Compile Include="OuputCodeWriter\MetaLinkerClosureComputing.cs" />
     <Compile Include="OuputCodeWriter\MetaLinkerOptimizer.cs" />
     <Compile Include="OuputCodeWriter\MethodInterpreterCodeWriter.cs" />
     <Compile Include="Optimizations\Common\ResultingOptimizationPass.cs" />
