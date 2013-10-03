@@ -31,18 +31,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
                 if (operation.Kind != OperationKind.Call)
                     continue;
 
-                var operationData = (MethodData)operation.Value;
-                var methodInterpreter = LinkerUtils.GetMethod(operationData.Info);
-                if (AnalyzeFunctionPurity.ReadPurity(methodInterpreter))
-                {
-                    operationData.IsPure = true;
-                }
-                else
-                {
-                    var computeIsPure = AnalyzeFunctionPurity.ComputeFunctionPurity(methodInterpreter);
-                    if (computeIsPure)
-                        operationData.IsPure = true;
-                }
+                var operationData = ComputeAndEvaluatePurityOfCall(operation);
                 if (!operationData.IsPure || !operationData.IsStatic)
                     continue;
                 var methodInfo = operationData.Info;
@@ -61,6 +50,23 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
                     }
                 };
             }
+        }
+
+        public static MethodData ComputeAndEvaluatePurityOfCall(LocalOperation operation)
+        {
+            var operationData = (MethodData) operation.Value;
+            var methodInterpreter = operationData.Info.GetMethod();
+            if (AnalyzeFunctionPurity.ReadPurity(methodInterpreter))
+            {
+                operationData.IsPure = true;
+            }
+            else
+            {
+                var computeIsPure = AnalyzeFunctionPurity.ComputeFunctionPurity(methodInterpreter);
+                if (computeIsPure)
+                    operationData.IsPure = true;
+            }
+            return operationData;
         }
 
         private static bool CheckIfParamAreConst(MethodData operationData, List<object> constParams)

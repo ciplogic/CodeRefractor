@@ -58,8 +58,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
         {
             return new OptimizationPass[]
                        {
-                                      
                            new DceVRegUnused(),
+                           new DeleteAssignmentWithSelf(), 
                         
                            new AssignmentWithVregPrevLineFolding(), 
                            new PropagationVariablesOptimizationPass(), 
@@ -69,9 +69,10 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
                            new OperatorConstantFolding(),
                            new ConstantVariableBranchOperatorPropagation(),
                            new AssignmentVregWithConstNextLineFolding(), 
-                             
-
+                           
                            new EvaluatePureFunctionWithConstantCall(),
+                           new PrecomputeRepeatedPureFunctionCall(), 
+
                            new AssignToReturnPropagation(),
                            new DeadStoreLastSequenceRemover(),
                            new DceLocalAssigned(),
@@ -101,8 +102,6 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
                            
                             new DeadStoreAssignment(), 
                              new OneAssignmentDeadStoreAssignment(),
-                           //new AssignmentWithVregPrevLineFolding(),
-                           //new AssignmentVregWithConstNextLineFolding(), 
                            new ReachabilityLines(),
                            new PropagationVariablesOptimizationPass(),
                            new InFunctionLoweringVars()

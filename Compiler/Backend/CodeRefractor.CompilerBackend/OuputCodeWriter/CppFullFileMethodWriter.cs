@@ -8,6 +8,7 @@ using CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
+using CodeRefractor.RuntimeBase.Runtime;
 using CodeRefractor.RuntimeBase.Shared;
 
 #endregion
@@ -61,14 +62,9 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 
         public static string GetMethodDescriptor(this MethodBase method)
         {
-            var declaringType = method.DeclaringType;
-            var mappedtypeAttr = declaringType.GetCustomAttribute<MapTypeAttribute>();
-            var mappedType2 = mappedtypeAttr == null ? null : mappedtypeAttr.MappedType;
-            var format = String.Format("{0}.{1}({2})",
-                                       mappedType2 == null ? declaringType.FullName : mappedType2.FullName, method.Name,
-                                       method.GetArgumentsAsText());
-            return format;
+            return CrRuntimeLibrary.GetMethodDescription(method);
         }
+
         public static string GetArgumentsAsText(this MethodBase method)
         {
             var parameterInfos = method.GetParameters();

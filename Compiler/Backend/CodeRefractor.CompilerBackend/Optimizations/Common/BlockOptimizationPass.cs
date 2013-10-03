@@ -1,10 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
-using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 
-namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagation.ComplexAssignments
+namespace CodeRefractor.CompilerBackend.Optimizations.Common
 {
     abstract class BlockOptimizationPass : ResultingInFunctionOptimizationPass
     {
@@ -16,7 +15,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
             var result = false;
             foreach (var labelPos in sortedLabelPos)
             {
-                result |= TryOptimizeBlock(localOperations, startPos, labelPos - 1);
+                result |= TryOptimizeBlock(intermediateCode, startPos, labelPos - 1);
                 if(result)
                 {
                     Result = true;
@@ -24,7 +23,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                 }
                 startPos = labelPos + 1;
             }
-            TryOptimizeBlock(localOperations, startPos, localOperations.Count - 1);
+            TryOptimizeBlock(intermediateCode, startPos, localOperations.Count - 1);
             result |= Result;
             Result = result;
         }
@@ -49,12 +48,12 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
             return sortedLabelPos.ToList();
         }
 
-        bool TryOptimizeBlock(List<LocalOperation> localOperations, int startRange, int endRange)
+        bool TryOptimizeBlock(MetaMidRepresentation localOperations, int startRange, int endRange)
         {
             if (startRange == endRange)
                 return false;
             return OptimizeBlock(localOperations, startRange, endRange);
         }
-        public abstract bool OptimizeBlock(List<LocalOperation> localOperations, int startRange, int endRange);
+        public abstract bool OptimizeBlock(MetaMidRepresentation localOperations, int startRange, int endRange);
     }
 }

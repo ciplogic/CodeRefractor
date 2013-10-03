@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
+using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
@@ -11,11 +12,12 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
         private readonly Dictionary<LocalVariable, int> _dictionary =
             new Dictionary<LocalVariable, int>();
 
-        public override bool OptimizeBlock(List<LocalOperation> localOperations, int startRange, int endRange)
+        public override bool OptimizeBlock(MetaMidRepresentation midRepresentation, int startRange, int endRange)
         {
             _dictionary.Clear();
             for (var i = startRange; i <= endRange; i++)
             {
+                var localOperations = midRepresentation.LocalOperations;
                 var op = localOperations[i];
 
                 var definition = op.GetUseDefinition();

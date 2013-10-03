@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using CodeRefractor.CompilerBackend.OuputCodeWriter.Platform;
 using CodeRefractor.RuntimeBase.MiddleEnd;
@@ -60,6 +61,8 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                     didOptimize = optimizationPass.Optimize(Interpreter.MidRepresentation);
                     if (didOptimize)
                     {
+                        var optimizationName = optimizationPass.GetType().Name;
+                        Debug.WriteLine(String.Format("Applied optimization: {0}", optimizationName));
                         result = true;
                         break;
                     }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
+using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
@@ -10,9 +11,11 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
     class PropagationVariablesOptimizationPass : BlockOptimizationPass
     {
         readonly Dictionary<LocalVariable, IdentifierValue> _dictionary = new Dictionary<LocalVariable, IdentifierValue>(); 
-        public override bool OptimizeBlock(List<LocalOperation> localOperations, int startRange, int endRange)
+        public override bool OptimizeBlock(MetaMidRepresentation midRepresentation, int startRange, int endRange)
         {
             var result = false;
+
+            var localOperations = midRepresentation.LocalOperations;
             _dictionary.Clear();
             for(var i = startRange; i<=endRange; i++)
             {
