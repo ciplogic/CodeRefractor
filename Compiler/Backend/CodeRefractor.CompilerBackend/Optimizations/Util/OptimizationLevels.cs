@@ -71,6 +71,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
                            new AssignmentVregWithConstNextLineFolding(), 
                            
                            new EvaluatePureFunctionWithConstantCall(),
+                           
+                           new RemoveDeadStoresToFunctionCalls(), 
+                           new RemoveDeadPureFunctionCalls(), 
                            new PrecomputeRepeatedPureFunctionCall(), 
 
                            new AssignToReturnPropagation(),

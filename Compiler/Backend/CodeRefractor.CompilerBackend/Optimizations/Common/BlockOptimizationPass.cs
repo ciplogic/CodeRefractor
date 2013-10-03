@@ -54,6 +54,6 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
                 return false;
             return OptimizeBlock(localOperations, startRange, endRange);
         }
-        public abstract bool OptimizeBlock(MetaMidRepresentation localOperations, int startRange, int endRange);
+        public abstract bool OptimizeBlock(MetaMidRepresentation midRepresentation, int startRange, int endRange);
     }
 }

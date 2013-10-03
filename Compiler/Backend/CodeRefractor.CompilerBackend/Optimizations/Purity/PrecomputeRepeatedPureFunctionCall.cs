@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
-using CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagation.ComplexAssignments;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
@@ -79,7 +78,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
        
         }
 
-        private static List<int> FindCallsToPureFunctions(List<LocalOperation> localOperations, int startRange, int endRange)
+        public static List<int> FindCallsToPureFunctions(List<LocalOperation> localOperations, int startRange, int endRange)
         {
             var calls = new List<int>();
             for (var index = startRange; index <= endRange; index++)
@@ -153,7 +152,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
             return GetMethodData(localOperations, index);
         }
 
-        private static MethodData GetMethodData(List<LocalOperation> localOperations, int index)
+        public static MethodData GetMethodData(List<LocalOperation> localOperations, int index)
         {
             return (MethodData) localOperations[index].Value;
         }
