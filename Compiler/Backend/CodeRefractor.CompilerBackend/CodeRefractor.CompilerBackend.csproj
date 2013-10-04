@@ -60,9 +60,12 @@
     <Compile Include="Optimizations\ConstantFoldingAndPropagation\SimpleAssignment\AssignmentVregWithConstNextLineFolding.cs" />
     <Compile Include="Optimizations\ConstantFoldingAndPropagation\SimpleAssignment\AssignmentWithVregPrevLineFolding.cs" />
     <Compile Include="Optimizations\EscapeAndLowering\AnalyzeParametersAreEscaping.cs" />
-    <Compile Include="Optimizations\Purity\PrecomputeRepeatedPureFunctionCall.cs" />
+    <Compile Include="Optimizations\RedundantExpressions\PrecomputeRepeatedPureFunctionCall.cs" />
     <Compile Include="Optimizations\Purity\RemoveDeadPureFunctionCalls.cs" />
     <Compile Include="Optimizations\Purity\RemoveDeadStoresToFunctionCalls.cs" />
+    <Compile Include="Optimizations\RedundantExpressions\PrecomputeRepeatedBinaryOperators.cs" />
+    <Compile Include="Optimizations\RedundantExpressions\PrecomputeRepeatedUnaryOperators.cs" />
+    <Compile Include="Optimizations\RedundantExpressions\PrecomputeRepeatedUtils.cs" />
     <Compile Include="Optimizations\SimpleDce\DeadStoreAssignment.cs" />
     <Compile Include="Optimizations\SimpleDce\DeleteCallToConstructorOfObject.cs" />
     <Compile Include="Optimizations\SimpleDce\OneAssignmentDeadStoreAssignment.cs" />

@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
+using CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 
@@ -20,7 +21,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
                 .ToArray();
             foreach (var call in calls)
             {
-                var methodData = PrecomputeRepeatedPureFunctionCall.GetMethodData(localOperations, call);
+                var methodData = PrecomputeRepeatedUtils.GetMethodData(localOperations, call);
                 if (methodData.Result == null)
                 {
                     continue;

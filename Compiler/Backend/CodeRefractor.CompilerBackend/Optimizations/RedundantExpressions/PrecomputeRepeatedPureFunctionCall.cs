@@ -1,12 +1,14 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
+using CodeRefractor.CompilerBackend.Optimizations.Purity;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
-namespace CodeRefractor.CompilerBackend.Optimizations.Purity
+namespace CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions
 {
     class PrecomputeRepeatedPureFunctionCall : BlockOptimizationPass
     {
@@ -18,18 +20,16 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
                 return false;
             for(var i = 0;i<calls.Count-1;i++)
             {
-                var firstMethodData = GetMethodData(localOperations, calls, i);
+                var firstMethodData = PrecomputeRepeatedUtils.GetMethodData(localOperations, calls, i);
                 for (int j = i+1; j < calls.Count; j++)
                 {
-                    var secondMethodData = GetMethodData(localOperations, calls, j);
+                    var secondMethodData = PrecomputeRepeatedUtils.GetMethodData(localOperations, calls, j);
                     if(firstMethodData.Info!=secondMethodData.Info)
                         continue;
                     var resultMerge = TryMergeCalls(i, j, firstMethodData, secondMethodData, localOperations);
-                    if (resultMerge)
-                    {
-                        ApplyOptimization(midRepresentation, calls[i], calls[j]);
-                        return true;
-                    }
+                    if (!resultMerge) continue;
+                    ApplyOptimization(midRepresentation, calls[i], calls[j]);
+                    return true;
                 }
             }
             return false;
@@ -37,44 +37,22 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
 
         private static void ApplyOptimization(MetaMidRepresentation midRepresentation, int i, int j)
         {
-            var max = midRepresentation.Vars.VirtRegs.Max(vreg => vreg.Id) + 1;
             var localOps = midRepresentation.LocalOperations;
 
-            var srcMethod = GetMethodData(localOps, i);
-            var destMethod = GetMethodData(localOps, j);
+            var srcMethod = PrecomputeRepeatedUtils.GetMethodData(localOps, i);
+            var destMethod = PrecomputeRepeatedUtils.GetMethodData(localOps, j);
 
-            var cacheVariable = new LocalVariable()
-            {
-                FixedType = srcMethod.Result.ComputedType(),
-                Id = max,
-                Kind = VariableKind.Vreg
-            };
+            var computedType = srcMethod.Result.ComputedType();
+            var newVreg = PrecomputeRepeatedUtils.CreateCacheVariable(midRepresentation, computedType);
 
-            midRepresentation.Vars.VirtRegs.Add(cacheVariable);
-            
-            var assignment = new Assignment
-                {
-                    AssignedTo = (LocalVariable) srcMethod.Result.Clone(),
-                    Right = cacheVariable.Clone()
-                };
-            localOps.Insert(i+1, new LocalOperation()
-                {
-                    Kind = OperationKind.Assignment,
-                    Value = assignment
-                });
-            srcMethod.Result = cacheVariable;
+            var assignedTo = srcMethod.Result;
+            var localOperation = PrecomputeRepeatedUtils.CreateAssignLocalOperation(assignedTo, newVreg);
+            localOps.Insert(i+1, localOperation);
+            srcMethod.Result = newVreg;
 
-            var destAssignment = new Assignment
-            {
-                AssignedTo = (LocalVariable) destMethod.Result.Clone(),
-                Right = cacheVariable.Clone()
-            };
+            var destAssignment = PrecomputeRepeatedUtils.CreateAssignLocalOperation(destMethod.Result, newVreg);
             localOps.RemoveAt(j+1);
-            localOps.Insert(j + 1, new LocalOperation()
-            {
-                Kind = OperationKind.Assignment,
-                Value = destAssignment
-            });
+            localOps.Insert(j + 1, destAssignment);
        
         }
 
@@ -94,7 +72,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
             return calls;
         }
 
-        private bool TryMergeCalls(int i, int i1, MethodData firstMethodData, MethodData secondMethodData, List<LocalOperation> localOperations)
+        private static bool TryMergeCalls(int i, int i1, MethodData firstMethodData, MethodData secondMethodData, List<LocalOperation> localOperations)
         {
             var validateParametersAreTheSame = ValidateParametersAreTheSame(firstMethodData, secondMethodData);
             if(!validateParametersAreTheSame)
@@ -146,15 +124,5 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
             return true;
         }
 
-        private static MethodData GetMethodData(List<LocalOperation> localOperations, List<int> calls, int i)
-        {
-            var index = calls[i];
-            return GetMethodData(localOperations, index);
-        }
-
-        public static MethodData GetMethodData(List<LocalOperation> localOperations, int index)
-        {
-            return (MethodData) localOperations[index].Value;
-        }
     }
 }

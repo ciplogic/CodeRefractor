@@ -11,6 +11,7 @@ using CodeRefractor.CompilerBackend.Optimizations.Inliner;
 using CodeRefractor.CompilerBackend.Optimizations.Jumps;
 using CodeRefractor.CompilerBackend.Optimizations.Purity;
 using CodeRefractor.CompilerBackend.Optimizations.ReachabilityDfa;
+using CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions;
 using CodeRefractor.CompilerBackend.Optimizations.SimpleDce;
 using CodeRefractor.RuntimeBase.Config;
 using CodeRefractor.RuntimeBase.Optimizations;
@@ -74,7 +75,10 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
                            
                            new RemoveDeadStoresToFunctionCalls(), 
                            new RemoveDeadPureFunctionCalls(), 
+                           
                            new PrecomputeRepeatedPureFunctionCall(), 
+                           new PrecomputeRepeatedBinaryOperators(), 
+                           new PrecomputeRepeatedUnaryOperators(), 
 
                            new AssignToReturnPropagation(),
                            new DeadStoreLastSequenceRemover(),

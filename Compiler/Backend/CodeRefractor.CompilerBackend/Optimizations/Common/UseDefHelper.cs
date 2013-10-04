@@ -213,15 +213,22 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
 
         public static HashSet<int> GetVariableUsages(this List<LocalOperation> localOperations, LocalVariable variable)
         {
+            var startIndex = 0;
+            var endIndex = localOperations.Count-1;
+
+            var result = GetVariableUsages(localOperations, variable, startIndex, endIndex);
+            return result;
+        }
+
+        public static HashSet<int> GetVariableUsages(List<LocalOperation> localOperations, LocalVariable variable, int startIndex, int endIndex)
+        {
             var result = new HashSet<int>();
-            var pos = -1;
-            foreach (var op in localOperations)
+            for (var index = startIndex; index <= endIndex; index++)
             {
-                pos++;
+                var op = localOperations[index];
 
                 if (op.OperationUses(variable))
-                    result.Add(pos);
-
+                    result.Add(index);
             }
             return result;
         }

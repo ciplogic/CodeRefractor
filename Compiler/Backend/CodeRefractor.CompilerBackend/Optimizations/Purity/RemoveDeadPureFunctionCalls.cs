@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
+using CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 
 namespace CodeRefractor.CompilerBackend.Optimizations.Purity
@@ -14,7 +15,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
             var toRemove = new HashSet<int>();
             foreach (var call in calls)
             {
-                var methodData = PrecomputeRepeatedPureFunctionCall.GetMethodData(localOperations, call);
+                var methodData = PrecomputeRepeatedUtils.GetMethodData(localOperations, call);
                 if (methodData.Result == null)
                 {
                     toRemove.Add(call);
