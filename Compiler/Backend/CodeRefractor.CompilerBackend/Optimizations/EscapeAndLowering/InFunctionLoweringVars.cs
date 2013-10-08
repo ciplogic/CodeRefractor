@@ -12,7 +12,6 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
 {
     class InFunctionLoweringVars : ResultingInFunctionOptimizationPass
     {
-
         public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
         {
             var candidateVariables = new HashSet<LocalVariable>();
@@ -53,7 +52,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
             }
         }
 
-        private static void RemoveCandidatesIfEscapes(LocalVariable localVariable, HashSet<LocalVariable> candidateVariables, LocalOperation op)
+        public static void RemoveCandidatesIfEscapes(LocalVariable localVariable, HashSet<LocalVariable> candidateVariables, LocalOperation op)
         {
             switch (op.Kind)
             {

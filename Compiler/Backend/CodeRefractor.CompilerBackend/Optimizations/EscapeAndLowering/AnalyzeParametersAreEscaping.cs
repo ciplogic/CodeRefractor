@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using CodeRefractor.CompilerBackend.Linker;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
+using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
@@ -12,31 +14,48 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
     class AnalyzeParametersAreEscaping : ResultingGlobalOptimizationPass
     {
         private const string EscapeName = "NonEscapingArgs";
+        HashSet<LocalVariable> argumentList = new HashSet<LocalVariable>();
         public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
         {
             if (intermediateCode.GetInterpreter().Kind != MethodKind.Default)
                 return;
 
             var operations = intermediateCode.LocalOperations;
-            
-            var escaping = ComputeArgsEscaping(operations);
 
+            var argEscaping = ComputeEscapingArgList(intermediateCode, operations);
+            var escaping = ComputeArgsEscaping(operations, argEscaping);
+            if (argEscaping.Count==0) return;
             intermediateCode.SetAdditionalValue(EscapeName, escaping);
         }
 
-        public static Dictionary<int, bool> ComputeArgsEscaping(List<LocalOperation> operations)
+        private HashSet<LocalVariable> ComputeEscapingArgList(MetaMidRepresentation intermediateCode, List<LocalOperation> operations)
+        {
+            argumentList.Clear();
+            argumentList.AddRange(
+                intermediateCode.Vars.Arguments
+                    .Where(varId => !varId.ComputedType().IsPrimitive)
+                );
+            if (argumentList.Count == 0)
+                return argumentList;
+            foreach (var op in operations)
+            {
+                var usages = op.GetUsages();
+                foreach (var localVariable in usages.Where(argumentList.Contains))
+                {
+                    InFunctionLoweringVars.RemoveCandidatesIfEscapes(localVariable, argumentList, op);
+                }
+            }
+            return argumentList;
+        }
+
+        public static Dictionary<int, bool> ComputeArgsEscaping(List<LocalOperation> operations, HashSet<LocalVariable> argEscaping)
         {
             var escaping = new Dictionary<int, bool>();
+            
             foreach (var op in operations)
             {
                 switch (op.Kind)
                 {
-                    case OperationKind.Assignment:
-                        var right = op.GetAssignment().Right as LocalVariable;
-                        if (right == null || right.Kind != VariableKind.Argument) continue;
-                        escaping[right.Id] = true;
-                        break;
-
                     case OperationKind.Call:
                         var methodData = (MethodData) op.Value;
                         var otherMethodData = GetEscapingParameterData(methodData);
@@ -50,14 +69,13 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
                                 continue;
                             if (!argCall.ComputedType().IsClass)
                                 continue;
-                            if (otherMethodData.ContainsKey(argCall.Id))
+
+                            if (otherMethodData.ContainsKey(argCall.Id)
+                                ||!argEscaping.Contains(argCall))
                             {
                                 escaping[argCall.Id] = true;
                             }
                         }
-                        break;
-
-                    default:
                         break;
                 }
             }

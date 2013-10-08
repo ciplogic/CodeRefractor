@@ -53,6 +53,8 @@
     <Compile Include="Optimizations\ConstantFoldingAndPropagation\SimpleAssignment\DeleteAssignmentWithSelf.cs" />
     <Compile Include="Optimizations\EscapeAndLowering\InFunctionLoweringVars.cs" />
     <Compile Include="Optimizations\Inliner\InlineGetterAndSetterMethods.cs" />
+    <Compile Include="Optimizations\Licm\LoopDetection.cs" />
+    <Compile Include="Optimizations\Licm\LoopInvariantCodeMotion.cs" />
     <Compile Include="Optimizations\Purity\AnalyzeFunctionIsEmpty.cs" />
     <Compile Include="Optimizations\Purity\AnalyzeFunctionIsGetter.cs" />
     <Compile Include="Optimizations\Purity\AnalyzeFunctionIsSetter.cs" />
@@ -104,7 +106,6 @@
     <Compile Include="Optimizations\SimpleDce\DeadStoreLastSequenceRemover.cs" />
     <Compile Include="Optimizations\SimpleDce\DoubleAssignPropagation.cs" />
     <Compile Include="Optimizations\Util\OptimizationLevels.cs" />
-    <Compile Include="Optimizations\VRegVariablePropagation.cs" />
     <Compile Include="OuputCodeWriter\Platform\PlatformInvokeCodeWriter.cs" />
     <Compile Include="OuputCodeWriter\Platform\PlatformInvokeDllImports.cs" />
     <Compile Include="OuputCodeWriter\Platform\PlatformInvokeDllMethod.cs" />

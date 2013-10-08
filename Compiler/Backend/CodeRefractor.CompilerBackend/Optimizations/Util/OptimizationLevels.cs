@@ -9,6 +9,7 @@ using CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagation.
 using CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering;
 using CodeRefractor.CompilerBackend.Optimizations.Inliner;
 using CodeRefractor.CompilerBackend.Optimizations.Jumps;
+using CodeRefractor.CompilerBackend.Optimizations.Licm;
 using CodeRefractor.CompilerBackend.Optimizations.Purity;
 using CodeRefractor.CompilerBackend.Optimizations.ReachabilityDfa;
 using CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions;
@@ -88,8 +89,6 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
                            new ConstantVariableOperatorPropagation(),
                            new ConstantVariablePropagationInCall(),
                            
-                           new VRegVariablePropagation(),
-                           
                            new DoubleAssignPropagation(),
                            
       
@@ -111,7 +110,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
                              new OneAssignmentDeadStoreAssignment(),
                            new ReachabilityLines(),
                            new PropagationVariablesOptimizationPass(),
-                           new InFunctionLoweringVars()
+                           new InFunctionLoweringVars(),
+                           new LoopInvariantCodeMotion(), 
                              
                        }.ToList();
         }
