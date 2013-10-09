@@ -192,6 +192,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
                 case OperationKind.GetStaticField:
                     var assign = operation.GetAssignment();
                     return assign.AssignedTo;
+                case OperationKind.GetField:
+                    var fieldGetter = (FieldGetter) operation.Value;
+                    return (LocalVariable) fieldGetter.AssignedTo;
                 case OperationKind.BinaryOperator:
                     var binOp = (BinaryOperator)operation.Value;
                     return binOp.AssignedTo;
