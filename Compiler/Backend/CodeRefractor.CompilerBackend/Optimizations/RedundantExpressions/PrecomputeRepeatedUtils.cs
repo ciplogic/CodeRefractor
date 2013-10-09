@@ -61,6 +61,16 @@ namespace CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions
         {
             return (BinaryOperator)localOperations[index].Value;
         }
+        public static FieldGetter GetFieldOperation(this List<LocalOperation> localOperations, List<int> calls, int i)
+        {
+            var index = calls[i];
+            return GetFieldOperation(localOperations, index);
+        }
+
+        public static FieldGetter GetFieldOperation(this List<LocalOperation> localOperations, int index)
+        {
+            return (FieldGetter)localOperations[index].Value;
+        }
 
         public static BranchOperator GetBranchOperator(this List<LocalOperation> localOperations, List<int> calls, int i)
         {

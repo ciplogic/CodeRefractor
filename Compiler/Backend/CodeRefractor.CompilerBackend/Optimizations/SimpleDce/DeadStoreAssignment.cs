@@ -40,6 +40,11 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
                 var opKind = op.Kind;
                 if (opKind != OperationKind.Assignment
                    && opKind != OperationKind.BinaryOperator
+                   && opKind != OperationKind.NewArray
+                   && opKind != OperationKind.NewObject
+                   && opKind != OperationKind.GetArrayItem
+                   && opKind != OperationKind.BinaryOperator
+                   && opKind != OperationKind.GetField
                     && opKind != OperationKind.UnaryOperator)
                     continue;
                 var variableDefinition = op.GetUseDefinition();

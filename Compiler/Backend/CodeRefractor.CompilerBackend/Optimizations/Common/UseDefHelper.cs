@@ -190,6 +190,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
                 case OperationKind.NewArray:
                 case OperationKind.CopyArrayInitializer:
                 case OperationKind.GetStaticField:
+                case OperationKind.GetArrayItem:
                     var assign = operation.GetAssignment();
                     return assign.AssignedTo;
                 case OperationKind.GetField:
@@ -377,7 +378,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
             var getFieldData = (FieldGetter)op.Value;
             if (usageVariable.Equals(getFieldData.Instance))
             {
-                getFieldData.Instance = definitionIdentifier;
+                getFieldData.Instance = (LocalVariable) definitionIdentifier;
             }
         }
 

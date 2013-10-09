@@ -62,7 +62,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Inliner
                                                          methodData);
 
             var mappedLocals = BuildMappedLocals(methodToInlineInterpreter,
-                                                 intermediateCode.Vars.LocalVariables.Count);
+                                                 intermediateCode.Vars.LocalVars.Count);
 
             var mappedVregs = BuildMappedVregs(intermediateCode, methodToInlineInterpreter);
 
@@ -108,7 +108,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Inliner
                                                 Dictionary<int, LocalVariable> mappedLocals)
         {
             var localVars =
-                methodToInlineInterpreter.MidRepresentation.Vars.LocalVariables;
+                methodToInlineInterpreter.MidRepresentation.Vars.LocalVars;
             var localVarsToAdd = mappedLocals.Select(id => new LocalVariable
                                                                {
                                                                    Kind = VariableKind.Local,
@@ -116,17 +116,14 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Inliner
                                                                    FixedType =
                                                                        localVars.First(
                                                                            item =>
-                                                                           id.Key == item.Value.Id).
-                                                                       Value.
-                                                                       FixedType
+                                                                           id.Key == item.Id).FixedType
                                                                }).ToList();
             var vars = intermediateCode.Vars;
             foreach (var localVariable in localVarsToAdd)
             {
-                vars.LocalVariables[localVariable.Id] = localVariable;
+                vars.LocalVars[localVariable.Id] = localVariable;
             }
-            vars.LocalVars.Clear();
-            vars.LocalVars.AddRange(vars.LocalVariables.Values.ToList());
+    
         }
 
         #region Instruction mapped
@@ -237,7 +234,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Inliner
         {
             var mappedNames = new Dictionary<int, LocalVariable>();
             var localVariables =
-                methodToInlineInterpreter.MidRepresentation.Vars.LocalVariables;
+                methodToInlineInterpreter.MidRepresentation.Vars.LocalVars;
             for (var i = 0; i < localVariables.Count; i++)
             {
                 var identifierValue = (LocalVariable)localVariables[i].Clone();

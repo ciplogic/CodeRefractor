@@ -46,10 +46,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers
 
         public override int GetHashCode()
         {
-            unchecked
-            {
-                return Name.GetHashCode();
-            }
+            return (int) Kind + 8*Id;
         }
     }
 }

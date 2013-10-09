@@ -64,7 +64,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
         public void CopyLocalVariableIntoStack(int value)
         {
-            var locVar = _representation.Vars.LocalVariables[value];
+            var locVar = _representation.Vars.LocalVars.First(v=>v.Id ==value);
 
             var vreg = SetNewVReg();
 
@@ -117,7 +117,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             };
 
             _evaluator.Stack.Pop();
-            _representation.Vars.LocalVariables[value] = newLocal;
+            _representation.Vars.LocalVars[value] = newLocal;
             var assingment = new Assignment
             {
                 AssignedTo = newLocal,
@@ -137,7 +137,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             };
 
             _evaluator.Stack.Pop();
-            _representation.Vars.LocalVariables[value] = newLocal;
+            _representation.Vars.LocalVars[value] = newLocal;
             var assingment = new Assignment
             {
                 AssignedTo = newLocal,
@@ -522,7 +522,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             var vreg = SetNewVReg();
             vreg.FixedType = index.LocalType.MakeByRefType();
 
-            var argument = _representation.Vars.LocalVariables[index.LocalIndex];
+            var argument = _representation.Vars.LocalVars.First(v=>v.Id ==index.LocalIndex);
             var assignment = new RefAssignment
             {
                 Left = vreg,
@@ -560,7 +560,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                                  {
                                      AssignedTo = vreg,
                                      FieldName = fieldName,
-                                     Instance = firstVar
+                                     Instance = (LocalVariable) firstVar
 
                                  };
             AddOperation(OperationKind.GetField, assignment);

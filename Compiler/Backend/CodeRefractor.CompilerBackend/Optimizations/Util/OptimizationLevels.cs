@@ -63,7 +63,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
                            new DceVRegUnused(),
                            new DeleteAssignmentWithSelf(), 
                         
-                           new AssignmentWithVregPrevLineFolding(), 
+                           //new AssignmentWithVregPrevLineFolding(), 
                            new PropagationVariablesOptimizationPass(), 
                            new RemoveDeadStoresInBlockOptimizationPass(), 
                            new FoldVariablesDefinitionsOptimizationPass(), 
@@ -80,6 +80,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
                            new PrecomputeRepeatedPureFunctionCall(), 
                            new PrecomputeRepeatedBinaryOperators(), 
                            new PrecomputeRepeatedUnaryOperators(), 
+                           new PrecomputeRepeatedFieldGets(), 
 
                            new AssignToReturnPropagation(),
                            new DeadStoreLastSequenceRemover(),

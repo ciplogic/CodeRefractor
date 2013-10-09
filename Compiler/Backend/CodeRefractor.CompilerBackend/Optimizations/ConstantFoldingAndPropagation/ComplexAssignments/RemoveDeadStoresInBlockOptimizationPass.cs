@@ -50,6 +50,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                 case OperationKind.BinaryOperator:
                 case OperationKind.BranchOperator:
                 case OperationKind.UnaryOperator:
+                case OperationKind.GetField:
                     break;
                     
                 case OperationKind.Call:

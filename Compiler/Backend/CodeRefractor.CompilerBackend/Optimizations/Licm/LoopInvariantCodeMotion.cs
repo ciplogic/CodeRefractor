@@ -72,6 +72,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Licm
                     case OperationKind.UnaryOperator:
                     case OperationKind.Call:
                     case OperationKind.BinaryOperator:
+                    case OperationKind.GetField:
                     case OperationKind.Assignment:
                         break;
                 }
@@ -98,7 +99,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Licm
 
         }
 
-        private HashSet<LocalVariable> GetAllDefinedVariables(MetaMidRepresentation intermediateCode, int loopStart, int loopEnd)
+        private static HashSet<LocalVariable> GetAllDefinedVariables(MetaMidRepresentation intermediateCode, int loopStart, int loopEnd)
         {
             var localOps = intermediateCode.LocalOperations;
             var result = new HashSet<LocalVariable>();

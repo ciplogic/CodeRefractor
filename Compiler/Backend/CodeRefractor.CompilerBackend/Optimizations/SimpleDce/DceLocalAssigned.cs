@@ -23,6 +23,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
             RemoveCandidatesInUsages(operations, vregConstants);
             if (vregConstants.Count == 0)
                 return;
+            return;
             OptimizeUnusedLocals(vregConstants, intermediateCode.Vars);
         }
 
@@ -66,7 +67,6 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
             foreach (var localUnused in localConstants)
             {
                 variables.LocalVars.RemoveAll(local => local.Id == localUnused);
-                variables.LocalVariables.Remove(localUnused);
             }
         }
 
