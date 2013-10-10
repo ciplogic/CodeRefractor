@@ -64,9 +64,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
         private bool UpdateKnownUsages(LocalOperation op)
         {
             var result =false;
-            foreach (var possibleUsage in _dictionary)
+            foreach (var possibleUsage in _dictionary.Where(possibleUsage => op.OperationUses(possibleUsage.Key)))
             {
-                if (!op.OperationUses(possibleUsage.Key)) continue;
                 op.SwitchUsageWithDefinition(possibleUsage.Key, possibleUsage.Value);
                 result = true;
             }

@@ -118,13 +118,23 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
         public static bool[] BuildEscapingBools(MethodBase method, ParameterInfo[] parameterInfos)
         {
             var escapingBools = new bool[parameterInfos.Length+1];
+            
             var escapeData = AnalyzeParametersAreEscaping.EscapingParameterData(method);
             if (escapeData != null)
+            {
                 foreach (var escaping in escapeData)
                 {
                     if (escaping.Value)
                         escapingBools[escaping.Key] = true;
                 }
+            }
+            else
+            {
+                for (var index = 0; index <= parameterInfos.Length; index++)
+                {
+                    escapingBools[index] = true;
+                }
+            }
             return escapingBools;
         }
     }

@@ -61,9 +61,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
                         var otherMethodData = GetEscapingParameterData(methodData);
                         if (otherMethodData == null)
                             break;
-                        for (var i = 0; i < methodData.Parameters.Count; i++)
+                        foreach (var parameter in methodData.Parameters)
                         {
-                            var parameter = methodData.Parameters[i];
                             var argCall = parameter as ArgumentVariable;
                             if (argCall == null)
                                 continue;

@@ -13,7 +13,7 @@ namespace SimpleAdditions
         public static void Main()
         {
             int n = 5000000;
-            NBodySystem bodies = new NBodySystem();
+            var bodies = new NBodySystem();
             Console.WriteLine(bodies.Energy());
             for (int i = 0; i < n; i++) bodies.Advance(0.01);
             Console.WriteLine(bodies.Energy());

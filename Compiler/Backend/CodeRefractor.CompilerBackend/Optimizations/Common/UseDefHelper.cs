@@ -34,7 +34,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
 
         public static List<LocalVariable> GetUsages(this LocalOperation operation)
         {
-            var result = new List<LocalVariable>();
+            var result = new List<LocalVariable>(2);
             switch (operation.Kind)
             {
                 case OperationKind.Assignment:
@@ -46,7 +46,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
                     break;
                 case OperationKind.BranchOperator:
                     var branchOperator = ((BranchOperator)operation.Value);
-                    result.AddUsage(branchOperator.CompareValue);
+                    result.AddUsage(branchOperator.CompareValue);;
+                    result.AddUsage(branchOperator.SecondValue);
                     break;
                 case OperationKind.BinaryOperator:
                     var binaryOperator = ((BinaryOperator)operation.Value);
@@ -153,10 +154,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
         public static bool OperationUses(this LocalOperation operation, LocalVariable variable)
         {
             var result = GetUsages(operation);
-            if (result.Count == 0)
-                return false;
-
-            return result.Any(localVariable => localVariable.Equals(variable));
+            return result.Count != 0 && 
+                result.Any(localVariable => localVariable.Equals(variable));
         }
 
         private static void AddUsage(this List<LocalVariable> usages, IdentifierValue usage)
@@ -210,12 +209,12 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
             }
         }
 
-        public static HashSet<int> GetVariableUsages(this MetaMidRepresentation representation, LocalVariable variable)
+        public static List<int> GetVariableUsages(this MetaMidRepresentation representation, LocalVariable variable)
         {
             return representation.LocalOperations.GetVariableUsages(variable);
         }
 
-        public static HashSet<int> GetVariableUsages(this List<LocalOperation> localOperations, LocalVariable variable)
+        public static List<int> GetVariableUsages(this List<LocalOperation> localOperations, LocalVariable variable)
         {
             var startIndex = 0;
             var endIndex = localOperations.Count-1;
@@ -224,9 +223,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
             return result;
         }
 
-        public static HashSet<int> GetVariableUsages(List<LocalOperation> localOperations, LocalVariable variable, int startIndex, int endIndex)
+        public static List<int> GetVariableUsages(List<LocalOperation> localOperations, LocalVariable variable, int startIndex, int endIndex)
         {
-            var result = new HashSet<int>();
+            var result = new List<int>();
             for (var index = startIndex; index <= endIndex; index++)
             {
                 var op = localOperations[index];
@@ -389,6 +388,10 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
             if (usageVariable.Equals(opBranchOperator.CompareValue))
             {
                 opBranchOperator.CompareValue = definitionIdentifier;
+            }
+            if (usageVariable.Equals(opBranchOperator.SecondValue))
+            {
+                opBranchOperator.SecondValue = definitionIdentifier;
             }
         }
 

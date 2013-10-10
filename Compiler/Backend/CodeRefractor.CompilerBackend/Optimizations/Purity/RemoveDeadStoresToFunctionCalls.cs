@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions;
@@ -14,18 +15,21 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
             var localOperations = midRepresentation.LocalOperations;
 
             var result = false;
-            var calls = localOperations
-                .Select((item, index) => new Tuple<LocalOperation,int>(item,index))
-                .Where(op => op.Item1.Kind == OperationKind.Call)
-                .Select(tuple=>tuple.Item2)
-                .ToArray();
+            var calls = new List<int>();
+            for (var index = 0; index < localOperations.Count; index++)
+            {
+                var operation = localOperations[index];
+                if(operation.Kind!=OperationKind.Call)
+                    continue;
+                calls.Add(index);
+            }
+            if (calls.Count == 0)
+                return false;
             foreach (var call in calls)
             {
                 var methodData = PrecomputeRepeatedUtils.GetMethodData(localOperations, call);
                 if (methodData.Result == null)
-                {
                     continue;
-                }
                 var resultUsages = localOperations.GetVariableUsages(methodData.Result);
                 if (resultUsages.Count != 0) continue;
                 result = true;

@@ -41,7 +41,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return other.Kind.Equals(Kind) && other.Id == Id;
+            return other.Kind == Kind && other.Id == Id;
         }
 
         public override int GetHashCode()
