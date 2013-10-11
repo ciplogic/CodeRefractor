@@ -87,6 +87,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
                 case OperationKind.FieldRefAssignment:
                 case OperationKind.CopyArrayInitializer:
                 case OperationKind.GetStaticField:
+                case OperationKind.LoadFunction:
                     break;
                 default:
                     throw new NotImplementedException();

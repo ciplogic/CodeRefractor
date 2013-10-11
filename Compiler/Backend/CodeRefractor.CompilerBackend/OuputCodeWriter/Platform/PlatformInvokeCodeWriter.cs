@@ -72,6 +72,13 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.Platform
         }
 
 
+        public static string WriteDelegateCallCode(this MethodInterpreter delegateInvoke)
+        {
+            var sb = new StringBuilder();
+
+            return sb.ToString();
+        }
+
         public static string WritePlatformInvokeMethod(this MethodInterpreter platformInvoke)
         {
             var invokeRepresentation = platformInvoke.PlatformInvoke;

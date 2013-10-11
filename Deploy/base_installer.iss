@@ -36,7 +36,6 @@ Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescrip
 Source: "..\bin\CodeRefractor.Compiler.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\bin\CodeRefractor.Launcher.exe"; DestDir: "{app}"; Flags: ignoreversion   
 Source: "..\bin\sloth.h"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\bin\CodeRefactorRuntime\*.h"; DestDir: "{app}\CodeRefactorRuntime"; Flags: ignoreversion
 Source: "..\bin\*.dll"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 

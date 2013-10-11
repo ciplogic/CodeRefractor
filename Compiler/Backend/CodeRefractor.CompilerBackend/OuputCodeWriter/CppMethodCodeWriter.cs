@@ -157,8 +157,9 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
         {
             var assign = (FunctionPointerStore)operation.Value;
             var leftData = assign.AssignedTo;
-            var rightData = assign.FunctionPointer.ToString();
-            bodySb.AppendFormat("{0}=&({1});", leftData.Name, rightData);
+            var info = assign.FunctionPointer;
+            var methodName = info.ClangMethodSignature();
+            bodySb.AppendFormat("{0}=&({1});", leftData.Name, methodName);
             
         }
 

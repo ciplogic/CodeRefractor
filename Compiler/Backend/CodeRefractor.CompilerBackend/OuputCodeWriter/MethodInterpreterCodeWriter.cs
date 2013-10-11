@@ -38,6 +38,12 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             return Interpreter.WritePlatformInvokeMethod();
         }
 
+        internal string WriteDelegateCallCode()
+        {
+            return Interpreter.WriteDelegateCallCode();
+        }
+
+
         public string WriteHeaderMethod()
         {
             var methodBase = Interpreter.Method;

@@ -43,6 +43,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             //WriteUsedRuntimeTypes(CrRuntimeLibrary.Instance, sb);
 
             WriteClosureStructBodies(typeClosure.ToArray(), sb);
+            WriteClosureDelegateBodies(closure, sb);
             WriteClosureHeaders(closure, sb);
 
             sb.AppendLine("#include \"runtime_base.partcpp\"");
@@ -109,6 +110,27 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                 }
                 sb.AppendFormat("}}; }}").AppendLine();
             }
+        }
+
+        private static void WriteClosureDelegateBodies(List<MethodInterpreter> closure, StringBuilder sb)
+        {
+            foreach (var methodBodyAttribute in CrRuntimeLibrary.Instance.UsedCppMethods)
+            {
+                WriteUsedCppRuntimeMethod(methodBodyAttribute, sb);
+            }
+
+            foreach (var interpreter in closure)
+            {
+                var codeWriter = new MethodInterpreterCodeWriter
+                {
+                    Interpreter = interpreter
+                };
+
+                if (interpreter.Kind != MethodKind.Delegate)
+                    continue;
+                sb.AppendLine(codeWriter.WriteDelegateCallCode());
+            }
+
         }
 
         private static void WriteClosureBodies(List<MethodInterpreter> closure, StringBuilder sb)

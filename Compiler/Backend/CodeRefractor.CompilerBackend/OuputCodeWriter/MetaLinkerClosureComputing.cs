@@ -40,6 +40,21 @@ namespace CodeRefractor.RuntimeBase
                 result[descInfo] = interpreter;
                 toAdd.Add(interpreter);
             }
+            localOperations = operations.Where(op => op.Kind == OperationKind.LoadFunction).ToArray();
+            foreach (var localOperation in localOperations)
+            {
+                var functionPointer = (FunctionPointerStore)localOperation.Value;
+                var info = functionPointer.FunctionPointer;
+                var descInfo = info.GetMethodDescriptor();
+                if (result.ContainsKey(descInfo))
+                    continue;
+                var interpreter = ClassTypeData.GetInterpreterStatic(info);
+                if (interpreter == null)
+                    continue;
+                result[descInfo] = interpreter;
+                toAdd.Add(interpreter);
+            }
+            
             foreach (var interpreter in toAdd)
             {
                 UpdateMethodEntryClosure(interpreter, result);
