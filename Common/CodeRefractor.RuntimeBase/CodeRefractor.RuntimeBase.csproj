@@ -47,6 +47,7 @@
     <Compile Include="CilMethodAttribute.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\Identifiers\NonEscapingMode.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\RefArrayItemAssignment.cs" />
+    <Compile Include="TypeNamerUtils.cs" />
     <Compile Include="TypesClosureLinker.cs" />
     <Compile Include="Config\CodeRefractorVersions.cs" />
     <Compile Include="Config\CommandLineParse.cs" />

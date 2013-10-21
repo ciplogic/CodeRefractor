@@ -23,7 +23,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
             RemoveCandidatesInUsages(operations, vregConstants);
             if (vregConstants.Count == 0)
                 return;
-            return;
+            
             OptimizeUnusedLocals(vregConstants, intermediateCode.Vars);
         }
 

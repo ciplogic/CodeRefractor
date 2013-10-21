@@ -359,10 +359,6 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
         {
             if(localVariable.NonEscaping==NonEscapingMode.Stack)
                 return;
-            if(localVariable.Id==158)
-            {
-                
-            }
             if (localVariable.NonEscaping == NonEscapingMode.Pointer)
             {
                 var cppName = localVariable.ComputedType().ToCppName(localVariable.NonEscaping);

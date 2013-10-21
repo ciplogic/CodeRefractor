@@ -15,6 +15,13 @@ namespace CodeRefractor.RuntimeBase
         {
             var result = new Dictionary<string, MethodInterpreter> { { entryPoints.ToString(), entryPoints } };
             UpdateMethodEntryClosure(entryPoints, result);
+            foreach (var interpreter in result)
+            {
+                var isGenericDeclaringType = interpreter.Value.IsGenericDeclaringType();
+                if(!isGenericDeclaringType)
+                    continue;
+                
+            }
             return result.Values.ToList();
         }
 
@@ -37,7 +44,14 @@ namespace CodeRefractor.RuntimeBase
                 var interpreter = ClassTypeData.GetInterpreterStatic(info);
                 if (interpreter == null)
                     continue;
+                interpreter = interpreter.Clone();
+                var isGenericDeclaringType = interpreter.IsGenericDeclaringType();
+                if (isGenericDeclaringType)
+                {
+                    interpreter.Specialize();
+                }
                 result[descInfo] = interpreter;
+
                 toAdd.Add(interpreter);
             }
             localOperations = operations.Where(op => op.Kind == OperationKind.LoadFunction).ToArray();
@@ -57,6 +71,12 @@ namespace CodeRefractor.RuntimeBase
             
             foreach (var interpreter in toAdd)
             {
+                if (interpreter.IsGenericDeclaringType())
+                {
+                    var genericSpecialization = interpreter.Clone();
+                    genericSpecialization.Specialize();
+                    UpdateMethodEntryClosure(genericSpecialization, result);
+                }else
                 UpdateMethodEntryClosure(interpreter, result);
             }
         }

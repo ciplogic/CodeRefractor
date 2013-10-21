@@ -17,6 +17,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         public readonly MethodBase Method;
 
         public MetaMidRepresentationOperationFactory OperationFactory;
+        public List<Type> ClassSpecializationType = new List<Type>();
+        public List<Type> MethodSpecializationType = new List<Type>(); 
 
         public MethodInterpreter(MethodBase method)
         {
@@ -25,6 +27,28 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             var pureAttribute = method.GetCustomAttribute<PureMethodAttribute>();
             if (pureAttribute != null)
                 PureMethodTable.AddPureFunction(method);
+        }
+
+        public void Specialize()
+        {
+            if (!IsGenericDeclaringType()) return;
+            var genTypeArguments = Method.DeclaringType.GetGenericArguments();
+            foreach (var genTypeArgument in genTypeArguments)
+            {
+                ClassSpecializationType.Add(genTypeArgument);
+            }
+        }
+
+        public MethodInterpreter Clone()
+        {
+            var result = new MethodInterpreter(Method);
+            result.Process();
+            return result;
+        }
+
+        public bool IsGenericDeclaringType()
+        {
+            return Method.DeclaringType.IsGenericType;
         }
 
         public override string ToString()

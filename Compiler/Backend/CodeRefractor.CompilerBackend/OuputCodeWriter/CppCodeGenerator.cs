@@ -9,8 +9,6 @@ using System.Text;
 using CodeRefractor.CompilerBackend.Linker;
 using CodeRefractor.CompilerBackend.OuputCodeWriter.Platform;
 using CodeRefractor.RuntimeBase;
-using CodeRefractor.RuntimeBase.Analyze;
-using CodeRefractor.RuntimeBase.FrontEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.ConstTable;
@@ -40,7 +38,6 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 
             sb.AppendLine("#include \"sloth.h\"");
             CrRuntimeLibrary.Instance.RemapUsedTypes();
-            //WriteUsedRuntimeTypes(CrRuntimeLibrary.Instance, sb);
 
             WriteClosureStructBodies(typeClosure.ToArray(), sb);
             WriteClosureDelegateBodies(closure, sb);
@@ -85,16 +82,15 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             {
                 var type = CrRuntimeLibrary.Instance.GetReverseType(typeData) ?? typeData;
                 var ns = type.Namespace ?? "";
-                sb.AppendFormat("namespace {0} {{ ", ns.Replace('.', '_'));
-                sb.AppendFormat("struct {0}; }}", type.Name).AppendLine();
+                sb.AppendFormat("struct {0}; ", type.ToCppMangling()).AppendLine();
             }
             foreach (var typeData in typeDatas)
             {
                 var type = CrRuntimeLibrary.Instance.GetReverseType(typeData) ?? typeData;
                 var mappedType = CrRuntimeLibrary.Instance.GetMappedType(type) ?? typeData;
                 var ns = type.Namespace??"";
-                sb.AppendFormat("namespace {0} {{", ns.Replace('.', '_')).AppendLine();
-                sb.AppendFormat("struct {0} {{", type.Name).AppendLine();
+                
+                sb.AppendFormat("struct {0} {{", type.ToCppMangling()).AppendLine();
                 var fieldInfos = mappedType.GetFields().ToList();
                 fieldInfos.AddRange(mappedType.GetFields(BindingFlags.NonPublic|BindingFlags.Instance));
                 foreach (var fieldData in fieldInfos)
@@ -108,7 +104,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                     sb.AppendFormat(" static {0} {1};", fieldData.FieldType.ToCppName(), fieldData.Name)
                         .AppendLine();
                 }
-                sb.AppendFormat("}}; }}").AppendLine();
+                sb.AppendFormat("}};").AppendLine();
             }
         }
 
@@ -168,153 +164,6 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                 sb.AppendLine(codeWriter.WriteMethodCode());
             }
             sb.AppendLine("///---End closure code --- ");
-        }
-
-        private static void WriteUsedRuntimeTypes(CrRuntimeLibrary crCrRuntimeLibrary, StringBuilder sb)
-        {
-            var usedTypes = crCrRuntimeLibrary.UsedTypes;
-            foreach (var usedType in usedTypes)
-            {
-                var typeData = usedType.Value;
-                var runtimeType = usedType.Key;
-                sb.AppendFormat("namespace {0} {{", typeData.Namespace.Replace('.', '_')).AppendLine();
-                sb.AppendFormat("struct {0} {{", typeData.Name).AppendLine();
-                var mappedAttribute = crCrRuntimeLibrary.TypeAttribute[runtimeType];
-                //sb.AppendLine(mappedAttribute.Code);
-                var fields = GetFieldsOfType(runtimeType);
-                foreach (var fieldData in fields)
-                {
-                    sb.AppendFormat(" {0} {1};", fieldData.FieldType.ToCppName(), fieldData.Name).AppendLine();
-                }
-                foreach (var fieldData in typeData.GetFields(BindingFlags.Static).Where(field => field.IsStatic))
-                {
-                    sb.AppendFormat(" static {0} {1};", fieldData.FieldType.ToCppName(), fieldData.Name)
-                        .AppendLine();
-                }
-                sb.AppendFormat("}}; }}").AppendLine();
-            }
-        }
-
-        private static List<FieldInfo> GetFieldsOfType(Type runtimeType)
-        {
-            var fields = runtimeType.GetFields(BindingFlags.Instance|BindingFlags.Public).Where(field => !field.IsStatic).ToList();
-            fields.AddRange(runtimeType.GetFields(BindingFlags.Instance | BindingFlags.NonPublic).Where(field => !field.IsStatic));
-            return fields;
-        }
-
-        private static void WriteClassHeaders(MetaLinker linker, StringBuilder sb)
-        {
-            var entryPoint = linker.MethodInfo;
-            var assemblyData = AssemblyData.GetAssemblyData(entryPoint.DeclaringType.Assembly);
-            var typeDatas =
-                assemblyData.Types.Values.Where(t => t.IsClass && !t.IsArray).Cast<ClassTypeData>().ToArray();
-
-            WriteForwardTypeDefinitions(sb, typeDatas);
-
-            var enumTypeDatas = assemblyData.Types.Values.Where(t => t.Info.IsSubclassOf(typeof (Enum))).ToArray();
-            WriteEnumBodies(sb, enumTypeDatas);
-            WriteForwardStructBodies(typeDatas, sb);
-            WriteStaticFieldDefinitions(sb, typeDatas);
-        }
-
-        private static void WriteMethodBodies(MetaLinker linker, StringBuilder sb, CrRuntimeLibrary crCrRuntimeLibrary)
-        {
-            foreach (var metaInterpreter in GlobalMethodPool.Instance.Interpreters
-                .Where(m => m.Value.Kind == MethodKind.PlatformInvoke))
-            {
-                var interpreterCodeWriter = new MethodInterpreterCodeWriter
-                {
-                    Interpreter = metaInterpreter.Value
-                };
-                sb.AppendLine(interpreterCodeWriter.WritePInvokeMethodCode());
-            }
-            foreach (var metaInterpreter in GlobalMethodPool.Instance.Interpreters
-                .Where(m => m.Value.Kind != MethodKind.PlatformInvoke))
-            {
-                var interpreterCodeWriter = new MethodInterpreterCodeWriter
-                                                {
-                                                    Interpreter = metaInterpreter.Value
-                                                };
-                sb.AppendLine(interpreterCodeWriter.WriteMethodSignature());
-            } 
-            foreach (var metaInterpreter in GlobalMethodPool.Instance.Interpreters
-                .Where(m => m.Value.Kind != MethodKind.PlatformInvoke))
-            {
-                var interpreterCodeWriter = new MethodInterpreterCodeWriter
-                {
-                    Interpreter = metaInterpreter.Value
-                };
-                sb.AppendLine(interpreterCodeWriter.WriteMethodCode());
-            } 
-            WriteMainBody(linker, sb);
-        }
-
-        private static void WriteEnumBodies(StringBuilder sb, TypeData[] enumTypeDatas)
-        {
-            sb.Append("namespace Enums");
-            sb.AppendLine("{");
-            foreach (var enumTypeData in enumTypeDatas)
-            {
-                var enumTypeInfo = enumTypeData.Info;
-
-                sb.AppendFormat("enum {0} {{", enumTypeInfo.Name);
-                sb.AppendLine("};");
-            }
-            sb.AppendLine("}");
-        }
-
-        private static void WriteStaticFieldDefinitions(StringBuilder sb, ClassTypeData[] typeDatas)
-        {
-            foreach (var typeData in typeDatas)
-            {
-                foreach (var fieldData in typeData.Fields.Where(field => field.IsStatic))
-                {
-                    sb.AppendFormat("{2} {4}::{0}::{1} = {3};",
-                                    typeData.Name,
-                                    fieldData.Name,
-                                    fieldData.TypeData.Info.ToCppName(),
-                                    Activator.CreateInstance(fieldData.TypeData.Info),
-                                    typeData.Namespace
-                        ).AppendLine();
-                }
-            }
-        }
-
-        private static void WriteForwardStructBodies(ClassTypeData[] typeDatas, StringBuilder sb)
-        {
-            foreach (var typeData in typeDatas)
-            {
-                sb.AppendFormat("namespace {0} {{", typeData.Namespace).AppendLine();
-                sb.AppendFormat("struct {0} {{", typeData.Name).AppendLine();
-                foreach (var fieldData in typeData.Fields.Where(field => !field.IsStatic))
-                {
-                    sb.AppendFormat(" {0} {1};", fieldData.TypeData.Info.ToCppName(), fieldData.Name).AppendLine();
-                }
-                foreach (var fieldData in typeData.Fields.Where(field => field.IsStatic))
-                {
-                    sb.AppendFormat(" static {0} {1};", fieldData.TypeData.Info.ToCppName(), fieldData.Name)
-                        .AppendLine();
-                }
-                sb.AppendFormat("}}; }}").AppendLine();
-                foreach (var item in typeData.Interpreters)
-                {
-                    var interpreterCodeWriter = new MethodInterpreterCodeWriter
-                                                    {
-                                                        Interpreter = item
-                                                    };
-                    sb.Append(interpreterCodeWriter.WriteHeaderMethod());
-                }
-            }
-        }
-
-        private static void WriteForwardTypeDefinitions(StringBuilder sb, ClassTypeData[] typeDatas)
-        {
-            foreach (var typeData in typeDatas)
-            {
-                sb.AppendFormat("namespace {0} {{", typeData.Namespace).AppendLine();
-                sb.AppendFormat("struct {0};", typeData.Name).AppendLine();
-                sb.AppendFormat("}}").AppendLine();
-            }
         }
 
         private static void WriteUsedCppRuntimeMethod(KeyValuePair<string, MethodBase> methodBodyAttribute,

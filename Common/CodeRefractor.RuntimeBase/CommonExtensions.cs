@@ -143,18 +143,6 @@ namespace CodeRefractor.RuntimeBase
             return CrRuntimeLibrary.Instance.GetReverseType(type) ?? type;
         }
 
-        public static string ClangMethodSignature(this MethodBase method)
-        {
-            var mappedType = CrRuntimeLibrary.Instance.GetReverseType(method.DeclaringType);
-            var declaringType = mappedType ?? method.DeclaringType;
-            var typeNamespace = (declaringType.Namespace ?? string.Empty).Replace('.', '_');
-            var typeName = declaringType.Name;
-            var methodName = method.Name;
-            if (method is ConstructorInfo)
-                methodName = declaringType.Name + "_ctor";
-            return String.Format("{0}_{1}__{2}", typeNamespace, typeName, methodName);
-        }
-
         public static bool IsBranchOperation(this LocalOperation operation, bool andLabels = true)
         {
             if (andLabels && operation.Kind == OperationKind.Label)
@@ -248,83 +236,6 @@ namespace CodeRefractor.RuntimeBase
             catch (Exception)
             {
             }
-        }
-
-        public static string ToCppMangling(this Type type)
-        {
-            return IsVoid(type)
-                       ? "void"
-                       : type.Name.ToCppMangling(type.Namespace);
-        }
-
-        public static string ToCppMangling(this string s, string nameSpace = "")
-        {
-            if (String.IsNullOrEmpty(s))
-                return String.Empty;
-            nameSpace = nameSpace ?? "";
-            nameSpace=nameSpace.Replace(".", "_");
-            var fullName = nameSpace+"::"+s;
-            if (s.EndsWith("[]"))
-            {
-                s = s.Remove(s.Length - 2, 2);
-                fullName = String.Format("std::shared_ptr <Array<{0}::{1}> > &", nameSpace,s);
-            }
-            return fullName;
-        }
-
-        public static string ToCppName(this Type type, NonEscapingMode isSmartPtr = NonEscapingMode.Smart)
-        {
-            if(type==null)
-            {
-                return "void*";
-            }
-            type = type.ReversedType();
-            if (type.IsArray)
-            {
-                var elementType = type.GetElementType();
-                var fullTypeName = elementType.ToCppName();
-                switch (isSmartPtr)
-                {
-                    case NonEscapingMode.Smart:
-                        return String.Format("std::shared_ptr< Array < {0} > >", fullTypeName);
-                    case NonEscapingMode.Pointer:
-                        return String.Format("Array < {0} > *", fullTypeName);
-                    case NonEscapingMode.Stack:
-                        return String.Format("Array < {0} > ", fullTypeName);
-                }
-
-            }
-            if (type.IsClass || isSmartPtr != NonEscapingMode.Smart)
-            {
-                if(type.IsPrimitive || type.IsValueType)
-                    isSmartPtr = NonEscapingMode.Stack;
-                switch (isSmartPtr)
-                {
-                    case NonEscapingMode.Smart:
-                        return String.Format("std::shared_ptr<{0}>", type.Name.ToCppMangling(type.Namespace));
-                    case NonEscapingMode.Pointer:
-                        return String.Format("{0} *", type.Name.ToCppMangling(type.Namespace));
-                    case NonEscapingMode.Stack:
-                        return String.Format("{0} ", type.Name.ToCppMangling(type.Namespace));
-                }
-            }
-            if (!type.IsClass || isSmartPtr!=NonEscapingMode.Smart)
-            {
-                return type.IsSubclassOf(typeof (Enum))
-                           ? "int"
-                           : type.Name.ToCppMangling(type.Namespace);
-            }
-            if (type.IsByRef)
-            {
-                var elementType = type.GetElementType();
-                return String.Format("{0}*", elementType.Name.ToCppMangling(elementType.Namespace));
-            }
-            return String.Format("std::shared_ptr<{0}>", type.Name.ToCppMangling(type.Namespace));
-        }
-
-        public static bool IsVoid(this Type type)
-        {
-            return type == typeof (void);
         }
 
         public static void ToFile(this string text, string fileName)
