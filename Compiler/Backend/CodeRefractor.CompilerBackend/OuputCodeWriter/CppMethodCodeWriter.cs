@@ -2,22 +2,17 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Text;
 using CodeRefractor.CompilerBackend.HandleOperations;
 using CodeRefractor.CompilerBackend.Linker;
-using CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering;
-using CodeRefractor.CompilerBackend.Optimizations.Purity;
 using CodeRefractor.RuntimeBase;
-using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.ConstTable;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
 using CodeRefractor.RuntimeBase.Runtime;
-using Mono.Reflection;
 
 #endregion
 
@@ -297,18 +292,21 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 
         private static void HandleLoadField(LocalOperation operation, StringBuilder bodySb)
         {
-            var fieldGetterInfo = (FieldGetter)operation.Value;
-            var assignedTo = (LocalVariable)fieldGetterInfo.AssignedTo;
+            var fieldGetterInfo = (FieldGetter) operation.Value;
+            var assignedFrom = fieldGetterInfo.Instance;
+            var getStackField = assignedFrom.NonEscaping == NonEscapingMode.Stack;
+            var fieldText = string.Format(getStackField ? "{0}.{1}" : "{0}->{1}", fieldGetterInfo.Instance.Name,
+                fieldGetterInfo.FieldName);
+
+            var assignedTo = fieldGetterInfo.AssignedTo;
             switch (assignedTo.NonEscaping)
             {
                 case NonEscapingMode.Smart:
-                    bodySb.AppendFormat("{0} = {1}->{2};", assignedTo.Name, fieldGetterInfo.Instance.Name,
-                                        fieldGetterInfo.FieldName);
+                    bodySb.AppendFormat("{0} = {1};", assignedTo.Name, fieldText);
                     break;
 
                 case NonEscapingMode.Pointer:
-                    bodySb.AppendFormat("{0} = {1}->{2}.get();", assignedTo.Name, fieldGetterInfo.Instance.Name,
-                                        fieldGetterInfo.FieldName);
+                    bodySb.AppendFormat("{0} = {1}.get();", assignedTo.Name, fieldText);
                     break;
             }
         }
