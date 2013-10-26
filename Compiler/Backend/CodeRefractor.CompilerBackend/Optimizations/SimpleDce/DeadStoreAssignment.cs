@@ -8,11 +8,12 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
 {
     class DeadStoreAssignment : ResultingInFunctionOptimizationPass
     {
+        readonly Dictionary<LocalVariable, int> _definitions = new Dictionary<LocalVariable, int>();
         public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
         {
             var toRemove = new HashSet<int>();
+            _definitions.Clear();
             var localOperations = intermediateCode.LocalOperations;
-            var definitions = new Dictionary<LocalVariable, int>();
 
             for (int index = 0; index < localOperations.Count; index++)
             {
@@ -20,7 +21,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
                 var variableDefinition = op.GetUseDefinition();
                 if (variableDefinition == null)
                     continue;
-                definitions[variableDefinition] = index;
+                _definitions[variableDefinition] = index;
             }
 
             foreach (var op in localOperations)
@@ -28,10 +29,10 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
                 var usages = op.GetUsages();
                 foreach (var localVariable in usages)
                 {
-                    definitions.Remove(localVariable);
+                    _definitions.Remove(localVariable);
                 }
             }
-            if (definitions.Count == 0)
+            if (_definitions.Count == 0)
                 return;
 
             for (var index = 0; index < localOperations.Count; index++)
@@ -48,7 +49,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
                     && opKind != OperationKind.UnaryOperator)
                     continue;
                 var variableDefinition = op.GetUseDefinition();
-                if (definitions.ContainsKey(variableDefinition))
+                if (_definitions.ContainsKey(variableDefinition))
                     toRemove.Add(index);
             }
             if (toRemove.Count == 0)

@@ -110,11 +110,6 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 
         private static void WriteClosureDelegateBodies(List<MethodInterpreter> closure, StringBuilder sb)
         {
-            foreach (var methodBodyAttribute in CrRuntimeLibrary.Instance.UsedCppMethods)
-            {
-                WriteUsedCppRuntimeMethod(methodBodyAttribute, sb);
-            }
-
             foreach (var interpreter in closure)
             {
                 var codeWriter = new MethodInterpreterCodeWriter

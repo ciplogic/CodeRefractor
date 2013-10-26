@@ -18,7 +18,15 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
         public MetaMidRepresentationOperationFactory OperationFactory;
         public List<Type> ClassSpecializationType = new List<Type>();
-        public List<Type> MethodSpecializationType = new List<Type>(); 
+        public List<Type> MethodSpecializationType = new List<Type>();
+        public MethodKind Kind { get; set; }
+
+        public HashSet<int> LabelList { get; set; }
+
+        public MetaMidRepresentation MidRepresentation = new MetaMidRepresentation();
+        public PlatformInvokeRepresentation PlatformInvoke = new PlatformInvokeRepresentation();
+        //private HashSet<int> _hashedLabels;
+
 
         public MethodInterpreter(MethodBase method)
         {
@@ -41,8 +49,15 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
         public MethodInterpreter Clone()
         {
-            var result = new MethodInterpreter(Method);
-            result.Process();
+            var result = new MethodInterpreter(Method)
+            {
+                MidRepresentation = MidRepresentation,
+                ClassSpecializationType = ClassSpecializationType,
+                Kind = Kind,
+                LabelList = LabelList,
+                MethodSpecializationType = MethodSpecializationType,
+                PlatformInvoke = PlatformInvoke
+            };
             return result;
         }
 
@@ -56,14 +71,6 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             return string.Format("{0}::{1}(...);", Method.DeclaringType.ToCppMangling(), Method.Name);
         }
 
-        public MethodKind Kind { get; set; }
-
-        public HashSet<int> LabelList { get; set; }
-
-        public readonly MetaMidRepresentation MidRepresentation = new MetaMidRepresentation();
-        public readonly PlatformInvokeRepresentation PlatformInvoke = new PlatformInvokeRepresentation();
-        private HashSet<int> _hashedLabels;
-
         public void Process()
         {
             if (HandlePlatformInvokeMethod(Method))
@@ -71,7 +78,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             if(Method.GetMethodBody()==null)
                 return;
             var instructions = MethodBodyReader.GetInstructions(Method);
-            _hashedLabels = MetaLinker.ComputeLabels(Method);
+            LabelList = MetaLinker.ComputeLabels(Method);
             MidRepresentation.Method = Method;
             var evaluator = new EvaluatorStack();
             OperationFactory = new MetaMidRepresentationOperationFactory(MidRepresentation, evaluator);
@@ -90,7 +97,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             {
                 offset = ((Instruction) (instruction.Operand)).Offset;
             }
-            if (_hashedLabels.Contains(instruction.Offset))
+            if (LabelList.Contains(instruction.Offset))
             {
                 OperationFactory.SetLabel(instruction.Offset);
             }

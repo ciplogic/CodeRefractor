@@ -16,7 +16,7 @@ namespace CodeRefractor.RuntimeBase
             var typeName = declaringType.ToCppMangling();
             var methodName = method.Name;
             if (method is ConstructorInfo)
-                methodName = typeName + "_ctor";
+                methodName = "ctor";
             return String.Format("{0}_{1}", typeName, methodName);
         }
 
@@ -58,9 +58,7 @@ namespace CodeRefractor.RuntimeBase
         public static string ToCppName(this Type type, NonEscapingMode isSmartPtr = NonEscapingMode.Smart)
         {
             if (type == null)
-            {
                 return "void*";
-            }
             type = type.ReversedType();
             if (type.IsArray)
             {

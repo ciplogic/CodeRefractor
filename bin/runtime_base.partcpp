@@ -37,13 +37,13 @@ void _AddJumpAndLength(int jump, int length)
 }
 #endif
 
-static std::vector<System::Byte*> _constTables;
-System::Byte* RuntimeHelpers_GetBytes(int id)
+static std::vector<System_Byte*> _constTables;
+System_Byte* RuntimeHelpers_GetBytes(int id)
 {
 	return _constTables[id];
 }
 
-void AddConstantByteArray(System::Byte* data)
+void AddConstantByteArray(System_Byte* data)
 {
 	_constTables.push_back(data);
 }
@@ -51,7 +51,7 @@ void AddConstantByteArray(System::Byte* data)
 
 #include <windows.h>
 
-HMODULE LoadNativeLibrary(const System::Char* dllFileName)
+HMODULE LoadNativeLibrary(const System_Char* dllFileName)
 {
 	return LoadLibraryW(dllFileName);
 }
