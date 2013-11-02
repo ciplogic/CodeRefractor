@@ -3,27 +3,24 @@
 
 #include <memory>
 
-namespace System {
-typedef bool		Boolean;
-typedef unsigned char		Byte;
-typedef short		Int16;
-typedef int			Int32;
-typedef	unsigned int UInt32;
-typedef	long long int Int64;
-typedef wchar_t		Char;
-typedef float		Single;
-typedef double		Double;
-typedef void*		IntPtr;
-typedef void		Void;
+typedef bool		System_Boolean;
+typedef unsigned char		System_Byte;
+typedef short		System_Int16;
+typedef int			System_Int32;
+typedef	unsigned int System_UInt32;
+typedef	long long int System_Int64;
+typedef wchar_t		System_Char;
+typedef float		System_Single;
+typedef double		System_Double;
+typedef void*		System_IntPtr;
+typedef void		System_Void;
 
 static void* IntPtr_Zero = 0;
 
 
-}
-
-System::Boolean System_IntPtr__op_Equality(
-	const System::IntPtr&src, 
-	const System::IntPtr&dest)
+System_Boolean System_IntPtr__op_Equality(
+	const System_IntPtr&src, 
+	const System_IntPtr&dest)
 {
 	return src == dest;
 }
@@ -58,7 +55,7 @@ template <class T> struct Array
 
 template <class T> void System_Runtime_CompilerServices_RuntimeHelpers__InitializeArray(
 		const std::shared_ptr< Array <T> > & array,
-		const std::shared_ptr< Array < System::Byte > > & data
+		const std::shared_ptr< Array < System_Byte > > & data
 ){
 	auto arraySrcRef = data.get();
 	auto arrayDestRef = array.get();
@@ -66,13 +63,13 @@ template <class T> void System_Runtime_CompilerServices_RuntimeHelpers__Initiali
 	memcpy(arrayDestRef->Items, arraySrcRef->Items, bytesCount);
 }
 
-System::Byte* System_Runtime_CompilerServices_RuntimeHelpers__InitializeArray(int id);
+System_Byte* System_Runtime_CompilerServices_RuntimeHelpers__InitializeArray(int id);
 
-void AddConstantByteArray(System::Byte* data);
+void AddConstantByteArray(System_Byte* data);
 #ifdef WIN32
 #include <Windows.h>
 
-HMODULE LoadNativeLibrary(const System::Char* dllFileName);
+HMODULE LoadNativeLibrary(const System_Char* dllFileName);
 void* LoadNativeMethod(HMODULE module, const char* methodName);
 #else
 
