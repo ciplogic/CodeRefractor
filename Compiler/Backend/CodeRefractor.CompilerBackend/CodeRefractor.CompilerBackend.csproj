@@ -117,10 +117,6 @@
       <Project>{10CEF783-53C3-42A7-940A-73773A2AF24F}</Project>
       <Name>CodeRefractor.RuntimeBase</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\mono.reflection-master\Mono.Reflection.csproj">
-      <Project>{97B010AB-0756-46DC-B75A-7A6C4F6FF28D}</Project>
-      <Name>Mono.Reflection</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -40,15 +40,8 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Tao.OpenGl">
-      <HintPath>..\..\..\..\TaoFramework\bin\Tao.OpenGl.dll</HintPath>
-    </Reference>
-    <Reference Include="Tao.Sdl">
-      <HintPath>..\..\..\..\TaoFramework\bin\Tao.Sdl.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CallEvent.cs" />
     <Compile Include="NBody.cs" />
   </ItemGroup>
   <ItemGroup>

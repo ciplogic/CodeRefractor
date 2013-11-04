@@ -9,6 +9,8 @@ namespace CodeRefractor.RuntimeBase
 {
     public static class TypeNamerUtils
     {
+        public const string StdSharedPtr = "std::shared_ptr";
+
         public static string ClangMethodSignature(this MethodBase method)
         {
             var mappedType = CrRuntimeLibrary.Instance.GetReverseType(method.DeclaringType);
@@ -54,7 +56,6 @@ namespace CodeRefractor.RuntimeBase
             }
             return fullName;
         }
-
         public static string ToCppName(this Type type, NonEscapingMode isSmartPtr = NonEscapingMode.Smart)
         {
             if (type == null)
@@ -67,7 +68,7 @@ namespace CodeRefractor.RuntimeBase
                 switch (isSmartPtr)
                 {
                     case NonEscapingMode.Smart:
-                        return String.Format("std::shared_ptr< Array < {0} > >", fullTypeName);
+                        return String.Format(StdSharedPtr+"< Array < {0} > >", fullTypeName);
                     case NonEscapingMode.Pointer:
                         return String.Format("Array < {0} > *", fullTypeName);
                     case NonEscapingMode.Stack:
@@ -79,10 +80,15 @@ namespace CodeRefractor.RuntimeBase
             {
                 if (type.IsPrimitive || type.IsValueType)
                     isSmartPtr = NonEscapingMode.Stack;
+                if (type.Name.EndsWith("*") || type.Name.EndsWith("&"))
+                {
+                    var elementType = type.GetElementType();
+                    return String.Format("{0}* ", elementType.ToCppMangling());
+                }
                 switch (isSmartPtr)
                 {
                     case NonEscapingMode.Smart:
-                        return String.Format("std::shared_ptr<{0}>", type.ToCppMangling());
+                        return String.Format(StdSharedPtr+"<{0}>", type.ToCppMangling());
                     case NonEscapingMode.Pointer:
                         return String.Format("{0} *", type.ToCppMangling());
                     case NonEscapingMode.Stack:
@@ -100,7 +106,7 @@ namespace CodeRefractor.RuntimeBase
                 var elementType = type.GetElementType();
                 return String.Format("{0}*", elementType.ToCppMangling());
             }
-            return String.Format("std::shared_ptr<{0}>", type.ToCppMangling());
+            return String.Format(StdSharedPtr+"<{0}>", type.ToCppMangling());
         }
 
         public static bool IsVoid(this Type type)

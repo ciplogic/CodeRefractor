@@ -44,13 +44,13 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                                                                                         Id = pos++
                                                                                     }));
 
-                pos = 0;
-                Vars.LocalVars.AddRange(Vars.Variables.Select(v => new LocalVariable
-                                                                       {
-                                                                           FixedType = v.LocalType,
-                                                                           Id = pos++,
-                                                                           Kind = VariableKind.Argument
-                                                                       }));
+                var varsToAdd = Vars.Variables.Select((v, index) => new LocalVariable
+                {
+                    FixedType = v.LocalType,
+                    Id = index,
+                    Kind = VariableKind.Argument
+                }).ToList();
+                Vars.LocalVars.AddRange(varsToAdd);
             }
         }
 

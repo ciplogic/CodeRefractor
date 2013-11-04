@@ -121,6 +121,12 @@
     <Compile Include="Util\DotNetUtils.cs" />
     <Compile Include="Util\NativeCompilationUtils.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Compiler\Frontend\MsilReader\MsilReader.csproj">
+      <Project>{1b6cf014-6cbd-4a06-a4de-50656c61b5c7}</Project>
+      <Name>MsilReader</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
@@ -129,10 +135,4 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <ItemGroup>
-    <ProjectReference Include="..\..\mono.reflection-master\Mono.Reflection.csproj">
-      <Project>{97B010AB-0756-46DC-B75A-7A6C4F6FF28D}</Project>
-      <Name>Mono.Reflection</Name>
-    </ProjectReference>
-  </ItemGroup>
 </Project>

@@ -11,6 +11,7 @@ namespace CodeRefractor.RuntimeBase
         public static List<Type> GetTypesClosure(List<MethodInterpreter> closure)
         {
             var typesSet = ScanMethodParameters(closure);
+
             bool isAdded;
             do
             {
@@ -36,10 +37,20 @@ namespace CodeRefractor.RuntimeBase
                 typesSet = toAdd;
 
             } while (isAdded);
-            var typesClosure = typesSet.Where(t => !t.IsPrimitive).ToList();
+            var typesClosure = typesSet.Where(t => IsRefClassType(t)).ToList();
             SortTypeDependencies(typesClosure);
 
             return typesClosure;
+        }
+
+        private static bool IsRefClassType(Type t)
+        {
+            var typeCode = Type.GetTypeCode(t);
+            if (t.IsPrimitive)
+                return false;
+            if (t.HasElementType)
+                return IsRefClassType(t.GetElementType());
+            return true;
         }
 
         private static HashSet<Type> ScanMethodParameters(List<MethodInterpreter> closure)

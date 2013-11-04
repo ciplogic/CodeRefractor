@@ -9,7 +9,7 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.ConstTable;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
 using CodeRefractor.RuntimeBase.Shared;
-using Mono.Reflection;
+using MsilReader;
 
 namespace CodeRefractor.RuntimeBase.MiddleEnd
 {
@@ -110,41 +110,27 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         public void CopyStackIntoArgument(int value)
         {
             var topVariable = _evaluator.Stack.Peek();
-            var newLocal = new LocalVariable
-            {
-                Kind = VariableKind.Argument,
-                Id = value
-            };
-
+            
             _evaluator.Stack.Pop();
-            _representation.Vars.LocalVars[value] = newLocal;
+            var newLocal = _representation.Vars.LocalVars[value];
             var assingment = new Assignment
             {
                 AssignedTo = newLocal,
                 Right = topVariable
             };
 
-            newLocal.FixedType = topVariable.ComputedType();
             AddOperation(OperationKind.Assignment, assingment);
         }
         public void CopyStackIntoLocalVariable(int value)
         {
             var topVariable = _evaluator.Stack.Peek();
-            var newLocal = new LocalVariable
-            {
-                Kind = VariableKind.Local,
-                Id = value
-            };
-
             _evaluator.Stack.Pop();
-            _representation.Vars.LocalVars[value] = newLocal;
+            var newLocal = _representation.Vars.LocalVars[value];
             var assingment = new Assignment
             {
                 AssignedTo = newLocal,
                 Right = topVariable
             };
-
-            newLocal.FixedType = topVariable.ComputedType();
             AddOperation(OperationKind.Assignment, assingment);
         }
 
