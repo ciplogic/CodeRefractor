@@ -145,7 +145,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
         private static void HandleGetAddressOfArrayItem(LocalOperation operation, StringBuilder bodySb)
         {
             var value = (RefArrayItemAssignment) operation.Value;
-            bodySb.AppendFormat("{0} = & ({1}->Items[{2}])", value.Left.Name, value.ArrayVar.Name, value.Index.Name);
+            bodySb.AppendFormat("{0} = & ({1}->Items[{2}]);", value.Left.Name, value.ArrayVar.Name, value.Index.Name);
         }
 
         private static void HandleLoadFunction(LocalOperation operation, StringBuilder bodySb)

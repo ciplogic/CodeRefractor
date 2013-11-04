@@ -4,8 +4,6 @@
    contributed by Isaac Gouy, optimization and use of more C# idioms by Robert F. Tobler
 */
 
-using System;
-
 namespace SimpleAdditions
 {
     class NBody
