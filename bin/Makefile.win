@@ -1,16 +1,16 @@
 # Project: Output
-# Makefile created by Dev-C++ 5.4.1
+# Makefile created by Dev-C++ 5.5.2
 
 CPP      = g++.exe
 CC       = gcc.exe
 WINDRES  = windres.exe
 OBJ      = output.o
 LINKOBJ  = output.o
-LIBS     = -L"C:/Oss/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib32" -static-libgcc   -s
-INCS     = -I"C:/Oss/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include"
-CXXINCS  = -I"C:/Oss/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include"
+LIBS     = -L"C:/Oss/Dev-Cpp/MinGW64/lib" -L"C:/Oss/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib" -static-libgcc   -s
+INCS     = -I"C:/Oss/Dev-Cpp/MinGW64/include" -I"C:/Oss/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include"
+CXXINCS  = -I"C:/Oss/Dev-Cpp/MinGW64/include" -I"C:/Oss/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Oss/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.7.1/include/c++"
 BIN      = Output.exe
-CXXFLAGS = $(CXXINCS) -O2 -std=c++11 -march=native -mtune=native -Ofast -std=gnu++11
+CXXFLAGS = $(CXXINCS) -march=native -mtune=native -Ofast -std=gnu++11 -O2 -std=c++11
 CFLAGS   = $(INCS) -march=native -mtune=native -Ofast -std=gnu++11
 RM       = rm -f
 
@@ -18,12 +18,11 @@ RM       = rm -f
 
 all: all-before $(BIN) all-after
 
-
 clean: clean-custom
 	${RM} $(OBJ) $(BIN)
 
 $(BIN): $(OBJ)
 	$(CPP) $(LINKOBJ) -o $(BIN) $(LIBS)
 
-output.o: output.cpp sloth.h CodeRefactorRuntime/System_Primitives.h  CodeRefactorRuntime/System_Console.h  CodeRefactorRuntime/System_Primitives.h runtime_base.partcpp
+output.o: output.cpp
 	$(CPP) -c output.cpp -o output.o $(CXXFLAGS)

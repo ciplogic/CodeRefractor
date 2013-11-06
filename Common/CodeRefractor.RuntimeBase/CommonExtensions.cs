@@ -203,11 +203,13 @@ namespace CodeRefractor.RuntimeBase
 
         public static string ExecuteCommand(this string pathToGpp, string arguments = "")
         {
+            var currentPath = Directory.GetCurrentDirectory();
+            var finalGccPath = Path.Combine(currentPath, pathToGpp);
             var p = new Process
                         {
                             StartInfo =
                                 {
-                                    FileName = pathToGpp,
+                                    FileName = finalGccPath,
                                     Arguments = arguments,
                                     RedirectStandardOutput = true,
                                     RedirectStandardError = true,

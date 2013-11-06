@@ -23,7 +23,7 @@ namespace CodeRefractor.RuntimeBase.Util
         {
             public GccOptions()
             {
-                PathOfCompilerTools = @"c:\Oss\Dev-Cpp\MinGW64\bin\";
+                PathOfCompilerTools = @"..\Lib\Gcc\bin\";
                 CompilerExe = "g++.exe";
                 OptimizationFlags = "-Ofast -fomit-frame-pointer -ffast-math -std=c++11 -static-libgcc ";
                 LinkerOptions = "";
