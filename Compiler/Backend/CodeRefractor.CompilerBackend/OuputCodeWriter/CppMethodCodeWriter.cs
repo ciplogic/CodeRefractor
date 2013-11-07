@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using System.Text;
 using CodeRefractor.CompilerBackend.HandleOperations;
@@ -405,9 +406,18 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             var localVariable = localVar.Right as LocalVariable;
             if (localVariable != null)
             {
+                var leftVarType = localVar.AssignedTo.ComputedType();
+                var rightVarType = localVar.Right.ComputedType();
+                if (leftVarType != rightVarType)
+                {
+                    if (rightVarType.IsPointer)
+                    {
+                        sb.AppendFormat("{0} = *{1};", left, localVariable.Name);
+                        return;
+                    }
+                }
                 var rightVar = localVariable;
-                var right = rightVar.Name;
-                sb.AppendFormat("{0} = {1};", left, right);
+                sb.AppendFormat("{0} = {1};", left, rightVar.Name);
             }
             else
             {

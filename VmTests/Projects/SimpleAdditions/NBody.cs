@@ -10,9 +10,22 @@ namespace SimpleAdditions
 {
     class NBody
     {
-        public static void Main()
+        unsafe static void FillWithColor(uint* data, int w, int h, uint color)
         {
-            Console.WriteLine(2+2);
+            var pixelCount = w * h;
+            for (var i = 0; i < pixelCount; i++)
+            {
+                *data = color;
+                data++;
+            }
+        }
+        public static unsafe void Main()
+        {
+            var surface = new uint[800 * 600];
+            fixed (uint* srf = surface)
+            {
+                FillWithColor(srf, 800, 600, 255);
+            }
         }
     }
 }

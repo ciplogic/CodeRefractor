@@ -12,7 +12,7 @@ typedef	long long int System_Int64;
 typedef wchar_t		System_Char;
 typedef float		System_Single;
 typedef double		System_Double;
-typedef void*		System_IntPtr;
+typedef void* 		System_IntPtr;
 typedef void		System_Void;
 
 static void* IntPtr_Zero = 0;

@@ -9,9 +9,9 @@ namespace CodeRefractor.RuntimeBase.Shared
         public const string ConvI8 = "conv.i8";
         public const string ConvR4 = "conv.r4";
         public const string ConvR8 = "conv.r8";
+        public const string ConvI = "conv.i";
 
         public const string LoadLen = "ldlen";
-
 
         public const string Xor = "xor";
         public const string Or = "or";

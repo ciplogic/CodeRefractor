@@ -113,6 +113,9 @@ namespace CodeRefractor.CompilerBackend.HandleOperations
                     HandleLoadLen(unaryOperator, sb);
                     break;
 
+                case OpcodeOperatorNames.ConvI:
+                    HandleConvI(unaryOperator, sb);
+                    break;
                 case OpcodeOperatorNames.ConvU1:
                     HandleConvU1(unaryOperator, sb);
                     break;
@@ -175,6 +178,10 @@ namespace CodeRefractor.CompilerBackend.HandleOperations
             sb.AppendFormat("{0} = (double){1};", unaryOperator.AssignedTo.Name, unaryOperator.Left.Name);
         }
 
+        private static void HandleConvI(UnaryOperator unaryOperator, StringBuilder sb)
+        {
+            sb.AppendFormat("{0} = (void*){1};", unaryOperator.AssignedTo.Name, unaryOperator.Left.Name);
+        }
 
         private static void HandleConvU1(UnaryOperator unaryOperator, StringBuilder sb)
         {
@@ -286,6 +293,12 @@ namespace CodeRefractor.CompilerBackend.HandleOperations
         {
             string right, left, local;
             GetBinaryOperandNames(localVar, out right, out left, out local);
+            if (localVar.Right.ComputedType() == typeof (IntPtr))
+            {
+                sb.AppendFormat("{0} = {1}+(size_t){2};", local, left, right);
+                
+                return;
+            }
 
             sb.AppendFormat("{0} = {1}+{2};", local, left, right);
         }

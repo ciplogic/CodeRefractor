@@ -193,8 +193,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
         public void ConvI()
         {
-            SetUnaryOperator(OpcodeOperatorNames.ConvI4);
-            _evaluator.Top.FixedType = typeof(int);
+            SetUnaryOperator(OpcodeOperatorNames.ConvI);
+            _evaluator.Top.FixedType = typeof(IntPtr);
         }
 
         public void ConvI4()

@@ -66,6 +66,7 @@ namespace CodeRefractor.CompilerBackend.HandleOperations
 
             var pos = 0;
             bool isFirst = true;
+            var arguments = operationData.Info.GetParameters();
             foreach (var value in identifierValues)
             {
                 if (isFirst)
@@ -73,14 +74,22 @@ namespace CodeRefractor.CompilerBackend.HandleOperations
                 else
                     sb.Append(", ");
                 var localValue = value as LocalVariable;
+                var argumentData = arguments[pos];
                 bool isEscaping = escapingData[pos];
                 pos++;
-            
                 if(localValue==null)
                 {
                     sb.Append(value.ComputedValue());
                     continue;
                 }
+
+                if (localValue.ComputedType() == typeof (IntPtr))
+                {
+                    var argumentTypeCast = argumentData.ParameterType.ToCppMangling();
+                    sb.AppendFormat("({0}){1}", argumentTypeCast, localValue.Name);
+                    continue;
+                }
+
                 switch (localValue.NonEscaping)
                 {
                     case NonEscapingMode.Smart:
