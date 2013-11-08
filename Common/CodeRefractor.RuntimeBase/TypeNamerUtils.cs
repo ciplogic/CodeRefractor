@@ -23,6 +23,20 @@ namespace CodeRefractor.RuntimeBase
         }
 
 
+        public static Type[] GetMethodArgumentTypes(this MethodBase method)
+        {
+            var resultList = new List<Type>();
+            if (!method.IsStatic)
+            {
+                resultList.Add(method.DeclaringType);
+            }
+            var arguments = method.GetParameters();
+            resultList.AddRange(arguments.Select(arg => arg.ParameterType));
+
+            return resultList.ToArray();
+
+        }
+
         public static string ToCppMangling(this Type type)
         {
             return IsVoid(type)

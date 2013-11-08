@@ -9,6 +9,7 @@ using System.Text;
 using CodeRefractor.CompilerBackend.Linker;
 using CodeRefractor.CompilerBackend.OuputCodeWriter.Platform;
 using CodeRefractor.RuntimeBase;
+using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.ConstTable;
@@ -121,6 +122,8 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                     continue;
                 sb.AppendLine(codeWriter.WriteDelegateCallCode());
             }
+
+            sb.AppendLine(DelegateManager.Instance.BuildDelegateContent());
 
         }
 

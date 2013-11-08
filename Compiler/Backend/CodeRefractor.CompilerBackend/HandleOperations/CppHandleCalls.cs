@@ -29,19 +29,6 @@ namespace CodeRefractor.CompilerBackend.HandleOperations
                 bodySb.AppendFormat("return {0};", returnValue.Name);
         }
 
-        public static Type[] GetMethodArgumentTypes(MethodBase method)
-        {
-            var resultList = new List<Type>();
-            if (!method.IsStatic)
-            {
-                resultList.Add(method.DeclaringType);
-            }
-            var arguments = method.GetParameters();
-            resultList.AddRange(arguments.Select(arg=>arg.ParameterType));
-
-            return resultList.ToArray();
-
-        }
 
         public static void HandleCall(LocalOperation operation, StringBuilder sb)
         {
@@ -82,7 +69,7 @@ namespace CodeRefractor.CompilerBackend.HandleOperations
 
             var pos = 0;
             bool isFirst = true;
-            var argumentTypes = GetMethodArgumentTypes(operationData.Info);
+            var argumentTypes = operationData.Info.GetMethodArgumentTypes();
             foreach (var value in identifierValues)
             {
                 if (isFirst)
