@@ -379,7 +379,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             if(declaringType.IsSubclassOf(typeof(Delegate)))
             {
                 var signature = declaringType.GetMethod("Invoke");
-                DelegateManager.RegisterType(declaringType);
+                DelegateManager.RegisterType(declaringType, signature);
             }
 
 
@@ -666,10 +666,10 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             AddOperation(OperationKind.Assignment, assign);
         }
 
-        public void LoadFunction(MethodBase operand)
+        public void LoadFunction(MethodInfo operand)
         {
             var result = SetNewVReg();
-            result.FixedType = typeof (IntPtr);
+            result.FixedType = typeof(MethodInfo);
             var store = new FunctionPointerStore()
             {
                 AssignedTo = result,

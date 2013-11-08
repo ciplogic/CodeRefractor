@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
+using CodeRefractor.RuntimeBase.DataBase;
 
 namespace CodeRefractor.RuntimeBase.Analyze
 {
@@ -62,16 +64,16 @@ void CustomDelegateVoid_Int32_Int32::Register(std::function<void(int, int)> stdF
 }
 ";
 
-        public static void RegisterType(Type declaringType)
+        public static void RegisterType(Type declaringType, MethodInfo signature)
         {
-            Instance._delegateTypes.Add(declaringType);
+            Instance._delegateTypes[declaringType] = signature;
         }
         public static DelegateManager Instance = new DelegateManager();
-        readonly HashSet<Type> _delegateTypes =new HashSet<Type>();
+        readonly Dictionary<Type, MethodInfo> _delegateTypes =new Dictionary<Type, MethodInfo>();
 
         public static bool IsTypeDelegate(Type declaringType)
         {
-            return (Instance._delegateTypes.Contains(declaringType));
+            return (Instance._delegateTypes.ContainsKey(declaringType));
         }
     }
 }

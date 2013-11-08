@@ -177,7 +177,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             }
             if (opcodeStr == "ldftn")
             {
-                OperationFactory.LoadFunction((MethodBase)instruction.Operand);
+                OperationFactory.LoadFunction((MethodInfo)instruction.Operand);
                 return;
             }
             if (opcodeStr == "switch")

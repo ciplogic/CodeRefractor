@@ -1,7 +1,9 @@
 ﻿#region Usings
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using CodeRefractor.CompilerBackend.Linker;
 using CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering;
@@ -25,6 +27,20 @@ namespace CodeRefractor.CompilerBackend.HandleOperations
                 bodySb.Append("return;");
             else
                 bodySb.AppendFormat("return {0};", returnValue.Name);
+        }
+
+        public static Type[] GetMethodArgumentTypes(MethodBase method)
+        {
+            var resultList = new List<Type>();
+            if (!method.IsStatic)
+            {
+                resultList.Add(method.DeclaringType);
+            }
+            var arguments = method.GetParameters();
+            resultList.AddRange(arguments.Select(arg=>arg.ParameterType));
+
+            return resultList.ToArray();
+
         }
 
         public static void HandleCall(LocalOperation operation, StringBuilder sb)
@@ -66,7 +82,7 @@ namespace CodeRefractor.CompilerBackend.HandleOperations
 
             var pos = 0;
             bool isFirst = true;
-            var arguments = operationData.Info.GetParameters();
+            var argumentTypes = GetMethodArgumentTypes(operationData.Info);
             foreach (var value in identifierValues)
             {
                 if (isFirst)
@@ -74,7 +90,7 @@ namespace CodeRefractor.CompilerBackend.HandleOperations
                 else
                     sb.Append(", ");
                 var localValue = value as LocalVariable;
-                var argumentData = arguments[pos];
+                var argumentData = argumentTypes[pos];
                 bool isEscaping = escapingData[pos];
                 pos++;
                 if(localValue==null)
@@ -85,7 +101,7 @@ namespace CodeRefractor.CompilerBackend.HandleOperations
 
                 if (localValue.ComputedType() == typeof (IntPtr))
                 {
-                    var argumentTypeCast = argumentData.ParameterType.ToCppMangling();
+                    var argumentTypeCast = argumentData.ToCppMangling();
                     sb.AppendFormat("({0}){1}", argumentTypeCast, localValue.Name);
                     continue;
                 }
