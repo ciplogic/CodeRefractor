@@ -73,14 +73,14 @@ namespace CodeRefractor.RuntimeBase.Analyze
 
             sb.AppendLine("}; //end of class delegate");
 
-            sb.AppendFormat("void {0}_ctor(std::shared_ptr<{0}> _delegate, void*, std::function<void({1})> fn){{",
+            sb.AppendFormat("void {0}_ctor(const std::shared_ptr<{0}>& _delegate, void*, std::function<void({1})> fn){{",
                     delegateType.Key.ToCppMangling(),
                     parametersFormat)
               .AppendLine();
 
             sb.AppendLine("  _delegate->Register(fn);");
             sb.AppendLine("}");
-            sb.AppendFormat("void {0}_Invoke(std::shared_ptr<{0}> _delegate, {1}){{",
+            sb.AppendFormat("void {0}_Invoke(const std::shared_ptr<{0}>& _delegate, {1}){{",
                     delegateType.Key.ToCppMangling(),
                     namedTypeArgs)
               .AppendLine();
