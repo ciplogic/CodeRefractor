@@ -669,7 +669,9 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         public void LoadFunction(MethodInfo operand)
         {
             var result = SetNewVReg();
-            result.FixedType = typeof(MethodInfo);
+            result.FixedType = operand.GetType();
+            result.CustomData = operand;
+            var ptr = operand.MethodHandle.GetFunctionPointer();
             var store = new FunctionPointerStore()
             {
                 AssignedTo = result,

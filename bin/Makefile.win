@@ -1,14 +1,14 @@
 # Project: Output
-# Makefile created by Dev-C++ 5.5.2
+# Makefile created by Dev-C++ 5.5.3
 
 CPP      = g++.exe
 CC       = gcc.exe
 WINDRES  = windres.exe
 OBJ      = output.o
 LINKOBJ  = output.o
-LIBS     = -L"C:/Oss/Dev-Cpp/MinGW64/lib" -L"C:/Oss/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib" -static-libgcc   -s
-INCS     = -I"C:/Oss/Dev-Cpp/MinGW64/include" -I"C:/Oss/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include"
-CXXINCS  = -I"C:/Oss/Dev-Cpp/MinGW64/include" -I"C:/Oss/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Oss/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.7.1/include/c++"
+LIBS     = -L"C:/Cip/Dev-Cpp/MinGW64/lib" -L"C:/Cip/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib" -static-libgcc   -s
+INCS     = -I"C:/Cip/Dev-Cpp/MinGW64/include" -I"C:/Cip/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include"
+CXXINCS  = -I"C:/Cip/Dev-Cpp/MinGW64/include" -I"C:/Cip/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Cip/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.7.1/include/c++"
 BIN      = Output.exe
 CXXFLAGS = $(CXXINCS) -march=native -mtune=native -Ofast -std=gnu++11 -O2 -std=c++11
 CFLAGS   = $(INCS) -march=native -mtune=native -Ofast -std=gnu++11

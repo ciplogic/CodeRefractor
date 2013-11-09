@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using CodeRefractor.CompilerBackend.HandleOperations;
@@ -354,19 +355,40 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             return variablesSb;
         }
 
+        static string ComputeCommaSeparatedParameterTypes(LocalVariable localVariable)
+        {
+            var methodInfo = (MethodInfo)localVariable.CustomData;
+
+            var parameters = methodInfo.GetMethodArgumentTypes().ToArray();
+
+            var parametersFormat = TypeNamerUtils.GetCommaSeparatedParameters(parameters);
+            return parametersFormat;
+        }
+
         private static void AddVariableContent(StringBuilder variablesSb, string format, LocalVariable localVariable)
         {
             if(localVariable.NonEscaping==NonEscapingMode.Stack)
                 return;
+            if (localVariable.ComputedType().IsSubclassOf(typeof(MethodInfo)))
+            {
+                variablesSb
+                    .AppendFormat("void (*{0})({1});", 
+                        localVariable.Name, 
+                        ComputeCommaSeparatedParameterTypes(localVariable))
+                    .AppendLine();
+                return;
+            }
             if (localVariable.NonEscaping == NonEscapingMode.Pointer)
             {
                 var cppName = localVariable.ComputedType().ToCppName(localVariable.NonEscaping);
-                variablesSb.AppendFormat(format, cppName, localVariable.Id);
-                variablesSb.AppendLine();
+                variablesSb
+                    .AppendFormat(format, cppName, localVariable.Id)
+                    .AppendLine();
                 return;
             }
-            variablesSb.AppendFormat(format, localVariable.ComputedType().ToCppName(localVariable.NonEscaping), localVariable.Id);
-            variablesSb.AppendLine();
+            variablesSb
+                .AppendFormat(format, localVariable.ComputedType().ToCppName(localVariable.NonEscaping), localVariable.Id)
+                .AppendLine();
         }
 
         private static void HandleAlwaysBranchOperator(LocalOperation operation, StringBuilder sb)

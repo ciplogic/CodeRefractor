@@ -87,6 +87,8 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             }
             foreach (var typeData in typeDatas)
             {
+                if (DelegateManager.IsTypeDelegate(typeData))
+                    continue;
                 var type = CrRuntimeLibrary.Instance.GetReverseType(typeData) ?? typeData;
                 var mappedType = CrRuntimeLibrary.Instance.GetMappedType(type) ?? typeData;
                 var ns = type.Namespace??"";

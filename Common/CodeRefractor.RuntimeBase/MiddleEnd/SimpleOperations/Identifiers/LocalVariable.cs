@@ -5,6 +5,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers
         public VariableKind Kind;
         public int Id;
         public NonEscapingMode NonEscaping;
+        public object CustomData;
 
         public override string ToString()
         {
@@ -17,7 +18,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers
                              {
                                  FixedType = FixedType,
                                  Id = Id,
-                                 Kind = Kind
+                                 Kind = Kind,
+                                 CustomData = CustomData
                              };
             return result;
         }

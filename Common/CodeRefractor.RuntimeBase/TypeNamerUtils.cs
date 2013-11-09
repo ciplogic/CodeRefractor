@@ -37,6 +37,13 @@ namespace CodeRefractor.RuntimeBase
 
         }
 
+
+
+        public static string GetCommaSeparatedParameters(Type[] parameters)
+        {
+            return string.Join(",", parameters.Select(paramType => paramType.ToCppMangling()));
+        }
+
         public static string ToCppMangling(this Type type)
         {
             return IsVoid(type)
