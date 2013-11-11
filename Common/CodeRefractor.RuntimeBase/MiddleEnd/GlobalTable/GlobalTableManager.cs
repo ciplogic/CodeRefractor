@@ -5,19 +5,6 @@ using System.Text;
 
 namespace CodeRefractor.RuntimeBase.MiddleEnd.GlobalTable
 {
-    public enum GlobalFieldKind{
-        None,
-        Const,
-        Static,
-    }
-    public class GlobalFieldDefinition
-    {
-        public string Name{get;set;}
-        public Type ParentType {get;set;}
-        public object ConstValue{get;set;} 
-        public bool Kind{get;set;}
-    }
-
     public class GlobalTableManager
     {
         public Dictionary<Type, GlobalFieldDefinition> GlobalConstants { get; set; }
