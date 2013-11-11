@@ -185,7 +185,7 @@ namespace CodeRefractor.CompilerBackend.HandleOperations
 
         private static void HandleConvU1(UnaryOperator unaryOperator, StringBuilder sb)
         {
-            sb.AppendFormat("{0} = (System::Byte){1};", unaryOperator.AssignedTo.Name, unaryOperator.Left.Name);
+            sb.AppendFormat("{0} = (System_Byte){1};", unaryOperator.AssignedTo.Name, unaryOperator.Left.Name);
         }
         private static void HandleConvI4(UnaryOperator unaryOperator, StringBuilder sb)
         {
@@ -194,7 +194,7 @@ namespace CodeRefractor.CompilerBackend.HandleOperations
 
         private static void HandleConvI8(UnaryOperator unaryOperator, StringBuilder sb)
         {
-            sb.AppendFormat("{0} = (System::Int64){1};", unaryOperator.AssignedTo.Name, unaryOperator.Left.Name);
+            sb.AppendFormat("{0} = (System_Int64){1};", unaryOperator.AssignedTo.Name, unaryOperator.Left.Name);
         }
 
         private static void HandleLoadLen(UnaryOperator unaryOperator, StringBuilder sb)

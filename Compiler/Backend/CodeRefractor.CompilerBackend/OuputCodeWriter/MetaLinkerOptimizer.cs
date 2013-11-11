@@ -46,6 +46,11 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             do
             {
                 doOptimize = false;
+                var toRemove = methodsToOptimize.Where(mth => mth.GetInterpreter() == null).ToArray();
+                foreach (var item in toRemove)
+                {
+                    methodsToOptimize.Remove(item);
+                }
                 foreach (var methodBase in methodsToOptimize)
                 {
                     var interpreter = methodBase.GetInterpreter();

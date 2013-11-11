@@ -35,12 +35,10 @@ namespace CodeRefractor.CompilerBackend.HandleOperations
             var operationData = (MethodData) operation.Value;
 
             var methodInfo = operationData.Info;
-            if (methodInfo.IsConstructor)
-            {
-                var ctorInterpreter = methodInfo.GetInterpreter();
-                if (ctorInterpreter == null)
-                    return;
-            }
+
+            var ctorInterpreter = methodInfo.GetInterpreter();
+            if (ctorInterpreter == null)
+                return; 
             var isVoidMethod = methodInfo.GetReturnType().IsVoid();
             if (isVoidMethod)
             {

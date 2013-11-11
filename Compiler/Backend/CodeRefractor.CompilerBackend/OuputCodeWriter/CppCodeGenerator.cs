@@ -94,20 +94,43 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                 var ns = type.Namespace??"";
                 
                 sb.AppendFormat("struct {0} {{", type.ToCppMangling()).AppendLine();
-                var fieldInfos = mappedType.GetFields().ToList();
-                fieldInfos.AddRange(mappedType.GetFields(BindingFlags.NonPublic|BindingFlags.Instance));
-                foreach (var fieldData in fieldInfos)
+                WriteClassFieldsBody(sb, mappedType);
+                sb.AppendFormat("}};").AppendLine();
+            }
+        }
+
+        private static void WriteClassFieldsBody(StringBuilder sb, Type mappedType)
+        {
+            var fieldInfos = mappedType.GetFields().ToList();
+            fieldInfos.AddRange(mappedType.GetFields(BindingFlags.NonPublic | BindingFlags.Instance));
+            foreach (var fieldData in fieldInfos)
+            {
+                if (fieldData.IsLiteral)
                 {
-                    sb.AppendFormat(" {0} {1};", fieldData.FieldType.ToCppName(), fieldData.Name).AppendLine();
-                }
-                var staticFields = mappedType.GetFields(BindingFlags.Static).ToList();
-                staticFields.AddRange(mappedType.GetFields(BindingFlags.Static|BindingFlags.NonPublic));
-                foreach (var fieldData in staticFields.Where(field => field.IsStatic))
+                    var constFieldValue = fieldData.GetValue(null);
+                    sb.AppendFormat(" {0} {1} = {2};",
+                        fieldData.FieldType.ToCppName(), fieldData.Name, constFieldValue)
+                        .AppendLine();
+                }else
+                sb.AppendFormat(" {0} {1};", fieldData.FieldType.ToCppName(), fieldData.Name).AppendLine();
+            }
+            var staticFields = mappedType.GetFields(BindingFlags.Static).ToList();
+            staticFields.AddRange(mappedType.GetFields(BindingFlags.Static | BindingFlags.NonPublic));
+            foreach (var fieldData in staticFields.Where(field => field.IsStatic))
+            {
+                if (fieldData.IsLiteral)
                 {
-                    sb.AppendFormat(" static {0} {1};", fieldData.FieldType.ToCppName(), fieldData.Name)
+                    var constFieldValue = fieldData.GetValue(null);
+                    sb.AppendFormat(" static {0} {1} = {2};", 
+                        fieldData.FieldType.ToCppName(), fieldData.Name, constFieldValue)
                         .AppendLine();
                 }
-                sb.AppendFormat("}};").AppendLine();
+                else
+                {
+
+                    sb.AppendFormat(" static {0} {1};", fieldData.FieldType.ToCppName(), fieldData.Name)
+                        .AppendLine();
+                } 
             }
         }
 
