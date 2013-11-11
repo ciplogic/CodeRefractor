@@ -14,6 +14,8 @@ namespace CodeRefractor.RuntimeBase.Analyze
         public bool IsArray;
         public Type Info;
 
+        public TypeCode Code { get; set; }
+
         public override string ToString()
         {
             return string.Format("MethodName='{0}' Namespace='{1}'", Name, Namespace);
@@ -40,6 +42,8 @@ namespace CodeRefractor.RuntimeBase.Analyze
             {
                 result = new TypeData();
             }
+
+            result.Code = Type.GetTypeCode(type);
             PopulateTypeDataFields(type, result);
 
             assemblyData.Types[fullName] = result;
