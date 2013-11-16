@@ -16,6 +16,13 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             UpdateMethodEntryClosure(entryPoints, result);
             foreach (var interpreter in result)
             {
+                var declaringType = interpreter.Value.Method.DeclaringType;
+                if (declaringType == null)
+                    continue;
+
+            }
+            foreach (var interpreter in result)
+            {
                 var isGenericDeclaringType = interpreter.Value.IsGenericDeclaringType();
                 if(!isGenericDeclaringType)
                     continue;
@@ -66,6 +73,22 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                     continue;
                 result[descInfo] = interpreter;
                 toAdd.Add(interpreter);
+            }
+
+            foreach (var it in toAdd)
+            {
+                var declaringType = it.Method.DeclaringType;
+                if (declaringType == null)
+                    continue;
+                if (declaringType.TypeInitializer != null)
+                {
+                    var info = declaringType.TypeInitializer;
+                    var descInfo = info.GetMethodDescriptor();
+
+                    var interpreter = ClassTypeData.GetInterpreterStatic(info);
+                    result[descInfo] = interpreter;
+                    UpdateMethodEntryClosure(interpreter, result);
+                }
             }
             
             foreach (var interpreter in toAdd)

@@ -96,6 +96,21 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                 sb.AppendFormat("struct {0} {{", type.ToCppMangling()).AppendLine();
                 WriteClassFieldsBody(sb, mappedType);
                 sb.AppendFormat("}};").AppendLine();
+
+                var staticFields = mappedType.GetFields(BindingFlags.Static).ToList();
+                staticFields.AddRange(mappedType.GetFields(BindingFlags.Static | BindingFlags.NonPublic));
+                foreach (var fieldData in staticFields.Where(field => field.IsStatic))
+                {
+					if (!fieldData.IsLiteral) {
+						sb.AppendFormat (" /* static*/ {0} {3}::{1} = {2};", 
+							fieldData.FieldType.ToCppName (), 
+							fieldData.Name.ValidName (), 
+							Activator.CreateInstance (fieldData.FieldType), 
+							type.ToCppMangling ())
+								.AppendLine ();
+					} else
+						continue;
+                }
             }
         }
 
@@ -108,11 +123,12 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                 if (fieldData.IsLiteral)
                 {
                     var constFieldValue = fieldData.GetValue(null);
-                    sb.AppendFormat(" {0} {1} = {2};",
+                    sb.AppendFormat("// {0} {1} = {2};",
                         fieldData.FieldType.ToCppName(), fieldData.Name, constFieldValue)
                         .AppendLine();
                 }else
-                sb.AppendFormat(" {0} {1};", fieldData.FieldType.ToCppName(), fieldData.Name).AppendLine();
+                sb.AppendFormat(" {0} {1};", fieldData.FieldType.ToCppName(), 
+                    fieldData.Name.ValidName()).AppendLine();
             }
             var staticFields = mappedType.GetFields(BindingFlags.Static).ToList();
             staticFields.AddRange(mappedType.GetFields(BindingFlags.Static | BindingFlags.NonPublic));
@@ -121,14 +137,16 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                 if (fieldData.IsLiteral)
                 {
                     var constFieldValue = fieldData.GetValue(null);
-                    sb.AppendFormat(" static {0} {1} = {2};", 
+                    sb.AppendFormat("// static {0} {1} = {2};", 
                         fieldData.FieldType.ToCppName(), fieldData.Name, constFieldValue)
                         .AppendLine();
                 }
                 else
                 {
 
-                    sb.AppendFormat(" static {0} {1};", fieldData.FieldType.ToCppName(), fieldData.Name)
+                    sb.AppendFormat(" static {0} {1};", 
+                            fieldData.FieldType.ToCppName(), 
+                            fieldData.Name.ValidName())
                         .AppendLine();
                 } 
             }

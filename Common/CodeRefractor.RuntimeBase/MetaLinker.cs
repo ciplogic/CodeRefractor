@@ -8,6 +8,7 @@ using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.Runtime;
 using CodeRefractor.RuntimeBase.Shared;
 using MsilReader;
+using MsilReader;
 
 #endregion
 

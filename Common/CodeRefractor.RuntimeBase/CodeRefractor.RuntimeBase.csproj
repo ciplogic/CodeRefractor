@@ -132,4 +132,10 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\Compiler\Frontend\MsilReader\MsilReader.csproj">
+      <Project>{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}</Project>
+      <Name>MsilReader</Name>
+    </ProjectReference>
+  </ItemGroup>
 </Project>

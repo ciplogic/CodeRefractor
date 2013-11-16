@@ -22,10 +22,17 @@ namespace CodeRefractor.RuntimeBase
                     if (type.IsPrimitive)
                         continue;
                     var fields = mappedType.GetFields().ToList();
-                    fields.AddRange(mappedType.GetFields(BindingFlags.NonPublic | BindingFlags.Instance));
+                    if (fields.Count == 0)
+                        continue;
+                    fields.AddRange(mappedType.GetFields(
+                        BindingFlags.NonPublic 
+                        | BindingFlags.Instance
+                        | BindingFlags.Static));
                     foreach (var fieldInfo in fields)
                     {
                         var fieldType = fieldInfo.FieldType;
+                        if (fieldType.IsInterface)
+                            continue;
                         if (fieldType.IsSubclassOf(typeof(Array)))
                             fieldType = fieldType.GetElementType();
                         if (fieldType.IsByRef)
@@ -37,7 +44,8 @@ namespace CodeRefractor.RuntimeBase
                 typesSet = toAdd;
 
             } while (isAdded);
-            var typesClosure = typesSet.Where(t => IsRefClassType(t)).ToList();
+            var typesClosure = typesSet.Where(t => 
+                IsRefClassType(t) && !t.IsInterface).ToList();
             SortTypeDependencies(typesClosure);
 
             return typesClosure;
@@ -86,7 +94,8 @@ namespace CodeRefractor.RuntimeBase
                 {
                     var depSearchId = typesClosure.IndexOf(depType);
                     if (depSearchId <= i) continue;
-
+                    if (searchType.Namespace == depType.Namespace)
+                        continue;
                     typesClosure[depSearchId] = searchType;
                     typesClosure[i] = depType;
                     i = -1;

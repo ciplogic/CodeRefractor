@@ -197,14 +197,18 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
         {
             var assign = (Assignment) operation.Value;
             var rightData = (StaticFieldGetter) assign.Right;
-            bodySb.AppendFormat("{0} = {1}::{2};", assign.AssignedTo.Name, rightData.DeclaringType.Name, rightData.FieldName);
+            bodySb.AppendFormat("{0} = {1}::{2};", assign.AssignedTo.Name,
+                rightData.DeclaringType.Info.ToCppMangling(),
+                rightData.FieldName.ValidName());
         }
 
         private static void HandleSetStaticField(LocalOperation operation, StringBuilder bodySb)
         {
             var assign = (Assignment) operation.Value;
             var rightData = (StaticFieldSetter) assign.AssignedTo;
-            bodySb.AppendFormat("{1}::{2} = {0};", assign.Right.Name, rightData.DeclaringType.Name, rightData.FieldName);
+            bodySb.AppendFormat("{1}::{2} = {0};", assign.Right.Name,
+                rightData.DeclaringType.ToCppMangling(),
+                rightData.FieldName.ValidName());
         }
 
         private static void HandleSwitch(LocalOperation operation, StringBuilder bodySb)
@@ -318,7 +322,8 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             var assign = (Assignment) operation.Value;
             var fieldSetter = (FieldSetter) assign.AssignedTo;
 
-            bodySb.AppendFormat("{0}->{1} = {2};", fieldSetter.Instance.Name, fieldSetter.FieldName, assign.Right.Name);
+            bodySb.AppendFormat("{0}->{1} = {2};", fieldSetter.Instance.Name,
+                fieldSetter.FieldName.ValidName(), assign.Right.Name);
         }
 
         private static void HandleNewObject(LocalOperation operation, StringBuilder bodySb)
