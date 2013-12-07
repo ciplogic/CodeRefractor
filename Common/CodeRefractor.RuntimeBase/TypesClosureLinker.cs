@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 
 namespace CodeRefractor.RuntimeBase
@@ -37,6 +38,7 @@ namespace CodeRefractor.RuntimeBase
                             fieldType = fieldType.GetElementType();
                         if (fieldType.IsByRef)
                             fieldType = fieldType.GetElementType();
+                        UsedTypeList.Set(type);
                         toAdd.Add(fieldType);
                     }
                 }
@@ -46,8 +48,17 @@ namespace CodeRefractor.RuntimeBase
             } while (isAdded);
             var typesClosure = typesSet.Where(t => 
                 IsRefClassType(t) && !t.IsInterface).ToList();
-            SortTypeDependencies(typesClosure);
-
+            //SortTypeDependencies(typesClosure);
+            foreach (var type in typesClosure)
+            {
+                UsedTypeList.Set(type);
+            }
+            var describedTypes = UsedTypeList.GetDescribedTypes();
+            typesClosure = describedTypes
+                .Where(typeDesc=>typeDesc.ClrTypeCode == TypeCode.Object)
+                .Where(typeDescArray => !typeDescArray.ClrType.IsSubclassOf(typeof(Array)))
+                .Select(typeDescr => typeDescr.ClrType)
+                .ToList();
             return typesClosure;
         }
 

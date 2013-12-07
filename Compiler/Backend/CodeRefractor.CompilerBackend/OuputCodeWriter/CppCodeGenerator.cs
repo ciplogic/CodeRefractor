@@ -116,6 +116,9 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 
         private static void WriteClassFieldsBody(StringBuilder sb, Type mappedType)
         {
+            var typeDesc = UsedTypeList.Set(mappedType);
+            typeDesc.WriteLayout(sb);
+            return;
             var fieldInfos = mappedType.GetFields().ToList();
             fieldInfos.AddRange(mappedType.GetFields(BindingFlags.NonPublic | BindingFlags.Instance));
             foreach (var fieldData in fieldInfos)

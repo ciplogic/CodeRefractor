@@ -17,6 +17,10 @@ namespace CodeRefractor.RuntimeBase
         public LocalVariable SetNewVReg()
         {
             _vRegId++;
+            if (_vRegId == 70)
+            {
+                
+            }
             var newLocal = new LocalVariable
                                {
                                    Kind = VariableKind.Vreg,

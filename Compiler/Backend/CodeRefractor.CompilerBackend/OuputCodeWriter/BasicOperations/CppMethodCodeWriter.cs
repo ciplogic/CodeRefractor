@@ -2,13 +2,13 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using CodeRefractor.CompilerBackend.HandleOperations;
 using CodeRefractor.CompilerBackend.Linker;
 using CodeRefractor.RuntimeBase;
+using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.ConstTable;
@@ -18,11 +18,10 @@ using CodeRefractor.RuntimeBase.Runtime;
 
 #endregion
 
-namespace CodeRefractor.CompilerBackend.OuputCodeWriter
+namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
 {
     internal static class CppMethodCodeWriter
     {
-        
         public static string WriteCode(MetaMidRepresentation midRepresentation)
         {
             var operations = midRepresentation.LocalOperations;

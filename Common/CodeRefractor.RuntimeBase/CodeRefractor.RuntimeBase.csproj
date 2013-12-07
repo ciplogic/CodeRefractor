@@ -43,7 +43,11 @@
     <Compile Include="Analyze\ClassTypeData.cs" />
     <Compile Include="Analyze\DelegateManager.cs" />
     <Compile Include="Analyze\FieldDataRef.cs" />
+    <Compile Include="Analyze\FieldNameTable.cs" />
+    <Compile Include="Analyze\NamerUtils.cs" />
     <Compile Include="Analyze\ProgramData.cs" />
+    <Compile Include="Analyze\TypeDescription.cs" />
+    <Compile Include="Analyze\UsedTypeList.cs" />
     <Compile Include="CilMethodAttribute.cs" />
     <Compile Include="MiddleEnd\GlobalTable\GlobalTableManager.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\Identifiers\NonEscapingMode.cs" />

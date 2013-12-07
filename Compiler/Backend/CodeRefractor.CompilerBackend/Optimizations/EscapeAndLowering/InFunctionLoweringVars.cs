@@ -57,7 +57,12 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
             switch (op.Kind)
             {
                 case OperationKind.Assignment:
+                    HandleAssign(localVariable, candidateVariables, op);
+                    break;
                 case OperationKind.Return:
+                    HandleReturn(localVariable, candidateVariables, op);
+                    break;
+                
                 case OperationKind.Call:
                     HandleCall(localVariable, candidateVariables, op);
                     break;
@@ -76,6 +81,17 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
                 default:
                     throw new NotImplementedException();
             }
+        }
+
+        private static void HandleReturn(LocalVariable localVariable, HashSet<LocalVariable> candidateVariables, LocalOperation op)
+        {
+            candidateVariables.Remove(localVariable);
+        }
+
+        private static void HandleAssign(LocalVariable localVariable, HashSet<LocalVariable> candidateVariables, LocalOperation op)
+        {
+            var assignData = op.GetAssignment();
+            candidateVariables.Remove(assignData.AssignedTo);
         }
 
         private static void HandleCall(LocalVariable localVariable, HashSet<LocalVariable> candidateVariables, LocalOperation op)

@@ -1,12 +1,9 @@
 ﻿#region Usings
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using CodeRefractor.CompilerBackend.Linker;
-using CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering;
 using CodeRefractor.CompilerBackend.OuputCodeWriter;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
@@ -36,9 +33,6 @@ namespace CodeRefractor.CompilerBackend.HandleOperations
 
             var methodInfo = operationData.Info;
 
-            var ctorInterpreter = methodInfo.GetInterpreter();
-            if (ctorInterpreter == null)
-                return; 
             var isVoidMethod = methodInfo.GetReturnType().IsVoid();
             if (isVoidMethod)
             {

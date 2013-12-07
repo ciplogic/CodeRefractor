@@ -50,13 +50,13 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
             }
         }
 
-        private static void RemoveCandidate(HashSet<int> vregConstants, LocalVariable definition)
+        private static void RemoveCandidate(HashSet<int> locals, LocalVariable definition)
         {
             if (definition == null)
                 return;
-            if (definition.Kind != VariableKind.Local)
+            if (definition.Kind == VariableKind.Vreg)
                 return;
-            vregConstants.Remove(definition.Id);
+            locals.Remove(definition.Id);
         }
 
         private static void OptimizeUnusedLocals(HashSet<int> localConstants, MidRepresentationVariables variables)

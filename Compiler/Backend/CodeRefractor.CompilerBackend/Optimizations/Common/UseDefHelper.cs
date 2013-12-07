@@ -376,6 +376,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
                                                  IdentifierValue definitionIdentifier)
         {
             var getFieldData = (FieldGetter)op.Value;
+            if(!(definitionIdentifier is LocalVariable))
+                return;
             if (usageVariable.Equals(getFieldData.Instance))
             {
                 getFieldData.Instance = (LocalVariable) definitionIdentifier;
