@@ -98,11 +98,11 @@
     <Compile Include="Optimizations\ConstantFoldingAndPropagation\ComplexAssignments\OperatorConstantFolding.cs" />
     <Compile Include="Optimizations\ConstantFoldingAndPropagation\ComplexAssignments\OperatorPartialConstantFolding.cs" />
     <Compile Include="Optimizations\Inliner\SmallFunctionsInliner.cs" />
-    <Compile Include="Optimizations\InstructionsUtils.cs" />
+    <Compile Include="Optimizations\Util\InstructionsUtils.cs" />
     <Compile Include="Optimizations\Jumps\MergeConsecutiveLabels.cs" />
     <Compile Include="Optimizations\ReachabilityDfa\DeleteJumpNextLine.cs" />
     <Compile Include="Optimizations\ReachabilityDfa\ReachabilityDfa.cs" />
-    <Compile Include="Optimizations\RemoveUnreferencedLabels.cs" />
+    <Compile Include="Optimizations\Jumps\RemoveUnreferencedLabels.cs" />
     <Compile Include="Optimizations\SimpleDce\AssignToReturnPropagation.cs" />
     <Compile Include="Optimizations\SimpleDce\DceLocalAssigned.cs" />
     <Compile Include="Optimizations\SimpleDce\DceVRegUnused.cs" />
@@ -128,9 +128,7 @@
       <Name>CodeRefractor.RuntimeBase</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="OuputCodeWriter\BasicOperations\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

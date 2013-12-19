@@ -71,6 +71,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
                            new ConstantVariableBranchOperatorPropagation(),
                            new AssignmentVregWithConstNextLineFolding(),  
                         
+                           /*
                            new EvaluatePureFunctionWithConstantCall(),
                            
                            new RemoveDeadStoresToFunctionCalls(), 
@@ -109,7 +110,6 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
                             
                            new PropagationVariablesOptimizationPass(),
 
-                           /*
                              new OneAssignmentDeadStoreAssignment(),
 
                             new AnalyzeParametersAreEscaping(), 

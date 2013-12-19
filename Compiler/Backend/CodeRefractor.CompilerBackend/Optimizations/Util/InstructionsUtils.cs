@@ -1,14 +1,12 @@
 ﻿#region Usings
 
 using System.Collections.Generic;
-using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
 #endregion
 
-namespace CodeRefractor.CompilerBackend.Optimizations
+namespace CodeRefractor.CompilerBackend.Optimizations.Util
 {
     public static class InstructionsUtils
     {

@@ -43,6 +43,7 @@
     <Compile Include="Analyze\ClassTypeData.cs" />
     <Compile Include="Analyze\DelegateManager.cs" />
     <Compile Include="Analyze\FieldDataRef.cs" />
+    <Compile Include="Analyze\FieldDescription.cs" />
     <Compile Include="Analyze\FieldNameTable.cs" />
     <Compile Include="Analyze\NamerUtils.cs" />
     <Compile Include="Analyze\ProgramData.cs" />

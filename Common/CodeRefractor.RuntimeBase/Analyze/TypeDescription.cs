@@ -2,17 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Text;
 
 namespace CodeRefractor.RuntimeBase.Analyze
 {
-    public class FieldDescription
-    {
-        public string Name { get; set; }
-        public TypeDescription TypeDescription { get; set; }
-        public bool IsStatic { get; set; }
-    }
     public class TypeDescription
     {
         public Type ClrType { get; private set; }
@@ -20,8 +13,6 @@ namespace CodeRefractor.RuntimeBase.Analyze
         public TypeCode ClrTypeCode { get; set; }
 
         public TypeDescription BaseType { get; private set; }
-
-
 
         List<FieldDescription> Layout { get; set; }
 

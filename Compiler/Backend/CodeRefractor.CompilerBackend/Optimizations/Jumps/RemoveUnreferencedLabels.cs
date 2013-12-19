@@ -9,7 +9,7 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
 
 #endregion
 
-namespace CodeRefractor.CompilerBackend.Optimizations
+namespace CodeRefractor.CompilerBackend.Optimizations.Jumps
 {
     public class RemoveUnreferencedLabels : ResultingInFunctionOptimizationPass
     {

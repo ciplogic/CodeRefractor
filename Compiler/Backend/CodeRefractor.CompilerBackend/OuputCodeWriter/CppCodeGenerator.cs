@@ -117,41 +117,6 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
         {
             var typeDesc = UsedTypeList.Set(mappedType);
             typeDesc.WriteLayout(sb);
-            return;
-            var fieldInfos = mappedType.GetFields().ToList();
-            fieldInfos.AddRange(mappedType.GetFields(BindingFlags.NonPublic | BindingFlags.Instance));
-            foreach (var fieldData in fieldInfos)
-            {
-                if (fieldData.IsLiteral)
-                {
-                    var constFieldValue = fieldData.GetValue(null);
-                    sb.AppendFormat("// {0} {1} = {2};",
-                        fieldData.FieldType.ToCppName(), fieldData.Name, constFieldValue)
-                        .AppendLine();
-                }else
-                sb.AppendFormat(" {0} {1};", fieldData.FieldType.ToCppName(), 
-                    fieldData.Name.ValidName()).AppendLine();
-            }
-            var staticFields = mappedType.GetFields(BindingFlags.Static).ToList();
-            staticFields.AddRange(mappedType.GetFields(BindingFlags.Static | BindingFlags.NonPublic));
-            foreach (var fieldData in staticFields.Where(field => field.IsStatic))
-            {
-                if (fieldData.IsLiteral)
-                {
-                    var constFieldValue = fieldData.GetValue(null);
-                    sb.AppendFormat("// static {0} {1} = {2};", 
-                        fieldData.FieldType.ToCppName(), fieldData.Name, constFieldValue)
-                        .AppendLine();
-                }
-                else
-                {
-
-                    sb.AppendFormat(" static {0} {1};", 
-                            fieldData.FieldType.ToCppName(), 
-                            fieldData.Name.ValidName())
-                        .AppendLine();
-                } 
-            }
         }
 
         private static void WriteClosureDelegateBodies(List<MethodInterpreter> closure, StringBuilder sb)

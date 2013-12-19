@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using CodeRefractor.CompilerBackend.Optimizations.Util;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
@@ -195,7 +196,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
                     return assign.AssignedTo;
                 case OperationKind.GetField:
                     var fieldGetter = (FieldGetter) operation.Value;
-                    return (LocalVariable) fieldGetter.AssignedTo;
+                    return fieldGetter.AssignedTo;
                 case OperationKind.BinaryOperator:
                     var binOp = (BinaryOperator)operation.Value;
                     return binOp.AssignedTo;
