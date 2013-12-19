@@ -55,7 +55,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
             }
             var fields = ClrType.GetFields(BindingFlags.NonPublic|
                 BindingFlags.Public|BindingFlags.Instance
-                |BindingFlags.DeclaredOnly
+                |BindingFlags.DeclaredOnly|BindingFlags.Static
                 );
             foreach (var fieldInfo in fields)
             {

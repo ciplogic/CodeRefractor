@@ -1,9 +1,6 @@
 //~~~~~~App.cs~~~~~~
 
 using System;
-using System.Runtime.InteropServices;
-using Tao.OpenGl;
-using Tao.Sdl;
 
 
 class Test

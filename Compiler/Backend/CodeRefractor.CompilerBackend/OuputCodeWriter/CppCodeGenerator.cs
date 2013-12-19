@@ -101,15 +101,14 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                 staticFields.AddRange(mappedType.GetFields(BindingFlags.Static | BindingFlags.NonPublic));
                 foreach (var fieldData in staticFields.Where(field => field.IsStatic))
                 {
-					if (!fieldData.IsLiteral) {
-						sb.AppendFormat (" /* static*/ {0} {3}::{1} = {2};", 
-							fieldData.FieldType.ToCppName (), 
-							fieldData.Name.ValidName (), 
-							Activator.CreateInstance (fieldData.FieldType), 
-							type.ToCppMangling ())
-								.AppendLine ();
-					} else
-						continue;
+                    if (fieldData.IsLiteral)
+                        continue;
+                    sb.AppendFormat(" /* static*/ {0} {3}::{1} = {2};",
+                        fieldData.FieldType.ToCppName(),
+                        fieldData.Name.ValidName(),
+                        Activator.CreateInstance(fieldData.FieldType),
+                        type.ToCppMangling())
+                        .AppendLine();
                 }
             }
         }
