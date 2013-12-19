@@ -29,17 +29,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
             RemoveMultipleDefinedVariables(assignToConstOperations, definedOnce);
             if(assignToConstOperations.Count==0)
                 return;
-            var instructionsToRemove = new HashSet<int>();
-            foreach (var operation in assignToConstOperations)
-            {
-                instructionsToRemove.Add(operation.Key);
-            }
-            var valuesMapping = new Dictionary<LocalVariable, ConstValue>();
-            foreach (var operation in assignToConstOperations)
-            {
-                var assign = operation.Value.GetAssignment();
-                valuesMapping[assign.AssignedTo] = (ConstValue) assign.Right;
-            }
+            var instructionsToRemove = FindInstructionsToRemove(assignToConstOperations);
+            var valuesMapping = FindValuesMapping(assignToConstOperations);
             intermediateCode.DeleteInstructions(instructionsToRemove);
 
             localOperations = intermediateCode.LocalOperations;
@@ -57,6 +48,27 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
                 return;
             }
             
+        }
+
+        private static Dictionary<LocalVariable, ConstValue> FindValuesMapping(Dictionary<int, LocalOperation> assignToConstOperations)
+        {
+            var valuesMapping = new Dictionary<LocalVariable, ConstValue>();
+            foreach (var operation in assignToConstOperations)
+            {
+                var assign = operation.Value.GetAssignment();
+                valuesMapping[assign.AssignedTo] = (ConstValue) assign.Right;
+            }
+            return valuesMapping;
+        }
+
+        private static HashSet<int> FindInstructionsToRemove(Dictionary<int, LocalOperation> assignToConstOperations)
+        {
+            var instructionsToRemove = new HashSet<int>();
+            foreach (var operation in assignToConstOperations)
+            {
+                instructionsToRemove.Add(operation.Key);
+            }
+            return instructionsToRemove;
         }
 
         private static void RemoveMultipleDefinedVariables(Dictionary<int, LocalOperation> assignToConstOperations, HashSet<LocalVariable> definedOnce)

@@ -71,22 +71,24 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
                            new ConstantVariableBranchOperatorPropagation(),
                            new AssignmentVregWithConstNextLineFolding(),  
                         
-                           /*
+                           
+                          
                            new EvaluatePureFunctionWithConstantCall(),
                            
                            new RemoveDeadStoresToFunctionCalls(), 
                            new RemoveDeadPureFunctionCalls(), 
+
                            
                            new PrecomputeRepeatedPureFunctionCall(), 
                            new PrecomputeRepeatedBinaryOperators(), 
                            new PrecomputeRepeatedUnaryOperators(), 
-                           new PrecomputeRepeatedFieldGets(), 
+                           //new PrecomputeRepeatedFieldGets(), 
+                            
                            
-                           new DoubleAssignPropagation(),
+                            new DoubleAssignPropagation(),
                            
       
                            new DeleteCallToConstructorOfObject(), 
-                           
                            new AssignToReturnPropagation(),
                            new DeadStoreLastSequenceRemover(),
                            new DceLocalAssigned(),
@@ -106,22 +108,23 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
                             new RemoveUnreferencedLabels(),
                             new MergeConsecutiveLabels(),
                             
+                           
                             new DeadStoreAssignment(), 
                             
                            new PropagationVariablesOptimizationPass(),
 
                              new OneAssignmentDeadStoreAssignment(),
+                            new InlineGetterAndSetterMethods(), 
+                           new ReachabilityLines(),
+
+                           new LoopInvariantCodeMotion(), 
+                             
+                           /*
 
                             new AnalyzeParametersAreEscaping(), 
-
-
-                            new InlineGetterAndSetterMethods(), 
+                            
                            
-                           
-                           new ReachabilityLines(),
-                           new InFunctionLoweringVars(),
-                           new LoopInvariantCodeMotion(), 
-                           */  
+                           new InFunctionLoweringVars(),*/
                        }.ToList();
         }
     }
