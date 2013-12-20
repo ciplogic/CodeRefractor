@@ -360,7 +360,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             }
             if (opcodeStr == "ldc.i8.s" || opcodeStr == "ldc.i8")
             {
-                OperationFactory.PushInt8(instruction.GetIntOperand());
+                OperationFactory.PushInt8(instruction.GetLongOperand());
                 return true;
             }
             if (opcodeStr.StartsWith("ldc.i4."))

@@ -1,10 +1,7 @@
 #region Usings
 
-using System;
 using System.Collections.Generic;
-using System.IO;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
-using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
@@ -51,6 +48,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                         break;
                     case OpcodeOperatorNames.ConvR4:
                         HandleConvFloat(constLeft);
+                        break;
+                    case OpcodeOperatorNames.Neg:
+                        HandleNeg(constLeft);
                         break;
                 }
             }
@@ -140,37 +140,36 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
 
         private void HandleNeg(ConstValue constLeft)
         {
-            var result = ComputeNeg(constLeft);
-
+            var result = ComputeConstantOperator.ComputeNeg(constLeft);
             FoldConstant(result);
         }
         private void HandleConvDouble(ConstValue constLeft)
         {
-            var result = ComputeDouble(constLeft);
+            var result = ComputeConstantOperator.ComputeDouble(constLeft);
             FoldConstant(result);
         }
         private void HandleConvFloat(ConstValue constLeft)
         {
-            var result = ComputeFloat(constLeft);
+            var result = ComputeConstantOperator.ComputeFloat(constLeft);
             FoldConstant(result);
         }
 
 
         private void HandleCeq(ConstValue constLeft, ConstValue constRight)
         {
-            var result = ComputeCeq(constLeft, constRight);
+            var result = ComputeConstantOperator.ComputeCeq(constLeft, constRight);
             FoldConstant(result);
         }
 
         private void HandleClt(ConstValue constLeft, ConstValue constRight)
         {
-            var result = ComputeClt(constLeft, constRight);
+            var result = ComputeConstantOperator.ComputeClt(constLeft, constRight);
             FoldConstant(result);
         }
 
         private void HandleCgt(ConstValue constLeft, ConstValue constRight)
         {
-            var result = ComputeCgt(constLeft, constRight);
+            var result = ComputeConstantOperator.ComputeCgt(constLeft, constRight);
             FoldConstant(result);
         }
 
@@ -178,152 +177,28 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
         
         private void HandleAdd(ConstValue constLeft, ConstValue constRight)
         {
-            var result = ComputeAdd(constLeft, constRight);
+            var result = ComputeConstantOperator.ComputeAdd(constLeft, constRight);
             FoldConstant(result);
         }
 
         private void HandleSub(ConstValue constLeft, ConstValue constRight)
         {
-            var result = ComputeSub(constLeft, constRight);
+            var result = ComputeConstantOperator.ComputeSub(constLeft, constRight);
             FoldConstant(result);
         }
 
 
         private void HandleMul(ConstValue constLeft, ConstValue constRight)
         {
-            var result = ComputeMul(constLeft, constRight);
+            var result = ComputeConstantOperator.ComputeMul(constLeft, constRight);
             FoldConstant(result);
         }
 
         private void HandleRem(ConstValue constLeft, ConstValue constRight)
         {
-            var result = ComputeRem(constLeft, constRight);
+            var result = ComputeConstantOperator.ComputeRem(constLeft, constRight);
             FoldConstant(result);
         }
-        #region Compute
-
-        private static object ComputeNeg(ConstValue constLeft)
-        {
-            var typeCode = constLeft.Value.ComputeTypeCode();
-            switch (typeCode)
-            {
-                case TypeCode.Int32:
-                    return -(int)constLeft.Value;
-                case TypeCode.Double:
-                    return -(double)constLeft.Value;
-                case TypeCode.Single:
-                    return -(float)constLeft.Value;
-            }
-            throw new InvalidDataException("This type combination is not implemented");
-        }
-
-
-        private static object ComputeAdd(ConstValue constLeft, ConstValue constRight)
-        {
-            var typeCode = constLeft.Value.ComputeTypeCode();
-            switch (typeCode)
-            {
-                case TypeCode.Int32:
-                    return (int)constLeft.Value + (int)constRight.Value;
-                case TypeCode.Double:
-                    return (double)constLeft.Value + (double)constRight.Value;
-                case TypeCode.Single:
-                    return (float)constLeft.Value + (float)constRight.Value;
-            }
-            throw new InvalidDataException("This type combination is not implemented");
-        }
-
-        private static object ComputeSub(ConstValue constLeft, ConstValue constRight)
-        {
-            var typeCode = constLeft.Value.ComputeTypeCode();
-            switch (typeCode)
-            {
-                case TypeCode.Int32:
-                    return (int)constLeft.Value - (int)constRight.Value;
-                case TypeCode.Double:
-                    return (double)constLeft.Value - (double)constRight.Value;
-                case TypeCode.Single:
-                    return (float)constLeft.Value - (float)constRight.Value;
-            }
-            throw new InvalidDataException("This type combination is not implemented");
-        }
-
-        private static object ComputeMul(ConstValue constLeft, ConstValue constRight)
-        {
-            var typeCode = constLeft.Value.ComputeTypeCode();
-            switch (typeCode)
-            {
-                case TypeCode.Int32:
-                    return (int)constLeft.Value * (int)constRight.Value;
-                case TypeCode.Double:
-                    return (double)constLeft.Value * (double)constRight.Value;
-                case TypeCode.Single:
-                    return (float)constLeft.Value * (float)constRight.Value;
-            }
-            throw new InvalidDataException("This type combination is not implemented");
-        }
-
-        private static object ComputeDiv(ConstValue constLeft, ConstValue constRight)
-        {
-            var typeCode = constLeft.Value.ComputeTypeCode();
-            switch (typeCode)
-            {
-                case TypeCode.Int32:
-                    return (int)constLeft.Value / (int)constRight.Value;
-                case TypeCode.Double:
-                    return (double)constLeft.Value / (double)constRight.Value;
-                case TypeCode.Single:
-                    return (float)constLeft.Value / (float)constRight.Value;
-            }
-            throw new InvalidDataException("This type combination is not implemented");
-        }
-
-        private static object ComputeRem(ConstValue constLeft, ConstValue constRight)
-        {
-            return (int)constLeft.Value % (int)constRight.Value;
-        }
-
-
-        private static object ComputeOr(ConstValue constLeft, ConstValue constRight)
-        {
-            return (int)constLeft.Value | (int)constRight.Value;
-        }
-        private static object ComputeAnd(ConstValue constLeft, ConstValue constRight)
-        {
-            return (int)constLeft.Value & (int)constRight.Value;
-        }
-
-        private static object ComputeXor(ConstValue constLeft, ConstValue constRight)
-        {
-            return (int)constLeft.Value ^ (int)constRight.Value;
-        }
-
-
-        private static object ComputeDouble(ConstValue constLeft)
-        {
-            return Convert.ToDouble(constLeft.Value);
-        }
-
-        private static object ComputeFloat(ConstValue constLeft)
-        {
-            return Convert.ToSingle(constLeft.Value);
-        }
-
-        private static object ComputeCeq(ConstValue constLeft, ConstValue constRight)
-        {
-            return (int)constLeft.Value == (int)constRight.Value ? 1 : 0;
-        }
-
-        private static object ComputeCgt(ConstValue constLeft, ConstValue constRight)
-        {
-            return (int)constLeft.Value > (int)constRight.Value ? 1 : 0;
-        }
-
-        private static object ComputeClt(ConstValue constLeft, ConstValue constRight)
-        {
-            return (int)constLeft.Value < (int)constRight.Value ? 1 : 0;
-        }
-        #endregion
         
         #endregion
 
@@ -332,25 +207,25 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
 
         private void HandleDiv(ConstValue constLeft, ConstValue constRight)
         {
-            var result = ComputeDiv(constLeft, constRight);
+            var result = ComputeConstantOperator.ComputeDiv(constLeft, constRight);
             FoldConstant(result);
         }
 
         private void HandleXor(ConstValue constLeft, ConstValue constRight)
         {
-            var result = ComputeXor(constLeft, constRight);
+            var result = ComputeConstantOperator.ComputeXor(constLeft, constRight);
             FoldConstant(result);
         }
 
         private void HandleAnd(ConstValue constLeft, ConstValue constRight)
         {
-            var result = ComputeAnd(constLeft, constRight);
+            var result = ComputeConstantOperator.ComputeAnd(constLeft, constRight);
             FoldConstant(result);
         }
 
         private void HandleOr(ConstValue constLeft, ConstValue constRight)
         {
-            var result = ComputeOr(constLeft, constRight);
+            var result = ComputeConstantOperator.ComputeOr(constLeft, constRight);
             FoldConstant(result);
         }
         #endregion
@@ -371,6 +246,5 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                 };
             Result = true;
         }
-
     }
 }
