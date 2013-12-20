@@ -149,7 +149,6 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
         private static void HandleComment(string toString, StringBuilder bodySb)
         {
             bodySb
-                .AppendLine()
                 .AppendFormat("// {0}", toString);
         }
 
