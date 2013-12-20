@@ -4,11 +4,7 @@ class NBody
 {
     public static void Main()
     {
-        int n = 10000000;
-        var bodies = new NBodySystem();
-        Console.WriteLine(bodies.Energy());
-        for (int i = 0; i < n; i++) bodies.Advance(0.01);
-        Console.WriteLine(bodies.Energy());
+        Console.WriteLine(Math.Cos(0)+5);
     }
 }
 

@@ -63,6 +63,12 @@ namespace CodeRefractor.RuntimeBase
             return default(T);
         }
 
+        public static TypeCode ComputeTypeCode(this object instance)
+        {
+            var type = instance.GetType();
+            return Type.GetTypeCode(type);
+        }
+
         public static int Int(this string value)
         {
             return Int32.Parse(value);

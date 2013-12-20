@@ -70,8 +70,6 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
                            new OperatorConstantFolding(),
                            new ConstantVariableBranchOperatorPropagation(),
                            new AssignmentVregWithConstNextLineFolding(),  
-                        
-                           
                           
                            new EvaluatePureFunctionWithConstantCall(),
                            
