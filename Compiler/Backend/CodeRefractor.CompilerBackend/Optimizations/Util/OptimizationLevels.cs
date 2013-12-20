@@ -75,20 +75,17 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
                            
                            new RemoveDeadStoresToFunctionCalls(), 
                            new RemoveDeadPureFunctionCalls(), 
-
                            
                            new PrecomputeRepeatedPureFunctionCall(), 
                            new PrecomputeRepeatedBinaryOperators(), 
                            new PrecomputeRepeatedUnaryOperators(), 
-                           //new PrecomputeRepeatedFieldGets(), 
-                            
-                           
-                            new DoubleAssignPropagation(),
-                           
-      
+                           new PrecomputeRepeatedFieldGets(), 
+
+                           new DoubleAssignPropagation(),
+
                            new DeleteCallToConstructorOfObject(), 
                            new AssignToReturnPropagation(),
-                           new DeadStoreLastSequenceRemover(),
+                           //new DeadStoreLastSequenceRemover(),
                            new DceLocalAssigned(),
 
                            new ConstantVariablePropagation(),
@@ -96,7 +93,6 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
                            new ConstantVariablePropagationInCall(),
 
                             new AnalyzeFunctionPurity(),
-                           
                             new AnalyzeFunctionIsGetter(),
                             new AnalyzeFunctionIsSetter(),
                             new AnalyzeFunctionIsEmpty(),
@@ -116,13 +112,10 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
                            new ReachabilityLines(),
 
                            new LoopInvariantCodeMotion(), 
-                             
-                           /*
 
                             new AnalyzeParametersAreEscaping(), 
-                            
                            
-                           new InFunctionLoweringVars(),*/
+                           new InFunctionLoweringVars(),
                        }.ToList();
         }
     }

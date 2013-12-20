@@ -33,6 +33,7 @@ namespace CodeRefractor.RuntimeBase.Config
 
         public void Process(string[] args)
         {
+            Console.WriteLine("Code Refractor (version {0})", CodeRefractorVersions.Version);
             Arguments.AddRange(args);
             for (var i = 0; i < args.Length; i++)
             {

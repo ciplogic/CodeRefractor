@@ -30,8 +30,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
             if(assignToConstOperations.Count==0)
                 return;
             var instructionsToRemove = FindInstructionsToRemove(assignToConstOperations);
+            if (instructionsToRemove.Count == 0)
+                return;
             var valuesMapping = FindValuesMapping(assignToConstOperations);
-            intermediateCode.DeleteInstructions(instructionsToRemove);
 
             localOperations = intermediateCode.LocalOperations;
             foreach (var op in localOperations)
@@ -45,9 +46,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
                     op.SwitchUsageWithDefinition(usagePos.Key, usagePos.Value);
                 }    
                 Result = true;
-                return;
             }
-            
+
+            intermediateCode.DeleteInstructions(instructionsToRemove);
         }
 
         private static Dictionary<LocalVariable, ConstValue> FindValuesMapping(Dictionary<int, LocalOperation> assignToConstOperations)
