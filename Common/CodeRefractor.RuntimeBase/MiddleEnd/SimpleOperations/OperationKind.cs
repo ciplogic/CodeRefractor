@@ -35,6 +35,10 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
         LoadFunction,
         FieldRefAssignment,
         SizeOf,
-        AddressOfArrayItem
+        AddressOfArrayItem,
+
+
+        Comment,
+
     }
 }

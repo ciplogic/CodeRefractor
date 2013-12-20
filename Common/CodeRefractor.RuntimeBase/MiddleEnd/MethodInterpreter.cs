@@ -102,6 +102,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 OperationFactory.SetLabel(instruction.Offset);
             }
             var opcodeValue = instruction.OpCode.Value;
+            OperationFactory.AddCommentInstruction(instruction.ToString());
             switch (opcodeValue)
             {
                 case ObcodeIntValues.Nop:

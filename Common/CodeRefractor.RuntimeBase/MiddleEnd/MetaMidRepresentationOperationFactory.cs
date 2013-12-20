@@ -134,6 +134,11 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             AddOperation(OperationKind.Assignment, assingment);
         }
 
+        public void AddCommentInstruction(string comment)
+        {
+            AddOperation(OperationKind.Comment, comment);
+        }
+
         public void StoreField(FieldInfo fieldInfo)
         {
             var secondVar = _evaluator.Stack.Pop();
