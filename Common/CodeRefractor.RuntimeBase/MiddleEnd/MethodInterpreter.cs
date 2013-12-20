@@ -358,6 +358,11 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 OperationFactory.PushInt4(instruction.GetIntOperand());
                 return true;
             }
+            if (opcodeStr == "ldc.i8.s" || opcodeStr == "ldc.i8")
+            {
+                OperationFactory.PushInt8(instruction.GetIntOperand());
+                return true;
+            }
             if (opcodeStr.StartsWith("ldc.i4."))
             {
                 var pushedIntValue = opcodeStr.Remove(0, "ldc.i4.".Length).ToInt();

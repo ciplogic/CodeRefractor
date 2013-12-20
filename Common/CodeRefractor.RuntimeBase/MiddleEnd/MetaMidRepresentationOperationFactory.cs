@@ -84,6 +84,11 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             AssignValueToStack(value);
         }
 
+        public void PushInt8(long value)
+        {
+            AssignValueToStack(value);
+        }
+
         public void PushString(string value)
         {
             AssignValueToStack(value);

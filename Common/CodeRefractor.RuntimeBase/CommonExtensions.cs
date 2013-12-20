@@ -180,6 +180,13 @@ namespace CodeRefractor.RuntimeBase
             return result;
         }
 
+        public static long ToLong(this string value)
+        {
+            long result;
+            long.TryParse(value, out result);
+            return result;
+        }
+
         public static FieldInfo LocateField(this Type type, string fieldName, bool isStatic = false)
         {
             var result = type.GetField(fieldName);
