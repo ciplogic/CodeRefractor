@@ -78,7 +78,7 @@ namespace CodeRefractor.CompilerBackend.HandleOperations
                     continue;
                 }
 
-                if (localValue.ComputedType() == typeof (IntPtr))
+                if (localValue.ComputedType().ClrType == typeof (IntPtr))
                 {
                     var argumentTypeCast = argumentData.ToCppMangling();
                     sb.AppendFormat("({0}){1}", argumentTypeCast, localValue.Name);
@@ -88,7 +88,7 @@ namespace CodeRefractor.CompilerBackend.HandleOperations
                 switch (localValue.NonEscaping)
                 {
                     case NonEscapingMode.Smart:
-                        if (!isEscaping && localValue.ComputedType().IsClass)
+                        if (!isEscaping && localValue.ComputedType().ClrType.IsClass)
                             sb.AppendFormat("{0}.get()", localValue.Name);
                         else
                             sb.Append(localValue.Name);

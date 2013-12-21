@@ -19,7 +19,7 @@ namespace CodeRefractor.CompilerBackend.Linker
                 return identifierValue.Name;
             }
             var computeType = identifierValue.ComputedType();
-            if (computeType == typeof(string))
+            if (computeType.ClrTypeCode == TypeCode.String)
             {
                 var stringTable = LinkingData.Instance.Strings;
                 var stringId = stringTable.GetStringId((string) constValue.Value);

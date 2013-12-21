@@ -1,6 +1,7 @@
 #region Usings
 
 using System;
+using CodeRefractor.RuntimeBase.Analyze;
 
 #endregion
 
@@ -8,9 +9,9 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers
 {
     public class IdentifierValue
     {
-        public Type FixedType;
+        public TypeDescription FixedType;
 
-        public virtual Type ComputedType()
+        public virtual TypeDescription ComputedType()
         {
             return FixedType;
         }

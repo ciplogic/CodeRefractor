@@ -280,13 +280,13 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
             switch (value.AssignedTo.NonEscaping)
             {
                 case NonEscapingMode.Smart:
-                    bodySb.AppendFormat(parentType.IsClass
+                    bodySb.AppendFormat(parentType.ClrType.IsClass
                                             ? "{0} = (*{1})[{2}];"
                                             : "{0} = {1}[{2}];",
                                         value.AssignedTo.Name, valueSrc.Parent.Name, valueSrc.Index.Name);
                     return;
                 case NonEscapingMode.Pointer:
-                    bodySb.AppendFormat(parentType.IsClass
+                    bodySb.AppendFormat(parentType.ClrType.IsClass
                                             ? "{0} = ((*{1})[{2}]).get();"
                                             : "{0} = ({1}[{2}]).get();",
                                         value.AssignedTo.Name, valueSrc.Parent.Name, valueSrc.Index.Name);
@@ -382,7 +382,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
         {
             if (localVariable.NonEscaping == NonEscapingMode.Stack)
                 return;
-            if (localVariable.ComputedType().IsSubclassOf(typeof(MethodInfo)))
+            if (localVariable.ComputedType().ClrType.IsSubclassOf(typeof(MethodInfo)))
             {
                 variablesSb
                     .AppendFormat("void (*{0})({1});",
@@ -393,14 +393,16 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
             }
             if (localVariable.NonEscaping == NonEscapingMode.Pointer)
             {
-                var cppName = localVariable.ComputedType().ToCppName(localVariable.NonEscaping);
+                var cppName = localVariable.ComputedType()
+                    .ClrType.ToCppName(localVariable.NonEscaping);
                 variablesSb
                     .AppendFormat(format, cppName, localVariable.Id)
                     .AppendLine();
                 return;
             }
             variablesSb
-                .AppendFormat(format, localVariable.ComputedType().ToCppName(localVariable.NonEscaping), localVariable.Id)
+                .AppendFormat(format, localVariable.ComputedType()
+                .ClrType.ToCppName(localVariable.NonEscaping), localVariable.Id)
                 .AppendLine();
         }
 
@@ -445,7 +447,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
                 var rightVarType = localVar.Right.ComputedType();
                 if (leftVarType != rightVarType)
                 {
-                    if (rightVarType.IsPointer)
+                    if (rightVarType.ClrType.IsPointer)
                     {
                         sb.AppendFormat("{0} = *{1};", left, localVariable.Name);
                         return;

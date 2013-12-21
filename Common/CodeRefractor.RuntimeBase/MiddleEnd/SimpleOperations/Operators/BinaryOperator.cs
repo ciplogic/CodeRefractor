@@ -1,6 +1,7 @@
 #region Usings
 
 using System;
+using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
 #endregion
@@ -13,7 +14,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators
         {
         }
 
-        public Type ComputedType()
+        public TypeDescription ComputedType()
         {
             var leftType = Left.ComputedType();
             var rightType = Right.ComputedType();

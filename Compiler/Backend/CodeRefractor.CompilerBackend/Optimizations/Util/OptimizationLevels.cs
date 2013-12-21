@@ -50,6 +50,12 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
                 
                 new OneAssignmentDeadStoreAssignment(), //??
                            //  //?? 
+                           
+                            // CSE
+                           new PrecomputeRepeatedPureFunctionCall(), 
+                           new PrecomputeRepeatedBinaryOperators(), 
+                           new PrecomputeRepeatedUnaryOperators(), 
+                           new PrecomputeRepeatedFieldGets(), 
                 
                 
             }.ToList();
@@ -75,12 +81,6 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
                            
                            new RemoveDeadStoresToFunctionCalls(), 
                            new RemoveDeadPureFunctionCalls(), 
-                           
-                            // CSE
-                           new PrecomputeRepeatedPureFunctionCall(), 
-                           new PrecomputeRepeatedBinaryOperators(), 
-                           new PrecomputeRepeatedUnaryOperators(), 
-                           new PrecomputeRepeatedFieldGets(), 
                            
                            new DoubleAssignPropagation(),
 
@@ -110,9 +110,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
                              new OneAssignmentDeadStoreAssignment(),
                             new InlineGetterAndSetterMethods(), 
                            new ReachabilityLines(),
-
+                              /*
                            new LoopInvariantCodeMotion(), 
-                           /*
+                        
                             new AnalyzeParametersAreEscaping(), 
                            new InFunctionLoweringVars(),
                             */

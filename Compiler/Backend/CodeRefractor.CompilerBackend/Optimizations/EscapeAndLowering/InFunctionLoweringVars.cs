@@ -16,9 +16,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
         public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
         {
             var candidateVariables = new HashSet<LocalVariable>();
-            var toAdd = intermediateCode.Vars.LocalVars.Where(varId => !varId.ComputedType().IsPrimitive);
+            var toAdd = intermediateCode.Vars.LocalVars.Where(varId => !varId.ComputedType().ClrType.IsPrimitive);
             candidateVariables.AddRange(toAdd);
-            toAdd = intermediateCode.Vars.VirtRegs.Where(varId => !varId.ComputedType().IsPrimitive);
+            toAdd = intermediateCode.Vars.VirtRegs.Where(varId => !varId.ComputedType().ClrType.IsPrimitive);
             candidateVariables.AddRange(toAdd);
             var localOp = intermediateCode.LocalOperations;
             foreach (var op in localOp)

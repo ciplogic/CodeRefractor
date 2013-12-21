@@ -9,16 +9,21 @@ namespace CodeRefractor.RuntimeBase.Analyze
     public class TypeDescription
     {
         public Type ClrType { get; private set; }
-
-        public TypeCode ClrTypeCode { get; set; }
-
+        public TypeCode ClrTypeCode { get; private set; }
         public TypeDescription BaseType { get; private set; }
 
+
+        public string Name { get; private set; }
+        public string Namespace { get; set; }
+        
+        
         List<FieldDescription> Layout { get; set; }
 
         public TypeDescription(Type clrType)
         {
             ClrType = clrType;
+            Name = clrType.Name;
+            Namespace = clrType.Namespace;
             Layout = new List<FieldDescription>();
             ExtractInformation();
         }
@@ -66,7 +71,6 @@ namespace CodeRefractor.RuntimeBase.Analyze
 
         public void WriteLayout(StringBuilder sb)
         {
-
             if (BaseType != null)
                 BaseType.WriteLayout(sb);
 

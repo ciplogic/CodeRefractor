@@ -293,7 +293,7 @@ namespace CodeRefractor.CompilerBackend.HandleOperations
         {
             string right, left, local;
             GetBinaryOperandNames(localVar, out right, out left, out local);
-            if (localVar.Right.ComputedType() == typeof (IntPtr))
+            if (localVar.Right.ComputedType().ClrType == typeof (IntPtr))
             {
                 sb.AppendFormat("{0} = {1}+(size_t){2};", local, left, right);
                 

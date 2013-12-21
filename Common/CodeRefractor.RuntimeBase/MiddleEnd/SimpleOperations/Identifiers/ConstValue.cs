@@ -1,6 +1,7 @@
 #region Usings
 
 using System;
+using CodeRefractor.RuntimeBase.Analyze;
 
 #endregion
 
@@ -34,9 +35,9 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers
             return new ConstValue(Value);
         }
 
-        public override Type ComputedType()
+        public override TypeDescription ComputedType()
         {
-            return Value == null ? typeof (void) : Value.GetType();
+            return UsedTypeList.Set(Value == null ? typeof (void) : Value.GetType());
         }
 
         public string Description

@@ -1,6 +1,7 @@
 #region Usings
 
 using System;
+using CodeRefractor.RuntimeBase.Analyze;
 
 #endregion
 
@@ -22,11 +23,11 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers
         public Type GetElementType()
         {
             var computedType = ComputedType();
-            var elementType = computedType.GetElementType();
+            var elementType = computedType.ClrType.GetElementType();
             return elementType;
         }
 
-        public override Type ComputedType()
+        public override TypeDescription ComputedType()
         {
             return Parent.ComputedType();
         }

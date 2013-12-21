@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
@@ -35,18 +36,18 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 {
                     Vars.Arguments.Add(new ArgumentVariable("_this")
                                            {
-                                               FixedType = Method.DeclaringType
+                                               FixedType = UsedTypeList.Set(Method.DeclaringType)
                                            });
                 }
                 Vars.Arguments.AddRange(_method.GetParameters().Select(param => new ArgumentVariable(param.Name)
                                                                                     {
-                                                                                        FixedType = param.ParameterType,
+                                                                                        FixedType = UsedTypeList.Set(param.ParameterType),
                                                                                         Id = pos++
                                                                                     }));
 
                 var varsToAdd = Vars.Variables.Select((v, index) => new LocalVariable
                 {
-                    FixedType = v.LocalType,
+                    FixedType = UsedTypeList.Set(v.LocalType),
                     Id = index,
                     Kind = VariableKind.Argument
                 }).ToList();

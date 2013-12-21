@@ -48,14 +48,14 @@ namespace CodeRefractor.RuntimeBase
             } while (isAdded);
             var typesClosure = typesSet.Where(t => 
                 IsRefClassType(t) && !t.IsInterface).ToList();
-            //SortTypeDependencies(typesClosure);
             foreach (var type in typesClosure)
             {
                 UsedTypeList.Set(type);
             }
             var describedTypes = UsedTypeList.GetDescribedTypes();
             typesClosure = describedTypes
-                .Where(typeDesc=>typeDesc.ClrTypeCode == TypeCode.Object)
+                .Where(typeDesc => typeDesc.ClrTypeCode == TypeCode.Object)
+                .Where(typeDesc => typeDesc.ClrType != typeof(void))
                 .Where(typeDescArray => !typeDescArray.ClrType.IsSubclassOf(typeof(Array)))
                 .Select(typeDescr => typeDescr.ClrType)
                 .ToList();

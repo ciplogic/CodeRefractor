@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
@@ -37,7 +38,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions
         {
             return (MethodData)localOperations[index].Value;
         }
-        public static LocalVariable CreateCacheVariable(this MetaMidRepresentation midRepresentation, Type computedType)
+        public static LocalVariable CreateCacheVariable(this MetaMidRepresentation midRepresentation, TypeDescription computedType)
         {
             var max = midRepresentation.Vars.VirtRegs.Max(vreg => vreg.Id) + 1;
             var cacheVariable = new LocalVariable()

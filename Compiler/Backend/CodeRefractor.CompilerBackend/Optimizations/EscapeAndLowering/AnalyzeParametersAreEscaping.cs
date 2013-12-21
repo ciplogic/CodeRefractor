@@ -33,7 +33,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
             argumentList.Clear();
             argumentList.AddRange(
                 intermediateCode.Vars.Arguments
-                    .Where(varId => !varId.ComputedType().IsPrimitive)
+                    .Where(varId => !varId.ComputedType().ClrType.IsPrimitive)
                 );
             if (argumentList.Count == 0)
                 return argumentList;
@@ -66,7 +66,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
                             var argCall = parameter as ArgumentVariable;
                             if (argCall == null)
                                 continue;
-                            if (!argCall.ComputedType().IsClass)
+                            if (!argCall.ComputedType().ClrType.IsClass)
                                 continue;
 
                             if (otherMethodData.ContainsKey(argCall.Id)

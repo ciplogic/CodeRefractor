@@ -1,3 +1,4 @@
+using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
 namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.ConstTable
@@ -9,7 +10,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.ConstTable
         public ConstByteArrayValue(int id) : base(id)
         {
             Id = id;
-            FixedType = typeof (byte);
+            FixedType = UsedTypeList.Set(typeof (byte));
             Value = ConstByteArrayList.Instance.ItemList[id];
         }
     }
