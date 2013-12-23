@@ -9,14 +9,25 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
 {
     class DeadStoreAssignment : ResultingInFunctionOptimizationPass
     {
+        static readonly List<OperationKind> NoSideEffectsOperationKinds = new List<OperationKind>
+        {
+            OperationKind.Assignment,
+            OperationKind.BinaryOperator,
+            OperationKind.NewArray,
+            OperationKind.NewObject,
+            OperationKind.GetArrayItem,
+            OperationKind.BinaryOperator,
+            OperationKind.GetField,
+            OperationKind.UnaryOperator
+        };
         readonly Dictionary<LocalVariable, int> _definitions = new Dictionary<LocalVariable, int>();
+
         public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
         {
-            var toRemove = new HashSet<int>();
             _definitions.Clear();
-            var localOperations = intermediateCode.LocalOperations;
+            var localOperations = intermediateCode.LocalOperations.ToArray();
 
-            for (int index = 0; index < localOperations.Count; index++)
+            for (int index = 0; index < localOperations.Length; index++)
             {
                 var op = localOperations[index];
                 var variableDefinition = op.GetUseDefinition();
@@ -35,28 +46,29 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
             }
             if (_definitions.Count == 0)
                 return;
+            var toRemove = BuildRemoveInstructions(localOperations);
+            if (toRemove.Count == 0)
+                return;
+            intermediateCode.DeleteInstructions(toRemove);
 
-            for (var index = 0; index < localOperations.Count; index++)
+            OptimizeOperations(intermediateCode);
+            Result = true;
+        }
+
+        private HashSet<int> BuildRemoveInstructions(LocalOperation[] localOperations)
+        {
+            var toRemove = new HashSet<int>();
+            for (var index = 0; index < localOperations.Length; index++)
             {
                 var op = localOperations[index];
                 var opKind = op.Kind;
-                if (opKind != OperationKind.Assignment
-                   && opKind != OperationKind.BinaryOperator
-                   && opKind != OperationKind.NewArray
-                   && opKind != OperationKind.NewObject
-                   && opKind != OperationKind.GetArrayItem
-                   && opKind != OperationKind.BinaryOperator
-                   && opKind != OperationKind.GetField
-                    && opKind != OperationKind.UnaryOperator)
+                if (!NoSideEffectsOperationKinds.Contains(opKind))
                     continue;
                 var variableDefinition = op.GetUseDefinition();
                 if (_definitions.ContainsKey(variableDefinition))
                     toRemove.Add(index);
             }
-            if (toRemove.Count == 0)
-                return;
-            intermediateCode.DeleteInstructions(toRemove);
-            Result = true;
+            return toRemove;
         }
     }
 }

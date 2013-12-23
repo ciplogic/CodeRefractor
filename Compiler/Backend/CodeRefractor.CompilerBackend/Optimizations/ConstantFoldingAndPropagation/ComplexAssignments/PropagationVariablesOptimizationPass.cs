@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
@@ -11,18 +10,18 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
 {
     class PropagationVariablesOptimizationPass : BlockOptimizationPass
     {
-        readonly Dictionary<LocalVariable, IdentifierValue> _dictionary = new Dictionary<LocalVariable, IdentifierValue>(); 
+        readonly Dictionary<LocalVariable, IdentifierValue> _dictionary 
+            = new Dictionary<LocalVariable, IdentifierValue>(); 
+
         public override bool OptimizeBlock(MetaMidRepresentation midRepresentation, int startRange, int endRange)
         {
             var result = false;
 
-            var localOperations = midRepresentation.LocalOperations;
+            var instructionRange = GetInstructionRange(midRepresentation, startRange, endRange);
             _dictionary.Clear();
-            for(var i = startRange; i<=endRange; i++)
+            foreach (var op in instructionRange)
             {
-                var op = localOperations[i];
                 result = UpdateKnownUsages(op);
-
                 var isAssign = op.Kind == OperationKind.Assignment;
                 if (!isAssign)
                 {
@@ -32,10 +31,12 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                     continue;
                 }
                 var assignment = op.GetAssignment();
+
+                if (_dictionary.ContainsKey(assignment.AssignedTo))
+                {
+                    RemoveDefinitionsIfTheUsageIsInvalidated(assignment.AssignedTo);
+                }
                 _dictionary[assignment.AssignedTo] = assignment.Right;
-                var rightAssignment = assignment.Right as LocalVariable;
-                if (rightAssignment == null) continue;
-                RemoveDefinitionsIfTheUsageIsInvalidated(rightAssignment);
             }
             return result;
         }
@@ -64,11 +65,16 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
 
         private bool UpdateKnownUsages(LocalOperation op)
         {
+            if (_dictionary.Count == 0)
+                return false;
             var result =false;
-            foreach (var possibleUsage in _dictionary.Where(possibleUsage => op.OperationUses(possibleUsage.Key)))
+            foreach (var possibleUsage in _dictionary)
             {
-                op.SwitchUsageWithDefinition(possibleUsage.Key, possibleUsage.Value);
-                result = true;
+                if (op.OperationUses(possibleUsage.Key))
+                {
+                    op.SwitchUsageWithDefinition(possibleUsage.Key, possibleUsage.Value);
+                    result = true;
+                }
             }
             return result;
         }

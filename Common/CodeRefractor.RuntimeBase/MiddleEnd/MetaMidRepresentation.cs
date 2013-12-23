@@ -49,7 +49,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 {
                     FixedType = UsedTypeList.Set(v.LocalType),
                     Id = index,
-                    Kind = VariableKind.Argument
+                    Kind = VariableKind.Local
                 }).ToList();
                 Vars.LocalVars.AddRange(varsToAdd);
             }

@@ -8,6 +8,23 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
 {
     abstract class BlockOptimizationPass : ResultingInFunctionOptimizationPass
     {
+        public List<LocalOperation> GetInstructionRange(
+            MetaMidRepresentation intermediateCode, int startInstruction, int endInstruction, bool cleanInstructions = true)
+        {
+            var result = new List<LocalOperation>();
+            var operations = intermediateCode.LocalOperations;
+            for (var i = startInstruction; i <= endInstruction; i++)
+            {
+                var op = operations[i];
+                if (cleanInstructions)
+                {
+                    if(op.Kind==OperationKind.Comment)
+                        continue;
+                }
+                result.Add(op);
+            }
+            return result;
+        }
         public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
         {
             var localOperations = intermediateCode.LocalOperations;
@@ -51,7 +68,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
 
         bool TryOptimizeBlock(MetaMidRepresentation localOperations, int startRange, int endRange)
         {
-            if (startRange == endRange)
+            if (startRange >= endRange)
                 return false;
             return OptimizeBlock(localOperations, startRange, endRange);
         }
