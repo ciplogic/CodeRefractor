@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using CodeRefractor.CompilerBackend.Linker;
 using CodeRefractor.RuntimeBase;
+using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 
 #endregion

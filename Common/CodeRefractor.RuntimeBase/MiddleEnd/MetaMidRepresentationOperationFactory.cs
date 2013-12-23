@@ -139,9 +139,13 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             AddOperation(OperationKind.Assignment, assingment);
         }
 
+        private static bool ShowComments = false;
         public void AddCommentInstruction(string comment)
         {
-            AddOperation(OperationKind.Comment, comment);
+            if (ShowComments)
+            {
+                AddOperation(OperationKind.Comment, comment);
+            }
         }
 
         public void StoreField(FieldInfo fieldInfo)

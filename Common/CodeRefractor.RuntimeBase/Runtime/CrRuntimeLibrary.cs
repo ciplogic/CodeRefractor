@@ -92,7 +92,7 @@ namespace CodeRefractor.RuntimeBase.Runtime
                 return null;
 
             Type result;
-            if(!ReverseMappedTypes.TryGetValue(type, out result))
+            if(!MappedTypes.TryGetValue(type, out result))
             {
                 return null;
             }

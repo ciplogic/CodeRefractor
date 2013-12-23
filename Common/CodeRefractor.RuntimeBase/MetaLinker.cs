@@ -116,7 +116,7 @@ namespace CodeRefractor.RuntimeBase
         public void Interpret()
         {
             var method = MethodInfo;
-            Interpreter = new MethodInterpreter(method);
+            Interpreter = LinkerInterpretersTable.Register(method);
 
             Interpreter.LabelList = ComputeLabels(Interpreter.Method);
             Interpreter.Process();

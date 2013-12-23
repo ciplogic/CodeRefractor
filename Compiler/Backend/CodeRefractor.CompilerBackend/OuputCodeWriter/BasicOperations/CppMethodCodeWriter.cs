@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -432,33 +433,57 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
 
         private static void StoreLocal(StringBuilder sb, LocalOperation operation)
         {
-            var localVar = (Assignment)operation.Value;
+            var assignment = (Assignment)operation.Value;
 
-            if (localVar.Right is NewConstructedObject)
+            if (assignment.Right is NewConstructedObject)
             {
                 HandleNewObject(operation, sb);
                 return;
             }
-            var left = localVar.AssignedTo.Name;
-            var localVariable = localVar.Right as LocalVariable;
+            var assignedTo = assignment.AssignedTo;
+            var localVariable = assignment.Right as LocalVariable;
             if (localVariable != null)
             {
-                var leftVarType = localVar.AssignedTo.ComputedType();
-                var rightVarType = localVar.Right.ComputedType();
+                var leftVarType = assignment.AssignedTo.ComputedType();
+                var rightVarType = assignment.Right.ComputedType();
                 if (leftVarType != rightVarType)
                 {
                     if (rightVarType.ClrType.IsPointer)
                     {
-                        sb.AppendFormat("{0} = *{1};", left, localVariable.Name);
+                        sb.AppendFormat("{0} = *{1};", assignedTo, localVariable.Name);
                         return;
                     }
                 }
                 var rightVar = localVariable;
-                sb.AppendFormat("{0} = {1};", left, rightVar.Name);
+                if (assignedTo.NonEscaping == localVariable.NonEscaping)
+                {
+                    sb.AppendFormat("{0} = {1};", assignedTo.Name, rightVar.Name);
+                    return;
+                }
+                switch (assignedTo.NonEscaping)
+                {
+                    case NonEscapingMode.Pointer:
+                        switch (localVariable.NonEscaping)
+                        {
+                            case NonEscapingMode.Stack:
+                                sb.AppendFormat("{0} = &{1};", assignedTo.Name, rightVar.Name);
+                                return;
+                            case NonEscapingMode.Smart:
+                                sb.AppendFormat("{0} = ({1}).get();", assignedTo.Name, rightVar.Name);
+                                return;
+                        }
+                        break;
+
+                    case NonEscapingMode.Smart:
+                        throw new InvalidDataException("Case not possible!");
+                        break;
+
+                }
+                throw new InvalidDataException("Case not handled");
             }
             else
             {
-                sb.AppendFormat("{0} = {1};", left, localVar.Right.ComputedValue());
+                sb.AppendFormat("{0} = {1};", assignedTo.Name, assignment.Right.ComputedValue());
             }
         }
     }

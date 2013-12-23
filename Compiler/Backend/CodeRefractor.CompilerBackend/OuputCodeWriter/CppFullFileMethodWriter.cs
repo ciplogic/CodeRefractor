@@ -27,23 +27,6 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             return linker;
         }
 
-        public static string WriteHeaderMethod(this MethodBase methodBase, bool writeEndColon = true)
-        {
-            var retType = methodBase.GetReturnType().ToCppName();
-
-            var sb = new StringBuilder();
-            var arguments = methodBase.GetArgumentsAsText();
-
-            sb.AppendFormat("{0} {1}({2})",
-                            retType, methodBase.ClangMethodSignature(), arguments);
-            if (writeEndColon)
-                sb.Append(";");
-
-            sb.AppendLine();
-            return sb.ToString();
-        }
-
-
         public static string WriteHeaderMethodWithEscaping(this MethodBase methodBase, bool writeEndColon = true)
         {
             var retType = methodBase.GetReturnType().ToCppName();
@@ -65,24 +48,10 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             return CrRuntimeLibrary.GetMethodDescription(method);
         }
 
-        public static string GetArgumentsAsText(this MethodBase method)
-        {
-            var parameterInfos = method.GetParameters();
-            var arguments = String.Join(", ",
-                                        CommonExtensions.GetParamAsPrettyList(parameterInfos));
-            if (!method.IsStatic)
-            {
-                var thisText = String.Format("const {0}& _this", method.DeclaringType.GetMappedType().ToCppName());
-                return parameterInfos.Length == 0
-                           ? thisText
-                           : String.Format("{0}, {1}", thisText, arguments);
-            }
-            return arguments;
-        }
         public static string GetArgumentsAsTextWithEscaping(this MethodBase method)
         {
             var parameterInfos = method.GetParameters();
-            var escapingBools = BuildEscapingBools(method, parameterInfos);
+            var escapingBools = BuildEscapingBools(method);
             var sb = new StringBuilder();
             var index = 0;
             if (!method.IsStatic)
@@ -115,9 +84,10 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             return sb.ToString();
         }
 
-        public static bool[] BuildEscapingBools(MethodBase method, ParameterInfo[] parameterInfos)
+        public static bool[] BuildEscapingBools(MethodBase method)
         {
-            var escapingBools = new bool[parameterInfos.Length+1];
+            var parameters = method.GetParameters();
+            var escapingBools = new bool[parameters.Length + 1];
             
             var escapeData = AnalyzeParametersAreEscaping.EscapingParameterData(method);
             if (escapeData != null)
@@ -130,7 +100,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             }
             else
             {
-                for (var index = 0; index <= parameterInfos.Length; index++)
+                for (var index = 0; index <= parameters.Length; index++)
                 {
                     escapingBools[index] = true;
                 }

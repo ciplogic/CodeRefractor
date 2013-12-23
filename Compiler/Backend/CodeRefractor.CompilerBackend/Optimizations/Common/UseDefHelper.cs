@@ -201,11 +201,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
                     var fieldGetter = (FieldGetter)operation.Value;
                     return fieldGetter.AssignedTo;
                 case OperationKind.BinaryOperator:
-                    var binOp = (BinaryOperator)operation.Value;
-                    return binOp.AssignedTo;
                 case OperationKind.UnaryOperator:
-                    var unOp = (UnaryOperator)operation.Value;
-                    return unOp.AssignedTo;
+                    var binOp = (OperatorBase)operation.Value;
+                    return binOp.AssignedTo;
                 case OperationKind.Call:
                     var value = (MethodData)operation.Value;
                     return value.Result;

@@ -23,7 +23,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Inliner
                 if (interpreter == null)
                     continue;
 
-                var methodInterpreter = methodData.Info.GetMethod();
+                var methodInterpreter = methodData.Info.GetInterpreter().MidRepresentation;
                 if (AnalyzeFunctionIsGetter.ReadProperty(methodInterpreter)
                     || AnalyzeFunctionIsSetter.ReadProperty(methodInterpreter)
                     || AnalyzeFunctionIsEmpty.ReadProperty(methodInterpreter)

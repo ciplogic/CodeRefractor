@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using CodeRefractor.CompilerBackend.Linker;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
+using CodeRefractor.CompilerBackend.OuputCodeWriter;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
@@ -13,8 +14,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
 {
     class AnalyzeParametersAreEscaping : ResultingGlobalOptimizationPass
     {
-        private const string EscapeName = "NonEscapingArgs";
-        HashSet<LocalVariable> argumentList = new HashSet<LocalVariable>();
+        public const string EscapeName = "NonEscapingArgs";
         public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
         {
             if (intermediateCode.GetInterpreter().Kind != MethodKind.Default)
@@ -26,10 +26,17 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
             var escaping = ComputeArgsEscaping(operations, argEscaping);
             if (argEscaping.Count==0) return;
             intermediateCode.SetAdditionalValue(EscapeName, escaping);
+            var escapingBools = CppFullFileMethodWriter.BuildEscapingBools(intermediateCode.Method);
+            foreach (var variable in intermediateCode.Vars.Arguments)
+            {
+                if(!escapingBools[variable.Id])
+                    variable.NonEscaping = NonEscapingMode.Pointer;
+            }
         }
 
-        private HashSet<LocalVariable> ComputeEscapingArgList(MetaMidRepresentation intermediateCode, List<LocalOperation> operations)
+        public static HashSet<LocalVariable> ComputeEscapingArgList(MetaMidRepresentation intermediateCode, List<LocalOperation> operations)
         {
+            var argumentList = new HashSet<LocalVariable>();
             argumentList.Clear();
             argumentList.AddRange(
                 intermediateCode.Vars.Arguments
@@ -89,7 +96,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
 
         public static Dictionary<int, bool> EscapingParameterData(MethodBase info)
         {
-            var calledMethod = info.GetMethod();
+            var calledMethod = info.GetInterpreter().MidRepresentation;
             var otherMethodData = (Dictionary<int, bool>) calledMethod.GetAdditionalProperty(EscapeName);
             return otherMethodData;
         }

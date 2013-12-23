@@ -20,40 +20,30 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
     {
         public static void OptimizeMethods(bool doInline = false)
         {
-            LinkerInterpretersTable.Instance.Clear();
-            foreach (var methodBase in GlobalMethodPool.Instance.MethodInfos)
-            {
-                var typeData =
-                    (ClassTypeData)ProgramData.UpdateType(
-                        methodBase.Value.DeclaringType);
-                var interpreter = typeData.GetInterpreter(methodBase.Value);
-                if(interpreter.Kind!=MethodKind.Default)
-                    continue;
-                LinkerInterpretersTable.Register(interpreter.MidRepresentation);
-            }
+            LinkerInterpretersTable.Clear();
 
             foreach (var usedMethod in CrRuntimeLibrary.Instance.UsedCppMethods)
             {
-                LinkerInterpretersTable.Instance.RegisterRuntimeMethod(usedMethod);
+                LinkerInterpretersTable.RegisterRuntimeMethod(usedMethod);
             }
-            var methodsToOptimize = LinkerInterpretersTable.Instance.Methods;
+            var methodsToOptimize = LinkerInterpretersTable.Methods;
             ApplyOptimizations(doInline, methodsToOptimize.Values.ToList());
         }
 
-        public static void ApplyOptimizations(bool doInline, List<MetaMidRepresentation> methodsToOptimize)
+        public static void ApplyOptimizations(bool doInline, List<MethodInterpreter> methodsToOptimize)
         {
             bool doOptimize;
             do
             {
                 doOptimize = false;
-                var toRemove = methodsToOptimize.Where(mth => mth.GetInterpreter() == null).ToArray();
+                var toRemove = methodsToOptimize.Where(mth => mth== null).ToArray();
                 foreach (var item in toRemove)
                 {
                     methodsToOptimize.Remove(item);
                 }
                 foreach (var methodBase in methodsToOptimize)
                 {
-                    var interpreter = methodBase.GetInterpreter();
+                    var interpreter = methodBase;
                     var codeWriter = new MethodInterpreterCodeWriter
                         {
                             Interpreter = interpreter
@@ -63,7 +53,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                 }
                 foreach (var methodBase in methodsToOptimize)
                 {
-                    var interpreter = methodBase.GetInterpreter();
+                    var interpreter = methodBase;
                     var codeWriter = new MethodInterpreterCodeWriter
                         {
                             Interpreter = interpreter

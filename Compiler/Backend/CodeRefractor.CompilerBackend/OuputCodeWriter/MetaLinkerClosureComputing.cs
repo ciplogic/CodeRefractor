@@ -50,7 +50,6 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                 var interpreter = ClassTypeData.GetInterpreterStatic(info);
                 if (interpreter == null)
                     continue;
-                interpreter = interpreter.Clone();
                 var isGenericDeclaringType = interpreter.IsGenericDeclaringType();
                 if (isGenericDeclaringType)
                 {

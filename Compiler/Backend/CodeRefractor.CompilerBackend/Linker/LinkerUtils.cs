@@ -1,14 +1,34 @@
 using System;
 using System.Reflection;
+using CodeRefractor.CompilerBackend.Optimizations.Purity;
 using CodeRefractor.CompilerBackend.OuputCodeWriter;
+using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
+using CodeRefractor.RuntimeBase.Shared;
 
 namespace CodeRefractor.CompilerBackend.Linker
 {
+    public static class LinkerInterpretersTableUtils
+    {
+        public static bool ReadPurity(MethodBase methodBase)
+        {
+            var method = methodBase.GetInterpreter().MidRepresentation;
+            if (method != null)
+            {
+                return AnalyzeFunctionPurity.ReadPurity(method);
+            }
+
+            var methodRuntimeInfo = methodBase.GetMethodDescriptor();
+            if (!LinkerInterpretersTable.RuntimeMethods.ContainsKey(methodRuntimeInfo))
+                return false;
+            var runtimeMethod = LinkerInterpretersTable.RuntimeMethods[methodRuntimeInfo];
+            return runtimeMethod.GetCustomAttribute<PureMethodAttribute>() != null;
+        }
+    }
     public static class LinkerUtils
     {
         public static string ComputedValue(this IdentifierValue identifierValue)
@@ -37,7 +57,9 @@ namespace CodeRefractor.CompilerBackend.Linker
 
         public static MethodInterpreter GetInterpreter(this MethodBase methodBase)
         {
-            var isGacType = methodBase.DeclaringType.Assembly.GlobalAssemblyCache;
+            var typeToSearch = methodBase.DeclaringType.ReversedType();
+            var isGacType = typeToSearch.Assembly.GlobalAssemblyCache;
+            
             if(isGacType)
                 return null;
             var typeData = (ClassTypeData) ProgramData.UpdateType(methodBase.DeclaringType);
@@ -50,11 +72,11 @@ namespace CodeRefractor.CompilerBackend.Linker
             return methodData.Method.GetInterpreter();
         }
 
-        public static MetaMidRepresentation GetMethod(this MethodBase midrepresentation)
+        public static MethodInterpreter GetMethod(this MethodInterpreter midrepresentation)
         {
-            var methodName = midrepresentation.WriteHeaderMethod(false);
-            MetaMidRepresentation result;
-            return !LinkerInterpretersTable.Instance.Methods.TryGetValue(methodName, out result) ? null : result;
+            var methodName = midrepresentation.Method.WriteHeaderMethod(false);
+            MethodInterpreter result;
+            return !LinkerInterpretersTable.Methods.TryGetValue(methodName, out result) ? null : result;
         }
     }
 }

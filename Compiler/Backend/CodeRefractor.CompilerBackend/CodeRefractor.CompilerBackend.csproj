@@ -47,7 +47,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Linker\LinkerInterpretersTable.cs" />
     <Compile Include="Linker\LinkerUtils.cs" />
     <Compile Include="Linker\LinkingData.cs" />
     <Compile Include="Linker\StringTable.cs" />

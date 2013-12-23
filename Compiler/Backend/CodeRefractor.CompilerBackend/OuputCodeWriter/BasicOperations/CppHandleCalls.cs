@@ -4,7 +4,6 @@ using System;
 using System.Linq;
 using System.Text;
 using CodeRefractor.CompilerBackend.Linker;
-using CodeRefractor.CompilerBackend.OuputCodeWriter;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
@@ -12,7 +11,7 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
 #endregion
 
-namespace CodeRefractor.CompilerBackend.HandleOperations
+namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
 {
     internal static class CppHandleCalls
     {
@@ -40,12 +39,17 @@ namespace CodeRefractor.CompilerBackend.HandleOperations
             }
             else
             {
+                if (operationData.Result == null)
+                {
+                    sb.AppendFormat("{0}", methodInfo.ClangMethodSignature());
+                }
+                else
                 sb.AppendFormat("{1} = {0}", methodInfo.ClangMethodSignature(),
                                 operationData.Result.Name);
             }
             var identifierValues = operationData.Parameters;
 
-            var escapingData = CppFullFileMethodWriter.BuildEscapingBools(methodInfo, methodInfo.GetParameters());
+            var escapingData = CppFullFileMethodWriter.BuildEscapingBools(methodInfo);
             if (escapingData == null)
             {
                 var argumentsCall = String.Join(", ", identifierValues.Select(p =>
@@ -77,6 +81,10 @@ namespace CodeRefractor.CompilerBackend.HandleOperations
                     sb.Append(value.ComputedValue());
                     continue;
                 }
+                if (localValue.Kind == VariableKind.Argument)
+                {
+
+                }
 
                 if (localValue.ComputedType().ClrType == typeof (IntPtr))
                 {
@@ -89,16 +97,20 @@ namespace CodeRefractor.CompilerBackend.HandleOperations
                 {
                     case NonEscapingMode.Smart:
                         if (!isEscaping && localValue.ComputedType().ClrType.IsClass)
+                        {
                             sb.AppendFormat("{0}.get()", localValue.Name);
+                        }
                         else
-                            sb.Append(localValue.Name);
+                        {
+                            sb.AppendFormat("{0}", localValue.Name);
+                        }
                         continue;
                     case NonEscapingMode.Stack:
                         sb.AppendFormat("&{0}", localValue.Name);
                         continue;
 
                     case NonEscapingMode.Pointer:
-                        sb.AppendFormat("{0}.get()", localValue.Name);
+                        sb.AppendFormat(!isEscaping ? "{0}" : "{0}.get()", localValue.Name);
                         continue;
                 }
             }

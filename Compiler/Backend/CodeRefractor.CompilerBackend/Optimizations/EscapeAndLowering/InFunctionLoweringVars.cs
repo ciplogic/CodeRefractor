@@ -34,6 +34,22 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
             foreach (var variable in candidateVariables)
                 variable.NonEscaping = NonEscapingMode.Pointer;
             AllocateVariablesOnStack(localOp, candidateVariables);
+            PropagateEscapign(localOp);
+        }
+
+        private void PropagateEscapign(List<LocalOperation> localOp)
+        {
+            foreach (var op in localOp)
+            {
+                if (op.Kind != OperationKind.Assignment) continue;
+                var assign = op.GetAssignment();
+                var right = assign.Right as LocalVariable;
+                if(right==null)
+                    continue;
+                if (assign.AssignedTo.NonEscaping == NonEscapingMode.Smart
+                    && right.NonEscaping != NonEscapingMode.Smart)
+                    right.NonEscaping = NonEscapingMode.Smart;
+            }
         }
 
         private static void AllocateVariablesOnStack(List<LocalOperation> localOp, HashSet<LocalVariable> candidateVariables)

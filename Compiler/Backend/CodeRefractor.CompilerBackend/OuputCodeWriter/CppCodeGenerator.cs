@@ -29,7 +29,6 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             var toOptimizeList = closure
                 .Where(c=>c.Kind==MethodKind.Default
                     && c.MidRepresentation.LocalOperations.Count>1)
-                .Select(cl => cl.MidRepresentation)
                 .ToList();
             MetaLinkerOptimizer.ApplyOptimizations(false, toOptimizeList);
             closure = MetaLinkerClosureComputing.GetMethodClosure(linker.Interpreter);

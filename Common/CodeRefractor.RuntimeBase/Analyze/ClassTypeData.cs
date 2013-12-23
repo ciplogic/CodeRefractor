@@ -55,10 +55,10 @@ namespace CodeRefractor.RuntimeBase.Analyze
                 return Interpreters[index];
             if(DelegateManager.IsTypeDelegate(methodBase.DeclaringType))
             {
-                return new MethodInterpreter(methodBase)
-                    {
-                        Kind = MethodKind.Delegate
-                    };
+                var methodInterpreter = LinkerInterpretersTable.Register(methodBase);
+                methodInterpreter.Kind=MethodKind.Delegate;
+                
+                return methodInterpreter;
             }
             var linker = new MetaLinker();
             linker.SetEntryPoint(methodBase);

@@ -24,18 +24,23 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
 
         public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
         {
-            _definitions.Clear();
             var localOperations = intermediateCode.LocalOperations.ToArray();
 
-            for (int index = 0; index < localOperations.Length; index++)
-            {
-                var op = localOperations[index];
-                var variableDefinition = op.GetUseDefinition();
-                if (variableDefinition == null)
-                    continue;
-                _definitions[variableDefinition] = index;
-            }
+            _definitions.Clear();
+            ComputeDefinitions(localOperations);
+            RemoveUsages(localOperations);
+            if (_definitions.Count == 0)
+                return;
+            var toRemove = BuildRemoveInstructions(localOperations);
+            if (toRemove.Count == 0)
+                return;
+            intermediateCode.DeleteInstructions(toRemove);
 
+            Result = true;
+        }
+
+        private void RemoveUsages(LocalOperation[] localOperations)
+        {
             foreach (var op in localOperations)
             {
                 var usages = op.GetUsages();
@@ -44,29 +49,32 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
                     _definitions.Remove(localVariable);
                 }
             }
-            if (_definitions.Count == 0)
-                return;
-            var toRemove = BuildRemoveInstructions(localOperations);
-            if (toRemove.Count == 0)
-                return;
-            intermediateCode.DeleteInstructions(toRemove);
+        }
 
-            OptimizeOperations(intermediateCode);
-            Result = true;
+        private void ComputeDefinitions(LocalOperation[] localOperations)
+        {
+            for (int index = 0; index < localOperations.Length; index++)
+            {
+                var op = localOperations[index];
+                var variableDefinition = op.GetUseDefinition();
+                if (variableDefinition == null)
+                    continue;
+                _definitions[variableDefinition] = index;
+            }
         }
 
         private HashSet<int> BuildRemoveInstructions(LocalOperation[] localOperations)
         {
+
             var toRemove = new HashSet<int>();
-            for (var index = 0; index < localOperations.Length; index++)
+            foreach (var definition in _definitions)
             {
+                var index = definition.Value;
                 var op = localOperations[index];
                 var opKind = op.Kind;
                 if (!NoSideEffectsOperationKinds.Contains(opKind))
                     continue;
-                var variableDefinition = op.GetUseDefinition();
-                if (_definitions.ContainsKey(variableDefinition))
-                    toRemove.Add(index);
+                toRemove.Add(index);
             }
             return toRemove;
         }

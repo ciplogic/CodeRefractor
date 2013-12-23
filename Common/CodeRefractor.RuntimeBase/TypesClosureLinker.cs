@@ -12,7 +12,7 @@ namespace CodeRefractor.RuntimeBase
         public static List<Type> GetTypesClosure(List<MethodInterpreter> closure)
         {
             var typesSet = ScanMethodParameters(closure);
-
+           
             bool isAdded;
             do
             {

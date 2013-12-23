@@ -52,11 +52,12 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
                            //  //?? 
                            
                             // CSE
+                            
                            new PrecomputeRepeatedPureFunctionCall(), 
                            new PrecomputeRepeatedBinaryOperators(), 
                            new PrecomputeRepeatedUnaryOperators(), 
                            new PrecomputeRepeatedFieldGets(), 
-                
+         
                 
             }.ToList();
         }
@@ -105,17 +106,17 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
                            
                             new DeadStoreAssignment(), 
                             
-                           new PropagationVariablesOptimizationPass(),
 
                              new OneAssignmentDeadStoreAssignment(),
                             new InlineGetterAndSetterMethods(), 
                            new ReachabilityLines(),
-                              /*
+                        
                            new LoopInvariantCodeMotion(), 
                         
                             new AnalyzeParametersAreEscaping(), 
                            new InFunctionLoweringVars(),
-                            */
+                          
+                           
                        }.ToList();
         }
     }
