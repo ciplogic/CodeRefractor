@@ -31,11 +31,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                     continue;
                 }
                 var assignment = op.GetAssignment();
+                RemoveDefinitionsIfTheUsageIsInvalidated(assignment.AssignedTo);
 
-                if (_dictionary.ContainsKey(assignment.AssignedTo))
-                {
-                    RemoveDefinitionsIfTheUsageIsInvalidated(assignment.AssignedTo);
-                }
                 _dictionary[assignment.AssignedTo] = assignment.Right;
             }
             return result;
@@ -52,11 +49,13 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
         private void RemoveDefinitionsIfTheUsageIsInvalidated(LocalVariable rightAssignment)
         {
             var toRemove = new HashSet<LocalVariable>();
-            foreach (var identifierValue in _dictionary.Where(identifierValue => identifierValue.Value.Equals(rightAssignment)))
+            foreach (var identifierValue in _dictionary)
             {
+                if (!identifierValue.Value.Equals(rightAssignment)) continue;
                 toRemove.Add(identifierValue.Key);
             }
-            if (toRemove.Count <= 0) return;
+            if(toRemove.Count==0)
+                return;
             foreach (var variable in toRemove)
             {
                 _dictionary.Remove(variable);

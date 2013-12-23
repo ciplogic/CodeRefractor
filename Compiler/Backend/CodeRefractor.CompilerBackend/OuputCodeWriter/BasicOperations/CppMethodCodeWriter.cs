@@ -455,7 +455,8 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
                     }
                 }
                 var rightVar = localVariable;
-                if (assignedTo.NonEscaping == localVariable.NonEscaping)
+                if (assignedTo.NonEscaping == localVariable.NonEscaping 
+                    || assignedTo.ComputedType().ClrTypeCode!=TypeCode.Object)
                 {
                     sb.AppendFormat("{0} = {1};", assignedTo.Name, rightVar.Name);
                     return;
