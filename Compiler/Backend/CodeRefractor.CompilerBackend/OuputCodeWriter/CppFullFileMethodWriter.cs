@@ -59,7 +59,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                 var thisText = String.Format("const {0}& _this", method.DeclaringType.GetMappedType().ToCppName());
                 if(!escapingBools[0])
                 {
-                    thisText = String.Format("{0} _this", method.DeclaringType.GetMappedType().ToCppName(NonEscapingMode.Pointer));
+                    thisText = String.Format("{0} _this", method.DeclaringType.GetMappedType().ToCppName(EscapingMode.Pointer));
                 }
                 sb.Append(thisText);
                 index++;
@@ -76,7 +76,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                 }
                 var parameterInfo = parameterInfos[index];
                 var isSmartPtr = escapingBools[index];
-                var nonEscapingMode = isSmartPtr ? NonEscapingMode.Smart : NonEscapingMode.Pointer;
+                var nonEscapingMode = isSmartPtr ? EscapingMode.Smart : EscapingMode.Pointer;
                 sb.AppendFormat("{0} {1}", 
                     parameterInfo.ParameterType.GetMappedType().ToCppName(nonEscapingMode ), 
                     parameterInfo.Name);

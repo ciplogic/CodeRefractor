@@ -52,12 +52,12 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
                            //  //?? 
                            
                             // CSE
-                            
                            new PrecomputeRepeatedPureFunctionCall(), 
                            new PrecomputeRepeatedBinaryOperators(), 
                            new PrecomputeRepeatedUnaryOperators(), 
                            new PrecomputeRepeatedFieldGets(), 
-         
+             
+                          // new AssignmentWithVregPrevLineFolding(),
                 
             }.ToList();
         }
@@ -67,16 +67,19 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
         {
             return new OptimizationPass[]
                        {
-                           new DceVRegUnused(),
                            new DeleteAssignmentWithSelf(),
-                           new AssignmentWithVregPrevLineFolding(), 
-                           new PropagationVariablesOptimizationPass(), 
                            new RemoveDeadStoresInBlockOptimizationPass(), 
-                           new FoldVariablesDefinitionsOptimizationPass(),
+                           
                            new OperatorPartialConstantFolding(),
                            new OperatorConstantFolding(),
+                           new FoldVariablesDefinitionsOptimizationPass(),
+
+                           new PropagationVariablesOptimizationPass(), 
+                           /*
+                            
+                           new PropagationVariablesOptimizationPass(), 
                            new ConstantVariableBranchOperatorPropagation(),
-                           new AssignmentVregWithConstNextLineFolding(),  
+                           //new AssignmentVregWithConstNextLineFolding(),  
                           
                            new EvaluatePureFunctionWithConstantCall(),
                            
@@ -84,15 +87,18 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
                            new RemoveDeadPureFunctionCalls(), 
                            
                            new DoubleAssignPropagation(),
-
-                           new DeleteCallToConstructorOfObject(), 
+                            */
                            new AssignToReturnPropagation(),
                            new DceLocalAssigned(),
 
+                           new DeleteCallToConstructorOfObject(), 
                            new ConstantVariablePropagation(),
+
+                           
                            new ConstantVariableOperatorPropagation(),
                            new ConstantVariablePropagationInCall(),
-
+                           /*
+                           */
                             new AnalyzeFunctionPurity(),
                             new AnalyzeFunctionIsGetter(),
                             new AnalyzeFunctionIsSetter(),
@@ -108,11 +114,15 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
                             
 
                              new OneAssignmentDeadStoreAssignment(),
-                            new InlineGetterAndSetterMethods(), 
+                            //new InlineGetterAndSetterMethods(), 
                            new ReachabilityLines(),
                         
+                        
+                           new DceVRegUnused(),
+                           
                            new LoopInvariantCodeMotion(), 
                         
+                           
                             new AnalyzeParametersAreEscaping(), 
                            new InFunctionLoweringVars(),
                           

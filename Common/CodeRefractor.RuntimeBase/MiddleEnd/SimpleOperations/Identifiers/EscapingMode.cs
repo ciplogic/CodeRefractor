@@ -1,6 +1,6 @@
 namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers
 {
-    public enum NonEscapingMode
+    public enum EscapingMode
     {
         Smart,
         Pointer,

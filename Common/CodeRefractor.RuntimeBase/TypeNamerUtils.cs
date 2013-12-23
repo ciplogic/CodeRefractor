@@ -77,7 +77,7 @@ namespace CodeRefractor.RuntimeBase
             }
             return fullName;
         }
-        public static string ToCppName(this Type type, NonEscapingMode isSmartPtr = NonEscapingMode.Smart)
+        public static string ToCppName(this Type type, EscapingMode isSmartPtr = EscapingMode.Smart)
         {
             if (type == null)
                 return "void*";
@@ -88,19 +88,19 @@ namespace CodeRefractor.RuntimeBase
                 var fullTypeName = elementType.ToCppName();
                 switch (isSmartPtr)
                 {
-                    case NonEscapingMode.Smart:
+                    case EscapingMode.Smart:
                         return String.Format(StdSharedPtr+"< Array < {0} > >", fullTypeName);
-                    case NonEscapingMode.Pointer:
+                    case EscapingMode.Pointer:
                         return String.Format("Array < {0} > *", fullTypeName);
-                    case NonEscapingMode.Stack:
+                    case EscapingMode.Stack:
                         return String.Format("Array < {0} > ", fullTypeName);
                 }
 
             }
-            if (type.IsClass || isSmartPtr != NonEscapingMode.Smart)
+            if (type.IsClass || isSmartPtr != EscapingMode.Smart)
             {
                 if (type.IsPrimitive || type.IsValueType)
-                    isSmartPtr = NonEscapingMode.Stack;
+                    isSmartPtr = EscapingMode.Stack;
                 if (type.Name.EndsWith("*") || type.Name.EndsWith("&"))
                 {
                     var elementType = type.GetElementType();
@@ -108,15 +108,15 @@ namespace CodeRefractor.RuntimeBase
                 }
                 switch (isSmartPtr)
                 {
-                    case NonEscapingMode.Smart:
+                    case EscapingMode.Smart:
                         return String.Format(StdSharedPtr+"<{0}>", type.ToCppMangling());
-                    case NonEscapingMode.Pointer:
+                    case EscapingMode.Pointer:
                         return String.Format("{0} *", type.ToCppMangling());
-                    case NonEscapingMode.Stack:
+                    case EscapingMode.Stack:
                         return String.Format("{0} ", type.ToCppMangling());
                 }
             }
-            if (!type.IsClass || isSmartPtr != NonEscapingMode.Smart)
+            if (!type.IsClass || isSmartPtr != EscapingMode.Smart)
             {
                 return type.IsSubclassOf(typeof(Enum))
                            ? "int"

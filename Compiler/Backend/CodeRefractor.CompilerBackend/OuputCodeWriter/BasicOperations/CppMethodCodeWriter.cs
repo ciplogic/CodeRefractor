@@ -278,15 +278,15 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
             var value = (Assignment)operation.Value;
             var valueSrc = (ArrayVariable)value.Right;
             var parentType = valueSrc.Parent.ComputedType();
-            switch (value.AssignedTo.NonEscaping)
+            switch (value.AssignedTo.Escaping)
             {
-                case NonEscapingMode.Smart:
+                case EscapingMode.Smart:
                     bodySb.AppendFormat(parentType.ClrType.IsClass
                                             ? "{0} = (*{1})[{2}];"
                                             : "{0} = {1}[{2}];",
                                         value.AssignedTo.Name, valueSrc.Parent.Name, valueSrc.Index.Name);
                     return;
-                case NonEscapingMode.Pointer:
+                case EscapingMode.Pointer:
                     bodySb.AppendFormat(parentType.ClrType.IsClass
                                             ? "{0} = ((*{1})[{2}]).get();"
                                             : "{0} = ({1}[{2}]).get();",
@@ -309,18 +309,18 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
         {
             var fieldGetterInfo = (FieldGetter)operation.Value;
             var assignedFrom = fieldGetterInfo.Instance;
-            var getStackField = assignedFrom.NonEscaping == NonEscapingMode.Stack;
+            var getStackField = assignedFrom.Escaping == EscapingMode.Stack;
             var fieldText = string.Format(getStackField ? "{0}.{1}" : "{0}->{1}", fieldGetterInfo.Instance.Name,
                 fieldGetterInfo.FieldName);
 
             var assignedTo = fieldGetterInfo.AssignedTo;
-            switch (assignedTo.NonEscaping)
+            switch (assignedTo.Escaping)
             {
-                case NonEscapingMode.Smart:
+                case EscapingMode.Smart:
                     bodySb.AppendFormat("{0} = {1};", assignedTo.Name, fieldText);
                     break;
 
-                case NonEscapingMode.Pointer:
+                case EscapingMode.Pointer:
                     bodySb.AppendFormat("{0} = {1}.get();", assignedTo.Name, fieldText);
                     break;
             }
@@ -342,10 +342,10 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
             var localValue = rightValue.Info;
 
             var declaringType = localValue.DeclaringType;
-            var cppName = declaringType.ToCppName(NonEscapingMode.Stack);
-            switch (value.AssignedTo.NonEscaping)
+            var cppName = declaringType.ToCppName(EscapingMode.Stack);
+            switch (value.AssignedTo.Escaping)
             {
-                case NonEscapingMode.Stack:
+                case EscapingMode.Stack:
                     bodySb.AppendFormat("{1} {0};", value.AssignedTo.Name, cppName);
 
                     break;
@@ -381,7 +381,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
 
         private static void AddVariableContent(StringBuilder variablesSb, string format, LocalVariable localVariable)
         {
-            if (localVariable.NonEscaping == NonEscapingMode.Stack)
+            if (localVariable.Escaping == EscapingMode.Stack)
                 return;
             if (localVariable.ComputedType().ClrType.IsSubclassOf(typeof(MethodInfo)))
             {
@@ -392,10 +392,10 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
                     .AppendLine();
                 return;
             }
-            if (localVariable.NonEscaping == NonEscapingMode.Pointer)
+            if (localVariable.Escaping == EscapingMode.Pointer)
             {
                 var cppName = localVariable.ComputedType()
-                    .ClrType.ToCppName(localVariable.NonEscaping);
+                    .ClrType.ToCppName(localVariable.Escaping);
                 variablesSb
                     .AppendFormat(format, cppName, localVariable.Id)
                     .AppendLine();
@@ -403,7 +403,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
             }
             variablesSb
                 .AppendFormat(format, localVariable.ComputedType()
-                .ClrType.ToCppName(localVariable.NonEscaping), localVariable.Id)
+                .ClrType.ToCppName(localVariable.Escaping), localVariable.Id)
                 .AppendLine();
         }
 
@@ -455,27 +455,27 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
                     }
                 }
                 var rightVar = localVariable;
-                if (assignedTo.NonEscaping == localVariable.NonEscaping 
+                if (assignedTo.Escaping == localVariable.Escaping 
                     || assignedTo.ComputedType().ClrTypeCode!=TypeCode.Object)
                 {
                     sb.AppendFormat("{0} = {1};", assignedTo.Name, rightVar.Name);
                     return;
                 }
-                switch (assignedTo.NonEscaping)
+                switch (assignedTo.Escaping)
                 {
-                    case NonEscapingMode.Pointer:
-                        switch (localVariable.NonEscaping)
+                    case EscapingMode.Pointer:
+                        switch (localVariable.Escaping)
                         {
-                            case NonEscapingMode.Stack:
+                            case EscapingMode.Stack:
                                 sb.AppendFormat("{0} = &{1};", assignedTo.Name, rightVar.Name);
                                 return;
-                            case NonEscapingMode.Smart:
+                            case EscapingMode.Smart:
                                 sb.AppendFormat("{0} = ({1}).get();", assignedTo.Name, rightVar.Name);
                                 return;
                         }
                         break;
 
-                    case NonEscapingMode.Smart:
+                    case EscapingMode.Smart:
                         throw new InvalidDataException("Case not possible!");
                         break;
 

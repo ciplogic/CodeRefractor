@@ -93,9 +93,9 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
                     continue;
                 }
 
-                switch (localValue.NonEscaping)
+                switch (localValue.Escaping)
                 {
-                    case NonEscapingMode.Smart:
+                    case EscapingMode.Smart:
                         if (!isEscaping && localValue.ComputedType().ClrType.IsClass)
                         {
                             sb.AppendFormat("{0}.get()", localValue.Name);
@@ -105,11 +105,11 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
                             sb.AppendFormat("{0}", localValue.Name);
                         }
                         continue;
-                    case NonEscapingMode.Stack:
+                    case EscapingMode.Stack:
                         sb.AppendFormat("&{0}", localValue.Name);
                         continue;
 
-                    case NonEscapingMode.Pointer:
+                    case EscapingMode.Pointer:
                         sb.AppendFormat(!isEscaping ? "{0}" : "{0}.get()", localValue.Name);
                         continue;
                 }

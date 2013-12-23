@@ -20,17 +20,41 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
             if (intermediateCode.GetInterpreter().Kind != MethodKind.Default)
                 return;
 
+            var originalSnapshot = CppFullFileMethodWriter.BuildEscapingBools(intermediateCode.Method);
+
+            if (ComputeEscapeTable(intermediateCode)) return;
+
+            var finalSnapshot= CppFullFileMethodWriter.BuildEscapingBools(intermediateCode.Method);
+            CheckForChanges(finalSnapshot, originalSnapshot);
+        }
+
+        private static bool ComputeEscapeTable(MetaMidRepresentation intermediateCode)
+        {
             var operations = intermediateCode.LocalOperations;
 
             var argEscaping = ComputeEscapingArgList(intermediateCode, operations);
             var escaping = ComputeArgsEscaping(operations, argEscaping);
-            if (argEscaping.Count==0) return;
+            if (argEscaping.Count == 0) return true;
             intermediateCode.SetAdditionalValue(EscapeName, escaping);
             var escapingBools = CppFullFileMethodWriter.BuildEscapingBools(intermediateCode.Method);
             foreach (var variable in intermediateCode.Vars.Arguments)
             {
-                if(!escapingBools[variable.Id])
-                    variable.NonEscaping = NonEscapingMode.Pointer;
+                if (!escapingBools[variable.Id])
+                    variable.Escaping = EscapingMode.Pointer;
+            }
+            return false;
+        }
+
+        private void CheckForChanges(bool[] finalSnapshot, bool[] originalSnapshot)
+        {
+            Result = false;
+            for (int index = 0; index < finalSnapshot.Length; index++)
+            {
+                var orig = originalSnapshot[index];
+                var final = finalSnapshot[index];
+                if (orig == final) continue;
+                Result = true;
+                return;
             }
         }
 
@@ -96,8 +120,14 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
 
         public static Dictionary<int, bool> EscapingParameterData(MethodBase info)
         {
-            var calledMethod = info.GetInterpreter().MidRepresentation;
+            var interpreter = info.GetInterpreter();
+            var calledMethod = interpreter.MidRepresentation;
             var otherMethodData = (Dictionary<int, bool>) calledMethod.GetAdditionalProperty(EscapeName);
+            if (otherMethodData == null)
+            {
+                ComputeEscapeTable(calledMethod);
+                otherMethodData = (Dictionary<int, bool>)calledMethod.GetAdditionalProperty(EscapeName);
+            }
             return otherMethodData;
         }
     }

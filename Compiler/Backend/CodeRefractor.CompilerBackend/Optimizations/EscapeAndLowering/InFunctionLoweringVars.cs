@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.CompilerBackend.Optimizations.Util;
+using CodeRefractor.CompilerBackend.OuputCodeWriter;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
@@ -32,40 +33,22 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
             if (candidateVariables.Count == 0)
                 return;
             foreach (var variable in candidateVariables)
-                variable.NonEscaping = NonEscapingMode.Pointer;
+                variable.Escaping = EscapingMode.Pointer;
             AllocateVariablesOnStack(localOp, candidateVariables);
-            PropagateEscapign(localOp);
-        }
-
-        private void PropagateEscapign(List<LocalOperation> localOp)
-        {
-            foreach (var op in localOp)
-            {
-                if (op.Kind != OperationKind.Assignment) continue;
-                var assign = op.GetAssignment();
-                var right = assign.Right as LocalVariable;
-                if(right==null)
-                    continue;
-                if (assign.AssignedTo.NonEscaping == NonEscapingMode.Smart
-                    && right.NonEscaping != NonEscapingMode.Smart)
-                    right.NonEscaping = NonEscapingMode.Smart;
-            }
         }
 
         private static void AllocateVariablesOnStack(List<LocalOperation> localOp, HashSet<LocalVariable> candidateVariables)
         {
-            foreach (var op in localOp)
+            var newOps = localOp.Where(op =>
+                op.Kind == OperationKind.NewArray
+                || op.Kind == OperationKind.NewObject).ToArray();
+            if(newOps.Length==0)
+                return;
+            foreach (var op in newOps)
             {
-                switch (op.Kind)
-                {
-                    case OperationKind.NewArray:
-                    case OperationKind.NewObject:
-
-                        var definition = op.GetUseDefinition();
-                        if (definition != null && candidateVariables.Contains(definition))
-                            definition.NonEscaping = NonEscapingMode.Stack;
-                        break;
-                }
+                var definition = op.GetUseDefinition();
+                if (definition != null && candidateVariables.Contains(definition))
+                    definition.Escaping = EscapingMode.Stack;
             }
         }
 
@@ -74,7 +57,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
             switch (op.Kind)
             {
                 case OperationKind.Assignment:
-                    HandleAssign(localVariable, candidateVariables, op);
+                    HandleAssign(candidateVariables, op);
                     break;
                 case OperationKind.Return:
                     HandleReturn(localVariable, candidateVariables, op);
@@ -105,9 +88,12 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
             candidateVariables.Remove(localVariable);
         }
 
-        private static void HandleAssign(LocalVariable localVariable, HashSet<LocalVariable> candidateVariables, LocalOperation op)
+        private static void HandleAssign(HashSet<LocalVariable> candidateVariables, LocalOperation op)
         {
             var assignData = op.GetAssignment();
+            var right = assignData.Right as LocalVariable;
+            if (right == null || candidateVariables.Contains(right))
+                return;
             candidateVariables.Remove(assignData.AssignedTo);
         }
 
@@ -120,14 +106,16 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
                 candidateVariables.Remove(localVariable);
                 return;
             }
-            for (int index = 0; index < methodData.Parameters.Count; index++)
+
+            var escapingBools = CppFullFileMethodWriter.BuildEscapingBools(methodData.Info);
+            for (var index = 0; index < methodData.Parameters.Count; index++)
             {
                 var parameter = methodData.Parameters[index];
-                bool isEscaping;
-                if (!escapeData.TryGetValue(index, out isEscaping) || !parameter.Equals(localVariable)) 
+                var variable = parameter as LocalVariable;
+                if(variable==null)
                     continue;
-                if (isEscaping)
-                    candidateVariables.Remove(localVariable);
+                if (escapingBools[index])
+                    candidateVariables.Remove(variable);
             }
         }
 

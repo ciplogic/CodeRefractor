@@ -140,8 +140,8 @@ namespace CodeRefractor.RuntimeBase
                 param =>
                 String.Format("{0} {1}", param.ParameterType.GetMappedType().ToCppName(
                 param.ParameterType.IsClass
-                    ?NonEscapingMode.Smart
-                    :NonEscapingMode.Smart), param.Name));
+                    ?EscapingMode.Smart
+                    :EscapingMode.Smart), param.Name));
         }
 
         public static Type ReversedType(this Type type)

@@ -52,7 +52,7 @@
     <Compile Include="Analyze\UsedTypeList.cs" />
     <Compile Include="CilMethodAttribute.cs" />
     <Compile Include="MiddleEnd\GlobalTable\GlobalTableManager.cs" />
-    <Compile Include="MiddleEnd\SimpleOperations\Identifiers\NonEscapingMode.cs" />
+    <Compile Include="MiddleEnd\SimpleOperations\Identifiers\EscapingMode.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\RefArrayItemAssignment.cs" />
     <Compile Include="TypeNamerUtils.cs" />
     <Compile Include="TypesClosureLinker.cs" />
