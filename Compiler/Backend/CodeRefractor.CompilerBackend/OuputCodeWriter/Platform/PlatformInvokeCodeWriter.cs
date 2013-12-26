@@ -84,8 +84,8 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.Platform
         {
             var invokeRepresentation = platformInvoke.PlatformInvoke;
             var methodId = Import(invokeRepresentation.LibraryName,
-                                  invokeRepresentation.MethodName,
-                                  invokeRepresentation.CallingConvention,
+                                  platformInvoke.Description.MethodName,
+                                  platformInvoke.Description.CallingConvention,
                                   invokeRepresentation.EntryPoint);
 
             var sb = new StringBuilder();

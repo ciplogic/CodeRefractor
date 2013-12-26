@@ -25,6 +25,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
         public MetaMidRepresentation MidRepresentation = new MetaMidRepresentation();
         public PlatformInvokeRepresentation PlatformInvoke = new PlatformInvokeRepresentation();
+        public CppLibMethodInvokeRepresentation LibraryInvoke = new CppLibMethodInvokeRepresentation();
+        public MethodDescription Description =  new MethodDescription();
         //private HashSet<int> _hashedLabels;
 
 
@@ -288,8 +290,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             if (pinvokeAttribute == null)
                 return false;
             PlatformInvoke.LibraryName = pinvokeAttribute.Value;
-            PlatformInvoke.MethodName = method.Name;
-            PlatformInvoke.CallingConvention = pinvokeAttribute.CallingConvention;
+            Description.MethodName = method.Name;
+            Description.CallingConvention = pinvokeAttribute.CallingConvention;
             PlatformInvoke.EntryPoint = pinvokeAttribute.EntryPoint;
             Kind = MethodKind.PlatformInvoke;
             return true;

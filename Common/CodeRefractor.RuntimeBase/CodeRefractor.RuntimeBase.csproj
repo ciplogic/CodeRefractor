@@ -51,7 +51,10 @@
     <Compile Include="Analyze\TypeDescription.cs" />
     <Compile Include="Analyze\UsedTypeList.cs" />
     <Compile Include="CilMethodAttribute.cs" />
+    <Compile Include="MiddleEnd\CppLibMethodInvokeRepresentation.cs" />
+    <Compile Include="MiddleEnd\EntityMapper.cs" />
     <Compile Include="MiddleEnd\GlobalTable\GlobalTableManager.cs" />
+    <Compile Include="MiddleEnd\MethodDescription.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\Identifiers\EscapingMode.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\RefArrayItemAssignment.cs" />
     <Compile Include="TypeNamerUtils.cs" />

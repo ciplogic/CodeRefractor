@@ -36,7 +36,9 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CFile.cs" />
     <Compile Include="CrConsole.cs" />
+    <Compile Include="CrFile.cs" />
     <Compile Include="CrMath.cs" />
     <Compile Include="CrRuntimeHelpers.cs" />
     <Compile Include="CrStartLib.cs" />
