@@ -11,8 +11,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
         public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
         {
             var localOps = intermediateCode.LocalOperations;
-            var toRemove = new HashSet<int>();
-            for (int index = 0; index < localOps.Count; index++)
+            var toRemove = new List<int>();
+            for (var index = 0; index < localOps.Count; index++)
             {
                 var localOp = localOps[index];
                 if(localOp.Kind!=OperationKind.Assignment)
@@ -24,7 +24,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
 
             if (toRemove.Count == 0)
                 return;
-            intermediateCode.DeleteInstructions(toRemove);
+            intermediateCode.DeleteInstructions(new HashSet<int>(toRemove)); 
             Result = true;
         }
 
