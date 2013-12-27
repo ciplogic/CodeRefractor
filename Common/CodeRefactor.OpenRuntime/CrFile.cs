@@ -8,20 +8,17 @@ namespace CodeRefactor.OpenRuntime
     {
 
         [CppMethodBody(Header = "stdio.h", 
-            Code = @"
-char* readFileBytes(const char *path)  
-{  
-" +
+            Code = 
 "    FILE *fl = fopen(path, \"r\");" +
     @"
-    fseek(fl, 0, SEEK_END);  
-    long len = ftell(fl);  
-    char *ret = new char[len];  
-    fseek(fl, 0, SEEK_SET);  
-    fread(ret, 1, len, fl);  
-    fclose(fl);  
-    return ret;  
-}"
+fseek(fl, 0, SEEK_END);  
+long len = ftell(fl);  
+char *ret = new char[len];  
+fseek(fl, 0, SEEK_SET);  
+fread(ret, 1, len, fl);  
+fclose(fl);  
+return ret;  
+"
         )]
         public static byte[] ReadAllBytes(string path)
         {

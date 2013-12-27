@@ -10,13 +10,18 @@ namespace CodeRefactor.OpenRuntime
             Code = "return fopen(fileName, mode);",
             Library = ""
             )]
-        public static extern IntPtr fopen(string fileName, string mode);
+        public static IntPtr fopen(string fileName, string mode)
+        {
+            return IntPtr.Zero;
+        }
 
         [CppLibMethod(
             Header = "stdio.h",
             Code = "return fclose(fileHandle);",
             Library = ""
             )]
-        public static extern void fclose(IntPtr fileHandle);
+        public static void fclose(IntPtr fileHandle)
+        {
+        }
     }
 }

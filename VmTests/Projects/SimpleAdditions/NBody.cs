@@ -4,7 +4,7 @@ class NBody
 {
     public static void Main()
     {
-        int n = 10000000;
+        int n = 50000000;
         var bodies = new NBodySystem();
         Console.WriteLine(bodies.Energy());
         for (int i = 0; i < n; i++) bodies.Advance(0.01);
