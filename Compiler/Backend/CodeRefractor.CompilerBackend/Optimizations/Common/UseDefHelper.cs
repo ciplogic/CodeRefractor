@@ -33,6 +33,38 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
             return null;
         }
 
+        public static List<LocalVariable> GetUsagesAndDefinitions(this LocalOperation operation)
+        {
+            var usages = GetUsages(operation);
+            var def = GetUseDefinition(operation);
+            if (def != null)
+            {
+                usages.Add(def);
+            }
+            return usages;
+        }
+
+        public static List<int> GetUsagesAndDefinitions(this MetaMidRepresentation intermediateCode,
+            LocalVariable localVariable)
+        {
+            var result = new List<int>();
+            var instructions = intermediateCode.LocalOperations;
+            for(var index = 0; index<instructions.Count;index++)
+            {
+                var instruction = instructions[index];
+                var usages = GetUsagesAndDefinitions(instruction);
+                foreach (var variable in usages)
+                {
+                    if (variable.Equals(localVariable))
+                    {
+                        result.Add(index);
+                        break;
+                    }
+                }
+            }
+            return result;
+        }
+
         public static List<LocalVariable> GetUsages(this LocalOperation operation)
         {
             var result = new List<LocalVariable>(2);
@@ -304,7 +336,10 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
         private static void SwitchUsageInNewArray(LocalOperation op, LocalVariable usageVariable,
                                                   IdentifierValue definitionIdentifier)
         {
-            var arrayVar = (NewArrayObject)op.GetAssignment().Right;
+            var assign = op.GetAssignment();
+            var arrayVar = (NewArrayObject)assign.Right;
+            if (usageVariable.Equals(assign.AssignedTo))
+                assign.AssignedTo = (LocalVariable)definitionIdentifier;
             if (usageVariable.Equals(arrayVar.ArrayLength))
                 arrayVar.ArrayLength = definitionIdentifier;
         }
@@ -372,6 +407,10 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
             {
                 opSetField.Right = definitionIdentifier;
             }
+            if (usageVariable.Equals(opSetField.AssignedTo))
+            {
+                opSetField.AssignedTo = (LocalVariable)definitionIdentifier;
+            }
         }
 
         private static void SwichUsageInGetField(LocalOperation op, LocalVariable usageVariable,
@@ -383,6 +422,10 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
             if (usageVariable.Equals(getFieldData.Instance))
             {
                 getFieldData.Instance = (LocalVariable)definitionIdentifier;
+            }
+            if (usageVariable.Equals(getFieldData.AssignedTo))
+            {
+                getFieldData.AssignedTo = (LocalVariable)definitionIdentifier;
             }
         }
 
@@ -408,12 +451,20 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
             {
                 opUnaryOperator.Left = definitionIdentifier;
             }
+            if (usageVariable.Equals(opUnaryOperator.AssignedTo))
+            {
+                opUnaryOperator.AssignedTo = (LocalVariable)definitionIdentifier;
+            }
         }
 
         private static void SwitchUsageInBinaryOperator(LocalOperation op, LocalVariable usageVariable,
                                                         IdentifierValue definitionIdentifier)
         {
             var opBinaryOperator = (BinaryOperator)op.Value;
+            if (usageVariable.Equals(opBinaryOperator.AssignedTo))
+            {
+                opBinaryOperator.AssignedTo = (LocalVariable)definitionIdentifier;
+            }
             if (usageVariable.Equals(opBinaryOperator.Right))
             {
                 opBinaryOperator.Right = definitionIdentifier;
@@ -428,6 +479,10 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
                                                     IdentifierValue definitionIdentifier)
         {
             var opAssignment = (Assignment)op.Value;
+            if (usageVariable.Equals(opAssignment.AssignedTo))
+            {
+                opAssignment.AssignedTo = (LocalVariable)definitionIdentifier;
+            }
             if (usageVariable.Equals(opAssignment.Right))
             {
                 opAssignment.Right = definitionIdentifier;

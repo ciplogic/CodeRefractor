@@ -75,9 +75,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
                            new FoldVariablesDefinitionsOptimizationPass(),
 
                            new PropagationVariablesOptimizationPass(), 
+                           new AssignBackDcePropagation(), 
                            /*
                             
-                           new PropagationVariablesOptimizationPass(), 
                            new ConstantVariableBranchOperatorPropagation(),
                            //new AssignmentVregWithConstNextLineFolding(),  
                           

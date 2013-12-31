@@ -12,5 +12,10 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
         public Type TypeArray { get; set; }
 
         public IdentifierValue ArrayLength { get; set; }
+
+        public override string ToString()
+        {
+            return string.Format("new {0}[{1}]", TypeArray.FullName, ArrayLength);
+        }
     }
 }

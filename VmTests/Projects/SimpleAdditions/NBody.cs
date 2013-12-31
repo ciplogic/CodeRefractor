@@ -85,19 +85,34 @@ class NBodySystem
 
     public void Advance(double dt)
     {
+        AdvancePairs(dt);
+        AdvanceBodies(dt);
+    }
+
+    private void AdvanceBodies(double dt)
+    {
+        foreach (var b in bodies)
+        {
+            b.x += dt*b.vx;
+            b.y += dt*b.vy;
+            b.z += dt*b.vz;
+        }
+    }
+
+    private void AdvancePairs(double dt)
+    {
         foreach (var p in pairs)
         {
             Body bi = p.bi, bj = p.bj;
             double dx = bi.x - bj.x, dy = bi.y - bj.y, dz = bi.z - bj.z;
-            double d2 = dx * dx + dy * dy + dz * dz;
-            double mag = dt / (d2 * Math.Sqrt(d2));
-            bi.vx -= dx * bj.mass * mag; bj.vx += dx * bi.mass * mag;
-            bi.vy -= dy * bj.mass * mag; bj.vy += dy * bi.mass * mag;
-            bi.vz -= dz * bj.mass * mag; bj.vz += dz * bi.mass * mag;
-        }
-        foreach (var b in bodies)
-        {
-            b.x += dt * b.vx; b.y += dt * b.vy; b.z += dt * b.vz;
+            double d2 = dx*dx + dy*dy + dz*dz;
+            double mag = dt/(d2*Math.Sqrt(d2));
+            bi.vx -= dx*bj.mass*mag;
+            bj.vx += dx*bi.mass*mag;
+            bi.vy -= dy*bj.mass*mag;
+            bj.vy += dy*bi.mass*mag;
+            bi.vz -= dz*bj.mass*mag;
+            bj.vz += dz*bi.mass*mag;
         }
     }
 

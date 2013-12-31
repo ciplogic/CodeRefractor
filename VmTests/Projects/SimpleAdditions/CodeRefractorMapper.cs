@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using CodeRefractor.RuntimeBase.MiddleEnd;
-using Tao.OpenGl;
 
 namespace SimpleAdditions
 {
@@ -12,7 +11,7 @@ namespace SimpleAdditions
     {
         public override MethodInterpreter MapMethod(MethodBase method)
         {
-            if (method.DeclaringType == typeof (Gl))
+            //if (method.DeclaringType == typeof (Gl))
             {
                 var methodInterpreter = new MethodInterpreter(method);
                 return methodInterpreter;
