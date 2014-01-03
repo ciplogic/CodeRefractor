@@ -49,6 +49,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
             }
 
             intermediateCode.DeleteInstructions(instructionsToRemove);
+            instructionsToRemove.Clear();
         }
 
         private static Dictionary<LocalVariable, ConstValue> FindValuesMapping(Dictionary<int, LocalOperation> assignToConstOperations)

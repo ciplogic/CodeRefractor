@@ -1,30 +1,32 @@
-﻿using CodeRefractor.CompilerBackend.Optimizations.Common;
+﻿using CodeRefractor.CompilerBackend.Linker;
+using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
-using CodeRefractor.CompilerBackend.Linker;
 
 namespace CodeRefractor.CompilerBackend.Optimizations.Purity
 {
-    public class AnalyzeFunctionPurity : ResultingGlobalOptimizationPass
+    public class AnalyzeFunctionNoStaticSideEffects : ResultingGlobalOptimizationPass
     {
         public static bool ReadPurity(MetaMidRepresentation intermediateCode)
         {
-            return intermediateCode.GetProperties().IsPure;
+            return intermediateCode.GetProperties().NoStaticSideEffects;
         }
+
         public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
         {
             if (ReadPurity(intermediateCode))
                 return;
-            var functionIsPure = ComputeFunctionPurity(intermediateCode);
+            var functionIsPure = ComputeFunctionProperty(intermediateCode);
             if (!functionIsPure) return;
-            intermediateCode.GetProperties().IsPure = true;
+            var additionalData = intermediateCode.GetProperties();
+            additionalData.NoStaticSideEffects = true;
             Result = true;
         }
 
-        public static bool ComputeFunctionPurity(MetaMidRepresentation intermediateCode)
+        public static bool ComputeFunctionProperty(MetaMidRepresentation intermediateCode)
         {
-            if(intermediateCode==null)
+            if (intermediateCode == null)
                 return false;
             var operations = intermediateCode.LocalOperations;
             foreach (var localOperation in operations)
@@ -32,14 +34,13 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
                 switch (localOperation.Kind)
                 {
                     case OperationKind.SetStaticField:
-                    case OperationKind.GetStaticField:
                     case OperationKind.CallRuntime:
                     case OperationKind.SetField:
                         return false;
-                        
+
                     case OperationKind.Call:
                         var operationData = (MethodData)localOperation.Value;
-                        var readPurity = LinkerInterpretersTableUtils.ReadPurity(operationData.Info);
+                        var readPurity = LinkerInterpretersTableUtils.ReadNoStaticSideEffects(operationData.Info);
                         if (!readPurity)
                             return false;
                         break;

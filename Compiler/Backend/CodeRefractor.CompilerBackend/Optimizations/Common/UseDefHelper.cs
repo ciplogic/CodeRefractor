@@ -36,7 +36,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
         public static List<LocalVariable> GetUsagesAndDefinitions(this LocalOperation operation)
         {
             var usages = GetUsages(operation);
-            var def = GetUseDefinition(operation);
+            var def = GetDefinition(operation);
             if (def != null)
             {
                 usages.Add(def);
@@ -210,13 +210,13 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
             foreach (var localOperation in midRepresentation.LocalOperations)
             {
                 pos++;
-                var definition = localOperation.GetUseDefinition();
+                var definition = localOperation.GetDefinition();
                 if (variable.Equals(definition))
                     result.Add(pos);
             }
             return result;
         }
-        public static LocalVariable GetUseDefinition(this LocalOperation operation)
+        public static LocalVariable GetDefinition(this LocalOperation operation)
         {
             var kind = operation.Kind;
             switch (kind)

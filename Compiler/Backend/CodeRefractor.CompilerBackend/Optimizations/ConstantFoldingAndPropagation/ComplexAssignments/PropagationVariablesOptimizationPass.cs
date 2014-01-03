@@ -25,7 +25,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                 var isAssign = op.Kind == OperationKind.Assignment;
                 if (!isAssign)
                 {
-                    var definition = op.GetUseDefinition();
+                    var definition = op.GetDefinition();
                     if (definition != null && _dictionary.ContainsKey(definition))
                         _dictionary.Remove(definition);
                     continue;

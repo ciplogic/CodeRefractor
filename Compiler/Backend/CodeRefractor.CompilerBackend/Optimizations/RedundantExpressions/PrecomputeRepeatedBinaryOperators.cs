@@ -78,7 +78,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions
             for (var index = calls[i] + 1; index < calls[j]; index++)
             {
                 var op = localOperations[index];
-                var def = op.GetUseDefinition();
+                var def = op.GetDefinition();
                 if (def == null)
                     continue;
                 if (!definitions.Contains(def)) continue;

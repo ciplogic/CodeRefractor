@@ -1,12 +1,11 @@
 ﻿#region Usings
 
 using System.Text;
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
 #endregion
 
-namespace CodeRefractor.CompilerBackend.HandleOperations
+namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
 {
     internal static class CppHandleCompareBranches
     {

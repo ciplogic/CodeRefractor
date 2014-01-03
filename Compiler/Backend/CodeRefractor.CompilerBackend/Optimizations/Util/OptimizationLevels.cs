@@ -75,7 +75,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
                            new FoldVariablesDefinitionsOptimizationPass(),
 
                            new PropagationVariablesOptimizationPass(), 
-                           new AssignBackDcePropagation(), 
+                           new DceNewObjectOrArray(), 
                            /*
                             
                            new ConstantVariableBranchOperatorPropagation(),
@@ -97,9 +97,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
                            
                            new ConstantVariableOperatorPropagation(),
                            new ConstantVariablePropagationInCall(),
-                           /*
-                           */
+
                             new AnalyzeFunctionPurity(),
+                            new AnalyzeFunctionNoStaticSideEffects(), 
                             new AnalyzeFunctionIsGetter(),
                             new AnalyzeFunctionIsSetter(),
                             new AnalyzeFunctionIsEmpty(),
@@ -114,6 +114,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
                             
 
                              new OneAssignmentDeadStoreAssignment(),
+                             new RemoveCallsToEmptyMethods(),
                             //new InlineGetterAndSetterMethods(), 
                            new ReachabilityLines(),
                         

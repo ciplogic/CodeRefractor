@@ -98,7 +98,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
             {
                 var op = localOperations[i];
 
-                var def = op.GetUseDefinition();
+                var def = op.GetDefinition();
                 UpdateDefinitionDictionaryForIndex(i, def);
                 var usages = op.GetUsages();
                 UpdateUsagesDictionaryForIndex(i, usages);

@@ -46,7 +46,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
                 return;
             foreach (var op in newOps)
             {
-                var definition = op.GetUseDefinition();
+                var definition = op.GetDefinition();
                 if (definition != null && candidateVariables.Contains(definition))
                     definition.Escaping = EscapingMode.Stack;
             }

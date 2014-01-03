@@ -7,6 +7,11 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers
         public EscapingMode Escaping;
         public object CustomData;
 
+        public LocalVariable()
+        {
+            
+        }
+
         public override string ToString()
         {
             return string.Format("{0}:{1}", Name, FixedType != null ? FixedType.Name : "Unknown");

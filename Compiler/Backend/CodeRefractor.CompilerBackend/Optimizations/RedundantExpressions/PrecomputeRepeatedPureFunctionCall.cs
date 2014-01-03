@@ -93,7 +93,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions
             for (var pos = i; pos <= i1; pos++)
             {
                 var op = localOperations[pos];
-                var definition = op.GetUseDefinition();
+                var definition = op.GetDefinition();
                 if (definition == null)
                     continue;
                 if (parametersFirst.Contains(definition))

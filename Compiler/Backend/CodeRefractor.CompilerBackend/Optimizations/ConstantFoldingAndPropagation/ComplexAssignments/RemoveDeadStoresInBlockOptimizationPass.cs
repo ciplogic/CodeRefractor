@@ -20,7 +20,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                 var localOperations = midRepresentation.LocalOperations;
                 var op = localOperations[i];
 
-                var definition = op.GetUseDefinition();
+                var definition = op.GetDefinition();
                 if(definition!=null)
                 {
                     if (!_dictionary.ContainsKey(definition))

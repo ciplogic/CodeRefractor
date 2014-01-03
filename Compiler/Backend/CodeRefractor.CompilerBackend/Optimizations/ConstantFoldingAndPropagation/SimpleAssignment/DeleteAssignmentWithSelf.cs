@@ -24,7 +24,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
 
             if (toRemove.Count == 0)
                 return;
-            intermediateCode.DeleteInstructions(new HashSet<int>(toRemove)); 
+            intermediateCode.DeleteInstructions(new HashSet<int>(toRemove));
+            toRemove.Clear();
             Result = true;
         }
 

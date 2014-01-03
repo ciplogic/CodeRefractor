@@ -6,11 +6,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
 {
     public class AnalyzeFunctionIsSetter : ResultingGlobalOptimizationPass
     {
-        public const string SearchForString = "IsSetter";
-
         public static bool ReadProperty(MetaMidRepresentation intermediateCode)
         {
-            return intermediateCode.ReadAdditionalBool(SearchForString);
+            return intermediateCode.GetProperties().IsSetter;
         }
         public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
         {
@@ -18,11 +16,11 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
                 return;
             var functionIsPure = ComputeFunctionPurity(intermediateCode);
             if (!functionIsPure) return;
-            intermediateCode.SetAdditionalValue(SearchForString, true);
+            intermediateCode.GetProperties().IsSetter = true;
             Result = true;
         }
 
-        public static bool ComputeFunctionPurity(MetaMidRepresentation intermediateCode)
+        private static bool ComputeFunctionPurity(MetaMidRepresentation intermediateCode)
         {
             if (intermediateCode == null)
                 return false;

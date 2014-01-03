@@ -6,23 +6,23 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
 {
     public class AnalyzeFunctionIsEmpty : ResultingGlobalOptimizationPass
     {
-        public const string SearchForString = "IsEmpty";
-
         public static bool ReadProperty(MetaMidRepresentation intermediateCode)
         {
-            return intermediateCode.ReadAdditionalBool(SearchForString);
+            return intermediateCode.GetProperties().IsEmpty;
         }
+
         public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
         {
             if (ReadProperty(intermediateCode))
                 return;
-            var functionIsPure = ComputeProperty(intermediateCode);
-            if (!functionIsPure) return;
-            intermediateCode.SetAdditionalValue(SearchForString, true);
-            Result = true;
+            var isEmtpy = ComputeProperty(intermediateCode);
+            var previous = intermediateCode.GetProperties().IsEmpty;
+            intermediateCode.GetProperties().IsEmpty = isEmtpy;
+            if (previous!= isEmtpy) 
+                Result = true;
         }
 
-        public static bool ComputeProperty(MetaMidRepresentation intermediateCode)
+        private static bool ComputeProperty(MetaMidRepresentation intermediateCode)
         {
             if (intermediateCode == null)
                 return false;

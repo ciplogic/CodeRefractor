@@ -15,7 +15,6 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.ConstTable;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
-using CodeRefractor.RuntimeBase.Runtime;
 
 #endregion
 
@@ -31,7 +30,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
 
             headerSb.Append("{");
             var bodySb = ComputeBodySb(operations);
-            var variablesSb = ComputeVariableSb(midRepresentation, CrRuntimeLibrary.Instance);
+            var variablesSb = ComputeVariableSb(midRepresentation);
             var finalSb = new StringBuilder();
             finalSb.AppendLine(headerSb.ToString());
             finalSb.AppendLine(variablesSb.ToString());
@@ -267,7 +266,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
         {
             var assignment = (Assignment)operation.Value;
             var arrayData = (NewArrayObject)assignment.Right;
-            bodySb.AppendFormat("{0} = std::make_shared< Array < {1} > >({2}); ",
+            bodySb.AppendFormat("{0} = std::make_shared< Array <{1}> >({2}); ",
                                 assignment.AssignedTo.Name,
                                 arrayData.TypeArray.ToCppName(),
                                 arrayData.ArrayLength.Name);
@@ -355,7 +354,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
             }
         }
 
-        private static StringBuilder ComputeVariableSb(MetaMidRepresentation midRepresentation, CrRuntimeLibrary crCrRuntimeLibrary)
+        private static StringBuilder ComputeVariableSb(MetaMidRepresentation midRepresentation)
         {
             var variablesSb = new StringBuilder();
             foreach (var variableInfo in midRepresentation.Vars.LocalVars)

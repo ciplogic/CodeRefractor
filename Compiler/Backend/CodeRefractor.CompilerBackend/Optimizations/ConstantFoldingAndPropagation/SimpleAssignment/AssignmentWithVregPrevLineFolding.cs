@@ -25,7 +25,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                 if (vregAssignment==null || vregAssignment.Kind != VariableKind.Vreg) continue;
                 
                 var destOperation = operations[index - 1];
-                var destOperationDefiniton = destOperation.GetUseDefinition();
+                var destOperationDefiniton = destOperation.GetDefinition();
                 if (destOperationDefiniton == null || !destOperationDefiniton.Equals(vregAssignment)) continue;
                 switch (destOperation.Kind)
                 {

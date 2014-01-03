@@ -29,6 +29,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
             if (toRemove.Count == 0)
                 return false;
             midRepresentation.DeleteInstructions(toRemove);
+            toRemove.Clear();
             return true;
         }
     }

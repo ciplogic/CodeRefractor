@@ -41,7 +41,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
         {
             foreach (var op in operations)
             {
-                var definition = op.GetUseDefinition();
+                var definition = op.GetDefinition();
                 RemoveCandidate(vregConstants, definition);
             }
         }

@@ -106,7 +106,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Licm
             for (var index = loopStart; index <= loopEnd; index++)
             {
                 var op = localOps[index];
-                var definition = op.GetUseDefinition();
+                var definition = op.GetDefinition();
                 if(definition==null)
                     continue;
                 result.Add(definition);

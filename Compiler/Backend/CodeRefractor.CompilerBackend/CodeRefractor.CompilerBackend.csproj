@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Linker\LinkerInterpretersTableUtils.cs" />
     <Compile Include="Linker\LinkerUtils.cs" />
     <Compile Include="Linker\LinkingData.cs" />
     <Compile Include="Linker\StringTable.cs" />
@@ -60,15 +61,19 @@
     <Compile Include="Optimizations\ConstantFoldingAndPropagation\SimpleAssignment\DeleteAssignmentWithSelf.cs" />
     <Compile Include="Optimizations\EscapeAndLowering\InFunctionLoweringVars.cs" />
     <Compile Include="Optimizations\Inliner\InlineGetterAndSetterMethods.cs" />
+    <Compile Include="Optimizations\Inliner\RemoveCallsToEmptyMethods.cs" />
     <Compile Include="Optimizations\Licm\LoopDetection.cs" />
     <Compile Include="Optimizations\Licm\LoopInvariantCodeMotion.cs" />
     <Compile Include="Optimizations\Purity\AnalyzeFunctionIsEmpty.cs" />
     <Compile Include="Optimizations\Purity\AnalyzeFunctionIsGetter.cs" />
     <Compile Include="Optimizations\Purity\AnalyzeFunctionIsSetter.cs" />
+    <Compile Include="Optimizations\Purity\AnalyzeFunctionNoStaticSideEffects.cs" />
     <Compile Include="Optimizations\Purity\AnalyzeFunctionPurity.cs" />
     <Compile Include="Optimizations\ConstantFoldingAndPropagation\SimpleAssignment\AssignmentVregWithConstNextLineFolding.cs" />
     <Compile Include="Optimizations\ConstantFoldingAndPropagation\SimpleAssignment\AssignmentWithVregPrevLineFolding.cs" />
     <Compile Include="Optimizations\EscapeAndLowering\AnalyzeParametersAreEscaping.cs" />
+    <Compile Include="Optimizations\Purity\AnalyzeProperties.cs" />
+    <Compile Include="Optimizations\Purity\AnalyzeUtils.cs" />
     <Compile Include="Optimizations\RedundantExpressions\PrecomputeRepeatedFieldGets.cs" />
     <Compile Include="Optimizations\RedundantExpressions\PrecomputeRepeatedPureFunctionCall.cs" />
     <Compile Include="Optimizations\Purity\RemoveDeadPureFunctionCalls.cs" />
@@ -76,6 +81,7 @@
     <Compile Include="Optimizations\RedundantExpressions\PrecomputeRepeatedBinaryOperators.cs" />
     <Compile Include="Optimizations\RedundantExpressions\PrecomputeRepeatedUnaryOperators.cs" />
     <Compile Include="Optimizations\RedundantExpressions\PrecomputeRepeatedUtils.cs" />
+    <Compile Include="Optimizations\SimpleDce\AssignBackDcePropagation.cs" />
     <Compile Include="Optimizations\SimpleDce\DeadStoreAssignment.cs" />
     <Compile Include="Optimizations\SimpleDce\DeleteCallToConstructorOfObject.cs" />
     <Compile Include="Optimizations\SimpleDce\OneAssignmentDeadStoreAssignment.cs" />
@@ -119,7 +125,6 @@
     <Compile Include="OuputCodeWriter\BasicOperations\CppHandleCalls.cs" />
     <Compile Include="OuputCodeWriter\BasicOperations\CppHandleCompareBranches.cs" />
     <Compile Include="OuputCodeWriter\BasicOperations\CppHandleOperators.cs" />
-    <Compile Include="OuputCodeWriter\BasicOperations\CppHandleFields.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Common\CodeRefractor.RuntimeBase\CodeRefractor.RuntimeBase.csproj">

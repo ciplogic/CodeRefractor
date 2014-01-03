@@ -7,9 +7,10 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
 namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
 {
+
     class DeadStoreAssignment : ResultingInFunctionOptimizationPass
     {
-        static readonly List<OperationKind> NoSideEffectsOperationKinds = new List<OperationKind>
+        static readonly OperationKind[] NoSideEffectsOperationKinds =
         {
             OperationKind.Assignment,
             OperationKind.BinaryOperator,
@@ -35,7 +36,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
             if (toRemove.Count == 0)
                 return;
             intermediateCode.DeleteInstructions(toRemove);
-
+            toRemove.Clear();
             Result = true;
         }
 
@@ -56,17 +57,16 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
             for (int index = 0; index < localOperations.Length; index++)
             {
                 var op = localOperations[index];
-                var variableDefinition = op.GetUseDefinition();
+                var variableDefinition = op.GetDefinition();
                 if (variableDefinition == null)
                     continue;
                 _definitions[variableDefinition] = index;
             }
         }
 
-        private HashSet<int> BuildRemoveInstructions(LocalOperation[] localOperations)
+        private List<int> BuildRemoveInstructions(LocalOperation[] localOperations)
         {
-
-            var toRemove = new HashSet<int>();
+            var toRemove = new List<int>();
             foreach (var definition in _definitions)
             {
                 var index = definition.Value;
