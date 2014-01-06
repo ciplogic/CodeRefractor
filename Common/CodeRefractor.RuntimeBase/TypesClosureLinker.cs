@@ -36,6 +36,8 @@ namespace CodeRefractor.RuntimeBase
                             continue;
                         if (fieldType.IsSubclassOf(typeof(Array)))
                             fieldType = fieldType.GetElementType();
+                        if (fieldType.IsPointer)
+                            fieldType = fieldType.GetElementType();
                         if (fieldType.IsByRef)
                             fieldType = fieldType.GetElementType();
                         UsedTypeList.Set(type);
@@ -55,6 +57,7 @@ namespace CodeRefractor.RuntimeBase
             var describedTypes = UsedTypeList.GetDescribedTypes();
             typesClosure = describedTypes
                 .Where(typeDesc => typeDesc.ClrTypeCode == TypeCode.Object)
+                .Where(typeDesc => !typeDesc.IsPointer)
                 .Where(typeDesc => typeDesc.ClrType != typeof(void))
                 .Where(typeDescArray => !typeDescArray.ClrType.IsSubclassOf(typeof(Array)))
                 .Select(typeDescr => typeDescr.ClrType)

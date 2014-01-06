@@ -43,39 +43,34 @@ namespace CodeRefractor.RuntimeBase.FrontEnd
         public static MethodBase GetReversedMethod(this MethodBase methodInfo)
         {
             var reverseType = methodInfo.DeclaringType.GetMappedType();
-            if (reverseType != methodInfo.DeclaringType)
-            {
-                var originalParameters = methodInfo.GetParameters();
-                var memberInfos = reverseType.GetMember(methodInfo.Name);
+            if (reverseType == methodInfo.DeclaringType) 
+                return methodInfo;
+            var originalParameters = methodInfo.GetParameters();
+            var memberInfos = reverseType.GetMember(methodInfo.Name);
 
-                foreach (var memberInfo in memberInfos)
+            foreach (var memberInfo in memberInfos)
+            {
+                var methodBase = memberInfo as MethodBase;
+                if (methodBase == null)
+                    continue;
+                var parameters = methodBase.GetParameters();
+                if (parameters.Length != originalParameters.Length)
+                    continue;
+                bool found = true;
+                for (var index = 0; index < parameters.Length; index++)
                 {
-                    var methodBase = memberInfo as MethodBase;
-                    if (methodBase == null)
-                        continue;
-                    var parameters = methodBase.GetParameters();
-                    if (parameters.Length != originalParameters.Length)
-                        continue;
-                    bool found = true;
-                    for (var index = 0; index < parameters.Length; index++)
-                    {
-                        var parameter = parameters[index];
-                        var originalParameter = originalParameters[index];
-                        if (parameter.ParameterType == originalParameter.ParameterType) continue;
-                        found = false;
-                        break;
-                    }
-                    if (found)
-                    {
-                        return methodBase;
-                    }
+                    var parameter = parameters[index];
+                    var originalParameter = originalParameters[index];
+                    if (parameter.ParameterType == originalParameter.ParameterType) continue;
+                    found = false;
+                    break;
+                }
+                if (found)
+                {
+                    return methodBase;
                 }
             }
-            else
-            {
-                return methodInfo;
-            }
-            return null;
+            return methodInfo;
         }
     }
 }

@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Runtime.Remoting.Messaging;
+using CodeRefractor.RuntimeBase.FrontEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.Shared;
 using MsilReader;
@@ -69,7 +71,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
         public override string ToString()
         {
-            return string.Format("{0}::{1}(...);", Method.DeclaringType.ToCppMangling(), Method.Name);
+            return Method.GenerateKey();
         }
 
         public void Process()

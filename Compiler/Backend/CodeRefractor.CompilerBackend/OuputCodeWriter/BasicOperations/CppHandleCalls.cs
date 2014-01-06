@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using CodeRefractor.CompilerBackend.Linker;
 using CodeRefractor.RuntimeBase;
+using CodeRefractor.RuntimeBase.FrontEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
@@ -26,12 +27,13 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
         }
 
 
-        public static void HandleCall(LocalOperation operation, StringBuilder sb)
+        public static void HandleCall(LocalOperation operation, StringBuilder sbCode)
         {
             var operationData = (MethodData) operation.Value;
+            var sb = new StringBuilder();
 
-            var methodInfo = operationData.Info;
-
+            var methodInfo = operationData.Info.GetReversedMethod();
+            #region Write method name
             var isVoidMethod = methodInfo.GetReturnType().IsVoid();
             if (isVoidMethod)
             {
@@ -61,10 +63,12 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
                 sb.AppendFormat("({0});", argumentsCall);
                 return;
             }
+            #endregion
             sb.Append("(");
 
+            #region Parameters
             var pos = 0;
-            bool isFirst = true;
+            var isFirst = true;
             var argumentTypes = operationData.Info.GetMethodArgumentTypes();
             foreach (var value in identifierValues)
             {
@@ -114,7 +118,11 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
                         continue;
                 }
             }
+
             sb.Append(");");
+            #endregion
+
+            sbCode.Append(sb);
         }
 
         public static void HandleCallRuntime(LocalOperation operation, StringBuilder sb)

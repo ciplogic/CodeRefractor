@@ -158,8 +158,6 @@ namespace CodeRefractor.RuntimeBase
                 return;
             var methodDesc = CrRuntimeLibrary.GetMethodDescription(methodBase);
 
-            if (ProgramData.CrCrRuntimeLibrary.UseMethod(methodBase))
-                return;
             if (GlobalMethodPool.Instance.MethodInfos.ContainsKey(methodDesc))
                 return;
             var declaringType = methodBase.DeclaringType;

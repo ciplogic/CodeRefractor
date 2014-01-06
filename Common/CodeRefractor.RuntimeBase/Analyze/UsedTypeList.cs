@@ -20,7 +20,6 @@ namespace CodeRefractor.RuntimeBase.Analyze
             Instance._userTypeDesc.Add(typeDescription);
             Instance._userTypes.Add(type);
             return typeDescription;
-
         }
         public static readonly UsedTypeList Instance  = new UsedTypeList();
 

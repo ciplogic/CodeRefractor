@@ -13,20 +13,8 @@ using CodeRefractor.RuntimeBase.Shared;
 
 namespace CodeRefractor.RuntimeBase.Runtime
 {
-    public class CrRuntimeLibrary
-    {
-        private readonly Dictionary<string, MetaLinker> _supportedCilMethods = new Dictionary<string, MetaLinker>();
-        private readonly Dictionary<string, MethodBase> _supportedMethods = new Dictionary<string, MethodBase>();
+    public class CrRuntimeLibrary{
         public readonly Dictionary<Type, Type> MappedTypes = new Dictionary<Type, Type>();
-        public readonly Dictionary<Type, MapTypeAttribute> TypeAttribute = new Dictionary<Type, MapTypeAttribute>();
-
-        private readonly Dictionary<Type, List<CppMethodDefinition>> _crMethods =
-            new Dictionary<Type, List<CppMethodDefinition>>();
-
-
-        public readonly Dictionary<string, MethodBase> UsedCppMethods = new Dictionary<string, MethodBase>();
-        public readonly Dictionary<string, MetaLinker> UsedCilMethods = new Dictionary<string, MetaLinker>();
-        public readonly Dictionary<Type, Type> UsedTypes = new Dictionary<Type, Type>();
 
         private static readonly CrRuntimeLibrary StaticInstance = new CrRuntimeLibrary();
         public static CrRuntimeLibrary Instance
@@ -45,8 +33,8 @@ namespace CodeRefractor.RuntimeBase.Runtime
             {
                 var mapTypeAttr = item.GetCustomAttribute<MapTypeAttribute>();
                 if (mapTypeAttr == null) continue;
-                TypeAttribute[item] = mapTypeAttr; 
                 MappedTypes[mapTypeAttr.MappedType] = item;
+                ScanMethodFunctions(item);
             }
 
         }
@@ -72,8 +60,21 @@ namespace CodeRefractor.RuntimeBase.Runtime
                 linker.SetEntryPoint(methodInfo);
                 //MetaLinker.ComputeDependencies(methodInfo);
                 linker.Interpret();
-                _supportedCilMethods[format] = linker;
             }
+        }
+        private static void ScanCppMethod(MethodBase method)
+        {
+            var methodNativeDescription = method.GetCustomAttribute<CppMethodBodyAttribute>();
+            if (methodNativeDescription == null) return;
+            var reversedMethod = method.GetReversedMethod();
+            var interpreter = reversedMethod.Register();
+            interpreter.Kind = MethodKind.RuntimeCppMethod;
+            interpreter.RuntimeLibrary.HeaderName = methodNativeDescription.Header;
+            interpreter.RuntimeLibrary.Source = methodNativeDescription.Code;
+            var pureAttribute = method.GetCustomAttribute<PureMethodAttribute>();
+            if (pureAttribute != null)
+                interpreter.RuntimeLibrary.IsPure = true;
+
         }
 
         public static string GetMethodDescription(MethodBase methodInfo)
@@ -107,15 +108,6 @@ namespace CodeRefractor.RuntimeBase.Runtime
             }
             return result;
         }
-        private List<CppMethodDefinition> GetTypesMethodList(Type type)
-        {
-            List<CppMethodDefinition> result;
-            if (_crMethods.TryGetValue(type, out result))
-                return result;
-            result = new List<CppMethodDefinition>();
-            _crMethods[type] = result;
-            return result;
-        }
 
         private static void ScanType(Type item)
         {
@@ -124,86 +116,6 @@ namespace CodeRefractor.RuntimeBase.Runtime
                 ScanCppMethod(method);
         }
 
-        private static void ScanCppMethod(MethodBase method)
-        {
-            var methodNativeDescription = method.GetCustomAttribute<CppMethodBodyAttribute>();
-            if (methodNativeDescription == null) return;
-            var reversedMethod = method.GetReversedMethod();
-            var interpreter = reversedMethod.Register();
-            interpreter.Kind = MethodKind.RuntimeCppMethod;
-            interpreter.RuntimeLibrary.HeaderName = methodNativeDescription.Header;
-            interpreter.RuntimeLibrary.Source = methodNativeDescription.Code;
-            var pureAttribute = method.GetCustomAttribute<PureMethodAttribute>();
-            if (pureAttribute != null)
-                interpreter.RuntimeLibrary.IsPure = true;
 
-        }
-
-        public bool UseMethod(MethodBase methodDefinition)
-        {
-            var description = GetMethodDescription(methodDefinition);
-            if (UsedCppMethods.ContainsKey(description)) return true;
-            if (UsedCilMethods.ContainsKey(description)) return true;
-            var mappedType = GetMappedType(methodDefinition.DeclaringType);
-            if (mappedType == null)
-                return false;
-            if(!ScanForMethod(description))
-                ScanMethodFunctions(mappedType);
-            return ScanForMethod(description);
-        }
-
-        private bool ScanForMethod(string description)
-        {
-            MethodBase method;
-            if (!_supportedMethods.TryGetValue(description, out method))
-            {
-                MetaLinker cilLinkerMethod;
-                if (!_supportedCilMethods.TryGetValue(description, out cilLinkerMethod))
-                    return false;
-                if (UsedCilMethods.ContainsKey(description))
-                    return false;
-                UsedCilMethods.Add(description, cilLinkerMethod);
-                MetaLinker.ComputeDependencies(cilLinkerMethod.MethodInfo);
-                return true;
-            }
-            if (UsedCppMethods.ContainsKey(description))
-                return false;
-            UsedCppMethods.Add(description, method);
-            return true;
-        }
-
-        public void RemapUsedTypes()
-        {
-            foreach (var usedCppMethod in UsedCppMethods.Values)
-            {
-                ScanMethodTypes(usedCppMethod);
-            }
-            foreach (var usedCppMethod in UsedCilMethods.Values)
-            {
-                ScanMethodTypes(usedCppMethod.MethodInfo);
-            }
-
-        }
-
-        private void ScanMethodTypes(MethodBase methodInfo)
-        {
-            var args = methodInfo.GetParameters().ToArray();
-            foreach (var arg in args)
-            {
-                UseClrType(arg.ParameterType);
-            }
-        }
-
-        public void UseClrType(Type typeToUse)
-        {
-            if (!MappedTypes.ContainsKey(typeToUse))
-                return;
-            UsedTypes[MappedTypes[typeToUse]] = typeToUse;
-        }
-
-        public void UseType(Type type)
-        {
-            UseClrType(type);
-        }
     }
 }

@@ -37,7 +37,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             LinkingData.Includes.Clear();
 
             sb.AppendLine("#include \"sloth.h\"");
-            CrRuntimeLibrary.Instance.RemapUsedTypes();
+            
 
             WriteClosureStructBodies(typeClosure.ToArray(), sb);
             WriteClosureDelegateBodies(closure, sb);
@@ -137,11 +137,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 
         private static void WriteClosureBodies(List<MethodInterpreter> closure, StringBuilder sb)
         {
-            foreach (var methodBodyAttribute in CrRuntimeLibrary.Instance.UsedCppMethods)
-            {
-                WriteUsedCppRuntimeMethod(methodBodyAttribute, sb);
-            }
-
+            
             foreach (var interpreter in closure)
             {
                 var codeWriter = new MethodInterpreterCodeWriter
@@ -157,9 +153,6 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             sb.AppendLine("///---Begin closure code --- ");
             foreach (var interpreter in closure)
             {
-                var methodDesc = interpreter.Method.GetMethodDescriptor();
-                if(CrRuntimeLibrary.Instance.UsedCppMethods.ContainsKey(methodDesc))
-                    continue;
                 var codeWriter = new MethodInterpreterCodeWriter
                     {
                         Interpreter = interpreter

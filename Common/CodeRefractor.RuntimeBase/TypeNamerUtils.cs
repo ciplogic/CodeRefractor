@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
-using CodeRefractor.RuntimeBase.Runtime;
 
 namespace CodeRefractor.RuntimeBase
 {
@@ -13,9 +12,8 @@ namespace CodeRefractor.RuntimeBase
 
         public static string ClangMethodSignature(this MethodBase method)
         {
-            var mappedType = CrRuntimeLibrary.Instance.GetReverseType(method.DeclaringType);
-            var declaringType = mappedType ?? method.DeclaringType;
-            var typeName = declaringType.ToCppMangling();
+            var mappedType = method.DeclaringType;
+            var typeName = mappedType.ToCppMangling();
             var methodName = method.Name;
             if (method is ConstructorInfo)
                 methodName = "ctor";

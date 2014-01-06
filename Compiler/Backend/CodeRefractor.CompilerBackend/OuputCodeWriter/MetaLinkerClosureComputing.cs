@@ -15,25 +15,11 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
         {
             var result = new Dictionary<string, MethodInterpreter> { { entryPoints.ToString(), entryPoints } };
             UpdateMethodEntryClosure(entryPoints, result);
-            foreach (var interpreter in result)
-            {
-                var declaringType = interpreter.Value.Method.DeclaringType;
-                if (declaringType == null)
-                    continue;
-
-            }
-            foreach (var interpreter in result)
-            {
-                var isGenericDeclaringType = interpreter.Value.IsGenericDeclaringType();
-                if(!isGenericDeclaringType)
-                    continue;
-                
-            }
             return result.Values.ToList();
         }
 
 
-        public static void UpdateMethodEntryClosure(MethodInterpreter entryPoint, Dictionary<string, MethodInterpreter> result)
+        private static void UpdateMethodEntryClosure(MethodInterpreter entryPoint, Dictionary<string, MethodInterpreter> result)
         {
             var operations = entryPoint.MidRepresentation.LocalOperations;
             var localOperations = operations.Where(op => op.Kind == OperationKind.Call).ToArray();

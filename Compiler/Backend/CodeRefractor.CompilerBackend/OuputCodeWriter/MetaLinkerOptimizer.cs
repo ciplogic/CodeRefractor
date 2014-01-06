@@ -8,7 +8,6 @@ using CodeRefractor.RuntimeBase.Config;
 using CodeRefractor.RuntimeBase.FrontEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.Optimizations;
-using CodeRefractor.RuntimeBase.Runtime;
 
 #endregion
 
@@ -20,10 +19,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
         {
             LinkerInterpretersTable.Clear();
 
-            foreach (var usedMethod in CrRuntimeLibrary.Instance.UsedCppMethods)
-            {
-                LinkerInterpretersTable.RegisterRuntimeMethod(usedMethod);
-            }
+            
             var methodsToOptimize = LinkerInterpretersTable.Methods;
             ApplyOptimizations(doInline, methodsToOptimize.Values.ToList());
         }

@@ -16,6 +16,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
 
         public string Name { get; private set; }
         public string Namespace { get; set; }
+        public bool IsPointer { get; private set; }
         
         
         List<FieldDescription> Layout { get; set; }
@@ -32,6 +33,12 @@ namespace CodeRefractor.RuntimeBase.Analyze
         private void ExtractInformation()
         {
             ClrTypeCode = Type.GetTypeCode(ClrType);
+            if (ClrType.IsPointer)
+            {
+                UsedTypeList.Set(ClrType.GetElementType());
+                IsPointer = ClrType.IsPointer;
+                return;
+            }
 
             if (ClrType.BaseType != typeof (object))
             {
