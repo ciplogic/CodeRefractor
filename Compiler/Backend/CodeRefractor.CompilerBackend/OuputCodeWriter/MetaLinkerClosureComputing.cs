@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using CodeRefractor.CompilerBackend.Linker;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
@@ -23,18 +24,83 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
         {
             var operations = entryPoint.MidRepresentation.LocalOperations;
             var localOperations = operations.Where(op => op.Kind == OperationKind.Call).ToArray();
-            var toAdd = new List<MethodInterpreter>();
+            var toAdd = HandleCallInstructions(result, localOperations);
+            localOperations = operations.Where(op => op.Kind == OperationKind.LoadFunction).ToArray();
+            HandleLoadFunctionInstructions(result, localOperations, toAdd);
+
+            HandleTypeInitializers(result, toAdd);
+            
+            HandleGenerics(result, toAdd);
+        }
+
+        private static void HandleGenerics(Dictionary<string, MethodInterpreter> result, List<MethodInterpreter> toAdd)
+        {
+            foreach (var interpreter in toAdd)
+            {
+                if (interpreter.IsGenericDeclaringType())
+                {
+                    var genericSpecialization = interpreter.Clone();
+                    genericSpecialization.Specialize();
+                    UpdateMethodEntryClosure(genericSpecialization, result);
+                }
+                else
+                    UpdateMethodEntryClosure(interpreter, result);
+            }
+        }
+
+        private static void HandleTypeInitializers(Dictionary<string, MethodInterpreter> result, List<MethodInterpreter> toAdd)
+        {
+            foreach (var it in toAdd)
+            {
+                var declaringType = it.Method.DeclaringType;
+                if (declaringType == null)
+                    continue;
+                declaringType = declaringType.GetReversedType();
+                if (declaringType.TypeInitializer == null) continue;
+                var info = declaringType.TypeInitializer;
+                var descInfo = info.GetMethodDescriptor();
+
+                var interpreter = info.GetInterpreter();
+                result[descInfo] = interpreter;
+                UpdateMethodEntryClosure(interpreter, result);
+            }
+        }
+
+        private static void HandleLoadFunctionInstructions(Dictionary<string, MethodInterpreter> result, LocalOperation[] localOperations, List<MethodInterpreter> toAdd)
+        {
+            if(localOperations.Length==0)
+                return;
             foreach (var localOperation in localOperations)
             {
-                var methodData = (MethodData)localOperation.Value;
-                var info = methodData.Info;
-                if (info.DeclaringType == typeof(object)
-                    || info.DeclaringType == typeof(IntPtr))
-                    continue;
+                var functionPointer = (FunctionPointerStore) localOperation.Value;
+                var info = functionPointer.FunctionPointer;
                 var descInfo = info.GetMethodDescriptor();
                 if (result.ContainsKey(descInfo))
                     continue;
                 var interpreter = ClassTypeData.GetInterpreterStatic(info);
+                if (interpreter == null)
+                    continue;
+                result[descInfo] = interpreter;
+                toAdd.Add(interpreter);
+            }
+        }
+
+        private static List<MethodInterpreter> HandleCallInstructions(Dictionary<string, MethodInterpreter> result, LocalOperation[] localOperations)
+        {
+            var toAdd = new List<MethodInterpreter>();
+            if (localOperations.Length == 0)
+                return toAdd;
+            foreach (var localOperation in localOperations)
+            {
+                var methodData = (MethodData) localOperation.Value;
+                var info = methodData.Info;
+                if (info.DeclaringType == typeof (object)
+                    || info.DeclaringType == typeof (IntPtr))
+                    continue;
+                var descInfo = info.GetMethodDescriptor();
+                if (result.ContainsKey(descInfo))
+                    continue;
+                var interpreter = info.GetInterpreter();
                 if (interpreter == null)
                     continue;
                 var isGenericDeclaringType = interpreter.IsGenericDeclaringType();
@@ -46,46 +112,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 
                 toAdd.Add(interpreter);
             }
-            localOperations = operations.Where(op => op.Kind == OperationKind.LoadFunction).ToArray();
-            foreach (var localOperation in localOperations)
-            {
-                var functionPointer = (FunctionPointerStore)localOperation.Value;
-                var info = functionPointer.FunctionPointer;
-                var descInfo = info.GetMethodDescriptor();
-                if (result.ContainsKey(descInfo))
-                    continue;
-                var interpreter = ClassTypeData.GetInterpreterStatic(info);
-                if (interpreter == null)
-                    continue;
-                result[descInfo] = interpreter;
-                toAdd.Add(interpreter);
-            }
-
-            foreach (var it in toAdd)
-            {
-                var declaringType = it.Method.DeclaringType;
-                if (declaringType == null)
-                    continue;
-                declaringType = declaringType.GetReversedType();
-                if (declaringType.TypeInitializer == null) continue;
-                var info = declaringType.TypeInitializer;
-                var descInfo = info.GetMethodDescriptor();
-
-                var interpreter = ClassTypeData.GetInterpreterStatic(info);
-                result[descInfo] = interpreter;
-                UpdateMethodEntryClosure(interpreter, result);
-            }
-            
-            foreach (var interpreter in toAdd)
-            {
-                if (interpreter.IsGenericDeclaringType())
-                {
-                    var genericSpecialization = interpreter.Clone();
-                    genericSpecialization.Specialize();
-                    UpdateMethodEntryClosure(genericSpecialization, result);
-                }else
-                UpdateMethodEntryClosure(interpreter, result);
-            }
+            return toAdd;
         }
     }
 }

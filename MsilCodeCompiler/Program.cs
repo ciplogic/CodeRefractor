@@ -20,12 +20,6 @@ namespace CodeRefractor.Compiler
     {
         public static void CallCompiler(string inputAssemblyName, string outputExeName)
         {
-
-            CrRuntimeLibrary.Instance.UseType(typeof (string));
-            //var getArgumentsDefinition = typeof(CrStartLib).GetMethod("GetArguments");
-            //var extraArgument = getArgumentsDefinition.CreateLinkerFromEntryPoint();
-
-
             var commandLineParse = CommandLineParse.Instance;
             if (!String.IsNullOrEmpty(inputAssemblyName))
             {
