@@ -7,26 +7,26 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
     public class AnalyzeFunctionIsGetter : ResultingGlobalOptimizationPass
     {
 
-        public static bool ReadProperty(MetaMidRepresentation intermediateCode)
+        public static bool ReadProperty(MethodInterpreter intermediateCode)
         {
-            return intermediateCode.GetProperties().IsGetter;
+            return intermediateCode.MidRepresentation.GetProperties().IsGetter;
         }
-        public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
+        public override void OptimizeOperations(MethodInterpreter intermediateCode)
         {
             if (ReadProperty(intermediateCode))
                 return;
             var functionIsPure = ComputeFunctionPurity(intermediateCode);
             
             if (!functionIsPure) return;
-            intermediateCode.GetProperties().IsGetter = true; 
+            intermediateCode.MidRepresentation.GetProperties().IsGetter = true; 
             Result = true;
         }
 
-        public static bool ComputeFunctionPurity(MetaMidRepresentation intermediateCode)
+        public static bool ComputeFunctionPurity(MethodInterpreter intermediateCode)
         {
             if (intermediateCode == null)
                 return false;
-            var operations = intermediateCode.LocalOperations;
+            var operations = intermediateCode.MidRepresentation.LocalOperations;
             foreach (var localOperation in operations)
             {
                 switch (localOperation.Kind)

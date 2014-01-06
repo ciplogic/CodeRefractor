@@ -77,7 +77,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                 var typeData = (ClassTypeData) ProgramData.UpdateType(methodBase.Value.DeclaringType);
                 var interpreter = typeData.GetInterpreter(methodBase.Value);
 
-                inliner.OptimizeOperations(interpreter.MidRepresentation);
+                inliner.OptimizeOperations(interpreter);
             }
         }
     }

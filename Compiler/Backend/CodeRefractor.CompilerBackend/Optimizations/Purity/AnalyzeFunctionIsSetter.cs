@@ -6,25 +6,25 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
 {
     public class AnalyzeFunctionIsSetter : ResultingGlobalOptimizationPass
     {
-        public static bool ReadProperty(MetaMidRepresentation intermediateCode)
+        public static bool ReadProperty(MethodInterpreter intermediateCode)
         {
-            return intermediateCode.GetProperties().IsSetter;
+            return intermediateCode.MidRepresentation.GetProperties().IsSetter;
         }
-        public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
+        public override void OptimizeOperations(MethodInterpreter intermediateCode)
         {
             if (ReadProperty(intermediateCode))
                 return;
             var functionIsPure = ComputeFunctionPurity(intermediateCode);
             if (!functionIsPure) return;
-            intermediateCode.GetProperties().IsSetter = true;
+            intermediateCode.MidRepresentation.GetProperties().IsSetter = true;
             Result = true;
         }
 
-        private static bool ComputeFunctionPurity(MetaMidRepresentation intermediateCode)
+        private static bool ComputeFunctionPurity(MethodInterpreter intermediateCode)
         {
             if (intermediateCode == null)
                 return false;
-            var operations = intermediateCode.LocalOperations;
+            var operations = intermediateCode.MidRepresentation.LocalOperations;
             foreach (var localOperation in operations)
             {
                 switch (localOperation.Kind)

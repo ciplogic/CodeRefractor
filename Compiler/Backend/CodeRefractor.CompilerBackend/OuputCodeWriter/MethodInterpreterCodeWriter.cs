@@ -49,7 +49,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 
         public string WriteHeaderMethod()
         {
-            var methodBase = Interpreter.Method;
+            var methodBase = Interpreter.MidRepresentation.Method;
             return methodBase.WriteHeaderMethod();
         }
 
@@ -65,9 +65,9 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                 didOptimize = false;
                 foreach (var optimizationPass in optimizationsList)
                 {
-                    if(!optimizationPass.CheckPreconditions(Interpreter.MidRepresentation))
+                    if(!optimizationPass.CheckPreconditions(Interpreter))
                         continue;
-                    didOptimize = optimizationPass.Optimize(Interpreter.MidRepresentation);
+                    didOptimize = optimizationPass.Optimize(Interpreter);
                     if (didOptimize)
                     {
                         var optimizationName = optimizationPass.GetType().Name;

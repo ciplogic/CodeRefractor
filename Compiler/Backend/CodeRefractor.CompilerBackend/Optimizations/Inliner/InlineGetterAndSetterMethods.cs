@@ -10,11 +10,11 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Inliner
 {
     public class InlineGetterAndSetterMethods : ResultingGlobalOptimizationPass
     {
-        public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
+        public override void OptimizeOperations(MethodInterpreter intermediateCode)
         {
-            for (int index = 0; index < intermediateCode.LocalOperations.Count; index++)
+            for (int index = 0; index < intermediateCode.MidRepresentation.LocalOperations.Count; index++)
             {
-                var localOperation = intermediateCode.LocalOperations[index];
+                var localOperation = intermediateCode.MidRepresentation.LocalOperations[index];
                 
                 if (localOperation.Kind != OperationKind.Call) continue;
 
@@ -23,13 +23,13 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Inliner
                 if (interpreter == null)
                     continue;
 
-                var methodInterpreter = methodData.Info.GetInterpreter().MidRepresentation;
+                var methodInterpreter = methodData.Info.GetInterpreter();
                 if (AnalyzeFunctionIsGetter.ReadProperty(methodInterpreter)
                     || AnalyzeFunctionIsSetter.ReadProperty(methodInterpreter)
                     || AnalyzeFunctionIsEmpty.ReadProperty(methodInterpreter)
                     )
                 {
-                    SmallFunctionsInliner.InlineMethod(intermediateCode, interpreter, methodData, index);
+                    SmallFunctionsInliner.InlineMethod(intermediateCode.MidRepresentation, interpreter, methodData, index);
                     Result = true;
                     return;
                 }

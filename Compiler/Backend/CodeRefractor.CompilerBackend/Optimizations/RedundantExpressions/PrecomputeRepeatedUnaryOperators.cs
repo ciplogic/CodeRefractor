@@ -9,9 +9,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions
 {
     class PrecomputeRepeatedUnaryOperators : BlockOptimizationPass
     {
-        public override bool OptimizeBlock(MetaMidRepresentation midRepresentation, int startRange, int endRange)
+        public override bool OptimizeBlock(MethodInterpreter midRepresentation, int startRange, int endRange)
         {
-            var localOperations = midRepresentation.LocalOperations;
+            var localOperations = midRepresentation.MidRepresentation.LocalOperations;
             var calls = FindUnaryOperators(localOperations, startRange, endRange);
             if (calls.Count < 2)
                 return false;
@@ -29,12 +29,13 @@ namespace CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions
 
             return false;
         }
-        private static void ApplyOptimization(MetaMidRepresentation midRepresentation, int i, int j)
+
+        private static void ApplyOptimization(MethodInterpreter midRepresentation, int i, int j)
         {
-            var localOps = midRepresentation.LocalOperations;
+            var localOps = midRepresentation.MidRepresentation.LocalOperations;
             var firstOperator = localOps.GetUnaryOperator(i);
             var secondOperator = localOps.GetUnaryOperator(j);
-            var newVreg = midRepresentation.CreateCacheVariable(firstOperator.AssignedTo.ComputedType());
+            var newVreg = midRepresentation.MidRepresentation.CreateCacheVariable(firstOperator.AssignedTo.ComputedType());
             var assignLocalOperation = PrecomputeRepeatedUtils.CreateAssignLocalOperation(firstOperator.AssignedTo, newVreg);
 
             firstOperator.AssignedTo = newVreg;

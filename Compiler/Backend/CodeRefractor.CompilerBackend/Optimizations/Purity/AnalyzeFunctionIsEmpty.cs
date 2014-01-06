@@ -6,27 +6,27 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
 {
     public class AnalyzeFunctionIsEmpty : ResultingGlobalOptimizationPass
     {
-        public static bool ReadProperty(MetaMidRepresentation intermediateCode)
+        public static bool ReadProperty(MethodInterpreter intermediateCode)
         {
-            return intermediateCode.GetProperties().IsEmpty;
+            return intermediateCode.MidRepresentation.GetProperties().IsEmpty;
         }
 
-        public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
+        public override void OptimizeOperations(MethodInterpreter intermediateCode)
         {
             if (ReadProperty(intermediateCode))
                 return;
             var isEmtpy = ComputeProperty(intermediateCode);
-            var previous = intermediateCode.GetProperties().IsEmpty;
-            intermediateCode.GetProperties().IsEmpty = isEmtpy;
+            var previous = intermediateCode.MidRepresentation.GetProperties().IsEmpty;
+            intermediateCode.MidRepresentation.GetProperties().IsEmpty = isEmtpy;
             if (previous!= isEmtpy) 
                 Result = true;
         }
 
-        private static bool ComputeProperty(MetaMidRepresentation intermediateCode)
+        private static bool ComputeProperty(MethodInterpreter intermediateCode)
         {
             if (intermediateCode == null)
                 return false;
-            var operations = intermediateCode.LocalOperations;
+            var operations = intermediateCode.MidRepresentation.LocalOperations;
             foreach (var localOperation in operations)
             {
                 switch (localOperation.Kind)

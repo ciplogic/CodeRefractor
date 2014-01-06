@@ -9,9 +9,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions
 {
     internal class PrecomputeRepeatedFieldGets : BlockOptimizationPass
     {
-        public override bool OptimizeBlock(MetaMidRepresentation midRepresentation, int startRange, int endRange)
+        public override bool OptimizeBlock(MethodInterpreter midRepresentation, int startRange, int endRange)
         {
-            var localOperations = midRepresentation.LocalOperations;
+            var localOperations = midRepresentation.MidRepresentation.LocalOperations;
             var getFieldOperations = FindGetFieldOperations(localOperations, startRange, endRange);
             if (getFieldOperations.Count < 2)
                 return false;
@@ -29,12 +29,12 @@ namespace CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions
 
             return false;
         }
-        private static void ApplyOptimization(MetaMidRepresentation midRepresentation, int i, int j)
+        private static void ApplyOptimization(MethodInterpreter midRepresentation, int i, int j)
         {
-            var localOps = midRepresentation.LocalOperations;
+            var localOps = midRepresentation.MidRepresentation.LocalOperations;
             var firstOperator = localOps.GetFieldOperation(i);
             var secondOperator = localOps.GetFieldOperation(j);
-            var newVreg = midRepresentation.CreateCacheVariable(firstOperator.AssignedTo.ComputedType());
+            var newVreg = midRepresentation.MidRepresentation.CreateCacheVariable(firstOperator.AssignedTo.ComputedType());
             var assignLocalOperation = PrecomputeRepeatedUtils.CreateAssignLocalOperation(firstOperator.AssignedTo, newVreg);
             localOps.Insert(i + 1, assignLocalOperation);
 

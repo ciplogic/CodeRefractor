@@ -14,14 +14,14 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
 {
     class InFunctionLoweringVars : ResultingInFunctionOptimizationPass
     {
-        public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
+        public override void OptimizeOperations(MethodInterpreter intermediateCode)
         {
             var candidateVariables = new HashSet<LocalVariable>();
-            var toAdd = intermediateCode.Vars.LocalVars.Where(varId => !varId.ComputedType().ClrType.IsPrimitive);
+            var toAdd = intermediateCode.MidRepresentation.Vars.LocalVars.Where(varId => !varId.ComputedType().ClrType.IsPrimitive);
             candidateVariables.AddRange(toAdd);
-            toAdd = intermediateCode.Vars.VirtRegs.Where(varId => !varId.ComputedType().ClrType.IsPrimitive);
+            toAdd = intermediateCode.MidRepresentation.Vars.VirtRegs.Where(varId => !varId.ComputedType().ClrType.IsPrimitive);
             candidateVariables.AddRange(toAdd);
-            var localOp = intermediateCode.LocalOperations;
+            var localOp = intermediateCode.MidRepresentation.LocalOperations;
             foreach (var op in localOp)
             {
                 var usages = op.GetUsages();

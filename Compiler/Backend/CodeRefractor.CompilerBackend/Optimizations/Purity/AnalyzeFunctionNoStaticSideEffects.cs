@@ -8,27 +8,27 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
 {
     public class AnalyzeFunctionNoStaticSideEffects : ResultingGlobalOptimizationPass
     {
-        public static bool ReadPurity(MetaMidRepresentation intermediateCode)
+        public static bool ReadPurity(MethodInterpreter intermediateCode)
         {
-            return intermediateCode.GetProperties().NoStaticSideEffects;
+            return intermediateCode.MidRepresentation.GetProperties().NoStaticSideEffects;
         }
 
-        public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
+        public override void OptimizeOperations(MethodInterpreter intermediateCode)
         {
             if (ReadPurity(intermediateCode))
                 return;
             var functionIsPure = ComputeFunctionProperty(intermediateCode);
             if (!functionIsPure) return;
-            var additionalData = intermediateCode.GetProperties();
+            var additionalData = intermediateCode.MidRepresentation.GetProperties();
             additionalData.NoStaticSideEffects = true;
             Result = true;
         }
 
-        public static bool ComputeFunctionProperty(MetaMidRepresentation intermediateCode)
+        public static bool ComputeFunctionProperty(MethodInterpreter intermediateCode)
         {
             if (intermediateCode == null)
                 return false;
-            var operations = intermediateCode.LocalOperations;
+            var operations = intermediateCode.MidRepresentation.LocalOperations;
             foreach (var localOperation in operations)
             {
                 switch (localOperation.Kind)

@@ -11,12 +11,12 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Inliner
 {
     public class RemoveCallsToEmptyMethods : ResultingGlobalOptimizationPass
     {
-        public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
+        public override void OptimizeOperations(MethodInterpreter intermediateCode)
         {
             var toRemove = new List<int>();
-            for (int index = 0; index < intermediateCode.LocalOperations.Count; index++)
+            for (int index = 0; index < intermediateCode.MidRepresentation.LocalOperations.Count; index++)
             {
-                var localOperation = intermediateCode.LocalOperations[index];
+                var localOperation = intermediateCode.MidRepresentation.LocalOperations[index];
 
                 if (localOperation.Kind != OperationKind.Call) continue;
                 

@@ -19,14 +19,14 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
     /// </summary>
     internal class AssignToReturnPropagation : ResultingInFunctionOptimizationPass
     {
-        public override bool CheckPreconditions(MetaMidRepresentation midRepresentation)
+        public override bool CheckPreconditions(MethodInterpreter midRepresentation)
         {
-            var localOperations = midRepresentation.LocalOperations;
+            var localOperations = midRepresentation.MidRepresentation.LocalOperations;
             return localOperations.Count >= 2;
         }
-        public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
+        public override void OptimizeOperations(MethodInterpreter intermediateCode)
         {
-            var localOperations = intermediateCode.LocalOperations;
+            var localOperations = intermediateCode.MidRepresentation.LocalOperations;
             var count = localOperations.Count;
             var assignBeforeReturn = localOperations[count - 2];
             if (assignBeforeReturn.Kind != OperationKind.Assignment)

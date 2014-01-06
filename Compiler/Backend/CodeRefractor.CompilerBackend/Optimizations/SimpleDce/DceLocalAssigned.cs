@@ -12,19 +12,19 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
 {
     public class DceLocalAssigned : ResultingInFunctionOptimizationPass
     {
-        public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
+        public override void OptimizeOperations(MethodInterpreter intermediateCode)
         {
-            var operations = intermediateCode.LocalOperations;
+            var operations = intermediateCode.MidRepresentation.LocalOperations;
             var vregConstants = new HashSet<int>();
-            foreach (var localVariable in intermediateCode.Vars.LocalVars)
+            foreach (var localVariable in intermediateCode.MidRepresentation.Vars.LocalVars)
                 vregConstants.Add(localVariable.Id);
 
             RemoveCandidatesInDefinitions(operations, vregConstants);
             RemoveCandidatesInUsages(operations, vregConstants);
             if (vregConstants.Count == 0)
                 return;
-            
-            OptimizeUnusedLocals(vregConstants, intermediateCode.Vars);
+
+            OptimizeUnusedLocals(vregConstants, intermediateCode.MidRepresentation.Vars);
         }
 
         #region Remove candidates

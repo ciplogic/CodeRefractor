@@ -12,12 +12,12 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
         private readonly Dictionary<LocalVariable, int> _dictionary =
             new Dictionary<LocalVariable, int>();
 
-        public override bool OptimizeBlock(MetaMidRepresentation midRepresentation, int startRange, int endRange)
+        public override bool OptimizeBlock(MethodInterpreter midRepresentation, int startRange, int endRange)
         {
             _dictionary.Clear();
             for (var i = startRange; i <= endRange; i++)
             {
-                var localOperations = midRepresentation.LocalOperations;
+                var localOperations = midRepresentation.MidRepresentation.LocalOperations;
                 var op = localOperations[i];
 
                 var definition = op.GetDefinition();

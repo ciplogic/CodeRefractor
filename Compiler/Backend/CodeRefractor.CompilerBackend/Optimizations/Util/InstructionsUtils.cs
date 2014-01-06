@@ -43,6 +43,12 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
             return labelTable;
         }
 
+        public static void DeleteInstructions(this MethodInterpreter intermediateCode,
+            IEnumerable<int> instructionsToBeDeleted)
+        {
+            intermediateCode.MidRepresentation.DeleteInstructions(instructionsToBeDeleted);
+        }
+
         public static void DeleteInstructions(this MetaMidRepresentation intermediateCode,
                                               IEnumerable<int> instructionsToBeDeleted)
         {

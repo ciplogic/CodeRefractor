@@ -19,9 +19,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantDfa
         private Dictionary<int, int> _labelTable = new Dictionary<int, int>();
         private List<LocalOperation> _operations;
         private DfaPointOfAnalysis[] _pointsOfAnalysis;
-        public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
+        public override void OptimizeOperations(MethodInterpreter intermediateCode)
         {
-            _operations = intermediateCode.LocalOperations;
+            _operations = intermediateCode.MidRepresentation.LocalOperations;
             _labelTable = InstructionsUtils.BuildLabelTable(_operations);
             _pointsOfAnalysis = new DfaPointOfAnalysis[_operations.Count + 1];
 

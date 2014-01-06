@@ -12,9 +12,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions
 {
     class PrecomputeRepeatedPureFunctionCall : BlockOptimizationPass
     {
-        public override bool OptimizeBlock(MetaMidRepresentation midRepresentation, int startRange, int endRange)
+        public override bool OptimizeBlock(MethodInterpreter midRepresentation, int startRange, int endRange)
         {
-            var localOperations = midRepresentation.LocalOperations;
+            var localOperations = midRepresentation.MidRepresentation.LocalOperations;
             var calls = FindCallsToPureFunctions(localOperations, startRange, endRange);
             if (calls.Count < 2)
                 return false;
@@ -35,15 +35,15 @@ namespace CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions
             return false;
         }
 
-        private static void ApplyOptimization(MetaMidRepresentation midRepresentation, int i, int j)
+        private static void ApplyOptimization(MethodInterpreter midRepresentation, int i, int j)
         {
-            var localOps = midRepresentation.LocalOperations;
+            var localOps = midRepresentation.MidRepresentation.LocalOperations;
 
             var srcMethod = PrecomputeRepeatedUtils.GetMethodData(localOps, i);
             var destMethod = PrecomputeRepeatedUtils.GetMethodData(localOps, j);
 
             var computedType = srcMethod.Result.ComputedType();
-            var newVreg = PrecomputeRepeatedUtils.CreateCacheVariable(midRepresentation, computedType);
+            var newVreg = PrecomputeRepeatedUtils.CreateCacheVariable(midRepresentation.MidRepresentation, computedType);
 
             var assignedTo = srcMethod.Result;
             var localOperation = PrecomputeRepeatedUtils.CreateAssignLocalOperation(assignedTo, newVreg);

@@ -25,10 +25,10 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
             set { _result = value; }
         }
 
-        public abstract void OptimizeOperations(MetaMidRepresentation intermediateCode);
+        public abstract void OptimizeOperations(MethodInterpreter intermediateCode);
 
 
-        public override bool Optimize(MetaMidRepresentation intermediateCode)
+        public override bool Optimize(MethodInterpreter intermediateCode)
         {
             _result = false;
             try

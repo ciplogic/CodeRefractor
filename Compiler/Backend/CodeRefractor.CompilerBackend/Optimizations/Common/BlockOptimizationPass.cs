@@ -9,10 +9,10 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
     abstract class BlockOptimizationPass : ResultingInFunctionOptimizationPass
     {
         public List<LocalOperation> GetInstructionRange(
-            MetaMidRepresentation intermediateCode, int startInstruction, int endInstruction, bool cleanInstructions = true)
+            MethodInterpreter intermediateCode, int startInstruction, int endInstruction, bool cleanInstructions = true)
         {
             var result = new List<LocalOperation>();
-            var operations = intermediateCode.LocalOperations;
+            var operations = intermediateCode.MidRepresentation.LocalOperations;
             for (var i = startInstruction; i <= endInstruction; i++)
             {
                 var op = operations[i];
@@ -25,9 +25,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
             }
             return result;
         }
-        public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
+        public override void OptimizeOperations(MethodInterpreter intermediateCode)
         {
-            var localOperations = intermediateCode.LocalOperations;
+            var localOperations = intermediateCode.MidRepresentation.LocalOperations;
             var sortedLabelPos = BuildLabelTable(localOperations);
             var startPos = 0;
             var result = false;
@@ -66,12 +66,12 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
             return sortedLabelPos.ToList();
         }
 
-        bool TryOptimizeBlock(MetaMidRepresentation localOperations, int startRange, int endRange)
+        bool TryOptimizeBlock(MethodInterpreter localOperations, int startRange, int endRange)
         {
             if (startRange >= endRange)
                 return false;
             return OptimizeBlock(localOperations, startRange, endRange);
         }
-        public abstract bool OptimizeBlock(MetaMidRepresentation midRepresentation, int startRange, int endRange);
+        public abstract bool OptimizeBlock(MethodInterpreter midRepresentation, int startRange, int endRange);
     }
 }

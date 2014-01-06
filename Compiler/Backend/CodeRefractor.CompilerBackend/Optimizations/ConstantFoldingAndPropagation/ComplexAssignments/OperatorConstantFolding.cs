@@ -17,10 +17,10 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
         private MetaMidRepresentation _intermediateCode;
         private int _pos;
 
-        public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
+        public override void OptimizeOperations(MethodInterpreter intermediateCode)
         {
-            _intermediateCode = intermediateCode;
-            var localOperations = intermediateCode.LocalOperations;
+            _intermediateCode = intermediateCode.MidRepresentation;
+            var localOperations = intermediateCode.MidRepresentation.LocalOperations;
             var binaryOperations = GetBinaryOperations(localOperations);
             ComputeBinaryOperations(binaryOperations);
 

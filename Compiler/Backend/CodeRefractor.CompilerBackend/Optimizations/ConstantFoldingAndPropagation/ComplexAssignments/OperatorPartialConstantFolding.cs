@@ -20,9 +20,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
         private List<LocalOperation> _localOperations;
         private int _pos;
 
-        public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
+        public override void OptimizeOperations(MethodInterpreter intermediateCode)
         {
-            _localOperations = intermediateCode.LocalOperations;
+            _localOperations = intermediateCode.MidRepresentation.LocalOperations;
             _pos = 0;
             for (int index = 0; index < _localOperations.Count; index++)
             {

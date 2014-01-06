@@ -8,9 +8,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
 {
     class RemoveDeadPureFunctionCalls : BlockOptimizationPass
     {
-        public override bool OptimizeBlock(MetaMidRepresentation midRepresentation, int startRange, int endRange)
+        public override bool OptimizeBlock(MethodInterpreter midRepresentation, int startRange, int endRange)
         {
-            var localOperations = midRepresentation.LocalOperations;
+            var localOperations = midRepresentation.MidRepresentation.LocalOperations;
 
             var calls = PrecomputeRepeatedPureFunctionCall.FindCallsToPureFunctions(localOperations, startRange, endRange);
             var toRemove = new HashSet<int>();
@@ -28,7 +28,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
             }
             if (toRemove.Count == 0)
                 return false;
-            midRepresentation.DeleteInstructions(toRemove);
+            midRepresentation.MidRepresentation.DeleteInstructions(toRemove);
             toRemove.Clear();
             return true;
         }

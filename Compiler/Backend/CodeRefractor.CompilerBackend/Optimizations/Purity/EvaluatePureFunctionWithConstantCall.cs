@@ -16,16 +16,16 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
 {
     internal class EvaluatePureFunctionWithConstantCall : ResultingGlobalOptimizationPass
     {
-        public override bool CheckPreconditions(MetaMidRepresentation midRepresentation)
+        public override bool CheckPreconditions(MethodInterpreter midRepresentation)
         {
-            var operations = midRepresentation.LocalOperations;
+            var operations = midRepresentation.MidRepresentation.LocalOperations;
 
             return operations.Any(op => op.Kind == OperationKind.Call);
         }
 
-        public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
+        public override void OptimizeOperations(MethodInterpreter intermediateCode)
         {
-            var operations = intermediateCode.LocalOperations;
+            var operations = intermediateCode.MidRepresentation.LocalOperations;
             for (var i = 0; i < operations.Count - 1; i++)
             {
                 var operation = operations[i];
@@ -56,7 +56,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
         public static MethodData ComputeAndEvaluatePurityOfCall(LocalOperation operation)
         {
             var operationData = (MethodData) operation.Value;
-            var methodInterpreter = operationData.Info.GetInterpreter().MidRepresentation;
+            var methodInterpreter = operationData.Info.GetInterpreter();
             if (AnalyzeFunctionPurity.ReadPurity(methodInterpreter))
             {
                 operationData.IsPure = true;

@@ -11,9 +11,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
     class PropagationVariablesOptimizationPass : BlockOptimizationPass
     {
         readonly Dictionary<LocalVariable, IdentifierValue> _dictionary 
-            = new Dictionary<LocalVariable, IdentifierValue>(); 
+            = new Dictionary<LocalVariable, IdentifierValue>();
 
-        public override bool OptimizeBlock(MetaMidRepresentation midRepresentation, int startRange, int endRange)
+        public override bool OptimizeBlock(MethodInterpreter midRepresentation, int startRange, int endRange)
         {
             var result = false;
 

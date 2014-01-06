@@ -9,28 +9,28 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Licm
 {
     class LoopInvariantCodeMotion : ResultingGlobalOptimizationPass
     {
-        public override bool CheckPreconditions(MetaMidRepresentation midRepresentation)
+        public override bool CheckPreconditions(MethodInterpreter midRepresentation)
         {
-            var loopStarts = LoopDetection.FindLoops(midRepresentation);
+            var loopStarts = LoopDetection.FindLoops(midRepresentation.MidRepresentation);
             return loopStarts.Count != 0;
         }
-        public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
+        public override void OptimizeOperations(MethodInterpreter intermediateCode)
         {
             List<int> loopStarts;
             bool found;
             do
             {
-                loopStarts = LoopDetection.FindLoops(intermediateCode);
+                loopStarts = LoopDetection.FindLoops(intermediateCode.MidRepresentation);
                 found = false;
                 foreach (var loopStart in loopStarts)
                 {
-                    var loopEnd = LoopDetection.GetEndLoop(intermediateCode.LocalOperations, loopStart);
-                    var allDefinedVariables = GetAllDefinedVariables(intermediateCode, loopStart, loopEnd);
-                    var allInvariantInstructions = GetAllInvariantInstructions(intermediateCode, loopStart, loopEnd,
+                    var loopEnd = LoopDetection.GetEndLoop(intermediateCode.MidRepresentation.LocalOperations, loopStart);
+                    var allDefinedVariables = GetAllDefinedVariables(intermediateCode.MidRepresentation, loopStart, loopEnd);
+                    var allInvariantInstructions = GetAllInvariantInstructions(intermediateCode.MidRepresentation, loopStart, loopEnd,
                                                                                allDefinedVariables);
                     if (allInvariantInstructions.Count == 0)
                         continue;
-                    PerformMoveInstructions(intermediateCode, loopStart, allInvariantInstructions);
+                    PerformMoveInstructions(intermediateCode.MidRepresentation, loopStart, allInvariantInstructions);
                     Result = true;
                     found = true;
                     break;

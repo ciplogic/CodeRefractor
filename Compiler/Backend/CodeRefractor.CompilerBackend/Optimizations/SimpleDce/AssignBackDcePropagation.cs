@@ -16,10 +16,10 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
     /// </summary>
     internal class DceNewObjectOrArray: ResultingInFunctionOptimizationPass
     {
-        public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
+        public override void OptimizeOperations(MethodInterpreter intermediateCode)
         {
             var dictionary = new Dictionary<LocalVariable, int>();
-            var localOperations = intermediateCode.LocalOperations;
+            var localOperations = intermediateCode.MidRepresentation.LocalOperations;
             for (var i = 0; i < localOperations.Count; i++)
             {
                 var op = localOperations[i];
@@ -43,8 +43,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
                 ).ToArray();
             if (toDelete.Length == 0)
                 return;
-            
-            intermediateCode.DeleteInstructions(toDelete);
+
+            intermediateCode.MidRepresentation.DeleteInstructions(toDelete);
         }
     }
 }

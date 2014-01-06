@@ -11,7 +11,7 @@ namespace CodeRefractor.CompilerBackend.Linker
     {
         public static bool ReadPurity(MethodBase methodBase)
         {
-            var method = methodBase.GetInterpreter().MidRepresentation;
+            var method = methodBase.GetInterpreter();
             if (method != null)
             {
                 return AnalyzeFunctionPurity.ReadPurity(method);

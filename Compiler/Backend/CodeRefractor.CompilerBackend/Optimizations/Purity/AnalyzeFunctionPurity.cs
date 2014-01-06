@@ -8,25 +8,25 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
 {
     public class AnalyzeFunctionPurity : ResultingGlobalOptimizationPass
     {
-        public static bool ReadPurity(MetaMidRepresentation intermediateCode)
+        public static bool ReadPurity(MethodInterpreter intermediateCode)
         {
-            return intermediateCode.GetProperties().IsPure;
+            return intermediateCode.MidRepresentation.GetProperties().IsPure;
         }
-        public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
+        public override void OptimizeOperations(MethodInterpreter intermediateCode)
         {
             if (ReadPurity(intermediateCode))
                 return;
             var functionIsPure = ComputeFunctionPurity(intermediateCode);
             if (!functionIsPure) return;
-            intermediateCode.GetProperties().IsPure = true;
+            intermediateCode.MidRepresentation.GetProperties().IsPure = true;
             Result = true;
         }
 
-        public static bool ComputeFunctionPurity(MetaMidRepresentation intermediateCode)
+        public static bool ComputeFunctionPurity(MethodInterpreter intermediateCode)
         {
             if(intermediateCode==null)
                 return false;
-            var operations = intermediateCode.LocalOperations;
+            var operations = intermediateCode.MidRepresentation.LocalOperations;
             foreach (var localOperation in operations)
             {
                 switch (localOperation.Kind)

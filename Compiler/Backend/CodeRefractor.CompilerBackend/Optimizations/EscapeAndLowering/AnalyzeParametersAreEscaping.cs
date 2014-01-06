@@ -15,14 +15,14 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
     class AnalyzeParametersAreEscaping : ResultingGlobalOptimizationPass
     {
         public const string EscapeName = "NonEscapingArgs";
-        public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
+        public override void OptimizeOperations(MethodInterpreter intermediateCode)
         {
-            if (intermediateCode.GetInterpreter().Kind != MethodKind.Default)
+            if (intermediateCode.Kind != MethodKind.Default)
                 return;
 
-            var originalSnapshot = CppFullFileMethodWriter.BuildEscapingBools(intermediateCode.Method);
+            var originalSnapshot = CppFullFileMethodWriter.BuildEscapingBools(intermediateCode.MidRepresentation.Method);
 
-            if (ComputeEscapeTable(intermediateCode)) return;
+            if (ComputeEscapeTable(intermediateCode.MidRepresentation)) return;
 
             var finalSnapshot= CppFullFileMethodWriter.BuildEscapingBools(intermediateCode.Method);
             CheckForChanges(finalSnapshot, originalSnapshot);

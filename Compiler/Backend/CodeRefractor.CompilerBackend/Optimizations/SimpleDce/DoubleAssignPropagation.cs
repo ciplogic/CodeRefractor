@@ -15,9 +15,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
     /// </summary>
     internal class DoubleAssignPropagation : ResultingInFunctionOptimizationPass
     {
-        public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
+        public override void OptimizeOperations(MethodInterpreter intermediateCode)
         {
-            var localOperations = intermediateCode.LocalOperations;
+            var localOperations = intermediateCode.MidRepresentation.LocalOperations;
             var count = localOperations.Count;
             for (var i = 0; i < count - 1; i++)
             {

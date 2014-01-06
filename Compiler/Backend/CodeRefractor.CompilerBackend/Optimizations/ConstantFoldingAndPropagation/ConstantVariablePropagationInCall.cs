@@ -11,9 +11,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
 {
     public class ConstantVariablePropagationInCall : ConstantVariablePropagationBase
     {
-        public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
+        public override void OptimizeOperations(MethodInterpreter intermediateCode)
         {
-            var operations = intermediateCode.LocalOperations;
+            var operations = intermediateCode.MidRepresentation.LocalOperations;
             for (var i = 0; i < operations.Count - 1; i++)
             {
                 Assignment srcVariableDefinition;

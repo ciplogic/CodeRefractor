@@ -24,13 +24,13 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Inliner
         {
         }
 
-        public override void OptimizeOperations(MetaMidRepresentation intermediateCode)
+        public override void OptimizeOperations(MethodInterpreter intermediateCode)
         {
-            if (intermediateCode.LocalOperations.Count > MaxLengthInliner) return;
+            if (intermediateCode.MidRepresentation.LocalOperations.Count > MaxLengthInliner) return;
             MethodInterpreter interpreter = null;
             MethodData methodData = null;
             var pos = 0;
-            foreach (var localOperation in intermediateCode.LocalOperations)
+            foreach (var localOperation in intermediateCode.MidRepresentation.LocalOperations)
             {
                 pos++;
                 if (localOperation.Kind != OperationKind.Call) continue;
@@ -41,15 +41,15 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Inliner
                 interpreter = ClassTypeData.GetInterpreterStatic(methodBase);
                 if (interpreter == null)
                     continue;
-                if (intermediateCode.GetMethodBody == null)
+                if (intermediateCode.MidRepresentation.GetMethodBody == null)
                     continue;
-                if (intermediateCode.LocalOperations.Count > MaxLengthChildFunction)
+                if (intermediateCode.MidRepresentation.LocalOperations.Count > MaxLengthChildFunction)
                     continue;
                 break;
             }
             if (interpreter == null)
                 return;
-            InlineMethod(intermediateCode, interpreter, methodData, pos);
+            InlineMethod(intermediateCode.MidRepresentation, interpreter, methodData, pos);
         }
 
         public static void InlineMethod(
