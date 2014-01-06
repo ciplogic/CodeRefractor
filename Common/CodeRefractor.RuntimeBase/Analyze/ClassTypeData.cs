@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using CodeRefractor.RuntimeBase.FrontEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.Runtime;
@@ -63,7 +64,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
             var linker = new MetaLinker();
             linker.SetEntryPoint(methodBase);
             linker.Interpret();
-            return GetInterpreter(methodBase);
+            return methodBase.GetRegisteredInterpreter();
         }
 
         public static MethodInterpreter GetInterpreterStatic(MethodBase methodBase)

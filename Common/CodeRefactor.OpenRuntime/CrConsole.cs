@@ -10,10 +10,6 @@ namespace CodeRefactor.OpenRuntime
     [MapType(typeof (Console))]
     public class CrConsole
     {
-        [CppMethodBody(Header = "stdio.h", Code = "printf(\"%lf\\n\", value);")]
-        public static void WriteLine(double value)
-        {
-        }
 
         [CppMethodBody(Header = "stdio.h", Code = "printf(\"%d\\n\", value);")]
         public static void WriteLine(int value)
@@ -40,5 +36,9 @@ namespace CodeRefactor.OpenRuntime
         {
         }
 
+        [CppMethodBody(Header = "stdio.h", Code = "printf(\"%lf\\n\", value);")]
+        public static void WriteLine(double value)
+        {
+        }
     }
 }

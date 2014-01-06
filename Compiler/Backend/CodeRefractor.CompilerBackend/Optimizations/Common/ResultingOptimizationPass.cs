@@ -25,7 +25,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
             set { _result = value; }
         }
 
-        public abstract void OptimizeOperations(MethodInterpreter intermediateCode);
+        public abstract void OptimizeOperations(MethodInterpreter methodInterpreter);
 
 
         public override bool Optimize(MethodInterpreter intermediateCode)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using CodeRefractor.RuntimeBase.Runtime;
 
 namespace CodeRefractor.RuntimeBase.Analyze
 {
@@ -45,14 +46,17 @@ namespace CodeRefractor.RuntimeBase.Analyze
 
         private void ExtractFieldsTypes()
         {
-            if (ClrType.IsSubclassOf(typeof (Array)))
+            var clrType = ClrType.GetReversedType();
+            if (clrType.IsSubclassOf(typeof (Array)))
             {
-                UsedTypeList.Set(ClrType.GetElementType());
+                UsedTypeList.Set(clrType.GetElementType());
             }
-            var fields = ClrType.GetFields(BindingFlags.NonPublic|
+            var fields = clrType.GetFields(BindingFlags.NonPublic|
                 BindingFlags.Public|BindingFlags.Instance
                 |BindingFlags.DeclaredOnly|BindingFlags.Static
-                );
+                ).ToArray();
+            if(fields.Length==0)
+                return;
             foreach (var fieldInfo in fields)
             {
                 if (fieldInfo.IsLiteral)
@@ -66,7 +70,6 @@ namespace CodeRefractor.RuntimeBase.Analyze
                 };
                 Layout.Add(fieldDescription);
             }
-
         }
 
         public void WriteLayout(StringBuilder sb)

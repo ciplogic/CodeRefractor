@@ -9,9 +9,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
 {
     class OneAssignmentDeadStoreAssignment : ResultingInFunctionOptimizationPass
     {
-        public override void OptimizeOperations(MethodInterpreter intermediateCode)
+        public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
-            var localOperations = intermediateCode.MidRepresentation.LocalOperations;
+            var localOperations = methodInterpreter.MidRepresentation.LocalOperations;
 
             var assignToConstOperations = GetAssignToConstOperations(localOperations);
 
@@ -22,7 +22,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
             if(definedOnce.Count == 0)
                 return;
 
-            FindMultipleDefinedVariables(intermediateCode.MidRepresentation, definedOnce);
+            FindMultipleDefinedVariables(methodInterpreter.MidRepresentation, definedOnce);
 
             if (definedOnce.Count == 0)
                 return;
@@ -34,7 +34,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
                 return;
             var valuesMapping = FindValuesMapping(assignToConstOperations);
 
-            localOperations = intermediateCode.MidRepresentation.LocalOperations;
+            localOperations = methodInterpreter.MidRepresentation.LocalOperations;
             foreach (var op in localOperations)
             {
                 var variableUsages = op.GetUsages();
@@ -48,7 +48,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
                 Result = true;
             }
 
-            intermediateCode.DeleteInstructions(instructionsToRemove);
+            methodInterpreter.DeleteInstructions(instructionsToRemove);
             instructionsToRemove.Clear();
         }
 

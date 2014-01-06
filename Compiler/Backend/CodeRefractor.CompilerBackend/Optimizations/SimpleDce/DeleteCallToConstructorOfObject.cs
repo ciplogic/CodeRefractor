@@ -7,9 +7,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
 {
     class DeleteCallToConstructorOfObject : ResultingInFunctionOptimizationPass
     {
-        public override void OptimizeOperations(MethodInterpreter intermediateCode)
+        public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
-            var localOps = intermediateCode.MidRepresentation.LocalOperations;
+            var localOps = methodInterpreter.MidRepresentation.LocalOperations;
             for (var index = 0; index < localOps.Count; index++)
             {
                 var op = localOps[index];

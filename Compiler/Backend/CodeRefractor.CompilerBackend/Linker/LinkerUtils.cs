@@ -1,7 +1,7 @@
 using System;
 using System.Reflection;
 using CodeRefractor.RuntimeBase;
-using CodeRefractor.RuntimeBase.Analyze;
+using CodeRefractor.RuntimeBase.FrontEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
@@ -41,21 +41,7 @@ namespace CodeRefractor.CompilerBackend.Linker
             
             if(isGacType)
                 return null;
-            var typeData = (ClassTypeData) ProgramData.UpdateType(methodBase.DeclaringType);
-            var interpreter = typeData.GetInterpreter(methodBase);
-            return interpreter;
-        }
-
-        public static MethodInterpreter GetInterpreter(this MetaMidRepresentation methodData)
-        {
-            return methodData.Method.GetInterpreter();
-        }
-
-        public static MethodInterpreter GetMethod(this MethodInterpreter midrepresentation)
-        {
-            var methodName = midrepresentation.Method.WriteHeaderMethod(false);
-            MethodInterpreter result;
-            return !LinkerInterpretersTable.Methods.TryGetValue(methodName, out result) ? null : result;
+            return methodBase.GetRegisteredInterpreter();
         }
     }
 }

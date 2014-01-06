@@ -10,11 +10,6 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
 {
     public static class InstructionsUtils
     {
-        public static Assignment GetAssignment(this LocalOperation operation)
-        {
-            return operation.Value as Assignment;
-        }
-
         public static bool Contains<T>(this T[] items, T value)
         {
             foreach (var item in items)
@@ -63,6 +58,5 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
             }
             intermediateCode.LocalOperations = liveOperations;
         }
-
     }
 }

@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using CodeRefractor.CompilerBackend.Optimizations.Util;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
@@ -216,6 +215,12 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
             }
             return result;
         }
+
+        public static Assignment GetAssignment(this LocalOperation operation)
+        {
+            return operation.Value as Assignment;
+        }
+
         public static LocalVariable GetDefinition(this LocalOperation operation)
         {
             var kind = operation.Kind;

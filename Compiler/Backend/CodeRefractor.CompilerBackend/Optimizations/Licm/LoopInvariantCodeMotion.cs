@@ -14,23 +14,24 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Licm
             var loopStarts = LoopDetection.FindLoops(midRepresentation.MidRepresentation);
             return loopStarts.Count != 0;
         }
-        public override void OptimizeOperations(MethodInterpreter intermediateCode)
+
+        public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
             List<int> loopStarts;
             bool found;
             do
             {
-                loopStarts = LoopDetection.FindLoops(intermediateCode.MidRepresentation);
+                loopStarts = LoopDetection.FindLoops(methodInterpreter.MidRepresentation);
                 found = false;
                 foreach (var loopStart in loopStarts)
                 {
-                    var loopEnd = LoopDetection.GetEndLoop(intermediateCode.MidRepresentation.LocalOperations, loopStart);
-                    var allDefinedVariables = GetAllDefinedVariables(intermediateCode.MidRepresentation, loopStart, loopEnd);
-                    var allInvariantInstructions = GetAllInvariantInstructions(intermediateCode.MidRepresentation, loopStart, loopEnd,
+                    var loopEnd = LoopDetection.GetEndLoop(methodInterpreter.MidRepresentation.LocalOperations, loopStart);
+                    var allDefinedVariables = GetAllDefinedVariables(methodInterpreter.MidRepresentation, loopStart, loopEnd);
+                    var allInvariantInstructions = GetAllInvariantInstructions(methodInterpreter.MidRepresentation, loopStart, loopEnd,
                                                                                allDefinedVariables);
                     if (allInvariantInstructions.Count == 0)
                         continue;
-                    PerformMoveInstructions(intermediateCode.MidRepresentation, loopStart, allInvariantInstructions);
+                    PerformMoveInstructions(methodInterpreter.MidRepresentation, loopStart, allInvariantInstructions);
                     Result = true;
                     found = true;
                     break;

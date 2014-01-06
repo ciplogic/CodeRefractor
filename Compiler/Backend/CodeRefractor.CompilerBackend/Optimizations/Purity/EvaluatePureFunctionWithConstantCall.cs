@@ -1,6 +1,5 @@
 ﻿#region Usings
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
@@ -23,9 +22,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
             return operations.Any(op => op.Kind == OperationKind.Call);
         }
 
-        public override void OptimizeOperations(MethodInterpreter intermediateCode)
+        public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
-            var operations = intermediateCode.MidRepresentation.LocalOperations;
+            var operations = methodInterpreter.MidRepresentation.LocalOperations;
             for (var i = 0; i < operations.Count - 1; i++)
             {
                 var operation = operations[i];

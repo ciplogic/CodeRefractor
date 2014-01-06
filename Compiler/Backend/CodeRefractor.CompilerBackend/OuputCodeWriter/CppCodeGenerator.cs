@@ -88,16 +88,15 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             {
                 if (DelegateManager.IsTypeDelegate(typeData))
                     continue;
-                var type = CrRuntimeLibrary.Instance.GetReverseType(typeData) ?? typeData;
-                var mappedType = CrRuntimeLibrary.Instance.GetMappedType(type) ?? typeData;
-                var ns = type.Namespace??"";
-                
+
+                var type = typeData.GetReversedType();
+                var mappedType = typeData;
                 sb.AppendFormat("struct {0} {{", type.ToCppMangling()).AppendLine();
                 WriteClassFieldsBody(sb, mappedType);
                 sb.AppendFormat("}};").AppendLine();
 
-                var staticFields = mappedType.GetFields(BindingFlags.Static).ToList();
-                staticFields.AddRange(mappedType.GetFields(BindingFlags.Static | BindingFlags.NonPublic));
+                var staticFields = type.GetFields(BindingFlags.Static).ToList();
+                staticFields.AddRange(type.GetFields(BindingFlags.Static | BindingFlags.NonPublic));
                 foreach (var fieldData in staticFields.Where(field => field.IsStatic))
                 {
                     if (fieldData.IsLiteral)

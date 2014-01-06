@@ -5,6 +5,7 @@ using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
+using CodeRefractor.RuntimeBase.Runtime;
 
 namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 {
@@ -79,15 +80,14 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                 var declaringType = it.Method.DeclaringType;
                 if (declaringType == null)
                     continue;
-                if (declaringType.TypeInitializer != null)
-                {
-                    var info = declaringType.TypeInitializer;
-                    var descInfo = info.GetMethodDescriptor();
+                declaringType = declaringType.GetReversedType();
+                if (declaringType.TypeInitializer == null) continue;
+                var info = declaringType.TypeInitializer;
+                var descInfo = info.GetMethodDescriptor();
 
-                    var interpreter = ClassTypeData.GetInterpreterStatic(info);
-                    result[descInfo] = interpreter;
-                    UpdateMethodEntryClosure(interpreter, result);
-                }
+                var interpreter = ClassTypeData.GetInterpreterStatic(info);
+                result[descInfo] = interpreter;
+                UpdateMethodEntryClosure(interpreter, result);
             }
             
             foreach (var interpreter in toAdd)

@@ -17,9 +17,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ReachabilityDfa
         private Dictionary<int, int> _labelTable;
         private HashSet<int> _reached;
 
-        public override void OptimizeOperations(MethodInterpreter intermediateCode)
+        public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
-            var operations = intermediateCode.MidRepresentation.LocalOperations;
+            var operations = methodInterpreter.MidRepresentation.LocalOperations;
             _labelTable = InstructionsUtils.BuildLabelTable(operations);
             _reached = new HashSet<int>();
             Interpret(0, operations);

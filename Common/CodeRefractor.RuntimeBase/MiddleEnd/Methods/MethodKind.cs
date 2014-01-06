@@ -5,6 +5,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.Methods
         Default,
         RuntimeLibrary,
         PlatformInvoke,
-        Delegate
+        Delegate,
+        RuntimeCppMethod
     }
 }

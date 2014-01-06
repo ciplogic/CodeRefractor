@@ -15,16 +15,16 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
     class AnalyzeParametersAreEscaping : ResultingGlobalOptimizationPass
     {
         public const string EscapeName = "NonEscapingArgs";
-        public override void OptimizeOperations(MethodInterpreter intermediateCode)
+        public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
-            if (intermediateCode.Kind != MethodKind.Default)
+            if (methodInterpreter.Kind != MethodKind.Default)
                 return;
 
-            var originalSnapshot = CppFullFileMethodWriter.BuildEscapingBools(intermediateCode.MidRepresentation.Method);
+            var originalSnapshot = CppFullFileMethodWriter.BuildEscapingBools(methodInterpreter.MidRepresentation.Method);
 
-            if (ComputeEscapeTable(intermediateCode.MidRepresentation)) return;
+            if (ComputeEscapeTable(methodInterpreter.MidRepresentation)) return;
 
-            var finalSnapshot= CppFullFileMethodWriter.BuildEscapingBools(intermediateCode.Method);
+            var finalSnapshot= CppFullFileMethodWriter.BuildEscapingBools(methodInterpreter.Method);
             CheckForChanges(finalSnapshot, originalSnapshot);
         }
 
@@ -121,6 +121,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
         public static Dictionary<int, bool> EscapingParameterData(MethodBase info)
         {
             var interpreter = info.GetInterpreter();
+            if (interpreter == null)
+                return null;
             var calledMethod = interpreter.MidRepresentation;
             var otherMethodData = (Dictionary<int, bool>) calledMethod.GetAdditionalProperty(EscapeName);
             if (otherMethodData == null)

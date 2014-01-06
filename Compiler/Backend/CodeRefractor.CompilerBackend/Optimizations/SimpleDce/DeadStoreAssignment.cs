@@ -23,9 +23,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
         };
         readonly Dictionary<LocalVariable, int> _definitions = new Dictionary<LocalVariable, int>();
 
-        public override void OptimizeOperations(MethodInterpreter intermediateCode)
+        public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
-            var localOperations = intermediateCode.MidRepresentation.LocalOperations.ToArray();
+            var localOperations = methodInterpreter.MidRepresentation.LocalOperations.ToArray();
 
             _definitions.Clear();
             ComputeDefinitions(localOperations);
@@ -35,7 +35,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
             var toRemove = BuildRemoveInstructions(localOperations);
             if (toRemove.Count == 0)
                 return;
-            intermediateCode.MidRepresentation.DeleteInstructions(toRemove);
+            methodInterpreter.MidRepresentation.DeleteInstructions(toRemove);
             toRemove.Clear();
             Result = true;
         }

@@ -24,9 +24,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
             var localOperations = midRepresentation.MidRepresentation.LocalOperations;
             return localOperations.Count >= 2;
         }
-        public override void OptimizeOperations(MethodInterpreter intermediateCode)
+        public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
-            var localOperations = intermediateCode.MidRepresentation.LocalOperations;
+            var localOperations = methodInterpreter.MidRepresentation.LocalOperations;
             var count = localOperations.Count;
             var assignBeforeReturn = localOperations[count - 2];
             if (assignBeforeReturn.Kind != OperationKind.Assignment)

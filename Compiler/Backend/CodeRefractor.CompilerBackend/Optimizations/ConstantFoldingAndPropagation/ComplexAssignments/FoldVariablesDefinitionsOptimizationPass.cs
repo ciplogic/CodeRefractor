@@ -16,9 +16,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
 
         readonly Dictionary<LocalVariable, int> _usagesDictionary = new Dictionary<LocalVariable, int>();
 
-        public override void OptimizeOperations(MethodInterpreter intermediateCode)
+        public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
-            var localOperations = intermediateCode.MidRepresentation.LocalOperations;
+            var localOperations = methodInterpreter.MidRepresentation.LocalOperations;
             _definitionsDictionary.Clear();
             BuildDefinitionDictionary(localOperations);
             RemoveNonUniqueDefinitions(_definitionsDictionary);

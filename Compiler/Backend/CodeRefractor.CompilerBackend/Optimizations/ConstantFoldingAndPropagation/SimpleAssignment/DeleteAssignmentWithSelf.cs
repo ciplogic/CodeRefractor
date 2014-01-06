@@ -8,9 +8,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
 {
     class DeleteAssignmentWithSelf : ResultingInFunctionOptimizationPass
     {
-        public override void OptimizeOperations(MethodInterpreter intermediateCode)
+        public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
-            var localOps = intermediateCode.MidRepresentation.LocalOperations;
+            var localOps = methodInterpreter.MidRepresentation.LocalOperations;
             var toRemove = new List<int>();
             for (var index = 0; index < localOps.Count; index++)
             {
@@ -24,7 +24,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
 
             if (toRemove.Count == 0)
                 return;
-            intermediateCode.MidRepresentation.DeleteInstructions(new HashSet<int>(toRemove));
+            methodInterpreter.MidRepresentation.DeleteInstructions(new HashSet<int>(toRemove));
             toRemove.Clear();
             Result = true;
         }

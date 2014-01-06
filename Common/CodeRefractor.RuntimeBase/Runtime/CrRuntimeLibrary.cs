@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using CodeRefractor.RuntimeBase.Analyze;
+using CodeRefractor.RuntimeBase.FrontEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.Shared;
 
@@ -14,14 +15,10 @@ namespace CodeRefractor.RuntimeBase.Runtime
 {
     public class CrRuntimeLibrary
     {
-        private readonly Dictionary<string, CppMethodBodyAttribute> _supportedCppMethods =
-            new Dictionary<string, CppMethodBodyAttribute>();
-
         private readonly Dictionary<string, MetaLinker> _supportedCilMethods = new Dictionary<string, MetaLinker>();
         private readonly Dictionary<string, MethodBase> _supportedMethods = new Dictionary<string, MethodBase>();
         public readonly Dictionary<Type, Type> MappedTypes = new Dictionary<Type, Type>();
         public readonly Dictionary<Type, MapTypeAttribute> TypeAttribute = new Dictionary<Type, MapTypeAttribute>();
-        public readonly Dictionary<Type, Type> ReverseMappedTypes = new Dictionary<Type, Type>();
 
         private readonly Dictionary<Type, List<CppMethodDefinition>> _crMethods =
             new Dictionary<Type, List<CppMethodDefinition>>();
@@ -50,7 +47,6 @@ namespace CodeRefractor.RuntimeBase.Runtime
                 if (mapTypeAttr == null) continue;
                 TypeAttribute[item] = mapTypeAttr; 
                 MappedTypes[mapTypeAttr.MappedType] = item;
-                ReverseMappedTypes[item] = mapTypeAttr.MappedType;
             }
 
         }
@@ -82,9 +78,11 @@ namespace CodeRefractor.RuntimeBase.Runtime
 
         public static string GetMethodDescription(MethodBase methodInfo)
         {
-            var reverseType = methodInfo.DeclaringType.ReversedType();
-            return string.Format("{0}::{1}",reverseType, methodInfo);
+            var methodBase  = methodInfo.GetReversedMethod();
+
+            return methodBase.GenerateKey();
         }
+
 
         public Type GetReverseType(Type type)
         {
@@ -119,32 +117,26 @@ namespace CodeRefractor.RuntimeBase.Runtime
             return result;
         }
 
-        private void ScanType(Type item)
+        private static void ScanType(Type item)
         {
             var methods = item.GetMethods();
             foreach (var method in methods)
-                ScanCppMethod(item, method);
+                ScanCppMethod(method);
         }
 
-        private void ScanCppMethod(Type declaringType, MethodBase method)
+        private static void ScanCppMethod(MethodBase method)
         {
             var methodNativeDescription = method.GetCustomAttribute<CppMethodBodyAttribute>();
             if (methodNativeDescription == null) return;
-            var format = GetMethodDescription(method);
-            _supportedCppMethods[format] = methodNativeDescription;
-            _supportedMethods[format] = method;
-            var methodList = GetTypesMethodList(declaringType);
-            var cppMethodDefinition = new CppMethodDefinition
-                                          {
-                                              DeclaringType = method.DeclaringType,
-                                              MappedType = declaringType,
-                                              AttributeData = methodNativeDescription,
-                                              MethodDefinition = method
-                                          };
+            var reversedMethod = method.GetReversedMethod();
+            var interpreter = reversedMethod.Register();
+            interpreter.Kind = MethodKind.RuntimeCppMethod;
+            interpreter.RuntimeLibrary.HeaderName = methodNativeDescription.Header;
+            interpreter.RuntimeLibrary.Source = methodNativeDescription.Code;
             var pureAttribute = method.GetCustomAttribute<PureMethodAttribute>();
             if (pureAttribute != null)
-                PureMethodTable.AddPureFunction(method);
-            methodList.Add(cppMethodDefinition);
+                interpreter.RuntimeLibrary.IsPure = true;
+
         }
 
         public bool UseMethod(MethodBase methodDefinition)
@@ -184,15 +176,11 @@ namespace CodeRefractor.RuntimeBase.Runtime
         {
             foreach (var usedCppMethod in UsedCppMethods.Values)
             {
-                var declaredType = usedCppMethod.DeclaringType;
                 ScanMethodTypes(usedCppMethod);
-                UseRuntimeType(declaredType);
             }
             foreach (var usedCppMethod in UsedCilMethods.Values)
             {
-                var declaredType = usedCppMethod.MethodInfo.DeclaringType;
                 ScanMethodTypes(usedCppMethod.MethodInfo);
-                UseRuntimeType(declaredType);
             }
 
         }
@@ -203,16 +191,9 @@ namespace CodeRefractor.RuntimeBase.Runtime
             foreach (var arg in args)
             {
                 UseClrType(arg.ParameterType);
-                UseRuntimeType(arg.ParameterType);
             }
         }
 
-        public void UseRuntimeType(Type typeToUse)
-        {
-            if(!ReverseMappedTypes.ContainsKey(typeToUse))
-                return;
-            UsedTypes[typeToUse] = ReverseMappedTypes[typeToUse];
-        }
         public void UseClrType(Type typeToUse)
         {
             if (!MappedTypes.ContainsKey(typeToUse))

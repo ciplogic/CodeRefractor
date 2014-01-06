@@ -11,14 +11,14 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
         {
             return intermediateCode.MidRepresentation.GetProperties().IsGetter;
         }
-        public override void OptimizeOperations(MethodInterpreter intermediateCode)
+        public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
-            if (ReadProperty(intermediateCode))
+            if (ReadProperty(methodInterpreter))
                 return;
-            var functionIsPure = ComputeFunctionPurity(intermediateCode);
+            var functionIsPure = ComputeFunctionPurity(methodInterpreter);
             
             if (!functionIsPure) return;
-            intermediateCode.MidRepresentation.GetProperties().IsGetter = true; 
+            methodInterpreter.MidRepresentation.GetProperties().IsGetter = true; 
             Result = true;
         }
 

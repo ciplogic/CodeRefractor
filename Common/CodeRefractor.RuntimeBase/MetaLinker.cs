@@ -5,6 +5,7 @@ using System.Reflection;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.FrontEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd;
+using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.Runtime;
 using CodeRefractor.RuntimeBase.Shared;
 using MsilReader;
@@ -26,8 +27,6 @@ namespace CodeRefractor.RuntimeBase
         public static void ComputeDependencies(MethodBase definition)
         {
             AddClassIfNecessary(definition);
-            var methodDefinitionKey = definition.ToString();
-            GlobalMethodPool.Instance.MethodInfos[methodDefinitionKey] = definition;
 
             var body = definition.GetMethodBody();
             if (body == null)
@@ -117,6 +116,8 @@ namespace CodeRefractor.RuntimeBase
         {
             var method = MethodInfo;
             Interpreter = LinkerInterpretersTable.Register(method);
+            if(Interpreter.Kind==MethodKind.RuntimeCppMethod)
+                return;
 
             Interpreter.LabelList = ComputeLabels(Interpreter.Method);
             Interpreter.Process();
@@ -128,6 +129,8 @@ namespace CodeRefractor.RuntimeBase
 
         public void AddToGlobalMethods()
         {
+            GlobalMethodPoolUtils.Register(Interpreter);
+
             var method = MethodInfo;
             var methodDefinitionKey = method.ToString();
             GlobalMethodPool.Instance.Interpreters[methodDefinitionKey] = Interpreter;
@@ -153,7 +156,7 @@ namespace CodeRefractor.RuntimeBase
         {
             if (MetaMidRepresentationOperationFactory.HandleRuntimeHelpersMethod(methodBase))
                 return;
-            var methodDesc =CrRuntimeLibrary.GetMethodDescription(methodBase);
+            var methodDesc = CrRuntimeLibrary.GetMethodDescription(methodBase);
 
             if (ProgramData.CrCrRuntimeLibrary.UseMethod(methodBase))
                 return;
@@ -163,7 +166,7 @@ namespace CodeRefractor.RuntimeBase
             var isInGlobalAssemblyCache = declaringType.Assembly.GlobalAssemblyCache;
             if (isInGlobalAssemblyCache)
                 return; //doesn't run on global assembly cache methods
-            GlobalMethodPool.Instance.MethodInfos[methodDesc] = methodBase;
+            methodBase.Register();
             ComputeDependencies(methodBase);
         }
     }

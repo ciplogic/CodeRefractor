@@ -12,11 +12,11 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
 {
     public class DceLocalAssigned : ResultingInFunctionOptimizationPass
     {
-        public override void OptimizeOperations(MethodInterpreter intermediateCode)
+        public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
-            var operations = intermediateCode.MidRepresentation.LocalOperations;
+            var operations = methodInterpreter.MidRepresentation.LocalOperations;
             var vregConstants = new HashSet<int>();
-            foreach (var localVariable in intermediateCode.MidRepresentation.Vars.LocalVars)
+            foreach (var localVariable in methodInterpreter.MidRepresentation.Vars.LocalVars)
                 vregConstants.Add(localVariable.Id);
 
             RemoveCandidatesInDefinitions(operations, vregConstants);
@@ -24,7 +24,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
             if (vregConstants.Count == 0)
                 return;
 
-            OptimizeUnusedLocals(vregConstants, intermediateCode.MidRepresentation.Vars);
+            OptimizeUnusedLocals(vregConstants, methodInterpreter.MidRepresentation.Vars);
         }
 
         #region Remove candidates

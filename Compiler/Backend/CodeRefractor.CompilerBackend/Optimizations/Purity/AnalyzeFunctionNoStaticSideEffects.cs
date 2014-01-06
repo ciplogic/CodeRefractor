@@ -13,13 +13,13 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
             return intermediateCode.MidRepresentation.GetProperties().NoStaticSideEffects;
         }
 
-        public override void OptimizeOperations(MethodInterpreter intermediateCode)
+        public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
-            if (ReadPurity(intermediateCode))
+            if (ReadPurity(methodInterpreter))
                 return;
-            var functionIsPure = ComputeFunctionProperty(intermediateCode);
+            var functionIsPure = ComputeFunctionProperty(methodInterpreter);
             if (!functionIsPure) return;
-            var additionalData = intermediateCode.MidRepresentation.GetProperties();
+            var additionalData = methodInterpreter.MidRepresentation.GetProperties();
             additionalData.NoStaticSideEffects = true;
             Result = true;
         }

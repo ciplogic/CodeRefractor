@@ -11,13 +11,13 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
             return intermediateCode.MidRepresentation.GetProperties().IsEmpty;
         }
 
-        public override void OptimizeOperations(MethodInterpreter intermediateCode)
+        public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
-            if (ReadProperty(intermediateCode))
+            if (ReadProperty(methodInterpreter))
                 return;
-            var isEmtpy = ComputeProperty(intermediateCode);
-            var previous = intermediateCode.MidRepresentation.GetProperties().IsEmpty;
-            intermediateCode.MidRepresentation.GetProperties().IsEmpty = isEmtpy;
+            var isEmtpy = ComputeProperty(methodInterpreter);
+            var previous = methodInterpreter.MidRepresentation.GetProperties().IsEmpty;
+            methodInterpreter.MidRepresentation.GetProperties().IsEmpty = isEmtpy;
             if (previous!= isEmtpy) 
                 Result = true;
         }

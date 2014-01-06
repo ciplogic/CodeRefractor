@@ -13,9 +13,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Jumps
 {
     public class RemoveUnreferencedLabels : ResultingInFunctionOptimizationPass
     {
-        public override void OptimizeOperations(MethodInterpreter intermediateCode)
+        public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
-            var operations = intermediateCode.MidRepresentation.LocalOperations;
+            var operations = methodInterpreter.MidRepresentation.LocalOperations;
 
             var found = operations.Any(operation => operation.Kind == OperationKind.Label);
             if (!found)

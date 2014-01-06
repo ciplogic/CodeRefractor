@@ -13,9 +13,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
 {
     public class ConstantVariableBranchOperatorPropagation : ConstantVariablePropagationBase
     {
-        public override void OptimizeOperations(MethodInterpreter intermediateCode)
+        public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
-            var operations = intermediateCode.MidRepresentation.LocalOperations;
+            var operations = methodInterpreter.MidRepresentation.LocalOperations;
             for (var i = 0; i < operations.Count - 1; i++)
             {
                 var destOperation = operations[i];
