@@ -24,7 +24,6 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
         public MethodBase Method
         {
-            get { return _method; }
             set
             {
                 _method = value;

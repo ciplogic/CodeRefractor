@@ -12,12 +12,17 @@ namespace CodeRefractor.RuntimeBase
     {
         public readonly Stack<IdentifierValue> Stack = new Stack<IdentifierValue>();
 
+        public override string ToString()
+        {
+            return Stack.ToArray().ToString();
+        }
+
         private int _vRegId;
 
         public LocalVariable SetNewVReg()
         {
             _vRegId++;
-            if (_vRegId == 70)
+            if (_vRegId == 7)
             {
                 
             }

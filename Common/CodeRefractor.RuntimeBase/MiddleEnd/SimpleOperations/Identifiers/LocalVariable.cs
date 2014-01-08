@@ -9,7 +9,6 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers
 
         public LocalVariable()
         {
-            
         }
 
         public override string ToString()

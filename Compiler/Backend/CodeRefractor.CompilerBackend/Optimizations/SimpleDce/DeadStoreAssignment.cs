@@ -10,7 +10,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
 
     class DeadStoreAssignment : ResultingInFunctionOptimizationPass
     {
-        static readonly OperationKind[] NoSideEffectsOperationKinds =
+        static readonly List<OperationKind> NoSideEffectsOperationKinds =new List<OperationKind>
         {
             OperationKind.Assignment,
             OperationKind.BinaryOperator,
@@ -72,9 +72,10 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
                 var index = definition.Value;
                 var op = localOperations[index];
                 var opKind = op.Kind;
-                if (!NoSideEffectsOperationKinds.Contains(opKind))
-                    continue;
-                toRemove.Add(index);
+                if (NoSideEffectsOperationKinds.Contains(opKind))
+                {
+                    toRemove.Add(index);
+                }
             }
             return toRemove;
         }
