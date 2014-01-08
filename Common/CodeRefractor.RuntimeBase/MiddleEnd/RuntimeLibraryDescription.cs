@@ -4,6 +4,10 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
     {
         public string Source { get; set; }
         public string HeaderName { get; set; }
-        public bool IsPure { get; set; }
+
+        public override string ToString()
+        {
+            return Source;
+        }
     }
 }

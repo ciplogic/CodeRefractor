@@ -52,22 +52,14 @@ namespace CodeRefractor.RuntimeBase.Analyze
         public static void Register(MethodInterpreter method)
         {
             var methodName = method.Method.WriteHeaderMethod(false);
-            GlobalMethodPoolUtils.Register(method);
+            GlobalMethodPool.Register(method);
             Methods[methodName] = method;
         }
 
         public static MethodInterpreter Register(MethodBase method)
         {
             var interpreter = method.GetRegisteredInterpreter();
-            if (interpreter != null)
-                return interpreter;
-            interpreter = new MethodInterpreter(method);
-            Register(interpreter);
             return interpreter;
-        }
-        public static void RegisterRuntimeMethod(KeyValuePair<string, MethodBase> usedMethod)
-        {
-            RuntimeMethods[usedMethod.Key] = usedMethod.Value;
         }
     }
 }

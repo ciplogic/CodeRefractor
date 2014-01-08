@@ -22,15 +22,15 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
 {
     internal static class CppMethodCodeWriter
     {
-        public static string WriteCode(MetaMidRepresentation midRepresentation)
+        public static string WriteCode(MethodInterpreter midRepresentation)
         {
-            var operations = midRepresentation.LocalOperations;
+            var operations = midRepresentation.MidRepresentation.LocalOperations;
             var headerSb = new StringBuilder();
             WriteSignature(midRepresentation.Method, headerSb);
 
             headerSb.Append("{");
             var bodySb = ComputeBodySb(operations);
-            var variablesSb = ComputeVariableSb(midRepresentation);
+            var variablesSb = ComputeVariableSb(midRepresentation.MidRepresentation);
             var finalSb = new StringBuilder();
             finalSb.AppendLine(headerSb.ToString());
             finalSb.AppendLine(variablesSb.ToString());
@@ -206,7 +206,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
             var assign = (Assignment)operation.Value;
             var rightData = (StaticFieldGetter)assign.Right;
             bodySb.AppendFormat("{0} = {1}::{2};", assign.AssignedTo.Name,
-                rightData.DeclaringType.Info.ToCppMangling(),
+                rightData.DeclaringType.ClrType.ToCppMangling(),
                 rightData.FieldName.ValidName());
         }
 
@@ -244,7 +244,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
             var right = (ConstByteArrayValue)assignment.Right;
             var rightArrayData = (ConstByteArrayData)right.Value;
             var rightArray = rightArrayData.Data;
-            sb.AppendFormat("{0} = std::make_shared< Array < System::Byte > >(" +
+            sb.AppendFormat("{0} = std::make_shared<Array<System::Byte> >(" +
                             "{1}, RuntimeHelpers_GetBytes({2}) ); ",
                             left.Name,
                             rightArray.Length,

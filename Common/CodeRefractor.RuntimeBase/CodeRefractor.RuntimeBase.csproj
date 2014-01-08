@@ -38,21 +38,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Analyze\AssemblyData.cs" />
     <Compile Include="Analyze\ClassHierarchyAnalysis.cs" />
-    <Compile Include="Analyze\ClassTypeData.cs" />
     <Compile Include="Analyze\DelegateManager.cs" />
-    <Compile Include="Analyze\FieldDataRef.cs" />
     <Compile Include="Analyze\FieldDescription.cs" />
     <Compile Include="Analyze\FieldNameTable.cs" />
     <Compile Include="Analyze\LinkerInterpretersTable.cs" />
     <Compile Include="Analyze\NamerUtils.cs" />
-    <Compile Include="Analyze\ProgramData.cs" />
     <Compile Include="Analyze\TypeDescription.cs" />
     <Compile Include="Analyze\UseDefHelper.cs" />
     <Compile Include="Analyze\UsedTypeList.cs" />
     <Compile Include="CilMethodAttribute.cs" />
-    <Compile Include="FrontEnd\GlobalMethodPoolUtils.cs" />
+    <Compile Include="FrontEnd\AnalyzeProperties.cs" />
+    <Compile Include="FrontEnd\GlobalMethodPool.cs" />
     <Compile Include="MiddleEnd\CppLibMethodInvokeRepresentation.cs" />
     <Compile Include="MiddleEnd\EntityMapper.cs" />
     <Compile Include="MiddleEnd\GlobalTable\GlobalTableManager.cs" />
@@ -66,8 +63,6 @@
     <Compile Include="Config\CodeRefractorVersions.cs" />
     <Compile Include="Config\CommandLineParse.cs" />
     <Compile Include="Config\OptimizationLevelBase.cs" />
-    <Compile Include="FrontEnd\ClassInterpreter.cs" />
-    <Compile Include="FrontEnd\GlobalMethodPool.cs" />
     <Compile Include="MetaLinker.cs" />
     <Compile Include="MiddleEnd\MetaMidRepresentationOperationFactory.cs" />
     <Compile Include="MiddleEnd\MidRepresentationUtils.cs" />
@@ -104,7 +99,6 @@
     <Compile Include="PureMethodAttribute.cs" />
     <Compile Include="Shared\ObcodeIntValues.cs" />
     <Compile Include="Shared\ReflectionUtils.cs" />
-    <Compile Include="Analyze\TypeData.cs" />
     <Compile Include="CommonExtensions.cs" />
     <Compile Include="EvaluatorStack.cs" />
     <Compile Include="MapTypeAttribute.cs" />

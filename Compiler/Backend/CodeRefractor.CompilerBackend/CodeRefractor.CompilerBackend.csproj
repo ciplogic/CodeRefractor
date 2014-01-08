@@ -72,7 +72,6 @@
     <Compile Include="Optimizations\ConstantFoldingAndPropagation\SimpleAssignment\AssignmentVregWithConstNextLineFolding.cs" />
     <Compile Include="Optimizations\ConstantFoldingAndPropagation\SimpleAssignment\AssignmentWithVregPrevLineFolding.cs" />
     <Compile Include="Optimizations\EscapeAndLowering\AnalyzeParametersAreEscaping.cs" />
-    <Compile Include="Optimizations\Purity\AnalyzeProperties.cs" />
     <Compile Include="Optimizations\Purity\AnalyzeUtils.cs" />
     <Compile Include="Optimizations\RedundantExpressions\PrecomputeRepeatedFieldGets.cs" />
     <Compile Include="Optimizations\RedundantExpressions\PrecomputeRepeatedPureFunctionCall.cs" />

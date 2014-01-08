@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.FrontEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.Shared;
@@ -22,11 +21,6 @@ namespace CodeRefractor.RuntimeBase.Runtime
             get { return StaticInstance; }
         }
 
-        public static void DefaultSetup()
-        {
-            ProgramData.CrCrRuntimeLibrary = Instance;
-        }
-
         public void ScanAssembly(Assembly assembly)
         {
             foreach (var item in assembly.GetTypes())
@@ -36,16 +30,15 @@ namespace CodeRefractor.RuntimeBase.Runtime
                 MappedTypes[mapTypeAttr.MappedType] = item;
                 ScanMethodFunctions(item);
             }
-
         }
 
-        private void ScanMethodFunctions(Type item)
+        private static void ScanMethodFunctions(Type item)
         {
             ScanType(item);
             ScanTypeForCilMethods(item);
         }
 
-        private void ScanTypeForCilMethods(Type item)
+        private static void ScanTypeForCilMethods(Type item)
         {
             var methodsToScan = new List<MethodBase>();
             methodsToScan.AddRange(item.GetMethods());
@@ -55,11 +48,13 @@ namespace CodeRefractor.RuntimeBase.Runtime
                 var methodNativeDescription = methodInfo.GetCustomAttribute<CilMethodAttribute>();
                 if (methodNativeDescription == null)
                     continue;
-                var format = GetMethodDescription(methodInfo);
-                var linker = new MetaLinker();
-                linker.SetEntryPoint(methodInfo);
-                //MetaLinker.ComputeDependencies(methodInfo);
-                linker.Interpret();
+                var interpreter = methodInfo.Register();
+                MetaLinker.Interpret(interpreter);
+                var dependencies = MetaLinker.ComputeDependencies(methodInfo);
+                foreach (var dependency in dependencies)
+                {
+                    MetaLinker.Interpret(dependency);
+                }
             }
         }
         private static void ScanCppMethod(MethodBase method)
@@ -73,7 +68,7 @@ namespace CodeRefractor.RuntimeBase.Runtime
             interpreter.RuntimeLibrary.Source = methodNativeDescription.Code;
             var pureAttribute = method.GetCustomAttribute<PureMethodAttribute>();
             if (pureAttribute != null)
-                interpreter.RuntimeLibrary.IsPure = true;
+                interpreter.AnalyzeProperties.IsPure = true;
 
         }
 
@@ -115,7 +110,5 @@ namespace CodeRefractor.RuntimeBase.Runtime
             foreach (var method in methods)
                 ScanCppMethod(method);
         }
-
-
     }
 }

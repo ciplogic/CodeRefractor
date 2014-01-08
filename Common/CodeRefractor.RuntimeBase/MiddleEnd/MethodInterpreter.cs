@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Runtime.Remoting.Messaging;
+using CodeRefractor.CompilerBackend.Optimizations.Purity;
 using CodeRefractor.RuntimeBase.FrontEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.Shared;
@@ -22,6 +22,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         public List<Type> MethodSpecializationType = new List<Type>();
         public MethodKind Kind { get; set; }
 
+        public AnalyzeProperties AnalyzeProperties = new AnalyzeProperties();
         public HashSet<int> LabelList { get; set; }
 
         public MetaMidRepresentation MidRepresentation = new MetaMidRepresentation();
@@ -37,7 +38,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
             var pureAttribute = method.GetCustomAttribute<PureMethodAttribute>();
             if (pureAttribute != null)
-                PureMethodTable.AddPureFunction(method);
+                AnalyzeProperties.IsPure = true;
         }
 
         public void Specialize()
@@ -109,22 +110,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             }
             var opcodeValue = instruction.OpCode.Value;
             operationFactory.AddCommentInstruction(instruction.ToString());
-            switch (opcodeValue)
-            {
-                case ObcodeIntValues.Nop:
-                    return;
-                case ObcodeIntValues.Call:
-                case ObcodeIntValues.CallVirt:
-                case ObcodeIntValues.CallInterface:
-                    operationFactory.Call(instruction.Operand);
-                    return;
-                case ObcodeIntValues.NewObj:
-                    {
-                        var consInfo = (ConstructorInfo) instruction.Operand;
-                        operationFactory.NewObject(consInfo);
-                    }
-                    return;
-            }
+            if (HandleCalls(instruction, operationFactory, opcodeValue)) 
+                return;
 
             if (HandleStores(opcodeStr, instruction, operationFactory))
                 return;
@@ -138,7 +125,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
             if (opcodeStr == "ret")
             {
-                var isVoid = MidRepresentation.Method.GetReturnType().IsVoid();
+                var isVoid = Method.GetReturnType().IsVoid();
 
                 operationFactory.Return(isVoid);
                 return;
@@ -250,6 +237,28 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 return;
             }
             throw new InvalidOperationException(string.Format("Unknown instruction: {0}", instruction));
+        }
+
+        private static bool HandleCalls(Instruction instruction, MetaMidRepresentationOperationFactory operationFactory,
+            short opcodeValue)
+        {
+            switch (opcodeValue)
+            {
+                case ObcodeIntValues.Nop:
+                    return true;
+                case ObcodeIntValues.Call:
+                case ObcodeIntValues.CallVirt:
+                case ObcodeIntValues.CallInterface:
+                    operationFactory.Call(instruction.Operand);
+                    return true;
+                case ObcodeIntValues.NewObj:
+                {
+                    var consInfo = (ConstructorInfo) instruction.Operand;
+                    operationFactory.NewObject(consInfo);
+                }
+                    return true;
+            }
+            return false;
         }
 
         private bool ConversionOperations(string opcodeStr, MetaMidRepresentationOperationFactory operationFactory)

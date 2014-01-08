@@ -9,7 +9,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 {
     public class StaticFieldGetter : IdentifierValue
     {
-        public TypeData DeclaringType;
+        public TypeDescription DeclaringType;
         public string FieldName;
     }
 }

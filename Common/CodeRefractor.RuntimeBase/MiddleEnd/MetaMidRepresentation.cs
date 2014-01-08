@@ -32,11 +32,11 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 Vars.Variables.AddRange(GetMethodBody.LocalVariables);
                 var pos = 0;
                 var isConstructor = _method is ConstructorInfo;
-                if (isConstructor || !Method.IsStatic)
+                if (isConstructor || !value.IsStatic)
                 {
                     Vars.Arguments.Add(new ArgumentVariable("_this")
                                            {
-                                               FixedType = UsedTypeList.Set(Method.DeclaringType)
+                                               FixedType = UsedTypeList.Set(value.DeclaringType)
                                            });
                 }
                 Vars.Arguments.AddRange(_method.GetParameters().Select(param => new ArgumentVariable(param.Name)

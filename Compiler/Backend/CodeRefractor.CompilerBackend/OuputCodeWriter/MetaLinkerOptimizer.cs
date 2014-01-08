@@ -58,21 +58,9 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                 }
             } while (doOptimize);
 
-            if (doInline)
-                InlineMethods();
+        
         }
 
 
-        private static void InlineMethods()
-        {
-            var inliner = new SmallFunctionsInliner();
-            foreach (var methodBase in GlobalMethodPool.Instance.MethodInfos)
-            {
-                var typeData = (ClassTypeData) ProgramData.UpdateType(methodBase.Value.DeclaringType);
-                var interpreter = typeData.GetInterpreter(methodBase.Value);
-
-                inliner.OptimizeOperations(interpreter);
-            }
-        }
     }
 }

@@ -1,15 +1,14 @@
 ﻿#region Usings
 
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering;
 using CodeRefractor.RuntimeBase;
+using CodeRefractor.RuntimeBase.FrontEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.RuntimeBase.Runtime;
-using CodeRefractor.RuntimeBase.Shared;
 
 #endregion
 
@@ -17,14 +16,17 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 {
     public static class CppFullFileMethodWriter
     {
-        public static MetaLinker CreateLinkerFromEntryPoint(this MethodInfo definition)
+        public static MethodInterpreter CreateLinkerFromEntryPoint(this MethodInfo definition)
         {
-            var linker = new MetaLinker();
-            linker.SetEntryPoint(definition);
-            MetaLinker.ComputeDependencies(definition);
-            linker.Interpret();
+            var methodInterpreter = definition.Register();
+            MetaLinker.Interpret(methodInterpreter);
+            var dependencies = methodInterpreter.GetMethodClosure();
+            foreach (var interpreter in dependencies)
+            {
+                MetaLinker.Interpret(interpreter);
+            }
             MetaLinkerOptimizer.OptimizeMethods();
-            return linker;
+            return methodInterpreter;
         }
 
         public static string WriteHeaderMethodWithEscaping(this MethodBase methodBase, bool writeEndColon = true)

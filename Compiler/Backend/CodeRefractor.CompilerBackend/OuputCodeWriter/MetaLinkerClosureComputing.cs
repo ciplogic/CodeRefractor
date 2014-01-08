@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using CodeRefractor.CompilerBackend.Linker;
-using CodeRefractor.RuntimeBase.Analyze;
+using CodeRefractor.RuntimeBase.FrontEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
@@ -12,7 +12,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 {
     public static class MetaLinkerClosureComputing
     {
-        public static List<MethodInterpreter> GetMethodClosure(MethodInterpreter entryPoints)
+        public static List<MethodInterpreter> GetMethodClosure(this MethodInterpreter entryPoints)
         {
             var result = new Dictionary<string, MethodInterpreter> { { entryPoints.ToString(), entryPoints } };
             UpdateMethodEntryClosure(entryPoints, result);
@@ -77,7 +77,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                 var descInfo = info.GetMethodDescriptor();
                 if (result.ContainsKey(descInfo))
                     continue;
-                var interpreter = ClassTypeData.GetInterpreterStatic(info);
+                var interpreter = info.Register();
                 if (interpreter == null)
                     continue;
                 result[descInfo] = interpreter;

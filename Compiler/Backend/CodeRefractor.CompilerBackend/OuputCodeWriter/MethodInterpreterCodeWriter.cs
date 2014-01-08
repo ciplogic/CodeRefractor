@@ -7,7 +7,6 @@ using System.Text;
 using CodeRefractor.CompilerBackend.Linker;
 using CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations;
 using CodeRefractor.CompilerBackend.OuputCodeWriter.Platform;
-using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.Optimizations;
@@ -22,17 +21,17 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 
         public string WriteMethodCode()
         {
-            return CppMethodCodeWriter.WriteCode(Interpreter.MidRepresentation);
+            return CppMethodCodeWriter.WriteCode(Interpreter);
         }
         public string WriteMethodSignature()
         {
-            if(Interpreter.MidRepresentation.Method==null)
+            if(Interpreter.Method==null)
             {
                 Console.WriteLine("Should not be null");
                 return "";
             }
             var sb = new StringBuilder();
-            CppMethodCodeWriter.WriteSignature(Interpreter.MidRepresentation.Method,sb, true);
+            CppMethodCodeWriter.WriteSignature(Interpreter.Method,sb, true);
             return sb.ToString();
         }
 
@@ -45,14 +44,6 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
         {
             return Interpreter.WriteDelegateCallCode();
         }
-
-
-        public string WriteHeaderMethod()
-        {
-            var methodBase = Interpreter.MidRepresentation.Method;
-            return methodBase.WriteHeaderMethod();
-        }
-
         public bool ApplyLocalOptimizations(IEnumerable<OptimizationPass> optimizationPasses)
         {
             if (optimizationPasses == null)

@@ -7,7 +7,6 @@ using CodeRefactor.OpenRuntime;
 using CodeRefractor.CompilerBackend.Optimizations.Util;
 using CodeRefractor.CompilerBackend.OuputCodeWriter;
 using CodeRefractor.RuntimeBase;
-using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.Config;
 using CodeRefractor.RuntimeBase.Runtime;
 using CodeRefractor.RuntimeBase.Util;
@@ -35,7 +34,6 @@ namespace CodeRefractor.Compiler
             var definition = asm.EntryPoint;
             var start = Environment.TickCount;
             var linker = definition.CreateLinkerFromEntryPoint();
-            linker.AddToGlobalMethods();
             var sb = CppCodeGenerator.BuildFullSourceCode(linker);
             var end = Environment.TickCount - start;
             Console.WriteLine("Compilation time: {0} ms", end);
@@ -47,12 +45,11 @@ namespace CodeRefractor.Compiler
 
         private static void Main(string[] args)
         {
-            CrRuntimeLibrary.DefaultSetup();
             var commandLineParse = CommandLineParse.Instance;
             commandLineParse.Process(args);
 
 
-            ProgramData.CrCrRuntimeLibrary.ScanAssembly(typeof (CrString).Assembly);
+            CrRuntimeLibrary.Instance.ScanAssembly(typeof (CrString).Assembly);
             OptimizationLevelBase.Instance = new OptimizationLevels();
 
             //MetaLinker.ScanAssembly(typeof(int));

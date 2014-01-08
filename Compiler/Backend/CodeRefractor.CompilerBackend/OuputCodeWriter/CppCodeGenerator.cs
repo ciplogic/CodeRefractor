@@ -22,16 +22,15 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 {
     public static class CppCodeGenerator
     {
-
-        public static StringBuilder BuildFullSourceCode(MetaLinker linker)
+        public static StringBuilder BuildFullSourceCode(MethodInterpreter interpreter)
         {
-            var closure = MetaLinkerClosureComputing.GetMethodClosure(linker.Interpreter);
+            var closure = interpreter.GetMethodClosure();
             var toOptimizeList = closure
                 .Where(c=>c.Kind==MethodKind.Default
                     && c.MidRepresentation.LocalOperations.Count>1)
                 .ToList();
             MetaLinkerOptimizer.ApplyOptimizations(false, toOptimizeList);
-            closure = MetaLinkerClosureComputing.GetMethodClosure(linker.Interpreter);
+            closure = interpreter.GetMethodClosure();
             var typeClosure = TypesClosureLinker.GetTypesClosure(closure);
             var sb = new StringBuilder();
             LinkingData.Includes.Clear();
@@ -48,7 +47,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 
             WriteClosureMethods(closure, sb);
 
-            WriteMainBody(linker, sb);
+            WriteMainBody(interpreter, sb);
             sb.AppendLine(PlatformInvokeCodeWriter.LoadDllMethods());
             sb.AppendLine(ConstByteArrayList.BuildConstantTable());
             sb.AppendLine(LinkingData.Instance.Strings.BuildStringTable());
@@ -183,13 +182,13 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             sb.AppendFormat("{{ {0} }}", methodNativeDescription.Code).AppendLine();
         }
 
-        private static void WriteMainBody(MetaLinker linker, StringBuilder sb)
+        private static void WriteMainBody(MethodInterpreter interpreter, StringBuilder sb)
         {
             sb.AppendLine("void initializeRuntime();");
             sb.AppendFormat("int main(int argc, char**argv) {{").AppendLine();
             sb.AppendFormat("auto argsAsList = System::getArgumentsAsList(argc, argv);").AppendLine();
             sb.AppendLine("initializeRuntime();");
-            var entryPoint = linker.MethodInfo as MethodInfo;
+            var entryPoint = interpreter.Method as MethodInfo;
             if (entryPoint.ReturnType != typeof (void))
                 sb.Append("return ");
             var parameterInfos = entryPoint.GetParameters();

@@ -1,36 +1,29 @@
-#region Usings
+#region Uses
 
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
-using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.FrontEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
-using CodeRefractor.RuntimeBase.Runtime;
 using CodeRefractor.RuntimeBase.Shared;
-using MsilReader;
 using MsilReader;
 
 #endregion
 
 namespace CodeRefractor.RuntimeBase
 {
-    public class MetaLinker
+    public static class MetaLinker
     {
-        public MethodBase MethodInfo;
 
-        public void SetEntryPoint(MethodBase entryMethod)
+        public static List<MethodInterpreter> ComputeDependencies(MethodBase definition)
         {
-            MethodInfo = entryMethod;
-        }
-
-        public static void ComputeDependencies(MethodBase definition)
-        {
-            AddClassIfNecessary(definition);
-
+            var resultDict = new Dictionary<string, MethodInterpreter>();
             var body = definition.GetMethodBody();
             if (body == null)
-                return;
+            {
+                return new List<MethodInterpreter>(); 
+            }
             var instructions = MethodBodyReader.GetInstructions(definition);
 
             foreach (var instruction in instructions)
@@ -45,7 +38,7 @@ namespace CodeRefractor.RuntimeBase
                             var operand = (MethodBase) instruction.Operand;
                             if (operand == null)
                                 break;
-                            AddMethodIfNecessary(operand);
+                            AddMethodIfNecessary(operand, resultDict);
                             break;
                         }
                     case ObcodeIntValues.NewObj:
@@ -53,11 +46,27 @@ namespace CodeRefractor.RuntimeBase
                             var operand = (ConstructorInfo) instruction.Operand;
                             if (operand == null)
                                 break;
-                            AddMethodIfNecessary(operand);
+                            AddMethodIfNecessary(operand, resultDict);
                             break;
                         }
                 }
             }
+            return resultDict.Values.ToList();
+        }
+
+
+        private static void AddMethodIfNecessary(MethodBase methodBase, Dictionary<string, MethodInterpreter> resultDict)
+        {
+            if (MetaMidRepresentationOperationFactory.HandleRuntimeHelpersMethod(methodBase))
+                return;
+            var interpreter = methodBase.Register();
+            resultDict[interpreter.ToString()] = interpreter;
+
+            var declaringType = methodBase.DeclaringType;
+            var isInGlobalAssemblyCache = declaringType.Assembly.GlobalAssemblyCache;
+            if (isInGlobalAssemblyCache)
+                return; //doesn't run on global assembly cache methods
+            ComputeDependencies(methodBase);
         }
 
         public static HashSet<int> ComputeLabels(MethodBase definition)
@@ -112,60 +121,13 @@ namespace CodeRefractor.RuntimeBase
             labels.Add(offset);
         }
 
-        public void Interpret()
+        public static void Interpret(MethodInterpreter methodInterpreter)
         {
-            var method = MethodInfo;
-            Interpreter = LinkerInterpretersTable.Register(method);
-            if(Interpreter.Kind==MethodKind.RuntimeCppMethod)
+            if(methodInterpreter.Kind!=MethodKind.Default)
                 return;
 
-            Interpreter.LabelList = ComputeLabels(Interpreter.Method);
-            Interpreter.Process();
-            AddClassIfNecessary(Interpreter.Method).Add(Interpreter);
-
-            var typeData = (ClassTypeData) ProgramData.UpdateType(method.DeclaringType);
-            typeData.AddMethodInterpreter(Interpreter);
-        }
-
-        public void AddToGlobalMethods()
-        {
-            GlobalMethodPoolUtils.Register(Interpreter);
-
-            var method = MethodInfo;
-            var methodDefinitionKey = method.ToString();
-            GlobalMethodPool.Instance.Interpreters[methodDefinitionKey] = Interpreter;
-        }
-
-        public MethodInterpreter Interpreter { get; set; }
-
-        private static ClassInterpreter AddClassIfNecessary(MethodBase operand)
-        {
-            var name = ClassInterpreter.GetClassName(operand.DeclaringType);
-            ClassInterpreter result;
-            if (GlobalMethodPool.Instance.Classes.TryGetValue(name, out result))
-            {
-                return result;
-            }
-            var declaringType = TypeData.GetTypeData(operand.DeclaringType);
-            var classInfo = new ClassInterpreter {DeclaringType = declaringType};
-            GlobalMethodPool.Instance.Classes[name] = classInfo;
-            return classInfo;
-        }
-
-        private static void AddMethodIfNecessary(MethodBase methodBase)
-        {
-            if (MetaMidRepresentationOperationFactory.HandleRuntimeHelpersMethod(methodBase))
-                return;
-            var methodDesc = CrRuntimeLibrary.GetMethodDescription(methodBase);
-
-            if (GlobalMethodPool.Instance.MethodInfos.ContainsKey(methodDesc))
-                return;
-            var declaringType = methodBase.DeclaringType;
-            var isInGlobalAssemblyCache = declaringType.Assembly.GlobalAssemblyCache;
-            if (isInGlobalAssemblyCache)
-                return; //doesn't run on global assembly cache methods
-            methodBase.Register();
-            ComputeDependencies(methodBase);
+            methodInterpreter.LabelList = ComputeLabels(methodInterpreter.Method);
+            methodInterpreter.Process();
         }
     }
 }

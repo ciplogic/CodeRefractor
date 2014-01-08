@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using CodeRefractor.RuntimeBase.FrontEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 using System.Linq;
 
@@ -18,6 +19,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.Methods
         public bool IsPure;
         public List<IdentifierValue> Parameters { get; set; }
 
+        public MethodInterpreter Interpreter { get; set; }
+
         public MethodData(MethodBase info)
         {
             Info = info;
@@ -25,6 +28,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.Methods
             Parameters = new List<IdentifierValue>();
             IsVoid = info.GetReturnType() == typeof (void);
             IsPure = PureMethodTable.ComputeMethodPurity(info.ToString());
+
+            Interpreter = info.Register();
         }
 
         public MethodBase Info { get; set; }

@@ -3,7 +3,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
-using CodeRefractor.RuntimeBase.Analyze;
+using CodeRefractor.RuntimeBase.FrontEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
@@ -37,8 +37,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Inliner
 
                 methodData = (MethodData) localOperation.Value;
                 var methodBase = methodData.Info;
-                var typeData = (ClassTypeData) ProgramData.UpdateType(methodBase.DeclaringType);
-                interpreter = ClassTypeData.GetInterpreterStatic(methodBase);
+                interpreter = methodBase.Register();
                 if (interpreter == null)
                     continue;
                 if (methodInterpreter.MidRepresentation.GetMethodBody == null)

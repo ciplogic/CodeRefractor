@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Security.Policy;
 using System.Text;
 using CodeRefractor.RuntimeBase.Runtime;
 
@@ -17,9 +18,16 @@ namespace CodeRefractor.RuntimeBase.Analyze
         public string Name { get; private set; }
         public string Namespace { get; set; }
         public bool IsPointer { get; private set; }
-        
-        
-        List<FieldDescription> Layout { get; set; }
+        static HashSet<Type> ignoredSet = new HashSet<Type>(
+             new []
+             {
+                 typeof(object),
+                 typeof(IntPtr)
+             }
+            );
+            
+            
+            List<FieldDescription> Layout { get; set; }
 
         public TypeDescription(Type clrType)
         {
@@ -33,7 +41,10 @@ namespace CodeRefractor.RuntimeBase.Analyze
         private void ExtractInformation()
         {
             ClrTypeCode = Type.GetTypeCode(ClrType);
-            if (ClrType.IsPointer)
+
+            if (ignoredSet.Contains(ClrType))
+                return;
+            if (ClrType.IsPointer || ClrType.IsByRef)
             {
                 UsedTypeList.Set(ClrType.GetElementType());
                 IsPointer = ClrType.IsPointer;

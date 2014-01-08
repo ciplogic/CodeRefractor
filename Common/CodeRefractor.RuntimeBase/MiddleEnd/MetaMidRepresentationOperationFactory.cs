@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using CodeRefractor.RuntimeBase.Analyze;
+using CodeRefractor.RuntimeBase.FrontEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.ConstTable;
@@ -558,7 +559,6 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             vreg.FixedType = 
                 UsedTypeList.Set(
                 computedType.ClrType.LocateField(fieldName).FieldType);
-            ProgramData.UpdateType(vreg.FixedType.ClrType);
             var assignment = new FieldGetter
                                  {
                                      AssignedTo = vreg,
@@ -576,7 +576,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             var declaringType = operand.DeclaringType;
             vreg.FixedType =
                 UsedTypeList.Set(declaringType.LocateField(fieldName, true).FieldType);
-            var typeData = ProgramData.UpdateType(declaringType);
+            var typeData = UsedTypeList.Set(declaringType);
             var assignment = new Assignment
             {
                 AssignedTo = vreg,
@@ -591,6 +591,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
         public void NewObject(ConstructorInfo constructorInfo)
         {
+            constructorInfo.Register();
             var result = SetNewVReg();
             result.FixedType = UsedTypeList.Set(constructorInfo.DeclaringType);
             var constructedObject = new NewConstructedObject(constructorInfo);
@@ -599,7 +600,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 AssignedTo = result,
                 Right = constructedObject
             };
-            ProgramData.UpdateType(constructorInfo.DeclaringType);
+            UsedTypeList.Set(constructorInfo.DeclaringType);
             AddOperation(OperationKind.NewObject, assignment);
             var methodData = new MethodData(constructedObject.Info);
             CallMethodData(constructedObject.Info, methodData);

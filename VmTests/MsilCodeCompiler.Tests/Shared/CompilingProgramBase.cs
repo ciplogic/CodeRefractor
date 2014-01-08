@@ -44,8 +44,6 @@ class C {{
 
         private Assembly CompileSource(string source)
         {
-            CrRuntimeLibrary.DefaultSetup();
-
             const string dummyName = "dump.cs";
             File.WriteAllText(dummyName, source);
             var currentDirectory = Directory.GetCurrentDirectory();
