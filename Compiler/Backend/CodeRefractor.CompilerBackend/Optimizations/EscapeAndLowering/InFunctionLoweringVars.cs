@@ -1,14 +1,17 @@
-﻿using System;
+﻿#region Uses
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
-using CodeRefractor.CompilerBackend.Optimizations.Util;
 using CodeRefractor.CompilerBackend.OuputCodeWriter;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
+
+#endregion
 
 namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
 {
@@ -18,9 +21,10 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
         {
             var candidateVariables = new HashSet<LocalVariable>();
             var midRepresentation = methodInterpreter.MidRepresentation;
-            var toAdd = midRepresentation.Vars.LocalVars.Where(varId => !varId.ComputedType().ClrType.IsPrimitive);
+            var variables = midRepresentation.Vars;
+            var toAdd = variables.LocalVars.Where(varId => !varId.ComputedType().ClrType.IsPrimitive);
             candidateVariables.AddRange(toAdd);
-            toAdd = midRepresentation.Vars.VirtRegs.Where(varId => !varId.ComputedType().ClrType.IsPrimitive);
+            toAdd = variables.VirtRegs.Where(varId => !varId.ComputedType().ClrType.IsPrimitive);
             candidateVariables.AddRange(toAdd);
             var localOp = midRepresentation.LocalOperations;
             foreach (var op in localOp)
@@ -34,11 +38,14 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
             if (candidateVariables.Count == 0)
                 return;
             foreach (var variable in candidateVariables)
-                variable.Escaping = EscapingMode.Pointer;
-            AllocateVariablesOnStack(localOp, candidateVariables);
+            {
+                var variableData = variables.GetVariableData(variable.Name);
+                variableData.Escaping = EscapingMode.Pointer;
+            }
+            AllocateVariablesOnStack(localOp, candidateVariables, variables);
         }
 
-        private static void AllocateVariablesOnStack(List<LocalOperation> localOp, HashSet<LocalVariable> candidateVariables)
+        private static void AllocateVariablesOnStack(List<LocalOperation> localOp, HashSet<LocalVariable> candidateVariables, MidRepresentationVariables variables)
         {
             var newOps = localOp.Where(op =>
                 op.Kind == OperationKind.NewArray
@@ -47,9 +54,13 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
                 return;
             foreach (var op in newOps)
             {
-                var definition = op.GetDefinition();
-                if (definition != null && candidateVariables.Contains(definition))
-                    definition.Escaping = EscapingMode.Stack;
+                var variable = op.GetDefinition();
+                if(variable==null)
+                    continue;
+
+                if (!candidateVariables.Contains(variable)) continue;
+                var variableData = variables.GetVariableData(variable.Name);
+                variableData.Escaping = EscapingMode.Stack;
             }
         }
 

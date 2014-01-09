@@ -15,7 +15,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 {
     public class MetaMidRepresentation
     {
-        public readonly MidRepresentationVariables Vars = new MidRepresentationVariables();
+        public MidRepresentationVariables Vars = new MidRepresentationVariables();
 
         public List<LocalOperation> LocalOperations = new List<LocalOperation>();
 
@@ -27,31 +27,42 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             set
             {
                 _method = value;
-                Vars.Variables.Clear();
-                Vars.Variables.AddRange(GetMethodBody.LocalVariables);
-                var pos = 0;
-                var isConstructor = _method is ConstructorInfo;
-                if (isConstructor || !value.IsStatic)
-                {
-                    Vars.Arguments.Add(new ArgumentVariable("_this")
-                                           {
-                                               FixedType = UsedTypeList.Set(value.DeclaringType)
-                                           });
-                }
-                Vars.Arguments.AddRange(_method.GetParameters().Select(param => new ArgumentVariable(param.Name)
-                                                                                    {
-                                                                                        FixedType = UsedTypeList.Set(param.ParameterType),
-                                                                                        Id = pos++
-                                                                                    }));
-
-                var varsToAdd = Vars.Variables.Select((v, index) => new LocalVariable
-                {
-                    FixedType = UsedTypeList.Set(v.LocalType),
-                    Id = index,
-                    Kind = VariableKind.Local
-                }).ToList();
-                Vars.LocalVars.AddRange(varsToAdd);
+                EvaluateVariableData(value);
             }
+        }
+
+        private void EvaluateVariableData(MethodBase value)
+        {
+            Vars = new MidRepresentationVariables();
+           
+            Vars.Variables.AddRange(GetMethodBody.LocalVariables);
+            var pos = 0;
+            var isConstructor = _method is ConstructorInfo;
+            if (isConstructor || !value.IsStatic)
+            {
+                Vars.Arguments.Add(
+                    new ArgumentVariable("_this")
+                    {
+                        FixedType = UsedTypeList.Set(value.DeclaringType)
+                    });
+            }
+            var argumentVariables = _method.GetParameters()
+                .Select(param => new ArgumentVariable(param.Name)
+                {
+                    FixedType = UsedTypeList.Set(param.ParameterType),
+                    Id = pos++
+                })
+                .ToArray();
+            Vars.Arguments.AddRange(argumentVariables);
+
+            var varsToAdd = Vars.Variables.Select((v, index) => new LocalVariable
+            {
+                FixedType = UsedTypeList.Set(v.LocalType),
+                Id = index,
+                Kind = VariableKind.Local
+            }).ToList();
+            Vars.LocalVars.Clear();
+            Vars.LocalVars.AddRange(varsToAdd);
         }
 
         public override string ToString()

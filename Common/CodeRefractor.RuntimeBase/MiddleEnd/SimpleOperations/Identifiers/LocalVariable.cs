@@ -4,12 +4,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers
     {
         public VariableKind Kind;
         public int Id;
-        public EscapingMode Escaping;
         public object CustomData;
-
-        public LocalVariable()
-        {
-        }
 
         public override string ToString()
         {

@@ -29,7 +29,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
             WriteSignature(midRepresentation.Method, headerSb);
 
             headerSb.Append("{");
-            var bodySb = ComputeBodySb(operations);
+            var bodySb = ComputeBodySb(operations, midRepresentation.MidRepresentation.Vars);
             var variablesSb = ComputeVariableSb(midRepresentation.MidRepresentation);
             var finalSb = new StringBuilder();
             finalSb.AppendLine(headerSb.ToString());
@@ -38,7 +38,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
             return finalSb.ToString();
         }
 
-        private static StringBuilder ComputeBodySb(List<LocalOperation> operations)
+        private static StringBuilder ComputeBodySb(List<LocalOperation> operations, MidRepresentationVariables vars)
         {
             var bodySb = new StringBuilder();
             foreach (var operation in operations)
@@ -49,7 +49,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
                         WriteLabel(bodySb, (int)operation.Value);
                         break;
                     case OperationKind.Assignment:
-                        StoreLocal(bodySb, operation);
+                        StoreLocal(bodySb, operation, vars);
                         break;
 
                     case OperationKind.BinaryOperator:
@@ -65,7 +65,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
                         CppHandleBranches.HandleBranchOperator(operation, bodySb);
                         break;
                     case OperationKind.Call:
-                        CppHandleCalls.HandleCall(operation, bodySb);
+                        CppHandleCalls.HandleCall(operation, bodySb, vars);
                         break;
                     case OperationKind.CallRuntime:
                         CppHandleCalls.HandleCallRuntime(operation, bodySb);
@@ -74,14 +74,14 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
                         CppHandleCalls.HandleReturn(operation, bodySb);
                         break;
                     case OperationKind.NewObject:
-                        HandleNewObject(operation, bodySb);
+                        HandleNewObject(operation, bodySb,vars);
                         break;
                     case OperationKind.SetField:
                         HandleSetField(operation, bodySb);
                         break;
 
                     case OperationKind.GetField:
-                        HandleLoadField(operation, bodySb);
+                        HandleLoadField(operation, bodySb, vars);
                         break;
                     case OperationKind.SetStaticField:
                         HandleSetStaticField(operation, bodySb);
@@ -92,7 +92,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
                         break;
 
                     case OperationKind.GetArrayItem:
-                        HandleReadArrayItem(operation, bodySb);
+                        HandleReadArrayItem(operation, bodySb, vars);
                         break;
                     case OperationKind.NewArray:
                         HandleNewArray(operation, bodySb);
@@ -272,12 +272,13 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
                                 arrayData.ArrayLength.Name);
         }
 
-        private static void HandleReadArrayItem(LocalOperation operation, StringBuilder bodySb)
+        private static void HandleReadArrayItem(LocalOperation operation, StringBuilder bodySb, MidRepresentationVariables vars)
         {
             var value = (Assignment)operation.Value;
             var valueSrc = (ArrayVariable)value.Right;
             var parentType = valueSrc.Parent.ComputedType();
-            switch (value.AssignedTo.Escaping)
+            var variableData = vars.GetVariableData(value.AssignedTo);
+            switch (variableData.Escaping)
             {
                 case EscapingMode.Smart:
                     bodySb.AppendFormat(parentType.ClrType.IsClass
@@ -296,24 +297,18 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
             }
         }
 
-        private static void HandleLoadArgument(LocalOperation operation, StringBuilder bodySb)
-        {
-            var value = (Assignment)operation.Value;
-            var argumentData = (ArgumentVariable)value.Right;
-
-            bodySb.AppendFormat("{0} = {1};", value.AssignedTo.Name, argumentData.Name);
-        }
-
-        private static void HandleLoadField(LocalOperation operation, StringBuilder bodySb)
+        private static void HandleLoadField(LocalOperation operation, StringBuilder bodySb, MidRepresentationVariables vars)
         {
             var fieldGetterInfo = (FieldGetter)operation.Value;
             var assignedFrom = fieldGetterInfo.Instance;
-            var getStackField = assignedFrom.Escaping == EscapingMode.Stack;
+            var assignedFromData = vars.GetVariableData(assignedFrom);
+            var getStackField = assignedFromData.Escaping == EscapingMode.Stack;
             var fieldText = string.Format(getStackField ? "{0}.{1}" : "{0}->{1}", fieldGetterInfo.Instance.Name,
                 fieldGetterInfo.FieldName);
 
             var assignedTo = fieldGetterInfo.AssignedTo;
-            switch (assignedTo.Escaping)
+            var assignedToData = vars.GetVariableData(assignedTo);
+            switch (assignedToData.Escaping)
             {
                 case EscapingMode.Smart:
                     bodySb.AppendFormat("{0} = {1};", assignedTo.Name, fieldText);
@@ -334,7 +329,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
                 fieldSetter.FieldName.ValidName(), assign.Right.Name);
         }
 
-        private static void HandleNewObject(LocalOperation operation, StringBuilder bodySb)
+        private static void HandleNewObject(LocalOperation operation, StringBuilder bodySb, MidRepresentationVariables vars)
         {
             var value = (Assignment)operation.Value;
             var rightValue = (NewConstructedObject)value.Right;
@@ -342,7 +337,8 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
 
             var declaringType = localValue.DeclaringType;
             var cppName = declaringType.ToCppName(EscapingMode.Stack);
-            switch (value.AssignedTo.Escaping)
+            var assignedData = vars.GetVariableData(value.AssignedTo);
+            switch (assignedData.Escaping)
             {
                 case EscapingMode.Stack:
                     bodySb.AppendFormat("{1} {0};", value.AssignedTo.Name, cppName);
@@ -357,13 +353,14 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
         private static StringBuilder ComputeVariableSb(MetaMidRepresentation midRepresentation)
         {
             var variablesSb = new StringBuilder();
-            foreach (var variableInfo in midRepresentation.Vars.LocalVars)
+            var vars = midRepresentation.Vars;
+            foreach (var variableInfo in vars.LocalVars)
             {
-                AddVariableContent(variablesSb, "{0} local_{1};", variableInfo);
+                AddVariableContent(variablesSb, "{0} local_{1};", variableInfo, vars);
             }
-            foreach (var localVariable in midRepresentation.Vars.VirtRegs)
+            foreach (var localVariable in vars.VirtRegs)
             {
-                AddVariableContent(variablesSb, "{0} vreg_{1};", localVariable);
+                AddVariableContent(variablesSb, "{0} vreg_{1};", localVariable, vars);
             }
             return variablesSb;
         }
@@ -378,9 +375,10 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
             return parametersFormat;
         }
 
-        private static void AddVariableContent(StringBuilder variablesSb, string format, LocalVariable localVariable)
+        private static void AddVariableContent(StringBuilder variablesSb, string format, LocalVariable localVariable, MidRepresentationVariables vars)
         {
-            if (localVariable.Escaping == EscapingMode.Stack)
+            var localVariableData = vars.GetVariableData(localVariable);
+            if (localVariableData.Escaping == EscapingMode.Stack)
                 return;
             if (localVariable.ComputedType().ClrType.IsSubclassOf(typeof(MethodInfo)))
             {
@@ -391,10 +389,10 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
                     .AppendLine();
                 return;
             }
-            if (localVariable.Escaping == EscapingMode.Pointer)
+            if (localVariableData.Escaping == EscapingMode.Pointer)
             {
                 var cppName = localVariable.ComputedType()
-                    .ClrType.ToCppName(localVariable.Escaping);
+                    .ClrType.ToCppName(localVariableData.Escaping);
                 variablesSb
                     .AppendFormat(format, cppName, localVariable.Id)
                     .AppendLine();
@@ -402,7 +400,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
             }
             variablesSb
                 .AppendFormat(format, localVariable.ComputedType()
-                .ClrType.ToCppName(localVariable.Escaping), localVariable.Id)
+                .ClrType.ToCppName(localVariableData.Escaping), localVariable.Id)
                 .AppendLine();
         }
 
@@ -430,13 +428,13 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
         }
 
 
-        private static void StoreLocal(StringBuilder sb, LocalOperation operation)
+        private static void StoreLocal(StringBuilder sb, LocalOperation operation, MidRepresentationVariables vars)
         {
             var assignment = (Assignment)operation.Value;
 
             if (assignment.Right is NewConstructedObject)
             {
-                HandleNewObject(operation, sb);
+                HandleNewObject(operation, sb, vars);
                 return;
             }
             var assignedTo = assignment.AssignedTo;
@@ -453,17 +451,19 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
                         return;
                     }
                 }
+                var assignedToData = vars.GetVariableData(assignedTo);
+                var localVariableData = vars.GetVariableData(localVariable);
                 var rightVar = localVariable;
-                if (assignedTo.Escaping == localVariable.Escaping 
+                if (assignedToData.Escaping == localVariableData.Escaping 
                     || assignedTo.ComputedType().ClrTypeCode!=TypeCode.Object)
                 {
                     sb.AppendFormat("{0} = {1};", assignedTo.Name, rightVar.Name);
                     return;
                 }
-                switch (assignedTo.Escaping)
+                switch (assignedToData.Escaping)
                 {
                     case EscapingMode.Pointer:
-                        switch (localVariable.Escaping)
+                        switch (localVariableData.Escaping)
                         {
                             case EscapingMode.Stack:
                                 sb.AppendFormat("{0} = &{1};", assignedTo.Name, rightVar.Name);

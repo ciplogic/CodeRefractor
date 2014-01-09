@@ -37,10 +37,12 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
             if (argEscaping.Count == 0) return true;
             intermediateCode.MidRepresentation.SetAdditionalValue(EscapeName, escaping);
             var escapingBools = CppFullFileMethodWriter.BuildEscapingBools(intermediateCode.Method);
-            foreach (var variable in intermediateCode.MidRepresentation.Vars.Arguments)
+            var variables = intermediateCode.MidRepresentation.Vars;
+            foreach (var variable in variables.Arguments)
             {
+                VariableData variableData = variables.GetVariableData(variable.Name);
                 if (!escapingBools[variable.Id])
-                    variable.Escaping = EscapingMode.Pointer;
+                    variableData.Escaping = EscapingMode.Pointer;
             }
             return false;
         }

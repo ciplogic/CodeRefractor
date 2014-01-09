@@ -91,6 +91,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             {
                 EvaluateInstuction(instruction, evaluator, operationFactory);
             }
+            MidRepresentation.Vars.Setup();
         }
 
         private void EvaluateInstuction(

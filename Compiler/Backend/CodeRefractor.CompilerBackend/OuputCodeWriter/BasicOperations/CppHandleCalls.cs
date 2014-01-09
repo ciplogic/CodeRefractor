@@ -6,6 +6,7 @@ using System.Text;
 using CodeRefractor.CompilerBackend.Linker;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.FrontEnd;
+using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
@@ -27,11 +28,10 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
         }
 
 
-        public static void HandleCall(LocalOperation operation, StringBuilder sbCode)
+        public static void HandleCall(LocalOperation operation, StringBuilder sbCode, MidRepresentationVariables vars)
         {
             var operationData = (MethodData) operation.Value;
             var sb = new StringBuilder();
-
             var methodInfo = operationData.Info.GetReversedMethod();
             #region Write method name
             var isVoidMethod = methodInfo.GetReturnType().IsVoid();
@@ -46,8 +46,10 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
                     sb.AppendFormat("{0}", methodInfo.ClangMethodSignature());
                 }
                 else
-                sb.AppendFormat("{1} = {0}", methodInfo.ClangMethodSignature(),
+                {
+                    sb.AppendFormat("{1} = {0}", methodInfo.ClangMethodSignature(),
                                 operationData.Result.Name);
+                }
             }
             var identifierValues = operationData.Parameters;
 
@@ -97,7 +99,8 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
                     continue;
                 }
 
-                switch (localValue.Escaping)
+                var localValueData = vars.GetVariableData(localValue);
+                switch (localValueData.Escaping)
                 {
                     case EscapingMode.Smart:
                         if (!isEscaping && localValue.ComputedType().ClrType.IsClass)
