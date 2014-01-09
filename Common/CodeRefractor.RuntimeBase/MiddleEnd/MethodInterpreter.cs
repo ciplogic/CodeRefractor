@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using CodeRefractor.CompilerBackend.Optimizations.Purity;
 using CodeRefractor.RuntimeBase.FrontEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.Shared;
@@ -31,6 +30,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         public RuntimeLibraryDescription RuntimeLibrary = new RuntimeLibraryDescription();
         public MethodDescription Description =  new MethodDescription();
 
+        public bool Interpreted { get; set; }
 
         public MethodInterpreter(MethodBase method)
         {
@@ -79,6 +79,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         {
             if (HandlePlatformInvokeMethod(Method))
                 return;
+            if (Interpreted)
+                return;
             if(Method.GetMethodBody()==null)
                 return;
             var instructions = MethodBodyReader.GetInstructions(Method);
@@ -92,6 +94,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 EvaluateInstuction(instruction, evaluator, operationFactory);
             }
             MidRepresentation.Vars.Setup();
+            Interpreted = true;
         }
 
         private void EvaluateInstuction(

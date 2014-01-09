@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using CodeRefractor.CompilerBackend.Linker;
-using CodeRefractor.RuntimeBase.FrontEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
@@ -77,7 +76,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                 var descInfo = info.GetMethodDescriptor();
                 if (result.ContainsKey(descInfo))
                     continue;
-                var interpreter = info.Register();
+                var interpreter = info.GetInterpreter();
                 if (interpreter == null)
                     continue;
                 result[descInfo] = interpreter;

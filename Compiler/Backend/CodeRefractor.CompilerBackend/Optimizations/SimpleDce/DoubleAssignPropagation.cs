@@ -1,5 +1,7 @@
 #region Usings
 
+using System.Collections.Generic;
+using System.Reflection;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.CompilerBackend.Optimizations.Util;
 using CodeRefractor.RuntimeBase.MiddleEnd;
@@ -17,28 +19,56 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
     {
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
+            return;
             var localOperations = methodInterpreter.MidRepresentation.LocalOperations;
-            var count = localOperations.Count;
-            for (var i = 0; i < count - 1; i++)
+            if(!(methodInterpreter.Method is ConstructorInfo))
+                return;
+            var toPatch = Analyze(localOperations);
+            if(toPatch.Count==0)
+                return;
+            ApplyOptimization(methodInterpreter, toPatch, localOperations);
+        }
+
+        private void ApplyOptimization(MethodInterpreter methodInterpreter, List<int> toPatch, List<LocalOperation> localOperations)
+        {
+            foreach (var patchLine in toPatch)
             {
-                var firstInstruction = localOperations[i];
-                if (firstInstruction.Kind != OperationKind.Assignment)
-                    continue;
-                var secondInstruction = localOperations[i + 1];
-                if (secondInstruction.Kind != OperationKind.Assignment)
-                    continue;
-                var secondAssign = secondInstruction.GetAssignment();
-                var localVariableSecondAssign = secondAssign.Right as LocalVariable;
-                if (localVariableSecondAssign == null)
-                    continue;
-                var firstAssign = firstInstruction.GetAssignment();
-                if (!localVariableSecondAssign.Equals(firstAssign.AssignedTo))
-                    continue;
-                if (secondAssign.Right == firstAssign.Right)
-                    continue;
-                secondAssign.Right = firstAssign.Right;
-                Result = true;
+                var prevOp = localOperations[patchLine - 1];
+                var assign = localOperations[patchLine].GetAssignment();
+                prevOp.SwitchUsageWithDefinition(assign.Right as LocalVariable, assign.AssignedTo);
             }
+            methodInterpreter.DeleteInstructions(toPatch);
+            Result = true;
+        }
+
+        private static List<int> Analyze(List<LocalOperation> localOperations)
+        {
+            var count = localOperations.Count;
+            var toPatch = new List<int>();
+            for (var i = 1; i < count; i++)
+            {
+                var targetAssignOp = localOperations[i];
+                if (targetAssignOp.Kind != OperationKind.Assignment)
+                    continue;
+                var assign = targetAssignOp.GetAssignment();
+                var rightVar = assign.Right as LocalVariable;
+                if (rightVar == null)
+                    continue;
+                var prevOp = localOperations[i - 1];
+
+                if (prevOp.Kind != OperationKind.BinaryOperator)
+                    continue;
+                var getDefinedVar = prevOp.GetDefinition();
+                if (getDefinedVar == null)
+                    continue;
+                if (!getDefinedVar.Equals(rightVar))
+                    continue;
+                var usagesOfVar = localOperations.GetVariableUsages(rightVar);
+                if (usagesOfVar.Count != 1)
+                    continue;
+                toPatch.Add(i);
+            }
+            return toPatch;
         }
     }
 }

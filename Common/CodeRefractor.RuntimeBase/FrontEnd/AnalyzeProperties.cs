@@ -1,4 +1,4 @@
-﻿namespace CodeRefractor.CompilerBackend.Optimizations.Purity
+﻿namespace CodeRefractor.RuntimeBase.FrontEnd
 {
     public class AnalyzeProperties
     {
@@ -6,6 +6,6 @@
         public bool IsEmpty { get; set; }
         public bool IsSetter { get; set; }
         public bool IsGetter { get; set; }
-        public bool NoStaticSideEffects { get; set; }
+        public bool IsReadOnly { get; set; }
     }
 }

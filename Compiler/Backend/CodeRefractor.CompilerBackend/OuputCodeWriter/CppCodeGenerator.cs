@@ -10,6 +10,7 @@ using CodeRefractor.CompilerBackend.Linker;
 using CodeRefractor.CompilerBackend.OuputCodeWriter.Platform;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
+using CodeRefractor.RuntimeBase.FrontEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.ConstTable;
@@ -29,14 +30,13 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                 .Where(c=>c.Kind==MethodKind.Default
                     && c.MidRepresentation.LocalOperations.Count>1)
                 .ToList();
-            MetaLinkerOptimizer.ApplyOptimizations(false, toOptimizeList);
+            MetaLinkerOptimizer.ApplyOptimizations(toOptimizeList);
             closure = interpreter.GetMethodClosure();
             var typeClosure = TypesClosureLinker.GetTypesClosure(closure);
             var sb = new StringBuilder();
             LinkingData.Includes.Clear();
 
             sb.AppendLine("#include \"sloth.h\"");
-            
 
             WriteClosureStructBodies(typeClosure.ToArray(), sb);
             WriteClosureDelegateBodies(closure, sb);
@@ -44,7 +44,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 
             sb.AppendLine("#include \"runtime_base.partcpp\"");
 
-
+            WriteCppMethods(closure, sb);
             WriteClosureMethods(closure, sb);
 
             WriteMainBody(interpreter, sb);
@@ -53,6 +53,24 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             sb.AppendLine(LinkingData.Instance.Strings.BuildStringTable());
 
             return sb;
+        }
+
+        private static void WriteCppMethods(List<MethodInterpreter> closure, StringBuilder sb)
+        {
+            var cppMethods = closure
+                .Where(m => m.Kind == MethodKind.RuntimeCppMethod)
+                .ToArray();
+            foreach (var interpreter in cppMethods)
+            {
+                var runtimeLibrary = interpreter.RuntimeLibrary;
+                var methodDeclaration = interpreter.Method.GenerateKey();
+                if (LinkingData.SetInclude(runtimeLibrary.Header))
+                    sb.AppendFormat("#include \"{0}\"", runtimeLibrary.Header).AppendLine();
+
+                sb.Append(methodDeclaration);
+                sb.AppendFormat("{{ {0} }}", runtimeLibrary.Source).AppendLine();
+
+            }
         }
 
         private static void WriteClosureMethods(List<MethodInterpreter> closure, StringBuilder sb)

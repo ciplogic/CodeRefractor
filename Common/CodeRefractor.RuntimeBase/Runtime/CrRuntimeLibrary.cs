@@ -64,7 +64,7 @@ namespace CodeRefractor.RuntimeBase.Runtime
             var reversedMethod = method.GetReversedMethod();
             var interpreter = reversedMethod.Register();
             interpreter.Kind = MethodKind.RuntimeCppMethod;
-            interpreter.RuntimeLibrary.HeaderName = methodNativeDescription.Header;
+            interpreter.RuntimeLibrary.Header = methodNativeDescription.Header;
             interpreter.RuntimeLibrary.Source = methodNativeDescription.Code;
             var pureAttribute = method.GetCustomAttribute<PureMethodAttribute>();
             if (pureAttribute != null)

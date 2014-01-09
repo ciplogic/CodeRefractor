@@ -10,7 +10,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
     {
         public static bool ReadPurity(MethodInterpreter intermediateCode)
         {
-            return intermediateCode.MidRepresentation.GetProperties().NoStaticSideEffects;
+            return intermediateCode.MidRepresentation.GetProperties().IsReadOnly;
         }
 
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)
@@ -20,7 +20,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
             var functionIsPure = ComputeFunctionProperty(methodInterpreter);
             if (!functionIsPure) return;
             var additionalData = methodInterpreter.MidRepresentation.GetProperties();
-            additionalData.NoStaticSideEffects = true;
+            additionalData.IsReadOnly = true;
             Result = true;
         }
 

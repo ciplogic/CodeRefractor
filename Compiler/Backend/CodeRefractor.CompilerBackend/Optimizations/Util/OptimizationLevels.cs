@@ -86,8 +86,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
                            new RemoveDeadStoresToFunctionCalls(), 
                            new RemoveDeadPureFunctionCalls(), 
                            
-                           new DoubleAssignPropagation(),
                             */
+                           new DoubleAssignPropagation(),
                            new AssignToReturnPropagation(),
                            new DceLocalAssigned(),
 

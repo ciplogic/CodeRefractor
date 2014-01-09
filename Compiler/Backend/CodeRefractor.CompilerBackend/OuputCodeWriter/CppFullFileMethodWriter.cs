@@ -1,6 +1,7 @@
 ﻿#region Usings
 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering;
@@ -18,14 +19,26 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
     {
         public static MethodInterpreter CreateLinkerFromEntryPoint(this MethodInfo definition)
         {
+
             var methodInterpreter = definition.Register();
             MetaLinker.Interpret(methodInterpreter);
-            var dependencies = methodInterpreter.GetMethodClosure();
-            foreach (var interpreter in dependencies)
-            {
-                MetaLinker.Interpret(interpreter);
-            }
+
             MetaLinkerOptimizer.OptimizeMethods();
+            var foundMethodCount = 1;
+            List<MethodInterpreter> dependencies;
+            bool canContinue = true;
+            while (canContinue)
+            {
+                dependencies = methodInterpreter.GetMethodClosure();
+                canContinue = foundMethodCount != dependencies.Count;
+                foundMethodCount = dependencies.Count;
+                foreach (var interpreter in dependencies)
+                {
+                    MetaLinker.Interpret(interpreter);
+                }
+                MetaLinkerOptimizer.OptimizeMethods();
+            }
+
             return methodInterpreter;
         }
 

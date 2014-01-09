@@ -1,4 +1,5 @@
-﻿using CodeRefractor.RuntimeBase.MiddleEnd;
+﻿using CodeRefractor.RuntimeBase.FrontEnd;
+using CodeRefractor.RuntimeBase.MiddleEnd;
 
 namespace CodeRefractor.CompilerBackend.Optimizations.Purity
 {

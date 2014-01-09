@@ -29,7 +29,7 @@ namespace CodeRefractor.CompilerBackend.Linker
             var method = methodBase.GetInterpreter().MidRepresentation;
             if (method != null)
             {
-                return method.GetProperties().NoStaticSideEffects;
+                return method.GetProperties().IsReadOnly;
             }
             return false;
         }

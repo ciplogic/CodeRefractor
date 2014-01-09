@@ -15,16 +15,15 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 {
     public static class MetaLinkerOptimizer
     {
-        public static void OptimizeMethods(bool doInline = false)
+        public static void OptimizeMethods()
         {
             LinkerInterpretersTable.Clear();
-
             
             var methodsToOptimize = LinkerInterpretersTable.Methods;
-            ApplyOptimizations(doInline, methodsToOptimize.Values.ToList());
+            ApplyOptimizations(methodsToOptimize.Values.ToList());
         }
 
-        public static void ApplyOptimizations(bool doInline, List<MethodInterpreter> methodsToOptimize)
+        public static void ApplyOptimizations(List<MethodInterpreter> methodsToOptimize)
         {
             bool doOptimize;
             do
