@@ -49,7 +49,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
                         WriteLabel(bodySb, (int)operation.Value);
                         break;
                     case OperationKind.Assignment:
-                        StoreLocal(bodySb, operation, vars);
+                        HandleAssign(bodySb, operation, vars);
                         break;
 
                     case OperationKind.BinaryOperator:
@@ -428,7 +428,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
         }
 
 
-        private static void StoreLocal(StringBuilder sb, LocalOperation operation, MidRepresentationVariables vars)
+        private static void HandleAssign(StringBuilder sb, LocalOperation operation, MidRepresentationVariables vars)
         {
             var assignment = (Assignment)operation.Value;
 

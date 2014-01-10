@@ -1,7 +1,5 @@
 using System.Collections.Generic;
-using System.Linq;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
-using CodeRefractor.CompilerBackend.Optimizations.Util;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
@@ -10,32 +8,44 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
 {
     class PropagationVariablesOptimizationPass : BlockOptimizationPass
     {
-        readonly Dictionary<LocalVariable, IdentifierValue> _dictionary 
-            = new Dictionary<LocalVariable, IdentifierValue>();
-
+        readonly Dictionary<LocalVariable, ConstValue> _constValues
+            = new Dictionary<LocalVariable, ConstValue>();
+        readonly Dictionary<LocalVariable, LocalVariable> _mappedValues
+            = new Dictionary<LocalVariable, LocalVariable>();
         public override bool OptimizeBlock(MethodInterpreter midRepresentation, int startRange, int endRange)
         {
             var result = false;
 
             var instructionRange = GetInstructionRange(midRepresentation, startRange, endRange);
-            _dictionary.Clear();
+            _constValues.Clear();
+            _mappedValues.Clear();
             foreach (var op in instructionRange)
             {
-                result = UpdateKnownUsages(op);
-                var isAssign = op.Kind == OperationKind.Assignment;
-                if (!isAssign)
-                {
-                    var definition = op.GetDefinition();
-                    if (definition != null && _dictionary.ContainsKey(definition))
-                        _dictionary.Remove(definition);
-                    continue;
-                }
-                var assignment = op.GetAssignment();
-                RemoveDefinitionsIfTheUsageIsInvalidated(assignment.AssignedTo);
+                result |= UpdateKnownUsages(op);
+              
+                RemoveDefinitionsIfTheUsageIsInvalidated(op.GetDefinition());
 
-                _dictionary[assignment.AssignedTo] = assignment.Right;
+                UpdateInstructionMapping(op);
             }
             return result;
+        }
+
+        private void UpdateInstructionMapping(LocalOperation op)
+        {
+            if (op.Kind != OperationKind.Assignment)
+                return;
+            var assignment = op.GetAssignment();
+
+            var right = assignment.Right;
+            var value = right as ConstValue;
+            if (value != null)
+            {
+                _constValues[assignment.AssignedTo] = value;
+            }
+            else
+            {
+                _mappedValues[assignment.AssignedTo] = (LocalVariable) right;
+            }
         }
 
         /// <summary>
@@ -45,35 +55,42 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
         /// a = 5 //here a is not safe to be used for future usages of b
         /// c = b
         /// </summary>
-        /// <param name="rightAssignment"></param>
-        private void RemoveDefinitionsIfTheUsageIsInvalidated(LocalVariable rightAssignment)
+        /// <param name="usageVariable"></param>
+        private void RemoveDefinitionsIfTheUsageIsInvalidated(LocalVariable usageVariable)
         {
+            if(usageVariable==null)
+                return;
             var toRemove = new HashSet<LocalVariable>();
-            foreach (var identifierValue in _dictionary)
+            foreach (var identifierValue in _mappedValues)
             {
-                if (!identifierValue.Value.Equals(rightAssignment)) continue;
+                if (!identifierValue.Value.Equals(usageVariable)) continue;
                 toRemove.Add(identifierValue.Key);
             }
             if(toRemove.Count==0)
                 return;
             foreach (var variable in toRemove)
             {
-                _dictionary.Remove(variable);
+                _mappedValues.Remove(variable);
+                _constValues.Remove(variable);
             }
         }
 
         private bool UpdateKnownUsages(LocalOperation op)
         {
-            if (_dictionary.Count == 0)
+            if (_mappedValues.Count == 0 && _constValues.Count==0)
                 return false;
             var result =false;
-            foreach (var possibleUsage in _dictionary)
+            foreach (var possibleUsage in _mappedValues)
             {
-                if (op.OperationUses(possibleUsage.Key))
-                {
-                    op.SwitchUsageWithDefinition(possibleUsage.Key, possibleUsage.Value);
-                    result = true;
-                }
+                if (!op.OperationUses(possibleUsage.Key)) continue;
+                op.SwitchUsageWithDefinition(possibleUsage.Key, possibleUsage.Value);
+                result = true;
+            }
+            foreach (var possibleUsage in _constValues)
+            {
+                if (!op.OperationUses(possibleUsage.Key)) continue;
+                op.SwitchUsageWithDefinition(possibleUsage.Key, possibleUsage.Value);
+                result = true;
             }
             return result;
         }

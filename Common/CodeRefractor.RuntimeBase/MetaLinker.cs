@@ -69,64 +69,13 @@ namespace CodeRefractor.RuntimeBase
             ComputeDependencies(methodBase);
         }
 
-        public static HashSet<int> ComputeLabels(MethodBase definition)
-        {
-            var labels = new HashSet<int>();
-            var body = definition.GetMethodBody();
-            if (body == null)
-                return labels;
-            var instructions = MethodBodyReader.GetInstructions(definition);
-
-            foreach (var instruction in instructions)
-            {
-                var opcodeStr = instruction.OpCode.Value;
-                switch (opcodeStr)
-                {
-                    case ObcodeIntValues.Beq:
-                    case ObcodeIntValues.BeqS:
-                    case ObcodeIntValues.Bge:
-                    case ObcodeIntValues.BgeS:
-                    case ObcodeIntValues.Bgt:
-                    case ObcodeIntValues.BgtS:
-                    case ObcodeIntValues.BrTrueS:
-                    case ObcodeIntValues.BrTrue:
-                    case ObcodeIntValues.BrZero:
-                    case ObcodeIntValues.BrZeroS:
-                    case ObcodeIntValues.Blt:
-                    case ObcodeIntValues.BltS:
-                    case ObcodeIntValues.BrS:
-                    case ObcodeIntValues.Br:
-                        {
-                            var offset = ((Instruction) instruction.Operand).Offset;
-                            AddLabelIfDoesntExist(offset, labels);
-                        }
-                        break;
-                    case ObcodeIntValues.Switch:
-                        {
-                            var offsets = (Instruction[]) instruction.Operand;
-                            foreach (var offset in offsets)
-                            {
-                                AddLabelIfDoesntExist(offset.Offset, labels);
-                            }
-                        }
-                        break;
-                }
-            }
-            return labels;
-        }
-
-        private static void AddLabelIfDoesntExist(int offset, HashSet<int> labels)
-        {
-           
-            labels.Add(offset);
-        }
 
         public static void Interpret(MethodInterpreter methodInterpreter)
         {
             if(methodInterpreter.Kind!=MethodKind.Default)
                 return;
 
-            methodInterpreter.LabelList = ComputeLabels(methodInterpreter.Method);
+            
             methodInterpreter.Process();
         }
     }

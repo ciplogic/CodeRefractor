@@ -22,7 +22,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         public MethodKind Kind { get; set; }
 
         public AnalyzeProperties AnalyzeProperties = new AnalyzeProperties();
-        public HashSet<int> LabelList { get; set; }
+        
 
         public MetaMidRepresentation MidRepresentation = new MetaMidRepresentation();
         public PlatformInvokeRepresentation PlatformInvoke = new PlatformInvokeRepresentation();
@@ -58,7 +58,6 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 MidRepresentation = MidRepresentation,
                 ClassSpecializationType = ClassSpecializationType,
                 Kind = Kind,
-                LabelList = LabelList,
                 MethodSpecializationType = MethodSpecializationType,
                 PlatformInvoke = PlatformInvoke
             };
@@ -75,6 +74,59 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             return Method.GenerateKey();
         }
 
+
+        public static HashSet<int> ComputeLabels(MethodBase definition)
+        {
+            var labels = new HashSet<int>();
+            var body = definition.GetMethodBody();
+            if (body == null)
+                return labels;
+            var instructions = MethodBodyReader.GetInstructions(definition);
+
+            foreach (var instruction in instructions)
+            {
+                var opcodeStr = instruction.OpCode.Value;
+                switch (opcodeStr)
+                {
+                    case ObcodeIntValues.Beq:
+                    case ObcodeIntValues.BeqS:
+                    case ObcodeIntValues.Bge:
+                    case ObcodeIntValues.BgeS:
+                    case ObcodeIntValues.Bgt:
+                    case ObcodeIntValues.BgtS:
+                    case ObcodeIntValues.BrTrueS:
+                    case ObcodeIntValues.BrTrue:
+                    case ObcodeIntValues.BrZero:
+                    case ObcodeIntValues.BrZeroS:
+                    case ObcodeIntValues.Blt:
+                    case ObcodeIntValues.BltS:
+                    case ObcodeIntValues.BrS:
+                    case ObcodeIntValues.Br:
+                    {
+                        var offset = ((Instruction)instruction.Operand).Offset;
+                        AddLabelIfDoesntExist(offset, labels);
+                    }
+                        break;
+                    case ObcodeIntValues.Switch:
+                    {
+                        var offsets = (Instruction[])instruction.Operand;
+                        foreach (var offset in offsets)
+                        {
+                            AddLabelIfDoesntExist(offset.Offset, labels);
+                        }
+                    }
+                        break;
+                }
+            }
+            return labels;
+        }
+
+        public static void AddLabelIfDoesntExist(int offset, HashSet<int> labels)
+        {
+
+            labels.Add(offset);
+        }
+
         public void Process()
         {
             if (HandlePlatformInvokeMethod(Method))
@@ -84,23 +136,21 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             if(Method.GetMethodBody()==null)
                 return;
             var instructions = MethodBodyReader.GetInstructions(Method);
-            LabelList = MetaLinker.ComputeLabels(Method);
+
+            var labelList = ComputeLabels(Method);
             MidRepresentation.Method = Method;
             var evaluator = new EvaluatorStack();
             var operationFactory = new MetaMidRepresentationOperationFactory(MidRepresentation, evaluator);
 
             foreach (var instruction in instructions)
             {
-                EvaluateInstuction(instruction, evaluator, operationFactory);
+                EvaluateInstuction(instruction, evaluator, operationFactory, labelList);
             }
             MidRepresentation.Vars.Setup();
             Interpreted = true;
         }
 
-        private void EvaluateInstuction(
-            Instruction instruction, 
-            EvaluatorStack evaluator, 
-            MetaMidRepresentationOperationFactory operationFactory)
+        private void EvaluateInstuction(Instruction instruction, EvaluatorStack evaluator, MetaMidRepresentationOperationFactory operationFactory, HashSet<int> labelList)
         {
             var opcodeStr = instruction.OpCode.ToString();
             var offset = 0;
@@ -108,7 +158,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             {
                 offset = ((Instruction) (instruction.Operand)).Offset;
             }
-            if (LabelList.Contains(instruction.Offset))
+            if (labelList.Contains(instruction.Offset))
             {
                 operationFactory.SetLabel(instruction.Offset);
             }
@@ -240,7 +290,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 operationFactory.InitObject();
                 return;
             }
-            throw new InvalidOperationException(string.Format("Unknown instruction: {0}", instruction));
+            throw new InvalidOperationException(String.Format("Unknown instruction: {0}", instruction));
         }
 
         private static bool HandleCalls(Instruction instruction, MetaMidRepresentationOperationFactory operationFactory,

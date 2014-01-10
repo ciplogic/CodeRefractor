@@ -1,7 +1,6 @@
 #region Usings
 
 using System.Collections.Generic;
-using System.Reflection;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.CompilerBackend.Optimizations.Util;
 using CodeRefractor.RuntimeBase.MiddleEnd;
@@ -19,10 +18,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
     {
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
-            return;
             var localOperations = methodInterpreter.MidRepresentation.LocalOperations;
-            if(!(methodInterpreter.Method is ConstructorInfo))
-                return;
             var toPatch = Analyze(localOperations);
             if(toPatch.Count==0)
                 return;
