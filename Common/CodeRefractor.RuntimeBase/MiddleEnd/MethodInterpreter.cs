@@ -25,9 +25,9 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         
 
         public MetaMidRepresentation MidRepresentation = new MetaMidRepresentation();
+        public CppRepresentation CppRepresentation = new CppRepresentation();
         public PlatformInvokeRepresentation PlatformInvoke = new PlatformInvokeRepresentation();
         public CppLibMethodInvokeRepresentation LibraryInvoke = new CppLibMethodInvokeRepresentation();
-        public RuntimeLibraryDescription RuntimeLibrary = new RuntimeLibraryDescription();
         public MethodDescription Description =  new MethodDescription();
 
         public bool Interpreted { get; set; }

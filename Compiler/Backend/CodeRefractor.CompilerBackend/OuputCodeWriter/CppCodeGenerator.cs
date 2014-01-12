@@ -62,7 +62,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                 .ToArray();
             foreach (var interpreter in cppMethods)
             {
-                var runtimeLibrary = interpreter.RuntimeLibrary;
+                var runtimeLibrary = interpreter.CppRepresentation;
                 var methodDeclaration = interpreter.Method.GenerateKey();
                 if (LinkingData.SetInclude(runtimeLibrary.Header))
                     sb.AppendFormat("#include \"{0}\"", runtimeLibrary.Header).AppendLine();

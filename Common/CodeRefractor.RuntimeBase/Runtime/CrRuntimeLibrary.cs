@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using CodeRefractor.RuntimeBase.FrontEnd;
+using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.Shared;
 
@@ -64,8 +65,10 @@ namespace CodeRefractor.RuntimeBase.Runtime
             var reversedMethod = method.GetReversedMethod();
             var interpreter = reversedMethod.Register();
             interpreter.Kind = MethodKind.RuntimeCppMethod;
-            interpreter.RuntimeLibrary.Header = methodNativeDescription.Header;
-            interpreter.RuntimeLibrary.Source = methodNativeDescription.Code;
+            var cppRepresentation = interpreter.CppRepresentation;
+            cppRepresentation.Kind = CppKinds.RuntimeLibrary;
+            cppRepresentation.Header = methodNativeDescription.Header;
+            cppRepresentation.Source = methodNativeDescription.Code;
             var pureAttribute = method.GetCustomAttribute<PureMethodAttribute>();
             if (pureAttribute != null)
                 interpreter.AnalyzeProperties.IsPure = true;

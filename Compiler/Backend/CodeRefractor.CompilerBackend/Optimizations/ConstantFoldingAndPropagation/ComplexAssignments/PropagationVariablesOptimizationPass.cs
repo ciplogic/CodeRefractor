@@ -8,29 +8,26 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
 {
     class PropagationVariablesOptimizationPass : BlockOptimizationPass
     {
-        readonly Dictionary<LocalVariable, ConstValue> _constValues
-            = new Dictionary<LocalVariable, ConstValue>();
-        readonly Dictionary<LocalVariable, LocalVariable> _mappedValues
-            = new Dictionary<LocalVariable, LocalVariable>();
         public override bool OptimizeBlock(MethodInterpreter midRepresentation, int startRange, int endRange)
         {
             var result = false;
 
             var instructionRange = GetInstructionRange(midRepresentation, startRange, endRange);
-            _constValues.Clear();
-            _mappedValues.Clear();
+            var constValues = new Dictionary<LocalVariable, ConstValue>();
+            var mappedValues = new Dictionary<LocalVariable, LocalVariable>();
             foreach (var op in instructionRange)
             {
-                result |= UpdateKnownUsages(op);
-              
-                RemoveDefinitionsIfTheUsageIsInvalidated(op.GetDefinition());
-
-                UpdateInstructionMapping(op);
+                result |= UpdateKnownUsages(op, constValues, mappedValues);
+                RemoveDefinitionsIfTheUsageIsInvalidated(op.GetDefinition(), constValues, mappedValues);
+                UpdateInstructionMapping(op, constValues, mappedValues);
             }
             return result;
         }
 
-        private void UpdateInstructionMapping(LocalOperation op)
+        private static void UpdateInstructionMapping(
+            LocalOperation op, 
+            Dictionary<LocalVariable, ConstValue> constValues, 
+            Dictionary<LocalVariable, LocalVariable> mappedValues)
         {
             if (op.Kind != OperationKind.Assignment)
                 return;
@@ -40,11 +37,11 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
             var value = right as ConstValue;
             if (value != null)
             {
-                _constValues[assignment.AssignedTo] = value;
+                constValues[assignment.AssignedTo] = value;
             }
             else
             {
-                _mappedValues[assignment.AssignedTo] = (LocalVariable) right;
+                mappedValues[assignment.AssignedTo] = (LocalVariable)right;
             }
         }
 
@@ -56,12 +53,17 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
         /// c = b
         /// </summary>
         /// <param name="usageVariable"></param>
-        private void RemoveDefinitionsIfTheUsageIsInvalidated(LocalVariable usageVariable)
+        /// <param name="constValues"></param>
+        /// <param name="mappedValues"></param>
+        private static void RemoveDefinitionsIfTheUsageIsInvalidated(
+            LocalVariable usageVariable, 
+            Dictionary<LocalVariable, ConstValue> constValues, 
+            Dictionary<LocalVariable, LocalVariable> mappedValues)
         {
             if(usageVariable==null)
                 return;
             var toRemove = new HashSet<LocalVariable>();
-            foreach (var identifierValue in _mappedValues)
+            foreach (var identifierValue in mappedValues)
             {
                 if (!identifierValue.Value.Equals(usageVariable)) continue;
                 toRemove.Add(identifierValue.Key);
@@ -70,23 +72,26 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                 return;
             foreach (var variable in toRemove)
             {
-                _mappedValues.Remove(variable);
-                _constValues.Remove(variable);
+                mappedValues.Remove(variable);
+                constValues.Remove(variable);
             }
         }
 
-        private bool UpdateKnownUsages(LocalOperation op)
+        private static bool UpdateKnownUsages(
+            LocalOperation op, 
+            Dictionary<LocalVariable, ConstValue> constValues, 
+            Dictionary<LocalVariable, LocalVariable> mappedValues)
         {
-            if (_mappedValues.Count == 0 && _constValues.Count==0)
+            if (mappedValues.Count == 0 && constValues.Count == 0)
                 return false;
             var result =false;
-            foreach (var possibleUsage in _mappedValues)
+            foreach (var possibleUsage in mappedValues)
             {
                 if (!op.OperationUses(possibleUsage.Key)) continue;
                 op.SwitchUsageWithDefinition(possibleUsage.Key, possibleUsage.Value);
                 result = true;
             }
-            foreach (var possibleUsage in _constValues)
+            foreach (var possibleUsage in constValues)
             {
                 if (!op.OperationUses(possibleUsage.Key)) continue;
                 op.SwitchUsageWithDefinition(possibleUsage.Key, possibleUsage.Value);
