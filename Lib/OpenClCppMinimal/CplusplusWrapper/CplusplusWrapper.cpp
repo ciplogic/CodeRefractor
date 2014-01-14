@@ -96,7 +96,8 @@ main(int argc, char * argv[])
     typedef cl::make_kernel<
             cl::Buffer&,
             cl::Buffer&,
-            cl::Buffer&
+            cl::Buffer&,
+			const int
             > KernelType;
    
     // create kernel as a functor
@@ -123,13 +124,6 @@ main(int argc, char * argv[])
     
     cl::Event e;
 	cl::Platform platform = cl::Platform::getDefault();
-	/*
-	if(strcmp(platform.getInfo<CL_PLATFORM_VENDOR>().c_str(), "Advanced Micro Devices, Inc."))
-	{
-		std::cout<<"Default platform should be Advanced Micro Devices, Inc. to run this sample\n"<<std::endl;
-		exit(FAILURE);
-	}
-	*/
     // set arguments for kernel, and execute it.
     cl::NDRange ndrg(NUM_ELEMENTS);
     cl::NDRange ndrl(NUM_ELEMENTS);
@@ -140,7 +134,8 @@ main(int argc, char * argv[])
         arg,
         outputBuffer,
         inputABuffer,
-        inputBBuffer);
+        inputBBuffer,
+		3);
         
      // transfer data to host memory from device memory.
     cl::copy(outputBuffer, output.begin(), output.end()); 
