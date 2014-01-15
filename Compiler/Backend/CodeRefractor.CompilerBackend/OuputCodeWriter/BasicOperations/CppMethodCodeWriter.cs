@@ -95,7 +95,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
                         HandleReadArrayItem(operation, bodySb, vars);
                         break;
                     case OperationKind.NewArray:
-                        HandleNewArray(operation, bodySb);
+                        HandleNewArray(operation, bodySb, vars);
                         break;
 
                     case OperationKind.SetArrayItem:
@@ -262,16 +262,6 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
                             right.Name);
         }
 
-        private static void HandleNewArray(LocalOperation operation, StringBuilder bodySb)
-        {
-            var assignment = (Assignment)operation.Value;
-            var arrayData = (NewArrayObject)assignment.Right;
-            bodySb.AppendFormat("{0} = std::make_shared< Array <{1}> >({2}); ",
-                                assignment.AssignedTo.Name,
-                                arrayData.TypeArray.ToCppName(),
-                                arrayData.ArrayLength.Name);
-        }
-
         private static void HandleReadArrayItem(LocalOperation operation, StringBuilder bodySb, MidRepresentationVariables vars)
         {
             var value = (Assignment)operation.Value;
@@ -328,6 +318,31 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
             bodySb.AppendFormat("{0}->{1} = {2};", fieldSetter.Instance.Name,
                 fieldSetter.FieldName.ValidName(), assign.Right.Name);
         }
+
+        private static void HandleNewArray(LocalOperation operation, StringBuilder bodySb,
+            MidRepresentationVariables vars)
+        {
+            var assignment = (Assignment) operation.Value;
+            var arrayData = (NewArrayObject) assignment.Right;
+
+            var assignedData = vars.GetVariableData(assignment.AssignedTo);
+            switch (assignedData.Escaping)
+            {
+                case EscapingMode.Stack:
+                    bodySb.AppendFormat("Array <{1}> {0} ({2}); ", 
+                        assignment.AssignedTo.Name,
+                        arrayData.TypeArray.ToCppName(),
+                        arrayData.ArrayLength.Name);
+                    break;
+                default:
+                    bodySb.AppendFormat("{0} = std::make_shared< Array <{1}> >({2}); ",
+                        assignment.AssignedTo.Name,
+                        arrayData.TypeArray.ToCppName(),
+                        arrayData.ArrayLength.Name);
+                    break;
+            }
+        }
+
 
         private static void HandleNewObject(LocalOperation operation, StringBuilder bodySb, MidRepresentationVariables vars)
         {

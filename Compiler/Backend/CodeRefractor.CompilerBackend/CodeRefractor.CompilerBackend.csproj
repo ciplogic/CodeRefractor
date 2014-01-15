@@ -58,6 +58,7 @@
     <Compile Include="Optimizations\ConstantFoldingAndPropagation\ComplexAssignments\FoldVariablesDefinitionsOptimizationPass.cs" />
     <Compile Include="Optimizations\ConstantFoldingAndPropagation\ComplexAssignments\PropagationVariablesOptimizationPass.cs" />
     <Compile Include="Optimizations\ConstantFoldingAndPropagation\ComplexAssignments\RemoveDeadStoresInBlockOptimizationPass.cs" />
+    <Compile Include="Optimizations\ConstantFoldingAndPropagation\ConstantVariableEvaluation.cs" />
     <Compile Include="Optimizations\ConstantFoldingAndPropagation\SimpleAssignment\DeleteAssignmentWithSelf.cs" />
     <Compile Include="Optimizations\EscapeAndLowering\InFunctionLoweringVars.cs" />
     <Compile Include="Optimizations\Inliner\InlineGetterAndSetterMethods.cs" />

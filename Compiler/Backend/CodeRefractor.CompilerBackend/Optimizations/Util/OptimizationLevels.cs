@@ -76,6 +76,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
 
                            new PropagationVariablesOptimizationPass(), 
                            new DceNewObjectOrArray(), 
+                           new ConstantVariableBranchOperatorPropagation(),
+                           new ConstantVariableEvaluation(),
                            /*
                             
                            new ConstantVariableBranchOperatorPropagation(),

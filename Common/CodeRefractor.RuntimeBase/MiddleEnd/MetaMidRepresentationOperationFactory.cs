@@ -706,12 +706,20 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         {
             var firstVar = (LocalVariable)_evaluator.Stack.Pop();
             var offsets = instructions.Select(inst => inst.Offset).ToArray();
-            var assign = new Assignment
+
+            var pos = 0;
+            foreach (var offset in offsets)
             {
-                AssignedTo = firstVar,
-                Right = new ConstValue(offsets)
-            };
-            AddOperation(OperationKind.Switch, assign);
+
+                AddOperation(OperationKind.BranchOperator,
+                             new BranchOperator(OpcodeBranchNames.Beq)
+                             {
+                                 JumpTo = offset,
+                                 CompareValue = firstVar,
+                                 SecondValue = new ConstValue(pos)
+                             });
+                pos++;
+            }
         }
 
         public void SizeOf(Type operand)
