@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
@@ -7,8 +9,11 @@ namespace CodeRefractor.RuntimeBase.FrontEnd
 {
     public static class GlobalMethodPool
     {
-        private static readonly Dictionary<string, MethodInterpreter>  
-            Interpreters = new Dictionary<string, MethodInterpreter>();
+        private static readonly SortedDictionary<string, MethodInterpreter>
+            Interpreters = new SortedDictionary<string, MethodInterpreter>();
+
+        public static Dictionary<Assembly, CrTypeResolver> TypeResolvers = new Dictionary<Assembly, CrTypeResolver>();  
+
         public static void Register(MethodInterpreter interpreter)
         {
             var method = interpreter.Method;
@@ -19,12 +24,49 @@ namespace CodeRefractor.RuntimeBase.FrontEnd
 
         public static MethodInterpreter Register(this MethodBase method)
         {
+            SetupTypeResolverIfNecesary(method);
+           
             var interpreter = GetRegisteredInterpreter(method);
             if (interpreter != null)
                 return interpreter;
             interpreter = new MethodInterpreter(method);
             Register(interpreter);
+            Resolve(interpreter);
             return interpreter;
+        }
+
+        static void Resolve(MethodInterpreter interpreter)
+        {
+            var resolvers = GetTypeResolvers();
+            foreach (var resolver in resolvers)
+            {
+                if(resolver.Resolve(interpreter))
+                    return;
+            }
+        }
+
+        public static CrTypeResolver[] GetTypeResolvers()
+        {
+            var resolvers = TypeResolvers.Values
+                .Where(r => r != null)
+                .ToArray();
+            return resolvers;
+        }
+
+        private static void SetupTypeResolverIfNecesary(MethodBase method)
+        {
+            if (method.DeclaringType == null) return;
+            var assembly = method.DeclaringType.Assembly;
+
+            var hasValue = TypeResolvers.ContainsKey(assembly);
+            if (hasValue)
+                return;
+            var resolver = assembly.GetTypes()
+                .Where(type => type.IsSubclassOf(typeof (CrTypeResolver)))
+                .Select(t => (CrTypeResolver)Activator.CreateInstance(t))
+                .FirstOrDefault();
+            TypeResolvers[assembly] = resolver;
+            
         }
 
         public static string GenerateKey(this MethodBase method)

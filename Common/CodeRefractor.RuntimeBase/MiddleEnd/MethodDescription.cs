@@ -14,6 +14,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         public bool IsStatic { get; set; }
         public CallingConvention CallingConvention { get; set; }
         public string MethodName { get; set; }
+
         public TypeDescription ReturnType { get; set; }
         public List<FieldDescription> Arguments { get; set; }
     }

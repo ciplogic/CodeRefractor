@@ -199,25 +199,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 operationFactory.Pop();
                 return;
             }
-
-
-            if (opcodeStr == "newarr")
-            {
-                operationFactory.NewArray((Type)instruction.Operand);
-                return;
-            }
-            if (opcodeStr == "stelem.ref"
-                 || opcodeStr == "stelem.i1"
-                 || opcodeStr == "stelem.i2"
-                  || opcodeStr == "stelem.i4"
-                   || opcodeStr == "stelem.i8"
-                  || opcodeStr == "stelem.r4"
-                   || opcodeStr == "stelem.r8"
-                || opcodeStr == "stelem.i2")
-            {
-                operationFactory.SetArrayElementValue();
-                return;
-            }
+            if (HandleArrayOperations(instruction, operationFactory, opcodeStr)) return;
             if (opcodeStr == "ldtoken")
             {
                 operationFactory.SetToken((FieldInfo)instruction.Operand);
@@ -293,6 +275,29 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             throw new InvalidOperationException(String.Format("Unknown instruction: {0}", instruction));
         }
 
+        private static bool HandleArrayOperations(Instruction instruction,
+            MetaMidRepresentationOperationFactory operationFactory, string opcodeStr)
+        {
+            if (opcodeStr == "newarr")
+            {
+                operationFactory.NewArray((Type) instruction.Operand);
+                return true;
+            }
+            if (opcodeStr == "stelem.ref"
+                || opcodeStr == "stelem.i1"
+                || opcodeStr == "stelem.i2"
+                || opcodeStr == "stelem.i4"
+                || opcodeStr == "stelem.i8"
+                || opcodeStr == "stelem.r4"
+                || opcodeStr == "stelem.r8"
+                || opcodeStr == "stelem.i2")
+            {
+                operationFactory.SetArrayElementValue();
+                return true;
+            }
+            return false;
+        }
+
         private static bool HandleCalls(Instruction instruction, MetaMidRepresentationOperationFactory operationFactory,
             short opcodeValue)
         {
@@ -315,7 +320,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             return false;
         }
 
-        private bool ConversionOperations(string opcodeStr, MetaMidRepresentationOperationFactory operationFactory)
+        private static bool ConversionOperations(string opcodeStr, MetaMidRepresentationOperationFactory operationFactory)
         {
             if (opcodeStr == "conv.u1")
             {
@@ -364,7 +369,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             return true;
         }
 
-        private bool HandleStores(string opcodeStr, Instruction instruction, MetaMidRepresentationOperationFactory operationFactory)
+        private static bool HandleStores(string opcodeStr, Instruction instruction, MetaMidRepresentationOperationFactory operationFactory)
         {
             if (opcodeStr == "stloc.s" || opcodeStr == "stloc")
             {
@@ -395,7 +400,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             return false;
         }
 
-        private bool HandleLoads(string opcodeStr, Instruction instruction, MetaMidRepresentationOperationFactory operationFactory)
+        private static bool HandleLoads(string opcodeStr, Instruction instruction, MetaMidRepresentationOperationFactory operationFactory)
         {
             if (opcodeStr == "ldelem.ref")
             {
@@ -560,7 +565,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             return false;
         }
 
-        private bool HandleOperators(string opcodeStr, EvaluatorStack evaluator, MetaMidRepresentationOperationFactory operationFactory)
+        private static bool HandleOperators(string opcodeStr, EvaluatorStack evaluator, MetaMidRepresentationOperationFactory operationFactory)
         {
             #region Operators
 

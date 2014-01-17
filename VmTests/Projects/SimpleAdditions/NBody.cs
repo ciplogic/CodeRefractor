@@ -1,6 +1,7 @@
 //~~~~~~App.cs~~~~~~
 
 using System;
+using System.Reflection;
 using Tao.Sdl;
 
 /* App sets up the SDL window and a timer, as well as basic openGL
@@ -104,8 +105,7 @@ namespace Game
                         if (e.button.button == Sdl.SDL_BUTTON_RIGHT) Console.WriteLine("Using an object");
                         break;
                     case Sdl.SDL_MOUSEMOTION:
-                        Console.WriteLine("Heading to {0}", e.motion.xrel);
-                        Console.WriteLine("Pitch to {0}", e.motion.yrel);
+                        Console.WriteLine("Mouse motion");
                         break;
                 }
             }

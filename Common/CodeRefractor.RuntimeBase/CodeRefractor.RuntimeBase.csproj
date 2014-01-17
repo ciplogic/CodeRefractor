@@ -60,6 +60,7 @@
     <Compile Include="MiddleEnd\VariableData.cs" />
     <Compile Include="Runtime\RuntimeLibraryUtils.cs" />
     <Compile Include="TypeNamerUtils.cs" />
+    <Compile Include="CrTypeResolver.cs" />
     <Compile Include="TypesClosureLinker.cs" />
     <Compile Include="Config\CodeRefractorVersions.cs" />
     <Compile Include="Config\CommandLineParse.cs" />

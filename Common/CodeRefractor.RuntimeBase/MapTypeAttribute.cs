@@ -19,7 +19,5 @@ namespace CodeRefractor.RuntimeBase
         {
             get { return _type; }
         }
-
-        public string Code { get; set; }
     }
 }

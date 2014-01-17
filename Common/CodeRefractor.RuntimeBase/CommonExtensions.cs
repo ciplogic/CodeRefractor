@@ -138,7 +138,7 @@ namespace CodeRefractor.RuntimeBase
         {
             return parameterInfos.Select(
                 param =>
-                String.Format("{0} {1}", param.ParameterType.GetMappedType().ToCppName(
+                String.Format("{0} {1}", param.ParameterType.ToCppName(
                 param.ParameterType.IsClass
                     ?EscapingMode.Smart
                     :EscapingMode.Smart), param.Name));

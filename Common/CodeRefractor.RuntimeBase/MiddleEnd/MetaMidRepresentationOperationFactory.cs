@@ -118,7 +118,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             var topVariable = _evaluator.Stack.Peek();
             
             _evaluator.Stack.Pop();
-            var newLocal = _representation.Vars.LocalVars[value];
+            var newLocal = _representation.Vars.Arguments[value];
             var assingment = new Assignment
             {
                 AssignedTo = newLocal,
@@ -591,6 +591,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
         public void NewObject(ConstructorInfo constructorInfo)
         {
+            if (constructorInfo.DeclaringType == typeof (object))
+                return;
             constructorInfo.Register();
             var result = SetNewVReg();
             result.FixedType = UsedTypeList.Set(constructorInfo.DeclaringType);

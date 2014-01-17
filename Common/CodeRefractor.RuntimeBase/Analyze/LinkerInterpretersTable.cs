@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
-using CodeRefractor.RuntimeBase.FrontEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 
 namespace CodeRefractor.RuntimeBase.Analyze
@@ -32,7 +31,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
                 CommonExtensions.GetParamAsPrettyList(parameterInfos));
             if (!method.IsStatic)
             {
-                var thisText = String.Format("const {0}& _this", method.DeclaringType.GetMappedType().ToCppName());
+                var thisText = String.Format("const {0}& _this", method.DeclaringType.ToCppName());
                 return parameterInfos.Length == 0
                     ? thisText
                     : String.Format("{0}, {1}", thisText, arguments);
@@ -41,25 +40,13 @@ namespace CodeRefractor.RuntimeBase.Analyze
         }
 
         
-        public static Dictionary<string, MethodInterpreter> Methods =
+        public static readonly Dictionary<string, MethodInterpreter> Methods =
             new Dictionary<string, MethodInterpreter>();
-        public static Dictionary<string, MethodBase> RuntimeMethods =
+        public static readonly Dictionary<string, MethodBase> RuntimeMethods =
             new Dictionary<string, MethodBase>();
         public static void Clear()
         {
             Methods.Clear();
-        }
-        public static void Register(MethodInterpreter method)
-        {
-            var methodName = method.Method.WriteHeaderMethod(false);
-            GlobalMethodPool.Register(method);
-            Methods[methodName] = method;
-        }
-
-        public static MethodInterpreter Register(MethodBase method)
-        {
-            var interpreter = method.GetRegisteredInterpreter();
-            return interpreter;
         }
     }
 }

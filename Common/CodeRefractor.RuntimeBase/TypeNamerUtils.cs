@@ -79,7 +79,6 @@ namespace CodeRefractor.RuntimeBase
         {
             if (type == null)
                 return "void*";
-            type = type.ReversedType();
             if (type.IsArray)
             {
                 var elementType = type.GetElementType();

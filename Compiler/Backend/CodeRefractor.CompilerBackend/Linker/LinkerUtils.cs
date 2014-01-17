@@ -13,7 +13,7 @@ namespace CodeRefractor.CompilerBackend.Linker
         public static string ComputedValue(this IdentifierValue identifierValue)
         {
             var constValue = identifierValue as ConstValue;
-            if(constValue==null)
+            if (constValue == null)
             {
                 return identifierValue.Name;
             }
@@ -21,8 +21,8 @@ namespace CodeRefractor.CompilerBackend.Linker
             if (computeType.ClrTypeCode == TypeCode.String)
             {
                 var stringTable = LinkingData.Instance.Strings;
-                var stringId = stringTable.GetStringId((string) constValue.Value);
-                
+                var stringId = stringTable.GetStringId((string)constValue.Value);
+
                 return String.Format("_str({0})", stringId);
             }
             return constValue.Name;
@@ -36,12 +36,13 @@ namespace CodeRefractor.CompilerBackend.Linker
 
         public static MethodInterpreter GetInterpreter(this MethodBase methodBase)
         {
-            var typeToSearch = methodBase.DeclaringType.ReversedType();
+            var declaringType = methodBase.DeclaringType;
+            var typeToSearch = declaringType.ReversedType();
             var isGacType = typeToSearch.Assembly.GlobalAssemblyCache;
-            
-            if(isGacType)
+
+            if (isGacType)
                 return null;
-            return methodBase.GetRegisteredInterpreter();
+            return methodBase.Register();
         }
     }
 }
