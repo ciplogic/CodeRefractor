@@ -27,8 +27,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                 switch (operation.Name)
                 {
                     case OpcodeBranchNames.Beq:
-                        var resultEq = EvaluateBeq(leftVal, rightVal);
-                        FoldEvaluation(operation, resultEq);
+                        FoldEvaluation(operation, EvaluateBeq(leftVal, rightVal));
                         break;
                     default:
                         throw new InvalidDataException("ConstantVariableEvaluation optimization. Case not handled, report a bug with reduced code");
