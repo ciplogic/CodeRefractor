@@ -102,6 +102,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
                 case OperationKind.SetField:
                     AddUsagesOfSetField(operation, result);
                     break;
+                case OperationKind.SetStaticField:
+                    AddUsagesOfSetStaticField(operation, result);
+                    break;
 
                 case OperationKind.Call:
                 case OperationKind.CallRuntime:
@@ -128,6 +131,12 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
                     throw new NotImplementedException();
             }
             return result;
+        }
+
+        private static void AddUsagesOfSetStaticField(LocalOperation operation, List<LocalVariable> result)
+        {
+            var assignment = (Assignment)operation.Value;
+            result.AddUsage(assignment.Right);
         }
 
         private static void AddUsagesOfCall(LocalOperation operation, List<LocalVariable> result)

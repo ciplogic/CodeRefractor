@@ -47,6 +47,7 @@
     <Compile Include="Analyze\TypeDescription.cs" />
     <Compile Include="Analyze\UseDefHelper.cs" />
     <Compile Include="Analyze\UsedTypeList.cs" />
+    <Compile Include="Analyze\UsedTypeListUtils.cs" />
     <Compile Include="CilMethodAttribute.cs" />
     <Compile Include="FrontEnd\AnalyzeProperties.cs" />
     <Compile Include="FrontEnd\GlobalMethodPool.cs" />

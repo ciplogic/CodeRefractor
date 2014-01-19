@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
@@ -67,7 +66,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
         public override string ToString()
         {
-            return String.Format("Interpreter for '{0}'", _method);
+            return String.Format("Interpreter for '{0}' - instruction count: {1}", _method, LocalOperations.Count);
         }
 
         public MethodBody GetMethodBody

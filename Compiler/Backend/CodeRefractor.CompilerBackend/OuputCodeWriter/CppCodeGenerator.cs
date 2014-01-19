@@ -92,39 +92,49 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             }
 
         }
-
+        public static object GetDefault(Type type)
+        {
+            if (type.IsValueType)
+            {
+                return Activator.CreateInstance(type);
+            }
+            return null;
+        }
         private static void WriteClosureStructBodies(Type[] typeDatas, StringBuilder sb)
         {
             foreach (var typeData in typeDatas)
             {
-                var type = CrRuntimeLibrary.Instance.GetReverseType(typeData) ?? typeData;
-                var ns = type.Namespace ?? "";
-                sb.AppendFormat("struct {0}; ", type.ToCppMangling()).AppendLine();
+                var mappedType = typeData.GetMappedType();
+                sb.AppendFormat("struct {0}; ", mappedType.ToCppMangling()).AppendLine();
             }
             foreach (var typeData in typeDatas)
             {
                 if (DelegateManager.IsTypeDelegate(typeData))
                     continue;
-
-                var type = typeData.GetReversedType();
+                var originalType = typeData;
+                var type = typeData.GetMappedType();
                 var mappedType = typeData;
                 sb.AppendFormat("struct {0} {{", type.ToCppMangling()).AppendLine();
                 WriteClassFieldsBody(sb, mappedType);
                 sb.AppendFormat("}};").AppendLine();
 
-                var staticFields = type.GetFields(BindingFlags.Static).ToList();
+                var typedesc = UsedTypeList.Set(type);
+                typedesc.WriteStaticFieldInitialization(sb);
+                /*
+                var staticFields = originalType.GetFields(BindingFlags.Static).ToList();
                 staticFields.AddRange(type.GetFields(BindingFlags.Static | BindingFlags.NonPublic));
                 foreach (var fieldData in staticFields.Where(field => field.IsStatic))
                 {
                     if (fieldData.IsLiteral)
                         continue;
-                    sb.AppendFormat(" /* static*/ {0} {3}::{1} = {2};",
+                    sb.AppendFormat(" -- static -- {0} {3}::{1} = {2};",
                         fieldData.FieldType.ToCppName(),
                         fieldData.Name.ValidName(),
-                        Activator.CreateInstance(fieldData.FieldType),
+                        GetDefault(fieldData.FieldType),
                         type.ToCppMangling())
                         .AppendLine();
                 }
+            */
             }
         }
 

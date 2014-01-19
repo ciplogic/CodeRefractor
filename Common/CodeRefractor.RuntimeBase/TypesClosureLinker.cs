@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
+using CodeRefractor.RuntimeBase.Runtime;
 
 namespace CodeRefractor.RuntimeBase
 {
@@ -39,7 +40,9 @@ namespace CodeRefractor.RuntimeBase
                         if (fieldType.IsPointer ||fieldType.IsByRef)
                             fieldType = fieldType.GetElementType();
                         
-                        UsedTypeList.Set(type);
+                        var  typeDesc = UsedTypeList.Set(type);
+                        if(typeDesc == null)
+                            continue;
                         toAdd.Add(fieldType);
                     }
                 }
@@ -91,9 +94,9 @@ namespace CodeRefractor.RuntimeBase
                         continue;
                     if (parameterType.IsByRef)
                         parameterType = parameterType.GetElementType();
-                    typesSet.Add(parameterType);
+                    typesSet.Add(parameterType.GetReversedType());
                 }
-                typesSet.Add(method.DeclaringType);
+                typesSet.Add(method.DeclaringType.GetReversedType());
             }
             return typesSet;
         }

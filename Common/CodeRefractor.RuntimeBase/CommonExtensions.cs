@@ -127,7 +127,6 @@ namespace CodeRefractor.RuntimeBase
 
         public static Type GetMappedType(this Type type)
         {
-
             var mappedtypeAttr = type.GetCustomAttribute<MapTypeAttribute>();
             if (mappedtypeAttr == null)
                 return type;

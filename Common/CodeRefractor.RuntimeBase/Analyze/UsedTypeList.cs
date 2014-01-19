@@ -1,52 +1,38 @@
 using System;
 using System.Collections.Generic;
-using CodeRefractor.RuntimeBase.FrontEnd;
+using System.Linq;
 
 namespace CodeRefractor.RuntimeBase.Analyze
 {
     public class UsedTypeList
     {
-        public List<Type> _userTypes = new List<Type>();
-        public List<TypeDescription> _userTypeDesc = new List<TypeDescription>(); 
+        public Dictionary<Type, TypeDescription> _userTypeDesc = new Dictionary<Type, TypeDescription>(); 
         public static TypeDescription Set(Type type)
         {
-            var typeList = Instance._userTypes;
-            var indexOf = typeList.IndexOf(type);
-            if (indexOf != -1)
+            if (type == null)
+                return null;
+            type = UsedTypeListUtils.ResolveTypeByResolvers(type);
+            var typeList = Instance._userTypeDesc;
+            TypeDescription typeDesc;
+            var indexOf = typeList.TryGetValue(type, out typeDesc);
+            if (indexOf )
             {
-                return Instance._userTypeDesc[indexOf];
+                return typeDesc;
             }
-            type = ResolveTypeByResolvers(type);
             var typeDescription = new TypeDescription(type);
-            Instance._userTypeDesc.Add(typeDescription);
-            Instance._userTypes.Add(type);
+            Instance._userTypeDesc[type] = typeDescription;
             return typeDescription;
-        }
-
-        public static Type ResolveTypeByResolvers(Type type)
-        {
-            var resolvers = GlobalMethodPool.GetTypeResolvers();
-            foreach (var resolver in resolvers)
-            {
-                var newType = resolver.ResolveType(type);
-                if (newType != null)
-                {
-                    type = newType;
-                    break;
-                }
-            }
-            return type;
         }
 
         public static readonly UsedTypeList Instance  = new UsedTypeList();
 
         public static List<Type> GetUsedTypes()
         {
-            return Instance._userTypes;
+            return Instance._userTypeDesc.Keys.ToList();
         }
         public static List<TypeDescription> GetDescribedTypes()
         {
-            return Instance._userTypeDesc;
+            return Instance._userTypeDesc.Values.ToList();
         }
     }
 }
