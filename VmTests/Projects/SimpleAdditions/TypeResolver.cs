@@ -30,6 +30,11 @@ namespace SimpleAdditions
         {
             var method = methodInterpreter.Method;
 
+            if (method.DeclaringType == typeof(Glu))
+            {
+                ResolveAsPinvoke(methodInterpreter, "glu32.dll", CallingConvention.StdCall);
+                return true;
+            }
             if (method.DeclaringType == typeof (Gl))
             {
                 ResolveAsPinvoke(methodInterpreter, "opengl32.dll", CallingConvention.StdCall);
@@ -37,7 +42,7 @@ namespace SimpleAdditions
             }
             if (method.DeclaringType == typeof(Sdl))
             {
-                ResolveAsPinvoke(methodInterpreter, "sdl.dll", CallingConvention.StdCall);
+                ResolveAsPinvoke(methodInterpreter, "sdl.dll", CallingConvention.Cdecl);
                 return true;
             }
             return false;

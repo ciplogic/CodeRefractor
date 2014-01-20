@@ -62,9 +62,23 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.Platform
             var retType = methodBase.Method.GetReturnType().ToCppMangling();
             var sb = new StringBuilder();
             var arguments = methodBase.Method.GetArgumentsAsText();
+            var callConvention = methodBase.Description.CallingConvention;
+            var callConventionStr = string.Empty;
+            switch (callConvention)
+            {
+                case CallingConvention.StdCall:
+                    callConventionStr = "__stdcall";
+                    break;
+                case CallingConvention.Cdecl:
+                    callConventionStr = "__cdecl";
+                    break;
+            }
 
-            sb.AppendFormat("typedef {0} (*{1}_type)({2})",
-                            retType, methodDll, arguments);
+            sb.AppendFormat("typedef {0} ({3} *{1}_type)({2})",
+                            retType, 
+                            methodDll, 
+                            arguments,
+                            callConventionStr);
 
             sb.AppendLine(";");
             sb.AppendFormat("{0}_type {0};", methodDll);
