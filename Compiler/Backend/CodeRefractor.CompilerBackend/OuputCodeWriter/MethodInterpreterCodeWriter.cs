@@ -48,24 +48,28 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
         {
             if (optimizationPasses == null)
                 return false;
+            if (Interpreter.Method.Name == "setSDLVideo")
+            {
+                
+            }
             var result = false;
             var optimizationsList = new List<OptimizationPass>(optimizationPasses);
             var didOptimize = true;
+
             while (didOptimize)
             {
+                var localOps = Interpreter.MidRepresentation.LocalOperations;
                 didOptimize = false;
                 foreach (var optimizationPass in optimizationsList)
                 {
                     if(!optimizationPass.CheckPreconditions(Interpreter))
                         continue;
                     didOptimize = optimizationPass.Optimize(Interpreter);
-                    if (didOptimize)
-                    {
-                        var optimizationName = optimizationPass.GetType().Name;
-                        Debug.WriteLine(String.Format("Applied optimization: {0}", optimizationName));
-                        result = true;
-                        break;
-                    }
+                    if (!didOptimize) continue;
+                    var optimizationName = optimizationPass.GetType().Name;
+                    Debug.WriteLine(String.Format("Applied optimization: {0}", optimizationName));
+                    result = true;
+                    break;
                 }
             }
             return result;

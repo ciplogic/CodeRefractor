@@ -574,6 +574,20 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             var vreg = SetNewVReg();
             var fieldName = operand.Name;
             var declaringType = operand.DeclaringType;
+            if (declaringType == typeof (IntPtr) && fieldName=="Zero")
+            {
+                var voidPtr = UsedTypeList.Set(typeof(IntPtr));
+                vreg.FixedType = voidPtr;
+                var nullPtrAssign = new Assignment
+                {
+                    AssignedTo = vreg,
+                    Right = new ConstValue(0)
+                    {FixedType = voidPtr
+                    }
+                };
+                AddOperation(OperationKind.Assignment, nullPtrAssign);
+                return;
+            }
             vreg.FixedType =
                 UsedTypeList.Set(declaringType.LocateField(fieldName, true).FieldType);
             var typeData = UsedTypeList.Set(declaringType);

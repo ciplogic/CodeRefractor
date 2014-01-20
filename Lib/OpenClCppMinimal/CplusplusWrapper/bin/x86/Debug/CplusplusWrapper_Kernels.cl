@@ -1,5 +1,6 @@
 
-float compute(float a, float b)
+
+float compute(float a, float b, const int toAdd)
 {
 	int intA = (int) a;
 	int intB= (int) b;
@@ -14,7 +15,7 @@ float compute(float a, float b)
 	goto label_final;
 	
 	label_else:
-	result = intA+intB+3;
+	result = intA+intB+toAdd;
 
 	label_final:
 	return result;
@@ -24,8 +25,7 @@ __kernel
 void vectorAdd(__global float *output,
                 __global float *inputA,		
                 __global float *inputB,
-				__global float toAdd,
-				__global float toRemove)  
+				const int toAdd)  
             
 {
 
@@ -34,6 +34,6 @@ void vectorAdd(__global float *output,
 	float a =inputA[gid];
 	float b =inputB[gid];
 
-    output[gid] = compute(a,b);
+    output[gid] = compute(a,b, toAdd);
     
 }

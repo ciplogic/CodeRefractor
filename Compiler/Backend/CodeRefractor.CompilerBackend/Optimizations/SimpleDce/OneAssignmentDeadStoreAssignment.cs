@@ -139,6 +139,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
                 if (opKind == OperationKind.Assignment)
                 {
                     var assign = op.GetAssignment();
+                    if (assign.AssignedTo.Kind == VariableKind.Argument)
+                        continue;
                     if (!(assign.Right is ConstValue))
                         continue;
                     assignToConstOperations[index] = op;
