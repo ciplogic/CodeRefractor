@@ -5,7 +5,7 @@ using CodeRefractor.RuntimeBase.MiddleEnd;
 using Tao.OpenGl;
 using Tao.Sdl;
 
-namespace Game
+namespace SimpleAdditions
 {
     public class CrGlu
     {
@@ -25,6 +25,7 @@ namespace Game
             MapType<CrGlu>(typeof(Glu));
             MapType<CrSdl>(typeof(Sdl));
         }
+
         public override bool Resolve(MethodInterpreter methodInterpreter)
         {
             var method = methodInterpreter.Method;
@@ -40,11 +41,6 @@ namespace Game
                 return true;
             }
             return false;
-        }
-
-        public override Type ResolveType(Type type)
-        {
-            return MappedResolveType(type);
         }
     }
 }

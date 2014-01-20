@@ -23,6 +23,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Inliner
                 
                 var methodData = (MethodData) localOperation.Value;
                 var interpreter = methodData.Info.GetInterpreter();
+                if(interpreter==null)
+                    continue;
                 var isEmpty = interpreter.MidRepresentation.GetProperties().IsEmpty;
                 if(!isEmpty)
                     continue;

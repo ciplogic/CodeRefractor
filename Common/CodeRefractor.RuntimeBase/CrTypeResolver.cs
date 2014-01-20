@@ -17,8 +17,6 @@ namespace CodeRefractor.RuntimeBase
             _mappedTypes[mappedType] = typeof(T);
         }
 
-        public abstract Type ResolveType(Type type);
-
         protected static void ResolveAsPinvoke(MethodInterpreter methodInterpreter, string libraryName,
             CallingConvention callingConvention = CallingConvention.Winapi)
         {
@@ -31,7 +29,7 @@ namespace CodeRefractor.RuntimeBase
             methodInterpreter.Description.CallingConvention = callingConvention;
         }
 
-        protected Type MappedResolveType(Type type)
+        public virtual Type ResolveType(Type type)
         {
             Type result;
             return _mappedTypes.TryGetValue(type, out result) ? result : null;

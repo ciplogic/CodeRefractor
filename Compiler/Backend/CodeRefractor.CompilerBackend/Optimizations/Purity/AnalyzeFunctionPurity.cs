@@ -10,6 +10,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
     {
         public static bool ReadPurity(MethodInterpreter intermediateCode)
         {
+            if (intermediateCode == null)
+                return false;
             return intermediateCode.MidRepresentation.GetProperties().IsPure;
         }
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)

@@ -48,7 +48,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
         {
             if (optimizationPasses == null)
                 return false;
-            if (Interpreter.Method.Name == "setSDLVideo")
+            if (Interpreter.Method.Name.Contains("ctor"))
             {
                 
             }

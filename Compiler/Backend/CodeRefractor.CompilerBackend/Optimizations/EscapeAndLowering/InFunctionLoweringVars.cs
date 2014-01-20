@@ -90,6 +90,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
                 case OperationKind.SetField:
                     HandleSetArrayItem(candidateVariables, op);
                     break;
+
+                case OperationKind.FieldRefAssignment:
+                    break;
                 default:
                     throw new NotImplementedException();
             }
