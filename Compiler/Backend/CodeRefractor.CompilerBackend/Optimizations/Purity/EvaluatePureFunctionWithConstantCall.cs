@@ -56,12 +56,21 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
         {
             var operationData = (MethodData) operation.Value;
             var methodInterpreter = operationData.Info.GetInterpreter();
-            if (AnalyzeFunctionPurity.ReadPurity(methodInterpreter))
+                        if (AnalyzeFunctionPurity.ReadPurity(methodInterpreter))
             {
                 operationData.IsPure = true;
             }
             else
             {
+                if (methodInterpreter == null)
+                {
+                    return operationData;
+                }
+                if (methodInterpreter.Kind != MethodKind.Default)
+                {
+                    operationData.IsPure = false;
+                    return operationData;
+                }
                 var computeIsPure = AnalyzeFunctionPurity.ComputeFunctionPurity(methodInterpreter);
                 if (computeIsPure)
                     operationData.IsPure = true;
