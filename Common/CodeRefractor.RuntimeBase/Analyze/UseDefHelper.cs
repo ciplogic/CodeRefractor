@@ -260,7 +260,6 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
                 case OperationKind.BranchOperator:
                 case OperationKind.SetField:
                 case OperationKind.SetArrayItem:
-                case OperationKind.RefAssignment:
                     return null;
                 case OperationKind.Assignment:
                 case OperationKind.NewObject:
@@ -284,6 +283,10 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
                 case OperationKind.FieldRefAssignment:
                     var refFieldValue = (FieldRefAssignment) operation.Value;
                     return refFieldValue.Left;
+                    
+                case OperationKind.RefAssignment:
+                    var refValue = (RefAssignment)operation.Value;
+                    return refValue.Left;
                 default:
                     throw new InvalidDataException("Case not handled");
             }

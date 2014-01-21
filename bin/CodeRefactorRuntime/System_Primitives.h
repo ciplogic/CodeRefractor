@@ -42,7 +42,8 @@ template <class T> struct Array
 	}
 	void AllocateLength(int newSize)
 	{
-		Items = (T*)malloc(newSize* sizeof(T));
+		auto sizeT = sizeof(T);
+		Items = (T*)calloc(newSize, sizeT);
 		Length = newSize;
 	}
 	T& operator[](const int idx)
