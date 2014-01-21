@@ -111,7 +111,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
             {
                 sb.AppendLine("union {");
                 WriteFieldListToLayout(sb, fieldList);
-                sb.AppendLine("}");
+                sb.AppendLine("};");
             } 
             WriteFieldListToLayout(sb, noOffsetFields);
         }

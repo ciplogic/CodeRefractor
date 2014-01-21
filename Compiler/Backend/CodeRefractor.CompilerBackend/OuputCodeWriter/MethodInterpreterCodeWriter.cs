@@ -48,17 +48,12 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
         {
             if (optimizationPasses == null)
                 return false;
-            if (Interpreter.Method.Name.Contains("ctor"))
-            {
-                
-            }
             var result = false;
             var optimizationsList = new List<OptimizationPass>(optimizationPasses);
             var didOptimize = true;
 
             while (didOptimize)
             {
-                var localOps = Interpreter.MidRepresentation.LocalOperations;
                 didOptimize = false;
                 foreach (var optimizationPass in optimizationsList)
                 {
