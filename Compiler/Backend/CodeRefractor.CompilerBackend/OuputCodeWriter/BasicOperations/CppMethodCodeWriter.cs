@@ -259,7 +259,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
             sb.AppendFormat("(*{0})[{1}] = {2}; ",
                             arrayItem.Parent.Name,
                             arrayItem.Index.Name,
-                            right.Name);
+                            right.ComputedValue());
         }
 
         private static void HandleReadArrayItem(LocalOperation operation, StringBuilder bodySb, MidRepresentationVariables vars)
