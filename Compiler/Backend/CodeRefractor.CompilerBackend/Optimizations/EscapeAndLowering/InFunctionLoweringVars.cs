@@ -50,12 +50,12 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
             var newOps = localOp.Where(op =>
                 op.Kind == OperationKind.NewArray
                 || op.Kind == OperationKind.NewObject).ToArray();
-            if(newOps.Length==0)
+            if (newOps.Length == 0)
                 return;
             foreach (var op in newOps)
             {
                 var variable = op.GetDefinition();
-                if(variable==null)
+                if (variable == null)
                     continue;
 
                 if (!candidateVariables.Contains(variable)) continue;
@@ -74,7 +74,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
                 case OperationKind.Return:
                     HandleReturn(localVariable, candidateVariables, op);
                     break;
-                
+
                 case OperationKind.Call:
                     HandleCall(localVariable, candidateVariables, op);
                     break;
@@ -91,6 +91,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
                     HandleSetArrayItem(candidateVariables, op);
                     break;
 
+                case OperationKind.RefAssignment:
                 case OperationKind.FieldRefAssignment:
                     break;
                 default:
@@ -127,7 +128,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
             {
                 var parameter = methodData.Parameters[index];
                 var variable = parameter as LocalVariable;
-                if(variable==null)
+                if (variable == null)
                     continue;
                 if (escapingBools[index])
                     candidateVariables.Remove(variable);

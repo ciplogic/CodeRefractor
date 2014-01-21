@@ -15,8 +15,14 @@ void initializeRuntime()
 	mapLibs();
 	RuntimeHelpersBuildConstantTable();
 }
-#define USE_STRINGS
-#ifdef USE_STRINGS
+
+template<typename  T>
+void System_Array_Resize(Array<T> * arr, int newSize)
+{
+	arr->Length = newSize;
+	arr->Items = (T*)realloc(arr->Items, sizeof(T)*newSize);
+}
+
 extern const wchar_t _stringTable[];
 std::shared_ptr<System_String> _str(int index)
 {
@@ -35,7 +41,6 @@ void _AddJumpAndLength(int jump, int length)
 	_stringJumps.push_back(jump);
 	_stringLength.push_back(length);
 }
-#endif
 
 static std::vector<System_Byte*> _constTables;
 System_Byte* RuntimeHelpers_GetBytes(int id)

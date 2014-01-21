@@ -123,6 +123,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
                 case OperationKind.FieldRefAssignment:
                     AddUsagesOfFieldRefAssignment(operation, result);
                     break;
+                case OperationKind.RefAssignment:
+                    AddUsagesOfRefAssignment(operation, result);
+                    break;
                 case OperationKind.CopyArrayInitializer:
                 case OperationKind.GetStaticField:
                 case OperationKind.LoadFunction:
@@ -134,6 +137,13 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
                     throw new NotImplementedException();
             }
             return result;
+        }
+
+        private static void AddUsagesOfRefAssignment(LocalOperation operation, List<LocalVariable> result)
+        {
+            var refData = (RefAssignment)operation.Value;
+            result.Add(refData.Left);
+            result.Add(refData.Right);
         }
 
         private static void AddUsagesOfFieldRefAssignment(LocalOperation operation, List<LocalVariable> result)
@@ -249,6 +259,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
                 case OperationKind.Label:
                 case OperationKind.BranchOperator:
                 case OperationKind.SetField:
+                case OperationKind.SetArrayItem:
+                case OperationKind.RefAssignment:
                     return null;
                 case OperationKind.Assignment:
                 case OperationKind.NewObject:
@@ -351,6 +363,10 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
                 case OperationKind.Label:
                 case OperationKind.NewObject:
                     break;
+
+                case OperationKind.RefAssignment:
+                    SwitchUsageInRefAssignment(op, usageVariable, definitionIdentifier);
+                    break;
                     
                 case OperationKind.FieldRefAssignment:
                     SwitchUsageInFieldRefAssignment(op, usageVariable, definitionIdentifier);
@@ -358,6 +374,19 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
                 default:
                     throw new NotImplementedException(
                         string.Format("Switch usage is not implemented for this operation '{0}'", op.Kind));
+            }
+        }
+
+        private static void SwitchUsageInRefAssignment(LocalOperation op, LocalVariable usageVariable, IdentifierValue definitionIdentifier)
+        {
+            var returnValue = op.Get<RefAssignment>();
+            if (usageVariable.Equals(returnValue.Right))
+            {
+                returnValue.Right = (LocalVariable)definitionIdentifier;
+            }
+            if (usageVariable.Equals(returnValue.Left))
+            {
+                returnValue.Left = (LocalVariable)definitionIdentifier;
             }
         }
 

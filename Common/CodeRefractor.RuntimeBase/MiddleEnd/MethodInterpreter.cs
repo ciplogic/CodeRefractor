@@ -21,14 +21,13 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         public List<Type> MethodSpecializationType = new List<Type>();
         public MethodKind Kind { get; set; }
 
-        public AnalyzeProperties AnalyzeProperties = new AnalyzeProperties();
+        public readonly AnalyzeProperties AnalyzeProperties = new AnalyzeProperties();
         
 
         public MetaMidRepresentation MidRepresentation = new MetaMidRepresentation();
-        public CppRepresentation CppRepresentation = new CppRepresentation();
+        public readonly CppRepresentation CppRepresentation = new CppRepresentation();
         public PlatformInvokeRepresentation PlatformInvoke = new PlatformInvokeRepresentation();
-        public CppLibMethodInvokeRepresentation LibraryInvoke = new CppLibMethodInvokeRepresentation();
-        public MethodDescription Description =  new MethodDescription();
+        public readonly MethodDescription Description =  new MethodDescription();
 
         public bool Interpreted { get; set; }
 
@@ -144,13 +143,13 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
             foreach (var instruction in instructions)
             {
-                EvaluateInstuction(instruction, evaluator, operationFactory, labelList);
+                EvaluateInstuction(instruction, operationFactory, labelList);
             }
             MidRepresentation.Vars.Setup();
             Interpreted = true;
         }
 
-        private void EvaluateInstuction(Instruction instruction, EvaluatorStack evaluator, MetaMidRepresentationOperationFactory operationFactory, HashSet<int> labelList)
+        private void EvaluateInstuction(Instruction instruction, MetaMidRepresentationOperationFactory operationFactory, HashSet<int> labelList)
         {
             var opcodeStr = instruction.OpCode.ToString();
             var offset = 0;
@@ -171,7 +170,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 return;
             if (HandleLoads(opcodeStr, instruction, operationFactory))
                 return;
-            if (HandleOperators(opcodeStr, evaluator, operationFactory))
+            if (HandleOperators(opcodeStr, operationFactory))
                 return;
 
             if (HandleBranching(opcodeStr, offset, operationFactory))
@@ -565,7 +564,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             return false;
         }
 
-        private static bool HandleOperators(string opcodeStr, EvaluatorStack evaluator, MetaMidRepresentationOperationFactory operationFactory)
+        private static bool HandleOperators(string opcodeStr, MetaMidRepresentationOperationFactory operationFactory)
         {
             #region Operators
 

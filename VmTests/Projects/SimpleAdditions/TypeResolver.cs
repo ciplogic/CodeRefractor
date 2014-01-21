@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using System.Text;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using Tao.OpenGl;
@@ -7,44 +8,16 @@ using Tao.Sdl;
 
 namespace SimpleAdditions
 {
-    public class CrGlu
+    class Program
     {
-    }
-
-    public class CrGl
-    {
-    }
-    public class CrSdl
-    {
-    }
-    public class TypeResolver : CrTypeResolver
-    {
-        public TypeResolver()
+        public static void Main()
         {
-            MapType<CrGl>(typeof(Gl));
-            MapType<CrGlu>(typeof(Glu));
-            MapType<CrSdl>(typeof(Sdl));
-        }
-
-        public override bool Resolve(MethodInterpreter methodInterpreter)
-        {
-            var method = methodInterpreter.Method;
-            if (method.DeclaringType == typeof(Glu))
-            {
-                ResolveAsPinvoke(methodInterpreter, "glu32.dll", CallingConvention.StdCall);
-                return true;
-            }
-            if (method.DeclaringType == typeof (Gl))
-            {
-                ResolveAsPinvoke(methodInterpreter, "opengl32.dll", CallingConvention.StdCall);
-                return true;
-            }
-            if (method.DeclaringType == typeof(Sdl))
-            {
-                ResolveAsPinvoke(methodInterpreter, "sdl.dll", CallingConvention.Cdecl);
-                return true;
-            }
-            return false;
+            var text = "one";
+            var text2 = "two";
+            var text3 = "three";
+            var strings = new string[]{text, text2};
+            Array.Resize(ref strings, 3);
+            strings[2] = text3;
         }
     }
 }

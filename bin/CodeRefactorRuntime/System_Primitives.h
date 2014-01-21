@@ -2,6 +2,7 @@
 #define SystemPrimitives_H
 
 #include <memory>
+#include <cstdlib>
 
 typedef bool		System_Boolean;
 typedef unsigned char		System_Byte;
@@ -31,15 +32,18 @@ template <class T> struct Array
 	T* Items;
 	Array(int newSize)
 	{
-		Items = new T[newSize];
-		Length = newSize;
+		AllocateLength(newSize);
 	}
 	Array(int newSize,const T* data)
 	{
-		Items = new T[newSize];
-		Length = newSize;
+		AllocateLength(newSize);
 		for(auto i =0;i<newSize;i++)
 			Items[i] = data[i];
+	}
+	void AllocateLength(int newSize)
+	{
+		Items = (T*)malloc(newSize* sizeof(T));
+		Length = newSize;
 	}
 	T& operator[](const int idx)
 	{
@@ -48,7 +52,7 @@ template <class T> struct Array
 
 	~Array()
 	{
-		delete []Items;
+		free(Items);
 		Items = 0;
 	}
 };
