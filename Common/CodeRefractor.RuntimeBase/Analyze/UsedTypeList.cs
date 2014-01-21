@@ -6,13 +6,13 @@ namespace CodeRefractor.RuntimeBase.Analyze
 {
     public class UsedTypeList
     {
-        public Dictionary<Type, TypeDescription> _userTypeDesc = new Dictionary<Type, TypeDescription>(); 
+        public readonly Dictionary<Type, TypeDescription> UserTypeDesc = new Dictionary<Type, TypeDescription>(); 
         public static TypeDescription Set(Type type)
         {
             if (type == null)
                 return null;
-            type = UsedTypeListUtils.ResolveTypeByResolvers(type);
-            var typeList = Instance._userTypeDesc;
+            type = type.ResolveTypeByResolvers();
+            var typeList = Instance.UserTypeDesc;
             TypeDescription typeDesc;
             var indexOf = typeList.TryGetValue(type, out typeDesc);
             if (indexOf )
@@ -20,7 +20,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
                 return typeDesc;
             }
             var typeDescription = new TypeDescription(type);
-            Instance._userTypeDesc[type] = typeDescription;
+            Instance.UserTypeDesc[type] = typeDescription;
             return typeDescription;
         }
 
@@ -28,11 +28,11 @@ namespace CodeRefractor.RuntimeBase.Analyze
 
         public static List<Type> GetUsedTypes()
         {
-            return Instance._userTypeDesc.Keys.ToList();
+            return Instance.UserTypeDesc.Keys.ToList();
         }
         public static List<TypeDescription> GetDescribedTypes()
         {
-            return Instance._userTypeDesc.Values.ToList();
+            return Instance.UserTypeDesc.Values.ToList();
         }
     }
 }

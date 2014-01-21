@@ -29,7 +29,6 @@ namespace SimpleAdditions
         public override bool Resolve(MethodInterpreter methodInterpreter)
         {
             var method = methodInterpreter.Method;
-
             if (method.DeclaringType == typeof(Glu))
             {
                 ResolveAsPinvoke(methodInterpreter, "glu32.dll", CallingConvention.StdCall);

@@ -2,9 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Security.Policy;
+using System.Runtime.InteropServices;
 using System.Text;
 using CodeRefractor.RuntimeBase.Runtime;
+using CodeRefractor.RuntimeBase.Shared;
 
 namespace CodeRefractor.RuntimeBase.Analyze
 {
@@ -18,7 +19,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
         public string Name { get; private set; }
         public string Namespace { get; set; }
         public bool IsPointer { get; private set; }
-        static HashSet<Type> ignoredSet = new HashSet<Type>(
+        static readonly HashSet<Type> IgnoredSet = new HashSet<Type>(
              new []
              {
                  typeof(object),
@@ -35,6 +36,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
             Name = clrType.Name;
             Namespace = clrType.Namespace;
             Layout = new List<FieldDescription>();
+
             ExtractInformation();
         }
 
@@ -42,7 +44,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
         {
             ClrTypeCode = Type.GetTypeCode(ClrType);
 
-            if (ignoredSet.Contains(ClrType))
+            if (IgnoredSet.Contains(ClrType))
                 return;
             if (ClrType.IsPointer || ClrType.IsByRef)
             {
@@ -88,6 +90,11 @@ namespace CodeRefractor.RuntimeBase.Analyze
                     TypeDescription = typeField,
                     IsStatic = fieldInfo.IsStatic
                 };
+                var fieldOffsetAttribute = fieldInfo.GetCustomAttribute<FieldOffsetAttribute>();
+                if (fieldOffsetAttribute != null)
+                {
+                    fieldDescription.Offset = fieldOffsetAttribute.Value;
+                }
                 Layout.Add(fieldDescription);
             }
         }
@@ -97,23 +104,49 @@ namespace CodeRefractor.RuntimeBase.Analyze
             if (BaseType != null)
                 BaseType.WriteLayout(sb);
 
-            var mappedType = ClrType;
-            
-            var fieldInfos = mappedType.GetFields().ToList();
-            fieldInfos.AddRange(mappedType.GetFields(BindingFlags.NonPublic | BindingFlags.Instance));
+            var noOffsetFields = new List<FieldDescription>();
+            var dictionary = new SortedDictionary<int, List<FieldDescription>>();
+            BuildUnionLayouts(noOffsetFields, dictionary);
+            foreach (var fieldList in dictionary.Values)
+            {
+                sb.AppendLine("union {");
+                WriteFieldListToLayout(sb, fieldList);
+                sb.AppendLine("}");
+            } 
+            WriteFieldListToLayout(sb, noOffsetFields);
+        }
+
+        private void BuildUnionLayouts(List<FieldDescription> noOffsetFields, SortedDictionary<int, List<FieldDescription>> dictionary)
+        {
             foreach (var fieldData in Layout)
             {
-                string staticString;
-                if (fieldData.IsStatic) 
-                    staticString = "static";
-                else staticString = "";
-                sb.AppendFormat("{2} {0} {1};", 
-                        fieldData.TypeDescription.ClrType.ToCppName(),
-                        fieldData.Name.ValidName(),
-                        staticString
-                        ).AppendLine();
+                var key = fieldData.Offset ?? -1;
+                if (key == -1)
+                {
+                    noOffsetFields.Add(fieldData);
+                    continue;
+                }
+                if (!dictionary.ContainsKey(key))
+                {
+                    dictionary[key] = new List<FieldDescription>();
+                }
+                dictionary[key].Add(fieldData);
             }
         }
+
+        private static void WriteFieldListToLayout(StringBuilder sb, List<FieldDescription> fields)
+        {
+            foreach (var fieldData in fields)
+            {
+                var staticString = fieldData.IsStatic ? "static" : "";
+                sb.AppendFormat("{2} {0} {1};",
+                    fieldData.TypeDescription.ClrType.ToCppName(),
+                    fieldData.Name.ValidName(),
+                    staticString
+                    ).AppendLine();
+            }
+        }
+
         public static string GetDefault(Type type)
         {
             if (type.IsValueType)
