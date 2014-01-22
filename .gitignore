@@ -33,3 +33,5 @@ ipch/*
 CodeRefractor.*sdf
 bin/CodeRefactorCppDebugging.ilk
 Compiler/Backend/CodeRefractor.CompilerBackend/bin/Release/*
+Compiler/Frontend/MsilReader/bin/*
+Compiler/Frontend/MsilReader/obj/*
