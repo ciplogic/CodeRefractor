@@ -96,11 +96,10 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.Platform
 
         public static string WritePlatformInvokeMethod(this MethodInterpreter platformInvoke)
         {
-            var invokeRepresentation = platformInvoke.PlatformInvoke;
-            var methodId = Import(invokeRepresentation.LibraryName,
+            var methodId = Import(platformInvoke.Description.LibraryName,
                                   platformInvoke.Description.MethodName,
                                   platformInvoke.Description.CallingConvention,
-                                  platformInvoke.PlatformInvoke.EntryPoint);
+                                  platformInvoke.Description.EntryPoint);
 
             var sb = new StringBuilder();
 

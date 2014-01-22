@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Runtime.InteropServices;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
@@ -23,8 +22,8 @@ namespace CodeRefractor.RuntimeBase
             var method = methodInterpreter.Method;
 
             methodInterpreter.Kind = MethodKind.PlatformInvoke;
-            methodInterpreter.PlatformInvoke.LibraryName = libraryName;
-            methodInterpreter.PlatformInvoke.EntryPoint = method.Name;
+            methodInterpreter.Description.LibraryName = libraryName;
+            methodInterpreter.Description.EntryPoint = method.Name;
             methodInterpreter.Description.MethodName = method.Name;
             methodInterpreter.Description.CallingConvention = callingConvention;
         }

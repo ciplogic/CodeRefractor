@@ -52,7 +52,6 @@
     <Compile Include="FrontEnd\AnalyzeProperties.cs" />
     <Compile Include="FrontEnd\GlobalMethodPool.cs" />
     <Compile Include="MiddleEnd\CppLibMethodInvokeRepresentation.cs" />
-    <Compile Include="MiddleEnd\EntityMapper.cs" />
     <Compile Include="MiddleEnd\GlobalTable\GlobalTableManager.cs" />
     <Compile Include="MiddleEnd\MethodDescription.cs" />
     <Compile Include="MiddleEnd\RuntimeLibraryDescription.cs" />
@@ -93,7 +92,6 @@
     <Compile Include="MiddleEnd\Methods\MethodKind.cs" />
     <Compile Include="MiddleEnd\Methods\PureMethodTable.cs" />
     <Compile Include="MiddleEnd\MidRepresentationVariables.cs" />
-    <Compile Include="MiddleEnd\PlatformInvokeRepresentation.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\ConstTable\ConstByteArrayData.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\ConstTable\ConstByteArrayValue.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\ConstTable\ConstByteArrayList.cs" />

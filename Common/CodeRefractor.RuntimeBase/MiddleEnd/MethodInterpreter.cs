@@ -26,7 +26,6 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
         public MetaMidRepresentation MidRepresentation = new MetaMidRepresentation();
         public readonly CppRepresentation CppRepresentation = new CppRepresentation();
-        public PlatformInvokeRepresentation PlatformInvoke = new PlatformInvokeRepresentation();
         public readonly MethodDescription Description =  new MethodDescription();
 
         public bool Interpreted { get; set; }
@@ -57,8 +56,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 MidRepresentation = MidRepresentation,
                 ClassSpecializationType = ClassSpecializationType,
                 Kind = Kind,
-                MethodSpecializationType = MethodSpecializationType,
-                PlatformInvoke = PlatformInvoke
+                MethodSpecializationType = MethodSpecializationType
             };
             return result;
         }
@@ -360,10 +358,10 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
             if (pinvokeAttribute == null)
                 return false;
-            PlatformInvoke.LibraryName = pinvokeAttribute.Value;
+            Description.LibraryName = pinvokeAttribute.Value;
             Description.MethodName = method.Name;
             Description.CallingConvention = pinvokeAttribute.CallingConvention;
-            PlatformInvoke.EntryPoint = pinvokeAttribute.EntryPoint;
+            Description.EntryPoint = pinvokeAttribute.EntryPoint;
             Kind = MethodKind.PlatformInvoke;
             return true;
         }
