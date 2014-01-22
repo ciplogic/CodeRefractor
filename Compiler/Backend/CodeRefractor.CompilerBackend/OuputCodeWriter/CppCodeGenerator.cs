@@ -42,7 +42,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             WriteClosureDelegateBodies(closure, sb);
             WriteClosureHeaders(closure, sb);
 
-            sb.AppendLine("#include \"runtime_base.partcpp\"");
+            sb.AppendLine("#include \"runtime_base.hpp\"");
 
             WriteCppMethods(closure, sb);
             WriteClosureMethods(closure, sb);
