@@ -16,17 +16,17 @@ void initializeRuntime()
 	RuntimeHelpersBuildConstantTable();
 }
 
-template<typename  T>
-void System_Array_Resize(Array<T> * arr, int newSize)
+template<class T>
+void System_Array_Resize(std::shared_ptr< Array<T> >* arr, int newSize)
 {
-	auto oldSize = arr->Length;
-	arr->Length = newSize;
+	auto oldSize = (*arr)->Length;
+	(*arr)->Length = newSize;
 	for(auto i = newSize; i<oldSize;i++)
 	{
 		T cleanInstance;
-		arr->Items[i] = cleanInstance;
+		(*arr)->Items[i] = cleanInstance;
 	}
-	arr->Items = (T*)realloc(arr->Items, sizeof(T)*newSize);
+	(*arr)->Items = (T*)realloc((*arr)->Items, sizeof(T)*newSize);
 }
 
 extern const wchar_t _stringTable[];

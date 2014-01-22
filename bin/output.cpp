@@ -23,7 +23,7 @@ struct SimpleAdditions_Program {
 
 System_Void SimpleAdditions_Program_Main();
 
-#include "runtime_base.partcpp"
+#include "runtime_base.hpp"
 ///---Begin closure code --- 
 System_Void SimpleAdditions_Program_Main()
 {

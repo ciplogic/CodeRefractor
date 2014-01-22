@@ -33,6 +33,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
                 foreach (var localVariable in usages.Where(candidateVariables.Contains))
                 {
                     RemoveCandidatesIfEscapes(localVariable, candidateVariables, op);
+                    if (candidateVariables.Count == 0)
+                        return;
                 }
             }
             if (candidateVariables.Count == 0)
@@ -103,7 +105,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
 
         private static void HandleRefAssignment(LocalVariable localVariable, HashSet<LocalVariable> candidateVariables, LocalOperation op)
         {
+            var value = (RefAssignment)op.Value;
             candidateVariables.Remove(localVariable);
+            candidateVariables.Remove(value.Right);
         }
 
         private static void HandleReturn(LocalVariable localVariable, HashSet<LocalVariable> candidateVariables, LocalOperation op)
