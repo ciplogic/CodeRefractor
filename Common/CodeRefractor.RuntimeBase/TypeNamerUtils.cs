@@ -46,7 +46,7 @@ namespace CodeRefractor.RuntimeBase
         {
             return IsVoid(type)
                        ? "void"
-                       : type.Name.ToCppMangling(type.Namespace, 
+                       : type.Name.ToCppMangling(type.Namespace,
                             type.IsGenericType
                             ? type.GetGenericArguments().ToList()
                             : null);
@@ -86,7 +86,7 @@ namespace CodeRefractor.RuntimeBase
                 switch (isSmartPtr)
                 {
                     case EscapingMode.Smart:
-                        return String.Format(StdSharedPtr+"< Array < {0} > >", fullTypeName);
+                        return String.Format(StdSharedPtr + "< Array < {0} > >", fullTypeName);
                     case EscapingMode.Pointer:
                         return String.Format("Array < {0} > *", fullTypeName);
                     case EscapingMode.Stack:
@@ -101,12 +101,13 @@ namespace CodeRefractor.RuntimeBase
                 if (type.Name.EndsWith("*") || type.Name.EndsWith("&"))
                 {
                     var elementType = type.GetElementType();
-                    return String.Format("{0}* ", elementType.ToCppMangling());
+                    var elementTypeCppName = elementType.ToCppName();
+                    return String.Format("{0}* ", elementTypeCppName);
                 }
                 switch (isSmartPtr)
                 {
                     case EscapingMode.Smart:
-                        return String.Format(StdSharedPtr+"<{0}>", type.ToCppMangling());
+                        return String.Format(StdSharedPtr + "<{0}>", type.ToCppMangling());
                     case EscapingMode.Pointer:
                         return String.Format("{0} *", type.ToCppMangling());
                     case EscapingMode.Stack:
@@ -124,7 +125,7 @@ namespace CodeRefractor.RuntimeBase
                 var elementType = type.GetElementType();
                 return String.Format("{0}*", elementType.ToCppMangling());
             }
-            return String.Format(StdSharedPtr+"<{0}>", type.ToCppMangling());
+            return String.Format(StdSharedPtr + "<{0}>", type.ToCppMangling());
         }
 
         public static bool IsVoid(this Type type)

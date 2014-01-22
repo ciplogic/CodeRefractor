@@ -17,10 +17,10 @@ void initializeRuntime()
 }
 
 template<typename  T>
-void System_Array_Resize(Array<T> * arr, int newSize)
+void System_Array_Resize(std::shared_ptr <Array<T> > * arr, int newSize)
 {
-	arr->Length = newSize;
-	arr->Items = (T*)realloc(arr->Items, sizeof(T)*newSize);
+	(*arr)->Length = newSize;
+	(*arr)->Items = (T*)realloc((*arr)->Items, sizeof(T)*newSize);
 }
 
 extern const wchar_t _stringTable[];

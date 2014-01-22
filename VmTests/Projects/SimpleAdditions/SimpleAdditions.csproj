@@ -55,7 +55,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>MainResources.resx</DependentUpon>
     </Compile>
-    <Compile Include="TypeResolver.cs" />
+    <Compile Include="Program.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

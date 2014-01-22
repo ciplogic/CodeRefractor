@@ -92,11 +92,18 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
                     break;
 
                 case OperationKind.RefAssignment:
+                    HandleRefAssignment(localVariable, candidateVariables, op);
+                    break;
                 case OperationKind.FieldRefAssignment:
                     break;
                 default:
                     throw new NotImplementedException();
             }
+        }
+
+        private static void HandleRefAssignment(LocalVariable localVariable, HashSet<LocalVariable> candidateVariables, LocalOperation op)
+        {
+            candidateVariables.Remove(localVariable);
         }
 
         private static void HandleReturn(LocalVariable localVariable, HashSet<LocalVariable> candidateVariables, LocalOperation op)

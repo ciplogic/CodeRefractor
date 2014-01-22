@@ -15,7 +15,7 @@ namespace SimpleAdditions
             var text = "one";
             var text2 = "two";
             var text3 = "three";
-            var strings = new string[]{text, text2};
+            var strings = new[]{text, text2};
             Array.Resize(ref strings, 3);
             strings[2] = text3;
         }

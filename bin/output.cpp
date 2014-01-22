@@ -24,18 +24,18 @@ struct SimpleAdditions_Program {
 System_Void SimpleAdditions_Program_Main();
 
 #include "runtime_base.partcpp"
-
 ///---Begin closure code --- 
 System_Void SimpleAdditions_Program_Main()
 {
-Array <std::shared_ptr<System_String>> *  vreg_13;
+std::shared_ptr< Array < std::shared_ptr<System_String> > > vreg_5;
+std::shared_ptr< Array < std::shared_ptr<System_String> > >*  vreg_13;
 
-Array <std::shared_ptr<System_String>> vreg_5 (2); 
-(vreg_5)[0] = one; 
-(vreg_5)[1] = two; 
+vreg_5 = std::make_shared< Array <std::shared_ptr<System_String>> >(2); 
+(*vreg_5)[0] = _str(0); 
+(*vreg_5)[1] = _str(1); 
 vreg_13 = &vreg_5;
-System_Array_Resize (vreg_13, 3);
-(vreg_5)[2] = three; 
+System_Array_Resize(vreg_13, 3);
+(*vreg_5)[2] = _str(2); 
 return;
 }
 
@@ -55,8 +55,13 @@ void RuntimeHelpersBuildConstantTable() {
 }
 
 void buildStringTable() {
+_AddJumpAndLength(0, 3);
+_AddJumpAndLength(4, 3);
+_AddJumpAndLength(8, 5);
 } // buildStringTable
-const wchar_t _stringTable[1] = {
-0
+const wchar_t _stringTable[14] = {
+111, 110, 101, 0 /* "one" */, 
+116, 119, 111, 0 /* "two" */, 
+116, 104, 114, 101, 101, 0 /* "three" */
 }; // _stringTable 
 
