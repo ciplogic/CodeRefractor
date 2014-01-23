@@ -8,16 +8,47 @@ using Tao.Sdl;
 
 namespace SimpleAdditions
 {
+    public class AuxList<T>
+    {
+        public T[] Data;
+        private int _count;
+
+        public int Count
+        {
+            get { return _count; }
+            private set { _count = value; }
+        }
+
+        public int Capacity { get { return Data.Length; } }
+        public AuxList(int capacity = 0)
+        {
+            Data = new T[capacity];
+        }
+
+        public void Add(T item)
+        {
+            if (Count <= Capacity)
+            {
+                if (Capacity == 0)
+                {
+                    Array.Resize(ref Data, 10);
+                }
+            }
+            Data[Count] = item;
+            Count++;
+        }
+
+        public T Get(int index)
+        {
+            return Data[index];
+        }
+    }
     class Program
     {
         public static void Main()
         {
-            var text = "one";
-            var text2 = "two";
-            var text3 = "three";
-            var strings = new[]{text, text2};
-            Array.Resize(ref strings, 3);
-            strings[2] = text3;
+            var list = new AuxList<int>();
+            list.Add(1);
         }
     }
 }

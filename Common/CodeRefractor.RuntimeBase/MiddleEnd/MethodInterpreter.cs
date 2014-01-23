@@ -174,58 +174,65 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             if (HandleBranching(opcodeStr, offset, operationFactory))
                 return;
 
+            if (HandleExtraInstructions(instruction, operationFactory, opcodeStr)) return;
+            throw new InvalidOperationException(String.Format("Unknown instruction: {0}", instruction));
+        }
+
+        private bool HandleExtraInstructions(Instruction instruction, MetaMidRepresentationOperationFactory operationFactory,
+            string opcodeStr)
+        {
             if (opcodeStr == "ret")
             {
                 var isVoid = Method.GetReturnType().IsVoid();
 
                 operationFactory.Return(isVoid);
-                return;
+                return true;
             }
             if (opcodeStr.StartsWith("conv."))
             {
-                if (ConversionOperations(opcodeStr, operationFactory)) return;
-                return;
+                if (ConversionOperations(opcodeStr, operationFactory)) return true;
+                return true;
             }
             if (opcodeStr == "dup")
             {
                 operationFactory.Dup();
-                return;
+                return true;
             }
             if (opcodeStr == "pop")
             {
                 operationFactory.Pop();
-                return;
+                return true;
             }
-            if (HandleArrayOperations(instruction, operationFactory, opcodeStr)) return;
+            if (HandleArrayOperations(instruction, operationFactory, opcodeStr)) return true;
             if (opcodeStr == "ldtoken")
             {
-                operationFactory.SetToken((FieldInfo)instruction.Operand);
-                return;
+                operationFactory.SetToken((FieldInfo) instruction.Operand);
+                return true;
             }
             if (opcodeStr == "ldftn")
             {
-                operationFactory.LoadFunction((MethodInfo)instruction.Operand);
-                return;
+                operationFactory.LoadFunction((MethodInfo) instruction.Operand);
+                return true;
             }
             if (opcodeStr == "switch")
             {
-                operationFactory.Switch((Instruction[])instruction.Operand);
-                return;
+                operationFactory.Switch((Instruction[]) instruction.Operand);
+                return true;
             }
             if (opcodeStr == "sizeof")
             {
-                operationFactory.SizeOf((Type)instruction.Operand);
-                return;
+                operationFactory.SizeOf((Type) instruction.Operand);
+                return true;
             }
             if (opcodeStr == "ldsfld")
             {
-                operationFactory.LoadStaticField((FieldInfo)instruction.Operand);
-                return;
+                operationFactory.LoadStaticField((FieldInfo) instruction.Operand);
+                return true;
             }
             if (opcodeStr == "stsfld")
             {
-                operationFactory.StoreStaticField((FieldInfo)instruction.Operand);
-                return;
+                operationFactory.StoreStaticField((FieldInfo) instruction.Operand);
+                return true;
             }
             if (opcodeStr == "ldloca.s" || opcodeStr == "ldloca")
             {
@@ -233,43 +240,43 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 var index = (LocalVariableInfo) instruction.Operand;
 
                 operationFactory.LoadAddressIntoEvaluationStack(index);
-                return;
+                return true;
             }
             if (opcodeStr == "ldflda.s" || opcodeStr == "ldflda")
             {
-                var fieldInfo = (FieldInfo)instruction.Operand;
+                var fieldInfo = (FieldInfo) instruction.Operand;
 
                 operationFactory.LoadFieldAddressIntoEvaluationStack(fieldInfo);
-                return;
+                return true;
             }
 
             if (opcodeStr == "ldelema")
             {
-                operationFactory.LoadAddressOfArrayItemIntoStack((Type)instruction.Operand);
-                return;
+                operationFactory.LoadAddressOfArrayItemIntoStack((Type) instruction.Operand);
+                return true;
             }
 
             if (opcodeStr.StartsWith("stind."))
             {
                 //TODO: load the address into evaluation stack
                 operationFactory.StoresValueFromAddress();
-                return;
+                return true;
             }
 
             if (opcodeStr.StartsWith("ldind."))
             {
                 //TODO: load the address into evaluation stack
                 operationFactory.LoadValueFromAddress();
-                return;
+                return true;
             }
 
             if (opcodeStr.StartsWith("initobj"))
             {
                 //TODO: load the address into evaluation stack
                 operationFactory.InitObject();
-                return;
+                return true;
             }
-            throw new InvalidOperationException(String.Format("Unknown instruction: {0}", instruction));
+            return false;
         }
 
         private static bool HandleArrayOperations(Instruction instruction,
@@ -290,6 +297,12 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 || opcodeStr == "stelem.i2")
             {
                 operationFactory.SetArrayElementValue();
+                return true;
+            }
+            if (opcodeStr == "stelem")
+            {
+                var elemInfo = (Type)instruction.Operand;
+                operationFactory.StoreElement(elemInfo);
                 return true;
             }
             return false;
@@ -496,7 +509,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             return false;
         }
 
-        private bool HandleBranching(string opcodeStr, int offset, MetaMidRepresentationOperationFactory operationFactory)
+        private static bool HandleBranching(string opcodeStr, int offset, MetaMidRepresentationOperationFactory operationFactory)
         {
             #region Branching
 

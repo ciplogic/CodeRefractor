@@ -787,5 +787,20 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             AddOperation(OperationKind.AddressOfArrayItem, assignment);
 
         }
+
+        public void StoreElement(Type elemInfo)
+        {
+            var value = _evaluator.Pop();
+            var index = _evaluator.Pop();
+            var array = _evaluator.Pop();
+            var arrayVariable = new ArrayVariable(array, index);
+            var assignment = new Assignment
+            {
+                AssignedTo = arrayVariable,
+                Right = value
+            };
+            arrayVariable.FixedType = UsedTypeList.Set(elemInfo);
+            AddOperation(OperationKind.SetArrayItem, assignment);
+        }
     }
 }
