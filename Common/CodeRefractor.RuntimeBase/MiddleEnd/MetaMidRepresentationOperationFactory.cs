@@ -184,6 +184,23 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             AddOperation(OperationKind.GetArrayItem, assignment);
         }
 
+        public void LoadReferenceInArrayTyped(Type elementType)
+        {
+            var secondVar = _evaluator.Stack.Pop();
+            var firstVar = _evaluator.Stack.Pop();
+
+            var result = SetNewVReg();
+            result.FixedType = UsedTypeList.Set(firstVar.FixedType.ClrType.GetElementType());
+            var arrayVariable = new ArrayVariable(firstVar, secondVar);
+            var assignment = new Assignment
+            {
+                AssignedTo = result,
+                Right = arrayVariable
+            };
+            result.FixedType = UsedTypeList.Set(elementType);
+            AddOperation(OperationKind.GetArrayItem, assignment);
+        }
+
         public void Return(bool isVoid)
         {
             var returnValue = isVoid ? null : _evaluator.Stack.Pop();

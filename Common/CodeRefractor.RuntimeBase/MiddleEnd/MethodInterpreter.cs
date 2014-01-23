@@ -437,6 +437,12 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 return true;
             }
 
+            if (opcodeStr == "ldelem")
+            {
+                operationFactory.LoadReferenceInArrayTyped((Type)instruction.Operand);
+                return true;
+            }
+
             if (opcodeStr == "ldc.i4.s" || opcodeStr == "ldc.i4")
             {
                 operationFactory.PushInt4(instruction.GetIntOperand());

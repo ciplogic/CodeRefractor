@@ -49,6 +49,8 @@ namespace SimpleAdditions
         {
             var list = new AuxList<int>();
             list.Add(1);
+            var item = list.Get(0);
+            Console.WriteLine(item);
         }
     }
 }
