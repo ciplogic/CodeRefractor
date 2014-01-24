@@ -491,8 +491,6 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
 
                     case EscapingMode.Smart:
                         throw new InvalidDataException("Case not possible!");
-                        break;
-
                 }
                 throw new InvalidDataException("Case not handled");
             }

@@ -11,13 +11,8 @@ namespace SimpleAdditions
     public class AuxList<T>
     {
         public T[] Data;
-        private int _count;
 
-        public int Count
-        {
-            get { return _count; }
-            private set { _count = value; }
-        }
+        public int Count { get; private set; }
 
         public int Capacity { get { return Data.Length; } }
         public AuxList(int capacity = 0)
