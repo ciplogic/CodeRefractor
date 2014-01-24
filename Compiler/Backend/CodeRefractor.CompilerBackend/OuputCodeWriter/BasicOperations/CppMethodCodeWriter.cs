@@ -292,9 +292,9 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
             var fieldGetterInfo = (FieldGetter)operation.Value;
             var assignedFrom = fieldGetterInfo.Instance;
             var assignedFromData = vars.GetVariableData(assignedFrom);
-            var getStackField = assignedFromData.Escaping == EscapingMode.Stack;
-            var fieldText = string.Format(getStackField ? "{0}.{1}" : "{0}->{1}", fieldGetterInfo.Instance.Name,
-                fieldGetterInfo.FieldName);
+            var isOnStack = assignedFromData.Escaping == EscapingMode.Stack;
+            var fieldText = string.Format(isOnStack ? "{0}.{1}" : "{0}->{1}", fieldGetterInfo.Instance.Name,
+                fieldGetterInfo.FieldName.ValidName());
 
             var assignedTo = fieldGetterInfo.AssignedTo;
             var assignedToData = vars.GetVariableData(assignedTo);

@@ -6,7 +6,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
     public class FieldNameTable
     {
         readonly Dictionary<string, string> InvalidNames = new Dictionary<string, string>();
-        int CountedField;
+        int _countedField;
 
         public static FieldNameTable Instance { get { return StaticInstance; } }
 
@@ -19,8 +19,8 @@ namespace CodeRefractor.RuntimeBase.Analyze
             string result;
             if (InvalidNames.TryGetValue(name, out result))
                 return result;
-            var formattedName = string.Format("AutoNamed_{0}", CountedField);
-            CountedField++;
+            var formattedName = string.Format("AutoNamed_{0}", _countedField);
+            _countedField++;
             InvalidNames[name] = formattedName;
             return formattedName;
         }
