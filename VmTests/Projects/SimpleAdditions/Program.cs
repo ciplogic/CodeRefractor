@@ -17,6 +17,7 @@ namespace SimpleAdditions
         public int Capacity { get { return Data.Length; } }
         public AuxList(int capacity = 0)
         {
+            Count = 0;
             Data = new T[capacity];
         }
 
