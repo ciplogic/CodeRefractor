@@ -1,36 +1,40 @@
 using System.Collections.Generic;
+using CodeRefractor.CompilerBackend.Linker;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
-using CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions;
 using CodeRefractor.CompilerBackend.Optimizations.Util;
 using CodeRefractor.RuntimeBase.MiddleEnd;
+using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
+using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 
 namespace CodeRefractor.CompilerBackend.Optimizations.Purity
 {
-    class RemoveDeadPureFunctionCalls : BlockOptimizationPass
+    public class RemoveDeadPureFunctionCalls : ResultingInFunctionOptimizationPass
     {
-        public override bool OptimizeBlock(MethodInterpreter midRepresentation, int startRange, int endRange)
+        public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
-            var localOperations = midRepresentation.MidRepresentation.LocalOperations;
+            var localOperations = methodInterpreter.MidRepresentation.LocalOperations;
 
-            var calls = PrecomputeRepeatedPureFunctionCall.FindCallsToPureFunctions(localOperations, startRange, endRange);
-            var toRemove = new HashSet<int>();
-            foreach (var call in calls)
+            var toRemove = new List<int>();
+            for (var index = 0; index < localOperations.Count; index++)
             {
-                var methodData = PrecomputeRepeatedUtils.GetMethodData(localOperations, call);
-                if (methodData.Result == null)
-                {
-                    toRemove.Add(call);
+                var operation = localOperations[index];
+                if(operation.Kind!=OperationKind.Call)
                     continue;
+
+                var methodData = operation.Get<MethodData>();
+                var interpreter = methodData.GetInterpreter();
+                if(interpreter==null)
+                    continue;
+                var properties = interpreter.AnalyzeProperties;
+                if (properties.IsReadOnly || properties.IsPure)
+                {
+                    toRemove.Add(index);
                 }
-                var resultUsages = localOperations.GetVariableUsages(methodData.Result);
-                if (resultUsages.Count == 0)
-                    toRemove.Add(call);
             }
-            if (toRemove.Count == 0)
-                return false;
-            midRepresentation.MidRepresentation.DeleteInstructions(toRemove);
-            toRemove.Clear();
-            return true;
+            if(toRemove.Count==0)
+                return;
+            methodInterpreter.DeleteInstructions(toRemove);
+            Result = true;
         }
     }
 }
