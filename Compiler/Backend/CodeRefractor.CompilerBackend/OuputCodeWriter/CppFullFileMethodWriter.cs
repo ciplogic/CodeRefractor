@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 using CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering;
 using CodeRefractor.RuntimeBase;
+using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.FrontEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
@@ -42,9 +43,18 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 
         public static string WriteHeaderMethodWithEscaping(this MethodBase methodBase, bool writeEndColon = true)
         {
-            var retType = methodBase.GetReturnType().ToCppName();
+            var retType = methodBase.GetReturnType().ToCppName(true);
 
             var sb = new StringBuilder();
+            var declaringType = methodBase.DeclaringType;
+            if (declaringType.IsGenericType)
+            {
+                var genericTypeCount = declaringType.GetGenericArguments().Length;
+
+                if (genericTypeCount > 0)
+                    sb.AppendLine(genericTypeCount.GetTypeTemplatePrefix());
+            }
+
             var arguments = methodBase.GetArgumentsAsTextWithEscaping();
 
             sb.AppendFormat("{0} {1}({2})",
@@ -69,15 +79,16 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             var index = 0;
             if (!method.IsStatic)
             {
-                var thisText = String.Format("const {0}& _this", method.DeclaringType.GetMappedType().ToCppName());
+                var argumentTypeDescription = UsedTypeList.Set(method.DeclaringType.GetMappedType());
+                var thisText = String.Format("const {0}& _this", argumentTypeDescription.ClrType.ToCppName(true));
                 if(!escapingBools[0])
                 {
-                    thisText = String.Format("{0} _this", method.DeclaringType.GetMappedType().ToCppName(EscapingMode.Pointer));
+                    thisText = String.Format("{0} _this", argumentTypeDescription.ClrType.ToCppName(true, EscapingMode.Pointer));
                 }
                 sb.Append(thisText);
                 index++;
             }
-            bool isFirst = index==0;
+            var isFirst = index==0;
             
             for (index=0; index < parameterInfos.Length; index++)
             {
@@ -90,8 +101,9 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                 var parameterInfo = parameterInfos[index];
                 var isSmartPtr = escapingBools[index];
                 var nonEscapingMode = isSmartPtr ? EscapingMode.Smart : EscapingMode.Pointer;
-                sb.AppendFormat("{0} {1}", 
-                    parameterInfo.ParameterType.GetMappedType().ToCppName(nonEscapingMode ), 
+                var argumentTypeDescription = UsedTypeList.Set(method.DeclaringType.GetMappedType());
+                sb.AppendFormat("{0} {1}",
+                    argumentTypeDescription.ClrType.ToCppName(true, isSmartPtr: nonEscapingMode), 
                     parameterInfo.Name);
             }
             return sb.ToString();

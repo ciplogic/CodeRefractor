@@ -15,36 +15,34 @@ using CodeRefractor.RuntimeBase.Optimizations;
 
 namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 {
-    public class MethodInterpreterCodeWriter
+    public static class MethodInterpreterCodeWriter
     {
-        public MethodInterpreter Interpreter { get; set; }
-
-        public string WriteMethodCode()
+        public static string WriteMethodCode(MethodInterpreter interpreter)
         {
-            return CppMethodCodeWriter.WriteCode(Interpreter);
+            return CppMethodCodeWriter.WriteCode(interpreter);
         }
-        public string WriteMethodSignature()
+        public static string WriteMethodSignature(MethodInterpreter interpreter)
         {
-            if(Interpreter.Method==null)
+            if(interpreter.Method==null)
             {
                 Console.WriteLine("Should not be null");
                 return "";
             }
             var sb = new StringBuilder();
-            CppMethodCodeWriter.WriteSignature(Interpreter.Method,sb, true);
+            CppMethodCodeWriter.WriteSignature(interpreter.Method,sb, true);
             return sb.ToString();
         }
 
-        internal string WritePInvokeMethodCode()
+        internal static string WritePInvokeMethodCode(MethodInterpreter interpreter)
         {
-            return Interpreter.WritePlatformInvokeMethod();
+            return interpreter.WritePlatformInvokeMethod();
         }
 
-        internal string WriteDelegateCallCode()
+        internal static string WriteDelegateCallCode(MethodInterpreter interpreter)
         {
-            return Interpreter.WriteDelegateCallCode();
+            return interpreter.WriteDelegateCallCode();
         }
-        public bool ApplyLocalOptimizations(IEnumerable<OptimizationPass> optimizationPasses)
+        public static bool ApplyLocalOptimizations(IEnumerable<OptimizationPass> optimizationPasses, MethodInterpreter interpreter)
         {
             if (optimizationPasses == null)
                 return false;
@@ -58,9 +56,9 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                 didOptimize = false;
                 foreach (var optimizationPass in optimizationsList)
                 {
-                    if(!optimizationPass.CheckPreconditions(Interpreter))
+                    if(!optimizationPass.CheckPreconditions(interpreter))
                         continue;
-                    didOptimize = optimizationPass.Optimize(Interpreter);
+                    didOptimize = optimizationPass.Optimize(interpreter);
                     if (!didOptimize) continue;
                     Interpreter.MidRepresentation.UpdateUseDef();
                     var optimizationName = optimizationPass.GetType().Name;

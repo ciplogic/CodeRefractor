@@ -351,7 +351,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
             var localValue = rightValue.Info;
 
             var declaringType = localValue.DeclaringType;
-            var cppName = declaringType.ToCppName(EscapingMode.Stack);
+            var cppName = declaringType.ToCppName(true, isSmartPtr: EscapingMode.Stack);
             var assignedData = vars.GetVariableData(value.AssignedTo);
             switch (assignedData.Escaping)
             {
@@ -407,7 +407,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
             if (localVariableData.Escaping == EscapingMode.Pointer)
             {
                 var cppName = localVariable.ComputedType()
-                    .ClrType.ToCppName(localVariableData.Escaping);
+                    .ClrType.ToCppName(true, isSmartPtr: localVariableData.Escaping);
                 variablesSb
                     .AppendFormat(format, cppName, localVariable.Id)
                     .AppendLine();
@@ -415,7 +415,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
             }
             variablesSb
                 .AppendFormat(format, localVariable.ComputedType()
-                .ClrType.ToCppName(localVariableData.Escaping), localVariable.Id)
+                .ClrType.ToCppName(true, isSmartPtr: localVariableData.Escaping), localVariable.Id)
                 .AppendLine();
         }
 

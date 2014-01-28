@@ -38,9 +38,9 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             {
                 if (interpreter.IsGenericDeclaringType())
                 {
-                    var genericSpecialization = interpreter.Clone();
-                    genericSpecialization.Specialize();
-                    UpdateMethodEntryClosure(genericSpecialization, result);
+                    //var genericSpecialization = interpreter.Clone();
+                    //genericSpecialization.Specialize();
+                    UpdateMethodEntryClosure(interpreter, result);
                 }
                 else
                     UpdateMethodEntryClosure(interpreter, result);

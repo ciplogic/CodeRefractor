@@ -14,7 +14,6 @@ using CodeRefractor.RuntimeBase.FrontEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.ConstTable;
-using CodeRefractor.RuntimeBase.Runtime;
 using CodeRefractor.RuntimeBase.Shared;
 
 #endregion
@@ -33,8 +32,15 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             MetaLinkerOptimizer.ApplyOptimizations(toOptimizeList);
             closure = interpreter.GetMethodClosure();
             var typeClosure = TypesClosureLinker.GetTypesClosure(closure);
-            var sb = new StringBuilder();
             LinkingData.Includes.Clear();
+            var sb = GenerateSourceStringBuilder(interpreter, typeClosure, closure);
+
+            return sb;
+        }
+
+        private static StringBuilder GenerateSourceStringBuilder(MethodInterpreter interpreter, List<Type> typeClosure, List<MethodInterpreter> closure)
+        {
+            var sb = new StringBuilder();
 
             sb.AppendLine("#include \"sloth.h\"");
 
@@ -51,7 +57,6 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             sb.AppendLine(PlatformInvokeCodeWriter.LoadDllMethods());
             sb.AppendLine(ConstByteArrayList.BuildConstantTable());
             sb.AppendLine(LinkingData.Instance.Strings.BuildStringTable());
-
             return sb;
         }
 
@@ -82,13 +87,9 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
         {
             foreach (var interpreter in closure)
             {
-                var codeWriter = new MethodInterpreterCodeWriter
-                    {
-                        Interpreter = interpreter
-                    };
                 if (interpreter.Kind != MethodKind.Default)
                     continue;
-                sb.AppendLine(codeWriter.WriteMethodSignature());
+                sb.AppendLine(MethodInterpreterCodeWriter.WriteMethodSignature(interpreter));
             }
 
         }
@@ -105,36 +106,33 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             foreach (var typeData in typeDatas)
             {
                 var mappedType = typeData.GetMappedType();
+                if(!mappedType.IsGenericType)
                 sb.AppendFormat("struct {0}; ", mappedType.ToCppMangling()).AppendLine();
             }
             foreach (var typeData in typeDatas)
             {
                 if (DelegateManager.IsTypeDelegate(typeData))
                     continue;
-                var originalType = typeData;
                 var type = typeData.GetMappedType();
                 var mappedType = typeData;
+
+                if (mappedType.IsGenericType)
+                {
+                    var genericTypeCount = mappedType.GetGenericArguments().Length;
+                    var typeNames = new List<string>();
+                    for (var i = 1; i <= genericTypeCount; i++)
+                    {
+                        typeNames.Add("class T" + i);
+                    }
+                    sb.AppendFormat("template <{0}> ", string.Join(", ", typeNames)).AppendLine();
+                }
                 sb.AppendFormat("struct {0} {{", type.ToCppMangling()).AppendLine();
                 WriteClassFieldsBody(sb, mappedType);
                 sb.AppendFormat("}};").AppendLine();
 
                 var typedesc = UsedTypeList.Set(type);
                 typedesc.WriteStaticFieldInitialization(sb);
-                /*
-                var staticFields = originalType.GetFields(BindingFlags.Static).ToList();
-                staticFields.AddRange(type.GetFields(BindingFlags.Static | BindingFlags.NonPublic));
-                foreach (var fieldData in staticFields.Where(field => field.IsStatic))
-                {
-                    if (fieldData.IsLiteral)
-                        continue;
-                    sb.AppendFormat(" -- static -- {0} {3}::{1} = {2};",
-                        fieldData.FieldType.ToCppName(),
-                        fieldData.Name.ValidName(),
-                        GetDefault(fieldData.FieldType),
-                        type.ToCppMangling())
-                        .AppendLine();
-                }
-            */
+               
             }
         }
 
@@ -148,14 +146,9 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
         {
             foreach (var interpreter in closure)
             {
-                var codeWriter = new MethodInterpreterCodeWriter
-                {
-                    Interpreter = interpreter
-                };
-
                 if (interpreter.Kind != MethodKind.Delegate)
                     continue;
-                sb.AppendLine(codeWriter.WriteDelegateCallCode());
+                sb.AppendLine(MethodInterpreterCodeWriter.WriteDelegateCallCode(interpreter));
             }
 
             sb.AppendLine(DelegateManager.Instance.BuildDelegateContent());
@@ -164,30 +157,19 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 
         private static void WriteClosureBodies(List<MethodInterpreter> closure, StringBuilder sb)
         {
-            
             foreach (var interpreter in closure)
             {
-                var codeWriter = new MethodInterpreterCodeWriter
-                {
-                    Interpreter = interpreter
-                };
-
                 if (interpreter.Kind != MethodKind.PlatformInvoke)
                     continue;
-                sb.AppendLine(codeWriter.WritePInvokeMethodCode());
+                sb.AppendLine(MethodInterpreterCodeWriter.WritePInvokeMethodCode(interpreter));
             }
 
             sb.AppendLine("///---Begin closure code --- ");
             foreach (var interpreter in closure)
             {
-                var codeWriter = new MethodInterpreterCodeWriter
-                    {
-                        Interpreter = interpreter
-                    };
-
                 if (interpreter.Kind != MethodKind.Default)
                     continue;
-                sb.AppendLine(codeWriter.WriteMethodCode());
+                sb.AppendLine(MethodInterpreterCodeWriter.WriteMethodCode(interpreter));
             }
             sb.AppendLine("///---End closure code --- ");
         }

@@ -37,23 +37,14 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                 foreach (var methodBase in methodsToOptimize)
                 {
                     var interpreter = methodBase;
-                    var codeWriter = new MethodInterpreterCodeWriter
-                        {
-                            Interpreter = interpreter
-                        };
-                    doOptimize = codeWriter.ApplyLocalOptimizations(
-                        CommandLineParse.SortedOptimizations[OptimizationKind.InFunction]);
+                    doOptimize = MethodInterpreterCodeWriter.ApplyLocalOptimizations(
+                        CommandLineParse.SortedOptimizations[OptimizationKind.InFunction], interpreter);
                 }
                 foreach (var methodBase in methodsToOptimize)
                 {
                     var interpreter = methodBase;
-                    var codeWriter = new MethodInterpreterCodeWriter
-                        {
-                            Interpreter = interpreter
-                        };
-
-                    doOptimize = codeWriter.ApplyLocalOptimizations(
-                        CommandLineParse.SortedOptimizations[OptimizationKind.Global]);
+                    doOptimize = MethodInterpreterCodeWriter.ApplyLocalOptimizations(
+                        CommandLineParse.SortedOptimizations[OptimizationKind.Global], interpreter);
                 }
             } while (doOptimize);
 

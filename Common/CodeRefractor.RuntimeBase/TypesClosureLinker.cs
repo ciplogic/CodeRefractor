@@ -65,9 +65,18 @@ namespace CodeRefractor.RuntimeBase
                     typeDesc.ClrType != typeof(IntPtr)
                 )
                 .Where(typeDescArray => !typeDescArray.ClrType.IsSubclassOf(typeof(Array)))
+                .Where(typeDesc =>
+                    typeDesc.ClrType.GetMappedType()==typeDesc.ClrType &&
+                    !string.IsNullOrEmpty(typeDesc.ClrType.FullName)
+                )
                 .Select(typeDescr => typeDescr.ClrType)
                 .ToList();
-            return typesClosure;
+            var resultDictonary = new Dictionary<string, Type>();
+            foreach (var typeDesc in typesClosure)
+            {
+                resultDictonary[typeDesc.ToCppMangling()] = typeDesc;
+            }
+            return resultDictonary.Values.ToList();
         }
 
         private static bool IsRefClassType(Type t)

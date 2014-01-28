@@ -2,8 +2,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.FrontEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.Shared;
@@ -15,7 +17,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 {
     public class MethodInterpreter
     {
-        public readonly MethodBase Method;
+        public MethodBase Method { get; set; }
+        public TypeDescription DeclaringType { get; set; }
 
         public List<Type> ClassSpecializationType = new List<Type>();
         public List<Type> MethodSpecializationType = new List<Type>();
@@ -30,10 +33,75 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
         public bool Interpreted { get; set; }
 
+        public MethodBase GetGenericMethod(MethodBase method)
+        {
+            var genericParameters = new List<Type>();
+            genericParameters.AddRange(DeclaringType.ClrType.GetGenericArguments());
+            var parameters = method.GetParameters().Select(par => par.ParameterType).ToArray();
+
+            var allMemberFlags = BindingFlags.Public | BindingFlags.NonPublic |
+                               BindingFlags.Static | BindingFlags.Instance;
+            MethodBase result = null;
+            if (method.IsConstructor)
+            {
+                result=DeclaringType.ClrType.GetConstructor(parameters);
+            }
+            else
+            {
+                result=DeclaringType.ClrType.GetMethod(method.Name, parameters);
+            }
+            if (result == null)
+            {
+                try
+                {
+                    result = DeclaringType.ClrType.GetMethod(method.Name, allMemberFlags);
+                }
+                catch
+                {
+                    
+                }
+            }
+
+            if (result == null)
+            {
+                var methods = DeclaringType.ClrType.GetMethods();
+                foreach (var info in methods)
+                {
+                    if (method.Name == info.Name)
+                    {
+                        result = info;
+                        break;
+                    }
+                }
+            }
+            if (result == null)
+            {
+            }
+            return result;
+        }
+
+        public void SetDeclaringType(MethodBase method)
+        {
+            DeclaringType = UsedTypeList.Set(method.DeclaringType);
+            if (!DeclaringType.ClrType.IsGenericType)
+            {
+                Method = method;
+                return;
+            }
+            Method = GetGenericMethod(method);
+            if (Method == null)
+            {
+                Method = DeclaringType.ClrType.GetMethod(method.Name);
+            }
+            if (Method == null)
+            {
+                
+            }
+        }
+
         public MethodInterpreter(MethodBase method)
         {
-            Method = method;
-
+            SetDeclaringType(method);
             var pureAttribute = method.GetCustomAttribute<PureMethodAttribute>();
             if (pureAttribute != null)
                 AnalyzeProperties.IsPure = true;

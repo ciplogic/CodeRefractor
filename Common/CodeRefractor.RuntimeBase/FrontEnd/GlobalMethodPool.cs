@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using CodeRefractor.RuntimeBase.Analyze;
@@ -17,6 +18,8 @@ namespace CodeRefractor.RuntimeBase.FrontEnd
         public static void Register(MethodInterpreter interpreter)
         {
             var method = interpreter.Method;
+            if(method==null)
+                throw new InvalidDataException("Method is not mapped correctly");
             var methodDefinitionKey = GenerateKey(method);
             Interpreters[methodDefinitionKey] = interpreter;
             

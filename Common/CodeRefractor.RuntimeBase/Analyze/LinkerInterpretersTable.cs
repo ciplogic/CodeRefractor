@@ -10,10 +10,17 @@ namespace CodeRefractor.RuntimeBase.Analyze
     {
         public static string WriteHeaderMethod(this MethodBase methodBase, bool writeEndColon = true)
         {
-            var retType = methodBase.GetReturnType().ToCppName();
+            var retType = methodBase.GetReturnType().ToCppName(true);
 
+            var genericTypeCount = methodBase.DeclaringType.GetGenericArguments().Length;
+            
             var sb = new StringBuilder();
-            var arguments = methodBase.GetArgumentsAsText();
+            if (genericTypeCount > 0)
+            {
+                sb.AppendLine(genericTypeCount.GetTypeTemplatePrefix());
+            }
+                
+                var arguments = methodBase.GetArgumentsAsText();
 
             sb.AppendFormat("{0} {1}({2})",
                 retType, methodBase.ClangMethodSignature(), arguments);
@@ -31,7 +38,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
                 CommonExtensions.GetParamAsPrettyList(parameterInfos));
             if (!method.IsStatic)
             {
-                var thisText = String.Format("const {0}& _this", method.DeclaringType.ToCppName());
+                var thisText = String.Format("const {0}& _this", method.DeclaringType.ToCppName(true));
                 return parameterInfos.Length == 0
                     ? thisText
                     : String.Format("{0}, {1}", thisText, arguments);

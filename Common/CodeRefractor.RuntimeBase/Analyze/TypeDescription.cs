@@ -15,6 +15,8 @@ namespace CodeRefractor.RuntimeBase.Analyze
         public TypeCode ClrTypeCode { get; private set; }
         public TypeDescription BaseType { get; private set; }
 
+        public bool ContainsGenericParameters { get; set; }
+
 
         public string Name { get; private set; }
         public string Namespace { get; set; }
@@ -32,9 +34,15 @@ namespace CodeRefractor.RuntimeBase.Analyze
 
         public TypeDescription(Type clrType)
         {
+            if (clrType.IsGenericType)
+            {
+                clrType = clrType.Assembly.GetType(string.Format("{0}.{1}", clrType.Namespace, clrType.Name));
+            }
             ClrType = clrType;
+
             Name = clrType.Name;
             Namespace = clrType.Namespace;
+            ContainsGenericParameters = clrType.ContainsGenericParameters;
             Layout = new List<FieldDescription>();
 
             ExtractInformation();
@@ -81,13 +89,13 @@ namespace CodeRefractor.RuntimeBase.Analyze
             {
                 if (fieldInfo.IsLiteral)
                     continue;
-                var typeField = UsedTypeList.Set(fieldInfo.FieldType);
-                if (typeField == null)
+                var typeOfField = UsedTypeList.Set(fieldInfo.FieldType);
+                if (typeOfField== null)
                     continue;
                 var fieldDescription = new FieldDescription
                 {
                     Name = fieldInfo.Name,
-                    TypeDescription = typeField,
+                    TypeDescription = typeOfField,
                     IsStatic = fieldInfo.IsStatic
                 };
                 var fieldOffsetAttribute = fieldInfo.GetCustomAttribute<FieldOffsetAttribute>();
@@ -138,9 +146,13 @@ namespace CodeRefractor.RuntimeBase.Analyze
         {
             foreach (var fieldData in fields)
             {
+                if (fieldData.TypeDescription.ContainsGenericParameters)
+                {
+                    
+                }
                 var staticString = fieldData.IsStatic ? "static" : "";
                 sb.AppendFormat("{2} {0} {1};",
-                    fieldData.TypeDescription.ClrType.ToCppName(),
+                    fieldData.TypeDescription.ClrType.ToCppName(true),
                     fieldData.Name.ValidName(),
                     staticString
                     ).AppendLine();
@@ -154,8 +166,13 @@ namespace CodeRefractor.RuntimeBase.Analyze
                 var obj = Activator.CreateInstance(type);
                 return obj.ToString();
             }
-            var result = string.Format("std::shared_ptr <{0}>(0)",type.ToCppName());
+            var result = string.Format("std::shared_ptr <{0}>(0)", type.ToCppName(true));
             return result;
+        }
+
+        public override string ToString()
+        {
+            return ClrType.ToString();
         }
 
         public void WriteStaticFieldInitialization(StringBuilder sb)
@@ -172,7 +189,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
                 if(!fieldData.IsStatic)
                     continue;
                 sb.AppendFormat(" /* static*/ {0} {3}::{1} = {2};",
-                        fieldData.TypeDescription.ClrType.ToCppName(),
+                        fieldData.TypeDescription.ClrType.ToCppName(true),
                         fieldData.Name.ValidName(),
                         GetDefault(fieldData.TypeDescription.ClrType),
                         ClrType.ToCppMangling())
