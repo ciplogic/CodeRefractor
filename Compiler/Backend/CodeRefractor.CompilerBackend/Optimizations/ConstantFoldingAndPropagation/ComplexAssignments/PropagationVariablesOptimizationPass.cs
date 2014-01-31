@@ -9,15 +9,16 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
 {
     class PropagationVariablesOptimizationPass : BlockOptimizationPass
     {
-        public override bool OptimizeBlock(MethodInterpreter midRepresentation, int startRange, int endRange)
+        public override bool OptimizeBlock(MethodInterpreter midRepresentation, int startRange, int endRange,
+            LocalOperation[] operations)
         {
             var result = false;
 
-            var instructionRange = GetInstructionRange(midRepresentation, startRange, endRange);
+            var instructionRange = GetInstructionRange(operations, startRange, endRange);
             var useDef = midRepresentation.MidRepresentation.UseDef;
             var constValues = new Dictionary<LocalVariable, ConstValue>();
             var mappedValues = new Dictionary<LocalVariable, LocalVariable>();
-            for (int index = 0; index < instructionRange.Length; index++)
+            for (var index = 0; index < instructionRange.Length; index++)
             {
                 var op = instructionRange[index];
                 result |= UpdateKnownUsages(op, constValues, mappedValues, useDef, startRange + index);

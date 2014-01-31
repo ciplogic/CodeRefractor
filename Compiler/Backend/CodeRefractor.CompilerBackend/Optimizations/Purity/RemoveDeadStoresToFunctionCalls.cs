@@ -11,7 +11,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
 {
     class RemoveDeadStoresToFunctionCalls : BlockOptimizationPass
     {
-        public override bool OptimizeBlock(MethodInterpreter midRepresentation, int startRange, int endRange)
+        public override bool OptimizeBlock(MethodInterpreter midRepresentation, int startRange, int endRange, LocalOperation[] operations)
         {
             var localOperations = midRepresentation.MidRepresentation.LocalOperations;
 

@@ -10,7 +10,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions
 {
     class PrecomputeRepeatedBinaryOperators : BlockOptimizationPass
     {
-        public override bool OptimizeBlock(MethodInterpreter midRepresentation, int startRange, int endRange)
+        public override bool OptimizeBlock(MethodInterpreter midRepresentation, int startRange, int endRange, LocalOperation[] operations)
         {
             var localOperations = midRepresentation.MidRepresentation.LocalOperations;
             var calls = FindBinaryOperators(localOperations, startRange, endRange);

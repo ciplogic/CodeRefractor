@@ -4,12 +4,13 @@ using CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions;
 using CodeRefractor.CompilerBackend.Optimizations.Util;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
+using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 
 namespace CodeRefractor.CompilerBackend.Optimizations.Purity
 {
     class RemoveDeadPureFunctionCalls : BlockOptimizationPass
     {
-        public override bool OptimizeBlock(MethodInterpreter midRepresentation, int startRange, int endRange)
+        public override bool OptimizeBlock(MethodInterpreter midRepresentation, int startRange, int endRange, LocalOperation[] operations)
         {
             var localOperations = midRepresentation.MidRepresentation.LocalOperations;
 

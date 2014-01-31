@@ -10,7 +10,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions
 {
     internal class PrecomputeRepeatedFieldGets : BlockOptimizationPass
     {
-        public override bool OptimizeBlock(MethodInterpreter midRepresentation, int startRange, int endRange)
+        public override bool OptimizeBlock(MethodInterpreter midRepresentation, int startRange, int endRange, LocalOperation[] operations)
         {
             var localOperations = midRepresentation.MidRepresentation.LocalOperations;
             var getFieldOperations = FindGetFieldOperations(localOperations, startRange, endRange);

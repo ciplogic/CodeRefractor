@@ -13,7 +13,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
         private readonly Dictionary<LocalVariable, int> _dictionary =
             new Dictionary<LocalVariable, int>();
 
-        public override bool OptimizeBlock(MethodInterpreter midRepresentation, int startRange, int endRange)
+        public override bool OptimizeBlock(MethodInterpreter midRepresentation, int startRange, int endRange, LocalOperation[] operations)
         {
             _dictionary.Clear();
             var useDef = midRepresentation.MidRepresentation.UseDef;

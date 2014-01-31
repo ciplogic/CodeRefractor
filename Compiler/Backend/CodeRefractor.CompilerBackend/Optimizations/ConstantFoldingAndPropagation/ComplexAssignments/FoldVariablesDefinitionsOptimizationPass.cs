@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
+using CodeRefractor.CompilerBackend.Optimizations.Util;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
@@ -19,7 +20,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
             var metaMidRepresentation = methodInterpreter.MidRepresentation;
-            var localOperations = metaMidRepresentation.LocalOperations;
+            var localOperations = metaMidRepresentation.LocalOperations.ToArray();
             _definitionsDictionary.Clear();
             BuildDefinitionDictionary(localOperations, metaMidRepresentation.UseDef);
             RemoveNonUniqueDefinitions(_definitionsDictionary);
@@ -45,14 +46,13 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
             }
             if(toPatch.Count==0)
                 return;
-            var patchArr = toPatch.ToArray();
-            Array.Sort(patchArr);
-            patchArr= patchArr.Reverse().ToArray();
-            PatchInstructions(localOperations, patchArr);
+            var toRemove = PatchInstructions(localOperations, toPatch);
+            methodInterpreter.DeleteInstructions(toRemove);
         }
 
-        private void PatchInstructions(List<LocalOperation> localOperations, IEnumerable<int> toPatch)
+        private List<int> PatchInstructions(LocalOperation[] localOperations, IEnumerable<int> toPatch)
         {
+            var toRemove = new List<int>();
             foreach (var line in toPatch)
             {
                 var assignment = localOperations[line].GetAssignment();
@@ -74,8 +74,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                     default:
                         continue;
                 }
-                localOperations.RemoveAt(line);
+                toRemove.Add(line);
             }
+            return toRemove;
         }
 
         private static void RemoveNonUniqueDefinitions(Dictionary<LocalVariable, int> dictionaryPositions)
@@ -93,13 +94,13 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
             }
         }
 
-        private void BuildDefinitionDictionary(List<LocalOperation> localOperations, UseDefDescription useDef)
+        private void BuildDefinitionDictionary(LocalOperation[] localOperations, UseDefDescription useDef)
         {
-            for (var i = 0; i < localOperations.Count; i++)
+            for (var i = 0; i < localOperations.Length; i++)
             {
                 var def = useDef.GetDefinition(i);
                 UpdateDefinitionDictionaryForIndex(i, def);
-                var usages = useDef.GetUsages(i); //op.GetUsages();
+                var usages = useDef.GetUsages(i);
                 UpdateUsagesDictionaryForIndex(i, usages);
 
             }

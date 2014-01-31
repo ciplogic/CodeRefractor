@@ -66,12 +66,15 @@ namespace CodeRefractor.RuntimeBase.FrontEnd
                 .Select(t => (CrTypeResolver)Activator.CreateInstance(t))
                 .FirstOrDefault();
             TypeResolvers[assembly] = resolver;
-            
         }
-
+        static readonly Dictionary<MethodBase, string> CachedKeys = new Dictionary<MethodBase, string>(); 
         public static string GenerateKey(this MethodBase method)
         {
-            return method.WriteHeaderMethod(false);
+            string result;
+            if (CachedKeys.TryGetValue(method, out result)) return result;
+            result = method.WriteHeaderMethod(false);
+            CachedKeys[method] = result;
+            return result;
         }
 
         public static MethodInterpreter GetRegisteredInterpreter(this MethodBase method)

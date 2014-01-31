@@ -13,7 +13,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions
 {
     class PrecomputeRepeatedPureFunctionCall : BlockOptimizationPass
     {
-        public override bool OptimizeBlock(MethodInterpreter midRepresentation, int startRange, int endRange)
+        public override bool OptimizeBlock(MethodInterpreter midRepresentation, int startRange, int endRange, LocalOperation[] operations)
         {
             var localOperations = midRepresentation.MidRepresentation.LocalOperations;
             var calls = FindCallsToPureFunctions(localOperations, startRange, endRange);
