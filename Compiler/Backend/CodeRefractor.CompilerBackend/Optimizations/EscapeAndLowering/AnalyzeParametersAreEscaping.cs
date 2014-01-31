@@ -132,6 +132,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
             var otherMethodData = (Dictionary<int, bool>) calledMethod.GetAdditionalProperty(EscapeName);
             if (otherMethodData == null)
             {
+                calledMethod.UpdateUseDef();
                 ComputeEscapeTable(interpreter);
                 otherMethodData = (Dictionary<int, bool>)calledMethod.GetAdditionalProperty(EscapeName);
             }
