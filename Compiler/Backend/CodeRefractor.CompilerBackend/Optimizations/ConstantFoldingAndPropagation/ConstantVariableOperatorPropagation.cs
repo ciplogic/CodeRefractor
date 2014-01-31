@@ -13,15 +13,15 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
     {
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
-            var operations = methodInterpreter.MidRepresentation.LocalOperations;
-            for (var i = 0; i < operations.Count - 1; i++)
+            var operations = methodInterpreter.MidRepresentation.LocalOperations.ToArray();
+            for (var i = 0; i < operations.Length- 1; i++)
             {
                 Assignment srcVariableDefinition;
-                var constValue = GetConstantFromOperation(operations, i, out srcVariableDefinition);
+                var constValue = GetConstantFromOperation(operations[i], out srcVariableDefinition);
                 if (constValue == null)
                     continue;
 
-                for (var j = i + 1; j < operations.Count; j++)
+                for (var j = i + 1; j < operations.Length; j++)
                 {
                     var destOperation = operations[j];
                     if (destOperation.Kind == OperationKind.Label)

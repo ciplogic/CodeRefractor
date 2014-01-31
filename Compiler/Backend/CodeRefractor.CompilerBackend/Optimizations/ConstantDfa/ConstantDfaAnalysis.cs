@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.CompilerBackend.Optimizations.Util;
+using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
@@ -17,13 +18,13 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantDfa
     internal class ConstantDfaAnalysis : ResultingInFunctionOptimizationPass
     {
         private Dictionary<int, int> _labelTable = new Dictionary<int, int>();
-        private List<LocalOperation> _operations;
+        private LocalOperation[] _operations;
         private DfaPointOfAnalysis[] _pointsOfAnalysis;
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
-            _operations = methodInterpreter.MidRepresentation.LocalOperations;
+            _operations = methodInterpreter.MidRepresentation.LocalOperations.ToArray();
             _labelTable = InstructionsUtils.BuildLabelTable(_operations);
-            _pointsOfAnalysis = new DfaPointOfAnalysis[_operations.Count + 1];
+            _pointsOfAnalysis = new DfaPointOfAnalysis[_operations.Length+ 1];
 
             var startingConclusions = new DfaPointOfAnalysis();
             Interpret(0, startingConclusions);
@@ -34,7 +35,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantDfa
         private void ApplyResult()
         {
             Assignment assignment;
-            for (var i = 0; i < _operations.Count; i++)
+            for (var i = 0; i < _operations.Length; i++)
             {
                 var operation = _operations[i];
                 switch (operation.Kind)

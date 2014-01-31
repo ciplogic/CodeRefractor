@@ -52,6 +52,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             var optimizationsList = new List<OptimizationPass>(optimizationPasses);
             var didOptimize = true;
 
+            Interpreter.MidRepresentation.UpdateUseDef();
             while (didOptimize)
             {
                 didOptimize = false;
@@ -61,6 +62,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                         continue;
                     didOptimize = optimizationPass.Optimize(Interpreter);
                     if (!didOptimize) continue;
+                    Interpreter.MidRepresentation.UpdateUseDef();
                     var optimizationName = optimizationPass.GetType().Name;
                     Debug.WriteLine(String.Format("Applied optimization: {0}", optimizationName));
                     result = true;

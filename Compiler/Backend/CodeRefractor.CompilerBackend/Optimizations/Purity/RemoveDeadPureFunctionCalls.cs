@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions;
 using CodeRefractor.CompilerBackend.Optimizations.Util;
+using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 
 namespace CodeRefractor.CompilerBackend.Optimizations.Purity

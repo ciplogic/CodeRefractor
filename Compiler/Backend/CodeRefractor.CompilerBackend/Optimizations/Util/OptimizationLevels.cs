@@ -98,7 +98,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
 
                            
                            new ConstantVariableOperatorPropagation(),
-                           new ConstantVariablePropagationInCall(),
+                           //new ConstantVariablePropagationInCall(),
 
                             new AnalyzeFunctionPurity(),
                             new AnalyzeFunctionNoStaticSideEffects(), 

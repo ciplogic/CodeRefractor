@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.CompilerBackend.Optimizations.Util;
+using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
@@ -20,11 +21,12 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
         {
             var dictionary = new Dictionary<LocalVariable, int>();
             var localOperations = methodInterpreter.MidRepresentation.LocalOperations;
+            var useDef = methodInterpreter.MidRepresentation.UseDef;
             for (var i = 0; i < localOperations.Count; i++)
             {
                 var op = localOperations[i];
 
-                var usages = op.GetUsagesAndDefinitions();
+                var usages = UseDefHelper.GetUsagesAndDefinitions(i, useDef);
                 foreach (var usage in usages)
                 {
                     if (dictionary.ContainsKey(usage))

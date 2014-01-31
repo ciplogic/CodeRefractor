@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.CompilerBackend.Optimizations.Util;
+using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
@@ -19,23 +20,19 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ReachabilityDfa
 
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
-            var operations = methodInterpreter.MidRepresentation.LocalOperations;
+            var operations = methodInterpreter.MidRepresentation.LocalOperations.ToArray();
             _labelTable = InstructionsUtils.BuildLabelTable(operations);
             _reached = new HashSet<int>();
             Interpret(0, operations);
-            if (_reached.Count == operations.Count) return;
+            if (_reached.Count == operations.Length) return;
             Result = true;
             var toDelete = new List<int>();
-            for (var i = 0; i < operations.Count; i++)
+            for (var i = 0; i < operations.Length; i++)
             {
                 if (!_reached.Contains(i))
                     toDelete.Add(i);
             }
-            toDelete.Reverse();
-            foreach (var i in toDelete)
-            {
-                operations.RemoveAt(i);
-            }
+            methodInterpreter.DeleteInstructions(toDelete);
         }
 
         private int JumpTo(int labelId)
@@ -43,7 +40,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ReachabilityDfa
             return _labelTable[labelId];
         }
 
-        private void Interpret(int cursor, List<LocalOperation> operations)
+        private void Interpret(int cursor, LocalOperation[] operations)
         {
             if (_reached.Contains(cursor))
                 return;
@@ -73,7 +70,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ReachabilityDfa
                         break;
                 }
                 cursor++;
-                canUpdate = !_reached.Contains(cursor) && cursor < operations.Count;
+                canUpdate = !_reached.Contains(cursor) && cursor < operations.Length;
             }
         }
     }

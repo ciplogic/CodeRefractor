@@ -5,6 +5,7 @@ using CodeRefractor.CompilerBackend.Linker;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.CompilerBackend.OuputCodeWriter;
 using CodeRefractor.RuntimeBase;
+using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
@@ -70,9 +71,11 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
                 );
             if (argumentList.Count == 0)
                 return argumentList;
-            foreach (var op in operations)
+            var useDef = intermediateCode.UseDef;
+            for (int index = 0; index < operations.Count; index++)
             {
-                var usages = op.GetUsages();
+                var op = operations[index];
+                var usages = useDef.GetUsages(index);
                 foreach (var localVariable in usages.Where(argumentList.Contains))
                 {
                     InFunctionLoweringVars.RemoveCandidatesIfEscapes(localVariable, argumentList, op);

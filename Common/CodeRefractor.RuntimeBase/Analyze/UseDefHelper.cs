@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
@@ -13,7 +12,7 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
 
 #endregion
 
-namespace CodeRefractor.CompilerBackend.Optimizations.Common
+namespace CodeRefractor.RuntimeBase.Analyze
 {
     public static class UseDefHelper
     {
@@ -33,15 +32,16 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
             return null;
         }
 
-        public static List<LocalVariable> GetUsagesAndDefinitions(this LocalOperation operation)
+        public static List<LocalVariable> GetUsagesAndDefinitions(int i, UseDefDescription useDef)
         {
-            var usages = GetUsages(operation);
-            var def = GetDefinition(operation);
+            var usages = useDef.GetUsages(i);
+            var def = useDef.GetDefinition(i);
+            var result = usages.ToList();
             if (def != null)
             {
-                usages.Add(def);
+                result.Add(def);
             }
-            return usages;
+            return result;
         }
 
         public static List<int> GetUsagesAndDefinitions(this MetaMidRepresentation intermediateCode,
@@ -49,10 +49,11 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
         {
             var result = new List<int>();
             var instructions = intermediateCode.LocalOperations;
+            var useDef = intermediateCode.UseDef;
             for(var index = 0; index<instructions.Count;index++)
             {
                 var instruction = instructions[index];
-                var usages = GetUsagesAndDefinitions(instruction);
+                var usages = GetUsagesAndDefinitions(index, useDef);
                 foreach (var variable in usages)
                 {
                     if (variable.Equals(localVariable))
@@ -218,8 +219,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
         public static bool OperationUses(this LocalOperation operation, LocalVariable variable)
         {
             var result = GetUsages(operation);
-            return result.Count != 0 &&
-                result.Any(localVariable => localVariable.Equals(variable));
+            return result.Contains(variable);
         }
 
         private static void AddUsage(this List<LocalVariable> usages, IdentifierValue usage)
@@ -230,16 +230,15 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
             usages.Add(localVar);
         }
 
-        public static HashSet<int> GetVariableDefinitions(this MetaMidRepresentation midRepresentation, LocalVariable variable)
+        public static List<int> GetVariableDefinitions(this MetaMidRepresentation midRepresentation, LocalVariable variable)
         {
-            var result = new HashSet<int>();
-            var pos = -1;
-            foreach (var localOperation in midRepresentation.LocalOperations)
+            var result = new List<int>();
+            var useDef = midRepresentation.UseDef;
+            for (int index = 0; index < midRepresentation.LocalOperations.Count; index++)
             {
-                pos++;
-                var definition = localOperation.GetDefinition();
+                var definition = useDef.GetDefinition(index);
                 if (variable.Equals(definition))
-                    result.Add(pos);
+                    result.Add(index);
             }
             return result;
         }
@@ -260,6 +259,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
                 case OperationKind.BranchOperator:
                 case OperationKind.SetField:
                 case OperationKind.SetArrayItem:
+                case OperationKind.SetStaticField:
+                    return null;
                     return null;
                 case OperationKind.Assignment:
                 case OperationKind.NewObject:
@@ -267,7 +268,6 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
                 case OperationKind.CopyArrayInitializer:
                 case OperationKind.GetStaticField:
                 case OperationKind.GetArrayItem:
-                case OperationKind.SetStaticField:
                     var assign = operation.GetAssignment();
                     return assign.AssignedTo;
                 case OperationKind.GetField:
@@ -297,7 +297,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
             return representation.LocalOperations.GetVariableUsages(variable);
         }
 
-        public static List<int> GetVariableUsages(this List<LocalOperation> localOperations, LocalVariable variable)
+        public static List<int> GetVariableUsages(this IList<LocalOperation> localOperations, LocalVariable variable)
         {
             var startIndex = 0;
             var endIndex = localOperations.Count - 1;
@@ -306,7 +306,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
             return result;
         }
 
-        public static List<int> GetVariableUsages(List<LocalOperation> localOperations, LocalVariable variable, int startIndex, int endIndex)
+        public static List<int> GetVariableUsages(IList<LocalOperation> localOperations, LocalVariable variable, int startIndex, int endIndex)
         {
             var result = new List<int>();
             for (var index = startIndex; index <= endIndex; index++)
@@ -344,6 +344,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
                 case OperationKind.SetField:
                     SwitchUsageInSetField(op, usageVariable, definitionIdentifier);
                     break;
+                case OperationKind.SetStaticField:
+                    SwitchUsageInSetStaticField(op, usageVariable, definitionIdentifier);
+                    break;
                 case OperationKind.SetArrayItem:
                     SwitchUsageInSetArrayItem(op, usageVariable, definitionIdentifier);
                     break;
@@ -379,7 +382,6 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
                         string.Format("Switch usage is not implemented for this operation '{0}'", op.Kind));
             }
         }
-
         private static void SwitchUsageInRefAssignment(LocalOperation op, LocalVariable usageVariable, IdentifierValue definitionIdentifier)
         {
             var returnValue = op.Get<RefAssignment>();
@@ -495,6 +497,17 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
                 opSetField.AssignedTo = (LocalVariable)definitionIdentifier;
             }
         }
+
+        private static void SwitchUsageInSetStaticField(LocalOperation op, LocalVariable usageVariable, IdentifierValue definitionIdentifier)
+        {
+            var opSetField = (Assignment)op.Value;
+           
+            if (usageVariable.Equals(opSetField.Right))
+            {
+                opSetField.Right = definitionIdentifier;
+            }
+        }
+
 
         private static void SwichUsageInGetField(LocalOperation op, LocalVariable usageVariable,
                                                  IdentifierValue definitionIdentifier)

@@ -11,10 +11,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
 {
     public abstract class ConstantVariablePropagationBase : ResultingInFunctionOptimizationPass
     {
-        protected static ConstValue GetConstantFromOperation(List<LocalOperation> operations, int i,
+        protected static ConstValue GetConstantFromOperation(LocalOperation srcOperation,
                                                              out Assignment srcVariableDefinition)
         {
-            var srcOperation = operations[i];
             srcVariableDefinition = null;
             return srcOperation.Kind != OperationKind.Assignment
                        ? null
@@ -23,9 +22,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
 
         public static ConstValue ConstantFromOperation(out Assignment srcVariableDefinition, LocalOperation srcOperation)
         {
-            srcVariableDefinition = srcOperation.Value as Assignment;
-            if (srcVariableDefinition == null)
-                return null;
+            srcVariableDefinition = (Assignment) srcOperation.Value;
             var constValue = srcVariableDefinition.Right as ConstValue;
             return constValue;
         }

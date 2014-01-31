@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.CompilerBackend.Optimizations.Util;
+using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
@@ -27,9 +28,10 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
         {
             var localOperations = methodInterpreter.MidRepresentation.LocalOperations.ToArray();
 
+            var useDef = methodInterpreter.MidRepresentation.UseDef;
             _definitions.Clear();
             ComputeDefinitions(localOperations);
-            RemoveUsages(localOperations);
+            RemoveUsages(localOperations,useDef);
             if (_definitions.Count == 0)
                 return;
             var toRemove = BuildRemoveInstructions(localOperations);
@@ -40,11 +42,11 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
             Result = true;
         }
 
-        private void RemoveUsages(LocalOperation[] localOperations)
+        private void RemoveUsages(LocalOperation[] localOperations, UseDefDescription useDef)
         {
-            foreach (var op in localOperations)
+            for (int index = 0; index < localOperations.Length; index++)
             {
-                var usages = op.GetUsages();
+                var usages = useDef.GetUsages(index);
                 foreach (var localVariable in usages)
                 {
                     _definitions.Remove(localVariable);

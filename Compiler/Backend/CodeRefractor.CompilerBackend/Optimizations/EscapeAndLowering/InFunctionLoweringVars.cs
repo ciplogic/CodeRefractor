@@ -6,6 +6,7 @@ using System.Linq;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.CompilerBackend.OuputCodeWriter;
 using CodeRefractor.RuntimeBase;
+using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
@@ -27,9 +28,11 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
             toAdd = variables.VirtRegs.Where(varId => !varId.ComputedType().ClrType.IsPrimitive);
             candidateVariables.AddRange(toAdd);
             var localOp = midRepresentation.LocalOperations;
-            foreach (var op in localOp)
+            var useDef = midRepresentation.UseDef;
+            for (int index = 0; index < localOp.Count; index++)
             {
-                var usages = op.GetUsages();
+                var op = localOp[index];
+                var usages = useDef.GetUsages(index);
                 foreach (var localVariable in usages.Where(candidateVariables.Contains))
                 {
                     RemoveCandidatesIfEscapes(localVariable, candidateVariables, op);

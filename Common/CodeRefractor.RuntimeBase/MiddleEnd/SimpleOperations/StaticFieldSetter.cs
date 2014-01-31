@@ -5,8 +5,12 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 {
     public class StaticFieldSetter : LocalVariable
     {
-        public IdentifierValue Instance;
         public Type DeclaringType;
         public string FieldName;
+
+        public StaticFieldSetter()
+        {
+            this.Id = -1;
+        }
     }
 }

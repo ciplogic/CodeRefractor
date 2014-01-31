@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
+using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
@@ -13,11 +14,13 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
             var result = false;
 
             var instructionRange = GetInstructionRange(midRepresentation, startRange, endRange);
+            var useDef = midRepresentation.MidRepresentation.UseDef;
             var constValues = new Dictionary<LocalVariable, ConstValue>();
             var mappedValues = new Dictionary<LocalVariable, LocalVariable>();
-            foreach (var op in instructionRange)
+            for (int index = 0; index < instructionRange.Length; index++)
             {
-                result |= UpdateKnownUsages(op, constValues, mappedValues);
+                var op = instructionRange[index];
+                result |= UpdateKnownUsages(op, constValues, mappedValues, useDef, startRange + index);
                 RemoveDefinitionsIfTheUsageIsInvalidated(op.GetDefinition(), constValues, mappedValues);
                 UpdateInstructionMapping(op, constValues, mappedValues);
             }
@@ -77,25 +80,28 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
             }
         }
 
-        private static bool UpdateKnownUsages(
-            LocalOperation op, 
-            Dictionary<LocalVariable, ConstValue> constValues, 
-            Dictionary<LocalVariable, LocalVariable> mappedValues)
+        private static bool UpdateKnownUsages(LocalOperation op, Dictionary<LocalVariable, ConstValue> constValues, Dictionary<LocalVariable, LocalVariable> mappedValues, UseDefDescription useDef, int i)
         {
             if (mappedValues.Count == 0 && constValues.Count == 0)
                 return false;
+            var usagesOp = useDef.GetUsages(i);
+            if (usagesOp.Length == 0)
+                return false;
             var result =false;
-            foreach (var possibleUsage in mappedValues)
+            foreach (var usage in usagesOp)
             {
-                if (!op.OperationUses(possibleUsage.Key)) continue;
-                op.SwitchUsageWithDefinition(possibleUsage.Key, possibleUsage.Value);
-                result = true;
-            }
-            foreach (var possibleUsage in constValues)
-            {
-                if (!op.OperationUses(possibleUsage.Key)) continue;
-                op.SwitchUsageWithDefinition(possibleUsage.Key, possibleUsage.Value);
-                result = true;
+                LocalVariable mappedVar;
+                if (mappedValues.TryGetValue(usage, out mappedVar))
+                {
+                    op.SwitchUsageWithDefinition(usage, mappedVar);
+                    result = true;
+                }
+                ConstValue constValue;
+                if (constValues.TryGetValue(usage, out constValue))
+                {
+                    op.SwitchUsageWithDefinition(usage, constValue);
+                    
+                }
             }
             return result;
         }

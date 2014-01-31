@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
+using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
@@ -15,6 +16,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
         public override bool OptimizeBlock(MethodInterpreter midRepresentation, int startRange, int endRange)
         {
             _dictionary.Clear();
+            var useDef = midRepresentation.MidRepresentation.UseDef;
             for (var i = startRange; i <= endRange; i++)
             {
                 var localOperations = midRepresentation.MidRepresentation.LocalOperations;
@@ -31,7 +33,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                             return true;
                     }
                 }
-                var usages = op.GetUsages();
+                var usages = useDef.GetUsages(i);
                 foreach (var usage in usages)
                 {
                     _dictionary.Remove(usage);

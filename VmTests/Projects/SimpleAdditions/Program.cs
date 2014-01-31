@@ -3,9 +3,6 @@ using System.Runtime.InteropServices;
 using System.Text;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.MiddleEnd;
-using Tao.OpenGl;
-using Tao.Sdl;
-
 namespace SimpleAdditions
 {
     public class AuxList<T>
@@ -43,7 +40,7 @@ namespace SimpleAdditions
         public static void Main()
         {
             var list = new AuxList<int>();
-            list.Add(1);
+            list.Add(2);
             var item = list.Get(0);
             Console.WriteLine(item);
         }

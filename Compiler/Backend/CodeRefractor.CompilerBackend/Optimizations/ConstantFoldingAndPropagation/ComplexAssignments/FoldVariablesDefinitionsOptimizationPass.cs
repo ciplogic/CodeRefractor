@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
-using CodeRefractor.CompilerBackend.Optimizations.Util;
+using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
@@ -18,9 +18,10 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
 
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
-            var localOperations = methodInterpreter.MidRepresentation.LocalOperations;
+            var metaMidRepresentation = methodInterpreter.MidRepresentation;
+            var localOperations = metaMidRepresentation.LocalOperations;
             _definitionsDictionary.Clear();
-            BuildDefinitionDictionary(localOperations);
+            BuildDefinitionDictionary(localOperations, metaMidRepresentation.UseDef);
             RemoveNonUniqueDefinitions(_definitionsDictionary);
             RemoveNonUniqueDefinitions(_usagesDictionary);
             var toPatch = new List<int>();
@@ -92,21 +93,19 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
             }
         }
 
-        private void BuildDefinitionDictionary(List<LocalOperation> localOperations)
+        private void BuildDefinitionDictionary(List<LocalOperation> localOperations, UseDefDescription useDef)
         {
             for (var i = 0; i < localOperations.Count; i++)
             {
-                var op = localOperations[i];
-
-                var def = op.GetDefinition();
+                var def = useDef.GetDefinition(i);
                 UpdateDefinitionDictionaryForIndex(i, def);
-                var usages = op.GetUsages();
+                var usages = useDef.GetUsages(i); //op.GetUsages();
                 UpdateUsagesDictionaryForIndex(i, usages);
 
             }
         }
 
-        private void UpdateUsagesDictionaryForIndex(int i, List<LocalVariable> usages)
+        private void UpdateUsagesDictionaryForIndex(int i, LocalVariable[] usages)
         {
             foreach (var localVariable in usages)
             {

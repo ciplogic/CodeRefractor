@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.CompilerBackend.Optimizations.Purity;
+using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
@@ -63,7 +64,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Licm
             var localOps = intermediateCode.LocalOperations;
 
 
-            var result=new List<int>();
+            var result = new List<int>();
+            var useDef = intermediateCode.UseDef;
             for (var index = loopStart; index <= loopEnd; index++)
             {
                 var op = localOps[index];
@@ -83,7 +85,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Licm
                     if(!methodData.IsPure)
                         continue;
                 }
-                var usages = op.GetUsages();
+                var usages = useDef.GetUsages(index);
                 var isInvariant = true;
                 foreach (var usage in usages)
                 {

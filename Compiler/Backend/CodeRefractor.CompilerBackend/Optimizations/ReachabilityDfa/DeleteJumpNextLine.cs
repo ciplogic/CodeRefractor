@@ -18,13 +18,14 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ReachabilityDfa
 
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
-            var operations = methodInterpreter.MidRepresentation.LocalOperations;
+            var operations = methodInterpreter.MidRepresentation.LocalOperations.ToArray();
 
             var found = operations.Any(operation => operation.Kind == OperationKind.AlwaysBranch);
             if (!found)
                 return;
             _labelTable = InstructionsUtils.BuildLabelTable(operations);
-            for (var i = 0; i < operations.Count; i++)
+            var toRemove = new List<int>();
+            for (var i = 0; i < operations.Length; i++)
             {
                 var operation = operations[i];
                 switch (operation.Kind)
@@ -34,9 +35,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ReachabilityDfa
                         
                         if (jumpLabel != i + 1)
                             continue;
-                        
-                        Result = true;
-                        operations.RemoveAt(i);
+                        toRemove.Add(i);
                         return;
                     case OperationKind.BranchOperator:
                         
@@ -45,13 +44,17 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ReachabilityDfa
                         if (jumpTo != i + 1)
                             continue;
                         
-                        Result = true;
-                        operations.RemoveAt(i);
+                        toRemove.Add(i);
                         return;
                     default:
                         continue;
                 }
             }
+            if(toRemove.Count==0)
+                return;
+            methodInterpreter.DeleteInstructions(toRemove);
+            Result = true;
+                        
         }
 
         private int JumpTo(int labelId)

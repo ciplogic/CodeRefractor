@@ -20,11 +20,11 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
             return false;
         }
 
-        public static Dictionary<int, int> BuildLabelTable(List<LocalOperation> operations)
+        public static Dictionary<int, int> BuildLabelTable(LocalOperation[] operations)
         {
             var labelTable = new Dictionary<int, int>();
             labelTable.Clear();
-            for (var i = 0; i < operations.Count; i++)
+            for (var i = 0; i < operations.Length; i++)
             {
                 var operation = operations[i];
                 switch (operation.Kind)

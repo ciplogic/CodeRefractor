@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
+using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.FrontEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
@@ -134,15 +135,17 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Inliner
         {
             var localOperationsToInline = new List<LocalOperation>();
             var localOperations = interpreter.MidRepresentation.LocalOperations.ToList();
-            foreach (var localOperation in localOperations)
+            var useDef = interpreter.MidRepresentation.UseDef;
+            for (int index = 0; index < localOperations.Count; index++)
             {
-                if(localOperation.Kind==OperationKind.Return)
+                var localOperation = localOperations[index];
+                if (localOperation.Kind == OperationKind.Return)
                 {
                     HandleReturn(result, localOperationsToInline, localOperation);
                     break;
                 }
                 var clone = localOperation.Clone();
-                var usages = clone.GetUsages();
+                var usages = useDef.GetUsages(index);
                 SwitchUsageClones(mappedNames, mappedVregs, mappedLocals, usages, clone);
                 localOperationsToInline.Add(clone);
             }
@@ -168,7 +171,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Inliner
         }
 
         private static void SwitchUsageClones(Dictionary<string, IdentifierValue> mappedNames, Dictionary<int, int> mappedVregs, Dictionary<int, LocalVariable> mappedLocals,
-                                              List<LocalVariable> usages, LocalOperation clone)
+                                              LocalVariable[] usages, LocalOperation clone)
         {
             foreach (var localVariable in usages)
             {

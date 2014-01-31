@@ -8,7 +8,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
 {
     abstract class BlockOptimizationPass : ResultingInFunctionOptimizationPass
     {
-        public List<LocalOperation> GetInstructionRange(
+        public LocalOperation[] GetInstructionRange(
             MethodInterpreter intermediateCode, int startInstruction, int endInstruction, bool cleanInstructions = true)
         {
             var result = new List<LocalOperation>();
@@ -23,11 +23,11 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
                 }
                 result.Add(op);
             }
-            return result;
+            return result.ToArray();
         }
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
-            var localOperations = methodInterpreter.MidRepresentation.LocalOperations;
+            var localOperations = methodInterpreter.MidRepresentation.LocalOperations.ToArray();
             var sortedLabelPos = BuildLabelTable(localOperations);
             var startPos = 0;
             var result = false;
@@ -41,17 +41,17 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
                 }
                 startPos = labelPos + 1;
             }
-            TryOptimizeBlock(methodInterpreter, startPos, localOperations.Count - 1);
+            TryOptimizeBlock(methodInterpreter, startPos, localOperations.Length- 1);
             result |= Result;
             Result = result;
         }
 
-        private static List<int> BuildLabelTable(List<LocalOperation> localOperations)
+        private static List<int> BuildLabelTable(LocalOperation[] localOperations)
         {
             var labels = InstructionsUtils.BuildLabelTable(localOperations);
             
             var sortedLabelPos = new SortedSet<int>(labels.Values);
-            for (var index = 0; index < localOperations.Count; index++)
+            for (var index = 0; index < localOperations.Length; index++)
             {
                 var operation = localOperations[index];
                 switch (operation.Kind)
