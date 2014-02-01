@@ -103,7 +103,6 @@
     <Compile Include="Optimizations\ConstantFoldingAndPropagation\ComplexAssignments\OperatorConstantFolding.cs" />
     <Compile Include="Optimizations\ConstantFoldingAndPropagation\ComplexAssignments\OperatorPartialConstantFolding.cs" />
     <Compile Include="Optimizations\Inliner\SmallFunctionsInliner.cs" />
-    <Compile Include="Optimizations\Util\InstructionsUtils.cs" />
     <Compile Include="Optimizations\Jumps\MergeConsecutiveLabels.cs" />
     <Compile Include="Optimizations\ReachabilityDfa\DeleteJumpNextLine.cs" />
     <Compile Include="Optimizations\ReachabilityDfa\ReachabilityDfa.cs" />

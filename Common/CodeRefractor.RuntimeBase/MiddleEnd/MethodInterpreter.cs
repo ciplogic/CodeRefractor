@@ -564,7 +564,10 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 operationFactory.BranchIfLess(offset);
                 return true;
             }
-            if (opcodeStr == OpcodeBranchNames.Bne || opcodeStr == OpcodeBranchNames.BneS)
+            if (opcodeStr == OpcodeBranchNames.Bne
+                || opcodeStr == OpcodeBranchNames.BneUn
+                || opcodeStr == OpcodeBranchNames.BneUnS
+                || opcodeStr == OpcodeBranchNames.BneS)
             {
                 operationFactory.BranchIfNotEqual(offset);
                 return true;
@@ -669,6 +672,11 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             #endregion
 
             return false;
+        }
+
+        public Dictionary<int, int> GetLabelTable()
+        {
+            return MidRepresentation.UseDef.GetLabelTable();
         }
     }
 }

@@ -18,27 +18,19 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Licm
 
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
-            List<int> loopStarts;
-            bool found;
-            do
+            var loopStarts = LoopDetection.FindLoops(methodInterpreter.MidRepresentation);
+            foreach (var loopStart in loopStarts)
             {
-                loopStarts = LoopDetection.FindLoops(methodInterpreter.MidRepresentation);
-                found = false;
-                foreach (var loopStart in loopStarts)
-                {
-                    var loopEnd = LoopDetection.GetEndLoop(methodInterpreter.MidRepresentation.LocalOperations, loopStart);
-                    var allDefinedVariables = GetAllDefinedVariables(methodInterpreter.MidRepresentation, loopStart, loopEnd);
-                    var allInvariantInstructions = GetAllInvariantInstructions(methodInterpreter.MidRepresentation, loopStart, loopEnd,
-                                                                               allDefinedVariables);
-                    if (allInvariantInstructions.Count == 0)
-                        continue;
-                    PerformMoveInstructions(methodInterpreter.MidRepresentation, loopStart, allInvariantInstructions);
-                    Result = true;
-                    found = true;
-                    break;
-                }
+                var loopEnd = LoopDetection.GetEndLoop(methodInterpreter.MidRepresentation.LocalOperations, loopStart);
+                var allDefinedVariables = GetAllDefinedVariables(methodInterpreter.MidRepresentation, loopStart, loopEnd);
+                var allInvariantInstructions = GetAllInvariantInstructions(methodInterpreter.MidRepresentation, loopStart, loopEnd,
+                                                                           allDefinedVariables);
+                if (allInvariantInstructions.Count == 0)
+                    continue;
+                PerformMoveInstructions(methodInterpreter.MidRepresentation, loopStart, allInvariantInstructions);
+                Result = true;
+                return;
             }
-            while(loopStarts.Count != 0 && found);
         }
 
         private static void PerformMoveInstructions(MetaMidRepresentation intermediateCode, int loopStart, List<int> allInvariantInstructions)

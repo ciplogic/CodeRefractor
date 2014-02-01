@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
+using CodeRefractor.CompilerBackend.Optimizations.Util;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
@@ -20,14 +21,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Jumps
             var found = operations.Any(operation => operation.Kind == OperationKind.Label);
             if (!found)
                 return;
-            var candidateLabelTable = new Dictionary<int, int>();
-            var pos = -1;
-            foreach (var operation in operations)
-            {
-                pos++;
-                if (operation.Kind == OperationKind.Label)
-                    candidateLabelTable[(int) operation.Value] = pos;
-            }
+            var candidateLabelTable = methodInterpreter.MidRepresentation.UseDef.GetLabelTable();
 
             foreach (var operation in operations)
             {
@@ -44,11 +38,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Jumps
             }
             if (candidateLabelTable.Count == 0)
                 return;
-            var labelsToRemove = candidateLabelTable.Values.OrderBy(v => v).Reverse().ToList();
-            foreach (var operationPos in labelsToRemove)
-            {
-                operations.RemoveAt(operationPos);
-            }
+            var labelsToRemove = candidateLabelTable.Values.ToList();
+            
+            methodInterpreter.DeleteInstructions(labelsToRemove);
             Result = true;
         }
     }

@@ -27,7 +27,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
             var localOperations = methodInterpreter.MidRepresentation.LocalOperations.ToArray();
-            var sortedLabelPos = BuildLabelTable(localOperations);
+            var sortedLabelPos = BuildLabelTable(localOperations, methodInterpreter.GetLabelTable());
             var startPos = 0;
             var result = false;
             foreach (var labelPos in sortedLabelPos)
@@ -45,11 +45,11 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
             Result = result;
         }
 
-        private static List<int> BuildLabelTable(LocalOperation[] localOperations)
+        private static List<int> BuildLabelTable(LocalOperation[] localOperations, Dictionary<int, int> labelTable)
         {
-            var labels = InstructionsUtils.BuildLabelTable(localOperations);
+            var labels = labelTable;
             
-            var sortedLabelPos = new SortedSet<int>(labels.Values);
+            var sortedLabelPos = new List<int>(labels.Values);
             for (var index = 0; index < localOperations.Length; index++)
             {
                 var operation = localOperations[index];
@@ -57,12 +57,13 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
                 {
                     case OperationKind.BranchOperator:
                     case OperationKind.AlwaysBranch:
-                        sortedLabelPos.Add(index);
+                        if (!sortedLabelPos.Contains(index))
+                            sortedLabelPos.Add(index);
                         break;
                 }
             }
-
-            return sortedLabelPos.ToList();
+            sortedLabelPos.Sort();
+            return sortedLabelPos;
         }
 
         bool TryOptimizeBlock(MethodInterpreter localOperations, int startRange, int endRange, LocalOperation[] operations)

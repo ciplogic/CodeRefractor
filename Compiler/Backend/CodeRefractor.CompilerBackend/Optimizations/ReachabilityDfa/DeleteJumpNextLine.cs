@@ -14,38 +14,35 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ReachabilityDfa
 {
     public class DeleteJumpNextLine : ResultingInFunctionOptimizationPass
     {
-        private Dictionary<int, int> _labelTable;
-
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
             var operations = methodInterpreter.MidRepresentation.LocalOperations.ToArray();
-
-            var found = operations.Any(operation => operation.Kind == OperationKind.AlwaysBranch);
-            if (!found)
-                return;
-            _labelTable = InstructionsUtils.BuildLabelTable(operations);
+            var labelTable = methodInterpreter.GetLabelTable();
             var toRemove = new List<int>();
-            for (var i = 0; i < operations.Length; i++)
+            foreach (var labelInfo in labelTable)
             {
+                var i = labelInfo.Value-1;
+                if(i<0)
+                    continue;
                 var operation = operations[i];
                 switch (operation.Kind)
                 {
                     case OperationKind.AlwaysBranch:
-                        var jumpLabel = JumpTo((int) operation.Value);
-                        
-                        if (jumpLabel != i + 1)
+                        var jumpLabel = labelTable[(int)operation.Value];
+
+                        if (jumpLabel != labelInfo.Value)
                             continue;
                         toRemove.Add(i);
-                        return;
+                        continue;
                     case OperationKind.BranchOperator:
-                        
-                        var destAssignment = (BranchOperator) operation.Value;
-                        var jumpTo = JumpTo(destAssignment.JumpTo);
-                        if (jumpTo != i + 1)
+
+                        var destAssignment = (BranchOperator)operation.Value;
+                        var jumpTo = labelTable[destAssignment.JumpTo];
+                        if (jumpTo != labelInfo.Value)
                             continue;
-                        
+
                         toRemove.Add(i);
-                        return;
+                        continue;
                     default:
                         continue;
                 }
@@ -54,12 +51,6 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ReachabilityDfa
                 return;
             methodInterpreter.DeleteInstructions(toRemove);
             Result = true;
-                        
-        }
-
-        private int JumpTo(int labelId)
-        {
-            return _labelTable[labelId];
         }
     }
 }
