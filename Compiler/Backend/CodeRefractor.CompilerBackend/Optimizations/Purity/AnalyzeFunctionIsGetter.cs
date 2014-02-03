@@ -19,7 +19,6 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
             
             if (!functionIsPure) return;
             methodInterpreter.MidRepresentation.GetProperties().IsGetter = true; 
-            Result = true;
         }
 
         public static bool ComputeFunctionPurity(MethodInterpreter intermediateCode)

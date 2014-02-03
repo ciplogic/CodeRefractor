@@ -33,6 +33,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Licm
                     if (allInvariantInstructions.Count == 0)
                         continue;
                     PerformMoveInstructions(methodInterpreter.MidRepresentation, loopStart, allInvariantInstructions);
+                    methodInterpreter.MidRepresentation.UpdateUseDef();
                     Result = true;
                     found = true;
                     break;
