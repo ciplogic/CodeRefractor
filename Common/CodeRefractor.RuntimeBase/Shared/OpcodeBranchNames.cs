@@ -15,6 +15,8 @@
 
         public const string Bne = "bne";
         public const string BneS = "bne.s";
+        public const string BneUn = "bne.un";
+        public const string BneUnS = "bne.un.s";
 
 
         public const string Beq = "beq";

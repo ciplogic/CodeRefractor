@@ -95,7 +95,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
                            new DceLocalAssigned(),
 
                            new DeleteCallToConstructorOfObject(), 
-                           new ConstantVariablePropagation(),
+                           //new ConstantVariablePropagation(),
 
                            
                            new ConstantVariableOperatorPropagation(),

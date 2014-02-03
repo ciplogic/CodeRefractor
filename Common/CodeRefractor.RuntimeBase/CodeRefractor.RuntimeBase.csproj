@@ -42,6 +42,7 @@
     <Compile Include="Analyze\DelegateManager.cs" />
     <Compile Include="Analyze\FieldDescription.cs" />
     <Compile Include="Analyze\FieldNameTable.cs" />
+    <Compile Include="Analyze\InstructionsUtils.cs" />
     <Compile Include="Analyze\LinkerInterpretersTable.cs" />
     <Compile Include="Analyze\NamerUtils.cs" />
     <Compile Include="Analyze\TypeDescription.cs" />

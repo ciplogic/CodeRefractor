@@ -64,10 +64,11 @@ namespace CodeRefractor.RuntimeBase.FrontEnd
             var hasValue = TypeResolvers.ContainsKey(assembly);
             if (hasValue)
                 return;
-            var resolver = assembly.GetTypes()
-                .Where(type => type.IsSubclassOf(typeof (CrTypeResolver)))
-                .Select(t => (CrTypeResolver)Activator.CreateInstance(t))
-                .FirstOrDefault();
+            var resolverType = assembly.GetType("TypeResolver");
+            
+            CrTypeResolver resolver=null;
+            if(resolverType!=null)
+                resolver = (CrTypeResolver) Activator.CreateInstance(resolverType);
             TypeResolvers[assembly] = resolver;
         }
         static readonly Dictionary<MethodBase, string> CachedKeys = new Dictionary<MethodBase, string>(); 

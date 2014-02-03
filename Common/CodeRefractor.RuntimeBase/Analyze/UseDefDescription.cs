@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using CodeRefractor.CompilerBackend.Optimizations.Util;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
@@ -8,6 +9,8 @@ namespace CodeRefractor.RuntimeBase.Analyze
     {
         private LocalVariable[][] _usages = {};
         private LocalVariable[] _definitions = { };
+
+        private Dictionary<int,int> _labelTable = new Dictionary<int, int>();
 
         public void Update(LocalOperation[] operations)
         {
@@ -21,6 +24,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
                 _usages[index] = operationUsages.ToArray();
                 _definitions[index] = operation.GetDefinition();
             }
+            _labelTable = InstructionsUtils.BuildLabelTable(operations);
         }
 
         public LocalVariable[] GetUsages(int i)
@@ -31,6 +35,11 @@ namespace CodeRefractor.RuntimeBase.Analyze
         public LocalVariable GetDefinition(int index)
         {
             return _definitions[index];
+        }
+
+        public Dictionary<int, int> GetLabelTable()
+        {
+            return _labelTable;
         }
     }
 }

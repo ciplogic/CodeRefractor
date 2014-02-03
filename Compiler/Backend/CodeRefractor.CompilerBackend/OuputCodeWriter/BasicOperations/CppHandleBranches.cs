@@ -47,6 +47,7 @@ namespace CodeRefractor.CompilerBackend.HandleOperations
                     CppHandleCompareBranches.HandleBlt(localVar, secondVar, sb, jumpAddress);
                     break;
                 case OpcodeBranchNames.Bne:
+                case OpcodeBranchNames.BneUn:
                     CppHandleCompareBranches.HandleBne(localVar, secondVar, sb, jumpAddress);
                     break;
 
