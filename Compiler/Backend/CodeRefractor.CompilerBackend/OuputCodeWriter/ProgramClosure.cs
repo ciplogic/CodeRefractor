@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using CodeRefactor.OpenRuntime;
 using CodeRefractor.RuntimeBase;
-using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.FrontEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 
@@ -23,6 +23,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             MetaLinkerOptimizer.ApplyOptimizations(MethodClosure);
             BuildMethodClosure();
             UsedTypes = TypesClosureLinker.GetTypesClosure(MethodClosure);
+            UsedTypes.Add(typeof(CrString));
         }
 
         private void BuildMethodClosure()

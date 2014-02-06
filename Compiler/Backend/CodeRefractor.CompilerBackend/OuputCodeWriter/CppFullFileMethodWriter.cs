@@ -101,7 +101,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                 var parameterInfo = parameterInfos[index];
                 var isSmartPtr = escapingBools[index];
                 var nonEscapingMode = isSmartPtr ? EscapingMode.Smart : EscapingMode.Pointer;
-                var argumentTypeDescription = UsedTypeList.Set(method.DeclaringType.GetMappedType());
+                var argumentTypeDescription = UsedTypeList.Set(parameterInfo.ParameterType.GetMappedType());
                 sb.AppendFormat("{0} {1}",
                     argumentTypeDescription.ClrType.ToCppName(true, isSmartPtr: nonEscapingMode), 
                     parameterInfo.Name);

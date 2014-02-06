@@ -38,14 +38,15 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                 }
                 var inFunctionOptimizations = CommandLineParse.SortedOptimizations[OptimizationKind.InFunction];
                 
-                Parallel.ForEach(methodsToOptimize, methodBase=> 
-                //foreach (var methodBase in methodsToOptimize)
+                //Parallel.ForEach(methodsToOptimize, methodBase=> 
+                //
+                foreach (var methodBase in methodsToOptimize)
                 {
                     var interpreter = methodBase;
                     MethodInterpreterCodeWriter.ApplyLocalOptimizations(
                         inFunctionOptimizations, interpreter);
                 }
-                    );
+                  //  );
                 foreach (var methodBase in methodsToOptimize)
                 {
                     var interpreter = methodBase;

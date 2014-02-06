@@ -49,7 +49,10 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             var result = false;
             var optimizationsList = new List<OptimizationPass>(optimizationPasses);
             var didOptimize = true;
-
+            if (interpreter.Method.Name == "ReSizeGLScene")
+            {
+                
+            }
             while (didOptimize)
             {
                 interpreter.MidRepresentation.UpdateUseDef();
@@ -60,6 +63,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                         continue;
                     didOptimize = optimizationPass.Optimize(interpreter);
                     if (!didOptimize) continue;
+                    var localOperations = interpreter.MidRepresentation.LocalOperations;
                     interpreter.MidRepresentation.UpdateUseDef();
                     var optimizationName = optimizationPass.GetType().Name;
                     //Debug.WriteLine(String.Format("Applied optimization: {0}", optimizationName));

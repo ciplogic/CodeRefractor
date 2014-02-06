@@ -126,6 +126,10 @@
     <Compile Include="OuputCodeWriter\BasicOperations\CppHandleOperators.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Common\CodeRefactor.OpenRuntime\CodeRefactor.OpenRuntime.csproj">
+      <Project>{6C4BC5D1-CE1E-4152-AB7D-0EE10C64496D}</Project>
+      <Name>CodeRefactor.OpenRuntime</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Common\CodeRefractor.RuntimeBase\CodeRefractor.RuntimeBase.csproj">
       <Project>{10CEF783-53C3-42A7-940A-73773A2AF24F}</Project>
       <Name>CodeRefractor.RuntimeBase</Name>
