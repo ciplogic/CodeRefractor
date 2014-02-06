@@ -38,7 +38,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             return sb;
         }
 
-        private static StringBuilder GenerateSourceStringBuilder(MethodInterpreter interpreter, List<Type> typeClosure, List<MethodInterpreter> closure)
+        public static StringBuilder GenerateSourceStringBuilder(MethodInterpreter interpreter, List<Type> typeClosure, List<MethodInterpreter> closure)
         {
             var sb = new StringBuilder();
 

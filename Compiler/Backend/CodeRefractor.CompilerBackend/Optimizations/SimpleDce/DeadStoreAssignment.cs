@@ -22,19 +22,20 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
             OperationKind.GetField,
             OperationKind.UnaryOperator
         };
-        readonly Dictionary<LocalVariable, int> _definitions = new Dictionary<LocalVariable, int>();
-
+        
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
+            Dictionary<LocalVariable, int> definitions = new Dictionary<LocalVariable, int>();
+
             var localOperations = methodInterpreter.MidRepresentation.LocalOperations.ToArray();
 
             var useDef = methodInterpreter.MidRepresentation.UseDef;
-            _definitions.Clear();
-            ComputeDefinitions(localOperations);
-            RemoveUsages(localOperations,useDef);
-            if (_definitions.Count == 0)
+            definitions.Clear();
+            ComputeDefinitions(localOperations, definitions);
+            RemoveUsages(localOperations, useDef, definitions);
+            if (definitions.Count == 0)
                 return;
-            var toRemove = BuildRemoveInstructions(localOperations);
+            var toRemove = BuildRemoveInstructions(localOperations, definitions);
             if (toRemove.Count == 0)
                 return;
             methodInterpreter.MidRepresentation.DeleteInstructions(toRemove);
@@ -42,19 +43,19 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
             Result = true;
         }
 
-        private void RemoveUsages(LocalOperation[] localOperations, UseDefDescription useDef)
+        private void RemoveUsages(LocalOperation[] localOperations, UseDefDescription useDef, Dictionary<LocalVariable, int> definitions)
         {
             for (int index = 0; index < localOperations.Length; index++)
             {
                 var usages = useDef.GetUsages(index);
                 foreach (var localVariable in usages)
                 {
-                    _definitions.Remove(localVariable);
+                    definitions.Remove(localVariable);
                 }
             }
         }
 
-        private void ComputeDefinitions(LocalOperation[] localOperations)
+        private void ComputeDefinitions(LocalOperation[] localOperations, Dictionary<LocalVariable, int> definitions)
         {
             for (int index = 0; index < localOperations.Length; index++)
             {
@@ -62,14 +63,14 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
                 var variableDefinition = op.GetDefinition();
                 if (variableDefinition == null)
                     continue;
-                _definitions[variableDefinition] = index;
+                definitions[variableDefinition] = index;
             }
         }
 
-        private List<int> BuildRemoveInstructions(LocalOperation[] localOperations)
+        private List<int> BuildRemoveInstructions(LocalOperation[] localOperations, Dictionary<LocalVariable, int> definitions)
         {
             var toRemove = new List<int>();
-            foreach (var definition in _definitions)
+            foreach (var definition in definitions)
             {
                 var index = definition.Value;
                 var op = localOperations[index];

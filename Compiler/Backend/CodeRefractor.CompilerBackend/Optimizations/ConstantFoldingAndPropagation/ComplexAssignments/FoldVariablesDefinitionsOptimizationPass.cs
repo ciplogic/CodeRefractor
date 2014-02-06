@@ -13,18 +13,19 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
 {
     class FoldVariablesDefinitionsOptimizationPass : ResultingInFunctionOptimizationPass
     {
-        readonly Dictionary<LocalVariable, int> _definitionsDictionary = new Dictionary<LocalVariable, int>();
-
-        readonly Dictionary<LocalVariable, int> _usagesDictionary = new Dictionary<LocalVariable, int>();
-
+        
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
+            var definitionsDictionary = new Dictionary<LocalVariable, int>();
+
+            var usagesDictionary = new Dictionary<LocalVariable, int>();
+
             var metaMidRepresentation = methodInterpreter.MidRepresentation;
             var localOperations = metaMidRepresentation.LocalOperations.ToArray();
-            _definitionsDictionary.Clear();
-            BuildDefinitionDictionary(localOperations, metaMidRepresentation.UseDef);
-            RemoveNonUniqueDefinitions(_definitionsDictionary);
-            RemoveNonUniqueDefinitions(_usagesDictionary);
+            definitionsDictionary.Clear();
+            BuildDefinitionDictionary(localOperations, metaMidRepresentation.UseDef, definitionsDictionary, usagesDictionary);
+            RemoveNonUniqueDefinitions(definitionsDictionary);
+            RemoveNonUniqueDefinitions(usagesDictionary);
             var toPatch = new List<int>();
             foreach (var targetOp in localOperations.Where(op=>op.Kind==OperationKind.Assignment))
             {
@@ -32,14 +33,14 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                 var rightVar = assignment.Right as LocalVariable;
                 if(rightVar==null)
                     continue;
-                if(!_usagesDictionary.ContainsKey(rightVar))
+                if(!usagesDictionary.ContainsKey(rightVar))
                     continue;
                 var leftVar = assignment.AssignedTo;
-                if (!_definitionsDictionary.ContainsKey(rightVar)
-                    || !_definitionsDictionary.ContainsKey(leftVar))
+                if (!definitionsDictionary.ContainsKey(rightVar)
+                    || !definitionsDictionary.ContainsKey(leftVar))
                     continue;
-                var rightId = _definitionsDictionary[rightVar];
-                var leftId = _definitionsDictionary[leftVar];
+                var rightId = definitionsDictionary[rightVar];
+                var leftId = definitionsDictionary[leftVar];
                 if (leftId- rightId != 1)
                     continue;
                 toPatch.Add(leftId);
@@ -94,41 +95,41 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
             }
         }
 
-        private void BuildDefinitionDictionary(LocalOperation[] localOperations, UseDefDescription useDef)
+        private void BuildDefinitionDictionary(LocalOperation[] localOperations, UseDefDescription useDef, Dictionary<LocalVariable, int> definitionsDictionary, Dictionary<LocalVariable, int> usagesDictionary)
         {
             for (var i = 0; i < localOperations.Length; i++)
             {
                 var def = useDef.GetDefinition(i);
-                UpdateDefinitionDictionaryForIndex(i, def);
+                UpdateDefinitionDictionaryForIndex(i, def, definitionsDictionary);
                 var usages = useDef.GetUsages(i);
-                UpdateUsagesDictionaryForIndex(i, usages);
+                UpdateUsagesDictionaryForIndex(i, usages, usagesDictionary);
 
             }
         }
 
-        private void UpdateUsagesDictionaryForIndex(int i, LocalVariable[] usages)
+        private void UpdateUsagesDictionaryForIndex(int i, LocalVariable[] usages, Dictionary<LocalVariable, int> usagesDictionary)
         {
             foreach (var localVariable in usages)
             {
-                if (_usagesDictionary.ContainsKey(localVariable))
-                    _usagesDictionary[localVariable] = -1;
+                if (usagesDictionary.ContainsKey(localVariable))
+                    usagesDictionary[localVariable] = -1;
                 else
                 {
-                    _usagesDictionary[localVariable] = i;
+                    usagesDictionary[localVariable] = i;
                 }
             }
         }
 
-        private void UpdateDefinitionDictionaryForIndex(int i, LocalVariable def)
+        private void UpdateDefinitionDictionaryForIndex(int i, LocalVariable def, Dictionary<LocalVariable, int> definitionsDictionary)
         {
             if (def == null)
                 return;
 
-            if (_definitionsDictionary.ContainsKey(def))
-                _definitionsDictionary[def] = -1;
+            if (definitionsDictionary.ContainsKey(def))
+                definitionsDictionary[def] = -1;
             else
             {
-                _definitionsDictionary[def] = i;
+                definitionsDictionary[def] = i;
             }
         }
     }

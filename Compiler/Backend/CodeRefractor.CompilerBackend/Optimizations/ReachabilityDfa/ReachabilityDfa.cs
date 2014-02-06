@@ -15,62 +15,59 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ReachabilityDfa
 {
     public class ReachabilityLines : ResultingInFunctionOptimizationPass
     {
-        private Dictionary<int, int> _labelTable;
-        private HashSet<int> _reached;
-
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
             var operations = methodInterpreter.MidRepresentation.LocalOperations.ToArray();
-            _labelTable = InstructionsUtils.BuildLabelTable(operations);
-            _reached = new HashSet<int>();
-            Interpret(0, operations);
-            if (_reached.Count == operations.Length) return;
+            var useDef = methodInterpreter.MidRepresentation.UseDef;
+            if (useDef.GetOperations(OperationKind.Label).Length != 0)
+            {
+                useDef.Update(operations);
+            }
+            var labelTable = useDef.GetLabelTable();
+            var reached = new HashSet<int>();
+            Interpret(0, operations,labelTable, reached);
+            if (reached.Count == operations.Length) return;
             Result = true;
             var toDelete = new List<int>();
             for (var i = 0; i < operations.Length; i++)
             {
-                if (!_reached.Contains(i))
+                if (!reached.Contains(i))
                     toDelete.Add(i);
             }
             methodInterpreter.DeleteInstructions(toDelete);
         }
 
-        private int JumpTo(int labelId)
+        private void Interpret(int cursor, LocalOperation[] operations, Dictionary<int, int> labelTable, HashSet<int> reached)
         {
-            return _labelTable[labelId];
-        }
-
-        private void Interpret(int cursor, LocalOperation[] operations)
-        {
-            if (_reached.Contains(cursor))
+            if (reached.Contains(cursor))
                 return;
             var canUpdate = true;
 
             while (canUpdate)
             {
-                _reached.Add(cursor);
+                reached.Add(cursor);
                 var operation = operations[cursor];
                 switch (operation.Kind)
                 {
                     case OperationKind.BranchOperator:
                         var branchOperator = (BranchOperator) operation.Value;
-                        Interpret(JumpTo(branchOperator.JumpTo), operations);
+                        Interpret(labelTable[branchOperator.JumpTo], operations,labelTable,reached);
                         break;
                     case OperationKind.AlwaysBranch:
                         var jumpTo = (int) operation.Value;
-                        Interpret(JumpTo(jumpTo), operations);
+                        Interpret(labelTable[jumpTo], operations, labelTable, reached);
                         return;
                         case OperationKind.Switch:
                         var switchAssign = operation.GetAssignment();
                         var jumps = (int[])((ConstValue)switchAssign.Right).Value;
                         foreach(var jump in jumps)
                         {
-                            Interpret(JumpTo(jump), operations);
+                            Interpret(labelTable[jump], operations, labelTable, reached);
                         }
                         break;
                 }
                 cursor++;
-                canUpdate = !_reached.Contains(cursor) && cursor < operations.Length;
+                canUpdate = !reached.Contains(cursor) && cursor < operations.Length;
             }
         }
     }

@@ -27,7 +27,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
             var localOperations = methodInterpreter.MidRepresentation.LocalOperations.ToArray();
-            var sortedLabelPos = BuildLabelTable(localOperations, methodInterpreter.GetLabelTable());
+            var sortedLabelPos = BuildBlockOperations(methodInterpreter);
             var startPos = 0;
             var result = false;
             foreach (var labelPos in sortedLabelPos)
@@ -45,25 +45,15 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
             Result = result;
         }
 
-        private static List<int> BuildLabelTable(LocalOperation[] localOperations, Dictionary<int, int> labelTable)
+        private static List<int> BuildBlockOperations(MethodInterpreter methodInterpreter)
         {
-            var labels = labelTable;
-            
-            var sortedLabelPos = new List<int>(labels.Values);
-            for (var index = 0; index < localOperations.Length; index++)
-            {
-                var operation = localOperations[index];
-                switch (operation.Kind)
-                {
-                    case OperationKind.BranchOperator:
-                    case OperationKind.AlwaysBranch:
-                        if (!sortedLabelPos.Contains(index))
-                            sortedLabelPos.Add(index);
-                        break;
-                }
-            }
-            sortedLabelPos.Sort();
-            return sortedLabelPos;
+            var useDef = methodInterpreter.MidRepresentation.UseDef;
+            var result = new List<int>();
+            result.AddRange(useDef.GetOperations(OperationKind.Label));
+            result.AddRange(useDef.GetOperations(OperationKind.BranchOperator));
+            result.AddRange(useDef.GetOperations(OperationKind.AlwaysBranch));
+            result.Sort();
+            return result;
         }
 
         bool TryOptimizeBlock(MethodInterpreter localOperations, int startRange, int endRange, LocalOperation[] operations)

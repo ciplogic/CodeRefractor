@@ -15,7 +15,6 @@ namespace CodeRefractor.RuntimeBase
 {
     public static class MetaLinker
     {
-
         public static List<MethodInterpreter> ComputeDependencies(MethodBase definition)
         {
             var resultDict = new Dictionary<string, MethodInterpreter>();
@@ -74,8 +73,8 @@ namespace CodeRefractor.RuntimeBase
         {
             if(methodInterpreter.Kind!=MethodKind.Default)
                 return;
-
-            
+            if(methodInterpreter.Interpreted)
+                return;
             methodInterpreter.Process();
         }
     }

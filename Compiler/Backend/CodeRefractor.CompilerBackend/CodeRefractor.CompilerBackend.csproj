@@ -115,6 +115,7 @@
     <Compile Include="OuputCodeWriter\Platform\PlatformInvokeCodeWriter.cs" />
     <Compile Include="OuputCodeWriter\Platform\PlatformInvokeDllImports.cs" />
     <Compile Include="OuputCodeWriter\Platform\PlatformInvokeDllMethod.cs" />
+    <Compile Include="OuputCodeWriter\ProgramClosure.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Linker\FieldNameTable.cs" />
     <Compile Include="Linker\NamerUtils.cs" />

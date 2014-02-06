@@ -33,8 +33,10 @@ namespace CodeRefractor.Compiler
             var asm = Assembly.LoadFile(inputAssemblyName);
             var definition = asm.EntryPoint;
             var start = Environment.TickCount;
-            var linker = definition.CreateLinkerFromEntryPoint();
-            var sb = CppCodeGenerator.BuildFullSourceCode(linker);
+            var programClosure = new ProgramClosure(definition);
+            var sb = programClosure.BuildFullSourceCode();
+            //var linker = definition.CreateLinkerFromEntryPoint();
+            //var sb = CppCodeGenerator.BuildFullSourceCode(linker);
             var end = Environment.TickCount - start;
             Console.WriteLine("Compilation time: {0} ms", end);
 

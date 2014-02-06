@@ -126,10 +126,10 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
                            
                            new LoopInvariantCodeMotion(), 
                         
-                           
+                           /*
                             new AnalyzeParametersAreEscaping(), 
                            new InFunctionLoweringVars(),
-                          
+                          */
                            
                        }.ToList();
         }

@@ -23,7 +23,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             var methodInterpreter = definition.Register();
             MetaLinker.Interpret(methodInterpreter);
 
-            MetaLinkerOptimizer.OptimizeMethods();
+            MetaLinkerOptimizer.OptimizeMethods(LinkerInterpretersTable.Methods);
             var foundMethodCount = 1;
             bool canContinue = true;
             while (canContinue)
@@ -35,7 +35,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                 {
                     MetaLinker.Interpret(interpreter);
                 }
-                MetaLinkerOptimizer.OptimizeMethods();
+                MetaLinkerOptimizer.OptimizeMethods(LinkerInterpretersTable.Methods);
             }
 
             return methodInterpreter;

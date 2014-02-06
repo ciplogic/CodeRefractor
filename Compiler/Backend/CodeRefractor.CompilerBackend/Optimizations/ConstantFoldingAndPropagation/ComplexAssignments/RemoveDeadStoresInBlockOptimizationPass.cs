@@ -10,12 +10,10 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
 {
     internal class RemoveDeadStoresInBlockOptimizationPass : BlockOptimizationPass
     {
-        private readonly Dictionary<LocalVariable, int> _dictionary =
-            new Dictionary<LocalVariable, int>();
-
         public override bool OptimizeBlock(MethodInterpreter midRepresentation, int startRange, int endRange, LocalOperation[] operations)
         {
-            _dictionary.Clear();
+            var dictionary = new Dictionary<LocalVariable, int>();
+            dictionary.Clear();
             var useDef = midRepresentation.MidRepresentation.UseDef;
             for (var i = startRange; i <= endRange; i++)
             {
@@ -25,18 +23,18 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                 var definition = op.GetDefinition();
                 if(definition!=null)
                 {
-                    if (!_dictionary.ContainsKey(definition))
-                        _dictionary[definition] = i;
+                    if (!dictionary.ContainsKey(definition))
+                        dictionary[definition] = i;
                     else
                     {
-                        if (TryRemoveLine(_dictionary[definition], localOperations))
+                        if (TryRemoveLine(dictionary[definition], localOperations))
                             return true;
                     }
                 }
                 var usages = useDef.GetUsages(i);
                 foreach (var usage in usages)
                 {
-                    _dictionary.Remove(usage);
+                    dictionary.Remove(usage);
                 }
 
             }

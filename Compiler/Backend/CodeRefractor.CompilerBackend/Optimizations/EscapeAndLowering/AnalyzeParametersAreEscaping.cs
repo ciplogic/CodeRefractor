@@ -23,16 +23,15 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
 
             var originalSnapshot = CppFullFileMethodWriter.BuildEscapingBools(methodInterpreter.Method);
 
-            if (ComputeEscapeTable(methodInterpreter)) return;
+            var localOperations = methodInterpreter.MidRepresentation.LocalOperations.ToArray();
+            if (ComputeEscapeTable(methodInterpreter, localOperations)) return;
 
             var finalSnapshot= CppFullFileMethodWriter.BuildEscapingBools(methodInterpreter.Method);
             CheckForChanges(finalSnapshot, originalSnapshot);
         }
 
-        private static bool ComputeEscapeTable(MethodInterpreter intermediateCode)
+        private static bool ComputeEscapeTable(MethodInterpreter intermediateCode, LocalOperation[] operations)
         {
-            var operations = intermediateCode.MidRepresentation.LocalOperations;
-
             var argEscaping = ComputeEscapingArgList(intermediateCode.MidRepresentation, operations);
             var escaping = ComputeArgsEscaping(operations, argEscaping);
             if (argEscaping.Count == 0) return true;
@@ -61,7 +60,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
             }
         }
 
-        public static HashSet<LocalVariable> ComputeEscapingArgList(MetaMidRepresentation intermediateCode, List<LocalOperation> operations)
+        public static HashSet<LocalVariable> ComputeEscapingArgList(MetaMidRepresentation intermediateCode, LocalOperation[] operations)
         {
             var argumentList = new HashSet<LocalVariable>();
             argumentList.Clear();
@@ -72,7 +71,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
             if (argumentList.Count == 0)
                 return argumentList;
             var useDef = intermediateCode.UseDef;
-            for (int index = 0; index < operations.Count; index++)
+            for (int index = 0; index < operations.Length; index++)
             {
                 var op = operations[index];
                 var usages = useDef.GetUsages(index);
@@ -84,7 +83,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
             return argumentList;
         }
 
-        public static Dictionary<int, bool> ComputeArgsEscaping(List<LocalOperation> operations, HashSet<LocalVariable> argEscaping)
+        public static Dictionary<int, bool> ComputeArgsEscaping(LocalOperation[] operations, HashSet<LocalVariable> argEscaping)
         {
             var escaping = new Dictionary<int, bool>();
             
@@ -132,9 +131,10 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
             var otherMethodData = (Dictionary<int, bool>) calledMethod.GetAdditionalProperty(EscapeName);
             if (otherMethodData == null)
             {
-                calledMethod.UpdateUseDef();
-                ComputeEscapeTable(interpreter);
-                otherMethodData = (Dictionary<int, bool>)calledMethod.GetAdditionalProperty(EscapeName);
+                //var operations = interpreter.MidRepresentation.LocalOperations.ToArray();
+                //ComputeEscapeTable(interpreter, operations);
+                //otherMethodData = (Dictionary<int, bool>)calledMethod.GetAdditionalProperty(EscapeName);
+                return null;
             }
             return otherMethodData;
         }

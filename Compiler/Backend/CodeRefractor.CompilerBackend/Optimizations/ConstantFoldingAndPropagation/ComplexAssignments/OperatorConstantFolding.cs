@@ -14,235 +14,229 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
 {
     public class OperatorConstantFolding : ResultingInFunctionOptimizationPass
     {
-        private MetaMidRepresentation _intermediateCode;
-        private int _pos;
-
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
-            _intermediateCode = methodInterpreter.MidRepresentation;
-            var localOperations = methodInterpreter.MidRepresentation.LocalOperations;
-            var binaryOperations = GetBinaryOperations(localOperations);
-            ComputeBinaryOperations(binaryOperations);
+            var intermediateCode = methodInterpreter.MidRepresentation;
 
-            var unaryOperations = GetUnaryOperations(localOperations);
-            ComputeUnaryOperations(unaryOperations);
+            var localOperations = intermediateCode.LocalOperations.ToArray();
+            var binaryOperations = intermediateCode.UseDef.GetOperations(OperationKind.BinaryOperator); 
+            ComputeBinaryOperations(binaryOperations, localOperations);
+
+            var unaryOperations = intermediateCode.UseDef.GetOperations(OperationKind.UnaryOperator); 
+            ComputeUnaryOperations(unaryOperations, localOperations);
         }
 
-        private void ComputeUnaryOperations(Dictionary<int, LocalOperation> unaryOperations)
+        private void ComputeUnaryOperations(int[] unaryOperations, LocalOperation[] localOperations)
         {
-            foreach (var unaryOperation in unaryOperations)
+            foreach (var pos in unaryOperations)
             {
-                var baseOperator = (OperatorBase) unaryOperation.Value.Value;
-
-                var unaryAssignment = (UnaryOperator) baseOperator;
+                var unaryAssignment = (UnaryOperator)localOperations[pos].Value;
 
                 var constLeft = unaryAssignment.Left as ConstValue;
                 if (constLeft == null)
                     continue;
 
-                _pos = unaryOperation.Key;
-                switch (baseOperator.Name)
+                switch (unaryAssignment.Name)
                 {
                     case OpcodeOperatorNames.ConvR8:
-                        HandleConvDouble(constLeft);
+                        HandleConvDouble(constLeft, localOperations, pos);
                         break;
                     case OpcodeOperatorNames.ConvR4:
-                        HandleConvFloat(constLeft);
+                        HandleConvFloat(constLeft, localOperations, pos);
                         break;
                     case OpcodeOperatorNames.Neg:
-                        HandleNeg(constLeft);
+                        HandleNeg(constLeft, localOperations, pos);
                         break;
                 }
             }
         }
 
-        private void ComputeBinaryOperations(Dictionary<int, LocalOperation> binaryOperations)
+        private void ComputeBinaryOperations(int[] binaryOperations, LocalOperation[] localOperations)
         {
-            foreach (var binaryOperation in binaryOperations)
+            foreach (var pos in binaryOperations)
             {
-                var baseOperator = (OperatorBase) binaryOperation.Value.Value;
+                var baseOperator = (OperatorBase)localOperations[pos].Value;
 
-                var unaryAssignment = (BinaryOperator) baseOperator;
+                var unaryAssignment = (BinaryOperator)baseOperator;
 
                 var constLeft = unaryAssignment.Left as ConstValue;
                 var constRight = unaryAssignment.Right as ConstValue;
                 if (constLeft == null || constRight == null)
                     continue;
-                _pos = binaryOperation.Key;
                 switch (baseOperator.Name)
                 {
                     case OpcodeOperatorNames.Add:
-                        HandleAdd(constLeft, constRight);
+                        HandleAdd(constLeft, constRight, localOperations, pos);
                         break;
                     case OpcodeOperatorNames.Sub:
-                        HandleSub(constLeft, constRight);
+                        HandleSub(constLeft, constRight, localOperations, pos);
                         break;
                     case OpcodeOperatorNames.Mul:
-                        HandleMul(constLeft, constRight);
+                        HandleMul(constLeft, constRight, localOperations, pos);
                         break;
                     case OpcodeOperatorNames.Div:
-                        HandleDiv(constLeft, constRight);
+                        HandleDiv(constLeft, constRight, localOperations, pos);
                         break;
                     case OpcodeOperatorNames.Rem:
-                        HandleRem(constLeft, constRight);
+                        HandleRem(constLeft, constRight, localOperations, pos);
                         break;
                     case OpcodeOperatorNames.Cgt:
-                        HandleCgt(constLeft, constRight);
+                        HandleCgt(constLeft, constRight, localOperations, pos);
                         break;
 
                     case OpcodeOperatorNames.Clt:
-                        HandleClt(constLeft, constRight);
+                        HandleClt(constLeft, constRight, localOperations, pos);
                         break;
 
                     case OpcodeOperatorNames.Ceq:
-                        HandleCeq(constLeft, constRight);
+                        HandleCeq(constLeft, constRight, localOperations, pos);
                         break;
 
                     case OpcodeOperatorNames.And:
-                        HandleAnd(constLeft, constRight);
+                        HandleAnd(constLeft, constRight, localOperations, pos);
                         break;
                     case OpcodeOperatorNames.Or:
-                        HandleOr(constLeft, constRight);
+                        HandleOr(constLeft, constRight, localOperations, pos);
                         break;
                     case OpcodeOperatorNames.Xor:
-                        HandleXor(constLeft, constRight);
+                        HandleXor(constLeft, constRight, localOperations, pos);
                         break;
                 }
             }
         }
 
-        private static Dictionary<int, LocalOperation> GetBinaryOperations(List<LocalOperation> localOperations)
+        private static List<int> GetBinaryOperations(LocalOperation[] localOperations)
         {
-            var binaryOperations = new Dictionary<int, LocalOperation>();
+            List<int> binaryOperations = new List<int>();
 
-            for (var index = 0; index < localOperations.Count; index++)
+            for (var index = 0; index < localOperations.Length; index++)
             {
                 var destOperation = localOperations[index];
                 if (destOperation.Kind != OperationKind.BinaryOperator)
                     continue;
-                binaryOperations[index] = destOperation;
+                binaryOperations.Add(index);
             }
             return binaryOperations;
         }
 
-        private static Dictionary<int, LocalOperation> GetUnaryOperations(List<LocalOperation> localOperations)
+        private static List<int> GetUnaryOperations(LocalOperation[] localOperations)
         {
-            var unaryOperations = new Dictionary<int, LocalOperation>();
-            for (var index = 0; index < localOperations.Count; index++)
+            var unaryOperations = new List<int>();
+            for (var index = 0; index < localOperations.Length; index++)
             {
                 var destOperation = localOperations[index];
                 if (destOperation.Kind != OperationKind.UnaryOperator)
                     continue;
-                unaryOperations[index] = destOperation;
+                unaryOperations.Add(index);
             }
             return unaryOperations;
         }
 
-        private void HandleNeg(ConstValue constLeft)
+        private void HandleNeg(ConstValue constLeft, LocalOperation[] localOperations, int pos)
         {
             var result = ComputeConstantOperator.ComputeNeg(constLeft);
-            FoldConstant(result);
+            FoldConstant(result, localOperations, pos);
         }
-        private void HandleConvDouble(ConstValue constLeft)
+        private void HandleConvDouble(ConstValue constLeft, LocalOperation[] localOperations, int pos)
         {
             var result = ComputeConstantOperator.ComputeDouble(constLeft);
-            FoldConstant(result);
+            FoldConstant(result, localOperations, pos);
         }
-        private void HandleConvFloat(ConstValue constLeft)
+        private void HandleConvFloat(ConstValue constLeft, LocalOperation[] localOperations, int pos)
         {
             var result = ComputeConstantOperator.ComputeFloat(constLeft);
-            FoldConstant(result);
+            FoldConstant(result, localOperations, pos);
         }
 
 
-        private void HandleCeq(ConstValue constLeft, ConstValue constRight)
+        private void HandleCeq(ConstValue constLeft, ConstValue constRight, LocalOperation[] localOperations, int pos)
         {
             var result = ComputeConstantOperator.ComputeCeq(constLeft, constRight);
-            FoldConstant(result);
+            FoldConstant(result, localOperations, pos);
         }
 
-        private void HandleClt(ConstValue constLeft, ConstValue constRight)
+        private void HandleClt(ConstValue constLeft, ConstValue constRight, LocalOperation[] localOperations, int pos)
         {
             var result = ComputeConstantOperator.ComputeClt(constLeft, constRight);
-            FoldConstant(result);
+            FoldConstant(result, localOperations, pos);
         }
 
-        private void HandleCgt(ConstValue constLeft, ConstValue constRight)
+        private void HandleCgt(ConstValue constLeft, ConstValue constRight, LocalOperation[] localOperations, int pos)
         {
             var result = ComputeConstantOperator.ComputeCgt(constLeft, constRight);
-            FoldConstant(result);
+            FoldConstant(result, localOperations, pos);
         }
 
         #region Compute math operations
-        
-        private void HandleAdd(ConstValue constLeft, ConstValue constRight)
+
+        private void HandleAdd(ConstValue constLeft, ConstValue constRight, LocalOperation[] localOperations, int pos)
         {
             var result = ComputeConstantOperator.ComputeAdd(constLeft, constRight);
-            FoldConstant(result);
+            FoldConstant(result, localOperations, pos);
         }
 
-        private void HandleSub(ConstValue constLeft, ConstValue constRight)
+        private void HandleSub(ConstValue constLeft, ConstValue constRight, LocalOperation[] localOperations, int pos)
         {
             var result = ComputeConstantOperator.ComputeSub(constLeft, constRight);
-            FoldConstant(result);
+            FoldConstant(result, localOperations, pos);
         }
 
 
-        private void HandleMul(ConstValue constLeft, ConstValue constRight)
+        private void HandleMul(ConstValue constLeft, ConstValue constRight, LocalOperation[] localOperations, int pos)
         {
             var result = ComputeConstantOperator.ComputeMul(constLeft, constRight);
-            FoldConstant(result);
+            FoldConstant(result, localOperations, pos);
         }
 
-        private void HandleRem(ConstValue constLeft, ConstValue constRight)
+        private void HandleRem(ConstValue constLeft, ConstValue constRight, LocalOperation[] localOperations, int pos)
         {
             var result = ComputeConstantOperator.ComputeRem(constLeft, constRight);
-            FoldConstant(result);
+            FoldConstant(result, localOperations, pos);
         }
-        
+
+        private void HandleDiv(ConstValue constLeft, ConstValue constRight, LocalOperation[] localOperations, int pos)
+        {
+            var result = ComputeConstantOperator.ComputeDiv(constLeft, constRight);
+            FoldConstant(result, localOperations, pos);
+        }
+
+
         #endregion
 
         #region Evaluate bit operations
 
-
-        private void HandleDiv(ConstValue constLeft, ConstValue constRight)
-        {
-            var result = ComputeConstantOperator.ComputeDiv(constLeft, constRight);
-            FoldConstant(result);
-        }
-
-        private void HandleXor(ConstValue constLeft, ConstValue constRight)
+        private void HandleXor(ConstValue constLeft, ConstValue constRight, LocalOperation[] localOperations, int pos)
         {
             var result = ComputeConstantOperator.ComputeXor(constLeft, constRight);
-            FoldConstant(result);
+            FoldConstant(result, localOperations, pos);
         }
 
-        private void HandleAnd(ConstValue constLeft, ConstValue constRight)
+        private void HandleAnd(ConstValue constLeft, ConstValue constRight, LocalOperation[] localOperations, int pos)
         {
             var result = ComputeConstantOperator.ComputeAnd(constLeft, constRight);
-            FoldConstant(result);
+            FoldConstant(result, localOperations, pos);
         }
 
-        private void HandleOr(ConstValue constLeft, ConstValue constRight)
+        private void HandleOr(ConstValue constLeft, ConstValue constRight, LocalOperation[] localOperations, int pos)
         {
             var result = ComputeConstantOperator.ComputeOr(constLeft, constRight);
-            FoldConstant(result);
+            FoldConstant(result, localOperations, pos);
         }
         #endregion
 
-        private void FoldConstant(object result)
+        private void FoldConstant(object result, LocalOperation[] localOperations, int pos)
         {
-            var baseOperator = (OperatorBase)_intermediateCode.LocalOperations[_pos].Value;
+            var baseOperator = (OperatorBase)localOperations[pos].Value;
             var resultAssignment = new Assignment
-                                       {
-                                                   AssignedTo = baseOperator.AssignedTo,
-                                                   Right = new ConstValue(result)
-                                               };
-            _intermediateCode.LocalOperations[_pos] = 
+            {
+                AssignedTo = baseOperator.AssignedTo,
+                Right = new ConstValue(result)
+            };
+            localOperations[pos] =
                 new LocalOperation
-                    {
-                        Kind= OperationKind.Assignment,
-                        Value = resultAssignment
+                {
+                    Kind = OperationKind.Assignment,
+                    Value = resultAssignment
                 };
             Result = true;
         }

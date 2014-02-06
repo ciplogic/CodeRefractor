@@ -23,7 +23,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantDfa
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
             _operations = methodInterpreter.MidRepresentation.LocalOperations.ToArray();
-            _labelTable = InstructionsUtils.BuildLabelTable(_operations);
+            _labelTable = methodInterpreter.MidRepresentation.UseDef.GetLabelTable();
             _pointsOfAnalysis = new DfaPointOfAnalysis[_operations.Length+ 1];
 
             var startingConclusions = new DfaPointOfAnalysis();

@@ -16,7 +16,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
     {
         public MidRepresentationVariables Vars = new MidRepresentationVariables();
 
-        public List<LocalOperation> LocalOperations = new List<LocalOperation>();
+        public volatile List<LocalOperation> LocalOperations = new List<LocalOperation>();
 
         public readonly Dictionary<string, object> AuxiliaryObjects =new Dictionary<string, object>();
         private MethodBase _method;

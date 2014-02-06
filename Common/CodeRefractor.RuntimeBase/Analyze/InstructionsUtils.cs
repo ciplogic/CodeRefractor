@@ -6,7 +6,7 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 
 #endregion
 
-namespace CodeRefractor.CompilerBackend.Optimizations.Util
+namespace CodeRefractor.RuntimeBase.Analyze
 {
     public static class InstructionsUtils
     {
@@ -20,20 +20,15 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
             return false;
         }
 
-        public static Dictionary<int, int> BuildLabelTable(LocalOperation[] operations)
+        public static Dictionary<int, int> BuildLabelTable(LocalOperation[] operations, int[] labelOperations)
         {
             var labelTable = new Dictionary<int, int>();
-            labelTable.Clear();
-            for (var i = 0; i < operations.Length; i++)
+            foreach (var i in labelOperations)
             {
                 var operation = operations[i];
-                switch (operation.Kind)
-                {
-                    case OperationKind.Label:
-                        var jumpTo = (int) operation.Value;
-                        labelTable[jumpTo] = i;
-                        break;
-                }
+                var jumpTo = (int)operation.Value;
+                labelTable[jumpTo] = i;
+
             }
             return labelTable;
         }
