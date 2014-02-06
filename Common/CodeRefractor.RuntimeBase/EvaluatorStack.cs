@@ -10,11 +10,11 @@ namespace CodeRefractor.RuntimeBase
 {
     public class EvaluatorStack
     {
-        public readonly Stack<IdentifierValue> Stack = new Stack<IdentifierValue>();
+        private readonly Stack<IdentifierValue> _stack = new Stack<IdentifierValue>();
 
         public override string ToString()
         {
-            return Stack.ToArray().ToString();
+            return _stack.ToArray().ToString();
         }
 
         private int _vRegId;
@@ -22,28 +22,24 @@ namespace CodeRefractor.RuntimeBase
         public LocalVariable SetNewVReg()
         {
             _vRegId++;
-            if (_vRegId == 7)
-            {
-                
-            }
             var newLocal = new LocalVariable
                                {
                                    Kind = VariableKind.Vreg,
                                    Id = _vRegId
                                };
-            Stack.Push(newLocal);
+            _stack.Push(newLocal);
             return newLocal;
         }
 
 
         public IdentifierValue Top
         {
-            get { return Stack.Peek(); }
+            get { return _stack.Peek(); }
         }
 
         public IdentifierValue Pop()
         {
-            return Stack.Pop();
+            return _stack.Pop();
         }
     }
 }

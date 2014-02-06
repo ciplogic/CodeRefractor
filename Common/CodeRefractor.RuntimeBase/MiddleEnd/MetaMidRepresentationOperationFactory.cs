@@ -115,9 +115,9 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
         public void CopyStackIntoArgument(int value)
         {
-            var topVariable = _evaluator.Stack.Peek();
+            var topVariable = _evaluator.Top;
             
-            _evaluator.Stack.Pop();
+            _evaluator.Pop();
             var newLocal = _representation.Vars.Arguments[value];
             var assingment = new Assignment
             {
@@ -129,8 +129,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         }
         public void CopyStackIntoLocalVariable(int value)
         {
-            var topVariable = _evaluator.Stack.Peek();
-            _evaluator.Stack.Pop();
+            var topVariable = _evaluator.Top;
+            _evaluator.Pop();
             var newLocal = _representation.Vars.LocalVars[value];
             var assingment = new Assignment
             {
@@ -148,11 +148,11 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 AddOperation(OperationKind.Comment, comment);
             }
         }
-
+        
         public void StoreField(FieldInfo fieldInfo)
         {
-            var secondVar = _evaluator.Stack.Pop();
-            var firstVar = _evaluator.Stack.Pop();
+            var secondVar = _evaluator.Pop();
+            var firstVar = _evaluator.Pop();
             var fieldName = fieldInfo.Name;
             var assignment = new Assignment
             {
@@ -169,8 +169,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
         public void LoadReferenceInArray()
         {
-            var secondVar = _evaluator.Stack.Pop();
-            var firstVar = _evaluator.Stack.Pop();
+            var secondVar = _evaluator.Pop();
+            var firstVar = _evaluator.Pop();
 
             var result = SetNewVReg();
             result.FixedType = UsedTypeList.Set(firstVar.FixedType.ClrType.GetElementType());
@@ -186,8 +186,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
         public void LoadReferenceInArrayTyped(Type elementType)
         {
-            var secondVar = _evaluator.Stack.Pop();
-            var firstVar = _evaluator.Stack.Pop();
+            var secondVar = _evaluator.Pop();
+            var firstVar = _evaluator.Pop();
 
             var result = SetNewVReg();
             result.FixedType = UsedTypeList.Set(firstVar.FixedType.ClrType.GetElementType());
@@ -203,14 +203,14 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
         public void Return(bool isVoid)
         {
-            var returnValue = isVoid ? null : _evaluator.Stack.Pop();
+            var returnValue = isVoid ? null : _evaluator.Pop();
             AddOperation(OperationKind.Return, returnValue);
         }
 
 
         private void SetUnaryOperator(string operatorName)
         {
-            var firstVar = _evaluator.Stack.Pop();
+            var firstVar = _evaluator.Pop();
             var result = SetNewVReg();
 
 
@@ -279,7 +279,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
         public void Dup()
         {
-            var variable = _evaluator.Stack.Peek();
+            var variable = _evaluator.Top;
             var vreg = SetNewVReg();
             var assign = new Assignment
             {
@@ -291,15 +291,15 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         }
         public void Pop()
         {
-            _evaluator.Stack.Pop();
+            _evaluator.Pop();
         }
 
 
 
         private void SetBinaryOperator(string operatorName)
         {
-            var secondVar = _evaluator.Stack.Pop();
-            var firstVar = _evaluator.Stack.Pop();
+            var secondVar = _evaluator.Pop();
+            var firstVar = _evaluator.Pop();
 
             var result = SetNewVReg();
             var assign = new BinaryOperator(operatorName)
@@ -429,7 +429,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
         public void StoreStaticField(FieldInfo fieldInfo)
         {
-            var firstVar = _evaluator.Stack.Pop();
+            var firstVar = _evaluator.Pop();
             var fieldName = fieldInfo.Name;
             var assignment = new Assignment
             {
@@ -447,8 +447,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
         public void StoresValueFromAddress()
         {
-            var varAddress = _evaluator.Stack.Pop();
-            var varValue = _evaluator.Stack.Pop();
+            var varAddress = _evaluator.Pop();
+            var varValue = _evaluator.Pop();
 
             var assignment = new DerefAssignment
             {
@@ -463,7 +463,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
         public void BranchIfTrue(int pushedIntValue)
         {
-            var firstVar = _evaluator.Stack.Pop();
+            var firstVar = _evaluator.Pop();
             AddOperation(OperationKind.BranchOperator,
                          new BranchOperator(OpcodeBranchNames.BrTrue)
                          {
@@ -474,7 +474,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
         public void BranchIfFalse(int pushedIntValue)
         {
-            var firstVar = _evaluator.Stack.Pop();
+            var firstVar = _evaluator.Pop();
             AddOperation(OperationKind.BranchOperator,
                          new BranchOperator(OpcodeBranchNames.BrFalse)
                          {
@@ -496,8 +496,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
         private void BranchTwoOperators(int jumpTo, string opcode)
         {
-            var firstVar = _evaluator.Stack.Pop();
-            var secondVar = _evaluator.Stack.Pop();
+            var firstVar = _evaluator.Pop();
+            var secondVar = _evaluator.Pop();
 
             AddOperation(OperationKind.BranchOperator,
                          new BranchOperator(opcode)
@@ -551,7 +551,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         }
         public void LoadFieldAddressIntoEvaluationStack(FieldInfo fieldInfo)
         {
-            var firstVar = (LocalVariable)_evaluator.Stack.Pop();
+            var firstVar = (LocalVariable)_evaluator.Pop();
             var vreg = SetNewVReg();
             vreg.FixedType = UsedTypeList.Set(fieldInfo.FieldType.MakeByRefType());
 
@@ -565,7 +565,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         }
         public void LoadField(string fieldName)
         {
-            var firstVar = _evaluator.Stack.Pop();
+            var firstVar = _evaluator.Pop();
 
             var vreg = SetNewVReg();
             var computedType = firstVar.ComputedType();
@@ -650,7 +650,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
         public void NewArray(Type typeArray)
         {
-            var arrayLength = _evaluator.Stack.Pop();
+            var arrayLength = _evaluator.Pop();
             var result = SetNewVReg();
             var assignment = new Assignment
             {
@@ -737,7 +737,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
         public void Switch(Instruction[] instructions)
         {
-            var firstVar = (LocalVariable)_evaluator.Stack.Pop();
+            var firstVar = (LocalVariable)_evaluator.Pop();
             var offsets = instructions.Select(inst => inst.Offset).ToArray();
 
             var pos = 0;
@@ -769,7 +769,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
         public void LoadValueFromAddress()
         {
-            var firstVar = (LocalVariable)_evaluator.Stack.Pop();
+            var firstVar = (LocalVariable)_evaluator.Pop();
 
 
             var result = SetNewVReg();
@@ -790,8 +790,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
         public void LoadAddressOfArrayItemIntoStack(Type operand)
         {
-            var indexVar = _evaluator.Stack.Pop();
-            var arrayVar = (LocalVariable)_evaluator.Stack.Pop();
+            var indexVar = _evaluator.Pop();
+            var arrayVar = (LocalVariable)_evaluator.Pop();
 
             var result = SetNewVReg();
             var assignment = new RefArrayItemAssignment

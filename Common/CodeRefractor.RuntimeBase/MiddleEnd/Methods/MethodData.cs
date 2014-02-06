@@ -36,19 +36,18 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.Methods
 
         public void ExtractNeededValuesFromStack(EvaluatorStack evaluatorStack)
         {
-            var stack = evaluatorStack.Stack;
             var methodParams = Info.GetParameters();
             if (Info.IsConstructor)
             {
-                Parameters.Insert(0, stack.Pop());
+                Parameters.Insert(0, evaluatorStack.Pop());
                 foreach (var t in methodParams)
-                    Parameters.Insert(1, stack.Pop());
+                    Parameters.Insert(1, evaluatorStack.Pop());
                 return;
             }
             foreach (var t in methodParams)
-                Parameters.Insert(0, stack.Pop());
+                Parameters.Insert(0, evaluatorStack.Pop());
             if (!IsStatic)
-                Parameters.Insert(0, stack.Pop());
+                Parameters.Insert(0, evaluatorStack.Pop());
 
         }
 
