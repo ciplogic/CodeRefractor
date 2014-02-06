@@ -72,7 +72,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
                            
                            new OperatorPartialConstantFolding(),
                            new OperatorConstantFolding(),
-                           new FoldVariablesDefinitionsOptimizationPass(),
+                           //new FoldVariablesDefinitionsOptimizationPass(),
 
                            new PropagationVariablesOptimizationPass(), 
                            new DceNewObjectOrArray(), 

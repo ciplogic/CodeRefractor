@@ -1,5 +1,6 @@
 #region Usings
 
+using System;
 using System.Collections.Generic;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.MiddleEnd;
@@ -17,17 +18,13 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
     /// </summary>
     public class OperatorPartialConstantFolding : ResultingInFunctionOptimizationPass
     {
-        private List<LocalOperation> _localOperations;
-        private int _pos;
-
+        
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
-            _localOperations = methodInterpreter.MidRepresentation.LocalOperations;
-            _pos = 0;
-            for (int index = 0; index < _localOperations.Count; index++)
+            LocalOperation[] localOperations = methodInterpreter.MidRepresentation.LocalOperations.ToArray();
+            for (int index = 0; index < localOperations.Length; index++)
             {
-                var destOperation = _localOperations[index];
-                _pos++;
+                var destOperation = localOperations[index];
                 if (destOperation.Kind != OperationKind.BinaryOperator)
                     continue;
 
@@ -47,18 +44,18 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                 switch (baseOperator.Name)
                 {
                     case OpcodeOperatorNames.Mul:
-                        HandleMul(constLeft, constRight, destOperation);
+                        HandleMul(constLeft, constRight, destOperation,localOperations, index);
                         break;
                     case OpcodeOperatorNames.Div:
-                        HandleDiv(constLeft, constRight, destOperation);
+                        HandleDiv(constLeft, constRight, destOperation,localOperations, index);
                         break;
                 }
             }
         }
 
-        void FoldAssign(IdentifierValue constResult)
+        void FoldAssign(IdentifierValue constResult, LocalOperation[] localOperations,int pos)
         {
-            _localOperations[_pos] = new LocalOperation()
+            localOperations[pos] = new LocalOperation()
             {
                 Kind = OperationKind.Assignment,
                 Value = constResult
@@ -66,62 +63,63 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
         }
 
         private void HandleMul(ConstValue constLeft, ConstValue constRight,
-                               LocalOperation destOperation)
+                               LocalOperation destOperation, LocalOperation[] localOperations, int pos)
         {
             var binaryOperator = (BinaryOperator)destOperation.Value;
 
             if (constRight != null && (int)constRight.Value == 1)
             {
-                FoldAssign(binaryOperator.Left);
+                FoldAssign(binaryOperator.Left,localOperations,pos);
                 Result = true;
                 return;
             }
             var constValue = constLeft ?? constRight;
             if (constValue != null && constValue.Value is int && (int)constValue.Value == 0)
             {
-                FoldAssign(constValue);
+                FoldAssign(constValue, localOperations, pos);
                 destOperation.Kind = OperationKind.Assignment;
                 Result = true;
             }
             if (constLeft != null && constLeft.Value is double && (double)constValue.Value == 0.0)
             {
-                FoldAssign(constValue);
+                FoldAssign(constValue, localOperations, pos);
                 Result = true;
                 return;
             }
             if (constLeft != null && constValue.Value is float && (float)constValue.Value == 0.0)
             {
-                FoldAssign(constValue);
+                FoldAssign(constValue, localOperations, pos);
                 Result = true;
                 return;
             }
         }
 
         private void HandleDiv(ConstValue constLeft, ConstValue constRight,
-                               LocalOperation destOperation)
+                               LocalOperation destOperation, LocalOperation[] localOperations, int pos)
         {
             var binaryOperator = (BinaryOperator)destOperation.Value;
 
             if (constRight != null && constRight.Value is int && (int)constRight.Value == 1)
             {
+                throw new NotImplementedException();
                 Result = true;
                 return;
             }
             if (constLeft != null && constLeft.Value is int && (int)constLeft.Value == 0)
             {
-                FoldAssign(binaryOperator.Left);
+                FoldAssign(binaryOperator.Left, localOperations, pos);
                 Result = true;
                 return;
             }
             if (constLeft != null && constLeft.Value is double && (double)constLeft.Value == 0.0)
             {
-                FoldAssign(binaryOperator.Left);
+                FoldAssign(binaryOperator.Left, localOperations, pos);
                 Result = true;
                 return;
             }
             if (constLeft != null && constLeft.Value is float && (float)constLeft.Value == 0.0)
             {
-                FoldAssign(binaryOperator.Left);
+                FoldAssign(binaryOperator.Left, localOperations, pos);
                 Result = true;
                 return;
             }

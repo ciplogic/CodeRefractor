@@ -20,13 +20,13 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
             var dictionary = new Dictionary<LocalVariable, int>();
-            var localOperations = methodInterpreter.MidRepresentation.LocalOperations;
+            var localOperations = methodInterpreter.MidRepresentation.LocalOperations.ToArray();
             var useDef = methodInterpreter.MidRepresentation.UseDef;
-            for (var i = 0; i < localOperations.Count; i++)
+            for (var i = 0; i < localOperations.Length; i++)
             {
                 var op = localOperations[i];
 
-                var usages = UseDefHelper.GetUsagesAndDefinitions(i, useDef);
+                var usages = useDef.GetUsages(i);
                 foreach (var usage in usages)
                 {
                     if (dictionary.ContainsKey(usage))
@@ -36,6 +36,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
                 var definition = op.GetDefinition();
                 if (definition == null)
                     continue;
+                if (dictionary.ContainsKey(definition))
+                    dictionary[definition] = -1;
                 if (op.Kind != OperationKind.NewObject)
                     continue;
                 dictionary[definition] = i;

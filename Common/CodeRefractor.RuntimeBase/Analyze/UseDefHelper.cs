@@ -44,28 +44,6 @@ namespace CodeRefractor.RuntimeBase.Analyze
             return result;
         }
 
-        public static List<int> GetUsagesAndDefinitions(this MetaMidRepresentation intermediateCode,
-            LocalVariable localVariable)
-        {
-            var result = new List<int>();
-            var instructions = intermediateCode.LocalOperations;
-            var useDef = intermediateCode.UseDef;
-            for(var index = 0; index<instructions.Count;index++)
-            {
-                var instruction = instructions[index];
-                var usages = GetUsagesAndDefinitions(index, useDef);
-                foreach (var variable in usages)
-                {
-                    if (variable.Equals(localVariable))
-                    {
-                        result.Add(index);
-                        break;
-                    }
-                }
-            }
-            return result;
-        }
-
         public static List<LocalVariable> GetUsages(this LocalOperation operation)
         {
             var result = new List<LocalVariable>(2);
