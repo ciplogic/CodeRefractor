@@ -53,16 +53,23 @@ namespace CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions
             return cacheVariable;
         }
 
-        public static BinaryOperator GetBinaryOperator(this List<LocalOperation> localOperations, List<int> calls, int i)
+        public static BinaryOperator GetBinaryOperator(this LocalOperation[] localOperations, List<int> calls, int i)
         {
             var index = calls[i];
             return GetBinaryOperator(localOperations, index);
         }
 
-        public static BinaryOperator GetBinaryOperator(this List<LocalOperation> localOperations, int index)
+        public static BinaryOperator GetBinaryOperator(this LocalOperation[] localOperations, int index)
         {
-            return (BinaryOperator)localOperations[index].Value;
+            var localOperation = localOperations[index];
+            return GetBinaryOperator(localOperation);
         }
+
+        public static BinaryOperator GetBinaryOperator(this LocalOperation localOperation)
+        {
+            return (BinaryOperator) localOperation.Value;
+        }
+
         public static FieldGetter GetFieldOperation(this List<LocalOperation> localOperations, List<int> calls, int i)
         {
             var index = calls[i];

@@ -13,15 +13,14 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
     {
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
-            var localOperations = methodInterpreter.MidRepresentation.LocalOperations;
+            var useDef = methodInterpreter.MidRepresentation.UseDef;
+            var localOperations = useDef.GetLocalOperations();
 
             var toRemove = new List<int>();
-            for (var index = 0; index < localOperations.Count; index++)
+            var callIndices = useDef.GetOperations(OperationKind.Call);
+            foreach (var index in callIndices)
             {
                 var operation = localOperations[index];
-                if(operation.Kind!=OperationKind.Call)
-                    continue;
-
                 var methodData = operation.Get<MethodData>();
                 var interpreter = methodData.GetInterpreter();
                 if(interpreter==null)

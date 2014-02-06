@@ -12,7 +12,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions
     {
         public override bool OptimizeBlock(MethodInterpreter midRepresentation, int startRange, int endRange, LocalOperation[] operations)
         {
-            var localOperations = midRepresentation.MidRepresentation.LocalOperations;
+            var localOperations = midRepresentation.MidRepresentation.LocalOperations.ToArray();
             var calls = FindBinaryOperators(localOperations, startRange, endRange);
             if (calls.Count < 2)
                 return false;
@@ -34,8 +34,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions
         private static void ApplyOptimization(MethodInterpreter midRepresentation, int i, int j)
         {
             var localOps = midRepresentation.MidRepresentation.LocalOperations;
-            var firstOperator = localOps.GetBinaryOperator(i);
-            var secondOperator = localOps.GetBinaryOperator(j);
+            var firstOperator = localOps[i].GetBinaryOperator();
+            var secondOperator = localOps[j].GetBinaryOperator();
             var newVreg = midRepresentation.MidRepresentation.CreateCacheVariable(firstOperator.ComputedType());
             var assignLocalOperation = PrecomputeRepeatedUtils.CreateAssignLocalOperation(firstOperator.AssignedTo, newVreg);
             localOps.Insert(i + 1, assignLocalOperation);
@@ -47,7 +47,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions
             localOps.Insert(j + 1, destAssignment);
         }
 
-        private static List<int> FindBinaryOperators(List<LocalOperation> localOperations, int startRange, int endRange)
+        private static List<int> FindBinaryOperators(LocalOperation[] localOperations, int startRange, int endRange)
         {
 
             var calls = new List<int>();
@@ -63,7 +63,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions
 
 
         private static bool AreDifferentOperators(BinaryOperator firstOperator, BinaryOperator secondOperator, List<int> calls, int i,
-                                                 int j, List<LocalOperation> localOperations)
+                                                 int j, LocalOperation[] localOperations)
         {
             if (firstOperator.Name != secondOperator.Name)
                 return true;

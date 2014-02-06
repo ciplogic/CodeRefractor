@@ -2,7 +2,6 @@
 
 using System.Collections.Generic;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
-using CodeRefractor.CompilerBackend.Optimizations.Util;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
@@ -17,14 +16,11 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ReachabilityDfa
     {
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
-            var operations = methodInterpreter.MidRepresentation.LocalOperations.ToArray();
             var useDef = methodInterpreter.MidRepresentation.UseDef;
-            if (useDef.GetOperations(OperationKind.Label).Length != 0)
-            {
-                useDef.Update(operations);
-            }
-            var labelTable = useDef.GetLabelTable();
-            var reached = new HashSet<int>();
+            var operations = useDef.GetLocalOperations();
+            
+            var labelTable =useDef.GetLabelTable(true);
+            var reached = new SortedSet<int>();
             Interpret(0, operations,labelTable, reached);
             if (reached.Count == operations.Length) return;
             Result = true;
@@ -37,7 +33,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ReachabilityDfa
             methodInterpreter.DeleteInstructions(toDelete);
         }
 
-        private void Interpret(int cursor, LocalOperation[] operations, Dictionary<int, int> labelTable, HashSet<int> reached)
+        private void Interpret(int cursor, LocalOperation[] operations, Dictionary<int, int> labelTable, SortedSet<int> reached)
         {
             if (reached.Contains(cursor))
                 return;

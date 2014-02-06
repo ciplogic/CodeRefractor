@@ -2,11 +2,8 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using CodeRefractor.CompilerBackend.Optimizations.Inliner;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.Config;
-using CodeRefractor.RuntimeBase.FrontEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.Optimizations;
@@ -37,19 +34,20 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                     methodsToOptimize.Remove(item);
                 }
                 var inFunctionOptimizations = CommandLineParse.SortedOptimizations[OptimizationKind.InFunction];
-                
+                var methodsArray = methodsToOptimize.ToArray();
                 //Parallel.ForEach(methodsToOptimize, methodBase=> 
-                //
-                foreach (var methodBase in methodsToOptimize)
+                foreach (var methodBase in methodsArray)
                 {
                     var interpreter = methodBase;
+                    //Console.WriteLine("Optimize locally: {0}", methodBase);
                     MethodInterpreterCodeWriter.ApplyLocalOptimizations(
                         inFunctionOptimizations, interpreter);
                 }
-                  //  );
-                foreach (var methodBase in methodsToOptimize)
+                  //);
+                foreach (var methodBase in methodsArray)
                 {
                     var interpreter = methodBase;
+                    //Console.WriteLine("Optimize globally: {0}", methodBase);
                     doOptimize = MethodInterpreterCodeWriter.ApplyLocalOptimizations(
                         CommandLineParse.SortedOptimizations[OptimizationKind.Global], interpreter);
                 }

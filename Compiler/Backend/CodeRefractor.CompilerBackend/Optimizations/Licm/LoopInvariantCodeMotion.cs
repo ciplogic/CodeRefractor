@@ -18,16 +18,18 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Licm
 
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
-            var loopStarts = LoopDetection.FindLoops(methodInterpreter.MidRepresentation);
+            var midRepresentation = methodInterpreter.MidRepresentation;
+            var useDef = midRepresentation.UseDef;
+            var loopStarts = LoopDetection.FindLoops(midRepresentation);
             foreach (var loopStart in loopStarts)
             {
-                var loopEnd = LoopDetection.GetEndLoop(methodInterpreter.MidRepresentation.LocalOperations, loopStart);
-                var allDefinedVariables = GetAllDefinedVariables(methodInterpreter.MidRepresentation, loopStart, loopEnd);
-                var allInvariantInstructions = GetAllInvariantInstructions(methodInterpreter.MidRepresentation, loopStart, loopEnd,
+                var loopEnd = LoopDetection.GetEndLoop(useDef.GetLocalOperations(), loopStart);
+                var allDefinedVariables = GetAllDefinedVariables(midRepresentation, loopStart, loopEnd);
+                var allInvariantInstructions = GetAllInvariantInstructions(midRepresentation, loopStart, loopEnd,
                                                                            allDefinedVariables);
                 if (allInvariantInstructions.Count == 0)
                     continue;
-                PerformMoveInstructions(methodInterpreter.MidRepresentation, loopStart, allInvariantInstructions);
+                PerformMoveInstructions(midRepresentation, loopStart, allInvariantInstructions);
                 Result = true;
                 return;
             }
@@ -53,11 +55,11 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Licm
 
         private static List<int> GetAllInvariantInstructions(MetaMidRepresentation intermediateCode, int loopStart, int loopEnd, HashSet<LocalVariable> getAllDefinedVariables)
         {
-            var localOps = intermediateCode.LocalOperations;
+            var useDef = intermediateCode.UseDef;
+            var localOps = useDef.GetLocalOperations();
 
 
             var result = new List<int>();
-            var useDef = intermediateCode.UseDef;
             for (var index = loopStart; index <= loopEnd; index++)
             {
                 var op = localOps[index];
@@ -96,7 +98,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Licm
 
         private static HashSet<LocalVariable> GetAllDefinedVariables(MetaMidRepresentation intermediateCode, int loopStart, int loopEnd)
         {
-            var localOps = intermediateCode.LocalOperations;
+            var localOps = intermediateCode.UseDef.GetLocalOperations();
             var result = new HashSet<LocalVariable>();
             for (var index = loopStart; index <= loopEnd; index++)
             {

@@ -28,7 +28,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
         {
             if (intermediateCode == null)
                 return false;
-            var operations = intermediateCode.MidRepresentation.LocalOperations;
+            var operations = intermediateCode.MidRepresentation.UseDef.GetLocalOperations();
             foreach (var localOperation in operations)
             {
                 switch (localOperation.Kind)

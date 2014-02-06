@@ -12,9 +12,10 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Inliner
     {
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
-            for (int index = 0; index < methodInterpreter.MidRepresentation.LocalOperations.Count; index++)
+            var localOperations = methodInterpreter.MidRepresentation.UseDef.GetLocalOperations();
+            for (int index = 0; index < localOperations.Length; index++)
             {
-                var localOperation = methodInterpreter.MidRepresentation.LocalOperations[index];
+                var localOperation = localOperations[index];
                 
                 if (localOperation.Kind != OperationKind.Call) continue;
 

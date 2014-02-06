@@ -11,9 +11,15 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
     {
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
-            var localOps = methodInterpreter.MidRepresentation.LocalOperations;
+            var midRepresentation = methodInterpreter.MidRepresentation;
+            var useDef = midRepresentation.UseDef;
+
+            var assigns = useDef.GetOperations(OperationKind.Assignment);
+            if(assigns.Length==0)
+                return;
+            var localOps = midRepresentation.LocalOperations.ToArray();
             var toRemove = new List<int>();
-            for (var index = 0; index < localOps.Count; index++)
+            foreach (var index in assigns)
             {
                 var localOp = localOps[index];
                 if(localOp.Kind!=OperationKind.Assignment)
@@ -25,7 +31,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
 
             if (toRemove.Count == 0)
                 return;
-            methodInterpreter.MidRepresentation.DeleteInstructions(new HashSet<int>(toRemove));
+            midRepresentation.DeleteInstructions(toRemove);
             toRemove.Clear();
             Result = true;
         }

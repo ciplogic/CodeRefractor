@@ -15,7 +15,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
     {
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
-            var operations = methodInterpreter.MidRepresentation.LocalOperations.ToArray();
+            var operations = methodInterpreter.MidRepresentation.UseDef.GetLocalOperations();
             var vregConstants = new HashSet<int>();
             foreach (var localVariable in methodInterpreter.MidRepresentation.Vars.LocalVars)
                 vregConstants.Add(localVariable.Id);

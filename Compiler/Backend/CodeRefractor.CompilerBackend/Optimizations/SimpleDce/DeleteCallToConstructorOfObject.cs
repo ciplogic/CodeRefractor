@@ -9,12 +9,14 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
     {
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
-            var localOps = methodInterpreter.MidRepresentation.LocalOperations;
-            for (var index = 0; index < localOps.Count; index++)
+            var midRepresentation = methodInterpreter.MidRepresentation;
+            var useDef = midRepresentation.UseDef;
+            var operations = useDef.GetLocalOperations();
+            var localOps = midRepresentation.LocalOperations;
+            var callIndices = useDef.GetOperations(OperationKind.Call);
+            foreach (var index in callIndices)
             {
-                var op = localOps[index];
-                if (op.Kind != OperationKind.Call)
-                    continue;
+                var op = operations[index];
                 var methodData = (MethodData) op.Value;
                 var info = methodData.Info;
                 if (info.DeclaringType != typeof (object))

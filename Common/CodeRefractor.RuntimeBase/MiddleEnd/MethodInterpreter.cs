@@ -155,6 +155,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 {
                     case ObcodeIntValues.Beq:
                     case ObcodeIntValues.BeqS:
+                    case ObcodeIntValues.Bne:
+                    case ObcodeIntValues.BneS:
                     case ObcodeIntValues.Bge:
                     case ObcodeIntValues.BgeS:
                     case ObcodeIntValues.Bgt:

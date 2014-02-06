@@ -27,9 +27,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
             candidateVariables.AddRange(toAdd);
             toAdd = variables.VirtRegs.Where(varId => !varId.ComputedType().ClrType.IsPrimitive);
             candidateVariables.AddRange(toAdd);
-            var localOp = midRepresentation.LocalOperations;
             var useDef = midRepresentation.UseDef;
-            for (int index = 0; index < localOp.Count; index++)
+            var localOp = useDef.GetLocalOperations();
+            for (int index = 0; index < localOp.Length; index++)
             {
                 var op = localOp[index];
                 var usages = useDef.GetUsages(index);
@@ -50,7 +50,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
             AllocateVariablesOnStack(localOp, candidateVariables, variables);
         }
 
-        private static void AllocateVariablesOnStack(List<LocalOperation> localOp, HashSet<LocalVariable> candidateVariables, MidRepresentationVariables variables)
+        private static void AllocateVariablesOnStack(LocalOperation[] localOp, HashSet<LocalVariable> candidateVariables, MidRepresentationVariables variables)
         {
             var newOps = localOp.Where(op =>
                 op.Kind == OperationKind.NewArray

@@ -20,8 +20,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
             var dictionary = new Dictionary<LocalVariable, int>();
-            var localOperations = methodInterpreter.MidRepresentation.LocalOperations.ToArray();
             var useDef = methodInterpreter.MidRepresentation.UseDef;
+            var localOperations = useDef.GetLocalOperations();
             for (var i = 0; i < localOperations.Length; i++)
             {
                 var op = localOperations[i];

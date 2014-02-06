@@ -101,7 +101,6 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                 if (constValues.TryGetValue(usage, out constValue))
                 {
                     op.SwitchUsageWithDefinition(usage, constValue);
-                    
                 }
             }
             return result;

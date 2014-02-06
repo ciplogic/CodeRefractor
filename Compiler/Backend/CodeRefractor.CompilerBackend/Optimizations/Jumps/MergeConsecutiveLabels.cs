@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.RuntimeBase;
+using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
@@ -16,31 +17,31 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Jumps
     {
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
-            var operations = methodInterpreter.MidRepresentation.LocalOperations;
+            var useDef = methodInterpreter.MidRepresentation.UseDef;
+            var operations = useDef.GetLocalOperations();
 
-            var found = operations.Any(operation => operation.Kind == OperationKind.Label);
+            var labelIndices = useDef.GetOperations(OperationKind.Label);
+            var found = labelIndices.Length==0;
             if (!found)
                 return;
-            for (var i = 0; i < operations.Count - 2; i++)
+            foreach (var i in labelIndices)
             {
-                var operation = operations[i];
-                if (operation.Kind != OperationKind.Label)
-                    continue;
-
                 var operation2 = operations[i + 1];
                 if (operation2.Kind != OperationKind.Label)
                     continue;
+                
+                var operation = operations[i];
                 var jumpId = (int) operation.Value;
                 var jumpId2 = (int) operation2.Value;
                 OptimizeConsecutiveLabels(operations, jumpId, jumpId2);
-                operations.RemoveAt(i + 1);
+                methodInterpreter.DeleteInstructions(new [] {i+1});
                 Result = true;
             }
         }
 
-        private static void OptimizeConsecutiveLabels(List<LocalOperation> operations, int jumpId, int jumpId2)
+        private static void OptimizeConsecutiveLabels(LocalOperation[] operations, int jumpId, int jumpId2)
         {
-            for (var i = 0; i < operations.Count - 2; i++)
+            for (var i = 0; i < operations.Length- 2; i++)
             {
                 var operation = operations[i];
                 if (!operation.IsBranchOperation())

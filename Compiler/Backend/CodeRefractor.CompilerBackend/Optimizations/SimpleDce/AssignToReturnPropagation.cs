@@ -22,13 +22,13 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
     {
         public override bool CheckPreconditions(MethodInterpreter midRepresentation)
         {
-            var localOperations = midRepresentation.MidRepresentation.LocalOperations;
-            return localOperations.Count >= 2;
+            var localOperations = midRepresentation.MidRepresentation.UseDef.GetLocalOperations();
+            return localOperations.Length >= 2;
         }
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
-            var localOperations = methodInterpreter.MidRepresentation.LocalOperations;
-            var count = localOperations.Count;
+            var localOperations = methodInterpreter.MidRepresentation.UseDef.GetLocalOperations();
+            var count = localOperations.Length;
             var assignBeforeReturn = localOperations[count - 2];
             if (assignBeforeReturn.Kind != OperationKind.Assignment)
                 return;

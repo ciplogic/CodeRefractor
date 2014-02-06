@@ -12,7 +12,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
         readonly Dictionary<LocalVariable,ConstValue> _constValues = new Dictionary<LocalVariable, ConstValue>();
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
-            var localOperations = methodInterpreter.MidRepresentation.LocalOperations.ToArray();
+            var localOperations = methodInterpreter.MidRepresentation.UseDef.GetLocalOperations();
             _constValues.Clear();
 
             GetAssignToConstOperations(localOperations);
@@ -20,7 +20,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
             if (_constValues.Count == 0)
                 return;
 
-            localOperations = methodInterpreter.MidRepresentation.LocalOperations.ToArray();
+            localOperations = methodInterpreter.MidRepresentation.UseDef.GetLocalOperations();
             var useDef = methodInterpreter.MidRepresentation.UseDef;
             for (int index = 0; index < localOperations.Length; index++)
             {

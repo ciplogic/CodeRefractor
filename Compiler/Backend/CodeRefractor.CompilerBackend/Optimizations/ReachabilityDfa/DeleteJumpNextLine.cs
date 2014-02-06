@@ -17,7 +17,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ReachabilityDfa
     {
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
-            var operations = methodInterpreter.MidRepresentation.LocalOperations.ToArray();
+            var operations = methodInterpreter.MidRepresentation.UseDef.GetLocalOperations();
             var labelTable = methodInterpreter.GetLabelTable();
             var toRemove = new List<int>();
             foreach (var labelInfo in labelTable)

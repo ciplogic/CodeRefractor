@@ -17,20 +17,19 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
     {
         public override bool CheckPreconditions(MethodInterpreter midRepresentation)
         {
-            var operations = midRepresentation.MidRepresentation.LocalOperations;
+            var operations = midRepresentation.MidRepresentation.UseDef;
 
-            return operations.Any(op => op.Kind == OperationKind.Call);
+            return operations.GetOperations(OperationKind.Call).Length>0;
         }
 
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
-            var operations = methodInterpreter.MidRepresentation.LocalOperations;
-            for (var i = 0; i < operations.Count - 1; i++)
+            var useDef = methodInterpreter.MidRepresentation.UseDef;
+            var operations = useDef.GetLocalOperations();
+            var callIndices = useDef.GetOperations(OperationKind.Call);
+            foreach (var i in callIndices)
             {
                 var operation = operations[i];
-                if (operation.Kind != OperationKind.Call)
-                    continue;
-
                 var operationData = ComputeAndEvaluatePurityOfCall(operation);
                 if (!operationData.IsPure || !operationData.IsStatic)
                     continue;

@@ -10,9 +10,10 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Licm
     {
         public static List<int> FindLoops(MetaMidRepresentation midRepresentation)
         {
-            var localOps = midRepresentation.LocalOperations;
+            var useDef = midRepresentation.UseDef;
+            var localOps = useDef.GetLocalOperations();
 
-            var findStartLoopCandidates = FindStartLoopCandidates(localOps);
+            var findStartLoopCandidates = FindStartLoopCandidates(localOps.ToArray());
             var result = new List<int>();
             if (findStartLoopCandidates.Count == 0)
                 return result;
@@ -26,10 +27,10 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Licm
             return result;
         }
 
-        private static List<int> FindStartLoopCandidates(List<LocalOperation> localOps)
+        private static List<int> FindStartLoopCandidates(LocalOperation[] localOps)
         {
             var findStartLoopCandidates = new List<int>();
-            for (var index = 0; index < localOps.Count; index++)
+            for (var index = 0; index < localOps.Length; index++)
             {
                 var op = localOps[index];
                 if (op.Kind != OperationKind.AlwaysBranch)
@@ -40,12 +41,12 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Licm
             return findStartLoopCandidates;
         }
 
-        public static int GetEndLoop(List<LocalOperation> localOps, int startPos)
+        public static int GetEndLoop(LocalOperation[] localOps, int startPos)
         {
             var jumpTarget = (int)localOps[startPos + 1].Value;
 
             var result = -1;
-            for (var index = 0; index < localOps.Count; index++)
+            for (var index = 0; index < localOps.Length; index++)
             {
                 var op = localOps[index];
                 if (op.Kind != OperationKind.BranchOperator)

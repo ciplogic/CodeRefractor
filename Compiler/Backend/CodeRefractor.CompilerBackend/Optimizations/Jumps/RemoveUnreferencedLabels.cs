@@ -1,9 +1,7 @@
 #region Usings
 
-using System.Collections.Generic;
 using System.Linq;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
-using CodeRefractor.CompilerBackend.Optimizations.Util;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
@@ -17,15 +15,21 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Jumps
     {
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
-            var operations = methodInterpreter.MidRepresentation.LocalOperations;
-
-            var found = operations.Any(operation => operation.Kind == OperationKind.Label);
+            var useDef = methodInterpreter.MidRepresentation.UseDef;
+            
+            var found = useDef.GetOperations(OperationKind.Label).Length != 0;
             if (!found)
                 return;
-            var candidateLabelTable = methodInterpreter.MidRepresentation.UseDef.GetLabelTable();
 
-            foreach (var operation in operations)
+            var operationIndexes = useDef.GetOperations(OperationKind.BranchOperator).ToList();
+            operationIndexes.AddRange(useDef.GetOperations(OperationKind.AlwaysBranch));
+            var operations = useDef.GetLocalOperations();
+
+            var candidateLabelTable = methodInterpreter.MidRepresentation.UseDef.GetLabelTable(true);
+
+            foreach (var index in operationIndexes)
             {
+                var operation = operations[index];
                 if (operation.Kind == OperationKind.BranchOperator)
                 {
                     var destAssignment = (BranchOperator) operation.Value;

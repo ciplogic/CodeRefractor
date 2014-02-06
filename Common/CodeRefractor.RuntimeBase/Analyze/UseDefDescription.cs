@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
@@ -11,9 +12,11 @@ namespace CodeRefractor.RuntimeBase.Analyze
 
         private volatile Dictionary<int, int> _labelTable;
         private volatile Dictionary<OperationKind, int[]> _instructionMix = new Dictionary<OperationKind, int[]>();
+        private LocalOperation[] _operations;
 
         public void Update(LocalOperation[] operations)
         {
+            _operations = operations;
             _usages = new LocalVariable[operations.Length][];
             _definitions = new LocalVariable[operations.Length];
 
@@ -22,14 +25,6 @@ namespace CodeRefractor.RuntimeBase.Analyze
             SetMigracionMixToField(instructionMix);
 
             UpdateLabelsTable(operations);
-
-            if (GetOperations(OperationKind.Label).Length != 0
-                && _labelTable.Count == 0
-                )
-            {
-                int x = 0;
-            }
-            
         }
 
         private void UpdateLabelsTable(LocalOperation[] operations)
@@ -84,9 +79,14 @@ namespace CodeRefractor.RuntimeBase.Analyze
             return _definitions[index];
         }
 
-        public Dictionary<int, int> GetLabelTable()
+        public Dictionary<int, int> GetLabelTable(bool doClone = false)
         {
-            return _labelTable;
+            return !doClone ? _labelTable : new Dictionary<int, int>(_labelTable);
+        }
+
+        public LocalOperation[] GetLocalOperations()
+        {
+            return _operations;
         }
 
         public int[] GetOperations(OperationKind binaryOperator)

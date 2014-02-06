@@ -23,7 +23,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
 
             var originalSnapshot = CppFullFileMethodWriter.BuildEscapingBools(methodInterpreter.Method);
 
-            var localOperations = methodInterpreter.MidRepresentation.LocalOperations.ToArray();
+            var localOperations = methodInterpreter.MidRepresentation.UseDef.GetLocalOperations();
             if (ComputeEscapeTable(methodInterpreter, localOperations)) return;
 
             var finalSnapshot= CppFullFileMethodWriter.BuildEscapingBools(methodInterpreter.Method);

@@ -15,8 +15,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Inliner
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
             var toRemove = new List<int>();
-            var localOperations = methodInterpreter.MidRepresentation.LocalOperations;
-            for (int index = 0; index < localOperations.Count; index++)
+            var localOperations = methodInterpreter.MidRepresentation.UseDef.GetLocalOperations();
+            for (int index = 0; index < localOperations.Length; index++)
             {
                 var localOperation = localOperations[index];
 

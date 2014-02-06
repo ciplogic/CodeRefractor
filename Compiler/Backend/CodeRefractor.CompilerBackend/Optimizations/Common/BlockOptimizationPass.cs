@@ -26,7 +26,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
         }
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
-            var localOperations = methodInterpreter.MidRepresentation.LocalOperations.ToArray();
+            var localOperations = methodInterpreter.MidRepresentation.UseDef.GetLocalOperations();
             var sortedLabelPos = BuildBlockOperations(methodInterpreter);
             var startPos = 0;
             var result = false;

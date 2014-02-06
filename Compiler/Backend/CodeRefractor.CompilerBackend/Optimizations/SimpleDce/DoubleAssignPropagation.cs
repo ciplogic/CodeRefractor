@@ -23,14 +23,14 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
     {
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
-            var localOperations = methodInterpreter.MidRepresentation.LocalOperations;
-            var toPatch = Analyze(localOperations.ToArray());
+            var localOperations = methodInterpreter.MidRepresentation.UseDef.GetLocalOperations();
+            var toPatch = Analyze(localOperations);
             if(toPatch.Count==0)
                 return;
             ApplyOptimization(methodInterpreter, toPatch, localOperations);
         }
 
-        private void ApplyOptimization(MethodInterpreter methodInterpreter, List<int> toPatch, List<LocalOperation> localOperations)
+        private void ApplyOptimization(MethodInterpreter methodInterpreter, List<int> toPatch, LocalOperation[] localOperations)
         {
             foreach (var patchLine in toPatch)
             {

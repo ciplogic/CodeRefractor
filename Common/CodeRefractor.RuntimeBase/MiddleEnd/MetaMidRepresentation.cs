@@ -20,8 +20,20 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
         public readonly Dictionary<string, object> AuxiliaryObjects =new Dictionary<string, object>();
         private MethodBase _method;
+        private UseDefDescription _useDef;
 
-        public UseDefDescription UseDef { get; private set; }
+        public UseDefDescription UseDef
+        {
+            get
+            {
+                if (_useDef.GetLocalOperations() == null)
+                {
+                    _useDef.Update(LocalOperations.ToArray());
+                }
+                return _useDef;
+            }
+            private set { _useDef = value; }
+        }
 
         public MetaMidRepresentation()
         {

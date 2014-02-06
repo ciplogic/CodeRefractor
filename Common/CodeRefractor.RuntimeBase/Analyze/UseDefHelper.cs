@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
@@ -16,34 +15,6 @@ namespace CodeRefractor.RuntimeBase.Analyze
 {
     public static class UseDefHelper
     {
-        public static LocalOperation GetNextUsage(this List<LocalOperation> operations, LocalVariable variable,
-                                                  int startPos, out int pos)
-        {
-            pos = startPos;
-            for (var i = startPos; i < operations.Count; i++)
-            {
-                var operation = operations[i];
-                pos = i;
-                if (operation.IsBranchOperation())
-                    return null;
-                if (OperationUses(operation, variable))
-                    return operation;
-            }
-            return null;
-        }
-
-        public static List<LocalVariable> GetUsagesAndDefinitions(int i, UseDefDescription useDef)
-        {
-            var usages = useDef.GetUsages(i);
-            var def = useDef.GetDefinition(i);
-            var result = usages.ToList();
-            if (def != null)
-            {
-                result.Add(def);
-            }
-            return result;
-        }
-
         public static List<LocalVariable> GetUsages(this LocalOperation operation)
         {
             var result = new List<LocalVariable>(2);
@@ -208,19 +179,6 @@ namespace CodeRefractor.RuntimeBase.Analyze
             usages.Add(localVar);
         }
 
-        public static List<int> GetVariableDefinitions(this MetaMidRepresentation midRepresentation, LocalVariable variable)
-        {
-            var result = new List<int>();
-            var useDef = midRepresentation.UseDef;
-            for (int index = 0; index < midRepresentation.LocalOperations.Count; index++)
-            {
-                var definition = useDef.GetDefinition(index);
-                if (variable.Equals(definition))
-                    result.Add(index);
-            }
-            return result;
-        }
-
         public static Assignment GetAssignment(this LocalOperation operation)
         {
             return operation.Value as Assignment;
@@ -238,7 +196,6 @@ namespace CodeRefractor.RuntimeBase.Analyze
                 case OperationKind.SetField:
                 case OperationKind.SetArrayItem:
                 case OperationKind.SetStaticField:
-                    return null;
                     return null;
                 case OperationKind.Assignment:
                 case OperationKind.NewObject:
