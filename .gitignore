@@ -37,3 +37,5 @@ Compiler/Frontend/MsilReader/bin/*
 Compiler/Frontend/MsilReader/obj/*
 bin/CodeRefactorCppDebugging.b*
 bin/Makefile.*
+VmTests/bin/*.dll
+VmTests/bin/cr.exe
