@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using CodeRefractor.CompilerBackend.Linker;
+using CodeRefractor.RuntimeBase.FrontEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
@@ -99,7 +100,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                 var descInfo = info.GetMethodDescriptor();
                 if (result.ContainsKey(descInfo))
                     continue;
-                var interpreter = info.GetInterpreter();
+                var interpreter = info.Register();
                 if (interpreter == null)
                     continue;
                 var isGenericDeclaringType = interpreter.IsGenericDeclaringType();
@@ -107,7 +108,12 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                 {
                     interpreter.Specialize();
                 }
-                result[descInfo] = interpreter;
+                var interpreterExists = result.ContainsKey(descInfo);
+                if (!interpreterExists)
+                {
+                    result[descInfo] = interpreter;
+                    UpdateMethodEntryClosure(interpreter, result);
+                }
 
                 toAdd.Add(interpreter);
             }
