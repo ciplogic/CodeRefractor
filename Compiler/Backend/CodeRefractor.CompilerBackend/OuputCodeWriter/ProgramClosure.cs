@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using CodeRefactor.OpenRuntime;
+using CodeRefractor.CompilerBackend.Optimizations.Common;
+using CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.FrontEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd;
@@ -47,8 +49,27 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             }
         }
 
+        public static void ComputeEscapeAnalysis(List<MethodInterpreter> methodClosures)
+        {
+            var escapeParameters = new AnalyzeParametersAreEscaping();
+            var loweringVars = new InFunctionLoweringVars();
+            var opSteps = new ResultingOptimizationPass[] {escapeParameters, loweringVars};
+            for (var i = 0; i < 2; i++)
+            {
+                foreach (var pass in opSteps)
+                {
+                    foreach (var methodInterpreter in methodClosures)
+                    {
+                        pass.Optimize(methodInterpreter);
+                    }
+                }
+            }
+        }
+
         public StringBuilder BuildFullSourceCode()
         {
+            ComputeEscapeAnalysis(MethodClosure);
+
             return CppCodeGenerator.GenerateSourceStringBuilder(EntryInterpreter, UsedTypes, MethodClosure);
         }
     }
