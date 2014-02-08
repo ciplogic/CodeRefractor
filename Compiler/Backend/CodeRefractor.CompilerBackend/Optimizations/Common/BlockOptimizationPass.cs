@@ -40,9 +40,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
                 }
                 startPos = labelPos + 1;
             }
-            TryOptimizeBlock(methodInterpreter, startPos, localOperations.Length - 1, localOperations);
-            result |= Result;
-            Result = result;
+            Result = TryOptimizeBlock(methodInterpreter, startPos, localOperations.Length - 1, localOperations);
         }
 
         private static List<int> BuildBlockOperations(MethodInterpreter methodInterpreter)

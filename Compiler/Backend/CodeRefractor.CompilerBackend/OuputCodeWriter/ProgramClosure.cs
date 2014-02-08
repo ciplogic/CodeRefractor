@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 using CodeRefactor.OpenRuntime;
-using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.FrontEnd;
@@ -53,16 +53,20 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
         {
             var escapeParameters = new AnalyzeParametersAreEscaping();
             var loweringVars = new InFunctionLoweringVars();
-            var opSteps = new ResultingOptimizationPass[] {escapeParameters, loweringVars};
             for (var i = 0; i < 2; i++)
             {
-                foreach (var pass in opSteps)
+
+                foreach (var methodInterpreter in methodClosures)
                 {
-                    foreach (var methodInterpreter in methodClosures)
-                    {
-                        pass.Optimize(methodInterpreter);
-                    }
+                    escapeParameters.Optimize(methodInterpreter);
                 }
+                Parallel.ForEach(methodClosures, methodInterpreter =>
+                    //foreach (var methodInterpreter in methodClosures)
+                {
+                    loweringVars.Optimize(methodInterpreter);
+                }
+                    );
+
             }
         }
 

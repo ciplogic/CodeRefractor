@@ -138,8 +138,6 @@ namespace CodeRefractor.RuntimeBase.Analyze
             result.AddUsage(assignment.Right);
         }
 
-
-
         private static void AddUsagesOfNewArray(LocalOperation operation, List<LocalVariable> result)
         {
             var assignment = (Assignment)operation.Value;
