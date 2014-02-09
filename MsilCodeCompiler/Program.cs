@@ -35,8 +35,6 @@ namespace CodeRefractor.Compiler
             var start = Environment.TickCount;
             var programClosure = new ProgramClosure(definition);
             var sb = programClosure.BuildFullSourceCode();
-            //var linker = definition.CreateLinkerFromEntryPoint();
-            //var sb = CppCodeGenerator.BuildFullSourceCode(linker);
             var end = Environment.TickCount - start;
             Console.WriteLine("Compilation time: {0} ms", end);
 
@@ -53,15 +51,9 @@ namespace CodeRefractor.Compiler
 
             CrRuntimeLibrary.Instance.ScanAssembly(typeof (CrString).Assembly);
             OptimizationLevelBase.Instance = new OptimizationLevels();
-
-            //MetaLinker.ScanAssembly(typeof(int));
-            //MetaLinker.ScanAssembly(typeof(Console));
             NativeCompilationUtils.SetCompilerOptions("gcc");
             CommandLineParse.OptimizerLevel =2;
             CallCompiler("", "");
-            //var standardOutput = applicationNativeExe.ExecuteCommand();
-            //Console.WriteLine(standardOutput);
-            //Console.ReadKey();
         }
     }
 }

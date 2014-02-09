@@ -21,6 +21,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
             }
             var typeDescription = new TypeDescription(type);
             Instance.UserTypeDesc[type] = typeDescription;
+            typeDescription.ExtractInformation();
             return typeDescription;
         }
 

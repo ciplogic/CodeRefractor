@@ -83,13 +83,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
                            
                            new RemoveDeadStoresToFunctionCalls(), 
                            new RemoveDeadPureFunctionCalls(), 
-                           /*
-                            
-                           new ConstantVariableBranchOperatorPropagation(),
+                         
                            //new AssignmentVregWithConstNextLineFolding(),  
                           
-                           
-                            */
                            new DoubleAssignPropagation(),
                            new AssignToReturnPropagation(),
                            new DceLocalAssigned(),
@@ -118,7 +114,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
 
                              new OneAssignmentDeadStoreAssignment(),
                              new RemoveCallsToEmptyMethods(),
-                            //new InlineGetterAndSetterMethods(), 
+                            new InlineGetterAndSetterMethods(), 
                            new ReachabilityLines(),
                         
                         

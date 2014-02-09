@@ -39,3 +39,11 @@ bin/CodeRefactorCppDebugging.b*
 bin/Makefile.*
 VmTests/bin/*.dll
 VmTests/bin/cr.exe
+Compiler/Backend/CodeRefractor.CompilerBackend/bin/*
+CodeRefactorCppDebugging/Debug*
+CodeRefactorCppDebugging/Release*
+CodeRefactorCppDebugging/OpenRa*
+Views/CodeRefractor.Launcher/bin/*
+VmTests/MsilCodeCompiler.Tests/bin/*
+VmTests/Projects/SimpleAdditions/bin/*
+MsilCodeCompiler/bin/*

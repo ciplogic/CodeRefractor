@@ -34,22 +34,16 @@ namespace CodeRefractor.RuntimeBase.Analyze
 
         public TypeDescription(Type clrType)
         {
-            if (clrType.IsGenericType)
-            {
-                clrType = clrType.Assembly.GetType(string.Format("{0}.{1}", clrType.Namespace, clrType.Name));
-            }
             ClrType = clrType;
 
             Name = clrType.Name;
             Namespace = clrType.Namespace;
             ContainsGenericParameters = clrType.ContainsGenericParameters;
-            Layout = new List<FieldDescription>();
-
-            ExtractInformation();
         }
 
-        private void ExtractInformation()
+        public void ExtractInformation()
         {
+            Layout = new List<FieldDescription>();
             ClrTypeCode = Type.GetTypeCode(ClrType);
 
             if (IgnoredSet.Contains(ClrType))
@@ -75,6 +69,10 @@ namespace CodeRefractor.RuntimeBase.Analyze
         private void ExtractFieldsTypes()
         {
             var clrType = ClrType.GetReversedType();
+            if (clrType.Assembly.GlobalAssemblyCache)
+                return;
+            if (clrType.IsInterface)
+                return;
             if (clrType.IsSubclassOf(typeof (Array)))
             {
                 UsedTypeList.Set(clrType.GetElementType());
