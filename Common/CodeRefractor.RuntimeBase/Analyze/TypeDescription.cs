@@ -30,7 +30,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
             );
             
             
-            List<FieldDescription> Layout { get; set; }
+           public List<FieldDescription> Layout { get; set; }
 
         public TypeDescription(Type clrType)
         {

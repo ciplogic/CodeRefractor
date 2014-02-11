@@ -79,6 +79,12 @@ namespace CodeRefractor.RuntimeBase
             return resultDictonary.Values.ToList();
         }
 
+        public static void SortTypeClosure(List<Type> types)
+        {
+            IComparer<Type> comparer = new ClosureTypeComparer();
+            types.Sort(comparer.Compare);
+        }
+
         private static bool IsRefClassType(Type t)
         {
             var typeCode = Type.GetTypeCode(t);

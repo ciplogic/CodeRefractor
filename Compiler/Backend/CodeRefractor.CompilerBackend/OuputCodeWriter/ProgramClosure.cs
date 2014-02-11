@@ -26,6 +26,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             BuildMethodClosure();
             UsedTypes = TypesClosureLinker.GetTypesClosure(MethodClosure);
             UsedTypes.Add(typeof(CrString));
+            TypesClosureLinker.SortTypeClosure(UsedTypes);
         }
 
         private void BuildMethodClosure()
