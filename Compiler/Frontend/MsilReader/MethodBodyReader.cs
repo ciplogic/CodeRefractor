@@ -72,22 +72,13 @@ namespace MsilReader
 
         private void ReadInstructions()
         {
-            Instruction previous = null;
-
             while (il.position < il.buffer.Length)
             {
                 var instruction = new Instruction(il.position, ReadOpCode());
 
                 ReadOperand(instruction);
 
-                if (previous != null)
-                {
-                    instruction.Previous = previous;
-                    previous.Next = instruction;
-                }
-
                 instructions.Add(instruction);
-                previous = instruction;
             }
 
             ResolveBranches();
@@ -233,11 +224,11 @@ namespace MsilReader
                 : two_bytes_opcodes[il.ReadByte()];
         }
 
-        public static List<Instruction> GetInstructions(MethodBase method)
+        public static Instruction[] GetInstructions(MethodBase method)
         {
             var reader = new MethodBodyReader(method);
             reader.ReadInstructions();
-            return reader.instructions;
+            return reader.instructions.ToArray();
         }
     }
 }

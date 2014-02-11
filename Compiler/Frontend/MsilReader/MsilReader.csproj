@@ -40,10 +40,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BackingFieldResolver.cs" />
     <Compile Include="ByteBuffer.cs" />
     <Compile Include="Disassembler.cs" />
-    <Compile Include="ILPattern.cs" />
     <Compile Include="Image.cs" />
     <Compile Include="Instruction.cs" />
     <Compile Include="MethodBodyReader.cs" />

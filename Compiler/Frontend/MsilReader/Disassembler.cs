@@ -10,12 +10,12 @@ namespace MsilReader
 {
     public static class Disassembler
     {
-        public static IList<Instruction> GetInstructions(this MethodBase self)
+        public static Instruction[] GetInstructions(this MethodBase self)
         {
             if (self == null)
                 throw new ArgumentNullException("self");
 
-            return MethodBodyReader.GetInstructions(self).AsReadOnly();
+            return MethodBodyReader.GetInstructions(self);
         }
     }
 }

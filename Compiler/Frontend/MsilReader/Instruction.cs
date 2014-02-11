@@ -28,11 +28,6 @@ namespace MsilReader
             get { return operand; }
             internal set { operand = value; }
         }
-
-        public Instruction Previous { get; internal set; }
-
-        public Instruction Next { get; internal set; }
-
         public int Size
         {
             get

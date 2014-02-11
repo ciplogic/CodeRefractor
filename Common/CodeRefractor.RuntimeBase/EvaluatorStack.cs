@@ -41,5 +41,10 @@ namespace CodeRefractor.RuntimeBase
         {
             return _stack.Pop();
         }
+
+        public void Clear()
+        {
+            _stack.Clear();
+        }
     }
 }

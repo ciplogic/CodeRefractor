@@ -92,6 +92,77 @@ namespace CodeRefractor.RuntimeBase
             }
             return fullName;
         }
+
+        public static string ToDeclaredVariableType(this Type type, bool handleGenerics = true,
+            EscapingMode isSmartPtr = EscapingMode.Smart)
+        {
+            if (type == null)
+                return "void*";
+            if (type.IsArray)
+            {
+                var elementType = type.GetElementType();
+                var fullTypeName = elementType.ToCppName(handleGenerics);
+                switch (isSmartPtr)
+                {
+                    case EscapingMode.Smart:
+                        return String.Format(StdSharedPtr + "< Array < {0} > >", fullTypeName);
+                    case EscapingMode.Pointer:
+                        return String.Format("Array < {0} > *", fullTypeName);
+                    case EscapingMode.Stack:
+                        return String.Format("Array < {0} > ", fullTypeName);
+                }
+            }
+            if (type.IsClass || isSmartPtr != EscapingMode.Smart)
+            {
+                if (type.IsPrimitive || type.IsValueType)
+                    isSmartPtr = EscapingMode.Stack;
+                if (type.Name.EndsWith("*") || type.Name.EndsWith("&"))
+                {
+                    var elementType = type.GetElementType();
+                    var elementTypeCppName = elementType.ToCppName(handleGenerics);
+                    return String.Format("{0}* ", elementTypeCppName);
+                }
+                var typeParameters = type.GetGenericArguments();
+                if (typeParameters.Length!=0)
+                {
+                    var genericSpecializations = typeParameters.Select(
+                        t => t.ToCppMangling()
+                        ).ToList();
+                    var genericSpecializationString = string.Join(", ", genericSpecializations);
+
+                    switch (isSmartPtr)
+                    {
+                        case EscapingMode.Smart:
+                            return String.Format(StdSharedPtr + "<{0} <{1}> >", type.ToCppMangling(), genericSpecializationString);
+                        case EscapingMode.Pointer:
+                            return String.Format("{0} <{1}>*", type.ToCppMangling(), genericSpecializationString);
+                        case EscapingMode.Stack:
+                            return String.Format("{0} <{1}>", type.ToCppMangling(), genericSpecializationString);
+                    }
+                }
+                switch (isSmartPtr)
+                {
+                    case EscapingMode.Smart:
+                        return String.Format(StdSharedPtr + "<{0}>", type.ToCppMangling(handleGenerics));
+                    case EscapingMode.Pointer:
+                        return String.Format("{0} *", type.ToCppMangling());
+                    case EscapingMode.Stack:
+                        return String.Format("{0} ", type.ToCppMangling());
+                }
+            }
+            if (!type.IsClass || isSmartPtr != EscapingMode.Smart)
+            {
+                return type.IsSubclassOf(typeof(Enum))
+                           ? "int"
+                           : type.Name.ToCppMangling(type.Namespace);
+            }
+            if (type.IsByRef)
+            {
+                var elementType = type.GetElementType();
+                return String.Format("{0}*", elementType.ToCppMangling());
+            }
+            return String.Format(StdSharedPtr + "<{0}>", type.ToCppMangling());
+        }
         public static string ToCppName(this Type type, bool handleGenerics = true, EscapingMode isSmartPtr = EscapingMode.Smart)
         {
             if (type == null)

@@ -39,5 +39,7 @@ namespace CodeRefractor.RuntimeBase.Shared
 
         public const int BrZero = 0x39;
         public const int BrZeroS = 0x2C;
+        public const int Leave = 0xDD;
+        public const int LeaveS = 0xDE;
     }
 }

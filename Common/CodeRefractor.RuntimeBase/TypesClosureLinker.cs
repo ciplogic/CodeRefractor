@@ -81,8 +81,8 @@ namespace CodeRefractor.RuntimeBase
 
         public static void SortTypeClosure(List<Type> types)
         {
-            IComparer<Type> comparer = new ClosureTypeComparer();
-            types.Sort(comparer.Compare);
+            var typeComparer = new ClosureTypeComparer(types);
+            typeComparer.Sort();
         }
 
         private static bool IsRefClassType(Type t)

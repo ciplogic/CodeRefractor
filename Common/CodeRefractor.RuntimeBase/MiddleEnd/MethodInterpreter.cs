@@ -33,53 +33,6 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
         public bool Interpreted { get; set; }
 
-        public MethodBase GetGenericMethod(MethodBase method)
-        {
-            var genericParameters = new List<Type>();
-            genericParameters.AddRange(DeclaringType.ClrType.GetGenericArguments());
-            var parameters = method.GetParameters().Select(par => par.ParameterType).ToArray();
-
-            var allMemberFlags = BindingFlags.Public | BindingFlags.NonPublic |
-                               BindingFlags.Static | BindingFlags.Instance;
-            MethodBase result = null;
-            if (method.IsConstructor)
-            {
-                result=DeclaringType.ClrType.GetConstructor(parameters);
-            }
-            else
-            {
-                result=DeclaringType.ClrType.GetMethod(method.Name, parameters);
-            }
-            if (result == null)
-            {
-                try
-                {
-                    result = DeclaringType.ClrType.GetMethod(method.Name, allMemberFlags);
-                }
-                catch
-                {
-                    
-                }
-            }
-
-            if (result == null)
-            {
-                var methods = DeclaringType.ClrType.GetMethods();
-                foreach (var info in methods)
-                {
-                    if (method.Name == info.Name)
-                    {
-                        result = info;
-                        break;
-                    }
-                }
-            }
-            if (result == null)
-            {
-            }
-            return result;
-        }
-
         public void SetDeclaringType(MethodBase method)
         {
             DeclaringType = UsedTypeList.Set(method.DeclaringType);
@@ -88,7 +41,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 Method = method;
                 return;
             }
-            Method = GetGenericMethod(method);
+            Method = MethodInterpreterUtils.GetGenericMethod(method, DeclaringType);
             if (Method == null)
             {
                 Method = DeclaringType.ClrType.GetMethod(method.Name);
@@ -169,6 +122,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                     case ObcodeIntValues.BltS:
                     case ObcodeIntValues.BrS:
                     case ObcodeIntValues.Br:
+                    case ObcodeIntValues.Leave:
+                    case ObcodeIntValues.LeaveS:
                     {
                         var offset = ((Instruction)instruction.Operand).Offset;
                         AddLabelIfDoesntExist(offset, labels);
@@ -209,8 +164,9 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             var evaluator = new EvaluatorStack();
             var operationFactory = new MetaMidRepresentationOperationFactory(MidRepresentation, evaluator);
 
-            foreach (var instruction in instructions)
+            for (int index = 0; index < instructions.Length; index++)
             {
+                var instruction = instructions[index];
                 EvaluateInstuction(instruction, operationFactory, labelList);
             }
             MidRepresentation.Vars.Setup();
@@ -229,6 +185,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             {
                 operationFactory.SetLabel(instruction.Offset);
             }
+            if(operationFactory.SkipInstruction(instruction.Offset))
+                return;
             var opcodeValue = instruction.OpCode.Value;
             operationFactory.AddCommentInstruction(instruction.ToString());
             if (HandleCalls(instruction, operationFactory, opcodeValue)) 
@@ -589,6 +547,18 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         {
             #region Branching
 
+
+            if (opcodeStr == OpcodeBranchNames.Leave
+                || opcodeStr == OpcodeBranchNames.LeaveS
+                )
+            {
+                operationFactory.AlwaysBranch(offset);
+                operationFactory.LeaveTo(offset);
+                operationFactory.ClearStack();
+                return true;
+            }
+
+
             if (opcodeStr == OpcodeBranchNames.BrTrueS
                 || opcodeStr == OpcodeBranchNames.BrTrue
                 || opcodeStr == OpcodeBranchNames.BrInstS
@@ -643,7 +613,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 return true;
             }
 
-            if (opcodeStr == "br.s" || opcodeStr == "br")
+            if (opcodeStr == OpcodeBranchNames.BrS || opcodeStr == OpcodeBranchNames.Br)
             {
                 operationFactory.AlwaysBranch(offset);
                 return true;

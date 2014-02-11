@@ -407,7 +407,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
             if (localVariableData.Escaping == EscapingMode.Pointer)
             {
                 var cppName = localVariable.ComputedType()
-                    .ClrType.ToCppName(true, isSmartPtr: localVariableData.Escaping);
+                    .ClrType.ToDeclaredVariableType(true, isSmartPtr: localVariableData.Escaping);
                 variablesSb
                     .AppendFormat(format, cppName, localVariable.Id)
                     .AppendLine();
@@ -415,7 +415,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
             }
             variablesSb
                 .AppendFormat(format, localVariable.ComputedType()
-                .ClrType.ToCppName(true, isSmartPtr: localVariableData.Escaping), localVariable.Id)
+                .ClrType.ToDeclaredVariableType(true, isSmartPtr: localVariableData.Escaping), localVariable.Id)
                 .AppendLine();
         }
 

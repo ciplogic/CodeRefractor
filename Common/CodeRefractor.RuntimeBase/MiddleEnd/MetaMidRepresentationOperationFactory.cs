@@ -19,6 +19,22 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         private readonly MetaMidRepresentation _representation;
         private readonly EvaluatorStack _evaluator;
 
+        private int _leaveOffset = -1;
+        public void LeaveTo(int offsetToLeave)
+        {
+            _leaveOffset = offsetToLeave;
+        }
+
+        public bool SkipInstruction(int offset)
+        {
+            if (_leaveOffset == -1)
+                return false;
+            if (offset < _leaveOffset)
+                return true;
+            _leaveOffset = -1;
+            return false;
+        }
+
         public MetaMidRepresentationOperationFactory(MetaMidRepresentation representation, EvaluatorStack evaluator)
         {
             _representation = representation;
@@ -818,6 +834,11 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             };
             arrayVariable.FixedType = UsedTypeList.Set(elemInfo);
             AddOperation(OperationKind.SetArrayItem, assignment);
+        }
+
+        public void ClearStack()
+        {
+            _evaluator.Clear();
         }
     }
 }

@@ -7,6 +7,28 @@ namespace CodeRefractor.RuntimeBase
 {
     public class ClosureTypeComparer : IComparer<Type>
     {
+        private readonly List<Type> _typesToSort;
+        Dictionary<Type, HashSet<Type>> _dictionary = new Dictionary<Type, HashSet<Type>>(); 
+        public ClosureTypeComparer(List<Type> typesToSort)
+        {
+            _typesToSort = typesToSort;
+            foreach (var type in typesToSort)
+            {
+                var typeDesc = UsedTypeList.Set(type);
+
+                var layout = typeDesc.Layout.Where(kind => kind.TypeDescription.ClrTypeCode == TypeCode.Object)
+                    .Select(field =>field.TypeDescription.ClrType)
+                    .ToArray();
+                var hashSet = new HashSet<Type>(layout);
+                _dictionary[type] = hashSet;
+            }
+        }
+
+        public void Sort()
+        {
+            _typesToSort.Sort(this);
+        }
+
         public int Compare(Type left, Type right)
         {
             if (left.IsValueType && !right.IsValueType)
@@ -17,27 +39,19 @@ namespace CodeRefractor.RuntimeBase
             {
                 return 1;
             }
-            var leftTypeDesc = UsedTypeList.Set(left);
-            var rightTypeDesc = UsedTypeList.Set(right);
-
-            var leftLayout = leftTypeDesc.Layout.Where(kind => kind.TypeDescription.ClrTypeCode == TypeCode.Object).ToList();
-            var rightLayout = rightTypeDesc.Layout.Where(kind => kind.TypeDescription.ClrTypeCode == TypeCode.Object).ToList(); 
-            if (leftLayout.Count == 0 && rightLayout.Count == 0)
+            var leftLayout = _dictionary[left];
+            var rightLayout = _dictionary[right]; 
+            if (leftLayout.Count== 0 && rightLayout.Count== 0)
                 return 0;
-            var leftTypeInRight = rightLayout.FirstOrDefault(kind => kind.TypeDescription.ClrType == left);
-            if (leftTypeInRight != null)
+            if (rightLayout.Contains(left))
                 return -1;
-            var rightTypeInLeft = leftLayout.FirstOrDefault(kind => kind.TypeDescription.ClrType == right);
-            if (rightTypeInLeft != null)
+            if (leftLayout.Contains(right))
                 return 1;
-            var countLeft = leftLayout.Count(kind => kind.TypeDescription.ClrTypeCode == TypeCode.Object);
-            var countRight = rightLayout.Count(kind => kind.TypeDescription.ClrTypeCode == TypeCode.Object);
-            if (countLeft != countRight)
-            {
-                var compare = countLeft-countRight;
-                return compare;
-            }
-            return 0;
+            var countLeft = leftLayout.Count;
+            var countRight = rightLayout.Count;
+            if (countLeft == countRight) return 0;
+            var compare = countLeft-countRight;
+            return compare;
         }
     }
 }
