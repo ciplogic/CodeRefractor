@@ -256,9 +256,6 @@ Global
 		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7} = {64825421-C03C-4F00-92D9-1A3822D4022F}
 		{6C4BC5D1-CE1E-4152-AB7D-0EE10C64496D} = {2F7063CF-FFF5-4F2E-9643-1ACB96A889E5}
 	EndGlobalSection
-	GlobalSection(Performance) = preSolution
-		HasPerformanceSessions = true
-	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = MsilCodeCompiler\CodeRefractor.Compiler.csproj
 	EndGlobalSection

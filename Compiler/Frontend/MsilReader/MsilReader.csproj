@@ -41,8 +41,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ByteBuffer.cs" />
-    <Compile Include="Disassembler.cs" />
-    <Compile Include="Image.cs" />
     <Compile Include="Instruction.cs" />
     <Compile Include="MethodBodyReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
