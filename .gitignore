@@ -49,3 +49,6 @@ VmTests/Projects/SimpleAdditions/bin/*
 MsilCodeCompiler/bin/*
 Compiler/Backend/CodeRefractor.CodeWriter/bin/*
 Compiler/Backend/CodeRefractor.CodeWriter/obj/*
+bin/Tao.OpenGl.xml
+bin/Tao.Platform.Windows.xml
+bin/Tao.Sdl.xml
