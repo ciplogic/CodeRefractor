@@ -199,7 +199,7 @@ namespace CodeRefractor.RuntimeBase
                     case EscapingMode.Smart:
                         return String.Format(StdSharedPtr + "<{0}>", type.ToCppMangling(handleGenerics));
                     case EscapingMode.Pointer:
-                        return String.Format("{0} *", type.ToCppMangling());
+                        return String.Format("{0} *", type.ToCppMangling(handleGenerics));
                     case EscapingMode.Stack:
                         return String.Format("{0} ", type.ToCppMangling());
                 }

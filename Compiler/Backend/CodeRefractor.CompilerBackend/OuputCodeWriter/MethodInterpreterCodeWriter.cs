@@ -2,13 +2,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
-using CodeRefractor.CompilerBackend.Linker;
 using CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations;
 using CodeRefractor.CompilerBackend.OuputCodeWriter.Platform;
 using CodeRefractor.RuntimeBase.MiddleEnd;
-using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.Optimizations;
 
 #endregion
@@ -28,8 +24,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                 Console.WriteLine("Should not be null");
                 return "";
             }
-            var sb = new StringBuilder();
-            CppMethodCodeWriter.WriteSignature(interpreter.Method,sb, true);
+            var sb = CppWriteSignature.WriteSignature(interpreter, true);
             return sb.ToString();
         }
 
