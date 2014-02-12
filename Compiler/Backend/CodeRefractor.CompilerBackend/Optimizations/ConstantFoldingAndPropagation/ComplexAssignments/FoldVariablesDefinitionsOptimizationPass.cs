@@ -1,19 +1,20 @@
-using System;
+#region Usings
+
 using System.Collections.Generic;
 using System.Linq;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
-using CodeRefractor.CompilerBackend.Optimizations.Util;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
 
+#endregion
+
 namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagation.ComplexAssignments
 {
-    class FoldVariablesDefinitionsOptimizationPass : ResultingInFunctionOptimizationPass
+    internal class FoldVariablesDefinitionsOptimizationPass : ResultingInFunctionOptimizationPass
     {
-        
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
             var definitionsDictionary = new Dictionary<LocalVariable, int>();
@@ -23,17 +24,18 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
             var metaMidRepresentation = methodInterpreter.MidRepresentation;
             var localOperations = metaMidRepresentation.LocalOperations.ToArray();
             definitionsDictionary.Clear();
-            BuildDefinitionDictionary(localOperations, metaMidRepresentation.UseDef, definitionsDictionary, usagesDictionary);
+            BuildDefinitionDictionary(localOperations, metaMidRepresentation.UseDef, definitionsDictionary,
+                usagesDictionary);
             RemoveNonUniqueDefinitions(definitionsDictionary);
             RemoveNonUniqueDefinitions(usagesDictionary);
             var toPatch = new List<int>();
-            foreach (var targetOp in localOperations.Where(op=>op.Kind==OperationKind.Assignment))
+            foreach (var targetOp in localOperations.Where(op => op.Kind == OperationKind.Assignment))
             {
                 var assignment = targetOp.GetAssignment();
                 var rightVar = assignment.Right as LocalVariable;
-                if(rightVar==null)
+                if (rightVar == null)
                     continue;
-                if(!usagesDictionary.ContainsKey(rightVar))
+                if (!usagesDictionary.ContainsKey(rightVar))
                     continue;
                 var leftVar = assignment.AssignedTo;
                 if (!definitionsDictionary.ContainsKey(rightVar)
@@ -41,11 +43,11 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                     continue;
                 var rightId = definitionsDictionary[rightVar];
                 var leftId = definitionsDictionary[leftVar];
-                if (leftId- rightId != 1)
+                if (leftId - rightId != 1)
                     continue;
                 toPatch.Add(leftId);
             }
-            if(toPatch.Count==0)
+            if (toPatch.Count == 0)
                 return;
             var toRemove = PatchInstructions(localOperations, toPatch);
             methodInterpreter.DeleteInstructions(toRemove);
@@ -57,7 +59,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
             foreach (var line in toPatch)
             {
                 var assignment = localOperations[line].GetAssignment();
-                var destOperation = localOperations[line-1];
+                var destOperation = localOperations[line - 1];
                 switch (destOperation.Kind)
                 {
                     case OperationKind.Assignment:
@@ -83,7 +85,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
         private static void RemoveNonUniqueDefinitions(Dictionary<LocalVariable, int> dictionaryPositions)
         {
             var toRemove = new HashSet<LocalVariable>();
-            
+
             foreach (var item in dictionaryPositions)
             {
                 if (item.Value == -1)
@@ -95,7 +97,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
             }
         }
 
-        private void BuildDefinitionDictionary(LocalOperation[] localOperations, UseDefDescription useDef, Dictionary<LocalVariable, int> definitionsDictionary, Dictionary<LocalVariable, int> usagesDictionary)
+        private void BuildDefinitionDictionary(LocalOperation[] localOperations, UseDefDescription useDef,
+            Dictionary<LocalVariable, int> definitionsDictionary, Dictionary<LocalVariable, int> usagesDictionary)
         {
             for (var i = 0; i < localOperations.Length; i++)
             {
@@ -103,11 +106,11 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                 UpdateDefinitionDictionaryForIndex(i, def, definitionsDictionary);
                 var usages = useDef.GetUsages(i);
                 UpdateUsagesDictionaryForIndex(i, usages, usagesDictionary);
-
             }
         }
 
-        private void UpdateUsagesDictionaryForIndex(int i, LocalVariable[] usages, Dictionary<LocalVariable, int> usagesDictionary)
+        private void UpdateUsagesDictionaryForIndex(int i, LocalVariable[] usages,
+            Dictionary<LocalVariable, int> usagesDictionary)
         {
             foreach (var localVariable in usages)
             {
@@ -120,7 +123,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
             }
         }
 
-        private void UpdateDefinitionDictionaryForIndex(int i, LocalVariable def, Dictionary<LocalVariable, int> definitionsDictionary)
+        private void UpdateDefinitionDictionaryForIndex(int i, LocalVariable def,
+            Dictionary<LocalVariable, int> definitionsDictionary)
         {
             if (def == null)
                 return;

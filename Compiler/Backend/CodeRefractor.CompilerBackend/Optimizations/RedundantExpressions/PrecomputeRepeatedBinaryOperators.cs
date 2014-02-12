@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿#region Usings
+
+using System.Collections.Generic;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
@@ -6,11 +8,14 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
 
+#endregion
+
 namespace CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions
 {
-    class PrecomputeRepeatedBinaryOperators : BlockOptimizationPass
+    internal class PrecomputeRepeatedBinaryOperators : BlockOptimizationPass
     {
-        public override bool OptimizeBlock(MethodInterpreter midRepresentation, int startRange, int endRange, LocalOperation[] operations)
+        public override bool OptimizeBlock(MethodInterpreter midRepresentation, int startRange, int endRange,
+            LocalOperation[] operations)
         {
             var localOperations = midRepresentation.MidRepresentation.LocalOperations.ToArray();
             var calls = FindBinaryOperators(localOperations, startRange, endRange);
@@ -37,9 +42,10 @@ namespace CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions
             var firstOperator = localOps[i].GetBinaryOperator();
             var secondOperator = localOps[j].GetBinaryOperator();
             var newVreg = midRepresentation.MidRepresentation.CreateCacheVariable(firstOperator.ComputedType());
-            var assignLocalOperation = PrecomputeRepeatedUtils.CreateAssignLocalOperation(firstOperator.AssignedTo, newVreg);
+            var assignLocalOperation = PrecomputeRepeatedUtils.CreateAssignLocalOperation(firstOperator.AssignedTo,
+                newVreg);
             localOps.Insert(i + 1, assignLocalOperation);
-            
+
             firstOperator.AssignedTo = newVreg;
 
             var destAssignment = PrecomputeRepeatedUtils.CreateAssignLocalOperation(secondOperator.AssignedTo, newVreg);
@@ -49,7 +55,6 @@ namespace CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions
 
         private static List<int> FindBinaryOperators(LocalOperation[] localOperations, int startRange, int endRange)
         {
-
             var calls = new List<int>();
             for (var index = startRange; index <= endRange; index++)
             {
@@ -62,8 +67,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions
         }
 
 
-        private static bool AreDifferentOperators(BinaryOperator firstOperator, BinaryOperator secondOperator, List<int> calls, int i,
-                                                 int j, LocalOperation[] localOperations)
+        private static bool AreDifferentOperators(BinaryOperator firstOperator, BinaryOperator secondOperator,
+            List<int> calls, int i,
+            int j, LocalOperation[] localOperations)
         {
             if (firstOperator.Name != secondOperator.Name)
                 return true;
@@ -73,9 +79,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions
                 return true;
             var definitions = new HashSet<LocalVariable>();
             if (firstOperator.Left is LocalVariable)
-                definitions.Add((LocalVariable)firstOperator.Left);
+                definitions.Add((LocalVariable) firstOperator.Left);
             if (firstOperator.Right is LocalVariable)
-                definitions.Add((LocalVariable)firstOperator.Right);
+                definitions.Add((LocalVariable) firstOperator.Right);
             var isReassigned = false;
             for (var index = calls[i] + 1; index < calls[j]; index++)
             {

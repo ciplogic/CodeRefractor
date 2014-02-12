@@ -1,21 +1,24 @@
+#region Usings
+
 using System.Collections.Generic;
 using System.Linq;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
-using CodeRefractor.CompilerBackend.Optimizations.Util;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
+#endregion
+
 namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
 {
     /// <summary>
-    ///   This optimization in case of two assignments of the form: 
-    /// > var1 = identifier 
-    /// > var2 = var1
-    ///  will transform the code to be > var2 = identifier
+    ///     This optimization in case of two assignments of the form:
+    ///     > var1 = identifier
+    ///     > var2 = var1
+    ///     will transform the code to be > var2 = identifier
     /// </summary>
-    internal class DceNewObjectOrArray: ResultingInFunctionOptimizationPass
+    internal class DceNewObjectOrArray : ResultingInFunctionOptimizationPass
     {
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {

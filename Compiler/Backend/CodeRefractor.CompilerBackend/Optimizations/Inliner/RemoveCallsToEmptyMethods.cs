@@ -1,13 +1,15 @@
+#region Usings
+
 using System.Collections.Generic;
 using CodeRefractor.CompilerBackend.Linker;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
-using CodeRefractor.CompilerBackend.Optimizations.Util;
+using CodeRefractor.CompilerBackend.Optimizations.Purity;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
-using CodeRefractor.CompilerBackend.Optimizations.Purity;
-using Compiler.CodeWriter.Linker;
+
+#endregion
 
 namespace CodeRefractor.CompilerBackend.Optimizations.Inliner
 {
@@ -17,22 +19,22 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Inliner
         {
             var toRemove = new List<int>();
             var localOperations = methodInterpreter.MidRepresentation.UseDef.GetLocalOperations();
-            for (int index = 0; index < localOperations.Length; index++)
+            for (var index = 0; index < localOperations.Length; index++)
             {
                 var localOperation = localOperations[index];
 
                 if (localOperation.Kind != OperationKind.Call) continue;
-                
+
                 var methodData = (MethodData) localOperation.Value;
                 var interpreter = methodData.Info.GetInterpreter();
-                if(interpreter==null)
+                if (interpreter == null)
                     continue;
                 var isEmpty = interpreter.MidRepresentation.GetProperties().IsEmpty;
-                if(!isEmpty)
+                if (!isEmpty)
                     continue;
                 toRemove.Add(index);
             }
-            if(toRemove.Count==0)
+            if (toRemove.Count == 0)
                 return;
             methodInterpreter.DeleteInstructions(toRemove);
             Result = true;

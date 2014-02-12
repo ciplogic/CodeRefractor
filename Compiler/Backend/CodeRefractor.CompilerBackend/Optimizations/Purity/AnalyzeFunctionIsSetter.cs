@@ -1,6 +1,10 @@
+#region Usings
+
 using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
+
+#endregion
 
 namespace CodeRefractor.CompilerBackend.Optimizations.Purity
 {
@@ -10,6 +14,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
         {
             return intermediateCode.MidRepresentation.GetProperties().IsSetter;
         }
+
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
             if (ReadProperty(methodInterpreter))

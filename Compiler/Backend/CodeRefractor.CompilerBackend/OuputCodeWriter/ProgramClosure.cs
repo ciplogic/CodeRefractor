@@ -1,3 +1,5 @@
+#region Usings
+
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -9,6 +11,8 @@ using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze.TypeTableIndices;
 using CodeRefractor.RuntimeBase.FrontEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd;
+
+#endregion
 
 namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 {
@@ -26,7 +30,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             MetaLinkerOptimizer.ApplyOptimizations(MethodClosure);
             BuildMethodClosure();
             UsedTypes = TypesClosureLinker.GetTypesClosure(MethodClosure);
-            UsedTypes.Add(typeof(CrString));
+            UsedTypes.Add(typeof (CrString));
             TypesClosureLinker.SortTypeClosure(UsedTypes);
         }
 
@@ -37,7 +41,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             MetaLinker.Interpret(EntryInterpreter);
 
             var foundMethodCount = 1;
-            bool canContinue = true;
+            var canContinue = true;
             while (canContinue)
             {
                 var dependencies = EntryInterpreter.GetMethodClosure();
@@ -57,18 +61,14 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             var loweringVars = new InFunctionLoweringVars();
             for (var i = 0; i < 2; i++)
             {
-
                 foreach (var methodInterpreter in methodClosures)
                 {
                     escapeParameters.Optimize(methodInterpreter);
                 }
                 Parallel.ForEach(methodClosures, methodInterpreter =>
                     //foreach (var methodInterpreter in methodClosures)
-                {
-                    loweringVars.Optimize(methodInterpreter);
-                }
+                { loweringVars.Optimize(methodInterpreter); }
                     );
-
             }
         }
 

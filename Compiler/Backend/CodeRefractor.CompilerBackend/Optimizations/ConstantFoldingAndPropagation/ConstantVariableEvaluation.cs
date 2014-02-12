@@ -1,3 +1,5 @@
+#region Usings
+
 using System;
 using System.IO;
 using System.Linq;
@@ -8,6 +10,8 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
 using CodeRefractor.RuntimeBase.Shared;
 
+#endregion
+
 namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagation
 {
     public class ConstantVariableEvaluation : ResultingInFunctionOptimizationPass
@@ -15,14 +19,14 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
             var operations = methodInterpreter.MidRepresentation.LocalOperations
-                .Where(op=>op.Kind==OperationKind.BranchOperator)
-                .Select(operation => (BranchOperator)operation.Value)
+                .Where(op => op.Kind == OperationKind.BranchOperator)
+                .Select(operation => (BranchOperator) operation.Value)
                 .ToArray();
             foreach (var operation in operations)
             {
                 var leftVal = (operation.CompareValue as ConstValue);
                 var rightVal = (operation.SecondValue as ConstValue);
-                if(leftVal==null||rightVal==null)
+                if (leftVal == null || rightVal == null)
                     continue;
                 switch (operation.Name)
                 {
@@ -30,11 +34,10 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                         FoldEvaluation(operation, EvaluateBeq(leftVal, rightVal));
                         break;
                     default:
-                        throw new InvalidDataException("ConstantVariableEvaluation optimization. Case not handled, report a bug with reduced code");
-
+                        throw new InvalidDataException(
+                            "ConstantVariableEvaluation optimization. Case not handled, report a bug with reduced code");
                 }
             }
-
         }
 
         private void FoldEvaluation(BranchOperator operation, bool resultEq)
@@ -52,7 +55,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                 case TypeCode.Int32:
                     return (int) leftVal.Value == (int) rightVal.Value;
                 default:
-                    throw new InvalidDataException("ConstantVariableEvaluation optimization. Case not handled, report a bug with reduced code");
+                    throw new InvalidDataException(
+                        "ConstantVariableEvaluation optimization. Case not handled, report a bug with reduced code");
             }
         }
     }

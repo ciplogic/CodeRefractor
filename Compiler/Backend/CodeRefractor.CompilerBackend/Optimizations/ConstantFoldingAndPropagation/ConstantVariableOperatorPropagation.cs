@@ -14,7 +14,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
             var operations = methodInterpreter.MidRepresentation.LocalOperations.ToArray();
-            for (var i = 0; i < operations.Length- 1; i++)
+            for (var i = 0; i < operations.Length - 1; i++)
             {
                 Assignment srcVariableDefinition;
                 var constValue = GetConstantFromOperation(operations[i], out srcVariableDefinition);

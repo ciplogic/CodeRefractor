@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace CodeRefractor.CodeWriter.Platform
 {
-    internal class PlatformInvokeDllMethod
+    public class PlatformInvokeDllMethod
     {
         public string Name { get; set; }
         public CallingConvention? CallingConvention { get; set; }

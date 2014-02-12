@@ -1,20 +1,20 @@
-﻿using System.Collections.Generic;
+﻿#region Usings
+
+using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using CodeRefractor.CompilerBackend.Linker;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
-using CodeRefractor.CompilerBackend.OuputCodeWriter;
 using CodeRefractor.RuntimeBase;
-using CodeRefractor.RuntimeBase.Analyze;
-using CodeRefractor.RuntimeBase.FrontEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
+#endregion
+
 namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
 {
-    class AnalyzeParametersAreEscaping : ResultingGlobalOptimizationPass
+    internal class AnalyzeParametersAreEscaping : ResultingGlobalOptimizationPass
     {
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
@@ -26,7 +26,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
             var localOperations = methodInterpreter.MidRepresentation.UseDef.GetLocalOperations();
             if (ComputeEscapeTable(methodInterpreter, localOperations)) return;
 
-            var finalSnapshot= LinkerUtils.BuildEscapingBools(methodInterpreter.Method);
+            var finalSnapshot = LinkerUtils.BuildEscapingBools(methodInterpreter.Method);
             CheckForChanges(finalSnapshot, originalSnapshot);
         }
 
@@ -40,7 +40,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
             var variables = intermediateCode.MidRepresentation.Vars;
             foreach (var variable in variables.Arguments)
             {
-                VariableData variableData = variables.GetVariableData(variable.Name);
+                var variableData = variables.GetVariableData(variable.Name);
                 if (!escapingBools[variable.Id])
                     variableData.Escaping = EscapingMode.Pointer;
             }
@@ -50,7 +50,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
         private void CheckForChanges(bool[] finalSnapshot, bool[] originalSnapshot)
         {
             Result = false;
-            for (int index = 0; index < finalSnapshot.Length; index++)
+            for (var index = 0; index < finalSnapshot.Length; index++)
             {
                 var orig = originalSnapshot[index];
                 var final = finalSnapshot[index];
@@ -60,7 +60,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
             }
         }
 
-        public static HashSet<LocalVariable> ComputeEscapingArgList(MetaMidRepresentation intermediateCode, LocalOperation[] operations)
+        public static HashSet<LocalVariable> ComputeEscapingArgList(MetaMidRepresentation intermediateCode,
+            LocalOperation[] operations)
         {
             var argumentList = new HashSet<LocalVariable>();
             argumentList.Clear();
@@ -71,7 +72,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
             if (argumentList.Count == 0)
                 return argumentList;
             var useDef = intermediateCode.UseDef;
-            for (int index = 0; index < operations.Length; index++)
+            for (var index = 0; index < operations.Length; index++)
             {
                 var op = operations[index];
                 var usages = useDef.GetUsages(index);
@@ -83,10 +84,11 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
             return argumentList;
         }
 
-        public static Dictionary<int, bool> ComputeArgsEscaping(LocalOperation[] operations, HashSet<LocalVariable> argEscaping)
+        public static Dictionary<int, bool> ComputeArgsEscaping(LocalOperation[] operations,
+            HashSet<LocalVariable> argEscaping)
         {
             var escaping = new Dictionary<int, bool>();
-            
+
             foreach (var op in operations)
             {
                 switch (op.Kind)
@@ -105,7 +107,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
                                 continue;
 
                             if (otherMethodData.ContainsKey(argCall.Id)
-                                ||!argEscaping.Contains(argCall))
+                                || !argEscaping.Contains(argCall))
                             {
                                 escaping[argCall.Id] = true;
                             }

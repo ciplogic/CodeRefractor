@@ -1,6 +1,5 @@
 #region Usings
 
-using System.Collections.Generic;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
@@ -12,12 +11,12 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
     public abstract class ConstantVariablePropagationBase : ResultingInFunctionOptimizationPass
     {
         protected static ConstValue GetConstantFromOperation(LocalOperation srcOperation,
-                                                             out Assignment srcVariableDefinition)
+            out Assignment srcVariableDefinition)
         {
             srcVariableDefinition = null;
             return srcOperation.Kind != OperationKind.Assignment
-                       ? null
-                       : ConstantFromOperation(out srcVariableDefinition, srcOperation);
+                ? null
+                : ConstantFromOperation(out srcVariableDefinition, srcOperation);
         }
 
         public static ConstValue ConstantFromOperation(out Assignment srcVariableDefinition, LocalOperation srcOperation)

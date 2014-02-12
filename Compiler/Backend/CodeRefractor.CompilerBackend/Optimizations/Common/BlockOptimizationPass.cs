@@ -1,12 +1,14 @@
+#region Usings
+
 using System.Collections.Generic;
-using System.Linq;
-using CodeRefractor.CompilerBackend.Optimizations.Util;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 
+#endregion
+
 namespace CodeRefractor.CompilerBackend.Optimizations.Common
 {
-    abstract class BlockOptimizationPass : ResultingInFunctionOptimizationPass
+    internal abstract class BlockOptimizationPass : ResultingInFunctionOptimizationPass
     {
         public LocalOperation[] GetInstructionRange(
             LocalOperation[] operations, int startInstruction, int endInstruction, bool cleanInstructions = true)
@@ -17,13 +19,14 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
                 var op = operations[i];
                 if (cleanInstructions)
                 {
-                    if(op.Kind==OperationKind.Comment)
+                    if (op.Kind == OperationKind.Comment)
                         continue;
                 }
                 result.Add(op);
             }
             return result.ToArray();
         }
+
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
             var localOperations = methodInterpreter.MidRepresentation.UseDef.GetLocalOperations();
@@ -33,7 +36,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
             foreach (var labelPos in sortedLabelPos)
             {
                 result |= TryOptimizeBlock(methodInterpreter, startPos, labelPos - 1, localOperations);
-                if(result)
+                if (result)
                 {
                     Result = true;
                     return;
@@ -54,12 +57,15 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
             return result;
         }
 
-        bool TryOptimizeBlock(MethodInterpreter localOperations, int startRange, int endRange, LocalOperation[] operations)
+        private bool TryOptimizeBlock(MethodInterpreter localOperations, int startRange, int endRange,
+            LocalOperation[] operations)
         {
             if (startRange >= endRange)
                 return false;
             return OptimizeBlock(localOperations, startRange, endRange, operations);
         }
-        public abstract bool OptimizeBlock(MethodInterpreter midRepresentation, int startRange, int endRange, LocalOperation[] operations);
+
+        public abstract bool OptimizeBlock(MethodInterpreter midRepresentation, int startRange, int endRange,
+            LocalOperation[] operations);
     }
 }

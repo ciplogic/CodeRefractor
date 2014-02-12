@@ -17,20 +17,23 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
             var operations = methodInterpreter.MidRepresentation.UseDef.GetLocalOperations();
-            var vregConstants = new HashSet<int>(methodInterpreter.MidRepresentation.Vars.VirtRegs.Select(localVar => localVar.Id));
+            var vregConstants =
+                new HashSet<int>(methodInterpreter.MidRepresentation.Vars.VirtRegs.Select(localVar => localVar.Id));
 
             var useDef = methodInterpreter.MidRepresentation.UseDef;
             RemoveCandidatesInDefinitions(operations, vregConstants, useDef);
             RemoveCandidatesInUsages(operations, vregConstants, useDef);
-            if(vregConstants.Count==0)
+            if (vregConstants.Count == 0)
                 return;
             OptimizeUnusedVregs(vregConstants, methodInterpreter.MidRepresentation.Vars);
         }
 
         #region Remove candidates
-        private static void RemoveCandidatesInUsages(LocalOperation[] operations, HashSet<int> vregConstants, UseDefDescription useDef)
+
+        private static void RemoveCandidatesInUsages(LocalOperation[] operations, HashSet<int> vregConstants,
+            UseDefDescription useDef)
         {
-            for (int index = 0; index < operations.Length; index++)
+            for (var index = 0; index < operations.Length; index++)
             {
                 var usages = useDef.GetUsages(index);
                 foreach (var usage in usages)
@@ -40,9 +43,10 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
             }
         }
 
-        private static void RemoveCandidatesInDefinitions(LocalOperation[] operations, HashSet<int> vregConstants, UseDefDescription useDef)
+        private static void RemoveCandidatesInDefinitions(LocalOperation[] operations, HashSet<int> vregConstants,
+            UseDefDescription useDef)
         {
-            for (int index = 0; index < operations.Length; index++)
+            for (var index = 0; index < operations.Length; index++)
             {
                 var definition = useDef.GetDefinition(index);
                 RemoveCandidate(vregConstants, definition);
@@ -63,10 +67,11 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
             if (vregConstants.Count == 0)
                 return;
             var liveVRegs =
-            variables.VirtRegs.Where(
-                vreg => vreg.Kind != VariableKind.Vreg || !vregConstants.Contains(vreg.Id)).ToList();
+                variables.VirtRegs.Where(
+                    vreg => vreg.Kind != VariableKind.Vreg || !vregConstants.Contains(vreg.Id)).ToList();
             variables.VirtRegs = liveVRegs;
         }
+
         #endregion
     }
 }

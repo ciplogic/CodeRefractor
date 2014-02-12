@@ -1,3 +1,5 @@
+#region Usings
+
 using System.Collections.Generic;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.Analyze;
@@ -6,11 +8,14 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
 
+#endregion
+
 namespace CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions
 {
-    class PrecomputeRepeatedUnaryOperators : BlockOptimizationPass
+    internal class PrecomputeRepeatedUnaryOperators : BlockOptimizationPass
     {
-        public override bool OptimizeBlock(MethodInterpreter midRepresentation, int startRange, int endRange, LocalOperation[] operations)
+        public override bool OptimizeBlock(MethodInterpreter midRepresentation, int startRange, int endRange,
+            LocalOperation[] operations)
         {
             var localOperations = midRepresentation.MidRepresentation.LocalOperations;
             var calls = FindUnaryOperators(localOperations, startRange, endRange);
@@ -36,8 +41,10 @@ namespace CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions
             var localOps = midRepresentation.MidRepresentation.LocalOperations;
             var firstOperator = localOps.GetUnaryOperator(i);
             var secondOperator = localOps.GetUnaryOperator(j);
-            var newVreg = midRepresentation.MidRepresentation.CreateCacheVariable(firstOperator.AssignedTo.ComputedType());
-            var assignLocalOperation = PrecomputeRepeatedUtils.CreateAssignLocalOperation(firstOperator.AssignedTo, newVreg);
+            var newVreg =
+                midRepresentation.MidRepresentation.CreateCacheVariable(firstOperator.AssignedTo.ComputedType());
+            var assignLocalOperation = PrecomputeRepeatedUtils.CreateAssignLocalOperation(firstOperator.AssignedTo,
+                newVreg);
 
             firstOperator.AssignedTo = newVreg;
             localOps.Insert(i + 1, assignLocalOperation);
@@ -49,7 +56,6 @@ namespace CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions
 
         private static List<int> FindUnaryOperators(List<LocalOperation> localOperations, int startRange, int endRange)
         {
-
             var calls = new List<int>();
             for (var index = startRange; index <= endRange; index++)
             {
@@ -62,8 +68,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions
         }
 
 
-        private static bool AreDifferentOperators(UnaryOperator firstOperator, UnaryOperator secondOperator, IList<int> calls, int i,
-                                                  int j, List<LocalOperation> localOperations)
+        private static bool AreDifferentOperators(UnaryOperator firstOperator, UnaryOperator secondOperator,
+            IList<int> calls, int i,
+            int j, List<LocalOperation> localOperations)
         {
             if (firstOperator.Name != secondOperator.Name)
                 return true;
@@ -71,7 +78,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions
                 return true;
             if (!(firstOperator.Left is LocalVariable))
                 return true;
-            var definitions = (LocalVariable)firstOperator.Left;
+            var definitions = (LocalVariable) firstOperator.Left;
             var isReassigned = false;
             for (var index = calls[i] + 1; index < calls[j]; index++)
             {

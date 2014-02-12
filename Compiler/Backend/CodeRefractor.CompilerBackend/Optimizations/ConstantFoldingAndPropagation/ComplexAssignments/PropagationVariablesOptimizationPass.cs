@@ -1,3 +1,5 @@
+#region Usings
+
 using System.Collections.Generic;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.Analyze;
@@ -5,9 +7,11 @@ using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
+#endregion
+
 namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagation.ComplexAssignments
 {
-    class PropagationVariablesOptimizationPass : BlockOptimizationPass
+    internal class PropagationVariablesOptimizationPass : BlockOptimizationPass
     {
         public override bool OptimizeBlock(MethodInterpreter midRepresentation, int startRange, int endRange,
             LocalOperation[] operations)
@@ -29,8 +33,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
         }
 
         private static void UpdateInstructionMapping(
-            LocalOperation op, 
-            Dictionary<LocalVariable, ConstValue> constValues, 
+            LocalOperation op,
+            Dictionary<LocalVariable, ConstValue> constValues,
             Dictionary<LocalVariable, LocalVariable> mappedValues)
         {
             if (op.Kind != OperationKind.Assignment)
@@ -45,26 +49,26 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
             }
             else
             {
-                mappedValues[assignment.AssignedTo] = (LocalVariable)right;
+                mappedValues[assignment.AssignedTo] = (LocalVariable) right;
             }
         }
 
         /// <summary>
-        /// This code has to run for the following sample:
-        /// a = 3
-        /// b = a
-        /// a = 5 //here a is not safe to be used for future usages of b
-        /// c = b
+        ///     This code has to run for the following sample:
+        ///     a = 3
+        ///     b = a
+        ///     a = 5 //here a is not safe to be used for future usages of b
+        ///     c = b
         /// </summary>
         /// <param name="usageVariable"></param>
         /// <param name="constValues"></param>
         /// <param name="mappedValues"></param>
         private static void RemoveDefinitionsIfTheUsageIsInvalidated(
-            LocalVariable usageVariable, 
-            Dictionary<LocalVariable, ConstValue> constValues, 
+            LocalVariable usageVariable,
+            Dictionary<LocalVariable, ConstValue> constValues,
             Dictionary<LocalVariable, LocalVariable> mappedValues)
         {
-            if(usageVariable==null)
+            if (usageVariable == null)
                 return;
             var toRemove = new HashSet<LocalVariable>();
             foreach (var identifierValue in mappedValues)
@@ -72,7 +76,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                 if (!identifierValue.Value.Equals(usageVariable)) continue;
                 toRemove.Add(identifierValue.Key);
             }
-            if(toRemove.Count==0)
+            if (toRemove.Count == 0)
                 return;
             foreach (var variable in toRemove)
             {
@@ -81,14 +85,15 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
             }
         }
 
-        private static bool UpdateKnownUsages(LocalOperation op, Dictionary<LocalVariable, ConstValue> constValues, Dictionary<LocalVariable, LocalVariable> mappedValues, UseDefDescription useDef, int i)
+        private static bool UpdateKnownUsages(LocalOperation op, Dictionary<LocalVariable, ConstValue> constValues,
+            Dictionary<LocalVariable, LocalVariable> mappedValues, UseDefDescription useDef, int i)
         {
             if (mappedValues.Count == 0 && constValues.Count == 0)
                 return false;
             var usagesOp = useDef.GetUsages(i);
             if (usagesOp.Length == 0)
                 return false;
-            var result =false;
+            var result = false;
             foreach (var usage in usagesOp)
             {
                 LocalVariable mappedVar;

@@ -1,3 +1,5 @@
+#region Usings
+
 using System.Collections.Generic;
 using System.IO;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
@@ -6,11 +8,14 @@ using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
+#endregion
+
 namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagation.ComplexAssignments
 {
     internal class RemoveDeadStoresInBlockOptimizationPass : BlockOptimizationPass
     {
-        public override bool OptimizeBlock(MethodInterpreter midRepresentation, int startRange, int endRange, LocalOperation[] operations)
+        public override bool OptimizeBlock(MethodInterpreter midRepresentation, int startRange, int endRange,
+            LocalOperation[] operations)
         {
             var dictionary = new Dictionary<LocalVariable, int>();
             dictionary.Clear();
@@ -21,7 +26,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                 var op = localOperations[i];
 
                 var definition = op.GetDefinition();
-                if(definition!=null)
+                if (definition != null)
                 {
                     if (!dictionary.ContainsKey(definition))
                         dictionary[definition] = i;
@@ -36,7 +41,6 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                 {
                     dictionary.Remove(usage);
                 }
-
             }
             return false;
         }
@@ -52,7 +56,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                 case OperationKind.UnaryOperator:
                 case OperationKind.GetField:
                     break;
-                    
+
                 case OperationKind.Call:
                     return false;
                 default:

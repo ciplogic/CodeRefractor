@@ -1,8 +1,12 @@
-﻿using CodeRefractor.CompilerBackend.Linker;
+﻿#region Usings
+
+using CodeRefractor.CompilerBackend.Linker;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
+
+#endregion
 
 namespace CodeRefractor.CompilerBackend.Optimizations.Purity
 {
@@ -39,7 +43,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
                         return false;
 
                     case OperationKind.Call:
-                        var operationData = (MethodData)localOperation.Value;
+                        var operationData = (MethodData) localOperation.Value;
                         var readPurity = LinkerInterpretersTableUtils.ReadNoStaticSideEffects(operationData.Info);
                         if (!readPurity)
                             return false;

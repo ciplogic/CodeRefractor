@@ -19,10 +19,10 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
             var intermediateCode = methodInterpreter.MidRepresentation;
 
             var localOperations = intermediateCode.LocalOperations.ToArray();
-            var binaryOperations = intermediateCode.UseDef.GetOperations(OperationKind.BinaryOperator); 
+            var binaryOperations = intermediateCode.UseDef.GetOperations(OperationKind.BinaryOperator);
             ComputeBinaryOperations(binaryOperations, localOperations);
 
-            var unaryOperations = intermediateCode.UseDef.GetOperations(OperationKind.UnaryOperator); 
+            var unaryOperations = intermediateCode.UseDef.GetOperations(OperationKind.UnaryOperator);
             ComputeUnaryOperations(unaryOperations, localOperations);
         }
 
@@ -30,7 +30,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
         {
             foreach (var pos in unaryOperations)
             {
-                var unaryAssignment = (UnaryOperator)localOperations[pos].Value;
+                var unaryAssignment = (UnaryOperator) localOperations[pos].Value;
 
                 var constLeft = unaryAssignment.Left as ConstValue;
                 if (constLeft == null)
@@ -55,9 +55,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
         {
             foreach (var pos in binaryOperations)
             {
-                var baseOperator = (OperatorBase)localOperations[pos].Value;
+                var baseOperator = (OperatorBase) localOperations[pos].Value;
 
-                var unaryAssignment = (BinaryOperator)baseOperator;
+                var unaryAssignment = (BinaryOperator) baseOperator;
 
                 var constLeft = unaryAssignment.Left as ConstValue;
                 var constRight = unaryAssignment.Right as ConstValue;
@@ -107,7 +107,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
 
         private static List<int> GetBinaryOperations(LocalOperation[] localOperations)
         {
-            List<int> binaryOperations = new List<int>();
+            var binaryOperations = new List<int>();
 
             for (var index = 0; index < localOperations.Length; index++)
             {
@@ -137,11 +137,13 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
             var result = ComputeConstantOperator.ComputeNeg(constLeft);
             FoldConstant(result, localOperations, pos);
         }
+
         private void HandleConvDouble(ConstValue constLeft, LocalOperation[] localOperations, int pos)
         {
             var result = ComputeConstantOperator.ComputeDouble(constLeft);
             FoldConstant(result, localOperations, pos);
         }
+
         private void HandleConvFloat(ConstValue constLeft, LocalOperation[] localOperations, int pos)
         {
             var result = ComputeConstantOperator.ComputeFloat(constLeft);
@@ -200,7 +202,6 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
             FoldConstant(result, localOperations, pos);
         }
 
-
         #endregion
 
         #region Evaluate bit operations
@@ -222,11 +223,12 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
             var result = ComputeConstantOperator.ComputeOr(constLeft, constRight);
             FoldConstant(result, localOperations, pos);
         }
+
         #endregion
 
         private void FoldConstant(object result, LocalOperation[] localOperations, int pos)
         {
-            var baseOperator = (OperatorBase)localOperations[pos].Value;
+            var baseOperator = (OperatorBase) localOperations[pos].Value;
             var resultAssignment = new Assignment
             {
                 AssignedTo = baseOperator.AssignedTo,

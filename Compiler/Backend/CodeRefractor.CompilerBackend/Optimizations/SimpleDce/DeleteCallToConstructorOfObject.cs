@@ -1,11 +1,15 @@
-﻿using CodeRefractor.CompilerBackend.Optimizations.Common;
+﻿#region Usings
+
+using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 
+#endregion
+
 namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
 {
-    class DeleteCallToConstructorOfObject : ResultingInFunctionOptimizationPass
+    internal class DeleteCallToConstructorOfObject : ResultingInFunctionOptimizationPass
     {
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {

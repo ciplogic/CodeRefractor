@@ -6,7 +6,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using CodeRefractor.CompilerBackend.Linker;
+using CodeRefractor.CodeWriter.Linker;
+using CodeRefractor.CodeWriter.Platform;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.Analyze.TypeTableIndices;
@@ -15,8 +16,6 @@ using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.ConstTable;
 using CodeRefractor.RuntimeBase.Shared;
-using Compiler.CodeWriter.Linker;
-using Compiler.CodeWriter.Platform;
 
 #endregion
 
@@ -28,8 +27,8 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
         {
             var closure = interpreter.GetMethodClosure();
             var toOptimizeList = closure
-                .Where(c=>c.Kind==MethodKind.Default
-                    && c.MidRepresentation.LocalOperations.Count>1)
+                .Where(c => c.Kind == MethodKind.Default
+                            && c.MidRepresentation.LocalOperations.Count > 1)
                 .ToList();
             MetaLinkerOptimizer.ApplyOptimizations(toOptimizeList);
             closure = interpreter.GetMethodClosure();
@@ -40,7 +39,8 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             return sb;
         }
 
-        public static StringBuilder GenerateSourceStringBuilder(MethodInterpreter interpreter, List<Type> typeClosure, List<MethodInterpreter> closure)
+        public static StringBuilder GenerateSourceStringBuilder(MethodInterpreter interpreter, List<Type> typeClosure,
+            List<MethodInterpreter> closure)
         {
             var sb = new StringBuilder();
 
@@ -76,7 +76,6 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 
                 sb.Append(methodDeclaration);
                 sb.AppendFormat("{{ {0} }}", runtimeLibrary.Source).AppendLine();
-
             }
         }
 
@@ -93,8 +92,8 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                     continue;
                 sb.AppendLine(MethodInterpreterCodeWriter.WriteMethodSignature(interpreter));
             }
-
         }
+
         public static object GetDefault(Type type)
         {
             if (type.IsValueType)
@@ -103,13 +102,14 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             }
             return null;
         }
+
         private static void WriteClosureStructBodies(Type[] typeDatas, StringBuilder sb)
         {
             foreach (var typeData in typeDatas)
             {
                 var mappedType = typeData.GetMappedType();
-                if(!mappedType.IsGenericType)
-                sb.AppendFormat("struct {0}; ", mappedType.ToCppMangling()).AppendLine();
+                if (!mappedType.IsGenericType)
+                    sb.AppendFormat("struct {0}; ", mappedType.ToCppMangling()).AppendLine();
             }
             foreach (var typeData in typeDatas)
             {
@@ -134,7 +134,6 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 
                 var typedesc = UsedTypeList.Set(type);
                 typedesc.WriteStaticFieldInitialization(sb);
-               
             }
         }
 
@@ -154,7 +153,6 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             }
 
             sb.AppendLine(DelegateManager.Instance.BuildDelegateContent());
-
         }
 
         private static void WriteClosureBodies(List<MethodInterpreter> closure, StringBuilder sb)
@@ -177,7 +175,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
         }
 
         private static void WriteUsedCppRuntimeMethod(KeyValuePair<string, MethodBase> methodBodyAttribute,
-                                                      StringBuilder sb)
+            StringBuilder sb)
         {
             var method = methodBodyAttribute.Value;
             var typeData = method.DeclaringType;

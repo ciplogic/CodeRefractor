@@ -1,4 +1,5 @@
-using System;
+#region Usings
+
 using System.Collections.Generic;
 using System.Linq;
 using CodeRefractor.RuntimeBase.Analyze;
@@ -8,22 +9,24 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
 
+#endregion
+
 namespace CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions
 {
-    static class PrecomputeRepeatedUtils
+    internal static class PrecomputeRepeatedUtils
     {
         public static LocalOperation CreateAssignLocalOperation(LocalVariable assignedTo, LocalVariable cacheVariable)
         {
             var assignment = new Assignment
-                {
-                    AssignedTo = assignedTo,
-                    Right = cacheVariable
-                };
+            {
+                AssignedTo = assignedTo,
+                Right = cacheVariable
+            };
             var localOperation = new LocalOperation()
-                {
-                    Kind = OperationKind.Assignment,
-                    Value = assignment
-                };
+            {
+                Kind = OperationKind.Assignment,
+                Value = assignment
+            };
             return localOperation;
         }
 
@@ -36,9 +39,11 @@ namespace CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions
 
         public static MethodData GetMethodData(List<LocalOperation> localOperations, int index)
         {
-            return (MethodData)localOperations[index].Value;
+            return (MethodData) localOperations[index].Value;
         }
-        public static LocalVariable CreateCacheVariable(this MetaMidRepresentation midRepresentation, TypeDescription computedType)
+
+        public static LocalVariable CreateCacheVariable(this MetaMidRepresentation midRepresentation,
+            TypeDescription computedType)
         {
             var max = midRepresentation.Vars.VirtRegs.Max(vreg => vreg.Id) + 1;
             var cacheVariable = new LocalVariable()
@@ -78,7 +83,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions
 
         public static FieldGetter GetFieldOperation(this List<LocalOperation> localOperations, int index)
         {
-            return (FieldGetter)localOperations[index].Value;
+            return (FieldGetter) localOperations[index].Value;
         }
 
         public static BranchOperator GetBranchOperator(this List<LocalOperation> localOperations, List<int> calls, int i)
@@ -89,7 +94,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions
 
         public static BranchOperator GetBranchOperator(this List<LocalOperation> localOperations, int index)
         {
-            return (BranchOperator)localOperations[index].Value;
+            return (BranchOperator) localOperations[index].Value;
         }
 
         public static UnaryOperator GetUnaryOperator(this List<LocalOperation> localOperations, List<int> calls, int i)
@@ -100,7 +105,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions
 
         public static UnaryOperator GetUnaryOperator(this List<LocalOperation> localOperations, int index)
         {
-            return (UnaryOperator)localOperations[index].Value;
+            return (UnaryOperator) localOperations[index].Value;
         }
     }
 }

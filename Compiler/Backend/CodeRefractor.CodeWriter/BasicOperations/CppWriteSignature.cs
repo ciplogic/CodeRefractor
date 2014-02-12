@@ -6,12 +6,18 @@ using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
+using CodeRefractor.RuntimeBase.Runtime;
 
 namespace CodeRefractor.CodeWriter.BasicOperations
 {
     public static class CppWriteSignature
     {
 
+
+        public static string GetMethodDescriptor(this MethodBase method)
+        {
+            return CrRuntimeLibrary.GetMethodDescription(method);
+        } 
         public static string GetArgumentsAsTextWithEscaping(this MethodBase method)
         {
             var parameterInfos = method.GetParameters();
@@ -76,7 +82,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             return sb.ToString();
         }
 
-        internal static StringBuilder WriteSignature(MethodInterpreter interpreter, bool writeEndColon = false)
+        public static StringBuilder WriteSignature(MethodInterpreter interpreter, bool writeEndColon = false)
         {
             var sb = new StringBuilder();
             if (interpreter == null)

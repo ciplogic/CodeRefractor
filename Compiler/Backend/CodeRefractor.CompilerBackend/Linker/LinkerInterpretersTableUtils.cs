@@ -1,11 +1,13 @@
+#region Usings
+
 using System.Reflection;
+using CodeRefractor.CodeWriter.BasicOperations;
 using CodeRefractor.CompilerBackend.Optimizations.Purity;
-using CodeRefractor.CompilerBackend.OuputCodeWriter;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.Shared;
-using Compiler.CodeWriter;
-using Compiler.CodeWriter.Linker;
+
+#endregion
 
 namespace CodeRefractor.CompilerBackend.Linker
 {

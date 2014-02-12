@@ -1,11 +1,13 @@
+#region Usings
+
 using CodeRefractor.CompilerBackend.Linker;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.CompilerBackend.Optimizations.Purity;
-using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
-using Compiler.CodeWriter.Linker;
+
+#endregion
 
 namespace CodeRefractor.CompilerBackend.Optimizations.Inliner
 {
@@ -14,10 +16,10 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Inliner
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
             var localOperations = methodInterpreter.MidRepresentation.UseDef.GetLocalOperations();
-            for (int index = 0; index < localOperations.Length; index++)
+            for (var index = 0; index < localOperations.Length; index++)
             {
                 var localOperation = localOperations[index];
-                
+
                 if (localOperation.Kind != OperationKind.Call) continue;
 
                 var methodData = (MethodData) localOperation.Value;
@@ -30,7 +32,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Inliner
                     || AnalyzeFunctionIsEmpty.ReadProperty(interpreter)
                     )
                 {
-                    SmallFunctionsInliner.InlineMethod(methodInterpreter.MidRepresentation, interpreter, methodData, index);
+                    SmallFunctionsInliner.InlineMethod(methodInterpreter.MidRepresentation, interpreter, methodData,
+                        index);
                     Result = true;
                     return;
                 }

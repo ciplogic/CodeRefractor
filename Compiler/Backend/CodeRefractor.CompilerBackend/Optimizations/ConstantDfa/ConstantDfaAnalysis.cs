@@ -3,13 +3,11 @@
 using System;
 using System.Collections.Generic;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
-using CodeRefractor.CompilerBackend.Optimizations.Util;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
-using CodeRefractor.RuntimeBase.Optimizations;
 
 #endregion
 
@@ -20,11 +18,12 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantDfa
         private Dictionary<int, int> _labelTable = new Dictionary<int, int>();
         private LocalOperation[] _operations;
         private DfaPointOfAnalysis[] _pointsOfAnalysis;
+
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
             _operations = methodInterpreter.MidRepresentation.LocalOperations.ToArray();
             _labelTable = methodInterpreter.MidRepresentation.UseDef.GetLabelTable();
-            _pointsOfAnalysis = new DfaPointOfAnalysis[_operations.Length+ 1];
+            _pointsOfAnalysis = new DfaPointOfAnalysis[_operations.Length + 1];
 
             var startingConclusions = new DfaPointOfAnalysis();
             Interpret(0, startingConclusions);
@@ -141,17 +140,17 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantDfa
                         if (constant != null)
                         {
                             analysis.States[assignment.AssignedTo] = new VariableState
-                                                                   {
-                                                                       Constant = constant,
-                                                                       State = VariableState.ConstantState.Constant
-                                                                   };
+                            {
+                                Constant = constant,
+                                State = VariableState.ConstantState.Constant
+                            };
                         }
                         else
                         {
                             analysis.States[assignment.AssignedTo] = new VariableState
-                                                                   {
-                                                                       State = VariableState.ConstantState.NotConstant
-                                                                   };
+                            {
+                                State = VariableState.ConstantState.NotConstant
+                            };
                         }
                         startingConclusions = analysis;
                         break;
@@ -159,9 +158,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantDfa
                     case OperationKind.BinaryOperator:
                         assignment = (Assignment) operation.Value;
                         analysis.States[assignment.AssignedTo] = new VariableState
-                                                               {
-                                                                   State = VariableState.ConstantState.NotConstant
-                                                               };
+                        {
+                            State = VariableState.ConstantState.NotConstant
+                        };
                         break;
                     case OperationKind.BranchOperator:
                         var branchOperator = (BranchOperator) operation.Value;

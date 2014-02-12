@@ -6,7 +6,6 @@ using CodeRefractor.CompilerBackend.Optimizations.ConstantDfa;
 using CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagation;
 using CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagation.ComplexAssignments;
 using CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagation.SimpleAssignment;
-using CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering;
 using CodeRefractor.CompilerBackend.Optimizations.Inliner;
 using CodeRefractor.CompilerBackend.Optimizations.Jumps;
 using CodeRefractor.CompilerBackend.Optimizations.Licm;
@@ -31,15 +30,13 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
         public override List<OptimizationPass> BuildOptimizationPasses3()
         {
             return new OptimizationPass[]
-                       {
-                           
-                           //new OneDefUsedNextLinePropagation(), //??
-                           //new OneDefUsedPreviousLinePropagation(), //??
+            {
+                //new OneDefUsedNextLinePropagation(), //??
+                //new OneDefUsedPreviousLinePropagation(), //??
                            
                         
-                           new ConstantDfaAnalysis()
-
-                       }.ToList();
+                new ConstantDfaAnalysis()
+            }.ToList();
         }
 
 
@@ -47,18 +44,16 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
         {
             return new OptimizationPass[]
             {
-                
                 new OneAssignmentDeadStoreAssignment(), //??
-                           //  //?? 
+                //  //?? 
                            
-                            // CSE
-                           new PrecomputeRepeatedPureFunctionCall(), 
-                           new PrecomputeRepeatedBinaryOperators(), 
-                           new PrecomputeRepeatedUnaryOperators(), 
-                           new PrecomputeRepeatedFieldGets(), 
+                // CSE
+                new PrecomputeRepeatedPureFunctionCall(),
+                new PrecomputeRepeatedBinaryOperators(),
+                new PrecomputeRepeatedUnaryOperators(),
+                new PrecomputeRepeatedFieldGets(), 
              
-                          // new AssignmentWithVregPrevLineFolding(),
-                
+                // new AssignmentWithVregPrevLineFolding(),
             }.ToList();
         }
 
@@ -66,64 +61,49 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
         public override List<OptimizationPass> BuildOptimizationPasses1()
         {
             return new OptimizationPass[]
-                       {
-                           new DeleteAssignmentWithSelf(),
-                           new RemoveDeadStoresInBlockOptimizationPass(), 
-                           
-                           new OperatorPartialConstantFolding(),
-                           new OperatorConstantFolding(),
-                           //new FoldVariablesDefinitionsOptimizationPass(),
+            {
+                new DeleteAssignmentWithSelf(),
+                new RemoveDeadStoresInBlockOptimizationPass(),
+                new OperatorPartialConstantFolding(),
+                new OperatorConstantFolding(),
+                //new FoldVariablesDefinitionsOptimizationPass(),
 
-                           new PropagationVariablesOptimizationPass(), 
-                           new DceNewObjectOrArray(), 
-                           new ConstantVariableBranchOperatorPropagation(),
-                           new ConstantVariableEvaluation(),
-
-                           new EvaluatePureFunctionWithConstantCall(),
-                           
-                           new RemoveDeadStoresToFunctionCalls(), 
-                           new RemoveDeadPureFunctionCalls(), 
+                new PropagationVariablesOptimizationPass(),
+                new DceNewObjectOrArray(),
+                new ConstantVariableBranchOperatorPropagation(),
+                new ConstantVariableEvaluation(),
+                new EvaluatePureFunctionWithConstantCall(),
+                new RemoveDeadStoresToFunctionCalls(),
+                new RemoveDeadPureFunctionCalls(), 
                          
-                           //new AssignmentVregWithConstNextLineFolding(),  
+                //new AssignmentVregWithConstNextLineFolding(),  
                           
-                           new DoubleAssignPropagation(),
-                           new AssignToReturnPropagation(),
-                           new DceLocalAssigned(),
+                new DoubleAssignPropagation(),
+                new AssignToReturnPropagation(),
+                new DceLocalAssigned(),
+                new DeleteCallToConstructorOfObject(), 
+                //new ConstantVariablePropagation(),
 
-                           new DeleteCallToConstructorOfObject(), 
-                           //new ConstantVariablePropagation(),
+                           
+                new ConstantVariableOperatorPropagation(),
+                //new ConstantVariablePropagationInCall(),
 
-                           
-                           new ConstantVariableOperatorPropagation(),
-                           //new ConstantVariablePropagationInCall(),
-
-                            new AnalyzeFunctionPurity(),
-                            new AnalyzeFunctionNoStaticSideEffects(), 
-                            new AnalyzeFunctionIsGetter(),
-                            new AnalyzeFunctionIsSetter(),
-                            new AnalyzeFunctionIsEmpty(),
-                           
-                           
-                            new DeleteJumpNextLine(),
-                            new RemoveUnreferencedLabels(),
-                            new MergeConsecutiveLabels(),
-                            
-                           
-                            new DeadStoreAssignment(), 
-                            
-
-                             new OneAssignmentDeadStoreAssignment(),
-                             new RemoveCallsToEmptyMethods(),
-                            new InlineGetterAndSetterMethods(), 
-                           new ReachabilityLines(),
-                        
-                        
-                           new DceVRegUnused(),
-                           
-                           new LoopInvariantCodeMotion(), 
-                        
-                           
-                       }.ToList();
+                new AnalyzeFunctionPurity(),
+                new AnalyzeFunctionNoStaticSideEffects(),
+                new AnalyzeFunctionIsGetter(),
+                new AnalyzeFunctionIsSetter(),
+                new AnalyzeFunctionIsEmpty(),
+                new DeleteJumpNextLine(),
+                new RemoveUnreferencedLabels(),
+                new MergeConsecutiveLabels(),
+                new DeadStoreAssignment(),
+                new OneAssignmentDeadStoreAssignment(),
+                new RemoveCallsToEmptyMethods(),
+                new InlineGetterAndSetterMethods(),
+                new ReachabilityLines(),
+                new DceVRegUnused(),
+                new LoopInvariantCodeMotion(),
+            }.ToList();
         }
     }
 }

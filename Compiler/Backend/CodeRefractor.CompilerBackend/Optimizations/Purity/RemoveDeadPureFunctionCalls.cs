@@ -1,12 +1,14 @@
+#region Usings
+
 using System.Collections.Generic;
 using CodeRefractor.CompilerBackend.Linker;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
-using CodeRefractor.CompilerBackend.Optimizations.Util;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
-using Compiler.CodeWriter.Linker;
+
+#endregion
 
 namespace CodeRefractor.CompilerBackend.Optimizations.Purity
 {
@@ -24,7 +26,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
                 var operation = localOperations[index];
                 var methodData = operation.Get<MethodData>();
                 var interpreter = methodData.GetInterpreter();
-                if(interpreter==null)
+                if (interpreter == null)
                     continue;
                 var properties = interpreter.AnalyzeProperties;
                 if (properties.IsReadOnly || properties.IsPure)
@@ -32,7 +34,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
                     toRemove.Add(index);
                 }
             }
-            if(toRemove.Count==0)
+            if (toRemove.Count == 0)
                 return;
             methodInterpreter.DeleteInstructions(toRemove);
             Result = true;

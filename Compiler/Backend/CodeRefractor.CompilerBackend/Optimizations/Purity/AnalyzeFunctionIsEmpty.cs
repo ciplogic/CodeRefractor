@@ -1,6 +1,10 @@
+#region Usings
+
 using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
+
+#endregion
 
 namespace CodeRefractor.CompilerBackend.Optimizations.Purity
 {
@@ -18,7 +22,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
             var isEmtpy = ComputeProperty(methodInterpreter);
             var previous = methodInterpreter.MidRepresentation.GetProperties().IsEmpty;
             methodInterpreter.MidRepresentation.GetProperties().IsEmpty = isEmtpy;
-            if (previous!= isEmtpy) 
+            if (previous != isEmtpy)
                 Result = true;
         }
 

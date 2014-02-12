@@ -16,7 +16,7 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
 namespace CodeRefractor.CodeWriter.BasicOperations
 {
-    internal static class CppMethodCodeWriter
+    public static class CppMethodCodeWriter
     {
         public static string WriteCode(MethodInterpreter midRepresentation)
         {

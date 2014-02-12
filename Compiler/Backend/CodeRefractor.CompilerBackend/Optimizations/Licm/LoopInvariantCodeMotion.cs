@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿#region Usings
+
+using System.Collections.Generic;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.CompilerBackend.Optimizations.Purity;
 using CodeRefractor.RuntimeBase.Analyze;
@@ -6,9 +8,11 @@ using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
+#endregion
+
 namespace CodeRefractor.CompilerBackend.Optimizations.Licm
 {
-    class LoopInvariantCodeMotion : ResultingGlobalOptimizationPass
+    internal class LoopInvariantCodeMotion : ResultingGlobalOptimizationPass
     {
         public override bool CheckPreconditions(MethodInterpreter midRepresentation)
         {
@@ -26,7 +30,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Licm
                 var loopEnd = LoopDetection.GetEndLoop(useDef.GetLocalOperations(), loopStart);
                 var allDefinedVariables = GetAllDefinedVariables(midRepresentation, loopStart, loopEnd);
                 var allInvariantInstructions = GetAllInvariantInstructions(midRepresentation, loopStart, loopEnd,
-                                                                           allDefinedVariables);
+                    allDefinedVariables);
                 if (allInvariantInstructions.Count == 0)
                     continue;
                 PerformMoveInstructions(midRepresentation, loopStart, allInvariantInstructions);
@@ -35,7 +39,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Licm
             }
         }
 
-        private static void PerformMoveInstructions(MetaMidRepresentation intermediateCode, int loopStart, List<int> allInvariantInstructions)
+        private static void PerformMoveInstructions(MetaMidRepresentation intermediateCode, int loopStart,
+            List<int> allInvariantInstructions)
         {
             var localOps = intermediateCode.LocalOperations;
 
@@ -46,14 +51,15 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Licm
                 licmBlock.Add(localOps[invariantInstruction]);
                 localOps.RemoveAt(invariantInstruction);
             }
-            for (int index = 0; index < licmBlock.Count; index++)
+            for (var index = 0; index < licmBlock.Count; index++)
             {
                 var operation = licmBlock[index];
                 localOps.Insert(loopStart + index, operation);
             }
         }
 
-        private static List<int> GetAllInvariantInstructions(MetaMidRepresentation intermediateCode, int loopStart, int loopEnd, HashSet<LocalVariable> getAllDefinedVariables)
+        private static List<int> GetAllInvariantInstructions(MetaMidRepresentation intermediateCode, int loopStart,
+            int loopEnd, HashSet<LocalVariable> getAllDefinedVariables)
         {
             var useDef = intermediateCode.UseDef;
             var localOps = useDef.GetLocalOperations();
@@ -65,7 +71,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Licm
                 var op = localOps[index];
                 switch (op.Kind)
                 {
-                    default:continue;
+                    default:
+                        continue;
                     case OperationKind.UnaryOperator:
                     case OperationKind.Call:
                     case OperationKind.BinaryOperator:
@@ -73,10 +80,10 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Licm
                     case OperationKind.Assignment:
                         break;
                 }
-                if(op.Kind==OperationKind.Call)
+                if (op.Kind == OperationKind.Call)
                 {
-                    var methodData =EvaluatePureFunctionWithConstantCall.ComputeAndEvaluatePurityOfCall(op);
-                    if(!methodData.IsPure)
+                    var methodData = EvaluatePureFunctionWithConstantCall.ComputeAndEvaluatePurityOfCall(op);
+                    if (!methodData.IsPure)
                         continue;
                 }
                 var usages = useDef.GetUsages(index);
@@ -87,16 +94,16 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Licm
                     isInvariant = false;
                     break;
                 }
-                if(!isInvariant)
+                if (!isInvariant)
                     continue;
                 result.Add(index);
             }
 
             return result;
-
         }
 
-        private static HashSet<LocalVariable> GetAllDefinedVariables(MetaMidRepresentation intermediateCode, int loopStart, int loopEnd)
+        private static HashSet<LocalVariable> GetAllDefinedVariables(MetaMidRepresentation intermediateCode,
+            int loopStart, int loopEnd)
         {
             var localOps = intermediateCode.UseDef.GetLocalOperations();
             var result = new HashSet<LocalVariable>();
@@ -104,7 +111,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Licm
             {
                 var op = localOps[index];
                 var definition = op.GetDefinition();
-                if(definition==null)
+                if (definition == null)
                     continue;
                 result.Add(definition);
             }

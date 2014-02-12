@@ -20,15 +20,15 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
             {
                 var destOperation = operations[i];
                 if (destOperation.Kind != OperationKind.BranchOperator) continue;
-                var destAssignment = (BranchOperator)destOperation.Value;
-                if(destAssignment.Name!=OpcodeBranchNames.BrTrue && destAssignment.Name!=OpcodeBranchNames.BrFalse)
+                var destAssignment = (BranchOperator) destOperation.Value;
+                if (destAssignment.Name != OpcodeBranchNames.BrTrue && destAssignment.Name != OpcodeBranchNames.BrFalse)
                     continue;
                 var constValue = destAssignment.CompareValue as ConstValue;
-                if(constValue==null)
+                if (constValue == null)
                     continue;
                 Result = true;
                 var expressionValue = Convert.ToInt32(constValue.Value) != 0;
-                var isTrue = (expressionValue ) ^ (destAssignment.Name != OpcodeBranchNames.BrTrue);
+                var isTrue = (expressionValue) ^ (destAssignment.Name != OpcodeBranchNames.BrTrue);
                 if (isTrue)
                 {
                     operations[i] = new LocalOperation

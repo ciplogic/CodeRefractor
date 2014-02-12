@@ -1,8 +1,12 @@
-﻿using CodeRefractor.CompilerBackend.Optimizations.Common;
+﻿#region Usings
+
+using CodeRefractor.CompilerBackend.Linker;
+using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
-using CodeRefractor.CompilerBackend.Linker;
+
+#endregion
 
 namespace CodeRefractor.CompilerBackend.Optimizations.Purity
 {
@@ -14,6 +18,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
                 return false;
             return intermediateCode.MidRepresentation.GetProperties().IsPure;
         }
+
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
             if (ReadPurity(methodInterpreter))
@@ -26,7 +31,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
 
         public static bool ComputeFunctionPurity(MethodInterpreter intermediateCode)
         {
-            if(intermediateCode==null)
+            if (intermediateCode == null)
                 return false;
             var operations = intermediateCode.MidRepresentation.UseDef.GetLocalOperations();
             foreach (var localOperation in operations)
@@ -38,9 +43,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
                     case OperationKind.CallRuntime:
                     case OperationKind.SetField:
                         return false;
-                        
+
                     case OperationKind.Call:
-                        var operationData = (MethodData)localOperation.Value;
+                        var operationData = (MethodData) localOperation.Value;
                         var readPurity = LinkerInterpretersTableUtils.ReadPurity(operationData.Info);
                         if (!readPurity)
                             return false;

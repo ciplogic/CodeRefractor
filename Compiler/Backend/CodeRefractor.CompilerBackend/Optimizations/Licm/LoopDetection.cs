@@ -1,12 +1,16 @@
+#region Usings
+
 using System.Collections.Generic;
 using System.Linq;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
 
+#endregion
+
 namespace CodeRefractor.CompilerBackend.Optimizations.Licm
 {
-    static class LoopDetection
+    internal static class LoopDetection
     {
         public static List<int> FindLoops(MetaMidRepresentation midRepresentation)
         {
@@ -43,7 +47,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Licm
 
         public static int GetEndLoop(LocalOperation[] localOps, int startPos)
         {
-            var jumpTarget = (int)localOps[startPos + 1].Value;
+            var jumpTarget = (int) localOps[startPos + 1].Value;
 
             var result = -1;
             for (var index = 0; index < localOps.Length; index++)
@@ -52,7 +56,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Licm
                 if (op.Kind != OperationKind.BranchOperator)
                     continue;
 
-                var branchOperator = (BranchOperator)op.Value;
+                var branchOperator = (BranchOperator) op.Value;
                 if (branchOperator.JumpTo != jumpTarget) continue;
                 result = index;
                 break;

@@ -14,7 +14,7 @@ using CodeRefractor.RuntimeBase.MiddleEnd;
 
 namespace CodeRefractor.CodeWriter.Platform
 {
-    internal static class PlatformInvokeCodeWriter
+    public static class PlatformInvokeCodeWriter
     {
         private static string Import(string dll, string method, CallingConvention? callingConvention, string entryPoint)
         {

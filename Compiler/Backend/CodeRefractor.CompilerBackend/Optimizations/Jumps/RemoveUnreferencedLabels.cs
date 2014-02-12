@@ -16,7 +16,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Jumps
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
             var useDef = methodInterpreter.MidRepresentation.UseDef;
-            
+
             var found = useDef.GetOperations(OperationKind.Label).Length != 0;
             if (!found)
                 return;
@@ -44,7 +44,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Jumps
             if (candidateLabelTable.Count == 0)
                 return;
             var labelsToRemove = candidateLabelTable.Values.ToList();
-            
+
             methodInterpreter.DeleteInstructions(labelsToRemove);
             Result = true;
         }

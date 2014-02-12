@@ -1,14 +1,18 @@
-﻿using CodeRefractor.RuntimeBase.FrontEnd;
+﻿#region Usings
+
+using CodeRefractor.RuntimeBase.FrontEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd;
+
+#endregion
 
 namespace CodeRefractor.CompilerBackend.Optimizations.Purity
 {
     public static class AnalyzeUtils
     {
         private const string PropString = "AnalyzeProperties";
+
         public static AnalyzeProperties GetProperties(this MetaMidRepresentation intermediateCode)
         {
-
             if (intermediateCode == null)
                 return null;
             var additionalData = intermediateCode.AuxiliaryObjects;

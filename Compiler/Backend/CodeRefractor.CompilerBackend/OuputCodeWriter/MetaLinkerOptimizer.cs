@@ -22,9 +22,9 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             var methodInterpreter = definition.Register();
             MetaLinker.Interpret(methodInterpreter);
 
-            MetaLinkerOptimizer.OptimizeMethods(LinkerInterpretersTable.Methods);
+            OptimizeMethods(LinkerInterpretersTable.Methods);
             var foundMethodCount = 1;
-            bool canContinue = true;
+            var canContinue = true;
             while (canContinue)
             {
                 var dependencies = methodInterpreter.GetMethodClosure();
@@ -34,7 +34,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                 {
                     MetaLinker.Interpret(interpreter);
                 }
-                MetaLinkerOptimizer.OptimizeMethods(LinkerInterpretersTable.Methods);
+                OptimizeMethods(LinkerInterpretersTable.Methods);
             }
 
             return methodInterpreter;
@@ -54,7 +54,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             do
             {
                 doOptimize = false;
-                var toRemove = methodsToOptimize.Where(mth => mth== null).ToArray();
+                var toRemove = methodsToOptimize.Where(mth => mth == null).ToArray();
                 foreach (var item in toRemove)
                 {
                     methodsToOptimize.Remove(item);
@@ -69,7 +69,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                     MethodInterpreterCodeWriter.ApplyLocalOptimizations(
                         inFunctionOptimizations, interpreter);
                 }
-                  //);
+                //);
                 foreach (var methodBase in methodsArray)
                 {
                     var interpreter = methodBase;
@@ -78,10 +78,6 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                         CommandLineParse.SortedOptimizations[OptimizationKind.Global], interpreter);
                 }
             } while (doOptimize);
-
-        
         }
-
-
     }
 }

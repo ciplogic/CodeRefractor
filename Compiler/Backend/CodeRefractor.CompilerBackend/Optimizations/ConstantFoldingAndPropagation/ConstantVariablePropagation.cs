@@ -13,7 +13,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
             var operations = methodInterpreter.MidRepresentation.LocalOperations.ToArray();
-            for (var i = 0; i < operations.Length- 1; i++)
+            for (var i = 0; i < operations.Length - 1; i++)
             {
                 Assignment srcVariableDefinition;
                 var constValue = GetConstantFromOperation(operations[i], out srcVariableDefinition);
@@ -29,36 +29,36 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
                     switch (destOperation.Kind)
                     {
                         case OperationKind.Assignment:
-                            {
-                                var destAssignment = (Assignment) destOperation.Value;
-                                if (SameVariable(destAssignment.AssignedTo, srcVariableDefinition.AssignedTo))
-                                    break;
-                                if (!SameVariable(destAssignment.Right as LocalVariable, srcVariableDefinition.AssignedTo))
-                                    continue;
-                                destAssignment.Right = constValue;
-                                Result = true;
-                            }
+                        {
+                            var destAssignment = (Assignment) destOperation.Value;
+                            if (SameVariable(destAssignment.AssignedTo, srcVariableDefinition.AssignedTo))
+                                break;
+                            if (!SameVariable(destAssignment.Right as LocalVariable, srcVariableDefinition.AssignedTo))
+                                continue;
+                            destAssignment.Right = constValue;
+                            Result = true;
+                        }
                             break;
                         case OperationKind.NewArray:
-                            {
-                                var destAssignment = (Assignment) destOperation.Value;
-                                var arrayCreationInfo = (NewArrayObject) destAssignment.Right;
-                                if (
-                                    !SameVariable(arrayCreationInfo.ArrayLength as LocalVariable,
-                                                  srcVariableDefinition.AssignedTo))
-                                    continue;
-                                arrayCreationInfo.ArrayLength = constValue;
-                                Result = true;
-                            }
+                        {
+                            var destAssignment = (Assignment) destOperation.Value;
+                            var arrayCreationInfo = (NewArrayObject) destAssignment.Right;
+                            if (
+                                !SameVariable(arrayCreationInfo.ArrayLength as LocalVariable,
+                                    srcVariableDefinition.AssignedTo))
+                                continue;
+                            arrayCreationInfo.ArrayLength = constValue;
+                            Result = true;
+                        }
                             break;
                         case OperationKind.SetField:
-                            {
-                                var destAssignment = (Assignment) destOperation.Value;
-                                if (!SameVariable(destAssignment.Right as LocalVariable, srcVariableDefinition.AssignedTo))
-                                    continue;
-                                destAssignment.Right = constValue;
-                                Result = true;
-                            }
+                        {
+                            var destAssignment = (Assignment) destOperation.Value;
+                            if (!SameVariable(destAssignment.Right as LocalVariable, srcVariableDefinition.AssignedTo))
+                                continue;
+                            destAssignment.Right = constValue;
+                            Result = true;
+                        }
                             break;
                     }
                 }

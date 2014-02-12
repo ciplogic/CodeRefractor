@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace CodeRefractor.CodeWriter.Platform
 {
-    internal class PlatformInvokeDllImports
+    public class PlatformInvokeDllImports
     {
         public PlatformInvokeDllImports(string dllName)
         {

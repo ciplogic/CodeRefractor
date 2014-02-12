@@ -1,6 +1,6 @@
-using System;
+#region Usings
+
 using System.Collections.Generic;
-using System.Linq;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.CompilerBackend.Optimizations.Purity;
 using CodeRefractor.RuntimeBase.Analyze;
@@ -9,23 +9,26 @@ using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
+#endregion
+
 namespace CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions
 {
-    class PrecomputeRepeatedPureFunctionCall : BlockOptimizationPass
+    internal class PrecomputeRepeatedPureFunctionCall : BlockOptimizationPass
     {
-        public override bool OptimizeBlock(MethodInterpreter midRepresentation, int startRange, int endRange, LocalOperation[] operations)
+        public override bool OptimizeBlock(MethodInterpreter midRepresentation, int startRange, int endRange,
+            LocalOperation[] operations)
         {
             var localOperations = midRepresentation.MidRepresentation.LocalOperations;
             var calls = FindCallsToPureFunctions(localOperations, startRange, endRange);
             if (calls.Count < 2)
                 return false;
-            for(var i = 0;i<calls.Count-1;i++)
+            for (var i = 0; i < calls.Count - 1; i++)
             {
                 var firstMethodData = PrecomputeRepeatedUtils.GetMethodData(localOperations, calls, i);
-                for (int j = i+1; j < calls.Count; j++)
+                for (var j = i + 1; j < calls.Count; j++)
                 {
                     var secondMethodData = PrecomputeRepeatedUtils.GetMethodData(localOperations, calls, j);
-                    if(firstMethodData.Info!=secondMethodData.Info)
+                    if (firstMethodData.Info != secondMethodData.Info)
                         continue;
                     var resultMerge = TryMergeCalls(i, j, firstMethodData, secondMethodData, localOperations);
                     if (!resultMerge) continue;
@@ -49,16 +52,16 @@ namespace CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions
 
             var assignedTo = srcMethod.Result;
             var localOperation = PrecomputeRepeatedUtils.CreateAssignLocalOperation(assignedTo, newVreg);
-            localOps.Insert(i+1, localOperation);
+            localOps.Insert(i + 1, localOperation);
             srcMethod.Result = newVreg;
 
             var destAssignment = PrecomputeRepeatedUtils.CreateAssignLocalOperation(destMethod.Result, newVreg);
-            localOps.RemoveAt(j+1);
+            localOps.RemoveAt(j + 1);
             localOps.Insert(j + 1, destAssignment);
-       
         }
 
-        public static List<int> FindCallsToPureFunctions(List<LocalOperation> localOperations, int startRange, int endRange)
+        public static List<int> FindCallsToPureFunctions(List<LocalOperation> localOperations, int startRange,
+            int endRange)
         {
             var calls = new List<int>();
             for (var index = startRange; index <= endRange; index++)
@@ -74,15 +77,17 @@ namespace CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions
             return calls;
         }
 
-        private static bool TryMergeCalls(int i, int i1, MethodData firstMethodData, MethodData secondMethodData, List<LocalOperation> localOperations)
+        private static bool TryMergeCalls(int i, int i1, MethodData firstMethodData, MethodData secondMethodData,
+            List<LocalOperation> localOperations)
         {
             var validateParametersAreTheSame = ValidateParametersAreTheSame(firstMethodData, secondMethodData);
-            if(!validateParametersAreTheSame)
+            if (!validateParametersAreTheSame)
                 return false;
             return CheckReassignmentsOfParameters(i, i1, firstMethodData, localOperations);
         }
 
-        private static bool CheckReassignmentsOfParameters(int i, int i1, MethodData firstMethodData, List<LocalOperation> localOperations)
+        private static bool CheckReassignmentsOfParameters(int i, int i1, MethodData firstMethodData,
+            List<LocalOperation> localOperations)
         {
             var parametersFirst = new HashSet<LocalVariable>();
             foreach (var identifierValue in firstMethodData.Parameters)
@@ -125,6 +130,5 @@ namespace CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions
             }
             return true;
         }
-
     }
 }

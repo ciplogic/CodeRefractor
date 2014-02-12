@@ -3,7 +3,7 @@ using CodeRefractor.CodeWriter.Platform;
 
 namespace CodeRefractor.CodeWriter.Linker
 {
-    class LinkingData
+    public class LinkingData
     {
         public static readonly List<PlatformInvokeDllImports> Libraries = new List<PlatformInvokeDllImports>();
         public static int LibraryMethodCount;

@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
 #endregion
@@ -55,9 +54,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantDfa
                     if (!tuple.Item2.Equals(variableState))
                     {
                         result.States[tuple.Item1] = new VariableState
-                                                         {
-                                                             State = VariableState.ConstantState.NotConstant
-                                                         };
+                        {
+                            State = VariableState.ConstantState.NotConstant
+                        };
                     }
                 }
                 else

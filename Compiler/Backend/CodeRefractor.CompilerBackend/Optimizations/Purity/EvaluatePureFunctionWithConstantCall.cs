@@ -1,14 +1,12 @@
 ﻿#region Usings
 
 using System.Collections.Generic;
-using System.Linq;
+using CodeRefractor.CompilerBackend.Linker;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
-using CodeRefractor.CompilerBackend.Linker;
-using Compiler.CodeWriter.Linker;
 
 #endregion
 
@@ -20,7 +18,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
         {
             var operations = midRepresentation.MidRepresentation.UseDef;
 
-            return operations.GetOperations(OperationKind.Call).Length>0;
+            return operations.GetOperations(OperationKind.Call).Length > 0;
         }
 
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)
@@ -56,7 +54,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
         {
             var operationData = (MethodData) operation.Value;
             var methodInterpreter = operationData.Info.GetInterpreter();
-                        if (AnalyzeFunctionPurity.ReadPurity(methodInterpreter))
+            if (AnalyzeFunctionPurity.ReadPurity(methodInterpreter))
             {
                 operationData.IsPure = true;
             }

@@ -1,9 +1,7 @@
 #region Usings
 
 using System.Collections.Generic;
-using System.Linq;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
-using CodeRefractor.CompilerBackend.Optimizations.Util;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
@@ -22,14 +20,14 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ReachabilityDfa
             var toRemove = new List<int>();
             foreach (var labelInfo in labelTable)
             {
-                var i = labelInfo.Value-1;
-                if(i<0)
+                var i = labelInfo.Value - 1;
+                if (i < 0)
                     continue;
                 var operation = operations[i];
                 switch (operation.Kind)
                 {
                     case OperationKind.AlwaysBranch:
-                        var jumpLabel = labelTable[(int)operation.Value];
+                        var jumpLabel = labelTable[(int) operation.Value];
 
                         if (jumpLabel != labelInfo.Value)
                             continue;
@@ -37,7 +35,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ReachabilityDfa
                         continue;
                     case OperationKind.BranchOperator:
 
-                        var destAssignment = (BranchOperator)operation.Value;
+                        var destAssignment = (BranchOperator) operation.Value;
                         var jumpTo = labelTable[destAssignment.JumpTo];
                         if (jumpTo != labelInfo.Value)
                             continue;
@@ -48,7 +46,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ReachabilityDfa
                         continue;
                 }
             }
-            if(toRemove.Count==0)
+            if (toRemove.Count == 0)
                 return;
             methodInterpreter.DeleteInstructions(toRemove);
             Result = true;

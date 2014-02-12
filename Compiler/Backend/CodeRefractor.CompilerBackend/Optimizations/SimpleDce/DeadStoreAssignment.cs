@@ -1,17 +1,19 @@
-﻿using System.Collections.Generic;
+﻿#region Usings
+
+using System.Collections.Generic;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
-using CodeRefractor.CompilerBackend.Optimizations.Util;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
+#endregion
+
 namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
 {
-
-    class DeadStoreAssignment : ResultingInFunctionOptimizationPass
+    internal class DeadStoreAssignment : ResultingInFunctionOptimizationPass
     {
-        static readonly List<OperationKind> NoSideEffectsOperationKinds =new List<OperationKind>
+        private static readonly List<OperationKind> NoSideEffectsOperationKinds = new List<OperationKind>
         {
             OperationKind.Assignment,
             OperationKind.BinaryOperator,
@@ -22,7 +24,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
             OperationKind.GetField,
             OperationKind.UnaryOperator
         };
-        
+
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
             var definitions = new Dictionary<LocalVariable, int>();
@@ -41,9 +43,10 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
             Result = true;
         }
 
-        private static void RemoveUsages(LocalOperation[] localOperations, UseDefDescription useDef, Dictionary<LocalVariable, int> definitions)
+        private static void RemoveUsages(LocalOperation[] localOperations, UseDefDescription useDef,
+            Dictionary<LocalVariable, int> definitions)
         {
-            for (int index = 0; index < localOperations.Length; index++)
+            for (var index = 0; index < localOperations.Length; index++)
             {
                 var usages = useDef.GetUsages(index);
                 foreach (var localVariable in usages)
@@ -55,7 +58,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
 
         private void ComputeDefinitions(LocalOperation[] localOperations, Dictionary<LocalVariable, int> definitions)
         {
-            for (int index = 0; index < localOperations.Length; index++)
+            for (var index = 0; index < localOperations.Length; index++)
             {
                 var op = localOperations[index];
                 var variableDefinition = op.GetDefinition();
@@ -65,7 +68,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
             }
         }
 
-        private List<int> BuildRemoveInstructions(LocalOperation[] localOperations, Dictionary<LocalVariable, int> definitions)
+        private List<int> BuildRemoveInstructions(LocalOperation[] localOperations,
+            Dictionary<LocalVariable, int> definitions)
         {
             var toRemove = new List<int>();
             foreach (var definition in definitions)

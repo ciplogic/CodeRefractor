@@ -5,7 +5,7 @@ using CodeRefractor.RuntimeBase;
 
 namespace CodeRefractor.CodeWriter.Linker
 {
-    class StringTable
+    public class StringTable
     {
         private readonly Dictionary<string, int> _stringsDictionary = new Dictionary<string, int>();
         private readonly List<string> _table = new List<string>();

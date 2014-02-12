@@ -2,8 +2,8 @@
 
 using System;
 using System.Collections.Generic;
-using CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations;
-using CodeRefractor.CompilerBackend.OuputCodeWriter.Platform;
+using CodeRefractor.CodeWriter.BasicOperations;
+using CodeRefractor.CodeWriter.Platform;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.Optimizations;
 
@@ -17,9 +17,10 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
         {
             return CppMethodCodeWriter.WriteCode(interpreter);
         }
+
         public static string WriteMethodSignature(MethodInterpreter interpreter)
         {
-            if(interpreter.Method==null)
+            if (interpreter.Method == null)
             {
                 Console.WriteLine("Should not be null");
                 return "";
@@ -37,7 +38,9 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
         {
             return interpreter.WriteDelegateCallCode();
         }
-        public static bool ApplyLocalOptimizations(IEnumerable<OptimizationPass> optimizationPasses, MethodInterpreter interpreter)
+
+        public static bool ApplyLocalOptimizations(IEnumerable<OptimizationPass> optimizationPasses,
+            MethodInterpreter interpreter)
         {
             if (optimizationPasses == null)
                 return false;
@@ -50,8 +53,8 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                 didOptimize = false;
                 foreach (var optimizationPass in optimizationsList)
                 {
-                    if(!optimizationPass.CheckPreconditions(interpreter))
-                        continue;   
+                    if (!optimizationPass.CheckPreconditions(interpreter))
+                        continue;
                     didOptimize = optimizationPass.Optimize(interpreter);
                     if (!didOptimize) continue;
                     interpreter.MidRepresentation.UpdateUseDef();

@@ -1,3 +1,5 @@
+#region Usings
+
 using System.Collections.Generic;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.Analyze;
@@ -5,11 +7,15 @@ using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
+#endregion
+
 namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
 {
-    class OneAssignmentDeadStoreAssignment : ResultingInFunctionOptimizationPass
+    internal class OneAssignmentDeadStoreAssignment : ResultingInFunctionOptimizationPass
     {
-        readonly Dictionary<LocalVariable,ConstValue> _constValues = new Dictionary<LocalVariable, ConstValue>();
+        private readonly Dictionary<LocalVariable, ConstValue> _constValues =
+            new Dictionary<LocalVariable, ConstValue>();
+
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
             var localOperations = methodInterpreter.MidRepresentation.UseDef.GetLocalOperations();
@@ -22,7 +28,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
 
             localOperations = methodInterpreter.MidRepresentation.UseDef.GetLocalOperations();
             var useDef = methodInterpreter.MidRepresentation.UseDef;
-            for (int index = 0; index < localOperations.Length; index++)
+            for (var index = 0; index < localOperations.Length; index++)
             {
                 var op = localOperations[index];
                 var variableUsages = useDef.GetUsages(index);
@@ -37,7 +43,6 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
                         Result = true;
                     }
                 }
-
             }
         }
 
@@ -66,7 +71,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
 
         private void GetAssignToConstOperations(LocalOperation[] localOperations)
         {
-            for (int index = 0; index < localOperations.Length; index++)
+            for (var index = 0; index < localOperations.Length; index++)
             {
                 var op = localOperations[index];
                 var opKind = op.Kind;
@@ -76,7 +81,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
                 if (assignedTo.Kind == VariableKind.Argument)
                     continue;
                 var constAssignedValue = assign.Right as ConstValue;
-                if (constAssignedValue==null)
+                if (constAssignedValue == null)
                     continue;
                 ConstValue constVal;
                 if (_constValues.TryGetValue(assignedTo, out constVal))
@@ -95,7 +100,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
             var toRemove = new List<LocalVariable>();
             foreach (var constValue in _constValues)
             {
-                if(constValue.Value==null)//const defined multiple times
+                if (constValue.Value == null) //const defined multiple times
                     toRemove.Add(constValue.Key);
             }
             foreach (var localVariable in toRemove)
