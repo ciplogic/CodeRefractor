@@ -42,10 +42,12 @@ System_Void Game_MyList_Add(const std::shared_ptr<Game_MyList<T1>>& _this, T1  i
 #include "runtime_base.hpp"
 ///---Begin closure code --- 
 System_Void Game_App_Main()
+
 {
 std::shared_ptr<Game_MyList <System_Int32> > vreg_1;
 
-vreg_1 = std::make_shared<Game_MyList >();
+vreg_1 = std::make_shared<Game_MyList <System_Int32>>();
+
 Game_MyList_ctor(vreg_1.get());
 Game_MyList_Add(vreg_1, 2);
 return;
@@ -53,7 +55,8 @@ return;
 
 
 template <class T1> 
-System_Void Game_MyList_ctor(Game_MyList * _this)
+System_Void Game_MyList_ctor(Game_MyList<T1> * _this)
+
 {
 std::shared_ptr< Array < T1  > > vreg_3;
 
@@ -65,6 +68,7 @@ return;
 
 template <class T1> 
 System_Void Game_MyList_Add(const std::shared_ptr<Game_MyList<T1>>& _this, T1  item)
+
 {
 Game_MyList <T1>* vreg_1;
 Array < T1  > * vreg_2;

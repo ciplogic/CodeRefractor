@@ -98,6 +98,7 @@
     <Compile Include="Optimizations\SimpleDce\DeadStoreAssignment.cs" />
     <Compile Include="Optimizations\SimpleDce\DeleteCallToConstructorOfObject.cs" />
     <Compile Include="Optimizations\SimpleDce\OneAssignmentDeadStoreAssignment.cs" />
+    <Compile Include="OuputCodeWriter\BasicOperations\CppWriteSignature.cs" />
     <Compile Include="OuputCodeWriter\CppCodeGenerator.cs" />
     <Compile Include="OuputCodeWriter\MetaLinkerClosureComputing.cs" />
     <Compile Include="OuputCodeWriter\MetaLinkerOptimizer.cs" />
