@@ -47,3 +47,5 @@ Views/CodeRefractor.Launcher/bin/*
 VmTests/MsilCodeCompiler.Tests/bin/*
 VmTests/Projects/SimpleAdditions/bin/*
 MsilCodeCompiler/bin/*
+Source/Compiler/Compiler.CodeWriter/bin/*
+Source/Compiler/Compiler.CodeWriter/obj/*

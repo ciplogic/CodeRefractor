@@ -8,6 +8,7 @@ using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.CompilerBackend.Linker;
+using Compiler.CodeWriter.Linker;
 
 #endregion
 

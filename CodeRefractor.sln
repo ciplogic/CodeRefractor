@@ -32,6 +32,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CodeRefactorCppDebugging", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MsilReader", "Compiler\Frontend\MsilReader\MsilReader.csproj", "{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Compiler.CodeWriter", "Source\Compiler\Compiler.CodeWriter\Compiler.CodeWriter.csproj", "{53D0059F-DF86-4249-AA7D-29BD53719AE3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -238,6 +240,24 @@ Global
 		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.Release|Win32.ActiveCfg = Release|Any CPU
 		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.Release|x86.ActiveCfg = Release|Any CPU
+		{53D0059F-DF86-4249-AA7D-29BD53719AE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53D0059F-DF86-4249-AA7D-29BD53719AE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53D0059F-DF86-4249-AA7D-29BD53719AE3}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{53D0059F-DF86-4249-AA7D-29BD53719AE3}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{53D0059F-DF86-4249-AA7D-29BD53719AE3}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{53D0059F-DF86-4249-AA7D-29BD53719AE3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{53D0059F-DF86-4249-AA7D-29BD53719AE3}.OpenRaTryCompile|Any CPU.ActiveCfg = Release|Any CPU
+		{53D0059F-DF86-4249-AA7D-29BD53719AE3}.OpenRaTryCompile|Any CPU.Build.0 = Release|Any CPU
+		{53D0059F-DF86-4249-AA7D-29BD53719AE3}.OpenRaTryCompile|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{53D0059F-DF86-4249-AA7D-29BD53719AE3}.OpenRaTryCompile|Mixed Platforms.Build.0 = Release|Any CPU
+		{53D0059F-DF86-4249-AA7D-29BD53719AE3}.OpenRaTryCompile|Win32.ActiveCfg = Release|Any CPU
+		{53D0059F-DF86-4249-AA7D-29BD53719AE3}.OpenRaTryCompile|x86.ActiveCfg = Release|Any CPU
+		{53D0059F-DF86-4249-AA7D-29BD53719AE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53D0059F-DF86-4249-AA7D-29BD53719AE3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53D0059F-DF86-4249-AA7D-29BD53719AE3}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{53D0059F-DF86-4249-AA7D-29BD53719AE3}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{53D0059F-DF86-4249-AA7D-29BD53719AE3}.Release|Win32.ActiveCfg = Release|Any CPU
+		{53D0059F-DF86-4249-AA7D-29BD53719AE3}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -254,6 +274,7 @@ Global
 		{F6805C3F-DF9C-424A-A27F-2BBFF2707221} = {64825421-C03C-4F00-92D9-1A3822D4022F}
 		{10CEF783-53C3-42A7-940A-73773A2AF24F} = {64825421-C03C-4F00-92D9-1A3822D4022F}
 		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7} = {64825421-C03C-4F00-92D9-1A3822D4022F}
+		{53D0059F-DF86-4249-AA7D-29BD53719AE3} = {64825421-C03C-4F00-92D9-1A3822D4022F}
 		{6C4BC5D1-CE1E-4152-AB7D-0EE10C64496D} = {2F7063CF-FFF5-4F2E-9643-1ACB96A889E5}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution

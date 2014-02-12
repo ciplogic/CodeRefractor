@@ -1,4 +1,7 @@
+#region Usings
+
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.FrontEnd;
@@ -6,7 +9,9 @@ using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
-namespace CodeRefractor.CompilerBackend.Linker
+#endregion
+
+namespace Compiler.CodeWriter.Linker
 {
     public static class LinkerUtils
     {
@@ -21,7 +26,7 @@ namespace CodeRefractor.CompilerBackend.Linker
             if (computeType.ClrTypeCode == TypeCode.String)
             {
                 var stringTable = LinkingData.Instance.Strings;
-                var stringId = stringTable.GetStringId((string)constValue.Value);
+                var stringId = stringTable.GetStringId((string) constValue.Value);
 
                 return String.Format("_str({0})", stringId);
             }
@@ -43,6 +48,22 @@ namespace CodeRefractor.CompilerBackend.Linker
             if (isGacType)
                 return null;
             return methodBase.Register();
+        }
+
+        public const string EscapeName = "NonEscapingArgs";
+
+        public static Dictionary<int, bool> EscapingParameterData(this MethodBase info)
+        {
+            var interpreter = info.GetInterpreter();
+            if (interpreter == null)
+                return null;
+            var calledMethod = interpreter.MidRepresentation;
+            var otherMethodData = (Dictionary<int, bool>) calledMethod.GetAdditionalProperty(EscapeName);
+            if (otherMethodData == null)
+            {
+                return null;
+            }
+            return otherMethodData;
         }
     }
 }

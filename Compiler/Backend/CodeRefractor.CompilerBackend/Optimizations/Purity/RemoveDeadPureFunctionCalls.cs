@@ -6,6 +6,7 @@ using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
+using Compiler.CodeWriter.Linker;
 
 namespace CodeRefractor.CompilerBackend.Optimizations.Purity
 {

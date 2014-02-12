@@ -8,13 +8,13 @@ using CodeRefractor.RuntimeBase.Shared;
 
 #endregion
 
-namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
+namespace Compiler.CodeWriter.BasicOperations
 {
     internal static class CppHandleOperators
     {
         public static void HandleOperator(object operation, StringBuilder sb)
         {
-            var instructionOperator = (OperatorBase)operation;
+            var instructionOperator = (OperatorBase) operation;
             var localOperator = instructionOperator;
             var binaryOperator = instructionOperator as BinaryOperator;
             var unaryOperator = instructionOperator as UnaryOperator;
@@ -95,7 +95,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
         public static void HandleUnaryOperator(UnaryOperator operation, StringBuilder sb)
         {
             var localVar = operation;
-            
+
             var unaryOperator = localVar;
 
             var operationName = localVar.Name;
@@ -167,6 +167,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
             var operat = localVar;
             sb.AppendFormat("{0} = -{1};", localVar.AssignedTo.Name, operat.Left.Name);
         }
+
         private static void HandleConvR4(UnaryOperator unaryOperator, StringBuilder sb)
         {
             sb.AppendFormat("{0} = (float){1};", unaryOperator.AssignedTo.Name, unaryOperator.Left.Name);
@@ -186,6 +187,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
         {
             sb.AppendFormat("{0} = (System_Byte){1};", unaryOperator.AssignedTo.Name, unaryOperator.Left.Name);
         }
+
         private static void HandleConvI4(UnaryOperator unaryOperator, StringBuilder sb)
         {
             sb.AppendFormat("{0} = (int){1};", unaryOperator.AssignedTo.Name, unaryOperator.Left.Name);
@@ -266,7 +268,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
         }
 
         private static void GetBinaryOperandNames(BinaryOperator localVar, out string right,
-                                                  out string left, out string local)
+            out string left, out string local)
         {
             local = localVar.AssignedTo.Name;
             var leftVar = localVar.Left as LocalVariable;
@@ -295,7 +297,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations
             if (localVar.Right.ComputedType().ClrType == typeof (IntPtr))
             {
                 sb.AppendFormat("{0} = {1}+(size_t){2};", local, left, right);
-                
+
                 return;
             }
 

@@ -7,6 +7,8 @@ using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.Runtime;
+using Compiler.CodeWriter;
+using Compiler.CodeWriter.Linker;
 
 namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 {

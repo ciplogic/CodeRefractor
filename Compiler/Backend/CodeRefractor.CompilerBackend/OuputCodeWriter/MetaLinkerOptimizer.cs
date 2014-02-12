@@ -2,8 +2,11 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.Config;
+using CodeRefractor.RuntimeBase.FrontEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.Optimizations;
@@ -14,6 +17,29 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 {
     public static class MetaLinkerOptimizer
     {
+        public static MethodInterpreter CreateLinkerFromEntryPoint(this MethodInfo definition)
+        {
+            var methodInterpreter = definition.Register();
+            MetaLinker.Interpret(methodInterpreter);
+
+            MetaLinkerOptimizer.OptimizeMethods(LinkerInterpretersTable.Methods);
+            var foundMethodCount = 1;
+            bool canContinue = true;
+            while (canContinue)
+            {
+                var dependencies = methodInterpreter.GetMethodClosure();
+                canContinue = foundMethodCount != dependencies.Count;
+                foundMethodCount = dependencies.Count;
+                foreach (var interpreter in dependencies)
+                {
+                    MetaLinker.Interpret(interpreter);
+                }
+                MetaLinkerOptimizer.OptimizeMethods(LinkerInterpretersTable.Methods);
+            }
+
+            return methodInterpreter;
+        }
+
         public static void OptimizeMethods(Dictionary<string, MethodInterpreter> methodsToOptimize)
         {
             LinkerInterpretersTable.Clear();

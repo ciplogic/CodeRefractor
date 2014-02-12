@@ -64,9 +64,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Linker\LinkerInterpretersTableUtils.cs" />
-    <Compile Include="Linker\LinkerUtils.cs" />
-    <Compile Include="Linker\LinkingData.cs" />
-    <Compile Include="Linker\StringTable.cs" />
     <Compile Include="Optimizations\Common\ResultingGlobalOptimizationPass.cs" />
     <Compile Include="Optimizations\Common\ResultingInFunctionOptimizationPass.cs" />
     <Compile Include="Optimizations\Common\BlockOptimizationPass.cs" />
@@ -102,7 +99,6 @@
     <Compile Include="Optimizations\SimpleDce\DeleteCallToConstructorOfObject.cs" />
     <Compile Include="Optimizations\SimpleDce\OneAssignmentDeadStoreAssignment.cs" />
     <Compile Include="OuputCodeWriter\CppCodeGenerator.cs" />
-    <Compile Include="OuputCodeWriter\CppFullFileMethodWriter.cs" />
     <Compile Include="OuputCodeWriter\MetaLinkerClosureComputing.cs" />
     <Compile Include="OuputCodeWriter\MetaLinkerOptimizer.cs" />
     <Compile Include="OuputCodeWriter\MethodInterpreterCodeWriter.cs" />
@@ -128,18 +124,9 @@
     <Compile Include="Optimizations\SimpleDce\DceVRegUnused.cs" />
     <Compile Include="Optimizations\SimpleDce\DoubleAssignPropagation.cs" />
     <Compile Include="Optimizations\Util\OptimizationLevels.cs" />
-    <Compile Include="OuputCodeWriter\Platform\PlatformInvokeCodeWriter.cs" />
-    <Compile Include="OuputCodeWriter\Platform\PlatformInvokeDllImports.cs" />
-    <Compile Include="OuputCodeWriter\Platform\PlatformInvokeDllMethod.cs" />
     <Compile Include="OuputCodeWriter\ProgramClosure.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Linker\FieldNameTable.cs" />
-    <Compile Include="Linker\NamerUtils.cs" />
-    <Compile Include="OuputCodeWriter\BasicOperations\CppMethodCodeWriter.cs" />
-    <Compile Include="OuputCodeWriter\BasicOperations\CppHandleBranches.cs" />
-    <Compile Include="OuputCodeWriter\BasicOperations\CppHandleCalls.cs" />
-    <Compile Include="OuputCodeWriter\BasicOperations\CppHandleCompareBranches.cs" />
-    <Compile Include="OuputCodeWriter\BasicOperations\CppHandleOperators.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Common\CodeRefactor.OpenRuntime\CodeRefactor.OpenRuntime.csproj">
@@ -149,6 +136,10 @@
     <ProjectReference Include="..\..\..\Common\CodeRefractor.RuntimeBase\CodeRefractor.RuntimeBase.csproj">
       <Project>{10CEF783-53C3-42A7-940A-73773A2AF24F}</Project>
       <Name>CodeRefractor.RuntimeBase</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\Compiler\Compiler.CodeWriter\Compiler.CodeWriter.csproj">
+      <Project>{53d0059f-df86-4249-aa7d-29bd53719ae3}</Project>
+      <Name>Compiler.CodeWriter</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

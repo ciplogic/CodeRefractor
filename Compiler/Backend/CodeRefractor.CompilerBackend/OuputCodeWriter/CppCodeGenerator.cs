@@ -7,14 +7,16 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using CodeRefractor.CompilerBackend.Linker;
-using CodeRefractor.CompilerBackend.OuputCodeWriter.Platform;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
+using CodeRefractor.RuntimeBase.Analyze.TypeTableIndices;
 using CodeRefractor.RuntimeBase.FrontEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.ConstTable;
 using CodeRefractor.RuntimeBase.Shared;
+using Compiler.CodeWriter.Linker;
+using Compiler.CodeWriter.Platform;
 
 #endregion
 

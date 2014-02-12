@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using CodeRefactor.OpenRuntime;
 using CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering;
 using CodeRefractor.RuntimeBase;
+using CodeRefractor.RuntimeBase.Analyze.TypeTableIndices;
 using CodeRefractor.RuntimeBase.FrontEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 

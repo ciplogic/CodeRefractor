@@ -1,9 +1,13 @@
+#region Usings
+
 using System;
 using System.Runtime.InteropServices;
 
-namespace CodeRefractor.CompilerBackend.OuputCodeWriter.Platform
+#endregion
+
+namespace Compiler.CodeWriter.Platform
 {
-    internal class PlatformInvokeDllMethod
+    public class PlatformInvokeDllMethod
     {
         public string Name { get; set; }
         public CallingConvention? CallingConvention { get; set; }
@@ -15,7 +19,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.Platform
         {
             Name = name;
             CallingConvention = callingConvention;
-            EntryPoint = !String.IsNullOrEmpty(entryPoint)? entryPoint:name;
+            EntryPoint = !String.IsNullOrEmpty(entryPoint) ? entryPoint : name;
         }
 
 

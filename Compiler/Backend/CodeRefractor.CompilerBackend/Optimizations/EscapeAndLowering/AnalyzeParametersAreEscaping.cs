@@ -10,12 +10,13 @@ using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
+using Compiler.CodeWriter;
+using Compiler.CodeWriter.Linker;
 
 namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
 {
     class AnalyzeParametersAreEscaping : ResultingGlobalOptimizationPass
     {
-        public const string EscapeName = "NonEscapingArgs";
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
             if (methodInterpreter.Kind != MethodKind.Default)
@@ -35,7 +36,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
             var argEscaping = ComputeEscapingArgList(intermediateCode.MidRepresentation, operations);
             var escaping = ComputeArgsEscaping(operations, argEscaping);
             if (argEscaping.Count == 0) return true;
-            intermediateCode.MidRepresentation.SetAdditionalValue(EscapeName, escaping);
+            intermediateCode.MidRepresentation.SetAdditionalValue(LinkerUtils.EscapeName, escaping);
             var escapingBools = CppFullFileMethodWriter.BuildEscapingBools(intermediateCode.Method);
             var variables = intermediateCode.MidRepresentation.Vars;
             foreach (var variable in variables.Arguments)
@@ -119,24 +120,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
         public static Dictionary<int, bool> GetEscapingParameterData(MethodData methodData)
         {
             var info = methodData.Info;
-            return EscapingParameterData(info);
-        }
-
-        public static Dictionary<int, bool> EscapingParameterData(MethodBase info)
-        {
-            var interpreter = info.GetInterpreter();
-            if (interpreter == null)
-                return null;
-            var calledMethod = interpreter.MidRepresentation;
-            var otherMethodData = (Dictionary<int, bool>) calledMethod.GetAdditionalProperty(EscapeName);
-            if (otherMethodData == null)
-            {
-                //var operations = interpreter.MidRepresentation.LocalOperations.ToArray();
-                //ComputeEscapeTable(interpreter, operations);
-                //otherMethodData = (Dictionary<int, bool>)calledMethod.GetAdditionalProperty(EscapeName);
-                return null;
-            }
-            return otherMethodData;
+            return info.EscapingParameterData();
         }
     }
 }

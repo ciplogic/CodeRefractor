@@ -2,11 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.Runtime;
 
-namespace CodeRefractor.RuntimeBase
+namespace CodeRefractor.RuntimeBase.Analyze.TypeTableIndices
 {
     public static class TypesClosureLinker
     {

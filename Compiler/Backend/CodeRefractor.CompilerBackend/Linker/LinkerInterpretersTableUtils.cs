@@ -4,6 +4,8 @@ using CodeRefractor.CompilerBackend.OuputCodeWriter;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.Shared;
+using Compiler.CodeWriter;
+using Compiler.CodeWriter.Linker;
 
 namespace CodeRefractor.CompilerBackend.Linker
 {
