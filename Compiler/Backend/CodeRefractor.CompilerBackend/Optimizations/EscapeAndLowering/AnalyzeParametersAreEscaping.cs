@@ -6,12 +6,11 @@ using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.CompilerBackend.OuputCodeWriter;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
+using CodeRefractor.RuntimeBase.FrontEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
-using Compiler.CodeWriter;
-using Compiler.CodeWriter.Linker;
 
 namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
 {
@@ -22,12 +21,12 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
             if (methodInterpreter.Kind != MethodKind.Default)
                 return;
 
-            var originalSnapshot = CppFullFileMethodWriter.BuildEscapingBools(methodInterpreter.Method);
+            var originalSnapshot = LinkerUtils.BuildEscapingBools(methodInterpreter.Method);
 
             var localOperations = methodInterpreter.MidRepresentation.UseDef.GetLocalOperations();
             if (ComputeEscapeTable(methodInterpreter, localOperations)) return;
 
-            var finalSnapshot= CppFullFileMethodWriter.BuildEscapingBools(methodInterpreter.Method);
+            var finalSnapshot= LinkerUtils.BuildEscapingBools(methodInterpreter.Method);
             CheckForChanges(finalSnapshot, originalSnapshot);
         }
 
@@ -37,7 +36,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
             var escaping = ComputeArgsEscaping(operations, argEscaping);
             if (argEscaping.Count == 0) return true;
             intermediateCode.MidRepresentation.SetAdditionalValue(LinkerUtils.EscapeName, escaping);
-            var escapingBools = CppFullFileMethodWriter.BuildEscapingBools(intermediateCode.Method);
+            var escapingBools = LinkerUtils.BuildEscapingBools(intermediateCode.Method);
             var variables = intermediateCode.MidRepresentation.Vars;
             foreach (var variable in variables.Arguments)
             {

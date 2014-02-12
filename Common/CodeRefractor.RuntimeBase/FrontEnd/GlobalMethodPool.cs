@@ -10,8 +10,7 @@ namespace CodeRefractor.RuntimeBase.FrontEnd
 {
     public static class GlobalMethodPool
     {
-        private static readonly SortedDictionary<string, MethodInterpreter>
-            Interpreters = new SortedDictionary<string, MethodInterpreter>();
+        private static readonly SortedDictionary<string, MethodInterpreter> Interpreters = new SortedDictionary<string, MethodInterpreter>();
 
         public static Dictionary<Assembly, CrTypeResolver> TypeResolvers = new Dictionary<Assembly, CrTypeResolver>();  
 

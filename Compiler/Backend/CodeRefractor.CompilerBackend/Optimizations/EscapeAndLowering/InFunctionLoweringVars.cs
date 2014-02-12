@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using CodeRefractor.CompilerBackend.Linker;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.CompilerBackend.OuputCodeWriter;
 using CodeRefractor.RuntimeBase;
@@ -138,7 +139,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
                 return;
             }
 
-            var escapingBools = CppFullFileMethodWriter.BuildEscapingBools(methodData.Info);
+            var escapingBools = LinkerUtils.BuildEscapingBools(methodData.Info);
             for (var index = 0; index < methodData.Parameters.Count; index++)
             {
                 var parameter = methodData.Parameters[index];
