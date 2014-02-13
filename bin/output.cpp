@@ -1,99 +1,108 @@
 #include "sloth.h"
-struct System_Array; 
-struct System_Object; 
 struct Game_App; 
-struct System_Math; 
-struct System_Console; 
+struct System_Object; 
+struct Game_Base; 
+struct Game_ImplBaseB; 
+struct Game_ImplBase; 
 struct System_ValueType; 
+struct System_Console; 
 struct System_IO_File; 
+struct System_Array; 
+struct System_Math; 
 struct System_String; 
-struct System_Array {
+struct Game_App {
 };
 struct System_Object {
 };
-struct Game_App {
+struct Game_Base {
 };
-struct System_Math {
+struct Game_ImplBaseB : public Game_Base {
 };
-struct System_Console {
+struct Game_ImplBase : public Game_Base {
 };
 struct System_ValueType {
 };
+struct System_Console {
+};
 struct System_IO_File {
+};
+struct System_Array {
+};
+struct System_Math {
 };
 struct System_String {
  std::shared_ptr< Array < System_Char > > Text;
 };
-template <class T1> 
-struct Game_MyList {
- std::shared_ptr< Array < T1  > > items;
- System_Int32 AutoNamed_0;
- System_Int32 AutoNamed_1;
-};
 
 System_Void Game_App_Main();
 
-template <class T1> 
-System_Void Game_MyList_ctor(Game_MyList<T1> * _this);
+System_Void Game_ImplBase_ctor(const std::shared_ptr<Game_ImplBase>& _this);
 
-template <class T1> 
-System_Void Game_MyList_Add(const std::shared_ptr<Game_MyList<T1>>& _this, T1  item);
+System_Void Game_ImplBaseB_ctor(const std::shared_ptr<Game_ImplBaseB>& _this);
+
+System_Void Game_Base_ToImplement(const std::shared_ptr<Game_Base>& _this);
 
 #include "runtime_base.hpp"
 ///---Begin closure code --- 
 System_Void Game_App_Main()
 
 {
-std::shared_ptr<Game_MyList <System_Int32> > vreg_1;
+Array < std::shared_ptr<Game_Base> > * local_4;
+System_Int32 local_5;
+std::shared_ptr<Game_ImplBase> vreg_3;
+std::shared_ptr<Game_ImplBaseB> vreg_8;
+std::shared_ptr<Game_Base> vreg_17;
+System_Int32 vreg_24;
+System_Int32 vreg_25;
+System_Boolean vreg_27;
 
-vreg_1 = std::make_shared<Game_MyList <System_Int32>>();
+Array <std::shared_ptr<Game_Base>> vreg_2 (2); 
+vreg_3 = std::make_shared<Game_ImplBase >();
 
-Game_MyList_ctor(vreg_1.get());
-Game_MyList_Add(vreg_1, 2);
+Game_ImplBase_ctor(vreg_3);
+(vreg_2)[0] = vreg_3; 
+vreg_8 = std::make_shared<Game_ImplBaseB >();
+
+Game_ImplBaseB_ctor(vreg_8);
+(vreg_2)[1] = vreg_8; 
+local_4 = &vreg_2;
+local_5 = 0;
+vreg_24 = local_4->Length;
+vreg_25 = (int)vreg_24;
+goto label_58;
+label_37:
+vreg_17 = (*local_4)[local_5];
+Game_Base_ToImplement(vreg_17);
+local_5 = local_5+1;
+label_58:
+vreg_27 = (local_5 < vreg_25)?1:0;
+if(vreg_27) goto label_37;
 return;
 }
 
 
-template <class T1> 
-System_Void Game_MyList_ctor(Game_MyList<T1> * _this)
+System_Void Game_ImplBase_ctor(const std::shared_ptr<Game_ImplBase>& _this)
 
 {
-std::shared_ptr< Array < T1  > > vreg_3;
 
-vreg_3 = std::make_shared< Array <T1 > >(10); 
-_this->items = vreg_3;
+Game_ImplBase_ctor(_this);
 return;
 }
 
 
-template <class T1> 
-System_Void Game_MyList_Add(const std::shared_ptr<Game_MyList<T1>>& _this, T1  item)
+System_Void Game_ImplBaseB_ctor(const std::shared_ptr<Game_ImplBaseB>& _this)
 
 {
-Game_MyList <T1>* vreg_1;
-Array < T1  > * vreg_2;
-std::shared_ptr<Game_MyList <T1> > vreg_3;
-System_Int32 vreg_4;
-std::shared_ptr<T1> vreg_5;
-std::shared_ptr<Game_MyList <T1> > vreg_6;
-std::shared_ptr<Game_MyList <T1> > vreg_7;
-System_Int32 vreg_8;
-System_Int32 vreg_9;
-System_Int32 vreg_10;
 
-vreg_1 = (_this).get();
-vreg_2 = vreg_1->items.get();
-vreg_3 = _this;
-vreg_4 = Game_MyList_get_Count(vreg_3);
-vreg_5 = item;
-(*vreg_2)[vreg_4] = vreg_5; 
-vreg_6 = _this;
-vreg_7 = vreg_6;
-vreg_8 = Game_MyList_get_Count(vreg_7);
-vreg_9 = 1;
-vreg_10 = vreg_8+vreg_9;
-Game_MyList_set_Count(vreg_6, vreg_10);
+Game_ImplBaseB_ctor(_this);
 return;
+}
+
+
+System_Void Game_Base_ToImplement(const std::shared_ptr<Game_Base>& _this)
+
+{
+
 }
 
 

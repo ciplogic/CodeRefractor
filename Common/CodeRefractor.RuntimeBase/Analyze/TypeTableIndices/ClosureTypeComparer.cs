@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using CodeRefractor.RuntimeBase.Analyze;
 
-namespace CodeRefractor.RuntimeBase
+namespace CodeRefractor.RuntimeBase.Analyze.TypeTableIndices
 {
     public class ClosureTypeComparer : IComparer<Type>
     {

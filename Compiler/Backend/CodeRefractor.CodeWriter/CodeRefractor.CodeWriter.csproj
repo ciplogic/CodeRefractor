@@ -54,6 +54,9 @@
     <Compile Include="Platform\PlatformInvokeDllImports.cs" />
     <Compile Include="Platform\PlatformInvokeDllMethod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TypeInfoWriter\TypeDescriptionTable.cs" />
+    <Compile Include="TypeInfoWriter\VirtualMethodDescription.cs" />
+    <Compile Include="TypeInfoWriter\VirtualMethodTable.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Common\CodeRefractor.RuntimeBase\CodeRefractor.RuntimeBase.csproj">

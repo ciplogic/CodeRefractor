@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using CodeRefactor.OpenRuntime;
+using CodeRefractor.CodeWriter.TypeInfoWriter;
 using CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze.TypeTableIndices;
@@ -21,6 +22,10 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
         public List<Type> UsedTypes;
         public MethodInterpreter EntryInterpreter { get; set; }
         public List<MethodInterpreter> MethodClosure = new List<MethodInterpreter>();
+        private TypeDescriptionTable _typeTable;
+        private Dictionary<Type, int> _typeDictionary;
+
+        VirtualMethodTable _virtualMethodTable=new VirtualMethodTable();
 
         public ProgramClosure(MethodInfo entryMethod)
         {
@@ -32,6 +37,23 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             UsedTypes = TypesClosureLinker.GetTypesClosure(MethodClosure);
             UsedTypes.Add(typeof (CrString));
             TypesClosureLinker.SortTypeClosure(UsedTypes);
+
+            _typeTable = new TypeDescriptionTable(UsedTypes);
+            _typeDictionary = _typeTable.ExtractInformation();
+
+            BuildVirtualMethodTable();
+        }
+
+        private void BuildVirtualMethodTable()
+        {
+            foreach (var type in _typeDictionary.Keys)
+            {
+                var methods = type.GetMethods();
+                foreach (var method in methods)
+                {
+                    _virtualMethodTable.RegisterMethod(method);
+                }
+            }
         }
 
         private void BuildMethodClosure()

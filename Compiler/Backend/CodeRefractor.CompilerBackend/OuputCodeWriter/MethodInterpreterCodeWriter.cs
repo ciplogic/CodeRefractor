@@ -44,6 +44,8 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
         {
             if (optimizationPasses == null)
                 return false;
+            if (interpreter.Method.IsAbstract)
+                return false;
             var result = false;
             var optimizationsList = new List<OptimizationPass>(optimizationPasses);
             var didOptimize = true;

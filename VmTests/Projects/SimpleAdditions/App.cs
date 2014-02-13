@@ -4,19 +4,23 @@ using Tao.Sdl;
 
 namespace Game
 {
-    class MyList<T>
+    public abstract class Base
     {
-        T[] items = new T[10];
-        public int Capacity { get; set; }
-        public int Count { get; private set; }
-        public MyList()
+        public abstract void ToImplement();
+    }
+
+    public class ImplBaseB : Base
+    {
+        public override void ToImplement()
         {
-            
-        } 
-        public void Add(T item)
+            Console.WriteLine("ImplBase");
+        }
+    }
+    public class ImplBase : Base
+    {
+        public override void ToImplement()
         {
-            items[Count] = item;
-            Count++;
+            Console.WriteLine("ImplBase");
         }
     }
     public class App
@@ -24,8 +28,16 @@ namespace Game
         [STAThread]
         public static void Main()
         {
-            var list = new MyList<int>();
-            list.Add(2);
+            var impls = new Base[2];
+            var impl = new ImplBase();
+            impls[0] = impl;
+            var implB = new ImplBaseB();
+            impls[1] = implB;
+            foreach (var aBase in impls)
+            {
+                aBase.ToImplement();
+            }
+
         }
     }
 }

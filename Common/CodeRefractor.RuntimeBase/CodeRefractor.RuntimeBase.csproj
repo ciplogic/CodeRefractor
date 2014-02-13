@@ -64,7 +64,7 @@
     <Compile Include="Analyze\UsedTypeList.cs" />
     <Compile Include="Analyze\UsedTypeListUtils.cs" />
     <Compile Include="CilMethodAttribute.cs" />
-    <Compile Include="ClosureTypeComparer.cs" />
+    <Compile Include="Analyze\TypeTableIndices\ClosureTypeComparer.cs" />
     <Compile Include="FrontEnd\AnalyzeProperties.cs" />
     <Compile Include="FrontEnd\GlobalMethodPool.cs" />
     <Compile Include="MiddleEnd\CppLibMethodInvokeRepresentation.cs" />

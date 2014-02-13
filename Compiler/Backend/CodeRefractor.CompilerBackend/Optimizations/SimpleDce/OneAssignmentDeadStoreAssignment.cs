@@ -13,21 +13,16 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
 {
     internal class OneAssignmentDeadStoreAssignment : ResultingInFunctionOptimizationPass
     {
-        private readonly Dictionary<LocalVariable, ConstValue> _constValues =
-            new Dictionary<LocalVariable, ConstValue>();
-
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
-            var localOperations = methodInterpreter.MidRepresentation.UseDef.GetLocalOperations();
-            _constValues.Clear();
+            var useDef = methodInterpreter.MidRepresentation.UseDef;
+            var localOperations = useDef.GetLocalOperations();
+            var constValues = GetAssignToConstOperations(localOperations, useDef);
 
-            GetAssignToConstOperations(localOperations);
-
-            if (_constValues.Count == 0)
+            if (constValues.Count == 0)
                 return;
 
-            localOperations = methodInterpreter.MidRepresentation.UseDef.GetLocalOperations();
-            var useDef = methodInterpreter.MidRepresentation.UseDef;
+            localOperations = useDef.GetLocalOperations();
             for (var index = 0; index < localOperations.Length; index++)
             {
                 var op = localOperations[index];
@@ -37,7 +32,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
                 foreach (var variable in variableUsages)
                 {
                     ConstValue constMappedValue;
-                    if (_constValues.TryGetValue(variable, out constMappedValue))
+                    if (constValues.TryGetValue(variable, out constMappedValue))
                     {
                         op.SwitchUsageWithDefinition(variable, constMappedValue);
                         Result = true;
@@ -46,67 +41,44 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
             }
         }
 
-        private static HashSet<LocalVariable> ComputeDefinedOnce(Dictionary<int, LocalOperation> assignToConstOperations)
+        private Dictionary<LocalVariable, ConstValue> GetAssignToConstOperations(LocalOperation[] localOperations, UseDefDescription useDef)
         {
-            var definedOnce = new HashSet<LocalVariable>();
-            var definedMany = new HashSet<LocalVariable>();
-            foreach (var op in assignToConstOperations)
-            {
-                var left = op.Value.GetAssignment().AssignedTo;
-                if (definedOnce.Contains(left))
-                {
-                    definedMany.Add(left);
-                }
-                else
-                {
-                    definedOnce.Add(left);
-                }
-            }
-            foreach (var many in definedMany)
-            {
-                definedOnce.Remove(many);
-            }
-            return definedOnce;
-        }
-
-        private void GetAssignToConstOperations(LocalOperation[] localOperations)
-        {
-            for (var index = 0; index < localOperations.Length; index++)
+            var constValues = new Dictionary<LocalVariable, ConstValue>();
+            var assignmentIds = useDef.GetOperations(OperationKind.Assignment);
+            foreach (var index in assignmentIds)
             {
                 var op = localOperations[index];
-                var opKind = op.Kind;
-                if (opKind != OperationKind.Assignment) continue;
-                var assign = op.GetAssignment();
+                var assign = (Assignment) op.Value;
                 var assignedTo = assign.AssignedTo;
-                if (assignedTo.Kind == VariableKind.Argument)
-                    continue;
                 var constAssignedValue = assign.Right as ConstValue;
                 if (constAssignedValue == null)
                     continue;
-                ConstValue constVal;
-                if (_constValues.TryGetValue(assignedTo, out constVal))
-                {
-                    if (constVal == null)
-                        continue;
-                    if (constVal.Value == constAssignedValue.Value)
-                        continue;
-                    _constValues[assignedTo] = null;
-                }
-                else
-                {
-                    _constValues[assignedTo] = constAssignedValue;
-                }
+                constValues[assignedTo] = constAssignedValue;
             }
-            var toRemove = new List<LocalVariable>();
-            foreach (var constValue in _constValues)
+            for (var index = 0; index < localOperations.Length; index++)
             {
-                if (constValue.Value == null) //const defined multiple times
-                    toRemove.Add(constValue.Key);
+                var op = localOperations[index];
+                var definition = useDef.GetDefinition(index);
+                if (definition==null)
+                    continue;
+                if (op.Kind != OperationKind.Assignment)
+                {
+                    constValues.Remove(definition);
+                    continue;
+                }
+                var assign = (Assignment)op.Value;
+                var constAssignedValue = assign.Right as ConstValue;
+                if (constAssignedValue == null)
+                {
+                    constValues.Remove(definition);
+                    continue;
+                }
+                ConstValue constDefValue;
+                if (!constValues.TryGetValue(definition, out constDefValue)) continue;
+                if (constDefValue.Value != constAssignedValue.Value)
+                    constValues.Remove(definition);
             }
-            foreach (var localVariable in toRemove)
-            {
-                _constValues.Remove(localVariable);
-            }
+            return constValues;
         }
     }
 }
