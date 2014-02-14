@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using CodeRefractor.CodeWriter.TypeInfoWriter;
 using CodeRefractor.CompilerBackend.Linker;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.MiddleEnd;
@@ -18,14 +19,14 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 {
     public static class CppMethodCodeWriter
     {
-        public static string WriteCode(MethodInterpreter midRepresentation)
+        public static string WriteCode(MethodInterpreter midRepresentation, TypeDescriptionTable typeTable)
         {
             var operations = midRepresentation.MidRepresentation.LocalOperations;
             var headerSb = new StringBuilder();
             var sb = CppWriteSignature.WriteSignature(midRepresentation);
             headerSb.AppendLine(sb.ToString());
             headerSb.Append("{");
-            var bodySb = ComputeBodySb(operations, midRepresentation.MidRepresentation.Vars);
+            var bodySb = ComputeBodySb(operations, midRepresentation.MidRepresentation.Vars, typeTable);
             var variablesSb = ComputeVariableSb(midRepresentation.MidRepresentation);
             var finalSb = new StringBuilder();
             finalSb.AppendLine(headerSb.ToString());
@@ -34,12 +35,12 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             return finalSb.ToString();
         }
 
-        private static StringBuilder ComputeBodySb(List<LocalOperation> operations, MidRepresentationVariables vars)
+        private static StringBuilder ComputeBodySb(List<LocalOperation> operations, MidRepresentationVariables vars, TypeDescriptionTable typeTable)
         {
             var bodySb = new StringBuilder();
             foreach (var operation in operations)
             {
-                if (CppHandleOperators.HandleAssignmentOperations(vars, bodySb, operation, operation.Kind))
+                if (CppHandleOperators.HandleAssignmentOperations(vars, bodySb, operation, operation.Kind, typeTable))
                 {
                     bodySb.AppendLine();
                     continue;

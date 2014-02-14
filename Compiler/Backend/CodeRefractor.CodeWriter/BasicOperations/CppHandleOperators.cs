@@ -3,6 +3,7 @@
 using System;
 using System.IO;
 using System.Text;
+using CodeRefractor.CodeWriter.TypeInfoWriter;
 using CodeRefractor.CompilerBackend.Linker;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
@@ -18,12 +19,12 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 {
     internal static class CppHandleOperators
     {
-        public static bool HandleAssignmentOperations(MidRepresentationVariables vars, StringBuilder bodySb, LocalOperation operation, OperationKind kind)
+        public static bool HandleAssignmentOperations(MidRepresentationVariables vars, StringBuilder bodySb, LocalOperation operation, OperationKind kind, TypeDescriptionTable typeTable)
         {
             switch (kind)
             {
                 case OperationKind.Assignment:
-                    HandleAssign(bodySb, operation, vars);
+                    HandleAssign(bodySb, operation, vars, typeTable);
                     break;
                 case OperationKind.BinaryOperator:
                     HandleOperator(operation.Value, bodySb);
@@ -51,7 +52,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                     HandleSetArrayValue(operation, bodySb, vars);
                     break;
                 case OperationKind.NewObject:
-                    HandleNewObject(operation, bodySb, vars);
+                    HandleNewObject(operation, bodySb, vars, typeTable);
                     break;
                 case OperationKind.NewArray:
                     HandleNewArray(operation, bodySb, vars);
@@ -82,13 +83,13 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         }
 
 
-        private static void HandleAssign(StringBuilder sb, LocalOperation operation, MidRepresentationVariables vars)
+        private static void HandleAssign(StringBuilder sb, LocalOperation operation, MidRepresentationVariables vars, TypeDescriptionTable typeTable)
         {
             var assignment = (Assignment)operation.Value;
 
             if (assignment.Right is NewConstructedObject)
             {
-                HandleNewObject(operation, sb, vars);
+                HandleNewObject(operation, sb, vars, typeTable);
                 return;
             }
             var assignedTo = assignment.AssignedTo;
@@ -288,7 +289,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         public static void HandleUnaryOperator(UnaryOperator operation, StringBuilder sb)
         {
             var localVar = operation;
-            
+
             var unaryOperator = localVar;
 
             var operationName = localVar.Name;
@@ -485,10 +486,10 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         {
             string right, left, local;
             GetBinaryOperandNames(localVar, out right, out left, out local);
-            if (localVar.Right.ComputedType().ClrType == typeof (IntPtr))
+            if (localVar.Right.ComputedType().ClrType == typeof(IntPtr))
             {
                 sb.AppendFormat("{0} = {1}+(size_t){2};", local, left, right);
-                
+
                 return;
             }
 
@@ -500,7 +501,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         {
             var assignment = (Assignment)operation.Value;
             var arrayItem = (ArrayVariable)assignment.AssignedTo;
-            var variableData = vars.GetVariableData(arrayItem.Parent); 
+            var variableData = vars.GetVariableData(arrayItem.Parent);
             switch (variableData.Escaping)
             {
                 case EscapingMode.Stack:
@@ -600,7 +601,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         }
 
 
-        private static void HandleNewObject(LocalOperation operation, StringBuilder bodySb, MidRepresentationVariables vars)
+        private static void HandleNewObject(LocalOperation operation, StringBuilder bodySb, MidRepresentationVariables vars, TypeDescriptionTable typeTable)
         {
             var value = (Assignment)operation.Value;
             var rightValue = (NewConstructedObject)value.Right;
@@ -609,19 +610,18 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             var declaringType = localValue.DeclaringType;
             var cppName = declaringType.ToDeclaredVariableType(true, EscapingMode.Stack);
             var assignedData = vars.GetVariableData(value.AssignedTo);
-            switch (assignedData.Escaping)
+            bool isStack = assignedData.Escaping == EscapingMode.Stack;
+            if (isStack)
             {
-                case EscapingMode.Stack:
-                    bodySb
-                        .AppendFormat("{1} {0};", value.AssignedTo.Name, cppName)
-                        .AppendLine();
-                    break;
-                default:
-                    bodySb
-                        .AppendFormat("{0} = std::make_shared<{1}>();", value.AssignedTo.Name, cppName)
-                        .AppendLine();;
-                    break;
+                bodySb
+                    .AppendFormat("{1} {0};", value.AssignedTo.Name, cppName);
             }
+            else
+            {       
+                bodySb.AppendFormat("{0} = std::make_shared<{1}>();", value.AssignedTo.Name, cppName);     
+            }
+            bodySb.AppendLine();
+            typeTable.SetIdOfInstance(bodySb, value.AssignedTo, declaringType, isStack);
         }
     }
 }

@@ -30,6 +30,21 @@ namespace CodeRefractor.RuntimeBase.Analyze.TypeTableIndices
 
         public int Compare(Type left, Type right)
         {
+            if (left == typeof (object))
+            {
+                return -1;
+            }
+            if (right== typeof(object))
+            {
+                return 1;
+            } if (left.BaseType == right)
+            {
+                return 1;
+            }
+            if (right.BaseType == left)
+            {
+                return -1;
+            }
             if (left.IsValueType && !right.IsValueType)
             {
                 return -1;

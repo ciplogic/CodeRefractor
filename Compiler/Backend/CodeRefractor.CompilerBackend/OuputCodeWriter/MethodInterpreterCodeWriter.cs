@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using CodeRefractor.CodeWriter.BasicOperations;
 using CodeRefractor.CodeWriter.Platform;
+using CodeRefractor.CodeWriter.TypeInfoWriter;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.Optimizations;
 
@@ -13,9 +14,9 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 {
     public static class MethodInterpreterCodeWriter
     {
-        public static string WriteMethodCode(MethodInterpreter interpreter)
+        public static string WriteMethodCode(MethodInterpreter interpreter, TypeDescriptionTable typeTable)
         {
-            return CppMethodCodeWriter.WriteCode(interpreter);
+            return CppMethodCodeWriter.WriteCode(interpreter, typeTable);
         }
 
         public static string WriteMethodSignature(MethodInterpreter interpreter)

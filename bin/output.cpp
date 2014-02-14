@@ -1,36 +1,37 @@
 #include "sloth.h"
-struct Game_App; 
 struct System_Object; 
 struct Game_Base; 
+struct Game_App; 
 struct Game_ImplBaseB; 
 struct Game_ImplBase; 
-struct System_ValueType; 
 struct System_Console; 
-struct System_IO_File; 
 struct System_Array; 
 struct System_Math; 
+struct System_IO_File; 
+struct System_ValueType; 
 struct System_String; 
-struct Game_App {
-};
 struct System_Object {
+int _typeId;
 };
-struct Game_Base {
+struct Game_Base : public System_Object {
+};
+struct Game_App : public System_Object {
 };
 struct Game_ImplBaseB : public Game_Base {
 };
 struct Game_ImplBase : public Game_Base {
 };
-struct System_ValueType {
+struct System_Console : public System_Object {
 };
-struct System_Console {
+struct System_Array : public System_Object {
 };
-struct System_IO_File {
+struct System_Math : public System_Object {
 };
-struct System_Array {
+struct System_IO_File : public System_Object {
 };
-struct System_Math {
+struct System_ValueType : public System_Object {
 };
-struct System_String {
+struct System_String : public System_Object {
  std::shared_ptr< Array < System_Char > > Text;
 };
 
@@ -43,6 +44,7 @@ System_Void Game_ImplBaseB_ctor(const std::shared_ptr<Game_ImplBaseB>& _this);
 System_Void Game_Base_ToImplement(const std::shared_ptr<Game_Base>& _this);
 
 #include "runtime_base.hpp"
+void setupTypeTable();
 ///---Begin closure code --- 
 System_Void Game_App_Main()
 
@@ -58,11 +60,11 @@ System_Boolean vreg_27;
 
 Array <std::shared_ptr<Game_Base>> vreg_2 (2); 
 vreg_3 = std::make_shared<Game_ImplBase >();
-
+vreg_3->_typeId = 0;
 Game_ImplBase_ctor(vreg_3);
 vreg_2[0] = vreg_3; 
 vreg_8 = std::make_shared<Game_ImplBaseB >();
-
+vreg_8->_typeId = 3;
 Game_ImplBaseB_ctor(vreg_8);
 vreg_2[1] = vreg_8; 
 local_4 = &vreg_2;
@@ -125,4 +127,6 @@ void buildStringTable() {
 const wchar_t _stringTable[1] = {
 0
 }; // _stringTable 
+
+void setupTypeTable(){}
 

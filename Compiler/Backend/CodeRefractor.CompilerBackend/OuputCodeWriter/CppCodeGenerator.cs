@@ -41,7 +41,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             sb.AppendLine("void setupTypeTable();");
 
             WriteCppMethods(closure, sb);
-            WriteClosureMethods(closure, sb);
+            WriteClosureMethods(closure, sb, typeTable);
 
             WriteMainBody(interpreter, sb);
             sb.AppendLine(PlatformInvokeCodeWriter.LoadDllMethods());
@@ -78,9 +78,9 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             }
         }
 
-        private static void WriteClosureMethods(List<MethodInterpreter> closure, StringBuilder sb)
+        private static void WriteClosureMethods(List<MethodInterpreter> closure, StringBuilder sb, TypeDescriptionTable typeTable)
         {
-            WriteClosureBodies(closure, sb);
+            WriteClosureBodies(closure, sb, typeTable);
         }
 
         private static void WriteClosureHeaders(List<MethodInterpreter> closure, StringBuilder sb)
@@ -127,7 +127,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                     }
                     sb.AppendFormat("template <{0}> ", string.Join(", ", typeNames)).AppendLine();
                 }
-                if (type.BaseType != typeof (object)&&type.BaseType != null)
+                if (!type.IsValueType &&type.BaseType != null)
                 {
                     sb.AppendFormat("struct {0} : public {1} {{", type.ToCppMangling(), type.BaseType.ToCppMangling());
                 }
@@ -137,6 +137,10 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                     sb.AppendFormat("struct {0} {{", type.ToCppMangling());
                 }
                 sb.AppendLine();
+                if (type == typeof(object))
+                {
+                    sb.AppendLine("int _typeId;");
+                }
                 WriteClassFieldsBody(sb, mappedType);
                 sb.AppendFormat("}};").AppendLine();
 
@@ -163,7 +167,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             sb.AppendLine(DelegateManager.Instance.BuildDelegateContent());
         }
 
-        private static void WriteClosureBodies(List<MethodInterpreter> closure, StringBuilder sb)
+        private static void WriteClosureBodies(List<MethodInterpreter> closure, StringBuilder sb, TypeDescriptionTable typeTable)
         {
             foreach (var interpreter in closure)
             {
@@ -177,7 +181,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             {
                 if (interpreter.Kind != MethodKind.Default)
                     continue;
-                sb.AppendLine(MethodInterpreterCodeWriter.WriteMethodCode(interpreter));
+                sb.AppendLine(MethodInterpreterCodeWriter.WriteMethodCode(interpreter, typeTable));
             }
             sb.AppendLine("///---End closure code --- ");
         }

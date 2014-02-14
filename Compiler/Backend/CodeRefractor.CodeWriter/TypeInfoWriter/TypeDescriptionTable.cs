@@ -76,7 +76,7 @@ namespace CodeRefractor.CodeWriter.TypeInfoWriter
             return compare;
         }
 
-        public void SetIdOfInstance(StringBuilder sb, LocalVariable variable, Type type)
+        public void SetIdOfInstance(StringBuilder sb, LocalVariable variable, Type type, bool isStack)
         {
             int typeId;
             if(!_result.TryGetValue(type, out typeId))
@@ -84,7 +84,14 @@ namespace CodeRefractor.CodeWriter.TypeInfoWriter
                     string.Format(
                     "Type id for type: '{0}' is not defined ", type.ToCppMangling(true)
                     ));
-            sb.AppendFormat("{0}._typeId = {1};", variable.Name, typeId);
+            if (isStack)
+            {
+                sb.AppendFormat("{0}._typeId = {1};", variable.Name, typeId);
+            }
+            else
+            {
+                sb.AppendFormat("{0}->_typeId = {1};", variable.Name, typeId);
+            }
         }
     }
 }
