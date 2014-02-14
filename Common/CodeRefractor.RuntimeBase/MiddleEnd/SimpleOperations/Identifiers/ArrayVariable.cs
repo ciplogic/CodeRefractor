@@ -10,9 +10,9 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers
     public class ArrayVariable : LocalVariable
     {
         public IdentifierValue Index { get; set; }
-        public IdentifierValue Parent;
+        public LocalVariable Parent;
 
-        public ArrayVariable(IdentifierValue parent, IdentifierValue id)
+        public ArrayVariable(LocalVariable parent, IdentifierValue id)
         {
             Id = -1;
             Kind = VariableKind.Local;

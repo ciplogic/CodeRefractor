@@ -186,11 +186,11 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         public void LoadReferenceInArray()
         {
             var secondVar = _evaluator.Pop();
-            var firstVar = _evaluator.Pop();
+            var firstVar = (LocalVariable)_evaluator.Pop();
 
             var result = SetNewVReg();
             result.FixedType = UsedTypeList.Set(firstVar.FixedType.ClrType.GetElementType());
-            var arrayVariable = new ArrayVariable(firstVar, secondVar);
+            var arrayVariable = new ArrayVariable( firstVar, secondVar);
             var assignment = new Assignment
             {
                 AssignedTo = result,
@@ -203,7 +203,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         public void LoadReferenceInArrayTyped(Type elementType)
         {
             var secondVar = _evaluator.Pop();
-            var firstVar = _evaluator.Pop();
+            var firstVar = (LocalVariable)_evaluator.Pop();
 
             var result = SetNewVReg();
             result.FixedType = UsedTypeList.Set(firstVar.FixedType.ClrType.GetElementType());
@@ -685,7 +685,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         {
             var value = _evaluator.Pop();
             var index = _evaluator.Pop();
-            var array = _evaluator.Pop();
+            var array = (LocalVariable)_evaluator.Pop();
             var arrayVariable = new ArrayVariable(array, index);
             var assignment = new Assignment
             {
@@ -825,7 +825,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         {
             var value = _evaluator.Pop();
             var index = _evaluator.Pop();
-            var array = _evaluator.Pop();
+            var array = (LocalVariable)_evaluator.Pop();
             var arrayVariable = new ArrayVariable(array, index);
             var assignment = new Assignment
             {

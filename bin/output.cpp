@@ -60,11 +60,11 @@ Array <std::shared_ptr<Game_Base>> vreg_2 (2);
 vreg_3 = std::make_shared<Game_ImplBase >();
 
 Game_ImplBase_ctor(vreg_3);
-(vreg_2)[0] = vreg_3; 
+vreg_2[0] = vreg_3; 
 vreg_8 = std::make_shared<Game_ImplBaseB >();
 
 Game_ImplBaseB_ctor(vreg_8);
-(vreg_2)[1] = vreg_8; 
+vreg_2[1] = vreg_8; 
 local_4 = &vreg_2;
 local_5 = 0;
 vreg_24 = local_4->Length;

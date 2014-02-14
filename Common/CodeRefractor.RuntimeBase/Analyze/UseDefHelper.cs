@@ -381,7 +381,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
             var getArrayData = (ArrayVariable)opGetArrayItem.Right;
             if (usageVariable.Equals(getArrayData.Parent))
             {
-                getArrayData.Parent = definitionIdentifier;
+                getArrayData.Parent = (LocalVariable) definitionIdentifier;
             }
             if (usageVariable.Equals(getArrayData.Index))
             {
@@ -400,7 +400,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
             var setArrayData = (ArrayVariable)opSetArrayItem.AssignedTo;
             if (usageVariable.Equals(setArrayData.Parent))
             {
-                setArrayData.Parent = definitionIdentifier;
+                setArrayData.Parent = (LocalVariable) definitionIdentifier;
             }
             if (usageVariable.Equals(setArrayData.Index))
             {

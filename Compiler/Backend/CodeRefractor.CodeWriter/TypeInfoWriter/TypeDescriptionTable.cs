@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using CodeRefractor.RuntimeBase.Analyze;
 
 namespace CodeRefractor.CodeWriter.TypeInfoWriter
@@ -23,8 +22,6 @@ namespace CodeRefractor.CodeWriter.TypeInfoWriter
 
         private static bool FilterType(Type type)
         {
-            if (type.IsValueType)
-                return false;
             var isStatic = (type.IsAbstract && type.IsSealed);
             return !isStatic;
         }

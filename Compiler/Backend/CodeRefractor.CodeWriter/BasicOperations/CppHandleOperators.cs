@@ -46,6 +46,10 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 case OperationKind.GetArrayItem:
                     HandleReadArrayItem(operation, bodySb, vars);
                     break;
+
+                case OperationKind.SetArrayItem:
+                    HandleSetArrayValue(operation, bodySb, vars);
+                    break;
                 case OperationKind.NewObject:
                     HandleNewObject(operation, bodySb, vars);
                     break;
@@ -491,6 +495,28 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             sb.AppendFormat("{0} = {1}+{2};", local, left, right);
         }
 
+
+        private static void HandleSetArrayValue(LocalOperation operation, StringBuilder sb, MidRepresentationVariables vars)
+        {
+            var assignment = (Assignment)operation.Value;
+            var arrayItem = (ArrayVariable)assignment.AssignedTo;
+            var variableData = vars.GetVariableData(arrayItem.Parent); 
+            switch (variableData.Escaping)
+            {
+                case EscapingMode.Stack:
+                    sb.AppendFormat("{0}[{1}] = {2}; ",
+                        arrayItem.Parent.Name,
+                        arrayItem.Index.Name,
+                        assignment.Right.ComputedValue());
+                    return;
+                default:
+                    sb.AppendFormat("(*{0})[{1}] = {2}; ",
+                        arrayItem.Parent.Name,
+                        arrayItem.Index.Name,
+                        assignment.Right.ComputedValue());
+                    return;
+            }
+        }
 
         private static void HandleReadArrayItem(LocalOperation operation, StringBuilder bodySb, MidRepresentationVariables vars)
         {

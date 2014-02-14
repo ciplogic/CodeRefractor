@@ -66,10 +66,6 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                         CppHandleCalls.HandleReturn(operation, bodySb);
                         break;
 
-                    case OperationKind.SetArrayItem:
-                        HandleSetArrayValue(operation, bodySb);
-                        break;
-
                     case OperationKind.CopyArrayInitializer:
                         HandleCopyArrayInitializer(operation, bodySb);
                         break;
@@ -131,17 +127,6 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                             left.Name,
                             rightArray.Length,
                             right.Id);
-        }
-
-        private static void HandleSetArrayValue(LocalOperation operation, StringBuilder sb)
-        {
-            var assignment = (Assignment)operation.Value;
-            var arrayItem = (ArrayVariable)assignment.AssignedTo;
-            var right = assignment.Right;
-            sb.AppendFormat("(*{0})[{1}] = {2}; ",
-                            arrayItem.Parent.Name,
-                            arrayItem.Index.Name,
-                            right.ComputedValue());
         }
         private static StringBuilder ComputeVariableSb(MetaMidRepresentation midRepresentation)
         {

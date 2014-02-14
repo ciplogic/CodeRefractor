@@ -128,7 +128,16 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                     }
                     sb.AppendFormat("template <{0}> ", string.Join(", ", typeNames)).AppendLine();
                 }
-                sb.AppendFormat("struct {0} {{", type.ToCppMangling()).AppendLine();
+                if (type.BaseType != typeof (object)&&type.BaseType != null)
+                {
+                    sb.AppendFormat("struct {0} : public {1} {{", type.ToCppMangling(), type.BaseType.ToCppMangling());
+                }
+                else
+                {
+
+                    sb.AppendFormat("struct {0} {{", type.ToCppMangling());
+                }
+                sb.AppendLine();
                 WriteClassFieldsBody(sb, mappedType);
                 sb.AppendFormat("}};").AppendLine();
 
