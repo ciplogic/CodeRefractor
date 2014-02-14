@@ -28,30 +28,53 @@ namespace CodeRefractor.RuntimeBase.Analyze.TypeTableIndices
             _typesToSort.Sort(this);
         }
 
+        public static bool MatchCondition(Func<Type, Type, bool> matcher, Type left, Type right, out int order)
+        {
+            if (matcher(left, right))
+            {
+                order = -1;
+                return true;
+            }
+            if (matcher(right, left))
+            {
+                order = 1;
+                return true;
+            }
+            order = 0;
+            return false;
+        }
+
+        class Matcher
+        {
+            private readonly Type _left;
+            private readonly Type _right;
+
+            public Matcher(Type left, Type right)
+            {
+                _left = left;
+                _right = right;
+            }
+
+            public bool Matches(Func<Type, Type, bool> matcher, out int order)
+            {
+                return (MatchCondition(matcher, _left, _right, out order));
+            }
+        }
         public int Compare(Type left, Type right)
         {
-            if (left == typeof (object))
+            int order;
+            var matcher = new Matcher(left, right);
+            if (matcher.Matches((l, r) => l == typeof (object), out order))
             {
-                return -1;
+                return order;
             }
-            if (right== typeof(object))
+            if (matcher.Matches((l, r) => r.BaseType == l, out order))
             {
-                return 1;
-            } if (left.BaseType == right)
-            {
-                return 1;
+                return order;
             }
-            if (right.BaseType == left)
+            if (matcher.Matches((l, r) => l.IsValueType && !r.IsValueType, out order))
             {
-                return -1;
-            }
-            if (left.IsValueType && !right.IsValueType)
-            {
-                return -1;
-            }
-            if (right.IsValueType && !left.IsValueType)
-            {
-                return 1;
+                return order;
             }
             var leftLayout = _dictionary[left];
             var rightLayout = _dictionary[right]; 
