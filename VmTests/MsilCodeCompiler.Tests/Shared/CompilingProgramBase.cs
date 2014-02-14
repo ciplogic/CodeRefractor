@@ -107,8 +107,8 @@ class C {{
             var linker = assembly.EntryPoint.CreateLinkerFromEntryPoint();
 
 
-            var generatedSource = CppCodeGenerator.BuildFullSourceCode(linker);
-            generatedSource.ToFile(outputCpp);
+            //var generatedSource = CppCodeGenerator.BuildFullSourceCode(linker);
+            //generatedSource.ToFile(outputCpp);
             return outputCpp;
         }
     }

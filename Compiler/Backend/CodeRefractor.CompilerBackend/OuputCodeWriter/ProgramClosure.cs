@@ -98,7 +98,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
         {
             ComputeEscapeAnalysis(MethodClosure);
 
-            return CppCodeGenerator.GenerateSourceStringBuilder(EntryInterpreter, UsedTypes, MethodClosure);
+            return CppCodeGenerator.GenerateSourceStringBuilder(EntryInterpreter, UsedTypes, MethodClosure, _typeTable);
         }
     }
 }

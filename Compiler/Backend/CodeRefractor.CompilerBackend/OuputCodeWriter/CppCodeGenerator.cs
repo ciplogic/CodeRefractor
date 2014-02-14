@@ -48,15 +48,17 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             sb.AppendLine(ConstByteArrayList.BuildConstantTable());
             sb.AppendLine(LinkingData.Instance.Strings.BuildStringTable());
 
-            sb.AppendLine(GenerateTypeTableCode(sb));
+            sb.AppendLine(GenerateTypeTableCode());
             
             return sb;
         }
 
-        private static string GenerateTypeTableCode(StringBuilder sb)
+        private static string GenerateTypeTableCode()
         {
             //TODO;
+            var sb = new StringBuilder();
             sb.AppendLine("void setupTypeTable(){}");
+            return sb.ToString();
         }
 
         private static void WriteCppMethods(List<MethodInterpreter> closure, StringBuilder sb)
