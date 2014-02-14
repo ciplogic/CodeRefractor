@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
+using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
+using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
 namespace CodeRefractor.CodeWriter.TypeInfoWriter
 {
@@ -9,9 +13,9 @@ namespace CodeRefractor.CodeWriter.TypeInfoWriter
     {
         private readonly List<Type> _typeClosure;
 
-        Dictionary<Type, HashSet<Type>> _dictionary = new Dictionary<Type, HashSet<Type>>(); 
+        Dictionary<Type, HashSet<Type>> _dictionary = new Dictionary<Type, HashSet<Type>>();
 
-        Dictionary<Type, int> _result = new Dictionary<Type, int>(); 
+        readonly Dictionary<Type, int> _result = new Dictionary<Type, int>(); 
 
         public TypeDescriptionTable(List<Type> typeClosure)
         {
@@ -32,7 +36,7 @@ namespace CodeRefractor.CodeWriter.TypeInfoWriter
             {
                 var typeDesc = UsedTypeList.Set(type);
 
-                var layout = typeDesc.Layout.Where(kind => kind.TypeDescription.ClrTypeCode == TypeCode.Object)
+                var layout = typeDesc.Layout
                     .Select(field => field.TypeDescription.ClrType)
                     .ToArray();
                 var hashSet = new HashSet<Type>(layout);
@@ -70,6 +74,17 @@ namespace CodeRefractor.CodeWriter.TypeInfoWriter
             if (countLeft == countRight) return 0;
             var compare = countLeft - countRight;
             return compare;
+        }
+
+        public void SetIdOfInstance(StringBuilder sb, LocalVariable variable, Type type)
+        {
+            int typeId;
+            if(!_result.TryGetValue(type, out typeId))
+                throw new InvalidDataException(
+                    string.Format(
+                    "Type id for type: '{0}' is not defined ", type.ToCppMangling(true)
+                    ));
+            sb.AppendFormat("{0}._typeId = {1};", variable.Name, typeId);
         }
     }
 }

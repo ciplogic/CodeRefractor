@@ -5,7 +5,7 @@ namespace CodeRefractor.CodeWriter.TypeInfoWriter
 {
     public class VirtualMethodTable
     {
-        public List<VirtualMethodDescription> VirtualMethods = new List<VirtualMethodDescription>();
+        public readonly List<VirtualMethodDescription> VirtualMethods = new List<VirtualMethodDescription>();
 
         public void RegisterMethod(MethodInfo method)
         {

@@ -8,9 +8,9 @@ using System.Reflection;
 using System.Text;
 using CodeRefractor.CodeWriter.Linker;
 using CodeRefractor.CodeWriter.Platform;
+using CodeRefractor.CodeWriter.TypeInfoWriter;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
-using CodeRefractor.RuntimeBase.Analyze.TypeTableIndices;
 using CodeRefractor.RuntimeBase.FrontEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
@@ -23,24 +23,11 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 {
     public static class CppCodeGenerator
     {
-        public static StringBuilder BuildFullSourceCode(MethodInterpreter interpreter)
-        {
-            var closure = interpreter.GetMethodClosure();
-            var toOptimizeList = closure
-                .Where(c => c.Kind == MethodKind.Default
-                            && c.MidRepresentation.LocalOperations.Count > 1)
-                .ToList();
-            MetaLinkerOptimizer.ApplyOptimizations(toOptimizeList);
-            closure = interpreter.GetMethodClosure();
-            var typeClosure = TypesClosureLinker.GetTypesClosure(closure);
-            LinkingData.Includes.Clear();
-            var sb = GenerateSourceStringBuilder(interpreter, typeClosure, closure);
-
-            return sb;
-        }
-
-        public static StringBuilder GenerateSourceStringBuilder(MethodInterpreter interpreter, List<Type> typeClosure,
-            List<MethodInterpreter> closure)
+        public static StringBuilder GenerateSourceStringBuilder(
+            MethodInterpreter interpreter, 
+            List<Type> typeClosure, 
+            List<MethodInterpreter> closure, 
+            TypeDescriptionTable typeTable)
         {
             var sb = new StringBuilder();
 
@@ -51,6 +38,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             WriteClosureHeaders(closure, sb);
 
             sb.AppendLine("#include \"runtime_base.hpp\"");
+            sb.AppendLine("void setupTypeTable();");
 
             WriteCppMethods(closure, sb);
             WriteClosureMethods(closure, sb);
@@ -59,7 +47,16 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             sb.AppendLine(PlatformInvokeCodeWriter.LoadDllMethods());
             sb.AppendLine(ConstByteArrayList.BuildConstantTable());
             sb.AppendLine(LinkingData.Instance.Strings.BuildStringTable());
+
+            sb.AppendLine(GenerateTypeTableCode(sb));
+            
             return sb;
+        }
+
+        private static string GenerateTypeTableCode(StringBuilder sb)
+        {
+            //TODO;
+            sb.AppendLine("void setupTypeTable(){}");
         }
 
         private static void WriteCppMethods(List<MethodInterpreter> closure, StringBuilder sb)
