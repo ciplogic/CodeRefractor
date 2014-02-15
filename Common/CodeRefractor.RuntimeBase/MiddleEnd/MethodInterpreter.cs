@@ -344,9 +344,14 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 case ObcodeIntValues.Nop:
                     return true;
                 case ObcodeIntValues.Call:
-                case ObcodeIntValues.CallVirt:
-                case ObcodeIntValues.CallInterface:
                     operationFactory.Call(instruction.Operand);
+                    return true;
+                case ObcodeIntValues.CallVirt:
+                    operationFactory.CallVirtual(instruction.Operand);
+                    return true;
+                    
+                case ObcodeIntValues.CallInterface:
+                    operationFactory.CallInterface(instruction.Operand);
                     return true;
                 case ObcodeIntValues.NewObj:
                 {

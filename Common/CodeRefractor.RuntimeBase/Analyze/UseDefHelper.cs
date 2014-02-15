@@ -58,6 +58,8 @@ namespace CodeRefractor.RuntimeBase.Analyze
                     break;
 
                 case OperationKind.Call:
+                case OperationKind.CallVirtual:
+                case OperationKind.CallInterface:
                 case OperationKind.CallRuntime:
                     AddUsagesOfCall(operation, result);
                     break;
@@ -211,12 +213,14 @@ namespace CodeRefractor.RuntimeBase.Analyze
                     var binOp = (OperatorBase)operation.Value;
                     return binOp.AssignedTo;
                 case OperationKind.Call:
+                case OperationKind.CallVirtual:
+                case OperationKind.CallInterface:
                     var value = (MethodData)operation.Value;
                     return value.Result;
                 case OperationKind.FieldRefAssignment:
-                    var refFieldValue = (FieldRefAssignment) operation.Value;
+                    var refFieldValue = (FieldRefAssignment)operation.Value;
                     return refFieldValue.Left;
-                    
+
                 case OperationKind.RefAssignment:
                     var refValue = (RefAssignment)operation.Value;
                     return refValue.Left;
@@ -288,6 +292,8 @@ namespace CodeRefractor.RuntimeBase.Analyze
                     break;
 
                 case OperationKind.Call:
+                case OperationKind.CallVirtual:
+                case OperationKind.CallInterface:
                 case OperationKind.CallRuntime:
                     SwitchUsageInCall(op, usageVariable, definitionIdentifier);
                     break;
@@ -306,7 +312,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
                 case OperationKind.RefAssignment:
                     SwitchUsageInRefAssignment(op, usageVariable, definitionIdentifier);
                     break;
-                    
+
                 case OperationKind.FieldRefAssignment:
                     SwitchUsageInFieldRefAssignment(op, usageVariable, definitionIdentifier);
                     break;
@@ -333,7 +339,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
             var returnValue = op.Get<FieldRefAssignment>();
             if (usageVariable.Equals(returnValue.Right))
             {
-                returnValue.Right = (LocalVariable) definitionIdentifier;
+                returnValue.Right = (LocalVariable)definitionIdentifier;
             }
             if (usageVariable.Equals(returnValue.Left))
             {
@@ -381,7 +387,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
             var getArrayData = (ArrayVariable)opGetArrayItem.Right;
             if (usageVariable.Equals(getArrayData.Parent))
             {
-                getArrayData.Parent = (LocalVariable) definitionIdentifier;
+                getArrayData.Parent = (LocalVariable)definitionIdentifier;
             }
             if (usageVariable.Equals(getArrayData.Index))
             {
@@ -400,7 +406,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
             var setArrayData = (ArrayVariable)opSetArrayItem.AssignedTo;
             if (usageVariable.Equals(setArrayData.Parent))
             {
-                setArrayData.Parent = (LocalVariable) definitionIdentifier;
+                setArrayData.Parent = (LocalVariable)definitionIdentifier;
             }
             if (usageVariable.Equals(setArrayData.Index))
             {
@@ -434,7 +440,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
         private static void SwitchUsageInSetStaticField(LocalOperation op, LocalVariable usageVariable, IdentifierValue definitionIdentifier)
         {
             var opSetField = (Assignment)op.Value;
-           
+
             if (usageVariable.Equals(opSetField.Right))
             {
                 opSetField.Right = definitionIdentifier;

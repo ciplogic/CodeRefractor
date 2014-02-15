@@ -404,10 +404,28 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             var methodData = new MethodData(methodInfo);
 
 
-            CallMethodData(methodInfo, methodData);
+            CallMethodData(methodInfo, methodData, OperationKind.Call);
         }
 
-        private void CallMethodData(MethodBase methodInfo, MethodData methodData)
+        public void CallVirtual(object operand)
+        {
+            var methodInfo = (MethodBase)operand;
+            var methodData = new MethodData(methodInfo);
+
+
+            CallMethodData(methodInfo, methodData, OperationKind.CallVirtual);
+        }
+
+        public void CallInterface(object operand)
+        {
+            var methodInfo = (MethodBase)operand;
+            var methodData = new MethodData(methodInfo);
+
+
+            CallMethodData(methodInfo, methodData, OperationKind.CallVirtual);
+        }
+
+        private void CallMethodData(MethodBase methodInfo, MethodData methodData, OperationKind operationKind)
         {
             if (HandleRuntimeHelpersMethod(methodInfo))
             {
@@ -438,7 +456,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 methodData.Result = vreg;
             }
             methodData.FixedType = UsedTypeList.Set(methodInfo.GetReturnType());
-            AddOperation(OperationKind.Call, methodData);
+            AddOperation(operationKind, methodData);
            
         }
 
@@ -652,7 +670,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             UsedTypeList.Set(constructorInfo.DeclaringType);
             AddOperation(OperationKind.NewObject, assignment);
             var methodData = new MethodData(constructedObject.Info);
-            CallMethodData(constructedObject.Info, methodData);
+            CallMethodData(constructedObject.Info, methodData, OperationKind.Call);
             var vreg = SetNewVReg();
             vreg.FixedType = UsedTypeList.Set(methodData.Info.DeclaringType);
             var assign = new Assignment()

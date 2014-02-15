@@ -3,6 +3,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
     public enum OperationKind
     {
         Call,
+        CallVirtual,
+        CallInterface,
 
         Return,
         BranchOperator,

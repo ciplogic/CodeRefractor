@@ -58,6 +58,8 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                         CppHandleBranches.HandleBranchOperator(operation, bodySb);
                         break;
                     case OperationKind.Call:
+                    case OperationKind.CallVirtual:
+                    case OperationKind.CallInterface:
                         CppHandleCalls.HandleCall(operation, bodySb, vars);
                         break;
                     case OperationKind.CallRuntime:

@@ -83,6 +83,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
                     break;
 
                 case OperationKind.Call:
+                case OperationKind.CallVirtual:
+                case OperationKind.CallInterface:
                     HandleCall(localVariable, candidateVariables, op);
                     break;
                 case OperationKind.BinaryOperator:
@@ -111,7 +113,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
         private static void HandleRefAssignment(LocalVariable localVariable, HashSet<LocalVariable> candidateVariables,
             LocalOperation op)
         {
-            var value = (RefAssignment) op.Value;
+            var value = (RefAssignment)op.Value;
             candidateVariables.Remove(localVariable);
             candidateVariables.Remove(value.Right);
         }
@@ -134,7 +136,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
         private static void HandleCall(LocalVariable localVariable, HashSet<LocalVariable> candidateVariables,
             LocalOperation op)
         {
-            var methodData = (MethodData) op.Value;
+            var methodData = (MethodData)op.Value;
             var escapeData = AnalyzeParametersAreEscaping.GetEscapingParameterData(methodData);
             if (escapeData == null)
             {
@@ -156,7 +158,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
 
         private static void HandleSetArrayItem(ICollection<LocalVariable> candidateVariables, LocalOperation op)
         {
-            var assignSetArray = (Assignment) op.Value;
+            var assignSetArray = (Assignment)op.Value;
             var right = assignSetArray.Right as LocalVariable;
             if (right != null)
             {
