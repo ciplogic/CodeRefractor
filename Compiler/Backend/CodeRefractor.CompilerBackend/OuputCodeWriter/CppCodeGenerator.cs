@@ -27,7 +27,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             MethodInterpreter interpreter, 
             List<Type> typeClosure, 
             List<MethodInterpreter> closure, 
-            TypeDescriptionTable typeTable)
+            VirtualMethodTable typeTable)
         {
             var sb = new StringBuilder();
 
@@ -41,23 +41,58 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             sb.AppendLine("void setupTypeTable();");
 
             WriteCppMethods(closure, sb);
-            WriteClosureMethods(closure, sb, typeTable);
+            WriteClosureMethods(closure, sb, typeTable.TypeTable);
 
             WriteMainBody(interpreter, sb);
             sb.AppendLine(PlatformInvokeCodeWriter.LoadDllMethods());
             sb.AppendLine(ConstByteArrayList.BuildConstantTable());
             sb.AppendLine(LinkingData.Instance.Strings.BuildStringTable());
 
-            sb.AppendLine(GenerateTypeTableCode());
+            sb.AppendLine(GenerateTypeTableCode(typeTable, closure));
             
             return sb;
         }
 
-        private static string GenerateTypeTableCode()
+        private static string GenerateTypeTableCode(VirtualMethodTable typeTable, List<MethodInterpreter> closure)
         {
-            //TODO;
+            var methodNames = new HashSet<string>
+            (
+                closure.Select(m=>m.Method.Name)
+            );
             var sb = new StringBuilder();
-            sb.AppendLine("void setupTypeTable(){}");
+
+            var validVirtMethods = new List<VirtualMethodDescription>();
+            foreach (var virtualMethod in typeTable.VirtualMethods)
+            {
+                if(!methodNames.Contains(virtualMethod.Name))
+                    continue;
+                var implementations = virtualMethod.UsingImplementations
+                    .Where(type =>typeTable.TypeTable.HasType(type))
+                    .ToList();
+                if(implementations.Count!=0)
+                    validVirtMethods.Add(virtualMethod);
+                
+            }
+            foreach (var virtualMethod in validVirtMethods)
+            {
+                sb.Append("typedef ");
+                sb.Append(virtualMethod.ReturnType.ToCppMangling());
+
+                sb.Append(" (*");
+                sb.Append(virtualMethod.Name);
+                sb.Append("VirtPtr)(");
+                sb.AppendLine(");");
+            }
+            sb.AppendLine("void setupTypeTable(){");
+            foreach (var virtualMethod in validVirtMethods)
+            {
+                if (!typeTable.TypeTable.HasType(virtualMethod.ReturnType))
+                {
+                    continue;
+                }
+                
+            }
+            sb.AppendLine("}");
             return sb.ToString();
         }
 

@@ -25,7 +25,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
         private TypeDescriptionTable _typeTable;
         private Dictionary<Type, int> _typeDictionary;
 
-        VirtualMethodTable _virtualMethodTable=new VirtualMethodTable();
+        VirtualMethodTable _virtualMethodTable;
 
         public ProgramClosure(MethodInfo entryMethod)
         {
@@ -41,11 +41,12 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             _typeTable = new TypeDescriptionTable(UsedTypes);
             _typeDictionary = _typeTable.ExtractInformation();
 
-            BuildVirtualMethodTable();
+            BuildVirtualMethodTable(_typeTable);
         }
 
-        private void BuildVirtualMethodTable()
+        private void BuildVirtualMethodTable(TypeDescriptionTable typeTable)
         {
+            _virtualMethodTable = new VirtualMethodTable(typeTable);
             foreach (var type in _typeDictionary.Keys)
             {
                 var methods = type.GetMethods();
@@ -98,7 +99,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
         {
             ComputeEscapeAnalysis(MethodClosure);
 
-            return CppCodeGenerator.GenerateSourceStringBuilder(EntryInterpreter, UsedTypes, MethodClosure, _typeTable);
+            return CppCodeGenerator.GenerateSourceStringBuilder(EntryInterpreter, UsedTypes, MethodClosure, _virtualMethodTable);
         }
     }
 }

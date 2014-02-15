@@ -5,7 +5,18 @@ namespace CodeRefractor.CodeWriter.TypeInfoWriter
 {
     public class VirtualMethodTable
     {
+        private readonly TypeDescriptionTable _typeTable;
         public readonly List<VirtualMethodDescription> VirtualMethods = new List<VirtualMethodDescription>();
+
+        public VirtualMethodTable(TypeDescriptionTable typeTable)
+        {
+            _typeTable = typeTable;
+        }
+
+        public TypeDescriptionTable TypeTable
+        {
+            get { return _typeTable; }
+        }
 
         public void RegisterMethod(MethodInfo method)
         {

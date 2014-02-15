@@ -61,7 +61,8 @@ namespace CodeRefractor.RuntimeBase.Analyze.TypeTableIndices
                 .Where(typeDesc => !typeDesc.IsPointer && !typeDesc.ClrType.IsByRef)
                 .Where(typeDesc =>
                     typeDesc.ClrType != typeof(void) &&
-                    typeDesc.ClrType != typeof(IntPtr)
+                    typeDesc.ClrType != typeof(IntPtr) &&
+                    typeDesc.ClrType != typeof(Array)
                 )
                 .Where(typeDescArray => !typeDescArray.ClrType.IsSubclassOf(typeof(Array)))
                 .Where(typeDesc =>

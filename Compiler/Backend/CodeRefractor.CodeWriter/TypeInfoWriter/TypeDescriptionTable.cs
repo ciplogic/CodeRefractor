@@ -93,5 +93,10 @@ namespace CodeRefractor.CodeWriter.TypeInfoWriter
                 sb.AppendFormat("{0}->_typeId = {1};", variable.Name, typeId);
             }
         }
+
+        public bool HasType(Type type)
+        {
+            return _dictionary.ContainsKey(type);
+        }
     }
 }
