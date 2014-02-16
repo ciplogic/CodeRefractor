@@ -35,22 +35,13 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             var methodInfo = operationData.Info.GetReversedMethod();
             #region Write method name
             var isVoidMethod = methodInfo.GetReturnType().IsVoid();
-            if (isVoidMethod)
+            if (!isVoidMethod && operationData.Result != null)
             {
-                sb.AppendFormat("{0}", methodInfo.ClangMethodSignature());
+                sb.AppendFormat("{0} = ", operationData.Result.Name);
             }
-            else
-            {
-                if (operationData.Result == null)
-                {
-                    sb.AppendFormat("{0}", methodInfo.ClangMethodSignature());
-                }
-                else
-                {
-                    sb.AppendFormat("{1} = {0}", methodInfo.ClangMethodSignature(),
-                                operationData.Result.Name);
-                }
-            }
+
+            sb.AppendFormat("{0}", methodInfo.ClangMethodSignature());
+
             var identifierValues = operationData.Parameters;
 
             var escapingData = methodInfo.BuildEscapingBools();

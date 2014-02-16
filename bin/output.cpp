@@ -38,8 +38,6 @@ System_Void Game_ImplBase_ctor(const std::shared_ptr<Game_ImplBase>& _this);
 
 System_Void Game_ImplBaseB_ctor(const std::shared_ptr<Game_ImplBaseB>& _this);
 
-System_Void Game_Base_ToImplement(const std::shared_ptr<Game_Base>& _this);
-
 #include "runtime_base.hpp"
 void setupTypeTable();
 ///---Begin closure code --- 
@@ -98,13 +96,6 @@ return;
 }
 
 
-System_Void Game_Base_ToImplement(const std::shared_ptr<Game_Base>& _this)
-
-{
-
-}
-
-
 ///---End closure code --- 
 void initializeRuntime();
 int main(int argc, char**argv) {
@@ -125,7 +116,6 @@ const wchar_t _stringTable[1] = {
 0
 }; // _stringTable 
 
-typedef void (*ToImplementVirtPtr)();
 void setupTypeTable(){
 }
 
