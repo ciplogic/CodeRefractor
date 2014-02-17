@@ -2,6 +2,7 @@
 
 using System;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using CodeRefractor.CodeWriter.Linker;
 using CodeRefractor.RuntimeBase;
@@ -33,7 +34,6 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             var operationData = (MethodData) operation.Value;
             var sb = new StringBuilder();
             var methodInfo = operationData.Info.GetReversedMethod();
-            #region Write method name
             var isVoidMethod = methodInfo.GetReturnType().IsVoid();
             if (!isVoidMethod && operationData.Result != null)
             {
@@ -42,24 +42,69 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 
             sb.AppendFormat("{0}", methodInfo.ClangMethodSignature());
 
+            if (WriteParametersToSb(vars, operationData, methodInfo, sb)) return;
+
+            sbCode.Append(sb);
+        }
+
+        public static void HandleCallInterface(LocalOperation operation, StringBuilder sbCode, MidRepresentationVariables vars)
+        {
+            var operationData = (MethodData)operation.Value;
+            var sb = new StringBuilder();
+            var methodInfo = operationData.Info.GetReversedMethod();
+            var isVoidMethod = methodInfo.GetReturnType().IsVoid();
+            if (!isVoidMethod && operationData.Result != null)
+            {
+                sb.AppendFormat("{0} = ", operationData.Result.Name);
+            }
+
+            sb.AppendFormat("{0}_icall", methodInfo.ClangMethodSignature());
+
+            if (WriteParametersToSb(vars, operationData, methodInfo, sb)) return;
+
+            sbCode.Append(sb);
+        }
+
+        public static void HandleCallVirtual(LocalOperation operation, StringBuilder sbCode, MidRepresentationVariables vars)
+        {
+            var operationData = (MethodData)operation.Value;
+            var sb = new StringBuilder();
+            var methodInfo = operationData.Info.GetReversedMethod();
+            var isVoidMethod = methodInfo.GetReturnType().IsVoid();
+            if (!isVoidMethod && operationData.Result != null)
+            {
+                sb.AppendFormat("{0} = ", operationData.Result.Name);
+            }
+
+            sb.AppendFormat("{0}_vcall", methodInfo.ClangMethodSignature());
+
+            if (WriteParametersToSb(vars, operationData, methodInfo, sb)) return;
+
+            sbCode.Append(sb);
+        }
+
+        private static bool WriteParametersToSb(MidRepresentationVariables vars, MethodData operationData, MethodBase methodInfo,
+            StringBuilder sb)
+        {
             var identifierValues = operationData.Parameters;
 
             var escapingData = methodInfo.BuildEscapingBools();
             if (escapingData == null)
             {
                 var argumentsCall = String.Join(", ", identifierValues.Select(p =>
-                    {
-                        var computeValue = p.ComputedValue();
-                        return computeValue;
-                    }));
+                {
+                    var computeValue = p.ComputedValue();
+                    return computeValue;
+                }));
 
                 sb.AppendFormat("({0});", argumentsCall);
-                return;
+                return true;
             }
-            #endregion
-            sb.Append("(");
+
 
             #region Parameters
+
+            sb.Append("(");
             var pos = 0;
             var isFirst = true;
             var argumentTypes = operationData.Info.GetMethodArgumentTypes();
@@ -73,14 +118,13 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 var argumentData = argumentTypes[pos];
                 bool isEscaping = escapingData[pos];
                 pos++;
-                if(localValue==null)
+                if (localValue == null)
                 {
                     sb.Append(value.ComputedValue());
                     continue;
                 }
                 if (localValue.Kind == VariableKind.Argument)
                 {
-
                 }
 
                 if (localValue.ComputedType().ClrType == typeof (IntPtr))
@@ -114,9 +158,10 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             }
 
             sb.Append(");");
+
             #endregion
 
-            sbCode.Append(sb);
+            return false;
         }
 
         public static void HandleCallRuntime(LocalOperation operation, StringBuilder sb)

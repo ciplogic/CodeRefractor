@@ -19,13 +19,36 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
     {
         public static List<MethodInterpreter> GetMethodClosure(this MethodInterpreter entryPoints)
         {
-            var result = new Dictionary<string, MethodInterpreter> {{entryPoints.ToString(), entryPoints}};
-            UpdateMethodEntryClosure(entryPoints, result);
-            return result.Values.ToList();
+            return GetClosureDictionary(entryPoints).Values.ToList();
         }
 
+        private static Dictionary<string, MethodInterpreter> GetClosureDictionary(this MethodInterpreter entryPoints)
+        {
+            var result = new Dictionary<string, MethodInterpreter> {{entryPoints.ToString(), entryPoints}};
+            UpdateMethodEntryClosure(entryPoints, result);
+            return result;
+        }
 
-        private static void UpdateMethodEntryClosure(MethodInterpreter entryPoint,
+        public static List<MethodInterpreter> GetMultiMethodsClosure(this List<MethodInterpreter> entryPoints)
+        {
+            var results = new List<Dictionary<string, MethodInterpreter>>();
+            foreach (var interpreter in entryPoints)
+            {
+                var result = GetClosureDictionary(interpreter);
+                results.Add(result);
+            }
+            var finalResult = new Dictionary<string, MethodInterpreter>();
+            foreach (var result in results)
+            {
+                foreach (var entry in result)
+                {
+                    finalResult[entry.Key] = entry.Value;
+                }
+            }
+            return finalResult.Values.ToList();
+        }
+
+        public static void UpdateMethodEntryClosure(MethodInterpreter entryPoint,
             Dictionary<string, MethodInterpreter> result)
         {
             var useDef = entryPoint.MidRepresentation.UseDef;

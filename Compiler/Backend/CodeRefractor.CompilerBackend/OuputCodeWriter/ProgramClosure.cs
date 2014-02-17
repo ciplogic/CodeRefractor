@@ -2,12 +2,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using CodeRefactor.OpenRuntime;
 using CodeRefractor.CodeWriter.TypeInfoWriter;
 using CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering;
+using CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.FrontEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd;
@@ -33,7 +35,14 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             BuildMethodClosure();
             MetaLinkerOptimizer.ApplyOptimizations(MethodClosure);
             BuildMethodClosure();
-            UsedTypes.Add(typeof (CrString));
+            if (!UsedTypes.Contains(typeof (CrString)))
+            {
+                UsedTypes.Add(typeof (CrString));
+            }
+            if (!UsedTypes.Contains(typeof(object)))
+            {
+                UsedTypes.Add(typeof(object));
+            }
             TypesClosureLinker.SortTypeClosure(UsedTypes);
 
             _typeTable = new TypeDescriptionTable(UsedTypes);
@@ -62,7 +71,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             var result = TypesClosureLinker.BuildClosureForEntry(entryInterpreter);
 
             MethodClosure = result.MethodInterpreters;
-            UsedTypes = result.UsedTypes;
+            UsedTypes = result.UsedTypes.ToList();
         }
 
         public static void ComputeEscapeAnalysis(List<MethodInterpreter> methodClosures)

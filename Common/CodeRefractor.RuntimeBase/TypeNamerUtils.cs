@@ -20,7 +20,6 @@ namespace CodeRefractor.RuntimeBase
             return String.Format("{0}_{1}", typeName, methodName);
         }
 
-
         public static Type[] GetMethodArgumentTypes(this MethodBase method)
         {
             var resultList = new List<Type>();

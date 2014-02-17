@@ -98,7 +98,7 @@
     <Compile Include="Optimizations\SimpleDce\DeadStoreAssignment.cs" />
     <Compile Include="Optimizations\SimpleDce\DeleteCallToConstructorOfObject.cs" />
     <Compile Include="Optimizations\SimpleDce\OneAssignmentDeadStoreAssignment.cs" />
-    <Compile Include="OuputCodeWriter\ClosureFromEntry.cs" />
+    <Compile Include="OuputCodeWriter\ComputeClosure\ClosureResult.cs" />
     <Compile Include="OuputCodeWriter\ComputeClosure\ClosureTypeComparer.cs" />
     <Compile Include="OuputCodeWriter\CppCodeGenerator.cs" />
     <Compile Include="OuputCodeWriter\ComputeClosure\MetaLinkerClosureComputing.cs" />
@@ -127,7 +127,9 @@
     <Compile Include="Optimizations\SimpleDce\DoubleAssignPropagation.cs" />
     <Compile Include="Optimizations\Util\OptimizationLevels.cs" />
     <Compile Include="OuputCodeWriter\ProgramClosure.cs" />
-    <Compile Include="OuputCodeWriter\TypesClosureLinker.cs" />
+    <Compile Include="OuputCodeWriter\ComputeClosure\TypesClosureLinker.cs" />
+    <Compile Include="ProgramWideOptimizations\ProgramOptimizationBase.cs" />
+    <Compile Include="ProgramWideOptimizations\Virtual\DevirtualizerIfOneImplemetor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

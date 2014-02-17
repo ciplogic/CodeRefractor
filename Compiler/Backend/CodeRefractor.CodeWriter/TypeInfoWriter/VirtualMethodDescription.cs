@@ -15,7 +15,7 @@ namespace CodeRefractor.CodeWriter.TypeInfoWriter
         public Type ReturnType;
         public Type BaseType;
 
-        public MemberInfo BaseMethod { get; private set; }
+        public MethodInfo BaseMethod { get; private set; }
 
         public VirtualMethodDescription(MethodInfo method, Type baseType)
         {

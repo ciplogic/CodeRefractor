@@ -57,9 +57,13 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                         CppHandleBranches.HandleBranchOperator(operation, bodySb);
                         break;
                     case OperationKind.Call:
-                    case OperationKind.CallVirtual:
-                    case OperationKind.CallInterface:
                         CppHandleCalls.HandleCall(operation, bodySb, vars);
+                        break;
+                    case OperationKind.CallInterface:
+                        CppHandleCalls.HandleCallInterface(operation, bodySb, vars);
+                        break;
+                    case OperationKind.CallVirtual:
+                        CppHandleCalls.HandleCallVirtual(operation, bodySb, vars);
                         break;
                     case OperationKind.CallRuntime:
                         CppHandleCalls.HandleCallRuntime(operation, bodySb);
@@ -173,7 +177,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             if (localVariableData.Escaping == EscapingMode.Pointer)
             {
                 var cppName = localVariable.ComputedType()
-                    .ClrType.ToDeclaredVariableType(true, isSmartPtr: localVariableData.Escaping);
+                    .ClrType.ToDeclaredVariableType(true, localVariableData.Escaping);
                 variablesSb
                     .AppendFormat(format, cppName, localVariable.Id)
                     .AppendLine();
@@ -181,7 +185,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             }
             variablesSb
                 .AppendFormat(format, localVariable.ComputedType()
-                .ClrType.ToDeclaredVariableType(true, isSmartPtr: localVariableData.Escaping), localVariable.Id)
+                .ClrType.ToDeclaredVariableType(true, localVariableData.Escaping), localVariable.Id)
                 .AppendLine();
         }
 

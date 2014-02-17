@@ -2,66 +2,64 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.FrontEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.Runtime;
 
-namespace CodeRefractor.CompilerBackend.OuputCodeWriter
+namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
 {
     public static class TypesClosureLinker
     {
-
-        public static ClosureFromEntry BuildClosureForEntry(MethodInterpreter entryInterpreter)
+        public static ClosureResult BuildClosureForEntry(MethodInterpreter entryInterpreter)
         {
-            var result = new ClosureFromEntry();
+            var result = new ClosureResult();
             var methodInterpreters = new List<MethodInterpreter>();
             methodInterpreters.Clear();
             methodInterpreters.Add(entryInterpreter);
             MetaLinker.Interpret(entryInterpreter);
 
             var foundMethodCount = 1;
-       
-                var canContinue = true;
-                while (canContinue)
+
+            var canContinue = true;
+            var dependencies = entryInterpreter.GetMethodClosure();
+            while (canContinue)
+            {
+                foreach (var interpreter in dependencies)
                 {
-                    var dependencies = entryInterpreter.GetMethodClosure();
-                    canContinue = foundMethodCount != dependencies.Count;
-                    foundMethodCount = dependencies.Count;
-                    foreach (var interpreter in dependencies)
-                    {
-                        MetaLinker.Interpret(interpreter);
-                    }
-                    methodInterpreters = dependencies;
-                    result.MethodInterpreters = methodInterpreters;
+                    MetaLinker.Interpret(interpreter);
                 }
-            bool foundNewMethods;
+                methodInterpreters = dependencies;
+                result.MethodInterpreters = methodInterpreters;
+                foundMethodCount = methodInterpreters.Count;
+                bool foundNewMethods;
                 do
                 {
-
-                result.UsedTypes = GetTypesClosure(methodInterpreters, out foundNewMethods);
-            } while (foundNewMethods);
+                    result.UsedTypes = new HashSet<Type>(GetTypesClosure(methodInterpreters, out foundNewMethods));
+                } while (foundNewMethods);
+                dependencies = methodInterpreters.GetMultiMethodsClosure();
+                canContinue = foundMethodCount != dependencies.Count;
+            }
             return result;
         }
-        public static List<Type> GetTypesClosure(List<MethodInterpreter> methodList, out bool foundNewMethods)
+        public static HashSet<Type> GetTypesClosure(List<MethodInterpreter> methodList, out bool foundNewMethods)
         {
             var typesSet = ScanMethodParameters(methodList);
 
             foundNewMethods = false;
-           
-            var resultTypes = BuildScannedDictionaryFromTypesAndInstructions(typesSet).Values.ToList();
+
+            var resultTypes = BuildScannedDictionaryFromTypesAndInstructions(typesSet);
             var methodDict = methodList.ToDictionary(method => method.Method.ClangMethodSignature());
             var virtMethods = methodList.Where(m => m.Method.IsVirtual).ToArray();
             foreach (var virt in virtMethods)
             {
                 var baseClass = virt.Method.DeclaringType;
                 var methodName = virt.Method.Name;
-                var methodArgs = virt.Method.GetParameters().Select(par=>par.ParameterType).ToArray();
+                var methodArgs = virt.Method.GetParameters().Select(par => par.ParameterType).ToArray();
                 foreach (var type in resultTypes)
                 {
-                    if(!type.IsSubclassOf(baseClass))
+                    if (!type.IsSubclassOf(baseClass))
                         continue;
                     var implMethod = type.GetMethod(methodName, methodArgs);
                     if (methodDict.ContainsKey(implMethod.ClangMethodSignature()))
@@ -76,7 +74,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             return resultTypes;
         }
 
-        private static Dictionary<string, Type> BuildScannedDictionaryFromTypesAndInstructions(HashSet<Type> typesSet)
+        private static HashSet<Type> BuildScannedDictionaryFromTypesAndInstructions(HashSet<Type> typesSet)
         {
             bool isAdded;
             do
@@ -99,7 +97,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                         var fieldType = fieldInfo.FieldType;
                         if (fieldType.IsInterface)
                             continue;
-                        if (fieldType.IsSubclassOf(typeof (Array)))
+                        if (fieldType.IsSubclassOf(typeof(Array)))
                             fieldType = fieldType.GetElementType();
                         if (fieldType.IsPointer || fieldType.IsByRef)
                             fieldType = fieldType.GetElementType();
@@ -119,28 +117,14 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             {
                 UsedTypeList.Set(type);
             }
-            var describedTypes = UsedTypeList.GetDescribedTypes();
-            typesClosure = describedTypes
-                .Where(typeDesc => typeDesc.ClrTypeCode == TypeCode.Object)
-                .Where(typeDesc => !typeDesc.IsPointer && !typeDesc.ClrType.IsByRef)
-                .Where(typeDesc =>
-                    typeDesc.ClrType != typeof (void) &&
-                    typeDesc.ClrType != typeof (IntPtr) &&
-                    typeDesc.ClrType != typeof (Array)
-                )
-                .Where(typeDescArray => !typeDescArray.ClrType.IsSubclassOf(typeof (Array)))
-                .Where(typeDesc =>
-                    typeDesc.ClrType.GetMappedType() == typeDesc.ClrType &&
-                    !string.IsNullOrEmpty(typeDesc.ClrType.FullName)
-                )
-                .Select(typeDescr => typeDescr.ClrType)
-                .ToList();
-            var resultDictonary = new Dictionary<string, Type>();
-            foreach (var typeDesc in typesClosure)
-            {
-                resultDictonary[typeDesc.ToCppMangling()] = typeDesc;
-            }
-            return resultDictonary;
+
+            typesSet.Remove(typeof (void));
+            typesSet.Remove(typeof (IntPtr));
+            typesSet.Remove(typeof(Array));
+            typesSet.RemoveWhere(t => t.IsPrimitive);
+            typesSet.RemoveWhere(t => t.IsSubclassOf(typeof (Array)));
+            typesSet.RemoveWhere(t => t.GetMappedType() == t && string.IsNullOrEmpty(t.FullName));
+            return typesSet;
         }
 
         public static void SortTypeClosure(List<Type> types)

@@ -8,7 +8,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
     public class ClosureTypeComparer : IComparer<Type>
     {
         private readonly List<Type> _typesToSort;
-        Dictionary<Type, HashSet<Type>> _dictionary = new Dictionary<Type, HashSet<Type>>(); 
+        readonly Dictionary<Type, HashSet<Type>> _dictionary = new Dictionary<Type, HashSet<Type>>(); 
         public ClosureTypeComparer(List<Type> typesToSort)
         {
             _typesToSort = typesToSort;

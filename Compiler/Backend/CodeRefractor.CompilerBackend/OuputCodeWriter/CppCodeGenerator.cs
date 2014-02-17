@@ -34,13 +34,15 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 
             sb.AppendLine("#include \"sloth.h\"");
 
+            var virtualMethodTableCodeWriter = new VirtualMethodTableCodeWriter(typeTable, closure);
+
             WriteClosureStructBodies(typeClosure.ToArray(), sb);
             WriteClosureDelegateBodies(closure, sb);
             WriteClosureHeaders(closure, sb);
 
             sb.AppendLine("#include \"runtime_base.hpp\"");
-            sb.AppendLine("void setupTypeTable();");
 
+            sb.AppendLine(virtualMethodTableCodeWriter.GenerateTypeTableCode());
             WriteCppMethods(closure, sb);
             WriteClosureMethods(closure, sb, typeTable.TypeTable);
 
@@ -49,7 +51,8 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             sb.AppendLine(ConstByteArrayList.BuildConstantTable());
             sb.AppendLine(LinkingData.Instance.Strings.BuildStringTable());
 
-            sb.AppendLine(VirtualMethodTableCodeWriter.GenerateTypeTableCode(typeTable, closure));
+
+            sb.AppendLine(virtualMethodTableCodeWriter.GenerateVirtualFunctionMappingCode());
             
             return sb;
         }
@@ -81,6 +84,8 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             foreach (var interpreter in closure)
             {
                 if (interpreter.Kind != MethodKind.Default)
+                    continue; 
+                if (interpreter.Method.IsAbstract)
                     continue;
                 sb.AppendLine(MethodInterpreterCodeWriter.WriteMethodSignature(interpreter));
             }
@@ -162,6 +167,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 
         private static void WriteClosureBodies(List<MethodInterpreter> closure, StringBuilder sb, TypeDescriptionTable typeTable)
         {
+            sb.AppendLine("///--- PInvoke code --- ");
             foreach (var interpreter in closure)
             {
                 if (interpreter.Kind != MethodKind.PlatformInvoke)
@@ -173,6 +179,9 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             foreach (var interpreter in closure)
             {
                 if (interpreter.Kind != MethodKind.Default)
+                    continue;
+
+                if (interpreter.Method.IsAbstract)
                     continue;
                 sb.AppendLine(MethodInterpreterCodeWriter.WriteMethodCode(interpreter, typeTable));
             }

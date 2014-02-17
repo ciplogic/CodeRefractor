@@ -13,7 +13,7 @@ namespace Game
     {
         public override void ToImplement()
         {
-            Console.WriteLine("ImplBase");
+            Console.WriteLine("ImplBaseB");
         }
     }
     public class ImplBase : Base
