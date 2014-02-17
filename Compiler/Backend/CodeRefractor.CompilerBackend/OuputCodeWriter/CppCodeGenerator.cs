@@ -9,6 +9,7 @@ using System.Text;
 using CodeRefractor.CodeWriter.Linker;
 using CodeRefractor.CodeWriter.Platform;
 using CodeRefractor.CodeWriter.TypeInfoWriter;
+using CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.FrontEnd;

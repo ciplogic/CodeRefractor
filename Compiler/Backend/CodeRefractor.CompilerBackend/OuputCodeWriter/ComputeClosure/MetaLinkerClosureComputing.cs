@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using CodeRefractor.CodeWriter.BasicOperations;
 using CodeRefractor.CodeWriter.Linker;
-using CodeRefractor.CompilerBackend.Linker;
 using CodeRefractor.RuntimeBase.FrontEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
@@ -14,7 +13,7 @@ using CodeRefractor.RuntimeBase.Runtime;
 
 #endregion
 
-namespace CodeRefractor.CompilerBackend.OuputCodeWriter
+namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
 {
     public static class MetaLinkerClosureComputing
     {

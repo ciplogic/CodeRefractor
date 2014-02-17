@@ -10,7 +10,7 @@ using CodeRefractor.RuntimeBase.Optimizations;
 
 #endregion
 
-namespace CodeRefractor.CompilerBackend.OuputCodeWriter
+namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
 {
     public static class MethodInterpreterCodeWriter
     {

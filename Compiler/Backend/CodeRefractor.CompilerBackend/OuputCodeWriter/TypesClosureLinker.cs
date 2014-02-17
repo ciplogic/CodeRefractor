@@ -2,17 +2,82 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure;
+using CodeRefractor.RuntimeBase;
+using CodeRefractor.RuntimeBase.Analyze;
+using CodeRefractor.RuntimeBase.FrontEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.Runtime;
 
-namespace CodeRefractor.RuntimeBase.Analyze.TypeTableIndices
+namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 {
     public static class TypesClosureLinker
     {
-        public static List<Type> GetTypesClosure(List<MethodInterpreter> closure)
+
+        public static ClosureFromEntry BuildClosureForEntry(MethodInterpreter entryInterpreter)
         {
-            var typesSet = ScanMethodParameters(closure);
+            var result = new ClosureFromEntry();
+            var methodInterpreters = new List<MethodInterpreter>();
+            methodInterpreters.Clear();
+            methodInterpreters.Add(entryInterpreter);
+            MetaLinker.Interpret(entryInterpreter);
+
+            var foundMethodCount = 1;
+       
+                var canContinue = true;
+                while (canContinue)
+                {
+                    var dependencies = entryInterpreter.GetMethodClosure();
+                    canContinue = foundMethodCount != dependencies.Count;
+                    foundMethodCount = dependencies.Count;
+                    foreach (var interpreter in dependencies)
+                    {
+                        MetaLinker.Interpret(interpreter);
+                    }
+                    methodInterpreters = dependencies;
+                    result.MethodInterpreters = methodInterpreters;
+                }
+            bool foundNewMethods;
+                do
+                {
+
+                result.UsedTypes = GetTypesClosure(methodInterpreters, out foundNewMethods);
+            } while (foundNewMethods);
+            return result;
+        }
+        public static List<Type> GetTypesClosure(List<MethodInterpreter> methodList, out bool foundNewMethods)
+        {
+            var typesSet = ScanMethodParameters(methodList);
+
+            foundNewMethods = false;
            
+            var resultTypes = BuildScannedDictionaryFromTypesAndInstructions(typesSet).Values.ToList();
+            var methodDict = methodList.ToDictionary(method => method.Method.ClangMethodSignature());
+            var virtMethods = methodList.Where(m => m.Method.IsVirtual).ToArray();
+            foreach (var virt in virtMethods)
+            {
+                var baseClass = virt.Method.DeclaringType;
+                var methodName = virt.Method.Name;
+                var methodArgs = virt.Method.GetParameters().Select(par=>par.ParameterType).ToArray();
+                foreach (var type in resultTypes)
+                {
+                    if(!type.IsSubclassOf(baseClass))
+                        continue;
+                    var implMethod = type.GetMethod(methodName, methodArgs);
+                    if (methodDict.ContainsKey(implMethod.ClangMethodSignature()))
+                        continue;
+                    var implInterpreter = implMethod.Register();
+                    MetaLinker.Interpret(implInterpreter);
+                    methodList.Add(implInterpreter);
+                    foundNewMethods = true;
+                }
+
+            }
+            return resultTypes;
+        }
+
+        private static Dictionary<string, Type> BuildScannedDictionaryFromTypesAndInstructions(HashSet<Type> typesSet)
+        {
             bool isAdded;
             do
             {
@@ -26,7 +91,7 @@ namespace CodeRefractor.RuntimeBase.Analyze.TypeTableIndices
                     if (fields.Count == 0)
                         continue;
                     fields.AddRange(mappedType.GetFields(
-                        BindingFlags.NonPublic 
+                        BindingFlags.NonPublic
                         | BindingFlags.Instance
                         | BindingFlags.Static));
                     foreach (var fieldInfo in fields)
@@ -34,22 +99,21 @@ namespace CodeRefractor.RuntimeBase.Analyze.TypeTableIndices
                         var fieldType = fieldInfo.FieldType;
                         if (fieldType.IsInterface)
                             continue;
-                        if (fieldType.IsSubclassOf(typeof(Array)))
+                        if (fieldType.IsSubclassOf(typeof (Array)))
                             fieldType = fieldType.GetElementType();
-                        if (fieldType.IsPointer ||fieldType.IsByRef)
+                        if (fieldType.IsPointer || fieldType.IsByRef)
                             fieldType = fieldType.GetElementType();
-                        
-                        var  typeDesc = UsedTypeList.Set(type);
-                        if(typeDesc == null)
+
+                        var typeDesc = UsedTypeList.Set(type);
+                        if (typeDesc == null)
                             continue;
                         toAdd.Add(fieldType);
                     }
                 }
                 isAdded = (toAdd.Count != typesSet.Count);
                 typesSet = toAdd;
-
             } while (isAdded);
-            var typesClosure = typesSet.Where(t => 
+            var typesClosure = typesSet.Where(t =>
                 IsRefClassType(t) && !t.IsInterface).ToList();
             foreach (var type in typesClosure)
             {
@@ -60,13 +124,13 @@ namespace CodeRefractor.RuntimeBase.Analyze.TypeTableIndices
                 .Where(typeDesc => typeDesc.ClrTypeCode == TypeCode.Object)
                 .Where(typeDesc => !typeDesc.IsPointer && !typeDesc.ClrType.IsByRef)
                 .Where(typeDesc =>
-                    typeDesc.ClrType != typeof(void) &&
-                    typeDesc.ClrType != typeof(IntPtr) &&
-                    typeDesc.ClrType != typeof(Array)
+                    typeDesc.ClrType != typeof (void) &&
+                    typeDesc.ClrType != typeof (IntPtr) &&
+                    typeDesc.ClrType != typeof (Array)
                 )
-                .Where(typeDescArray => !typeDescArray.ClrType.IsSubclassOf(typeof(Array)))
+                .Where(typeDescArray => !typeDescArray.ClrType.IsSubclassOf(typeof (Array)))
                 .Where(typeDesc =>
-                    typeDesc.ClrType.GetMappedType()==typeDesc.ClrType &&
+                    typeDesc.ClrType.GetMappedType() == typeDesc.ClrType &&
                     !string.IsNullOrEmpty(typeDesc.ClrType.FullName)
                 )
                 .Select(typeDescr => typeDescr.ClrType)
@@ -76,7 +140,7 @@ namespace CodeRefractor.RuntimeBase.Analyze.TypeTableIndices
             {
                 resultDictonary[typeDesc.ToCppMangling()] = typeDesc;
             }
-            return resultDictonary.Values.ToList();
+            return resultDictonary;
         }
 
         public static void SortTypeClosure(List<Type> types)

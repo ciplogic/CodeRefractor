@@ -98,10 +98,12 @@
     <Compile Include="Optimizations\SimpleDce\DeadStoreAssignment.cs" />
     <Compile Include="Optimizations\SimpleDce\DeleteCallToConstructorOfObject.cs" />
     <Compile Include="Optimizations\SimpleDce\OneAssignmentDeadStoreAssignment.cs" />
+    <Compile Include="OuputCodeWriter\ClosureFromEntry.cs" />
+    <Compile Include="OuputCodeWriter\ComputeClosure\ClosureTypeComparer.cs" />
     <Compile Include="OuputCodeWriter\CppCodeGenerator.cs" />
-    <Compile Include="OuputCodeWriter\MetaLinkerClosureComputing.cs" />
+    <Compile Include="OuputCodeWriter\ComputeClosure\MetaLinkerClosureComputing.cs" />
     <Compile Include="OuputCodeWriter\MetaLinkerOptimizer.cs" />
-    <Compile Include="OuputCodeWriter\MethodInterpreterCodeWriter.cs" />
+    <Compile Include="OuputCodeWriter\ComputeClosure\MethodInterpreterCodeWriter.cs" />
     <Compile Include="Optimizations\Common\ResultingOptimizationPass.cs" />
     <Compile Include="Optimizations\ConstantDfa\ConstantDfaAnalysis.cs" />
     <Compile Include="Optimizations\ConstantDfa\DfaPointOfAnalysis.cs" />
@@ -125,6 +127,7 @@
     <Compile Include="Optimizations\SimpleDce\DoubleAssignPropagation.cs" />
     <Compile Include="Optimizations\Util\OptimizationLevels.cs" />
     <Compile Include="OuputCodeWriter\ProgramClosure.cs" />
+    <Compile Include="OuputCodeWriter\TypesClosureLinker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

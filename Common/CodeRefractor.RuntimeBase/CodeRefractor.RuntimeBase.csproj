@@ -64,7 +64,6 @@
     <Compile Include="Analyze\UsedTypeList.cs" />
     <Compile Include="Analyze\UsedTypeListUtils.cs" />
     <Compile Include="CilMethodAttribute.cs" />
-    <Compile Include="Analyze\TypeTableIndices\ClosureTypeComparer.cs" />
     <Compile Include="FrontEnd\AnalyzeProperties.cs" />
     <Compile Include="FrontEnd\GlobalMethodPool.cs" />
     <Compile Include="MiddleEnd\CppLibMethodInvokeRepresentation.cs" />
@@ -77,7 +76,6 @@
     <Compile Include="Runtime\RuntimeLibraryUtils.cs" />
     <Compile Include="TypeNamerUtils.cs" />
     <Compile Include="CrTypeResolver.cs" />
-    <Compile Include="Analyze\TypeTableIndices\TypesClosureLinker.cs" />
     <Compile Include="Config\CodeRefractorVersions.cs" />
     <Compile Include="Config\CommandLineParse.cs" />
     <Compile Include="Config\OptimizationLevelBase.cs" />
