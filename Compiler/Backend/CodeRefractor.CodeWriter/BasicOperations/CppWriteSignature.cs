@@ -1,7 +1,7 @@
 using System;
 using System.Reflection;
 using System.Text;
-using CodeRefractor.CompilerBackend.Linker;
+using CodeRefractor.CodeWriter.Linker;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;

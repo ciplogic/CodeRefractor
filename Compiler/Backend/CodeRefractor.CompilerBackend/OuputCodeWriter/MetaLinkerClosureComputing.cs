@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using CodeRefractor.CodeWriter.BasicOperations;
+using CodeRefractor.CodeWriter.Linker;
 using CodeRefractor.CompilerBackend.Linker;
 using CodeRefractor.RuntimeBase.FrontEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd;
@@ -28,10 +29,15 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
         private static void UpdateMethodEntryClosure(MethodInterpreter entryPoint,
             Dictionary<string, MethodInterpreter> result)
         {
-            var operations = entryPoint.MidRepresentation.LocalOperations;
-            var localOperations = operations.Where(op => op.Kind == OperationKind.Call).ToArray();
+            var useDef = entryPoint.MidRepresentation.UseDef;
+            var ops = useDef.GetLocalOperations();
+            var callList = useDef.GetOperations(OperationKind.Call).ToList();
+            callList.AddRange(useDef.GetOperations(OperationKind.CallVirtual));
+            callList.AddRange(useDef.GetOperations(OperationKind.CallInterface));
+            var localOperations = callList.Select(i=>ops[i]).ToArray();
             var toAdd = HandleCallInstructions(result, localOperations);
-            localOperations = operations.Where(op => op.Kind == OperationKind.LoadFunction).ToArray();
+            var funcList = useDef.GetOperations(OperationKind.LoadFunction).ToList();
+            localOperations = funcList.Select(i => ops[i]).ToArray();
             HandleLoadFunctionInstructions(result, localOperations, toAdd);
 
             HandleTypeInitializers(result, toAdd);

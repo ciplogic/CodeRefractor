@@ -46,7 +46,6 @@
     <Compile Include="BasicOperations\CppHandleOperators.cs" />
     <Compile Include="BasicOperations\CppMethodCodeWriter.cs" />
     <Compile Include="BasicOperations\CppWriteSignature.cs" />
-    <Compile Include="Linker\FieldNameTable.cs" />
     <Compile Include="Linker\LinkerUtils.cs" />
     <Compile Include="Linker\LinkingData.cs" />
     <Compile Include="Linker\StringTable.cs" />
@@ -57,6 +56,7 @@
     <Compile Include="TypeInfoWriter\TypeDescriptionTable.cs" />
     <Compile Include="TypeInfoWriter\VirtualMethodDescription.cs" />
     <Compile Include="TypeInfoWriter\VirtualMethodTable.cs" />
+    <Compile Include="TypeInfoWriter\VirtualMethodTableCodeWriter.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Common\CodeRefractor.RuntimeBase\CodeRefractor.RuntimeBase.csproj">

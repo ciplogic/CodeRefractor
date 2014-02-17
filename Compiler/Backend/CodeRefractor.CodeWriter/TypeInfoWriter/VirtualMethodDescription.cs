@@ -15,6 +15,8 @@ namespace CodeRefractor.CodeWriter.TypeInfoWriter
         public Type ReturnType;
         public Type BaseType;
 
+        public MemberInfo BaseMethod { get; private set; }
+
         public VirtualMethodDescription(MethodInfo method, Type baseType)
         {
             UsingImplementations = new HashSet<Type>();
@@ -23,7 +25,7 @@ namespace CodeRefractor.CodeWriter.TypeInfoWriter
             Parameters = method.GetParameters().Select(par => par.ParameterType).ToArray();
 
             BaseType = baseType;
-
+            BaseMethod = BaseType.GetMethod(Name, Parameters);
         }
 
         public override string ToString()

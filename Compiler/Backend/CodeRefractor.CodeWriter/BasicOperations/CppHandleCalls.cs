@@ -3,7 +3,7 @@
 using System;
 using System.Linq;
 using System.Text;
-using CodeRefractor.CompilerBackend.Linker;
+using CodeRefractor.CodeWriter.Linker;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.FrontEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd;

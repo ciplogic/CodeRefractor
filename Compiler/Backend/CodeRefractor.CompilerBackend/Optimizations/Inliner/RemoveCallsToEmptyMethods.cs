@@ -1,6 +1,7 @@
 #region Usings
 
 using System.Collections.Generic;
+using CodeRefractor.CodeWriter.Linker;
 using CodeRefractor.CompilerBackend.Linker;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.CompilerBackend.Optimizations.Purity;

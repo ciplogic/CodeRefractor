@@ -3,8 +3,8 @@
 using System;
 using System.IO;
 using System.Text;
+using CodeRefractor.CodeWriter.Linker;
 using CodeRefractor.CodeWriter.TypeInfoWriter;
-using CodeRefractor.CompilerBackend.Linker;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;

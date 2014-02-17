@@ -2,6 +2,7 @@
 
 using System.Reflection;
 using CodeRefractor.CodeWriter.BasicOperations;
+using CodeRefractor.CodeWriter.Linker;
 using CodeRefractor.CompilerBackend.Optimizations.Purity;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;

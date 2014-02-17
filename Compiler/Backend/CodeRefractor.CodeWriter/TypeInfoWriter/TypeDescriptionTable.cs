@@ -98,5 +98,13 @@ namespace CodeRefractor.CodeWriter.TypeInfoWriter
         {
             return _dictionary.ContainsKey(type);
         }
+
+        public object GetTypeId(Type implementation)
+        {
+            int result;
+            if (!_result.TryGetValue(implementation, out result))
+                return -1;
+            return result;
+        }
     }
 }

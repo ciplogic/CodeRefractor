@@ -6,7 +6,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using CodeRefractor.CodeWriter.TypeInfoWriter;
-using CodeRefractor.CompilerBackend.Linker;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
@@ -131,6 +130,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                             rightArray.Length,
                             right.Id);
         }
+
         private static StringBuilder ComputeVariableSb(MetaMidRepresentation midRepresentation)
         {
             var variablesSb = new StringBuilder();

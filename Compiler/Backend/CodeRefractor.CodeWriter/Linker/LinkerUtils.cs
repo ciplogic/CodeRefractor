@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using CodeRefractor.CodeWriter.Linker;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.FrontEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
-namespace CodeRefractor.CompilerBackend.Linker
+namespace CodeRefractor.CodeWriter.Linker
 {
     public static class LinkerUtils
     {

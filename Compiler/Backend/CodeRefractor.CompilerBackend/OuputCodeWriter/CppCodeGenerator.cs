@@ -48,52 +48,9 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             sb.AppendLine(ConstByteArrayList.BuildConstantTable());
             sb.AppendLine(LinkingData.Instance.Strings.BuildStringTable());
 
-            sb.AppendLine(GenerateTypeTableCode(typeTable, closure));
+            sb.AppendLine(VirtualMethodTableCodeWriter.GenerateTypeTableCode(typeTable, closure));
             
             return sb;
-        }
-
-        private static string GenerateTypeTableCode(VirtualMethodTable typeTable, List<MethodInterpreter> closure)
-        {
-            var methodNames = new HashSet<string>
-            (
-                closure.Select(m=>m.Method.Name)
-            );
-            var sb = new StringBuilder();
-
-            var validVirtMethods = new List<VirtualMethodDescription>();
-            foreach (var virtualMethod in typeTable.VirtualMethods)
-            {
-                if(!methodNames.Contains(virtualMethod.Name))
-                    continue;
-                var implementations = virtualMethod.UsingImplementations
-                    .Where(type =>typeTable.TypeTable.HasType(type))
-                    .ToList();
-                if(implementations.Count!=0)
-                    validVirtMethods.Add(virtualMethod);
-                
-            }
-            foreach (var virtualMethod in validVirtMethods)
-            {
-                sb.Append("typedef ");
-                sb.Append(virtualMethod.ReturnType.ToCppMangling());
-
-                sb.Append(" (*");
-                sb.Append(virtualMethod.Name);
-                sb.Append("VirtPtr)(");
-                sb.AppendLine(");");
-            }
-            sb.AppendLine("void setupTypeTable(){");
-            foreach (var virtualMethod in validVirtMethods)
-            {
-                if (!typeTable.TypeTable.HasType(virtualMethod.ReturnType))
-                {
-                    continue;
-                }
-                
-            }
-            sb.AppendLine("}");
-            return sb.ToString();
         }
 
         private static void WriteCppMethods(List<MethodInterpreter> closure, StringBuilder sb)
