@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using CodeRefractor.CodeWriter.BasicOperations;
 using CodeRefractor.CodeWriter.Linker;
 using CodeRefractor.CodeWriter.Platform;
 using CodeRefractor.CodeWriter.TypeInfoWriter;

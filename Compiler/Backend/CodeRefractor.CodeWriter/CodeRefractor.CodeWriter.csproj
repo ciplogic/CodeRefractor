@@ -56,7 +56,7 @@
     <Compile Include="TypeInfoWriter\TypeDescriptionTable.cs" />
     <Compile Include="TypeInfoWriter\VirtualMethodDescription.cs" />
     <Compile Include="TypeInfoWriter\VirtualMethodTable.cs" />
-    <Compile Include="TypeInfoWriter\VirtualMethodTableCodeWriter.cs" />
+    <Compile Include="BasicOperations\VirtualMethodTableCodeWriter.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Common\CodeRefractor.RuntimeBase\CodeRefractor.RuntimeBase.csproj">

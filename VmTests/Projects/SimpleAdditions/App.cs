@@ -4,6 +4,10 @@ using Tao.Sdl;
 
 namespace Game
 {
+    public interface IBaseInterface
+    {
+        void InterfaceMethod();
+    }
     public abstract class Base
     {
         public abstract void ToImplement();
@@ -16,11 +20,16 @@ namespace Game
             Console.WriteLine("ImplBaseB");
         }
     }
-    public class ImplBase : Base
+    public class ImplBase : Base, IBaseInterface
     {
         public override void ToImplement()
         {
             Console.WriteLine("ImplBase");
+        }
+
+        public void InterfaceMethod()
+        {
+            Console.WriteLine("ImplBase.IBaseInterface");
         }
     }
     public class App
@@ -37,7 +46,7 @@ namespace Game
             {
                 aBase.ToImplement();
             }
-
+            impl.InterfaceMethod();
         }
     }
 }

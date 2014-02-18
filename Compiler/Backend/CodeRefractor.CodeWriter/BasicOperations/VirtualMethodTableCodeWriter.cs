@@ -1,10 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using CodeRefractor.CodeWriter.TypeInfoWriter;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 
-namespace CodeRefractor.CodeWriter.TypeInfoWriter
+namespace CodeRefractor.CodeWriter.BasicOperations
 {
     public class VirtualMethodTableCodeWriter
     {
