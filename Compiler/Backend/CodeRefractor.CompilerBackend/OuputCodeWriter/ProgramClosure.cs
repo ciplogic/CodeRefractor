@@ -22,7 +22,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
     {
         public List<Type> UsedTypes;
         public MethodInterpreter EntryInterpreter { get; set; }
-        public List<MethodInterpreter> MethodClosure = new List<MethodInterpreter>();
+        public Dictionary<MethodInterpreterKey, MethodInterpreter> MethodClosure = new Dictionary<MethodInterpreterKey, MethodInterpreter>();
         private TypeDescriptionTable _typeTable;
         private Dictionary<Type, int> _typeDictionary;
 
@@ -33,7 +33,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             EntryInterpreter = entryMethod.Register();
 
             BuildMethodClosure();
-            MetaLinkerOptimizer.ApplyOptimizations(MethodClosure);
+            MetaLinkerOptimizer.ApplyOptimizations(MethodClosure.Values.ToList());
             BuildMethodClosure();
             if (!UsedTypes.Contains(typeof (CrString)))
             {
@@ -93,9 +93,9 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 
         public StringBuilder BuildFullSourceCode()
         {
-            ComputeEscapeAnalysis(MethodClosure);
+            ComputeEscapeAnalysis(MethodClosure.Values.ToList());
 
-            return CppCodeGenerator.GenerateSourceStringBuilder(EntryInterpreter, UsedTypes, MethodClosure, _virtualMethodTable);
+            return CppCodeGenerator.GenerateSourceStringBuilder(EntryInterpreter, UsedTypes, MethodClosure.Values.ToList(), _virtualMethodTable);
         }
     }
 }

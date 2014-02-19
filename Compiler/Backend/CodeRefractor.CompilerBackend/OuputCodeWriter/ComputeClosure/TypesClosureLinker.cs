@@ -15,9 +15,9 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
         public static ClosureResult BuildClosureForEntry(MethodInterpreter entryInterpreter)
         {
             var result = new ClosureResult();
-            var methodInterpreters = new List<MethodInterpreter>();
+            var methodInterpreters = new Dictionary<MethodInterpreterKey, MethodInterpreter>();
             methodInterpreters.Clear();
-            methodInterpreters.Add(entryInterpreter);
+            methodInterpreters[entryInterpreter.ToKey()] = entryInterpreter;
             MetaLinker.Interpret(entryInterpreter);
 
             var foundMethodCount = 1;
@@ -30,15 +30,24 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
                 {
                     MetaLinker.Interpret(interpreter);
                 }
-                methodInterpreters = dependencies;
+                foreach (var dependency in dependencies)
+                {
+                    methodInterpreters[dependency.ToKey()] = dependency;
+                }
                 result.MethodInterpreters = methodInterpreters;
                 foundMethodCount = methodInterpreters.Count;
                 bool foundNewMethods;
                 do
                 {
-                    result.UsedTypes = new HashSet<Type>(GetTypesClosure(methodInterpreters, out foundNewMethods));
+                    dependencies = methodInterpreters.Values.ToList();
+                    result.UsedTypes = new HashSet<Type>(GetTypesClosure(dependencies, out foundNewMethods));
+                    if(!foundNewMethods) break;
+                    foreach (var dependency in dependencies)
+                    {
+                        methodInterpreters[dependency.ToKey()] = dependency;
+                    }
                 } while (foundNewMethods);
-                dependencies = methodInterpreters.GetMultiMethodsClosure();
+                dependencies = methodInterpreters.Values.ToList().GetMultiMethodsClosure();
                 canContinue = foundMethodCount != dependencies.Count;
             }
             return result;

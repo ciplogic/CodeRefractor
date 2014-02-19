@@ -69,6 +69,8 @@
     <Compile Include="MiddleEnd\CppLibMethodInvokeRepresentation.cs" />
     <Compile Include="MiddleEnd\GlobalTable\GlobalTableManager.cs" />
     <Compile Include="MiddleEnd\MethodDescription.cs" />
+    <Compile Include="MiddleEnd\MethodInterpreterKey.cs" />
+    <Compile Include="MiddleEnd\MethodInterpreterKeyUtils.cs" />
     <Compile Include="MiddleEnd\RuntimeLibraryDescription.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\Identifiers\EscapingMode.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\RefArrayItemAssignment.cs" />

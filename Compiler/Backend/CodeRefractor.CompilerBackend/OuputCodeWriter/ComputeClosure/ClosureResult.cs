@@ -9,10 +9,10 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
     {
         public ClosureResult()
         {
-            MethodInterpreters = new List<MethodInterpreter>();
+            MethodInterpreters = new Dictionary<MethodInterpreterKey, MethodInterpreter>();
         }
 
-        public List<MethodInterpreter> MethodInterpreters { get; set; }
+        public Dictionary<MethodInterpreterKey, MethodInterpreter> MethodInterpreters { get; set; }
 
         public HashSet<Type> UsedTypes { get; set; }
 
