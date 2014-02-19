@@ -80,28 +80,34 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 sb.Append(virtualMethod.ReturnType.ToCppMangling());
                 sb.Append(" ");
                 sb.Append(methodName);
-                sb.Append("_vcall(");
-                sb.AppendFormat(parametersString);
-                sb.AppendLine("){");
-                sb.AppendLine("int typeId = _this->_typeId;");
-                sb.AppendFormat("for(int i= 0; i<{0};i++)",implCount)
-                    .AppendLine();
+                sb.Append("_vcall(")
+                    .AppendFormat(parametersString)
+                    .AppendLine("){")
+                    .AppendLine("switch(_this->_typeId)")
+                    .AppendLine("{");
+                foreach (var implementation in virtualMethod.UsingImplementations)
+                {
+                    var typeId = _typeTable.TypeTable.GetTypeId(implementation);
 
-                sb.AppendLine("{");
-                sb.AppendFormat("if(virt_typeId_{0}[i] == typeId)",methodName)
-                    .AppendLine();
-                if (virtualMethod.BaseMethod.ReturnType != typeof (void))
-                {
-                    sb.Append("return ");
+                    sb.AppendFormat("case {0}:",typeId).AppendLine();
+
+                    var isVoid = virtualMethod.BaseMethod.ReturnType == typeof(void);
+                    if (!isVoid)
+                    {
+                        sb.Append("return ");
+                    }
+
+                    var methodImpl = implementation.GetMethod(virtualMethod.Name).ClangMethodSignature();
+                    sb
+                        .AppendFormat("{0}(", methodImpl)
+                        .AppendFormat("{0});", parametersCallString)
+                        .AppendLine();
+                    if (isVoid)
+                    {
+                        sb.Append("return;").AppendLine();
+                    }
                 }
-                sb.AppendFormat("methods_{0}[i](", methodName);
-                sb.AppendFormat("{0});", parametersCallString)
-                    .AppendLine();
                 sb.AppendLine("}");
-                if (virtualMethod.BaseMethod.ReturnType != typeof(void))
-                {
-                    sb.Append("return 0;");
-                }
                 sb.AppendLine("}");
             }
 

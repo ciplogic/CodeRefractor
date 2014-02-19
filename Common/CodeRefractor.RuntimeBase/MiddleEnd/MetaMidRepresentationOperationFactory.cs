@@ -658,7 +658,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             CallMethodData(constructedObject.Info, methodData, OperationKind.Call);
             var vreg = SetNewVReg();
             vreg.FixedType = UsedTypeList.Set(methodData.Info.DeclaringType);
-            var assign = new Assignment()
+            var assign = new Assignment
             {
                 AssignedTo = vreg,
                 Right = methodData.Parameters.First()
