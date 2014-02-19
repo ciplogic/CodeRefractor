@@ -60,39 +60,31 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                                       Environment.NewLine + "Operation: {0}", result));
             }
         }
-        public LocalVariable SetNewVReg()
+
+        private LocalVariable SetNewVReg()
         {
             var newLocal = _evaluator.SetNewVReg();
             _representation.Vars.VirtRegs.Add(newLocal);
             return newLocal;
         }
 
+        private void PushStack(IdentifierValue identifier)
+        {
+            _evaluator.Push(identifier);
+        }
+
         private void AssignValueToStack(object value)
         {
-            var result = SetNewVReg();
-            var assign = new Assignment
-            {
-                AssignedTo = result,
-                Right = new ConstValue(value)
-            };
-            result.FixedType = UsedTypeList.Set(value.GetType());
-            AddOperation(OperationKind.Assignment, assign);
+            PushStack(new ConstValue(value));
+            UsedTypeList.Set(value.GetType());
+            
         }
 
         public void CopyLocalVariableIntoStack(int value)
         {
             var locVar = _representation.Vars.LocalVars.First(v=>v.Id ==value);
 
-            var vreg = SetNewVReg();
-
-            var assingment = new Assignment
-                                 {
-                                     AssignedTo = vreg,
-                                     Right = locVar
-                                 };
-
-            vreg.FixedType = locVar.ComputedType();
-            AddOperation(OperationKind.Assignment, assingment);
+            PushStack(locVar);
         }
 
 
@@ -119,14 +111,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         public void LoadArgument(int pushedIntValue)
         {
             var argument = _representation.Vars.Arguments[pushedIntValue];
-            var vreg = SetNewVReg();
-            vreg.FixedType = argument.ComputedType();
-            var assignment = new Assignment
-            {
-                AssignedTo = vreg,
-                Right = argument
-            };
-            AddOperation(OperationKind.Assignment, assignment);
+            PushStack(argument);
         }
 
         public void CopyStackIntoArgument(int value)
@@ -740,18 +725,11 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
         private void AssignNullToStack()
         {
-            var result = SetNewVReg();
             var nullConst = new ConstValue(null)
             {
                 FixedType = UsedTypeList.Set(typeof (object))
             };
-            var assign = new Assignment
-            {
-                AssignedTo = result,
-                Right = nullConst
-            };
-            result.FixedType = UsedTypeList.Set(typeof(object));
-            AddOperation(OperationKind.Assignment, assign);
+            PushStack(nullConst);
         }
 
         public void LoadFunction(MethodInfo operand)

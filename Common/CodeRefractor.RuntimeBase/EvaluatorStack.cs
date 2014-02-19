@@ -27,8 +27,13 @@ namespace CodeRefractor.RuntimeBase
                                    Kind = VariableKind.Vreg,
                                    Id = _vRegId
                                };
-            _stack.Push(newLocal);
+            Push(newLocal);
             return newLocal;
+        }
+
+        public void Push(IdentifierValue newLocal)
+        {
+            _stack.Push(newLocal);
         }
 
 
