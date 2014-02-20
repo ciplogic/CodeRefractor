@@ -19,13 +19,13 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
             return intermediateCode.MidRepresentation.GetProperties().IsPure;
         }
 
-        public override void OptimizeOperations(MethodInterpreter methodInterpreter)
+        public override void OptimizeOperations(MethodInterpreter interpreter)
         {
-            if (ReadPurity(methodInterpreter))
+            if (ReadPurity(interpreter))
                 return;
-            var functionIsPure = ComputeFunctionPurity(methodInterpreter);
+            var functionIsPure = ComputeFunctionPurity(interpreter);
             if (!functionIsPure) return;
-            methodInterpreter.MidRepresentation.GetProperties().IsPure = true;
+            interpreter.MidRepresentation.GetProperties().IsPure = true;
             Result = true;
         }
 

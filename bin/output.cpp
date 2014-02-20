@@ -46,21 +46,24 @@ void Game_ImplBase_InterfaceMethod_vcall(const std::shared_ptr<Game_ImplBase> &_
 int virt_typeId_Game_Base_ToImplement[2];
 Game_Base_ToImplementVirtPtr methods_Game_Base_ToImplement[2];
 void Game_Base_ToImplement_vcall(const std::shared_ptr<Game_Base> &_this){
-int typeId = _this->_typeId;
-for(int i= 0; i<2;i++)
+switch(_this->_typeId)
 {
-if(virt_typeId_Game_Base_ToImplement[i] == typeId)
-methods_Game_Base_ToImplement[i](_this);
+case 1:
+Game_ImplBaseB_ToImplement(_this);
+return;
+case 2:
+Game_ImplBase_ToImplement(_this);
+return;
 }
 }
 int virt_typeId_Game_ImplBase_InterfaceMethod[1];
 Game_ImplBase_InterfaceMethodVirtPtr methods_Game_ImplBase_InterfaceMethod[1];
 void Game_ImplBase_InterfaceMethod_vcall(const std::shared_ptr<Game_ImplBase> &_this){
-int typeId = _this->_typeId;
-for(int i= 0; i<1;i++)
+switch(_this->_typeId)
 {
-if(virt_typeId_Game_ImplBase_InterfaceMethod[i] == typeId)
-methods_Game_ImplBase_InterfaceMethod[i](_this);
+case 2:
+Game_ImplBase_InterfaceMethod(_this);
+return;
 }
 }
 // --- End of definition of virtual method tables ---
@@ -76,35 +79,35 @@ System_Void Game_App_Main()
 Game_ImplBase * local_1;
 Array < std::shared_ptr<Game_Base> > * local_4;
 System_Int32 local_5;
-std::shared_ptr<Game_ImplBase> vreg_3;
-std::shared_ptr<Game_ImplBaseB> vreg_8;
-std::shared_ptr<Game_Base> vreg_17;
-System_Int32 vreg_24;
-System_Int32 vreg_25;
-System_Boolean vreg_27;
+System_Boolean local_6;
+std::shared_ptr<Game_ImplBase> vreg_2;
+std::shared_ptr<Game_ImplBaseB> vreg_4;
+std::shared_ptr<Game_Base> vreg_6;
+System_Int32 vreg_8;
+System_Int32 vreg_9;
 
-Array <std::shared_ptr<Game_Base>> vreg_2 (2); 
-vreg_3 = std::make_shared<Game_ImplBase >();
-vreg_3->_typeId = 2;
-Game_ImplBase_ctor(vreg_3.get());
-local_1 = (vreg_3).get();
-vreg_2[0] = vreg_3; 
-vreg_8 = std::make_shared<Game_ImplBaseB >();
-vreg_8->_typeId = 1;
-Game_ImplBaseB_ctor(vreg_8.get());
-vreg_2[1] = vreg_8; 
-local_4 = &vreg_2;
+Array <std::shared_ptr<Game_Base>> vreg_1 (2); 
+vreg_2 = std::make_shared<Game_ImplBase >();
+vreg_2->_typeId = 2;
+Game_ImplBase_ctor(vreg_2.get());
+local_1 = (vreg_2).get();
+vreg_1[0] = vreg_2; 
+vreg_4 = std::make_shared<Game_ImplBaseB >();
+vreg_4->_typeId = 1;
+Game_ImplBaseB_ctor(vreg_4.get());
+vreg_1[1] = vreg_4; 
+local_4 = &vreg_1;
 local_5 = 0;
-vreg_24 = local_4->Length;
-vreg_25 = (int)vreg_24;
+vreg_8 = local_4->Length;
+vreg_9 = (int)vreg_8;
 goto label_58;
 label_37:
-vreg_17 = (*local_4)[local_5];
-Game_Base_ToImplement_vcall(vreg_17);
+vreg_6 = (*local_4)[local_5];
+Game_Base_ToImplement_vcall(vreg_6);
 local_5 = local_5+1;
 label_58:
-vreg_27 = (local_5 < vreg_25)?1:0;
-if(vreg_27) goto label_37;
+local_6 = (local_5 < vreg_9)?1:0;
+if(local_6) goto label_37;
 Game_ImplBase_InterfaceMethod_vcall(local_1);
 return;
 }

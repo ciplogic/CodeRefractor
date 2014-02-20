@@ -13,10 +13,10 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ReachabilityDfa
 {
     public class DeleteJumpNextLine : ResultingInFunctionOptimizationPass
     {
-        public override void OptimizeOperations(MethodInterpreter methodInterpreter)
+        public override void OptimizeOperations(MethodInterpreter interpreter)
         {
-            var operations = methodInterpreter.MidRepresentation.UseDef.GetLocalOperations();
-            var labelTable = methodInterpreter.GetLabelTable();
+            var operations = interpreter.MidRepresentation.UseDef.GetLocalOperations();
+            var labelTable = interpreter.GetLabelTable();
             var toRemove = new List<int>();
             foreach (var labelInfo in labelTable)
             {
@@ -48,7 +48,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ReachabilityDfa
             }
             if (toRemove.Count == 0)
                 return;
-            methodInterpreter.DeleteInstructions(toRemove);
+            interpreter.DeleteInstructions(toRemove);
             Result = true;
         }
     }

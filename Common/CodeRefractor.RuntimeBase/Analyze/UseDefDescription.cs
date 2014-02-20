@@ -10,9 +10,17 @@ namespace CodeRefractor.RuntimeBase.Analyze
         private volatile LocalVariable[][] _usages = { };
         private volatile LocalVariable[] _definitions = { };
 
-        private volatile Dictionary<int, int> _labelTable;
-        private volatile Dictionary<OperationKind, int[]> _instructionMix = new Dictionary<OperationKind, int[]>();
+        private Dictionary<int, int> _labelTable;
+        private Dictionary<OperationKind, int[]> _instructionMix = new Dictionary<OperationKind, int[]>();
         private LocalOperation[] _operations;
+
+
+        private readonly HashSet<string> _unusedArguments = new HashSet<string>();
+
+        public HashSet<string> UnusedArguments
+        {
+            get { return _unusedArguments; }
+        }
 
         public void Update(LocalOperation[] operations)
         {
@@ -22,7 +30,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
 
 
             var instructionMix = BuildInstructionMix(operations);
-            SetMigracionMixToField(instructionMix);
+            SetInstructionMixToField(instructionMix);
 
             UpdateLabelsTable(operations);
         }
@@ -34,12 +42,35 @@ namespace CodeRefractor.RuntimeBase.Analyze
             _labelTable = InstructionsUtils.BuildLabelTable(operations, labelOperations);
         }
 
-        private void SetMigracionMixToField(Dictionary<OperationKind, List<int>> instructionMix)
+        private void SetInstructionMixToField(Dictionary<OperationKind, List<int>> instructionMix)
         {
             _instructionMix.Clear();
             foreach (var instruction in instructionMix)
             {
                 _instructionMix.Add(instruction.Key, instruction.Value.ToArray());
+            }
+        }
+
+        public void ComputeUnusedArguments(List<LocalVariable> argList)
+        {
+            var unusedArguments = new HashSet<LocalVariable>(argList);
+            for (int index = 0; index < _operations.Length; index++)
+            {
+                var usages = GetUsages(index);
+                var definition = GetDefinition(index);
+                if (definition != null)
+                    unusedArguments.Remove(definition);
+                foreach (var usage in usages)
+                {
+                    unusedArguments.Remove(usage);
+                }
+                if(unusedArguments.Count==0)
+                    return;
+            }
+            UnusedArguments.Clear();
+            foreach (var argument in unusedArguments)
+            {
+                UnusedArguments.Add(argument.Name);
             }
         }
 

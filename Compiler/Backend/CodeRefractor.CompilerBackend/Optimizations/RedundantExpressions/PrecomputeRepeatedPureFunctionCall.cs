@@ -48,7 +48,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions
             if (srcMethod.Result == null)
                 return;
             var computedType = srcMethod.Result.ComputedType();
-            var newVreg = PrecomputeRepeatedUtils.CreateCacheVariable(midRepresentation.MidRepresentation, computedType);
+            var newVreg = midRepresentation.CreateCacheVariable(computedType);
 
             var assignedTo = srcMethod.Result;
             var localOperation = PrecomputeRepeatedUtils.CreateAssignLocalOperation(assignedTo, newVreg);

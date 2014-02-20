@@ -27,9 +27,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
             }
         }
 
-        public override void OptimizeOperations(MethodInterpreter methodInterpreter)
+        public override void OptimizeOperations(MethodInterpreter interpreter)
         {
-            var operations = methodInterpreter.MidRepresentation.LocalOperations;
+            var operations = interpreter.MidRepresentation.LocalOperations;
             var toFix = new List<ToFixAssignment>();
             for (var index = 0; index < operations.Count - 1; index++)
             {

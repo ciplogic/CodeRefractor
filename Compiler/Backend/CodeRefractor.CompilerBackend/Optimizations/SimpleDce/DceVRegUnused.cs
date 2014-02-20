@@ -14,18 +14,18 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
 {
     public class DceVRegUnused : ResultingInFunctionOptimizationPass
     {
-        public override void OptimizeOperations(MethodInterpreter methodInterpreter)
+        public override void OptimizeOperations(MethodInterpreter interpreter)
         {
-            var operations = methodInterpreter.MidRepresentation.UseDef.GetLocalOperations();
+            var operations = interpreter.MidRepresentation.UseDef.GetLocalOperations();
             var vregConstants =
-                new HashSet<int>(methodInterpreter.MidRepresentation.Vars.VirtRegs.Select(localVar => localVar.Id));
+                new HashSet<int>(interpreter.MidRepresentation.Vars.VirtRegs.Select(localVar => localVar.Id));
 
-            var useDef = methodInterpreter.MidRepresentation.UseDef;
+            var useDef = interpreter.MidRepresentation.UseDef;
             RemoveCandidatesInDefinitions(operations, vregConstants, useDef);
             RemoveCandidatesInUsages(operations, vregConstants, useDef);
             if (vregConstants.Count == 0)
                 return;
-            OptimizeUnusedVregs(vregConstants, methodInterpreter.MidRepresentation.Vars);
+            OptimizeUnusedVregs(vregConstants, interpreter.MidRepresentation.Vars);
         }
 
         #region Remove candidates

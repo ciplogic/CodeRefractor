@@ -18,9 +18,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
     /// </summary>
     public class OperatorPartialConstantFolding : ResultingInFunctionOptimizationPass
     {
-        public override void OptimizeOperations(MethodInterpreter methodInterpreter)
+        public override void OptimizeOperations(MethodInterpreter interpreter)
         {
-            var localOperations = methodInterpreter.MidRepresentation.LocalOperations.ToArray();
+            var localOperations = interpreter.MidRepresentation.LocalOperations.ToArray();
             for (var index = 0; index < localOperations.Length; index++)
             {
                 var destOperation = localOperations[index];

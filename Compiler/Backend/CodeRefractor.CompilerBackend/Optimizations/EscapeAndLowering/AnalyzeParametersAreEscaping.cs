@@ -17,21 +17,21 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
 {
     internal class AnalyzeParametersAreEscaping : ResultingGlobalOptimizationPass
     {
-        public override void OptimizeOperations(MethodInterpreter methodInterpreter)
+        public override void OptimizeOperations(MethodInterpreter interpreter)
         {
-            if (methodInterpreter.Kind != MethodKind.Default)
+            if (interpreter.Kind != MethodKind.Default)
                 return;
 
-            var originalSnapshot = LinkerUtils.BuildEscapingBools(methodInterpreter.Method);
+            var originalSnapshot = LinkerUtils.BuildEscapingBools(interpreter.Method);
 
-            var localOperations = methodInterpreter.MidRepresentation.UseDef.GetLocalOperations();
-            if (ComputeEscapeTable(methodInterpreter, localOperations)) return;
+            var localOperations = interpreter.MidRepresentation.UseDef.GetLocalOperations();
+            if (ComputeEscapeTable(interpreter, localOperations, interpreter)) return;
 
-            var finalSnapshot = LinkerUtils.BuildEscapingBools(methodInterpreter.Method);
+            var finalSnapshot = LinkerUtils.BuildEscapingBools(interpreter.Method);
             CheckForChanges(finalSnapshot, originalSnapshot);
         }
 
-        private static bool ComputeEscapeTable(MethodInterpreter intermediateCode, LocalOperation[] operations)
+        private static bool ComputeEscapeTable(MethodInterpreter intermediateCode, LocalOperation[] operations, MethodInterpreter interpreter)
         {
             var argEscaping = ComputeEscapingArgList(intermediateCode.MidRepresentation, operations);
             var escaping = ComputeArgsEscaping(operations, argEscaping);
@@ -41,7 +41,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
             var variables = intermediateCode.MidRepresentation.Vars;
             foreach (var variable in variables.Arguments)
             {
-                var variableData = variables.GetVariableData(variable.Name);
+                var variableData = interpreter.AnalyzeProperties.GetVariableData(variable);
                 if (!escapingBools[variable.Id])
                     variableData.Escaping = EscapingMode.Pointer;
             }

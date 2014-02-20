@@ -50,7 +50,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 var nonEscapingMode = isSmartPtr ? EscapingMode.Smart : EscapingMode.Pointer;
                 var argumentTypeDescription = UsedTypeList.Set(parameterInfo.ParameterType.GetMappedType());
                 sb.AppendFormat("{0} {1}",
-                    argumentTypeDescription.ClrType.ToCppName(true, isSmartPtr: nonEscapingMode),
+                    argumentTypeDescription.ClrType.ToCppName(true, nonEscapingMode),
                     parameterInfo.Name);
             }
             return sb.ToString();

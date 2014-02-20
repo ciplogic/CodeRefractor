@@ -24,7 +24,6 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         public MethodKind Kind { get; set; }
 
         public readonly AnalyzeProperties AnalyzeProperties = new AnalyzeProperties();
-        
 
         public MetaMidRepresentation MidRepresentation = new MetaMidRepresentation();
         public readonly CppRepresentation CppRepresentation = new CppRepresentation();
@@ -57,6 +56,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             var pureAttribute = method.GetCustomAttribute<PureMethodAttribute>();
             if (pureAttribute != null)
                 AnalyzeProperties.IsPure = true;
+
+            MidRepresentation.Vars.SetupArguments(Method);
         }
 
         public void Specialize()
@@ -160,6 +161,9 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
             var labelList = ComputeLabels(Method);
             MidRepresentation.Method = Method;
+
+
+            MidRepresentation.Vars.SetupLocalVariables(Method);
             var evaluator = new EvaluatorStack();
             var operationFactory = new MetaMidRepresentationOperationFactory(MidRepresentation, evaluator);
 
@@ -168,7 +172,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 var instruction = instructions[index];
                 EvaluateInstuction(instruction, operationFactory, labelList);
             }
-            MidRepresentation.Vars.Setup();
+            AnalyzeProperties.Setup(MidRepresentation.Vars.Arguments, MidRepresentation.Vars.VirtRegs, MidRepresentation.Vars.LocalVars);
             Interpreted = true;
         }
 

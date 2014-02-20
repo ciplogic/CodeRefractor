@@ -42,7 +42,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions
             var firstOperator = localOps.GetFieldOperation(i);
             var secondOperator = localOps.GetFieldOperation(j);
             var newVreg =
-                midRepresentation.MidRepresentation.CreateCacheVariable(firstOperator.AssignedTo.ComputedType());
+                midRepresentation.CreateCacheVariable(firstOperator.AssignedTo.ComputedType());
             var assignLocalOperation = PrecomputeRepeatedUtils.CreateAssignLocalOperation(firstOperator.AssignedTo,
                 newVreg);
             localOps.Insert(i + 1, assignLocalOperation);

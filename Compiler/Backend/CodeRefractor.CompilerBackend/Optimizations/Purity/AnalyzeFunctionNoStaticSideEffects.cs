@@ -17,13 +17,13 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
             return intermediateCode.MidRepresentation.GetProperties().IsReadOnly;
         }
 
-        public override void OptimizeOperations(MethodInterpreter methodInterpreter)
+        public override void OptimizeOperations(MethodInterpreter interpreter)
         {
-            if (ReadPurity(methodInterpreter))
+            if (ReadPurity(interpreter))
                 return;
-            var functionIsPure = ComputeFunctionProperty(methodInterpreter);
+            var functionIsPure = ComputeFunctionProperty(interpreter);
             if (!functionIsPure) return;
-            var additionalData = methodInterpreter.MidRepresentation.GetProperties();
+            var additionalData = interpreter.MidRepresentation.GetProperties();
             additionalData.IsReadOnly = true;
             Result = true;
         }

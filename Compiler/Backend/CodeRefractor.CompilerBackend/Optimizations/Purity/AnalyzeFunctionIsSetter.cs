@@ -15,13 +15,13 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
             return intermediateCode.MidRepresentation.GetProperties().IsSetter;
         }
 
-        public override void OptimizeOperations(MethodInterpreter methodInterpreter)
+        public override void OptimizeOperations(MethodInterpreter interpreter)
         {
-            if (ReadProperty(methodInterpreter))
+            if (ReadProperty(interpreter))
                 return;
-            var functionIsPure = ComputeFunctionPurity(methodInterpreter);
+            var functionIsPure = ComputeFunctionPurity(interpreter);
             if (!functionIsPure) return;
-            methodInterpreter.MidRepresentation.GetProperties().IsSetter = true;
+            interpreter.MidRepresentation.GetProperties().IsSetter = true;
         }
 
         private static bool ComputeFunctionPurity(MethodInterpreter intermediateCode)

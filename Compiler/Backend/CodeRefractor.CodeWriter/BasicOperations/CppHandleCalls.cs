@@ -29,7 +29,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         }
 
 
-        public static void HandleCall(LocalOperation operation, StringBuilder sbCode, MidRepresentationVariables vars)
+        public static void HandleCall(LocalOperation operation, StringBuilder sbCode, MidRepresentationVariables vars, MethodInterpreter interpreter)
         {
             var operationData = (MethodData) operation.Value;
             var sb = new StringBuilder();
@@ -42,12 +42,12 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 
             sb.AppendFormat("{0}", methodInfo.ClangMethodSignature());
 
-            if (WriteParametersToSb(vars, operationData, methodInfo, sb)) return;
+            if (WriteParametersToSb(vars, operationData, methodInfo, sb, interpreter)) return;
 
             sbCode.Append(sb);
         }
 
-        public static void HandleCallInterface(LocalOperation operation, StringBuilder sbCode, MidRepresentationVariables vars)
+        public static void HandleCallInterface(LocalOperation operation, StringBuilder sbCode, MidRepresentationVariables vars, MethodInterpreter interpreter)
         {
             var operationData = (MethodData)operation.Value;
             var sb = new StringBuilder();
@@ -60,12 +60,12 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 
             sb.AppendFormat("{0}_icall", methodInfo.ClangMethodSignature());
 
-            if (WriteParametersToSb(vars, operationData, methodInfo, sb)) return;
+            if (WriteParametersToSb(vars, operationData, methodInfo, sb,interpreter)) return;
 
             sbCode.Append(sb);
         }
 
-        public static void HandleCallVirtual(LocalOperation operation, StringBuilder sbCode, MidRepresentationVariables vars)
+        public static void HandleCallVirtual(LocalOperation operation, StringBuilder sbCode, MidRepresentationVariables vars, MethodInterpreter interpreter)
         {
             var operationData = (MethodData)operation.Value;
             var sb = new StringBuilder();
@@ -78,13 +78,13 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 
             sb.AppendFormat("{0}_vcall", methodInfo.ClangMethodSignature());
 
-            if (WriteParametersToSb(vars, operationData, methodInfo, sb)) return;
+            if (WriteParametersToSb(vars, operationData, methodInfo, sb,interpreter)) return;
 
             sbCode.Append(sb);
         }
 
         private static bool WriteParametersToSb(MidRepresentationVariables vars, MethodData operationData, MethodBase methodInfo,
-            StringBuilder sb)
+            StringBuilder sb, MethodInterpreter interpreter)
         {
             var identifierValues = operationData.Parameters;
 
@@ -134,7 +134,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                     continue;
                 }
 
-                var localValueData = vars.GetVariableData(localValue);
+                var localValueData = interpreter.AnalyzeProperties.GetVariableData(localValue);
                 switch (localValueData.Escaping)
                 {
                     case EscapingMode.Smart:

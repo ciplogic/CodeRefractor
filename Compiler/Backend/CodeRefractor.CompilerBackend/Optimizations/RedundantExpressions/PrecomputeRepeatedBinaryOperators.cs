@@ -41,7 +41,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions
             var localOps = midRepresentation.MidRepresentation.LocalOperations;
             var firstOperator = localOps[i].GetBinaryOperator();
             var secondOperator = localOps[j].GetBinaryOperator();
-            var newVreg = midRepresentation.MidRepresentation.CreateCacheVariable(firstOperator.ComputedType());
+            var newVreg = midRepresentation.CreateCacheVariable(firstOperator.ComputedType());
             var assignLocalOperation = PrecomputeRepeatedUtils.CreateAssignLocalOperation(firstOperator.AssignedTo,
                 newVreg);
             localOps.Insert(i + 1, assignLocalOperation);

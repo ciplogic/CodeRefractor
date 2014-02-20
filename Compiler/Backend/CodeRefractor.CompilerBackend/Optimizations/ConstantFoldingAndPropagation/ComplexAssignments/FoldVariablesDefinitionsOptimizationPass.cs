@@ -15,13 +15,13 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
 {
     internal class FoldVariablesDefinitionsOptimizationPass : ResultingInFunctionOptimizationPass
     {
-        public override void OptimizeOperations(MethodInterpreter methodInterpreter)
+        public override void OptimizeOperations(MethodInterpreter interpreter)
         {
             var definitionsDictionary = new Dictionary<LocalVariable, int>();
 
             var usagesDictionary = new Dictionary<LocalVariable, int>();
 
-            var metaMidRepresentation = methodInterpreter.MidRepresentation;
+            var metaMidRepresentation = interpreter.MidRepresentation;
             var localOperations = metaMidRepresentation.LocalOperations.ToArray();
             definitionsDictionary.Clear();
             BuildDefinitionDictionary(localOperations, metaMidRepresentation.UseDef, definitionsDictionary,
@@ -50,7 +50,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
             if (toPatch.Count == 0)
                 return;
             var toRemove = PatchInstructions(localOperations, toPatch);
-            methodInterpreter.DeleteInstructions(toRemove);
+            interpreter.DeleteInstructions(toRemove);
         }
 
         private List<int> PatchInstructions(LocalOperation[] localOperations, IEnumerable<int> toPatch)

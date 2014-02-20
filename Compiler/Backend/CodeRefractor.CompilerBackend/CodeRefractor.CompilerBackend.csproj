@@ -73,6 +73,7 @@
     <Compile Include="Optimizations\ConstantFoldingAndPropagation\ComplexAssignments\RemoveDeadStoresInBlockOptimizationPass.cs" />
     <Compile Include="Optimizations\ConstantFoldingAndPropagation\ConstantVariableEvaluation.cs" />
     <Compile Include="Optimizations\ConstantFoldingAndPropagation\SimpleAssignment\DeleteAssignmentWithSelf.cs" />
+    <Compile Include="Optimizations\EscapeAndLowering\ClearInFunctionUnusedArguments.cs" />
     <Compile Include="Optimizations\EscapeAndLowering\InFunctionLoweringVars.cs" />
     <Compile Include="Optimizations\Inliner\InlineGetterAndSetterMethods.cs" />
     <Compile Include="Optimizations\Inliner\RemoveCallsToEmptyMethods.cs" />

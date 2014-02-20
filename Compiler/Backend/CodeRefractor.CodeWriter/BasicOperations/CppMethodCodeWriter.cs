@@ -18,15 +18,15 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 {
     public static class CppMethodCodeWriter
     {
-        public static string WriteCode(MethodInterpreter midRepresentation, TypeDescriptionTable typeTable)
+        public static string WriteCode(MethodInterpreter interpreter, TypeDescriptionTable typeTable)
         {
-            var operations = midRepresentation.MidRepresentation.LocalOperations;
+            var operations = interpreter.MidRepresentation.LocalOperations;
             var headerSb = new StringBuilder();
-            var sb = CppWriteSignature.WriteSignature(midRepresentation);
+            var sb = CppWriteSignature.WriteSignature(interpreter);
             headerSb.AppendLine(sb.ToString());
             headerSb.Append("{");
-            var bodySb = ComputeBodySb(operations, midRepresentation.MidRepresentation.Vars, typeTable);
-            var variablesSb = ComputeVariableSb(midRepresentation.MidRepresentation);
+            var bodySb = ComputeBodySb(operations, interpreter.MidRepresentation.Vars, typeTable, interpreter);
+            var variablesSb = ComputeVariableSb(interpreter.MidRepresentation, interpreter);
             var finalSb = new StringBuilder();
             finalSb.AppendLine(headerSb.ToString());
             finalSb.AppendLine(variablesSb.ToString());
@@ -34,19 +34,18 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             return finalSb.ToString();
         }
 
-        private static StringBuilder ComputeBodySb(List<LocalOperation> operations, MidRepresentationVariables vars, TypeDescriptionTable typeTable)
+        private static StringBuilder ComputeBodySb(List<LocalOperation> operations, MidRepresentationVariables vars, TypeDescriptionTable typeTable, MethodInterpreter interpreter)
         {
             var bodySb = new StringBuilder();
             foreach (var operation in operations)
             {
-                if (CppHandleOperators.HandleAssignmentOperations(vars, bodySb, operation, operation.Kind, typeTable))
+                if (CppHandleOperators.HandleAssignmentOperations(vars, bodySb, operation, operation.Kind, typeTable, interpreter))
                 {
                     bodySb.AppendLine();
                     continue;
                 }
                 switch (operation.Kind)
                 {
-
                     case OperationKind.Label:
                         WriteLabel(bodySb, (int)operation.Value);
                         break;
@@ -57,13 +56,13 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                         CppHandleBranches.HandleBranchOperator(operation, bodySb);
                         break;
                     case OperationKind.Call:
-                        CppHandleCalls.HandleCall(operation, bodySb, vars);
+                        CppHandleCalls.HandleCall(operation, bodySb, vars,interpreter);
                         break;
                     case OperationKind.CallInterface:
-                        CppHandleCalls.HandleCallInterface(operation, bodySb, vars);
+                        CppHandleCalls.HandleCallInterface(operation, bodySb, vars, interpreter);
                         break;
                     case OperationKind.CallVirtual:
-                        CppHandleCalls.HandleCallVirtual(operation, bodySb, vars);
+                        CppHandleCalls.HandleCallVirtual(operation, bodySb, vars, interpreter);
                         break;
                     case OperationKind.CallRuntime:
                         CppHandleCalls.HandleCallRuntime(operation, bodySb);
@@ -135,17 +134,17 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                             right.Id);
         }
 
-        private static StringBuilder ComputeVariableSb(MetaMidRepresentation midRepresentation)
+        private static StringBuilder ComputeVariableSb(MetaMidRepresentation midRepresentation, MethodInterpreter interpreter)
         {
             var variablesSb = new StringBuilder();
             var vars = midRepresentation.Vars;
             foreach (var variableInfo in vars.LocalVars)
             {
-                AddVariableContent(variablesSb, "{0} local_{1};", variableInfo, vars);
+                AddVariableContent(variablesSb, "{0} local_{1};", variableInfo, vars,interpreter);
             }
             foreach (var localVariable in vars.VirtRegs)
             {
-                AddVariableContent(variablesSb, "{0} vreg_{1};", localVariable, vars);
+                AddVariableContent(variablesSb, "{0} vreg_{1};", localVariable, vars,interpreter);
             }
             return variablesSb;
         }
@@ -160,9 +159,9 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             return parametersFormat;
         }
 
-        private static void AddVariableContent(StringBuilder variablesSb, string format, LocalVariable localVariable, MidRepresentationVariables vars)
+        private static void AddVariableContent(StringBuilder variablesSb, string format, LocalVariable localVariable, MidRepresentationVariables vars, MethodInterpreter interpreter)
         {
-            var localVariableData = vars.GetVariableData(localVariable);
+            var localVariableData = interpreter.AnalyzeProperties.GetVariableData(localVariable);
             if (localVariableData.Escaping == EscapingMode.Stack)
                 return;
             if (localVariable.ComputedType().ClrType.IsSubclassOf(typeof(MethodInfo)))

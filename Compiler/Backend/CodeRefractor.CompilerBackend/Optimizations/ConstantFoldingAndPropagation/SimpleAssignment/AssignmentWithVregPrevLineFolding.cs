@@ -13,9 +13,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
 {
     public class AssignmentWithVregPrevLineFolding : ResultingInFunctionOptimizationPass
     {
-        public override void OptimizeOperations(MethodInterpreter methodInterpreter)
+        public override void OptimizeOperations(MethodInterpreter interpreter)
         {
-            var operations = methodInterpreter.MidRepresentation.LocalOperations;
+            var operations = interpreter.MidRepresentation.LocalOperations;
 
             for (var index = operations.Count - 1; index >= 1; index--)
             {

@@ -22,9 +22,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
             return operations.GetOperations(OperationKind.Call).Length > 0;
         }
 
-        public override void OptimizeOperations(MethodInterpreter methodInterpreter)
+        public override void OptimizeOperations(MethodInterpreter interpreter)
         {
-            var useDef = methodInterpreter.MidRepresentation.UseDef;
+            var useDef = interpreter.MidRepresentation.UseDef;
             var operations = useDef.GetLocalOperations();
             var callIndices = useDef.GetOperations(OperationKind.Call);
             foreach (var i in callIndices)

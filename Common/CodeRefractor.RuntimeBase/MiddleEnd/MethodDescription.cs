@@ -10,7 +10,6 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         {
             IsStatic = true;
         }
-
         public TypeDescription DeclaringType { get; set; }
         public bool IsStatic { get; set; }
         public CallingConvention CallingConvention { get; set; }

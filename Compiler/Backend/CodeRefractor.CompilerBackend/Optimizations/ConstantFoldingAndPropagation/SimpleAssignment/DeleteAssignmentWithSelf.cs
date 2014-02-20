@@ -12,9 +12,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
 {
     internal class DeleteAssignmentWithSelf : ResultingInFunctionOptimizationPass
     {
-        public override void OptimizeOperations(MethodInterpreter methodInterpreter)
+        public override void OptimizeOperations(MethodInterpreter interpreter)
         {
-            var midRepresentation = methodInterpreter.MidRepresentation;
+            var midRepresentation = interpreter.MidRepresentation;
             var useDef = midRepresentation.UseDef;
 
             var assigns = useDef.GetOperations(OperationKind.Assignment);

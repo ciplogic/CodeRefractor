@@ -27,15 +27,15 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
             return result.ToArray();
         }
 
-        public override void OptimizeOperations(MethodInterpreter methodInterpreter)
+        public override void OptimizeOperations(MethodInterpreter interpreter)
         {
-            var localOperations = methodInterpreter.MidRepresentation.UseDef.GetLocalOperations();
-            var sortedLabelPos = BuildBlockOperations(methodInterpreter);
+            var localOperations = interpreter.MidRepresentation.UseDef.GetLocalOperations();
+            var sortedLabelPos = BuildBlockOperations(interpreter);
             var startPos = 0;
             var result = false;
             foreach (var labelPos in sortedLabelPos)
             {
-                result |= TryOptimizeBlock(methodInterpreter, startPos, labelPos - 1, localOperations);
+                result |= TryOptimizeBlock(interpreter, startPos, labelPos - 1, localOperations);
                 if (result)
                 {
                     Result = true;
@@ -43,7 +43,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
                 }
                 startPos = labelPos + 1;
             }
-            Result = TryOptimizeBlock(methodInterpreter, startPos, localOperations.Length - 1, localOperations);
+            Result = TryOptimizeBlock(interpreter, startPos, localOperations.Length - 1, localOperations);
         }
 
         private static List<int> BuildBlockOperations(MethodInterpreter methodInterpreter)

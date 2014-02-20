@@ -11,9 +11,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
 {
     internal class DeleteCallToConstructorOfObject : ResultingInFunctionOptimizationPass
     {
-        public override void OptimizeOperations(MethodInterpreter methodInterpreter)
+        public override void OptimizeOperations(MethodInterpreter interpreter)
         {
-            var midRepresentation = methodInterpreter.MidRepresentation;
+            var midRepresentation = interpreter.MidRepresentation;
             var useDef = midRepresentation.UseDef;
             var operations = useDef.GetLocalOperations();
             var localOps = midRepresentation.LocalOperations;
@@ -25,7 +25,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
                 var info = methodData.Info;
                 if (!info.IsConstructor) continue;
                 if (info.DeclaringType != typeof (object) &&
-                    info.DeclaringType != methodInterpreter.Method.DeclaringType) continue;
+                    info.DeclaringType != interpreter.Method.DeclaringType) continue;
                 localOps.RemoveAt(index);
                 Result = true;
                 return;

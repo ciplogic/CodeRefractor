@@ -13,9 +13,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
 {
     internal class OneAssignmentDeadStoreAssignment : ResultingInFunctionOptimizationPass
     {
-        public override void OptimizeOperations(MethodInterpreter methodInterpreter)
+        public override void OptimizeOperations(MethodInterpreter interpreter)
         {
-            var useDef = methodInterpreter.MidRepresentation.UseDef;
+            var useDef = interpreter.MidRepresentation.UseDef;
             var localOperations = useDef.GetLocalOperations();
             var constValues = GetAssignToConstOperations(localOperations, useDef);
 

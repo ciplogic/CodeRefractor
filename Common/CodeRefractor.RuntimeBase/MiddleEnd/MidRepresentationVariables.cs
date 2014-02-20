@@ -1,7 +1,9 @@
 #region Usings
 
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
@@ -11,45 +13,50 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 {
     public class MidRepresentationVariables
     {
-        public readonly List<LocalVariableInfo> Variables = new List<LocalVariableInfo>();
+        public readonly List<LocalVariableInfo> VariableInfos = new List<LocalVariableInfo>();
         public readonly List<ArgumentVariable> Arguments = new List<ArgumentVariable>();
         public List<LocalVariable> VirtRegs = new List<LocalVariable>();
         public readonly List<LocalVariable> LocalVars = new List<LocalVariable>();
 
-        public readonly Dictionary<string, VariableData> LocalVarEscaping = new Dictionary<string, VariableData>();
-
-        public void Setup()
+        public void SetupArguments(MethodBase _method)
         {
-            LocalVarEscaping.Clear();
-            foreach (var variable in Arguments)
+            var pos = 0;
+            var isConstructor = _method is ConstructorInfo;
+            if (isConstructor || !_method.IsStatic)
             {
-                RegisterVariable(variable);
+                Arguments.Add(
+                    new ArgumentVariable("_this")
+                    {
+                        FixedType = UsedTypeList.Set(_method.DeclaringType)
+                    });
             }
+            var argumentVariables = _method.GetParameters()
+                .Select(param => new ArgumentVariable(param.Name)
+                {
+                    FixedType = UsedTypeList.Set(param.ParameterType),
+                    Id = pos++
+                })
+                .ToArray();
+            Arguments.AddRange(argumentVariables);
+        }
 
-            foreach (var variable in VirtRegs)
+
+
+        public void SetupLocalVariables(MethodBase value)
+        {
+            VariableInfos.Clear();
+            VariableInfos.AddRange(value.GetMethodBody().LocalVariables);
+
+            var varsToAdd = VariableInfos.Select((v, index) => new LocalVariable
             {
-                RegisterVariable(variable);
-            }
-            foreach (var variable in LocalVars)
-            {
-                RegisterVariable(variable);
-            }
-        }
-
-        public void RegisterVariable(LocalVariable variable)
-        {
-            LocalVarEscaping[variable.Name] = new VariableData();
+                FixedType = UsedTypeList.Set(v.LocalType),
+                Id = index,
+                Kind = VariableKind.Local
+            }).ToList();
+            LocalVars.Clear();
+            LocalVars.AddRange(varsToAdd);
         }
 
 
-        public VariableData GetVariableData(string name)
-        {
-            return LocalVarEscaping[name];
-        }
-
-        public VariableData GetVariableData(LocalVariable variable)
-        {
-            return GetVariableData(variable.Name);
-        }
     }
 }

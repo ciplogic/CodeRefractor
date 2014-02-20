@@ -13,9 +13,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Jumps
 {
     internal class MergeConsecutiveLabels : ResultingInFunctionOptimizationPass
     {
-        public override void OptimizeOperations(MethodInterpreter methodInterpreter)
+        public override void OptimizeOperations(MethodInterpreter interpreter)
         {
-            var useDef = methodInterpreter.MidRepresentation.UseDef;
+            var useDef = interpreter.MidRepresentation.UseDef;
             var operations = useDef.GetLocalOperations();
 
             var labelIndices = useDef.GetOperations(OperationKind.Label);
@@ -32,7 +32,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Jumps
                 var jumpId = (int) operation.Value;
                 var jumpId2 = (int) operation2.Value;
                 OptimizeConsecutiveLabels(operations, jumpId, jumpId2);
-                methodInterpreter.DeleteInstructions(new[] {i + 1});
+                interpreter.DeleteInstructions(new[] {i + 1});
                 Result = true;
             }
         }

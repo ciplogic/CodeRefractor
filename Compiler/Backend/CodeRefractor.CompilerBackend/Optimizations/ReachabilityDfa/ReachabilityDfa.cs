@@ -14,9 +14,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ReachabilityDfa
 {
     public class ReachabilityLines : ResultingInFunctionOptimizationPass
     {
-        public override void OptimizeOperations(MethodInterpreter methodInterpreter)
+        public override void OptimizeOperations(MethodInterpreter interpreter)
         {
-            var useDef = methodInterpreter.MidRepresentation.UseDef;
+            var useDef = interpreter.MidRepresentation.UseDef;
             var operations = useDef.GetLocalOperations();
 
             var labelTable = useDef.GetLabelTable(true);
@@ -30,7 +30,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ReachabilityDfa
                 if (!reached.Contains(i))
                     toDelete.Add(i);
             }
-            methodInterpreter.DeleteInstructions(toDelete);
+            interpreter.DeleteInstructions(toDelete);
         }
 
         private void Interpret(int cursor, LocalOperation[] operations, Dictionary<int, int> labelTable,

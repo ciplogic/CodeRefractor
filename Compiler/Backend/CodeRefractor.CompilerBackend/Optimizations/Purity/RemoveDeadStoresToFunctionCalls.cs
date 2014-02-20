@@ -14,11 +14,11 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
 {
     internal class RemoveDeadStoresToFunctionCalls : ResultingInFunctionOptimizationPass
     {
-        public override void OptimizeOperations(MethodInterpreter methodInterpreter)
+        public override void OptimizeOperations(MethodInterpreter interpreter)
         {
-            var localOperations = methodInterpreter.MidRepresentation.LocalOperations.ToArray();
+            var localOperations = interpreter.MidRepresentation.LocalOperations.ToArray();
 
-            var calls = methodInterpreter.MidRepresentation.UseDef.GetOperations(OperationKind.Call);
+            var calls = interpreter.MidRepresentation.UseDef.GetOperations(OperationKind.Call);
             if (calls.Length == 0) return;
             var candidates = new Dictionary<LocalVariable, int>();
             foreach (var call in calls)
@@ -31,7 +31,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
 
             if (candidates.Count == 0)
                 return;
-            var useDef = methodInterpreter.MidRepresentation.UseDef;
+            var useDef = interpreter.MidRepresentation.UseDef;
             for (var index = 0; index < localOperations.Length; index++)
             {
                 var usages = useDef.GetUsages(index);

@@ -13,9 +13,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Jumps
 {
     public class RemoveUnreferencedLabels : ResultingInFunctionOptimizationPass
     {
-        public override void OptimizeOperations(MethodInterpreter methodInterpreter)
+        public override void OptimizeOperations(MethodInterpreter interpreter)
         {
-            var useDef = methodInterpreter.MidRepresentation.UseDef;
+            var useDef = interpreter.MidRepresentation.UseDef;
 
             var found = useDef.GetOperations(OperationKind.Label).Length != 0;
             if (!found)
@@ -25,7 +25,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Jumps
             operationIndexes.AddRange(useDef.GetOperations(OperationKind.AlwaysBranch));
             var operations = useDef.GetLocalOperations();
 
-            var candidateLabelTable = methodInterpreter.MidRepresentation.UseDef.GetLabelTable(true);
+            var candidateLabelTable = interpreter.MidRepresentation.UseDef.GetLabelTable(true);
 
             foreach (var index in operationIndexes)
             {
@@ -45,7 +45,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Jumps
                 return;
             var labelsToRemove = candidateLabelTable.Values.ToList();
 
-            methodInterpreter.DeleteInstructions(labelsToRemove);
+            interpreter.DeleteInstructions(labelsToRemove);
             Result = true;
         }
     }

@@ -20,13 +20,13 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
     /// </summary>
     internal class DoubleAssignPropagation : ResultingInFunctionOptimizationPass
     {
-        public override void OptimizeOperations(MethodInterpreter methodInterpreter)
+        public override void OptimizeOperations(MethodInterpreter interpreter)
         {
-            var localOperations = methodInterpreter.MidRepresentation.UseDef.GetLocalOperations();
+            var localOperations = interpreter.MidRepresentation.UseDef.GetLocalOperations();
             var toPatch = Analyze(localOperations);
             if (toPatch.Count == 0)
                 return;
-            ApplyOptimization(methodInterpreter, toPatch, localOperations);
+            ApplyOptimization(interpreter, toPatch, localOperations);
         }
 
         private void ApplyOptimization(MethodInterpreter methodInterpreter, List<int> toPatch,

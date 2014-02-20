@@ -19,12 +19,12 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 {
     internal static class CppHandleOperators
     {
-        public static bool HandleAssignmentOperations(MidRepresentationVariables vars, StringBuilder bodySb, LocalOperation operation, OperationKind kind, TypeDescriptionTable typeTable)
+        public static bool HandleAssignmentOperations(MidRepresentationVariables vars, StringBuilder bodySb, LocalOperation operation, OperationKind kind, TypeDescriptionTable typeTable, MethodInterpreter interpreter)
         {
             switch (kind)
             {
                 case OperationKind.Assignment:
-                    HandleAssign(bodySb, operation, vars, typeTable);
+                    HandleAssign(bodySb, operation, vars, typeTable,interpreter);
                     break;
                 case OperationKind.BinaryOperator:
                     HandleOperator(operation.Value, bodySb);
@@ -36,7 +36,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                     HandleSetField(operation, bodySb);
                     break;
                 case OperationKind.GetField:
-                    HandleLoadField(operation, bodySb, vars);
+                    HandleLoadField(operation, bodySb,interpreter);
                     break;
                 case OperationKind.SetStaticField:
                     HandleSetStaticField(operation, bodySb);
@@ -45,17 +45,17 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                     HandleLoadStaticField(operation, bodySb);
                     break;
                 case OperationKind.GetArrayItem:
-                    HandleReadArrayItem(operation, bodySb, vars);
+                    HandleReadArrayItem(operation, bodySb,interpreter);
                     break;
 
                 case OperationKind.SetArrayItem:
-                    HandleSetArrayValue(operation, bodySb, vars);
+                    HandleSetArrayValue(operation, bodySb, interpreter);
                     break;
                 case OperationKind.NewObject:
-                    HandleNewObject(operation, bodySb, vars, typeTable);
+                    HandleNewObject(operation, bodySb, vars, typeTable, interpreter);
                     break;
                 case OperationKind.NewArray:
-                    HandleNewArray(operation, bodySb, vars);
+                    HandleNewArray(operation, bodySb, interpreter);
                     break;
                 case OperationKind.AddressOfArrayItem:
                     HandleGetAddressOfArrayItem(operation, bodySb);
@@ -83,13 +83,13 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         }
 
 
-        private static void HandleAssign(StringBuilder sb, LocalOperation operation, MidRepresentationVariables vars, TypeDescriptionTable typeTable)
+        private static void HandleAssign(StringBuilder sb, LocalOperation operation, MidRepresentationVariables vars, TypeDescriptionTable typeTable, MethodInterpreter interpreter)
         {
             var assignment = (Assignment)operation.Value;
 
             if (assignment.Right is NewConstructedObject)
             {
-                HandleNewObject(operation, sb, vars, typeTable);
+                HandleNewObject(operation, sb, vars, typeTable, interpreter);
                 return;
             }
             var assignedTo = assignment.AssignedTo;
@@ -106,8 +106,8 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                         return;
                     }
                 }
-                var assignedToData = vars.GetVariableData(assignedTo);
-                var localVariableData = vars.GetVariableData(localVariable);
+                var assignedToData = interpreter.AnalyzeProperties.GetVariableData(assignedTo);
+                var localVariableData = interpreter.AnalyzeProperties.GetVariableData(localVariable);
                 var rightVar = localVariable;
                 if (assignedToData.Escaping == localVariableData.Escaping
                     || assignedTo.ComputedType().ClrTypeCode != TypeCode.Object)
@@ -497,11 +497,11 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         }
 
 
-        private static void HandleSetArrayValue(LocalOperation operation, StringBuilder sb, MidRepresentationVariables vars)
+        private static void HandleSetArrayValue(LocalOperation operation, StringBuilder sb, MethodInterpreter interpreter)
         {
             var assignment = (Assignment)operation.Value;
             var arrayItem = (ArrayVariable)assignment.AssignedTo;
-            var variableData = vars.GetVariableData(arrayItem.Parent);
+            var variableData = interpreter.AnalyzeProperties.GetVariableData(arrayItem.Parent);
             switch (variableData.Escaping)
             {
                 case EscapingMode.Stack:
@@ -519,12 +519,12 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             }
         }
 
-        private static void HandleReadArrayItem(LocalOperation operation, StringBuilder bodySb, MidRepresentationVariables vars)
+        private static void HandleReadArrayItem(LocalOperation operation, StringBuilder bodySb,MethodInterpreter interpreter)
         {
             var value = (Assignment)operation.Value;
             var valueSrc = (ArrayVariable)value.Right;
             var parentType = valueSrc.Parent.ComputedType();
-            var variableData = vars.GetVariableData(value.AssignedTo);
+            var variableData = interpreter.AnalyzeProperties.GetVariableData(value.AssignedTo);
             switch (variableData.Escaping)
             {
                 case EscapingMode.Smart:
@@ -544,17 +544,17 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             }
         }
 
-        private static void HandleLoadField(LocalOperation operation, StringBuilder bodySb, MidRepresentationVariables vars)
+        private static void HandleLoadField(LocalOperation operation, StringBuilder bodySb, MethodInterpreter interpreter)
         {
             var fieldGetterInfo = (FieldGetter)operation.Value;
             var assignedFrom = fieldGetterInfo.Instance;
-            var assignedFromData = vars.GetVariableData(assignedFrom);
+            var assignedFromData = interpreter.AnalyzeProperties.GetVariableData(assignedFrom);
             var isOnStack = assignedFromData.Escaping == EscapingMode.Stack;
             var fieldText = String.Format(isOnStack ? "{0}.{1}" : "{0}->{1}", fieldGetterInfo.Instance.Name,
                 fieldGetterInfo.FieldName.ValidName());
 
             var assignedTo = fieldGetterInfo.AssignedTo;
-            var assignedToData = vars.GetVariableData(assignedTo);
+            var assignedToData = interpreter.AnalyzeProperties.GetVariableData(assignedTo);
             switch (assignedToData.Escaping)
             {
                 case EscapingMode.Smart:
@@ -576,13 +576,12 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 fieldSetter.FieldName.ValidName(), assign.Right.Name);
         }
 
-        private static void HandleNewArray(LocalOperation operation, StringBuilder bodySb,
-            MidRepresentationVariables vars)
+        private static void HandleNewArray(LocalOperation operation, StringBuilder bodySb, MethodInterpreter interpreter)
         {
             var assignment = (Assignment)operation.Value;
             var arrayData = (NewArrayObject)assignment.Right;
 
-            var assignedData = vars.GetVariableData(assignment.AssignedTo);
+            var assignedData = interpreter.AnalyzeProperties.GetVariableData(assignment.AssignedTo);
             switch (assignedData.Escaping)
             {
                 case EscapingMode.Stack:
@@ -601,7 +600,8 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         }
 
 
-        private static void HandleNewObject(LocalOperation operation, StringBuilder bodySb, MidRepresentationVariables vars, TypeDescriptionTable typeTable)
+        private static void HandleNewObject(LocalOperation operation, StringBuilder bodySb, MidRepresentationVariables vars, 
+            TypeDescriptionTable typeTable, MethodInterpreter interpreter)
         {
             var value = (Assignment)operation.Value;
             var rightValue = (NewConstructedObject)value.Right;
@@ -609,7 +609,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 
             var declaringType = localValue.DeclaringType;
             var cppName = declaringType.ToDeclaredVariableType(true, EscapingMode.Stack);
-            var assignedData = vars.GetVariableData(value.AssignedTo);
+            var assignedData = interpreter.AnalyzeProperties.GetVariableData(value.AssignedTo);
             bool isStack = assignedData.Escaping == EscapingMode.Stack;
             if (isStack)
             {

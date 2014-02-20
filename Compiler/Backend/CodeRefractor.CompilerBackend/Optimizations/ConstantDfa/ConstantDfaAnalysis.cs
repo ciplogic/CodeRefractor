@@ -19,10 +19,10 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantDfa
         private LocalOperation[] _operations;
         private DfaPointOfAnalysis[] _pointsOfAnalysis;
 
-        public override void OptimizeOperations(MethodInterpreter methodInterpreter)
+        public override void OptimizeOperations(MethodInterpreter interpreter)
         {
-            _operations = methodInterpreter.MidRepresentation.LocalOperations.ToArray();
-            _labelTable = methodInterpreter.MidRepresentation.UseDef.GetLabelTable();
+            _operations = interpreter.MidRepresentation.LocalOperations.ToArray();
+            _labelTable = interpreter.MidRepresentation.UseDef.GetLabelTable();
             _pointsOfAnalysis = new DfaPointOfAnalysis[_operations.Length + 1];
 
             var startingConclusions = new DfaPointOfAnalysis();

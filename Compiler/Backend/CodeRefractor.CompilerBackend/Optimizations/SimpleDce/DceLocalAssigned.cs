@@ -13,20 +13,20 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
 {
     public class DceLocalAssigned : ResultingInFunctionOptimizationPass
     {
-        public override void OptimizeOperations(MethodInterpreter methodInterpreter)
+        public override void OptimizeOperations(MethodInterpreter interpreter)
         {
-            var operations = methodInterpreter.MidRepresentation.UseDef.GetLocalOperations();
+            var operations = interpreter.MidRepresentation.UseDef.GetLocalOperations();
             var vregConstants = new HashSet<int>();
-            foreach (var localVariable in methodInterpreter.MidRepresentation.Vars.LocalVars)
+            foreach (var localVariable in interpreter.MidRepresentation.Vars.LocalVars)
                 vregConstants.Add(localVariable.Id);
 
-            var useDef = methodInterpreter.MidRepresentation.UseDef;
+            var useDef = interpreter.MidRepresentation.UseDef;
             RemoveCandidatesInDefinitions(operations, vregConstants, useDef);
             RemoveCandidatesInUsages(operations, vregConstants, useDef);
             if (vregConstants.Count == 0)
                 return;
 
-            OptimizeUnusedLocals(vregConstants, methodInterpreter.MidRepresentation.Vars);
+            OptimizeUnusedLocals(vregConstants, interpreter.MidRepresentation.Vars);
         }
 
         #region Remove candidates

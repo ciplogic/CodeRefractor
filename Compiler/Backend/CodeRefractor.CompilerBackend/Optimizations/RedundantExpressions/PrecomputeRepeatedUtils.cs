@@ -42,9 +42,10 @@ namespace CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions
             return (MethodData) localOperations[index].Value;
         }
 
-        public static LocalVariable CreateCacheVariable(this MetaMidRepresentation midRepresentation,
+        public static LocalVariable CreateCacheVariable(this MethodInterpreter interpreter,
             TypeDescription computedType)
         {
+            var midRepresentation = interpreter.MidRepresentation;
             var max = midRepresentation.Vars.VirtRegs.Max(vreg => vreg.Id) + 1;
             var cacheVariable = new LocalVariable()
             {
@@ -54,7 +55,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions
             };
 
             midRepresentation.Vars.VirtRegs.Add(cacheVariable);
-            midRepresentation.Vars.RegisterVariable(cacheVariable);
+            interpreter.AnalyzeProperties.RegisterVariable(cacheVariable);
             return cacheVariable;
         }
 

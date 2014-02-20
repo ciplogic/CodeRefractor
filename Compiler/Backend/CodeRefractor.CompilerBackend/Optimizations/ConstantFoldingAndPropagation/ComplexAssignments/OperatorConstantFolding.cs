@@ -14,9 +14,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
 {
     public class OperatorConstantFolding : ResultingInFunctionOptimizationPass
     {
-        public override void OptimizeOperations(MethodInterpreter methodInterpreter)
+        public override void OptimizeOperations(MethodInterpreter interpreter)
         {
-            var intermediateCode = methodInterpreter.MidRepresentation;
+            var intermediateCode = interpreter.MidRepresentation;
 
             var localOperations = intermediateCode.LocalOperations.ToArray();
             var binaryOperations = intermediateCode.UseDef.GetOperations(OperationKind.BinaryOperator);

@@ -19,10 +19,10 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
 {
     internal class InFunctionLoweringVars : ResultingInFunctionOptimizationPass
     {
-        public override void OptimizeOperations(MethodInterpreter methodInterpreter)
+        public override void OptimizeOperations(MethodInterpreter interpreter)
         {
             var candidateVariables = new HashSet<LocalVariable>();
-            var midRepresentation = methodInterpreter.MidRepresentation;
+            var midRepresentation = interpreter.MidRepresentation;
             var variables = midRepresentation.Vars;
             var toAdd = variables.LocalVars.Where(varId => !varId.ComputedType().ClrType.IsPrimitive);
             candidateVariables.AddRange(toAdd);
@@ -45,14 +45,14 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
                 return;
             foreach (var variable in candidateVariables)
             {
-                var variableData = variables.GetVariableData(variable.Name);
+                var variableData = interpreter.AnalyzeProperties.GetVariableData(variable);
                 variableData.Escaping = EscapingMode.Pointer;
             }
-            AllocateVariablesOnStack(localOp, candidateVariables, variables);
+            AllocateVariablesOnStack(localOp, candidateVariables, variables,interpreter);
         }
 
         private static void AllocateVariablesOnStack(LocalOperation[] localOp, HashSet<LocalVariable> candidateVariables,
-            MidRepresentationVariables variables)
+            MidRepresentationVariables variables,MethodInterpreter interpreter)
         {
             var newOps = localOp.Where(op =>
                 op.Kind == OperationKind.NewArray
@@ -66,7 +66,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
                     continue;
 
                 if (!candidateVariables.Contains(variable)) continue;
-                var variableData = variables.GetVariableData(variable.Name);
+                var variableData = interpreter.AnalyzeProperties.GetVariableData(variable);
                 variableData.Escaping = EscapingMode.Stack;
             }
         }

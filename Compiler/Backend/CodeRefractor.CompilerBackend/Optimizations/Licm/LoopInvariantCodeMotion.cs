@@ -20,9 +20,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Licm
             return loopStarts.Count != 0;
         }
 
-        public override void OptimizeOperations(MethodInterpreter methodInterpreter)
+        public override void OptimizeOperations(MethodInterpreter interpreter)
         {
-            var midRepresentation = methodInterpreter.MidRepresentation;
+            var midRepresentation = interpreter.MidRepresentation;
             var useDef = midRepresentation.UseDef;
             var loopStarts = LoopDetection.FindLoops(midRepresentation);
             foreach (var loopStart in loopStarts)

@@ -4,6 +4,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers
     {
         Smart,
         Pointer,
-        Stack
+        Stack,
+        Unused
     }
 }
