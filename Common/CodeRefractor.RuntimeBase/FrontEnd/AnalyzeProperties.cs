@@ -13,7 +13,7 @@ namespace CodeRefractor.RuntimeBase.FrontEnd
         public bool IsReadOnly { get; set; }
 
 
-        public readonly Dictionary<LocalVariable, VariableData> LocalVarEscaping = new Dictionary<LocalVariable, VariableData>();
+        public readonly Dictionary<LocalVariable, EscapingMode> LocalVarEscaping = new Dictionary<LocalVariable, EscapingMode>();
         public void Setup(List<ArgumentVariable> arguments,List<LocalVariable> virtRegs,List<LocalVariable> localVars)
         {
             LocalVarEscaping.Clear();
@@ -34,12 +34,19 @@ namespace CodeRefractor.RuntimeBase.FrontEnd
 
         public void RegisterVariable(LocalVariable variable)
         {
-            LocalVarEscaping[variable] = new VariableData();
+            LocalVarEscaping[variable] = EscapingMode.Smart;
         }
 
-        public VariableData GetVariableData(LocalVariable variable)
+        public EscapingMode GetVariableData(LocalVariable variable)
         {
+            EscapingMode result;
+            if (!LocalVarEscaping.TryGetValue(variable, out result))
+                return EscapingMode.Smart;
             return LocalVarEscaping[variable];
+        }
+        public void SetVariableData(LocalVariable variable, EscapingMode escaping)
+        {
+            LocalVarEscaping[variable] = escaping;
         }
     }
 }

@@ -91,14 +91,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 
             }
 
-            var removeUnusedArguments = new ClearInFunctionUnusedArguments();
-            Parallel.ForEach(methodClosures, methodInterpreter =>
-            //foreach (var methodInterpreter in methodClosures)
-            {
-                removeUnusedArguments.Optimize(methodInterpreter);
-            }
-                 );
-
+            
         }
 
         public StringBuilder BuildFullSourceCode()

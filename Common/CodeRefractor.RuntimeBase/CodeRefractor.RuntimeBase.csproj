@@ -74,7 +74,6 @@
     <Compile Include="MiddleEnd\RuntimeLibraryDescription.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\Identifiers\EscapingMode.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\RefArrayItemAssignment.cs" />
-    <Compile Include="MiddleEnd\VariableData.cs" />
     <Compile Include="Runtime\RuntimeLibraryUtils.cs" />
     <Compile Include="TypeNamerUtils.cs" />
     <Compile Include="CrTypeResolver.cs" />

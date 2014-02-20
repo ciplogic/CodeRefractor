@@ -43,7 +43,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
             {
                 var variableData = interpreter.AnalyzeProperties.GetVariableData(variable);
                 if (!escapingBools[variable.Id])
-                    variableData.Escaping = EscapingMode.Pointer;
+                   interpreter.AnalyzeProperties.SetVariableData(variable, EscapingMode.Pointer);
             }
             return false;
         }

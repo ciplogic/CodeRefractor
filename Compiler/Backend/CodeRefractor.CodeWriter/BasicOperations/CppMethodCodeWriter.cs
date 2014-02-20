@@ -162,7 +162,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         private static void AddVariableContent(StringBuilder variablesSb, string format, LocalVariable localVariable, MidRepresentationVariables vars, MethodInterpreter interpreter)
         {
             var localVariableData = interpreter.AnalyzeProperties.GetVariableData(localVariable);
-            if (localVariableData.Escaping == EscapingMode.Stack)
+            if (localVariableData == EscapingMode.Stack)
                 return;
             if (localVariable.ComputedType().ClrType.IsSubclassOf(typeof(MethodInfo)))
             {
@@ -173,10 +173,10 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                     .AppendLine();
                 return;
             }
-            if (localVariableData.Escaping == EscapingMode.Pointer)
+            if (localVariableData == EscapingMode.Pointer)
             {
                 var cppName = localVariable.ComputedType()
-                    .ClrType.ToDeclaredVariableType(true, localVariableData.Escaping);
+                    .ClrType.ToDeclaredVariableType(true, localVariableData);
                 variablesSb
                     .AppendFormat(format, cppName, localVariable.Id)
                     .AppendLine();
@@ -184,7 +184,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             }
             variablesSb
                 .AppendFormat(format, localVariable.ComputedType()
-                .ClrType.ToDeclaredVariableType(true, localVariableData.Escaping), localVariable.Id)
+                .ClrType.ToDeclaredVariableType(true, localVariableData), localVariable.Id)
                 .AppendLine();
         }
 

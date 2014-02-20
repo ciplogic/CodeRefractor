@@ -82,7 +82,7 @@ System_Int32 local_5;
 System_Boolean local_6;
 std::shared_ptr<Game_ImplBase> vreg_2;
 std::shared_ptr<Game_ImplBaseB> vreg_4;
-std::shared_ptr<Game_Base> vreg_6;
+Game_Base * vreg_6;
 System_Int32 vreg_8;
 System_Int32 vreg_9;
 
@@ -102,7 +102,7 @@ vreg_8 = local_4->Length;
 vreg_9 = (int)vreg_8;
 goto label_58;
 label_37:
-vreg_6 = (*local_4)[local_5];
+vreg_6 = ((*local_4)[local_5]).get();
 Game_Base_ToImplement_vcall(vreg_6);
 local_5 = local_5+1;
 label_58:

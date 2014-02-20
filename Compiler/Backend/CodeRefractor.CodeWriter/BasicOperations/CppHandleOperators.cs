@@ -109,16 +109,16 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 var assignedToData = interpreter.AnalyzeProperties.GetVariableData(assignedTo);
                 var localVariableData = interpreter.AnalyzeProperties.GetVariableData(localVariable);
                 var rightVar = localVariable;
-                if (assignedToData.Escaping == localVariableData.Escaping
+                if (assignedToData == localVariableData
                     || assignedTo.ComputedType().ClrTypeCode != TypeCode.Object)
                 {
                     sb.AppendFormat("{0} = {1};", assignedTo.Name, rightVar.Name);
                     return;
                 }
-                switch (assignedToData.Escaping)
+                switch (assignedToData)
                 {
                     case EscapingMode.Pointer:
-                        switch (localVariableData.Escaping)
+                        switch (localVariableData)
                         {
                             case EscapingMode.Stack:
                                 sb.AppendFormat("{0} = &{1};", assignedTo.Name, rightVar.Name);
@@ -502,7 +502,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             var assignment = (Assignment)operation.Value;
             var arrayItem = (ArrayVariable)assignment.AssignedTo;
             var variableData = interpreter.AnalyzeProperties.GetVariableData(arrayItem.Parent);
-            switch (variableData.Escaping)
+            switch (variableData)
             {
                 case EscapingMode.Stack:
                     sb.AppendFormat("{0}[{1}] = {2}; ",
@@ -525,7 +525,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             var valueSrc = (ArrayVariable)value.Right;
             var parentType = valueSrc.Parent.ComputedType();
             var variableData = interpreter.AnalyzeProperties.GetVariableData(value.AssignedTo);
-            switch (variableData.Escaping)
+            switch (variableData)
             {
                 case EscapingMode.Smart:
                     bodySb.AppendFormat(parentType.ClrType.IsClass
@@ -549,13 +549,13 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             var fieldGetterInfo = (FieldGetter)operation.Value;
             var assignedFrom = fieldGetterInfo.Instance;
             var assignedFromData = interpreter.AnalyzeProperties.GetVariableData(assignedFrom);
-            var isOnStack = assignedFromData.Escaping == EscapingMode.Stack;
+            var isOnStack = assignedFromData == EscapingMode.Stack;
             var fieldText = String.Format(isOnStack ? "{0}.{1}" : "{0}->{1}", fieldGetterInfo.Instance.Name,
                 fieldGetterInfo.FieldName.ValidName());
 
             var assignedTo = fieldGetterInfo.AssignedTo;
             var assignedToData = interpreter.AnalyzeProperties.GetVariableData(assignedTo);
-            switch (assignedToData.Escaping)
+            switch (assignedToData)
             {
                 case EscapingMode.Smart:
                     bodySb.AppendFormat("{0} = {1};", assignedTo.Name, fieldText);
@@ -582,7 +582,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             var arrayData = (NewArrayObject)assignment.Right;
 
             var assignedData = interpreter.AnalyzeProperties.GetVariableData(assignment.AssignedTo);
-            switch (assignedData.Escaping)
+            switch (assignedData)
             {
                 case EscapingMode.Stack:
                     bodySb.AppendFormat("Array <{1}> {0} ({2}); ",
@@ -610,7 +610,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             var declaringType = localValue.DeclaringType;
             var cppName = declaringType.ToDeclaredVariableType(true, EscapingMode.Stack);
             var assignedData = interpreter.AnalyzeProperties.GetVariableData(value.AssignedTo);
-            bool isStack = assignedData.Escaping == EscapingMode.Stack;
+            bool isStack = assignedData == EscapingMode.Stack;
             if (isStack)
             {
                 bodySb

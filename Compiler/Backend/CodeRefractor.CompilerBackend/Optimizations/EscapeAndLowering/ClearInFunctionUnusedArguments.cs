@@ -11,8 +11,21 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
         {
             var midRepresentation = interpreter.MidRepresentation;
             var useDef = midRepresentation.UseDef;
-            var argList = midRepresentation.Vars.Arguments.Select(a=>(LocalVariable)a).ToList();
+            var arguments = midRepresentation.Vars.Arguments;
+            if(arguments.Count==0)
+                return;
+            var properties = interpreter.AnalyzeProperties;
+            var argList = arguments
+                .Select(a=>(LocalVariable)a)
+                .Where(argVar=>properties.GetVariableData(argVar)!=EscapingMode.Unused)
+                .ToList();
+            var oldCount = argList.Count;
             useDef.ComputeUnusedArguments(argList);
+            foreach (var variable in argList)
+            {
+                properties.SetVariableData(variable, EscapingMode.Unused);
+            }
+            Result = argList.Count != oldCount;
         }
     }
 }

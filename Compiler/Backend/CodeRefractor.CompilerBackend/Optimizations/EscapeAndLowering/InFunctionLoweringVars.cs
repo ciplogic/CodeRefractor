@@ -45,8 +45,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
                 return;
             foreach (var variable in candidateVariables)
             {
-                var variableData = interpreter.AnalyzeProperties.GetVariableData(variable);
-                variableData.Escaping = EscapingMode.Pointer;
+                interpreter.AnalyzeProperties.SetVariableData(variable, EscapingMode.Pointer);
             }
             AllocateVariablesOnStack(localOp, candidateVariables, variables,interpreter);
         }
@@ -67,7 +66,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
 
                 if (!candidateVariables.Contains(variable)) continue;
                 var variableData = interpreter.AnalyzeProperties.GetVariableData(variable);
-                variableData.Escaping = EscapingMode.Stack;
+
+                interpreter.AnalyzeProperties.SetVariableData(variable, EscapingMode.Stack);
             }
         }
 

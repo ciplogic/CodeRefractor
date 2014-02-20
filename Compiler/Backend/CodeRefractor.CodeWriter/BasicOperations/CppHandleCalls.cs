@@ -135,7 +135,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 }
 
                 var localValueData = interpreter.AnalyzeProperties.GetVariableData(localValue);
-                switch (localValueData.Escaping)
+                switch (localValueData)
                 {
                     case EscapingMode.Smart:
                         if (!isEscaping && localValue.ComputedType().ClrType.IsClass)
