@@ -46,12 +46,16 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <WarningLevel>4</WarningLevel>
+    <Optimize>false</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'OpenRaTryCompile|x86'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\x86\OpenRaTryCompile\</OutputPath>
     <PlatformTarget>x86</PlatformTarget>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <WarningLevel>4</WarningLevel>
+    <Optimize>false</Optimize>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -143,7 +147,7 @@
       <Name>CodeRefractor.RuntimeBase</Name>
     </ProjectReference>
     <ProjectReference Include="..\CodeRefractor.CodeWriter\CodeRefractor.CodeWriter.csproj">
-      <Project>{a6b506a2-a2a2-461a-8977-df6f37d2e977}</Project>
+      <Project>{A6B506A2-A2A2-461A-8977-DF6F37D2E977}</Project>
       <Name>CodeRefractor.CodeWriter</Name>
     </ProjectReference>
   </ItemGroup>
