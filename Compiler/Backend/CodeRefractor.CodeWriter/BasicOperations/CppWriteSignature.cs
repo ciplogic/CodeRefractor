@@ -16,7 +16,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 
         public static string GetMethodDescriptor(this MethodBase method)
         {
-            return CrRuntimeLibrary.GetMethodDescription(method);
+			return CrRuntimeLibrary.Instance.GetMethodDescription(method);
         } 
         public static string GetArgumentsAsTextWithEscaping(this MethodBase method)
         {

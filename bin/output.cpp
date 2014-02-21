@@ -1,26 +1,26 @@
 #include "sloth.h"
 struct System_Object; 
-struct System_Console; 
 struct Game_App; 
 struct Game_Base; 
-struct System_String; 
-struct Game_ImplBaseB; 
 struct Game_ImplBase; 
+struct Game_ImplBaseB; 
+struct System_Console; 
+struct System_String; 
 struct System_Object {
 int _typeId;
-};
-struct System_Console : public System_Object {
 };
 struct Game_App : public System_Object {
 };
 struct Game_Base : public System_Object {
 };
-struct System_String : public System_Object {
- std::shared_ptr< Array < System_Char > > Text;
+struct Game_ImplBase : public Game_Base {
 };
 struct Game_ImplBaseB : public Game_Base {
 };
-struct Game_ImplBase : public Game_Base {
+struct System_Console : public System_Object {
+};
+struct System_String : public System_Object {
+ std::shared_ptr< Array < System_Char > > Text;
 };
 
 System_Void Game_App_Main();
@@ -48,11 +48,11 @@ Game_Base_ToImplementVirtPtr methods_Game_Base_ToImplement[2];
 void Game_Base_ToImplement_vcall(const std::shared_ptr<Game_Base> &_this){
 switch(_this->_typeId)
 {
-case 1:
-Game_ImplBaseB_ToImplement(_this);
-return;
-case 2:
+case 3:
 Game_ImplBase_ToImplement(_this);
+return;
+case 4:
+Game_ImplBaseB_ToImplement(_this);
 return;
 }
 }
@@ -61,7 +61,7 @@ Game_ImplBase_InterfaceMethodVirtPtr methods_Game_ImplBase_InterfaceMethod[1];
 void Game_ImplBase_InterfaceMethod_vcall(const std::shared_ptr<Game_ImplBase> &_this){
 switch(_this->_typeId)
 {
-case 2:
+case 3:
 Game_ImplBase_InterfaceMethod(_this);
 return;
 }
@@ -79,7 +79,6 @@ System_Void Game_App_Main()
 Game_ImplBase * local_1;
 Array < std::shared_ptr<Game_Base> > * local_4;
 System_Int32 local_5;
-System_Boolean local_6;
 std::shared_ptr<Game_ImplBase> vreg_2;
 std::shared_ptr<Game_ImplBaseB> vreg_4;
 Game_Base * vreg_6;
@@ -88,26 +87,25 @@ System_Int32 vreg_9;
 
 Array <std::shared_ptr<Game_Base>> vreg_1 (2); 
 vreg_2 = std::make_shared<Game_ImplBase >();
-vreg_2->_typeId = 2;
+vreg_2->_typeId = 3;
 Game_ImplBase_ctor(vreg_2.get());
 local_1 = (vreg_2).get();
 vreg_1[0] = vreg_2; 
 vreg_4 = std::make_shared<Game_ImplBaseB >();
-vreg_4->_typeId = 1;
+vreg_4->_typeId = 4;
 Game_ImplBaseB_ctor(vreg_4.get());
 vreg_1[1] = vreg_4; 
 local_4 = &vreg_1;
 local_5 = 0;
 vreg_8 = local_4->Length;
 vreg_9 = (int)vreg_8;
-goto label_58;
-label_37:
+goto label_60;
+label_40:
 vreg_6 = ((*local_4)[local_5]).get();
 Game_Base_ToImplement_vcall(vreg_6);
 local_5 = local_5+1;
-label_58:
-local_6 = (local_5 < vreg_9)?1:0;
-if(local_6) goto label_37;
+label_60:
+if(vreg_9<local_5) goto label_40;
 Game_ImplBase_InterfaceMethod_vcall(local_1);
 return;
 }
@@ -182,11 +180,11 @@ const wchar_t _stringTable[43] = {
 }; // _stringTable 
 
 void setupTypeTable(){
-virt_typeId_Game_Base_ToImplement[0] = 1;
-methods_Game_Base_ToImplement[0] = (Game_Base_ToImplementVirtPtr)Game_ImplBaseB_ToImplement;
-virt_typeId_Game_Base_ToImplement[1] = 2;
-methods_Game_Base_ToImplement[1] = (Game_Base_ToImplementVirtPtr)Game_ImplBase_ToImplement;
-virt_typeId_Game_ImplBase_InterfaceMethod[0] = 2;
+virt_typeId_Game_Base_ToImplement[0] = 3;
+methods_Game_Base_ToImplement[0] = (Game_Base_ToImplementVirtPtr)Game_ImplBase_ToImplement;
+virt_typeId_Game_Base_ToImplement[1] = 4;
+methods_Game_Base_ToImplement[1] = (Game_Base_ToImplementVirtPtr)Game_ImplBaseB_ToImplement;
+virt_typeId_Game_ImplBase_InterfaceMethod[0] = 3;
 methods_Game_ImplBase_InterfaceMethod[0] = (Game_ImplBase_InterfaceMethodVirtPtr)Game_ImplBase_InterfaceMethod;
 }
 

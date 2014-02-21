@@ -7,15 +7,19 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
     public class MethodInterpreterKey
     {
         private readonly MethodInterpreter _interpreter;
-        private readonly int _hash;
+        private int _hash;
         private readonly string _methodName;
         private readonly Type[] _parameterList;
 
+		public Type DeclaringType { get; set; }
+		public Type ImplementingType { get; set; }
 
-        public MethodInterpreterKey(MethodInterpreter interpreter)
+		public MethodInterpreterKey(MethodInterpreter interpreter, Type implementingType = null)
         {
             _interpreter = interpreter;
-            var methodBase = _interpreter.Method;
+			var methodBase = _interpreter.Method;
+			DeclaringType = methodBase.DeclaringType;
+			ImplementingType = implementingType ?? methodBase.DeclaringType;
             _methodName = methodBase.Name;
 
             var parameterList = new List<Type>();
@@ -27,8 +31,35 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 parameterList.Add(returnType);
             _parameterList = parameterList.ToArray();
 
-            _hash = ComputeHash();
+			RecomputeHash ();
         }
+
+
+		public void MapTypes(Dictionary<Type, Type> mappedTypes)
+		{
+			var reversedMap = mappedTypes.ReversedTypeMap ();
+			for (int i = 0; i < _parameterList.Length; i++)
+			{
+				var par = _parameterList [i];
+				_parameterList [i] = GetMappingType (par, reversedMap);
+			}
+			DeclaringType = GetMappingType (DeclaringType, reversedMap);
+			RecomputeHash ();		
+		} 
+
+		void RecomputeHash ()
+		{
+			_hash = ComputeHash ();
+		}
+
+		static Type GetMappingType(Type type, Dictionary<Type, Type> mappedTypes)
+		{
+			Type result;
+			if (!mappedTypes.TryGetValue (type, out result))
+				return type;
+			return result;
+		}
+
 
         private int ComputeHash()
         {
@@ -49,6 +80,17 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         {
             return _hash;
         }
+
+		public override string ToString ()
+		{
+			var declaringType = DeclaringType.ToCppMangling ();
+			var functionParams = _parameterList
+				.Select (par => par.ToCppMangling ())
+				.ToArray();
+			var paramString = string.Join(", ", functionParams); 
+			return string.Format (
+				"{0}.{1}({2})", declaringType, _methodName, paramString);
+		}
 
         public override bool Equals(object obj)
         {

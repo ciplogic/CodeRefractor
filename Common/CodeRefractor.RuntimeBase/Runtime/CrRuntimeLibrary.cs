@@ -15,6 +15,8 @@ namespace CodeRefractor.RuntimeBase.Runtime
 {
     public class CrRuntimeLibrary{
         public readonly Dictionary<Type, Type> MappedTypes = new Dictionary<Type, Type>();
+		public Dictionary<MethodInterpreterKey, MethodInterpreter> SupportedMethods = 
+			new Dictionary<MethodInterpreterKey, MethodInterpreter>();
 
         private static readonly CrRuntimeLibrary StaticInstance = new CrRuntimeLibrary();
         public static CrRuntimeLibrary Instance
@@ -29,17 +31,20 @@ namespace CodeRefractor.RuntimeBase.Runtime
                 var mapTypeAttr = item.GetCustomAttribute<MapTypeAttribute>();
                 if (mapTypeAttr == null) continue;
                 MappedTypes[mapTypeAttr.MappedType] = item;
-                ScanMethodFunctions(item);
             }
+			foreach (var item in MappedTypes) 
+			{
+				ScanMethodFunctions(item.Value, item.Key);
+			}
         }
 
-        private static void ScanMethodFunctions(Type item)
+		private void ScanMethodFunctions(Type item, Type mappedType)
         {
-            ScanType(item);
-            ScanTypeForCilMethods(item);
+			ScanType(item, mappedType);
+			ScanTypeForCilMethods(item, mappedType);
         }
 
-        private static void ScanTypeForCilMethods(Type item)
+		private void ScanTypeForCilMethods(Type item, Type mappedType)
         {
             var methodsToScan = new List<MethodBase>();
             methodsToScan.AddRange(item.GetMethods());
@@ -50,6 +55,10 @@ namespace CodeRefractor.RuntimeBase.Runtime
                 if (methodNativeDescription == null)
                     continue;
                 var interpreter = methodInfo.Register();
+				var iKey = interpreter.ToKey (item);
+				iKey.MapTypes (Instance.MappedTypes);
+				
+				Instance.SupportedMethods [iKey] = interpreter;
                 MetaLinker.Interpret(interpreter);
                 var dependencies = MetaLinker.ComputeDependencies(methodInfo);
                 foreach (var dependency in dependencies)
@@ -58,7 +67,8 @@ namespace CodeRefractor.RuntimeBase.Runtime
                 }
             }
         }
-        private static void ScanCppMethod(MethodBase method)
+
+		private void ScanCppMethod(MethodBase method, Type mappedType)
         {
             var methodNativeDescription = method.GetCustomAttribute<CppMethodBodyAttribute>();
             if (methodNativeDescription == null) return;
@@ -75,13 +85,12 @@ namespace CodeRefractor.RuntimeBase.Runtime
 
         }
 
-        public static string GetMethodDescription(MethodBase methodInfo)
+        public string GetMethodDescription(MethodBase methodInfo)
         {
             var methodBase  = methodInfo.GetReversedMethod();
 
             return methodBase.GenerateKey();
         }
-
 
         public Type GetReverseType(Type type)
         {
@@ -107,11 +116,11 @@ namespace CodeRefractor.RuntimeBase.Runtime
             return result;
         }
 
-        private static void ScanType(Type item)
+		private void ScanType(Type item, Type mappedType)
         {
             var methods = item.GetMethods();
             foreach (var method in methods)
-                ScanCppMethod(method);
+				ScanCppMethod(method, mappedType);
         }
     }
 }

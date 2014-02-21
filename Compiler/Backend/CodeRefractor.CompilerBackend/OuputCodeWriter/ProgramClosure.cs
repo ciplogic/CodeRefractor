@@ -13,6 +13,7 @@ using CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.FrontEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd;
+using CodeRefractor.RuntimeBase.Runtime;
 
 #endregion
 
@@ -28,7 +29,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 
         VirtualMethodTable _virtualMethodTable;
 
-        public ProgramClosure(MethodInfo entryMethod)
+		public ProgramClosure(MethodInfo entryMethod, CrRuntimeLibrary runtimeLibrary)
         {
             EntryInterpreter = entryMethod.Register();
 

@@ -33,7 +33,8 @@ namespace CodeRefractor.Compiler
             var asm = Assembly.LoadFile(inputAssemblyName);
             var definition = asm.EntryPoint;
             var start = Environment.TickCount;
-            var programClosure = new ProgramClosure(definition);
+			var runtime = CrRuntimeLibrary.Instance;
+			var programClosure = new ProgramClosure(definition, runtime);
             var sb = programClosure.BuildFullSourceCode();
             var end = Environment.TickCount - start;
             Console.WriteLine("Compilation time: {0} ms", end);
