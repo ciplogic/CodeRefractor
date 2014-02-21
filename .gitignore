@@ -1,3 +1,5 @@
+*.mdb
+*~
 _ReSharper*
 bin/*.dll
 Common/CodeRefractor.RuntimeBase/obj
