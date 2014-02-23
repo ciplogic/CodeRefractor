@@ -17,16 +17,7 @@ namespace CodeRefractor.CompilerBackend.Linker
         public static bool ReadPurity(MethodBase methodBase)
         {
             var method = methodBase.GetInterpreter();
-            if (method != null)
-            {
-                return AnalyzeFunctionPurity.ReadPurity(method);
-            }
-
-            var methodRuntimeInfo = methodBase.GetMethodDescriptor();
-            if (!LinkerInterpretersTable.RuntimeMethods.ContainsKey(methodRuntimeInfo))
-                return false;
-            var runtimeMethod = LinkerInterpretersTable.RuntimeMethods[methodRuntimeInfo];
-            return runtimeMethod.GetCustomAttribute<PureMethodAttribute>() != null;
+            return AnalyzeFunctionPurity.ReadPurity(method);
         }
 
         public static bool ReadNoStaticSideEffects(MethodBase methodBase)

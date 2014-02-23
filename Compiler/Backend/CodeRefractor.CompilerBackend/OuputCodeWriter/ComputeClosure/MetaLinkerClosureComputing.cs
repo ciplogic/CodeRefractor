@@ -22,9 +22,9 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
             return GetClosureDictionary(entryPoints).Values.ToList();
         }
 
-        private static Dictionary<string, MethodInterpreter> GetClosureDictionary(this MethodInterpreter entryPoints)
+        private static Dictionary<MethodInterpreterKey, MethodInterpreter> GetClosureDictionary(this MethodInterpreter entryPoints)
         {
-            var result = new Dictionary<string, MethodInterpreter> {{entryPoints.ToString(), entryPoints}};
+            var result = new Dictionary<MethodInterpreterKey, MethodInterpreter> { { entryPoints.ToKey(), entryPoints } };
             UpdateMethodEntryClosure(entryPoints, result);
             return result;
         }
@@ -37,13 +37,13 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
         } 
         public static List<MethodInterpreter> GetMultiMethodsClosure(this List<MethodInterpreter> entryPoints)
         {
-            var results = new List<Dictionary<string, MethodInterpreter>>();
+            var results = new List<Dictionary<MethodInterpreterKey, MethodInterpreter>>();
             foreach (var interpreter in entryPoints)
             {
                 var result = GetClosureDictionary(interpreter);
                 results.Add(result);
             }
-            var finalResult = new Dictionary<string, MethodInterpreter>();
+            var finalResult = new Dictionary<MethodInterpreterKey, MethodInterpreter>();
             foreach (var result in results)
             {
                 foreach (var entry in result)
@@ -55,7 +55,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
         }
 
         public static void UpdateMethodEntryClosure(MethodInterpreter entryPoint,
-            Dictionary<string, MethodInterpreter> result)
+            Dictionary<MethodInterpreterKey, MethodInterpreter> result)
         {
             var useDef = entryPoint.MidRepresentation.UseDef;
             var ops = useDef.GetLocalOperations();
@@ -73,7 +73,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
             HandleGenerics(result, toAdd);
         }
 
-        private static void HandleGenerics(Dictionary<string, MethodInterpreter> result, List<MethodInterpreter> toAdd)
+        private static void HandleGenerics(Dictionary<MethodInterpreterKey, MethodInterpreter> result, List<MethodInterpreter> toAdd)
         {
             foreach (var interpreter in toAdd)
             {
@@ -88,7 +88,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
             }
         }
 
-        private static void HandleTypeInitializers(Dictionary<string, MethodInterpreter> result,
+        private static void HandleTypeInitializers(Dictionary<MethodInterpreterKey, MethodInterpreter> result,
             List<MethodInterpreter> toAdd)
         {
             foreach (var it in toAdd)
@@ -99,15 +99,14 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
                 declaringType = declaringType.GetReversedType();
                 if (declaringType.TypeInitializer == null) continue;
                 var info = declaringType.TypeInitializer;
-                var descInfo = info.GetMethodDescriptor();
-
+                
                 var interpreter = info.GetInterpreter();
-                result[descInfo] = interpreter;
+                result[interpreter.ToKey()] = interpreter;
                 UpdateMethodEntryClosure(interpreter, result);
             }
         }
 
-        private static void HandleLoadFunctionInstructions(Dictionary<string, MethodInterpreter> result,
+        private static void HandleLoadFunctionInstructions(Dictionary<MethodInterpreterKey, MethodInterpreter> result,
             LocalOperation[] localOperations, List<MethodInterpreter> toAdd)
         {
             if (localOperations.Length == 0)
@@ -116,18 +115,15 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
             {
                 var functionPointer = (FunctionPointerStore) localOperation.Value;
                 var info = functionPointer.FunctionPointer;
-                var descInfo = info.GetMethodDescriptor();
-                if (result.ContainsKey(descInfo))
-                    continue;
                 var interpreter = info.GetInterpreter();
                 if (interpreter == null)
                     continue;
-                result[descInfo] = interpreter;
+                result[interpreter.ToKey()] = interpreter;
                 toAdd.Add(interpreter);
             }
         }
 
-        private static List<MethodInterpreter> HandleCallInstructions(Dictionary<string, MethodInterpreter> result,
+        private static List<MethodInterpreter> HandleCallInstructions(Dictionary<MethodInterpreterKey, MethodInterpreter> result,
             LocalOperation[] localOperations)
         {
             var toAdd = new List<MethodInterpreter>();
@@ -140,7 +136,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
                 if (info.DeclaringType == typeof (object)
                     || info.DeclaringType == typeof (IntPtr))
                     continue;
-                var descInfo = info.GetMethodDescriptor();
+                var descInfo = methodData.Interpreter.ToKey();
                 if (result.ContainsKey(descInfo))
                     continue;
                 var interpreter = info.Register();
