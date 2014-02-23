@@ -17,10 +17,10 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
             var midRepresentation = interpreter.MidRepresentation;
             var useDef = midRepresentation.UseDef;
 
-            var assigns = useDef.GetOperations(OperationKind.Assignment);
+            var assigns = useDef.GetOperationsOfKind(OperationKind.Assignment);
             if (assigns.Length == 0)
                 return;
-            var localOps = midRepresentation.LocalOperations.ToArray();
+            var localOps = useDef.GetLocalOperations();
             var toRemove = new List<int>();
             foreach (var index in assigns)
             {

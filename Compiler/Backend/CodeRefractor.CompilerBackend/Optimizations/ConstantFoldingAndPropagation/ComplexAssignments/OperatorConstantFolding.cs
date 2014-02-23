@@ -19,10 +19,10 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
             var intermediateCode = interpreter.MidRepresentation;
 
             var localOperations = intermediateCode.LocalOperations.ToArray();
-            var binaryOperations = intermediateCode.UseDef.GetOperations(OperationKind.BinaryOperator);
+            var binaryOperations = intermediateCode.UseDef.GetOperationsOfKind(OperationKind.BinaryOperator);
             ComputeBinaryOperations(binaryOperations, localOperations);
 
-            var unaryOperations = intermediateCode.UseDef.GetOperations(OperationKind.UnaryOperator);
+            var unaryOperations = intermediateCode.UseDef.GetOperationsOfKind(OperationKind.UnaryOperator);
             ComputeUnaryOperations(unaryOperations, localOperations);
         }
 

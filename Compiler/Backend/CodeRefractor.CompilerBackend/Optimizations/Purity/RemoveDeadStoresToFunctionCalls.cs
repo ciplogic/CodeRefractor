@@ -18,7 +18,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
         {
             var localOperations = interpreter.MidRepresentation.LocalOperations.ToArray();
 
-            var calls = interpreter.MidRepresentation.UseDef.GetOperations(OperationKind.Call);
+            var calls = interpreter.MidRepresentation.UseDef.GetOperationsOfKind(OperationKind.Call);
             if (calls.Length == 0) return;
             var candidates = new Dictionary<LocalVariable, int>();
             foreach (var call in calls)

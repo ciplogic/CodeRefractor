@@ -21,13 +21,15 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
             var localOperations = useDef.GetLocalOperations();
 
             var toRemove = new List<int>();
-            var callIndices = useDef.GetOperations(OperationKind.Call);
+            var callIndices = useDef.GetOperationsOfKind(OperationKind.Call);
             foreach (var index in callIndices)
             {
                 var operation = localOperations[index];
                 var methodData = operation.Get<MethodData>();
                 var interpreter = methodData.GetInterpreter();
                 if (interpreter == null)
+                    continue;
+                if(methodData.Result!=null)
                     continue;
                 var properties = interpreter.AnalyzeProperties;
                 if (properties.IsReadOnly || properties.IsPure)

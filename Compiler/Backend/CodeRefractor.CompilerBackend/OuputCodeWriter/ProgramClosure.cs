@@ -10,10 +10,10 @@ using CodeRefactor.OpenRuntime;
 using CodeRefractor.CodeWriter.TypeInfoWriter;
 using CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering;
 using CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure;
+using CodeRefractor.CompilerBackend.ProgramWideOptimizations;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.FrontEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd;
-using CodeRefractor.RuntimeBase.Runtime;
 
 #endregion
 
@@ -24,17 +24,19 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
         public List<Type> UsedTypes;
         public MethodInterpreter EntryInterpreter { get; set; }
         public Dictionary<MethodInterpreterKey, MethodInterpreter> MethodClosure = new Dictionary<MethodInterpreterKey, MethodInterpreter>();
-        private TypeDescriptionTable _typeTable;
-        private Dictionary<Type, int> _typeDictionary;
+        private readonly Dictionary<Type, int> _typeDictionary;
 
         VirtualMethodTable _virtualMethodTable;
 
-		public ProgramClosure(MethodInfo entryMethod, CrRuntimeLibrary runtimeLibrary)
+        public ProgramClosure(MethodInfo entryMethod, ProgramOptimizationsTable table)
         {
             EntryInterpreter = entryMethod.Register();
 
             BuildMethodClosure();
             MetaLinkerOptimizer.ApplyOptimizations(MethodClosure.Values.ToList());
+            if(table.Optimize(this))
+                MetaLinkerOptimizer.ApplyOptimizations(MethodClosure.Values.ToList());
+
             BuildMethodClosure();
             if (!UsedTypes.Contains(typeof (CrString)))
             {
@@ -46,10 +48,10 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             }
             TypesClosureLinker.SortTypeClosure(UsedTypes);
 
-            _typeTable = new TypeDescriptionTable(UsedTypes);
-            _typeDictionary = _typeTable.ExtractInformation();
+            var typeTable = new TypeDescriptionTable(UsedTypes);
+            _typeDictionary = typeTable.ExtractInformation();
 
-            BuildVirtualMethodTable(_typeTable);
+            BuildVirtualMethodTable(typeTable);
         }
 
         private void BuildVirtualMethodTable(TypeDescriptionTable typeTable)

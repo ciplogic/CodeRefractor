@@ -51,9 +51,6 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             sb.AppendLine(PlatformInvokeCodeWriter.LoadDllMethods());
             sb.AppendLine(ConstByteArrayList.BuildConstantTable());
             sb.AppendLine(LinkingData.Instance.Strings.BuildStringTable());
-
-
-            sb.AppendLine(virtualMethodTableCodeWriter.GenerateVirtualFunctionMappingCode());
             
             return sb;
         }

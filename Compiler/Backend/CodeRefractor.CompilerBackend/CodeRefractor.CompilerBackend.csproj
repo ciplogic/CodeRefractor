@@ -79,6 +79,7 @@
     <Compile Include="Optimizations\ConstantFoldingAndPropagation\SimpleAssignment\DeleteAssignmentWithSelf.cs" />
     <Compile Include="Optimizations\EscapeAndLowering\ClearInFunctionUnusedArguments.cs" />
     <Compile Include="Optimizations\EscapeAndLowering\InFunctionLoweringVars.cs" />
+    <Compile Include="Optimizations\EscapeAndLowering\ReplaceCallsToFunctionsWithUnusedArguments.cs" />
     <Compile Include="Optimizations\Inliner\InlineGetterAndSetterMethods.cs" />
     <Compile Include="Optimizations\Inliner\RemoveCallsToEmptyMethods.cs" />
     <Compile Include="Optimizations\Licm\LoopDetection.cs" />
@@ -134,6 +135,10 @@
     <Compile Include="OuputCodeWriter\ProgramClosure.cs" />
     <Compile Include="OuputCodeWriter\ComputeClosure\TypesClosureLinker.cs" />
     <Compile Include="ProgramWideOptimizations\ProgramOptimizationBase.cs" />
+    <Compile Include="ProgramWideOptimizations\ProgramOptimizationsTable.cs" />
+    <Compile Include="ProgramWideOptimizations\ConstParameters\CallToFunctionsWithSameConstant.cs" />
+    <Compile Include="ProgramWideOptimizations\ConstParameters\ConstantParametersData.cs" />
+    <Compile Include="ProgramWideOptimizations\ResultingProgramOptimizationBase.cs" />
     <Compile Include="ProgramWideOptimizations\Virtual\DevirtualizerIfOneImplemetor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

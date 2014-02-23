@@ -19,19 +19,19 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
         {
             var operations = midRepresentation.MidRepresentation.UseDef;
 
-            return operations.GetOperations(OperationKind.Call).Length > 0;
+            return operations.GetOperationsOfKind(OperationKind.Call).Length > 0;
         }
 
         public override void OptimizeOperations(MethodInterpreter interpreter)
         {
             var useDef = interpreter.MidRepresentation.UseDef;
             var operations = useDef.GetLocalOperations();
-            var callIndices = useDef.GetOperations(OperationKind.Call);
+            var callIndices = useDef.GetOperationsOfKind(OperationKind.Call);
             foreach (var i in callIndices)
             {
                 var operation = operations[i];
                 var operationData = ComputeAndEvaluatePurityOfCall(operation);
-                if (!operationData.IsPure || !operationData.IsStatic)
+                if (!operationData.Interpreter.AnalyzeProperties.IsPure || !operationData.IsStatic)
                     continue;
                 var methodInfo = operationData.Info;
                 var constParams = new List<object>();
@@ -57,7 +57,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
             var methodInterpreter = operationData.Info.GetInterpreter();
             if (AnalyzeFunctionPurity.ReadPurity(methodInterpreter))
             {
-                operationData.IsPure = true;
+                operationData.Interpreter.AnalyzeProperties.IsPure = true;
             }
             else
             {
@@ -67,12 +67,12 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
                 }
                 if (methodInterpreter.Kind != MethodKind.Default)
                 {
-                    operationData.IsPure = false;
+                    operationData.Interpreter.AnalyzeProperties.IsPure = false;
                     return operationData;
                 }
                 var computeIsPure = AnalyzeFunctionPurity.ComputeFunctionPurity(methodInterpreter);
                 if (computeIsPure)
-                    operationData.IsPure = true;
+                    operationData.Interpreter.AnalyzeProperties.IsPure = true;
             }
             return operationData;
         }

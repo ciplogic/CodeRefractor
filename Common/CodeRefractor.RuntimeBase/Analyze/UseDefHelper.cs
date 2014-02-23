@@ -15,6 +15,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
 {
     public static class UseDefHelper
     {
+        #region GetUsages
         public static List<LocalVariable> GetUsages(this LocalOperation operation)
         {
             var result = new List<LocalVariable>(2);
@@ -184,6 +185,9 @@ namespace CodeRefractor.RuntimeBase.Analyze
             return operation.Value as Assignment;
         }
 
+        #endregion  //GetUsages
+
+        #region GetDefinition
         public static LocalVariable GetDefinition(this LocalOperation operation)
         {
             var kind = operation.Kind;
@@ -229,9 +233,36 @@ namespace CodeRefractor.RuntimeBase.Analyze
             }
         }
 
-        public static List<int> GetVariableUsages(this MetaMidRepresentation representation, LocalVariable variable)
+        #endregion
+
+        public static HashSet<LocalVariable> GetAllUsedVariables(MethodInterpreter interpreter, bool includeDefinitions = false)
         {
-            return representation.LocalOperations.GetVariableUsages(variable);
+            var useDef = interpreter.MidRepresentation.UseDef;
+            return GetAllUsedVariables(useDef, includeDefinitions);
+        }
+
+        public static HashSet<LocalVariable> GetAllUsedVariables(this UseDefDescription useDef,bool includeDefinitions=false)
+        {
+            var result = new HashSet<LocalVariable>();
+            var operations = useDef.GetLocalOperations();
+            for (int index = 0; index < operations.Length; index++)
+            {
+                var op = operations[index];
+                var usages = useDef.GetUsages(index);
+                foreach (var usage in usages)
+                {
+                    result.Add(usage);
+                }
+                if (includeDefinitions)
+                {
+                    var definition = useDef.GetDefinition(index);
+                    if (definition != null)
+                    {
+                        result.Add(definition);
+                    }
+                }
+            }
+            return result;
         }
 
         public static List<int> GetVariableUsages(this IList<LocalOperation> localOperations, LocalVariable variable)
@@ -256,6 +287,20 @@ namespace CodeRefractor.RuntimeBase.Analyze
             return result;
         }
 
+        public static void SwitchAllUsagesWithDefinition(this MethodInterpreter interpreter, LocalVariable usageVariable,
+            IdentifierValue definitionIdentifier)
+        {
+            var midRep = interpreter.MidRepresentation;
+            var localOperations = midRep.UseDef.GetLocalOperations();
+            foreach (var operation in localOperations)
+            {
+                operation.SwitchUsageWithDefinition(usageVariable, definitionIdentifier);
+            }
+
+            midRep.UpdateUseDef();
+
+        }
+        #region SwitchUsageWithDefinition
         public static void SwitchUsageWithDefinition(this LocalOperation op, LocalVariable usageVariable,
             IdentifierValue definitionIdentifier)
         {
@@ -523,5 +568,6 @@ namespace CodeRefractor.RuntimeBase.Analyze
                 opAssignment.Right = definitionIdentifier;
             }
         }
+        #endregion // SwitchUsageWithDefinition
     }
 }

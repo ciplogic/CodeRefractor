@@ -17,7 +17,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
             var useDef = midRepresentation.UseDef;
             var operations = useDef.GetLocalOperations();
             var localOps = midRepresentation.LocalOperations;
-            var callIndices = useDef.GetOperations(OperationKind.Call);
+            var callIndices = useDef.GetOperationsOfKind(OperationKind.Call);
             foreach (var index in callIndices)
             {
                 var op = operations[index];

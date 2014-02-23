@@ -1,11 +1,12 @@
 using System.Linq;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
+using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
 namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
 {
-    internal class ClearInFunctionUnusedArguments : ResultingInFunctionOptimizationPass
+    internal class ClearInFunctionUnusedArguments : ResultingGlobalOptimizationPass
     {
         public override void OptimizeOperations(MethodInterpreter interpreter)
         {
@@ -19,13 +20,12 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
                 .Select(a=>(LocalVariable)a)
                 .Where(argVar=>properties.GetVariableData(argVar)!=EscapingMode.Unused)
                 .ToList();
-            var oldCount = argList.Count;
-            useDef.ComputeUnusedArguments(argList);
+            argList = UseDefDescription.ComputeUnusedArguments(argList, useDef);
             foreach (var variable in argList)
             {
                 properties.SetVariableData(variable, EscapingMode.Unused);
+                Result = true;
             }
-            Result = argList.Count != oldCount;
         }
     }
 }

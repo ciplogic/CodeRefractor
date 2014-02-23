@@ -50,8 +50,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
                 ).ToArray();
             if (toDelete.Length == 0)
                 return;
-
             interpreter.MidRepresentation.DeleteInstructions(toDelete);
+            Result = true;
         }
     }
 }

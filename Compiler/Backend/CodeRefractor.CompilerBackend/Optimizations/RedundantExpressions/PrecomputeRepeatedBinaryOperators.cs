@@ -17,7 +17,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions
         public override bool OptimizeBlock(MethodInterpreter midRepresentation, int startRange, int endRange,
             LocalOperation[] operations)
         {
-            var localOperations = midRepresentation.MidRepresentation.LocalOperations.ToArray();
+            var localOperations = midRepresentation.MidRepresentation.UseDef.GetLocalOperations();
             var calls = FindBinaryOperators(localOperations, startRange, endRange);
             if (calls.Count < 2)
                 return false;

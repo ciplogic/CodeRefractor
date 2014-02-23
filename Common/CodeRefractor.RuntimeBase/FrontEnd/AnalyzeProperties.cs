@@ -48,5 +48,16 @@ namespace CodeRefractor.RuntimeBase.FrontEnd
         {
             LocalVarEscaping[variable] = escaping;
         }
+
+        public bool[] GetUsedArguments(List<ArgumentVariable> arguments)
+        {
+            var result = new bool[arguments.Count];
+            for (int index = 0; index < arguments.Count; index++)
+            {
+                var argument = arguments[index];
+                result[index] = GetVariableData(argument) != EscapingMode.Unused;
+            }
+            return result;
+        }
     }
 }

@@ -104,7 +104,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
                 new ReachabilityLines(),
                 new DceVRegUnused(),
                 new LoopInvariantCodeMotion(),
-                new ClearInFunctionUnusedArguments()
+                new ClearInFunctionUnusedArguments(),
+                new ReplaceCallsToFunctionsWithUnusedArguments(), 
             }.ToList();
         }
     }

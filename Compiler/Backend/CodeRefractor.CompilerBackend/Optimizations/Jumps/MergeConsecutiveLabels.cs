@@ -18,7 +18,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Jumps
             var useDef = interpreter.MidRepresentation.UseDef;
             var operations = useDef.GetLocalOperations();
 
-            var labelIndices = useDef.GetOperations(OperationKind.Label);
+            var labelIndices = useDef.GetOperationsOfKind(OperationKind.Label);
             var found = labelIndices.Length == 0;
             if (!found)
                 return;

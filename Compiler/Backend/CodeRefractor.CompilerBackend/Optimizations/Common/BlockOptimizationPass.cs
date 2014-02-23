@@ -50,9 +50,9 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
         {
             var useDef = methodInterpreter.MidRepresentation.UseDef;
             var result = new List<int>();
-            result.AddRange(useDef.GetOperations(OperationKind.Label));
-            result.AddRange(useDef.GetOperations(OperationKind.BranchOperator));
-            result.AddRange(useDef.GetOperations(OperationKind.AlwaysBranch));
+            result.AddRange(useDef.GetOperationsOfKind(OperationKind.Label));
+            result.AddRange(useDef.GetOperationsOfKind(OperationKind.BranchOperator));
+            result.AddRange(useDef.GetOperationsOfKind(OperationKind.AlwaysBranch));
             result.Sort();
             return result;
         }

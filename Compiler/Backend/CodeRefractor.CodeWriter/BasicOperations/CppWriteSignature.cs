@@ -16,36 +16,45 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 
         public static string GetMethodDescriptor(this MethodBase method)
         {
-			return CrRuntimeLibrary.Instance.GetMethodDescription(method);
-        } 
-        public static string GetArgumentsAsTextWithEscaping(this MethodBase method)
+            return CrRuntimeLibrary.GetMethodDescription(method);
+        }
+        public static string GetArgumentsAsTextWithEscaping(this MethodInterpreter interpreter)
         {
+            MethodBase method = interpreter.Method;
             var parameterInfos = method.GetParameters();
             var escapingBools = method.BuildEscapingBools();
             var sb = new StringBuilder();
             var index = 0;
+            var analyze = interpreter.AnalyzeProperties;
             if (!method.IsStatic)
             {
-                var argumentTypeDescription = UsedTypeList.Set(method.DeclaringType.GetMappedType());
-                var thisText = String.Format("const {0}& _this", argumentTypeDescription.ClrType.ToCppName(true));
-                if (!escapingBools[0])
+                var parameterData = analyze.GetVariableData(new ArgumentVariable("_this"));
+                if(parameterData!=EscapingMode.Unused)
                 {
-                    thisText = String.Format("{0} _this", argumentTypeDescription.ClrType.ToCppName(true, EscapingMode.Pointer));
+                    var argumentTypeDescription = UsedTypeList.Set(method.DeclaringType.GetMappedType());
+                    var thisText = String.Format("const {0}& _this", argumentTypeDescription.ClrType.ToCppName(true));
+                    if (!escapingBools[0])
+                    {
+                        thisText = String.Format("{0} _this", argumentTypeDescription.ClrType.ToCppName(true, EscapingMode.Pointer));
+                    }
+                    sb.Append(thisText);
+                    index++;
                 }
-                sb.Append(thisText);
-                index++;
             }
             var isFirst = index == 0;
-
             for (index = 0; index < parameterInfos.Length; index++)
             {
+                var parameterInfo = parameterInfos[index];
+                var parameterData = analyze.GetVariableData(new ArgumentVariable(parameterInfo.Name));
+                if(parameterData == EscapingMode.Unused)
+                    continue;
+                
                 if (isFirst)
                     isFirst = false;
                 else
                 {
                     sb.Append(", ");
                 }
-                var parameterInfo = parameterInfos[index];
                 var isSmartPtr = escapingBools[index];
                 var nonEscapingMode = isSmartPtr ? EscapingMode.Smart : EscapingMode.Pointer;
                 var argumentTypeDescription = UsedTypeList.Set(parameterInfo.ParameterType.GetMappedType());
@@ -57,8 +66,9 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         }
 
 
-        public static string WriteHeaderMethodWithEscaping(this MethodBase methodBase, bool writeEndColon = true)
+        public static string WriteHeaderMethodWithEscaping(this MethodInterpreter interpreter, bool writeEndColon = true)
         {
+            MethodBase methodBase = interpreter.Method;
             var retType = methodBase.GetReturnType().ToCppName(true);
 
             var sb = new StringBuilder();
@@ -71,7 +81,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                     sb.AppendLine(genericTypeCount.GetTypeTemplatePrefix());
             }
 
-            var arguments = methodBase.GetArgumentsAsTextWithEscaping();
+            var arguments = interpreter.GetArgumentsAsTextWithEscaping();
 
             sb.AppendFormat("{0} {1}({2})",
                             retType, methodBase.ClangMethodSignature(), arguments);
@@ -87,7 +97,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             var sb = new StringBuilder();
             if (interpreter == null)
                 return sb;
-            var text = interpreter.Method.WriteHeaderMethodWithEscaping(writeEndColon);
+            var text = interpreter.WriteHeaderMethodWithEscaping(writeEndColon);
             sb.Append(text);
             return sb;
         }

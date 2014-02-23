@@ -27,8 +27,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != typeof (LocalVariable)) return false;
-            return Equals((LocalVariable) obj);
+            var variable = obj as LocalVariable;
+            return variable != null && Equals(variable);
         }
 
         public override string FormatVar()

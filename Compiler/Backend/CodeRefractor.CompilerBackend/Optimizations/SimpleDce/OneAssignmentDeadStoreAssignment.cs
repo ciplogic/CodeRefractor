@@ -44,7 +44,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
         private Dictionary<LocalVariable, ConstValue> GetAssignToConstOperations(LocalOperation[] localOperations, UseDefDescription useDef)
         {
             var constValues = new Dictionary<LocalVariable, ConstValue>();
-            var assignmentIds = useDef.GetOperations(OperationKind.Assignment);
+            var assignmentIds = useDef.GetOperationsOfKind(OperationKind.Assignment);
             foreach (var index in assignmentIds)
             {
                 var op = localOperations[index];

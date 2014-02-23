@@ -75,7 +75,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                 {
                     var interpreter = methodBase;
                     //Console.WriteLine("Optimize globally: {0}", methodBase);
-                    doOptimize = MethodInterpreterCodeWriter.ApplyLocalOptimizations(
+                    doOptimize |= MethodInterpreterCodeWriter.ApplyLocalOptimizations(
                         CommandLineParse.SortedOptimizations[OptimizationKind.Global], interpreter);
                 }
             } while (doOptimize);

@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using CodeRefractor.CodeWriter.BasicOperations;
 using CodeRefractor.CodeWriter.Platform;
 using CodeRefractor.CodeWriter.TypeInfoWriter;
@@ -54,14 +55,22 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
             {
                 interpreter.MidRepresentation.UpdateUseDef();
                 didOptimize = false;
+                var useDef = interpreter.MidRepresentation.UseDef;
                 foreach (var optimizationPass in optimizationsList)
                 {
+                    var optimizationName = optimizationPass.GetType().Name;
                     if (!optimizationPass.CheckPreconditions(interpreter))
                         continue;
+                    var prevCount = interpreter.MidRepresentation.LocalOperations.Count;
                     didOptimize = optimizationPass.Optimize(interpreter);
+
+                    var actualCount = interpreter.MidRepresentation.LocalOperations.Count;
+                    if (!didOptimize && actualCount != prevCount)
+                    {
+                        Console.WriteLine("Wrong optimization code: {0}", optimizationName);
+                    }
                     if (!didOptimize) continue;
                     interpreter.MidRepresentation.UpdateUseDef();
-                    //var optimizationName = optimizationPass.GetType().Name;
                     //Console.WriteLine(String.Format("Applied optimization: {0}", optimizationName));
                     result = true;
                     break;

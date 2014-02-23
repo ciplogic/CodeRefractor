@@ -1,5 +1,5 @@
-using System;
 using System.Collections.Generic;
+using System.Linq;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
@@ -11,16 +11,9 @@ namespace CodeRefractor.RuntimeBase.Analyze
         private volatile LocalVariable[] _definitions = { };
 
         private Dictionary<int, int> _labelTable;
-        private Dictionary<OperationKind, int[]> _instructionMix = new Dictionary<OperationKind, int[]>();
+        private readonly Dictionary<OperationKind, int[]> _instructionMix = new Dictionary<OperationKind, int[]>();
         private LocalOperation[] _operations;
 
-
-        private readonly HashSet<string> _unusedArguments = new HashSet<string>();
-
-        public HashSet<string> UnusedArguments
-        {
-            get { return _unusedArguments; }
-        }
 
         public void Update(LocalOperation[] operations)
         {
@@ -37,7 +30,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
 
         private void UpdateLabelsTable(LocalOperation[] operations)
         {
-            var labelOperations = GetOperations(OperationKind.Label);
+            var labelOperations = GetOperationsOfKind(OperationKind.Label);
 
             _labelTable = InstructionsUtils.BuildLabelTable(operations, labelOperations);
         }
@@ -51,27 +44,19 @@ namespace CodeRefractor.RuntimeBase.Analyze
             }
         }
 
-        public void ComputeUnusedArguments(List<LocalVariable> argList)
+        public static List<LocalVariable> ComputeUnusedArguments(
+            List<LocalVariable> argList,
+            UseDefDescription useDef)
         {
+            var allUsages = useDef.GetAllUsedVariables();
+            var stillUnused = new List<LocalVariable>();
             var unusedArguments = new HashSet<LocalVariable>(argList);
-            for (int index = 0; index < _operations.Length; index++)
+            foreach (var unusedArgument in unusedArguments)
             {
-                var usages = GetUsages(index);
-                var definition = GetDefinition(index);
-                if (definition != null)
-                    unusedArguments.Remove(definition);
-                foreach (var usage in usages)
-                {
-                    unusedArguments.Remove(usage);
-                }
-                if(unusedArguments.Count==0)
-                    return;
+                if (!allUsages.Contains(unusedArgument))
+                    stillUnused.Add(unusedArgument);
             }
-            UnusedArguments.Clear();
-            foreach (var argument in unusedArguments)
-            {
-                UnusedArguments.Add(argument.Name);
-            }
+            return stillUnused.ToList();
         }
 
         private Dictionary<OperationKind, List<int>> BuildInstructionMix(LocalOperation[] operations)
@@ -120,7 +105,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
             return _operations;
         }
 
-        public int[] GetOperations(OperationKind binaryOperator)
+        public int[] GetOperationsOfKind(OperationKind binaryOperator)
         {
             int[] list;
             return _instructionMix.TryGetValue(binaryOperator, out list) ? list : new int[0];

@@ -17,12 +17,12 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Jumps
         {
             var useDef = interpreter.MidRepresentation.UseDef;
 
-            var found = useDef.GetOperations(OperationKind.Label).Length != 0;
+            var found = useDef.GetOperationsOfKind(OperationKind.Label).Length != 0;
             if (!found)
                 return;
 
-            var operationIndexes = useDef.GetOperations(OperationKind.BranchOperator).ToList();
-            operationIndexes.AddRange(useDef.GetOperations(OperationKind.AlwaysBranch));
+            var operationIndexes = useDef.GetOperationsOfKind(OperationKind.BranchOperator).ToList();
+            operationIndexes.AddRange(useDef.GetOperationsOfKind(OperationKind.AlwaysBranch));
             var operations = useDef.GetLocalOperations();
 
             var candidateLabelTable = interpreter.MidRepresentation.UseDef.GetLabelTable(true);

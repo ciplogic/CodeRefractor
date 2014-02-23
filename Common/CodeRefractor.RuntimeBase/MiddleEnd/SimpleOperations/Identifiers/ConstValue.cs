@@ -45,6 +45,13 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers
             get { return string.Format("c: '{0}'", Value); }
         }
 
+        public bool ValueEquals(ConstValue otherValue)
+        {
+            if (Value == null)
+                return otherValue.Value == null;
+            return Value.Equals(otherValue.Value);
+        }
+
         public override string FormatVar()
         {
             if (Value == null)

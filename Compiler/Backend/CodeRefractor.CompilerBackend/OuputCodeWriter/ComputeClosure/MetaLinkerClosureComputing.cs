@@ -29,6 +29,12 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
             return result;
         }
 
+
+        public static List<Type> ImplementorsOfT(this Type t, IEnumerable<Type> usedTypes)
+        {
+            var result = usedTypes.Where(usedType => usedType.IsSubclassOf(t)).ToList();
+            return result;
+        } 
         public static List<MethodInterpreter> GetMultiMethodsClosure(this List<MethodInterpreter> entryPoints)
         {
             var results = new List<Dictionary<string, MethodInterpreter>>();
@@ -53,12 +59,12 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
         {
             var useDef = entryPoint.MidRepresentation.UseDef;
             var ops = useDef.GetLocalOperations();
-            var callList = useDef.GetOperations(OperationKind.Call).ToList();
-            callList.AddRange(useDef.GetOperations(OperationKind.CallVirtual));
-            callList.AddRange(useDef.GetOperations(OperationKind.CallInterface));
+            var callList = useDef.GetOperationsOfKind(OperationKind.Call).ToList();
+            callList.AddRange(useDef.GetOperationsOfKind(OperationKind.CallVirtual));
+            callList.AddRange(useDef.GetOperationsOfKind(OperationKind.CallInterface));
             var localOperations = callList.Select(i=>ops[i]).ToArray();
             var toAdd = HandleCallInstructions(result, localOperations);
-            var funcList = useDef.GetOperations(OperationKind.LoadFunction).ToList();
+            var funcList = useDef.GetOperationsOfKind(OperationKind.LoadFunction).ToList();
             localOperations = funcList.Select(i => ops[i]).ToArray();
             HandleLoadFunctionInstructions(result, localOperations, toAdd);
 

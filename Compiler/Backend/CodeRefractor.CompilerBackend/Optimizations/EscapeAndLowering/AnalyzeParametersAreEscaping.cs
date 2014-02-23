@@ -22,12 +22,12 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
             if (interpreter.Kind != MethodKind.Default)
                 return;
 
-            var originalSnapshot = LinkerUtils.BuildEscapingBools(interpreter.Method);
+            var originalSnapshot = interpreter.Method.BuildEscapingBools();
 
             var localOperations = interpreter.MidRepresentation.UseDef.GetLocalOperations();
             if (ComputeEscapeTable(interpreter, localOperations, interpreter)) return;
 
-            var finalSnapshot = LinkerUtils.BuildEscapingBools(interpreter.Method);
+            var finalSnapshot = interpreter.Method.BuildEscapingBools();
             CheckForChanges(finalSnapshot, originalSnapshot);
         }
 
@@ -37,13 +37,17 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
             var escaping = ComputeArgsEscaping(operations, argEscaping);
             if (argEscaping.Count == 0) return true;
             intermediateCode.MidRepresentation.SetAdditionalValue(LinkerUtils.EscapeName, escaping);
-            var escapingBools = LinkerUtils.BuildEscapingBools(intermediateCode.Method);
+            var escapingBools = intermediateCode.Method.BuildEscapingBools();
             var variables = intermediateCode.MidRepresentation.Vars;
             foreach (var variable in variables.Arguments)
             {
-                var variableData = interpreter.AnalyzeProperties.GetVariableData(variable);
                 if (!escapingBools[variable.Id])
-                   interpreter.AnalyzeProperties.SetVariableData(variable, EscapingMode.Pointer);
+                {
+                    var oldVariableData = interpreter.AnalyzeProperties.GetVariableData(variable);
+                    if (oldVariableData == EscapingMode.Unused)
+                        continue;
+                    interpreter.AnalyzeProperties.SetVariableData(variable, EscapingMode.Pointer);
+                }
             }
             return false;
         }

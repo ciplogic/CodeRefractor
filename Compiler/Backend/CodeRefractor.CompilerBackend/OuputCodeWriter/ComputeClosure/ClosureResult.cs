@@ -16,11 +16,5 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
 
         public HashSet<Type> UsedTypes { get; set; }
 
-        public List<Type> ImplementorsOfT(Type t)
-        {
-            var result = UsedTypes.Where(usedType => usedType.IsSubclassOf(t)).ToList();
-            return result;
-        } 
-
     }
 }

@@ -16,7 +16,6 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.Methods
         public bool IsStatic;
         public bool IsVoid;
         public LocalVariable Result;
-        public bool IsPure;
         public List<IdentifierValue> Parameters { get; set; }
 
         public MethodInterpreter Interpreter { get; set; }
@@ -27,7 +26,6 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.Methods
             IsStatic = info.IsStatic;
             Parameters = new List<IdentifierValue>();
             IsVoid = info.GetReturnType() == typeof (void);
-            IsPure = PureMethodTable.ComputeMethodPurity(info.ToString());
 
             Interpreter = info.Register();
         }

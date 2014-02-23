@@ -54,3 +54,4 @@ Compiler/Backend/CodeRefractor.CodeWriter/obj/*
 bin/Tao.OpenGl.xml
 bin/Tao.Platform.Windows.xml
 bin/Tao.Sdl.xml
+Lib/Qt5Examples/build*

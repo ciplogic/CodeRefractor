@@ -1,7 +1,6 @@
 ﻿#region Usings
 
 using System.Collections.Generic;
-using System.Reflection;
 
 #endregion
 
@@ -20,11 +19,6 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.Methods
         public static bool ComputeMethodPurity(string description)
         {
             return Instance._descriptions.Contains(description);
-        }
-
-        public static void AddPureFunction(MemberInfo description)
-        {
-            Instance._descriptions.Add(description.ToString());
         }
     }
 }

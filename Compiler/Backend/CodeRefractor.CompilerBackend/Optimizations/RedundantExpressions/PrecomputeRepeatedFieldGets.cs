@@ -17,7 +17,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions
             LocalOperation[] operations)
         {
             var localOperations = midRepresentation.MidRepresentation.LocalOperations;
-            var getFieldOperations = FindGetFieldOperations(localOperations, startRange, endRange);
+            var localOperationsArr = localOperations.ToArray();
+            var getFieldOperations = FindGetFieldOperations(localOperationsArr, startRange, endRange);
             if (getFieldOperations.Count < 2)
                 return false;
             for (var i = 0; i < getFieldOperations.Count - 1; i++)
@@ -54,7 +55,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions
             localOps.Insert(j + 1, destAssignment);
         }
 
-        private static List<int> FindGetFieldOperations(List<LocalOperation> localOperations, int startRange,
+        private static List<int> FindGetFieldOperations(LocalOperation[] localOperations, int startRange,
             int endRange)
         {
             var calls = new List<int>();

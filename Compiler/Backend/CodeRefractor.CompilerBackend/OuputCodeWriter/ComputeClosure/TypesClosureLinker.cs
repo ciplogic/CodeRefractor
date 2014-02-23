@@ -91,6 +91,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
                 var toAdd = new HashSet<Type>(typesSet);
                 foreach (var type in typesSet)
                 {
+                    AddBaseTypesToHash(type, toAdd);
                     var mappedType = type.ReversedType();
                     if (type.IsPrimitive)
                         continue;
@@ -115,6 +116,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
                         if (typeDesc == null)
                             continue;
                         toAdd.Add(fieldType);
+                        AddBaseTypesToHash(fieldType, toAdd);
                     }
                 }
                 isAdded = (toAdd.Count != typesSet.Count);
@@ -134,6 +136,15 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
             typesSet.RemoveWhere(t => t.IsSubclassOf(typeof (Array)));
             typesSet.RemoveWhere(t => t.GetMappedType() == t && string.IsNullOrEmpty(t.FullName));
             return typesSet;
+        }
+
+        private static void AddBaseTypesToHash(Type fieldType, HashSet<Type> toAdd)
+        {
+            while (fieldType.BaseType != null && fieldType.BaseType != typeof (object))
+            {
+                toAdd.Add(fieldType.BaseType);
+                fieldType = fieldType.BaseType;
+            }
         }
 
         public static void SortTypeClosure(List<Type> types)

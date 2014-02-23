@@ -6,6 +6,9 @@ using System.Reflection;
 using CodeRefactor.OpenRuntime;
 using CodeRefractor.CompilerBackend.Optimizations.Util;
 using CodeRefractor.CompilerBackend.OuputCodeWriter;
+using CodeRefractor.CompilerBackend.ProgramWideOptimizations;
+using CodeRefractor.CompilerBackend.ProgramWideOptimizations.ConstParameters;
+using CodeRefractor.CompilerBackend.ProgramWideOptimizations.Virtual;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Config;
 using CodeRefractor.RuntimeBase.Runtime;
@@ -33,8 +36,12 @@ namespace CodeRefractor.Compiler
             var asm = Assembly.LoadFile(inputAssemblyName);
             var definition = asm.EntryPoint;
             var start = Environment.TickCount;
-			var runtime = CrRuntimeLibrary.Instance;
-			var programClosure = new ProgramClosure(definition, runtime);
+
+            var optimizationsTable=new ProgramOptimizationsTable();
+            optimizationsTable.Add(new DevirtualizerIfOneImplemetor());
+            optimizationsTable.Add(new CallToFunctionsWithSameConstant());
+
+            var programClosure = new ProgramClosure(definition, optimizationsTable);
             var sb = programClosure.BuildFullSourceCode();
             var end = Environment.TickCount - start;
             Console.WriteLine("Compilation time: {0} ms", end);

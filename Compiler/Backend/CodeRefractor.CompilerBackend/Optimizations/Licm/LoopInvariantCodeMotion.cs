@@ -83,7 +83,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Licm
                 if (op.Kind == OperationKind.Call)
                 {
                     var methodData = EvaluatePureFunctionWithConstantCall.ComputeAndEvaluatePurityOfCall(op);
-                    if (!methodData.IsPure)
+                    if (!methodData.Interpreter.AnalyzeProperties.IsPure)
                         continue;
                 }
                 var usages = useDef.GetUsages(index);

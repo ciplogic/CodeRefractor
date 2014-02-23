@@ -42,7 +42,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 
             sb.AppendFormat("{0}", methodInfo.ClangMethodSignature());
 
-            if (WriteParametersToSb(vars, operationData, methodInfo, sb, interpreter)) return;
+            if (WriteParametersToSb(operationData, methodInfo, sb, interpreter)) return;
 
             sbCode.Append(sb);
         }
@@ -60,7 +60,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 
             sb.AppendFormat("{0}_icall", methodInfo.ClangMethodSignature());
 
-            if (WriteParametersToSb(vars, operationData, methodInfo, sb,interpreter)) return;
+            if (WriteParametersToSb(operationData, methodInfo, sb,interpreter)) return;
 
             sbCode.Append(sb);
         }
@@ -78,12 +78,12 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 
             sb.AppendFormat("{0}_vcall", methodInfo.ClangMethodSignature());
 
-            if (WriteParametersToSb(vars, operationData, methodInfo, sb,interpreter)) return;
+            if (WriteParametersToSb(operationData, methodInfo, sb,interpreter)) return;
 
             sbCode.Append(sb);
         }
 
-        private static bool WriteParametersToSb(MidRepresentationVariables vars, MethodData operationData, MethodBase methodInfo,
+        private static bool WriteParametersToSb(MethodData operationData, MethodBase methodInfo,
             StringBuilder sb, MethodInterpreter interpreter)
         {
             var identifierValues = operationData.Parameters;
@@ -94,6 +94,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 var argumentsCall = String.Join(", ", identifierValues.Select(p =>
                 {
                     var computeValue = p.ComputedValue();
+                    
                     return computeValue;
                 }));
 
@@ -106,10 +107,15 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 
             sb.Append("(");
             var pos = 0;
-            var isFirst = true;
+            var isFirst = true;               
+            var argumentUsages = operationData.Interpreter.AnalyzeProperties.GetUsedArguments(operationData.Interpreter.MidRepresentation.Vars.Arguments);
+
             var argumentTypes = operationData.Info.GetMethodArgumentTypes();
-            foreach (var value in identifierValues)
+            for (int index = 0; index < identifierValues.Count; index++)
             {
+                var value = identifierValues[index];
+                if(!argumentUsages[index])
+                    continue;
                 if (isFirst)
                     isFirst = false;
                 else
