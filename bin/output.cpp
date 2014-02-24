@@ -173,8 +173,6 @@ System_Void Game_App_Tick();
 
 System_Boolean Game_App_DrawGLScene();
 
-System_Boolean Game_GameClass_get_finP(Game_GameClass * _this);
-
 #include "runtime_base.hpp"
 // --- Begin definition of virtual method tables ---
 void setupTypeTable();
@@ -389,47 +387,39 @@ return;
 System_Void Game_App_ctor(Game_App * _this)
 
 {
-System_Boolean local_0;
 System_Int32 vreg_1;
-System_Int32 vreg_2;
-std::shared_ptr<Game_GameClass> vreg_4;
-Game_GameClass * vreg_6;
+std::shared_ptr<Game_GameClass> vreg_2;
+Game_GameClass * vreg_4;
+System_Boolean vreg_6;
 Game_GameClass * vreg_7;
-System_Boolean vreg_8;
-Game_GameClass * vreg_9;
-System_Boolean vreg_10;
 
 _this->w = 1024;
 _this->h = 768;
 _this->bpp = 16;
 _this->flags = 7;
 vreg_1 = Tao_Sdl_Sdl_SDL_Init(32);
-vreg_2 = (vreg_1 < 0)?1:0;
-local_0 = (vreg_2 == 0)?1:0;
-if(local_0) goto label_82;
+if(0>=vreg_1) goto label_69;
 System_Console_WriteLine(_str(0));
 Tao_Sdl_Sdl_SDL_Quit();
-goto label_155;
-label_82:
+return;
+label_69:
 Game_App_setSDLVideo(_this);
-vreg_4 = std::make_shared<Game_GameClass >();
-vreg_4->_typeId = 20;
-Game_GameClass_ctor(vreg_4.get());
-_this->game = vreg_4;
-vreg_9 = _this->game.get();
-vreg_7 = vreg_9;
-vreg_6 = vreg_9;
-goto label_129;
-label_102:
-Game_GameClass_pollEvents(vreg_6);
+vreg_2 = std::make_shared<Game_GameClass >();
+vreg_2->_typeId = 20;
+Game_GameClass_ctor(vreg_2.get());
+_this->game = vreg_2;
+vreg_7 = _this->game.get();
+vreg_4 = vreg_7;
+vreg_1 = vreg_7->fin;
+vreg_6 = vreg_1;
+goto label_110;
+label_88:
+Game_GameClass_pollEvents(vreg_4);
 Game_App_Tick();
 Tao_Sdl_Sdl_SDL_Delay(1);
-label_129:
-vreg_8 = Game_GameClass_get_finP(vreg_7);
-local_0 = (vreg_8 == 0)?1:0;
-if(local_0) goto label_102;
+label_110:
+if(!(vreg_6)) goto label_88;
 Tao_Sdl_Sdl_SDL_Quit();
-label_155:
 return;
 }
 
@@ -438,15 +428,14 @@ System_Void Game_App_setSDLVideo(Game_App * _this)
 
 {
 System_IntPtr local_0;
-System_Boolean local_1;
 System_Int32 vreg_10;
 System_Int32 vreg_11;
 System_Int32 vreg_12;
 System_Int32 vreg_13;
 System_IntPtr vreg_14;
 System_Boolean vreg_16;
+System_Int32 vreg_18;
 System_Int32 vreg_19;
-System_Int32 vreg_20;
 
 Tao_Sdl_Sdl_SDL_putenv(_str(1));
 Tao_Sdl_Sdl_SDL_GL_SetAttribute(16, 1);
@@ -463,15 +452,14 @@ vreg_12 = _this->bpp;
 vreg_13 = _this->flags;
 vreg_14 = Tao_Sdl_Sdl_SDL_SetVideoMode(vreg_10, vreg_11, vreg_12, vreg_13);
 vreg_16 = System_IntPtr_op_Equality((System_IntPtr)vreg_14, 0);
-local_1 = (vreg_16 == 0)?1:0;
-if(local_1) goto label_147;
+if(!(vreg_16)) goto label_137;
 System_Console_WriteLine(_str(2));
 Tao_Sdl_Sdl_SDL_Quit();
-label_147:
+label_137:
 Game_App_InitGL();
-vreg_19 = _this->w;
-vreg_20 = _this->h;
-Game_App_ReSizeGLScene(vreg_19, vreg_20);
+vreg_18 = _this->w;
+vreg_19 = _this->h;
+Game_App_ReSizeGLScene(vreg_18, vreg_19);
 return;
 }
 
@@ -493,24 +481,20 @@ return 1;
 System_Void Game_App_ReSizeGLScene(System_Int32 width, System_Int32 height)
 
 {
-System_Boolean local_0;
-System_Int32 vreg_1;
+System_Double vreg_1;
+System_Double vreg_2;
 System_Double vreg_3;
-System_Double vreg_4;
-System_Double vreg_5;
 
-vreg_1 = (height == 0)?1:0;
-local_0 = (vreg_1 == 0)?1:0;
-if(local_0) goto label_17;
+if(height) goto label_6;
 height = 1;
-label_17:
+label_6:
 Tao_OpenGl_Gl_glViewport(0, 0, width, height);
 Tao_OpenGl_Gl_glMatrixMode(5889);
 Tao_OpenGl_Gl_glLoadIdentity();
-vreg_3 = (double)width;
-vreg_4 = (double)height;
-vreg_5 = vreg_3/vreg_4;
-Tao_OpenGl_Glu_gluPerspective(45, vreg_5, 0.1, 100);
+vreg_1 = (double)width;
+vreg_2 = (double)height;
+vreg_3 = vreg_1/vreg_2;
+Tao_OpenGl_Glu_gluPerspective(45, vreg_3, 0.1, 100);
 Tao_OpenGl_Gl_glMatrixMode(5888);
 Tao_OpenGl_Gl_glLoadIdentity();
 return;
@@ -522,9 +506,6 @@ System_Void Game_GameClass_ctor(Game_GameClass * _this)
 {
 Tao_Sdl_SDL_Event*  vreg_3;
 
-_this->fin = 0;
-_this->xrot = 0;
-_this->yrot = 0;
 Tao_Sdl_Sdl_SDL_ShowCursor(0);
 Tao_Sdl_Sdl_SDL_WM_GrabInput(1);
 vreg_3 = &_this->e;
@@ -536,7 +517,6 @@ System_Void Game_GameClass_pollEvents(Game_GameClass * _this)
 
 {
 System_Byte local_0;
-System_Boolean local_1;
 Tao_Sdl_SDL_Event*  vreg_1;
 System_Byte vreg_2;
 System_Byte vreg_3;
@@ -544,126 +524,101 @@ Tao_Sdl_SDL_Event*  vreg_4;
 Tao_Sdl_SDL_KeyboardEvent*  vreg_5;
 Tao_Sdl_SDL_keysym*  vreg_6;
 System_Int32 vreg_7;
-System_Int32 vreg_8;
-Tao_Sdl_SDL_Event*  vreg_10;
-Tao_Sdl_SDL_KeyboardEvent*  vreg_11;
-Tao_Sdl_SDL_keysym*  vreg_12;
-System_Int32 vreg_13;
-System_Int32 vreg_14;
+Tao_Sdl_SDL_Event*  vreg_8;
+Tao_Sdl_SDL_KeyboardEvent*  vreg_9;
+Tao_Sdl_SDL_keysym*  vreg_10;
+System_Int32 vreg_11;
+Tao_Sdl_SDL_Event*  vreg_12;
+Tao_Sdl_SDL_KeyboardEvent*  vreg_13;
+Tao_Sdl_SDL_keysym*  vreg_14;
+System_Int32 vreg_15;
 Tao_Sdl_SDL_Event*  vreg_16;
 Tao_Sdl_SDL_KeyboardEvent*  vreg_17;
 Tao_Sdl_SDL_keysym*  vreg_18;
 System_Int32 vreg_19;
-System_Int32 vreg_20;
-Tao_Sdl_SDL_Event*  vreg_22;
-Tao_Sdl_SDL_KeyboardEvent*  vreg_23;
-Tao_Sdl_SDL_keysym*  vreg_24;
-System_Int32 vreg_25;
-System_Int32 vreg_26;
-Tao_Sdl_SDL_Event*  vreg_28;
-Tao_Sdl_SDL_KeyboardEvent*  vreg_29;
-Tao_Sdl_SDL_keysym*  vreg_30;
+Tao_Sdl_SDL_Event*  vreg_20;
+Tao_Sdl_SDL_KeyboardEvent*  vreg_21;
+Tao_Sdl_SDL_keysym*  vreg_22;
+System_Int32 vreg_23;
+Tao_Sdl_SDL_Event*  vreg_24;
+Tao_Sdl_SDL_MouseButtonEvent*  vreg_25;
+System_Byte vreg_26;
+Tao_Sdl_SDL_Event*  vreg_27;
+Tao_Sdl_SDL_MouseButtonEvent*  vreg_28;
+System_Byte vreg_29;
+Tao_Sdl_SDL_Event*  vreg_30;
 System_Int32 vreg_31;
-System_Int32 vreg_32;
-Tao_Sdl_SDL_Event*  vreg_34;
-Tao_Sdl_SDL_MouseButtonEvent*  vreg_35;
-System_Byte vreg_36;
-System_Byte vreg_37;
-Tao_Sdl_SDL_Event*  vreg_39;
-Tao_Sdl_SDL_MouseButtonEvent*  vreg_40;
-System_Byte vreg_41;
-System_Byte vreg_42;
-Tao_Sdl_SDL_Event*  vreg_44;
-System_Int32 vreg_45;
 
-goto label_369;
-label_6:
+goto label_325;
+label_5:
 vreg_1 = &_this->e;
 vreg_2 = vreg_1->type;
 local_0 = vreg_2;
 vreg_3 = vreg_2-2;
-if(vreg_3==0) goto label_65;
-if(vreg_3==1) goto label_368;
-if(vreg_3==2) goto label_355;
-if(vreg_3==3) goto label_279;
-if(12==local_0) goto label_53;
-goto label_368;
-label_53:
+if(vreg_3==0) goto label_61;
+if(vreg_3==1) goto label_325;
+if(vreg_3==2) goto label_315;
+if(vreg_3==3) goto label_255;
+if(12!=local_0) goto label_325;
 _this->fin = 1;
-goto label_368;
-label_65:
+goto label_325;
+label_61:
+System_Console_WriteLine(_str(3));
 vreg_4 = &_this->e;
 vreg_5 = &vreg_4->key;
 vreg_6 = &vreg_5->keysym;
 vreg_7 = vreg_6->sym;
-vreg_8 = (vreg_7 == 27)?1:0;
-local_1 = (vreg_8 == 0)?1:0;
-if(local_1) goto label_105;
+if(27!=vreg_7) goto label_113;
+System_Console_WriteLine(_str(4));
 _this->fin = 1;
-label_105:
-vreg_10 = &_this->e;
-vreg_11 = &vreg_10->key;
-vreg_12 = &vreg_11->keysym;
-vreg_13 = vreg_12->sym;
-vreg_14 = (vreg_13 == 101)?1:0;
-local_1 = (vreg_14 == 0)?1:0;
-if(local_1) goto label_148;
-System_Console_WriteLine(_str(3));
+label_113:
+vreg_8 = &_this->e;
+vreg_9 = &vreg_8->key;
+vreg_10 = &vreg_9->keysym;
+vreg_11 = vreg_10->sym;
+if(101!=vreg_11) goto label_148;
+System_Console_WriteLine(_str(5));
 label_148:
+vreg_12 = &_this->e;
+vreg_13 = &vreg_12->key;
+vreg_14 = &vreg_13->keysym;
+vreg_15 = vreg_14->sym;
+if(102!=vreg_15) goto label_183;
+System_Console_WriteLine(_str(6));
+label_183:
 vreg_16 = &_this->e;
 vreg_17 = &vreg_16->key;
 vreg_18 = &vreg_17->keysym;
 vreg_19 = vreg_18->sym;
-vreg_20 = (vreg_19 == 102)?1:0;
-local_1 = (vreg_20 == 0)?1:0;
-if(local_1) goto label_191;
-System_Console_WriteLine(_str(4));
-label_191:
-vreg_22 = &_this->e;
-vreg_23 = &vreg_22->key;
-vreg_24 = &vreg_23->keysym;
-vreg_25 = vreg_24->sym;
-vreg_26 = (vreg_25 == 97)?1:0;
-local_1 = (vreg_26 == 0)?1:0;
-if(local_1) goto label_234;
-System_Console_WriteLine(_str(5));
-label_234:
-vreg_28 = &_this->e;
-vreg_29 = &vreg_28->key;
-vreg_30 = &vreg_29->keysym;
-vreg_31 = vreg_30->sym;
-vreg_32 = (vreg_31 == 32)?1:0;
-local_1 = (vreg_32 == 0)?1:0;
-if(local_1) goto label_277;
-System_Console_WriteLine(_str(6));
-label_277:
-goto label_368;
-label_279:
-vreg_34 = &_this->e;
-vreg_35 = &vreg_34->button;
-vreg_36 = vreg_35->button;
-vreg_37 = (vreg_36 == 1)?1:0;
-local_1 = (vreg_37 == 0)?1:0;
-if(local_1) goto label_316;
+if(97!=vreg_19) goto label_218;
 System_Console_WriteLine(_str(7));
-label_316:
-vreg_39 = &_this->e;
-vreg_40 = &vreg_39->button;
-vreg_41 = vreg_40->button;
-vreg_42 = (vreg_41 == 3)?1:0;
-local_1 = (vreg_42 == 0)?1:0;
-if(local_1) goto label_353;
+label_218:
+vreg_20 = &_this->e;
+vreg_21 = &vreg_20->key;
+vreg_22 = &vreg_21->keysym;
+vreg_23 = vreg_22->sym;
+if(32!=vreg_23) goto label_325;
 System_Console_WriteLine(_str(8));
-label_353:
-goto label_368;
-label_355:
+goto label_325;
+label_255:
+vreg_24 = &_this->e;
+vreg_25 = &vreg_24->button;
+vreg_26 = vreg_25->button;
+if(1!=vreg_26) goto label_284;
 System_Console_WriteLine(_str(9));
-label_368:
-label_369:
-vreg_44 = &_this->e;
-vreg_45 = Tao_Sdl_Sdl_SDL_PollEvent(vreg_44);
-local_1 = (vreg_45 == 1)?1:0;
-if(local_1) goto label_6;
+label_284:
+vreg_27 = &_this->e;
+vreg_28 = &vreg_27->button;
+vreg_29 = vreg_28->button;
+if(3!=vreg_29) goto label_325;
+System_Console_WriteLine(_str(10));
+goto label_325;
+label_315:
+System_Console_WriteLine(_str(11));
+label_325:
+vreg_30 = &_this->e;
+vreg_31 = Tao_Sdl_Sdl_SDL_PollEvent(vreg_30);
+if(1==vreg_31) goto label_5;
 return;
 }
 
@@ -767,17 +722,6 @@ return 1;
 }
 
 
-System_Boolean Game_GameClass_get_finP(Game_GameClass * _this)
-
-{
-System_Boolean local_0;
-System_Boolean vreg_1;
-
-vreg_1 = _this->fin;
-return vreg_1;
-}
-
-
 ///---End closure code --- 
 void initializeRuntime();
 int main(int argc, char**argv) {
@@ -827,17 +771,21 @@ _AddJumpAndLength(0, 22);
 _AddJumpAndLength(23, 25);
 _AddJumpAndLength(49, 29);
 _AddJumpAndLength(79, 11);
-_AddJumpAndLength(91, 11);
-_AddJumpAndLength(103, 13);
-_AddJumpAndLength(117, 14);
-_AddJumpAndLength(132, 23);
-_AddJumpAndLength(156, 15);
-_AddJumpAndLength(172, 12);
+_AddJumpAndLength(91, 8);
+_AddJumpAndLength(100, 11);
+_AddJumpAndLength(112, 11);
+_AddJumpAndLength(124, 13);
+_AddJumpAndLength(138, 14);
+_AddJumpAndLength(153, 23);
+_AddJumpAndLength(177, 15);
+_AddJumpAndLength(193, 12);
 } // buildStringTable
-const wchar_t _stringTable[185] = {
+const wchar_t _stringTable[206] = {
 69, 114, 114, 111, 114, 32, 105, 110, 105, 116, 105, 97, 108, 105, 122, 105, 110, 103, 32, 83, 68, 76, 0 /* "Error initializing SDL" */, 
 83, 68, 76, 95, 86, 73, 68, 69, 79, 95, 67, 69, 78, 84, 69, 82, 69, 68, 61, 99, 101, 110, 116, 101, 114, 0 /* "SDL_VIDEO_CENTERED=center" */, 
 69, 114, 114, 111, 114, 32, 113, 115, 101, 116, 116, 105, 110, 103, 32, 116, 104, 101, 32, 118, 105, 100, 101, 111, 32, 109, 111, 100, 101, 0 /* "Error qsetting the video mode" */, 
+75, 101, 121, 32, 112, 114, 101, 115, 115, 101, 100, 0 /* "Key pressed" */, 
+81, 117, 105, 116, 116, 105, 110, 103, 0 /* "Quitting" */, 
 77, 111, 118, 105, 110, 103, 32, 102, 111, 114, 100, 0 /* "Moving ford" */, 
 77, 111, 118, 105, 110, 103, 32, 98, 97, 99, 107, 0 /* "Moving back" */, 
 83, 116, 114, 97, 102, 105, 110, 103, 32, 108, 101, 102, 116, 0 /* "Strafing left" */, 

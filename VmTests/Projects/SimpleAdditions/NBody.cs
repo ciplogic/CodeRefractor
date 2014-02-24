@@ -94,7 +94,14 @@ namespace Game
                         fin = true;
                         break;
                     case Sdl.SDL_KEYDOWN:
-                        if (e.key.keysym.sym == Sdl.SDLK_ESCAPE) finP = true;
+                    {
+                        Console.WriteLine("Key pressed");
+                        if (e.key.keysym.sym == Sdl.SDLK_ESCAPE)
+                        {
+                            Console.WriteLine("Quitting");
+                            finP = true;
+                        }
+                    }
                         if (e.key.keysym.sym == Sdl.SDLK_e) Console.WriteLine("Moving ford");
                         if (e.key.keysym.sym == Sdl.SDLK_f) Console.WriteLine("Moving back");
                         if (e.key.keysym.sym == Sdl.SDLK_a) Console.WriteLine("Strafing left");
