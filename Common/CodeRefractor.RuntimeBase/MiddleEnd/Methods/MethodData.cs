@@ -28,6 +28,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.Methods
             IsVoid = info.GetReturnType() == typeof (void);
 
             Interpreter = info.Register();
+
+            Interpreter.ResolveByTypeResolver();
         }
 
         public MethodBase Info { get; set; }

@@ -55,21 +55,15 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
             {
                 interpreter.MidRepresentation.UpdateUseDef();
                 didOptimize = false;
-                var useDef = interpreter.MidRepresentation.UseDef;
                 foreach (var optimizationPass in optimizationsList)
                 {
-                    var optimizationName = optimizationPass.GetType().Name;
                     if (!optimizationPass.CheckPreconditions(interpreter))
                         continue;
-                    var prevCount = interpreter.MidRepresentation.LocalOperations.Count;
                     didOptimize = optimizationPass.Optimize(interpreter);
 
-                    var actualCount = interpreter.MidRepresentation.LocalOperations.Count;
-                    if (!didOptimize && actualCount != prevCount)
-                    {
-                        Console.WriteLine("Wrong optimization code: {0}", optimizationName);
-                    }
                     if (!didOptimize) continue;
+                    var useDef = interpreter.MidRepresentation.UseDef;
+                    var optimizationName = optimizationPass.GetType().Name;
                     interpreter.MidRepresentation.UpdateUseDef();
                     //Console.WriteLine(String.Format("Applied optimization: {0}", optimizationName));
                     result = true;

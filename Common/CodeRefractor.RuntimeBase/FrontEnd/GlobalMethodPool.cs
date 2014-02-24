@@ -33,11 +33,11 @@ namespace CodeRefractor.RuntimeBase.FrontEnd
                 return interpreter;
             interpreter = new MethodInterpreter(method);
             Register(interpreter);
-            Resolve(interpreter);
+            ResolveByTypeResolver(interpreter);
             return interpreter;
         }
 
-        static void Resolve(MethodInterpreter interpreter)
+        public static void ResolveByTypeResolver(this MethodInterpreter interpreter)
         {
             var resolvers = GetTypeResolvers();
             foreach (var resolver in resolvers)

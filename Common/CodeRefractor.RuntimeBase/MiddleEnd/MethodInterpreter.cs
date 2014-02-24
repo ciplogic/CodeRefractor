@@ -56,7 +56,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             var pureAttribute = method.GetCustomAttribute<PureMethodAttribute>();
             if (pureAttribute != null)
                 AnalyzeProperties.IsPure = true;
-
+            this.ResolveByTypeResolver();
             MidRepresentation.Vars.SetupArguments(Method);
         }
 
@@ -151,9 +151,9 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
         public void Process()
         {
-            if (HandlePlatformInvokeMethod(Method))
-                return;
             if (Interpreted)
+                return;
+            if (HandlePlatformInvokeMethod(Method))
                 return;
             if(Method.GetMethodBody()==null)
                 return;

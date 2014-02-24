@@ -20,8 +20,6 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
             methodInterpreters[entryInterpreter.ToKey()] = entryInterpreter;
             MetaLinker.Interpret(entryInterpreter);
 
-            var foundMethodCount = 1;
-
             var canContinue = true;
             var dependencies = entryInterpreter.GetMethodClosure();
             while (canContinue)
@@ -35,23 +33,20 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
                     methodInterpreters[dependency.ToKey()] = dependency;
                 }
                 result.MethodInterpreters = methodInterpreters;
-                foundMethodCount = methodInterpreters.Count;
+                var foundMethodCount = methodInterpreters.Count;
+                dependencies = methodInterpreters.Values.ToList();
                 bool foundNewMethods;
-                do
+                result.UsedTypes = new HashSet<Type>(GetTypesClosure(dependencies, out foundNewMethods));
+                foreach (var dependency in dependencies)
                 {
-                    dependencies = methodInterpreters.Values.ToList();
-                    result.UsedTypes = new HashSet<Type>(GetTypesClosure(dependencies, out foundNewMethods));
-                    if(!foundNewMethods) break;
-                    foreach (var dependency in dependencies)
-                    {
-                        methodInterpreters[dependency.ToKey()] = dependency;
-                    }
-                } while (foundNewMethods);
+                    methodInterpreters[dependency.ToKey()] = dependency;
+                }
                 dependencies = methodInterpreters.Values.ToList().GetMultiMethodsClosure();
                 canContinue = foundMethodCount != dependencies.Count;
             }
             return result;
         }
+
         public static HashSet<Type> GetTypesClosure(List<MethodInterpreter> methodList, out bool foundNewMethods)
         {
             var typesSet = ScanMethodParameters(methodList);
