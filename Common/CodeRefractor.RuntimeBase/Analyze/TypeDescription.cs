@@ -59,6 +59,8 @@ namespace CodeRefractor.RuntimeBase.Analyze
             {
                 BaseType = UsedTypeList.Set(ClrType.BaseType);
             }
+            if(ClrType.IsPrimitive)
+                return;
 
             if (ClrTypeCode == TypeCode.Object)
             {

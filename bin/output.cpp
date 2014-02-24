@@ -1,23 +1,23 @@
 #include "sloth.h"
 struct System_Object; 
 struct System_ValueType; 
-struct Tao_Sdl_SDL_JoyButtonEvent; 
 struct Tao_Sdl_SDL_JoyHatEvent; 
-struct Tao_Sdl_SDL_JoyAxisEvent; 
 struct Tao_Sdl_SDL_JoyBallEvent; 
-struct Tao_Sdl_SDL_ResizeEvent; 
-struct Tao_Sdl_SDL_SysWMEvent; 
-struct Tao_Sdl_SDL_keysym; 
-struct Tao_Sdl_SDL_UserEvent; 
-struct Tao_Sdl_SDL_ExposeEvent; 
-struct Tao_Sdl_SDL_QuitEvent; 
 struct Tao_Sdl_SDL_MouseButtonEvent; 
-struct Tao_Sdl_SDL_ActiveEvent; 
-struct Tao_Sdl_SDL_Event; 
+struct Tao_Sdl_SDL_JoyAxisEvent; 
+struct Tao_Sdl_SDL_QuitEvent; 
+struct Tao_Sdl_SDL_keysym; 
+struct Tao_Sdl_SDL_ExposeEvent; 
+struct Tao_Sdl_SDL_JoyButtonEvent; 
+struct Tao_Sdl_SDL_ResizeEvent; 
 struct Tao_Sdl_SDL_MouseMotionEvent; 
+struct Tao_Sdl_SDL_ActiveEvent; 
+struct Tao_Sdl_SDL_SysWMEvent; 
+struct Tao_Sdl_SDL_UserEvent; 
 struct Tao_Sdl_SDL_KeyboardEvent; 
-struct System_Console; 
+struct Tao_Sdl_SDL_Event; 
 struct SimpleAdditions_CrSdl; 
+struct System_Console; 
 struct SimpleAdditions_CrGl; 
 struct SimpleAdditions_CrGlu; 
 struct Game_App; 
@@ -28,39 +28,107 @@ int _typeId;
 };
 struct System_ValueType : public System_Object {
 };
-struct Tao_Sdl_SDL_JoyButtonEvent {
-};
 struct Tao_Sdl_SDL_JoyHatEvent {
-};
-struct Tao_Sdl_SDL_JoyAxisEvent {
+ System_Byte type;
+ System_Byte which;
+ System_Byte hat;
+ System_Byte val;
 };
 struct Tao_Sdl_SDL_JoyBallEvent {
-};
-struct Tao_Sdl_SDL_ResizeEvent {
-};
-struct Tao_Sdl_SDL_SysWMEvent {
-};
-struct Tao_Sdl_SDL_keysym {
-};
-struct Tao_Sdl_SDL_UserEvent {
-};
-struct Tao_Sdl_SDL_ExposeEvent {
-};
-struct Tao_Sdl_SDL_QuitEvent {
+ System_Byte type;
+ System_Byte which;
+ System_Byte ball;
+ System_Int16 xrel;
+ System_Int16 yrel;
 };
 struct Tao_Sdl_SDL_MouseButtonEvent {
+ System_Byte type;
+ System_Byte which;
+ System_Byte button;
+ System_Byte state;
+ System_Int16 x;
+ System_Int16 y;
 };
-struct Tao_Sdl_SDL_ActiveEvent {
+struct Tao_Sdl_SDL_JoyAxisEvent {
+ System_Byte type;
+ System_Byte which;
+ System_Byte axis;
+ System_Int16 val;
 };
-struct Tao_Sdl_SDL_Event {
+struct Tao_Sdl_SDL_QuitEvent {
+ System_Byte type;
+};
+struct Tao_Sdl_SDL_keysym {
+ System_Byte scancode;
+ System_Int32 sym;
+ System_Int32 mod;
+ System_Int16 unicode;
+};
+struct Tao_Sdl_SDL_ExposeEvent {
+ System_Byte type;
+};
+struct Tao_Sdl_SDL_JoyButtonEvent {
+ System_Byte type;
+ System_Byte which;
+ System_Byte button;
+ System_Byte state;
+};
+struct Tao_Sdl_SDL_ResizeEvent {
+ System_Byte type;
+ System_Int32 w;
+ System_Int32 h;
 };
 struct Tao_Sdl_SDL_MouseMotionEvent {
+ System_Byte type;
+ System_Byte which;
+ System_Byte state;
+ System_Int16 x;
+ System_Int16 y;
+ System_Int16 xrel;
+ System_Int16 yrel;
+};
+struct Tao_Sdl_SDL_ActiveEvent {
+ System_Byte type;
+ System_Byte gain;
+ System_Byte state;
+};
+struct Tao_Sdl_SDL_SysWMEvent {
+ System_Byte type;
+ System_IntPtr msg;
+};
+struct Tao_Sdl_SDL_UserEvent {
+ System_Byte type;
+ System_Int32 code;
+ System_IntPtr data1;
+ System_IntPtr data2;
 };
 struct Tao_Sdl_SDL_KeyboardEvent {
+ System_Byte type;
+ System_Byte which;
+ System_Byte state;
+ Tao_Sdl_SDL_keysym keysym;
 };
-struct System_Console : public System_Object {
+struct Tao_Sdl_SDL_Event {
+union {
+ System_Byte type;
+ Tao_Sdl_SDL_ActiveEvent active;
+ Tao_Sdl_SDL_KeyboardEvent key;
+ Tao_Sdl_SDL_MouseMotionEvent motion;
+ Tao_Sdl_SDL_MouseButtonEvent button;
+ Tao_Sdl_SDL_JoyAxisEvent jaxis;
+ Tao_Sdl_SDL_JoyBallEvent jball;
+ Tao_Sdl_SDL_JoyHatEvent jhat;
+ Tao_Sdl_SDL_JoyButtonEvent jbutton;
+ Tao_Sdl_SDL_ResizeEvent resize;
+ Tao_Sdl_SDL_ExposeEvent expose;
+ Tao_Sdl_SDL_QuitEvent quit;
+ Tao_Sdl_SDL_UserEvent user;
+ Tao_Sdl_SDL_SysWMEvent syswm;
+};
 };
 struct SimpleAdditions_CrSdl : public System_Object {
+};
+struct System_Console : public System_Object {
 };
 struct SimpleAdditions_CrGl : public System_Object {
 };
@@ -312,7 +380,7 @@ System_Void Game_App_Main()
 {
 
 Game_App  vreg_1;
-vreg_1._typeId = 23;
+vreg_1._typeId = 21;
 Game_App_ctor(&vreg_1);
 return;
 }
@@ -345,7 +413,7 @@ goto label_155;
 label_82:
 Game_App_setSDLVideo(_this);
 vreg_4 = std::make_shared<Game_GameClass >();
-vreg_4->_typeId = 22;
+vreg_4->_typeId = 20;
 Game_GameClass_ctor(vreg_4.get());
 _this->game = vreg_4;
 vreg_9 = _this->game.get();
@@ -378,6 +446,7 @@ System_Int32 vreg_13;
 System_IntPtr vreg_14;
 System_Boolean vreg_16;
 System_Int32 vreg_19;
+System_Int32 vreg_20;
 
 Tao_Sdl_Sdl_SDL_putenv(_str(1));
 Tao_Sdl_Sdl_SDL_GL_SetAttribute(16, 1);
@@ -401,7 +470,8 @@ Tao_Sdl_Sdl_SDL_Quit();
 label_147:
 Game_App_InitGL();
 vreg_19 = _this->w;
-Game_App_ReSizeGLScene(vreg_19);
+vreg_20 = _this->h;
+Game_App_ReSizeGLScene(vreg_19, vreg_20);
 return;
 }
 
@@ -424,14 +494,22 @@ System_Void Game_App_ReSizeGLScene(System_Int32 width, System_Int32 height)
 
 {
 System_Boolean local_0;
+System_Int32 vreg_1;
 System_Double vreg_3;
+System_Double vreg_4;
 System_Double vreg_5;
 
-Tao_OpenGl_Gl_glViewport(0, 0, width, 1);
+vreg_1 = (height == 0)?1:0;
+local_0 = (vreg_1 == 0)?1:0;
+if(local_0) goto label_17;
+height = 1;
+label_17:
+Tao_OpenGl_Gl_glViewport(0, 0, width, height);
 Tao_OpenGl_Gl_glMatrixMode(5889);
 Tao_OpenGl_Gl_glLoadIdentity();
 vreg_3 = (double)width;
-vreg_5 = vreg_3/1;
+vreg_4 = (double)height;
+vreg_5 = vreg_3/vreg_4;
 Tao_OpenGl_Glu_gluPerspective(45, vreg_5, 0.1, 100);
 Tao_OpenGl_Gl_glMatrixMode(5888);
 Tao_OpenGl_Gl_glLoadIdentity();

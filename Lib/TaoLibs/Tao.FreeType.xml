@@ -1,0 +1,2450 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Tao.FreeType</name>
+    </assembly>
+    <members>
+        <member name="T:Tao.FreeType.MemoryRec_">
+            <summary>
+                FreeType 2 Binding for .NET
+            </summary>
+            <remarks>
+                <para>
+                    Binds functions and definitions in 
+                    freetype6.dll (Windows)
+                    /usr/lib/libfreetype.so.6 (Linux - specifically Fedora Core freetype install location)
+                    /Library/Frameworks/Mono.framework/Libraries/libfreetype.6.dylib (MacOSX)
+                </para>
+                <para>
+                    The FreeType library includes the base data types and function calls to FreeType 2
+                    to allow access to TrueType and OpenType fonts across platforms.
+                </para>
+                <para>
+                    This is not a rendering utility and will not render fonts to the screen. It is an interface
+                    to the various font formats, and can provide either outline or bitmapped versions
+                    of font glyphs.
+                </para>    
+            </remarks>
+        </member>
+        <member name="F:Tao.FreeType.MemoryRec_.user">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.MemoryRec_.alloc">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.MemoryRec_.free">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.MemoryRec_.realloc">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Tao.FreeType.FT_StreamRec">
+            <summary>
+            A structure used to describe an input stream.
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_StreamRec._base">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_StreamRec.size">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_StreamRec.pos">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_StreamRec.descriptor">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_StreamRec.pathname">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_StreamRec.read">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_StreamRec.close">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_StreamRec.memory">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_StreamRec.cursor">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_StreamRec.limit">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Tao.FreeType.FT_StreamDesc">
+            <summary>
+            A union type used to store either a long or a pointer. This is used to store a file descriptor or a ‘FILE*’ in an input stream
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_StreamDesc._value">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_StreamDesc.pointer">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Tao.FreeType.FT_Vector">
+            <summary>
+            A simple structure used to store a 2D vector; coordinates are of the FT_Pos type.
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Vector.x">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Vector.y">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Tao.FreeType.FT_BBox">
+            <summary>
+            A structure used to hold an outline's bounding box, i.e., the coordinates of its extrema in the horizontal and vertical directions.
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_BBox.xMin">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_BBox.yMin">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_BBox.xMax">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_BBox.yMax">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Tao.FreeType.FT_Bitmap">
+            <summary>
+            A structure used to describe a bitmap or pixmap to the raster. Note that we now manage pixmaps of various depths through the ‘pixel_mode’ field.
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Bitmap.rows">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Bitmap.width">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Bitmap.pitch">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Bitmap.buffer">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Bitmap.num_grays">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Bitmap.pixel_mode">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Bitmap.palette_mode">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Bitmap.palette">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Tao.FreeType.FT_Outline">
+            <summary>
+            This structure is used to describe an outline to the scan-line converter.
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Outline.n_contours">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Outline.n_points">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Outline.points">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Outline.tags">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Outline.contours">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Outline.flags">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Tao.FreeType.FT_Outline_Funcs">
+            <summary>
+            A structure to hold various function pointers used during outline decomposition in order to emit segments, conic, and cubic Béziers, as well as ‘move to’ and ‘close to’ operations.
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Outline_Funcs.move_to">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Outline_Funcs.line_to">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Outline_Funcs.conic_to">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Outline_Funcs.cubic_to">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Outline_Funcs.shift">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Outline_Funcs.delta">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Tao.FreeType.RasterRec_">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Tao.FreeType.FT_Span">
+            <summary>
+            A structure used to model a single span of gray (or black) pixels when rendering a monochrome or anti-aliased bitmap
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Span.x">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Span.len">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Span.coverage">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Tao.FreeType.FT_Raster_Params">
+            <summary>
+            A structure to hold the arguments used by a raster's render functions
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Raster_Params.target">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Raster_Params.source">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Raster_Params.flags">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Raster_Params.gray_spans">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Raster_Params.black_spans">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Raster_Params.bit_test">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Raster_Params.bit_set">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Raster_Params.user">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Raster_Params.clip_box">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Tao.FreeType.FT_Raster_Funcs">
+            <summary>
+            A structure used to describe a given raster class to the library.
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Raster_Funcs.glyph_format">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Raster_Funcs.raster_new">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Raster_Funcs.raster_reset">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Raster_Funcs.raster_set_mode">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Raster_Funcs.raster_render">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Raster_Funcs.raster_done">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Tao.FreeType.FT_UnitVector">
+            <summary>
+            A simple structure used to store a 2D vector unit vector.
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_UnitVector.x">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_UnitVector.y">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Tao.FreeType.FT_Matrix">
+            <summary>
+            A simple structure used to store a 2x2 matrix. Coefficients are in 16.16 fixed float format. The computation performed is:
+            x' = x*xx + y*xy                                             
+            y' = x*yx + y*yy   
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Matrix.xx">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Matrix.xy">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Matrix.yx">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Matrix.yy">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Tao.FreeType.FT_Data">
+            <summary>
+            Read-only binary data represented as a pointer and a length.
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Data.pointer">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Data.length">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Tao.FreeType.FT_Generic">
+            <summary>
+            Client applications often need to associate their own data to a variety of FreeType core objects. For example, a text layout API might want to associate a glyph cache to a given size object.
+            Most FreeType object contains a ‘generic’ field, of type FT_Generic, which usage is left to client applications and font servers.
+            It can be used to store a pointer to client-specific data, as well as the address of a ‘finalizer’ function, which will be called by FreeType when the object is destroyed (for example, the previous client example would put the address of the glyph cache destructor in the ‘finalizer’ field).
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Generic.data">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Generic.finalizer">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Tao.FreeType.FT_ListNodeRec">
+            <summary>
+            A structure used to hold a single list element.
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_ListNodeRec.prev">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_ListNodeRec.next">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_ListNodeRec.data">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Tao.FreeType.FT_ListRec">
+            <summary>
+            A structure used to hold a simple double-linked list. These are used in many parts of FreeType.
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_ListRec.head">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_ListRec.tail">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Tao.FreeType.FT_Glyph_Metrics">
+            <summary>
+            A structure used to model the metrics of a single glyph. The values are expressed in 26.6 fractional pixel format; if the flag FT_LOAD_NO_SCALE has been used while loading the glyph, values are expressed in font units instead.
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Glyph_Metrics.width">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Glyph_Metrics.height">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Glyph_Metrics.horiBearingX">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Glyph_Metrics.horiBearingY">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Glyph_Metrics.horiAdvance">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Glyph_Metrics.vertBearingX">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Glyph_Metrics.vertBearingY">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Glyph_Metrics.vertAdvance">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Tao.FreeType.FT_Bitmap_Size">
+            <summary>
+            This structure models the metrics of a bitmap strike (i.e., a set of glyphs for a given point size and resolution) in a bitmap font. It is used for the ‘available_sizes’ field of FT_Face.
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Bitmap_Size.height">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Bitmap_Size.width">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Bitmap_Size.size">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Bitmap_Size.x_ppem">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Bitmap_Size.y_ppem">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Tao.FreeType.LibraryRec_">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Tao.FreeType.ModuleRec_">
+            <summary>
+            /
+            </summary>
+        </member>
+        <member name="T:Tao.FreeType.DriverRec_">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Tao.FreeType.RendererRec_">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Tao.FreeType.FT_FaceRec">
+            <summary>
+            FreeType root face class structure. A face object models a typeface in a font file.
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_FaceRec.num_faces">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_FaceRec.face_index">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_FaceRec.face_flags">
+            <summary>
+            /
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_FaceRec.style_flags">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_FaceRec.num_glyphs">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_FaceRec.family_name">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_FaceRec.style_name">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_FaceRec.num_fixed_sizes">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_FaceRec.available_sizes">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_FaceRec.num_charmaps">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_FaceRec.charmaps">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_FaceRec.generic">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_FaceRec.bbox">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_FaceRec.units_per_EM">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_FaceRec.ascender">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_FaceRec.descender">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_FaceRec.height">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_FaceRec.max_advance_width">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_FaceRec.max_advance_height">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_FaceRec.underline_position">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_FaceRec.underline_thickness">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_FaceRec.glyph">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_FaceRec.size">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_FaceRec.charmap">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_FaceRec.driver">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_FaceRec.memory">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_FaceRec.stream">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_FaceRec.sizes_list">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_FaceRec.autohint">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_FaceRec.extensions">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_FaceRec._internal">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Tao.FreeType.FT_SizeRec">
+            <summary>
+            FreeType root size class structure. A size object models a face object at a given size.
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_SizeRec.face">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_SizeRec.generic">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_SizeRec.metrics">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_SizeRec._internal">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Tao.FreeType.FT_GlyphSlotRec">
+            <summary>
+            FreeType root glyph slot class structure. A glyph slot is a container where individual glyphs can be loaded, be they in outline or bitmap format.
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_GlyphSlotRec.library">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_GlyphSlotRec.face">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_GlyphSlotRec.next">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_GlyphSlotRec.reserved">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_GlyphSlotRec.generic">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_GlyphSlotRec.metrics">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_GlyphSlotRec.linearHoriAdvance">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_GlyphSlotRec.linearVertAdvance">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_GlyphSlotRec.advance">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_GlyphSlotRec.format">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_GlyphSlotRec.bitmap">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_GlyphSlotRec.bitmap_left">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_GlyphSlotRec.bitmap_top">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_GlyphSlotRec.outline">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_GlyphSlotRec.num_subglyphs">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_GlyphSlotRec.subglyphs">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_GlyphSlotRec.control_data">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_GlyphSlotRec.control_len">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_GlyphSlotRec.lsb_delta">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_GlyphSlotRec.rsb_delta">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_GlyphSlotRec.other">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_GlyphSlotRec._internal">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Tao.FreeType.FT_CharMapRec">
+            <summary>
+            The base charmap structure.
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_CharMapRec.face">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_CharMapRec.encoding">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_CharMapRec.platform_id">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_CharMapRec.encoding_id">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Tao.FreeType.Face_InternalRec_">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Tao.FreeType.Size_InternalRec_">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Tao.FreeType.FT_Size_Metrics">
+            <summary>
+            The size metrics structure gives the metrics of a size object.
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Size_Metrics.x_ppem">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Size_Metrics.y_ppem">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Size_Metrics.x_scale">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Size_Metrics.y_scale">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Size_Metrics.ascender">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Size_Metrics.descender">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Size_Metrics.height">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Size_Metrics.max_advance">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Tao.FreeType.SubGlyphRec_">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Tao.FreeType.Slot_InternalRec_">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Tao.FreeType.FT_Parameter">
+            <summary>
+            A simple structure used to pass more or less generic parameters to FT_Open_Face.
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Parameter.tag">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Parameter.data">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Tao.FreeType.FT_Open_Args">
+            <summary>
+            A structure used to indicate how to open a new font file or stream. A pointer to such a structure can be used as a parameter for the functions FT_Open_Face and FT_Attach_Stream.
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Open_Args.flags">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Open_Args.memory_base">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Open_Args.memory_size">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Open_Args.pathname">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Open_Args.stream">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Open_Args.driver">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Open_Args.num_params">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Open_Args._params">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Tao.FreeType.FT_Pixel_Mode">
+            <summary>
+            An enumeration type used to describe the format of pixels in a given bitmap. Note that additional formats may be added in the future.
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Pixel_Mode.FT_PIXEL_MODE_NONE">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Pixel_Mode.FT_PIXEL_MODE_MONO">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Pixel_Mode.FT_PIXEL_MODE_GRAY">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Pixel_Mode.FT_PIXEL_MODE_GRAY2">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Pixel_Mode.FT_PIXEL_MODE_GRAY4">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Pixel_Mode.FT_PIXEL_MODE_LCD">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Pixel_Mode.FT_PIXEL_MODE_LCD_V">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Pixel_Mode.FT_PIXEL_MODE_MAX">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Tao.FreeType.FT_Glyph_Format">
+            <summary>
+            An enumeration type used to describe the format of a given glyph image. Note that this version of FreeType only supports two image formats, even though future font drivers will be able to register their own format.
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Glyph_Format.FT_GLYPH_FORMAT_NONE">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Glyph_Format.FT_GLYPH_FORMAT_COMPOSITE">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Glyph_Format.FT_GLYPH_FORMAT_BITMAP">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Glyph_Format.FT_GLYPH_FORMAT_OUTLINE">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Glyph_Format.FT_GLYPH_FORMAT_PLOTTER">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Tao.FreeType.FT_Encoding">
+            <summary>
+            An enumeration used to specify character sets supported by charmaps. Used in the FT_Select_Charmap API function.
+            note:
+            Despite the name, this enumeration lists specific character repertories (i.e., charsets), and not text encoding methods (e.g., UTF-8, UTF-16, GB2312_EUC, etc.).
+            Because of 32-bit charcodes defined in Unicode (i.e., surrogates), all character codes must be expressed as FT_Longs.
+            Other encodings might be defined in the future.
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Encoding.FT_ENCODING_NONE">
+            <summary>
+            /
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Encoding.FT_ENCODING_MS_SYMBOL">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Encoding.FT_ENCODING_UNICODE">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Encoding.FT_ENCODING_SJIS">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Encoding.FT_ENCODING_GB2312">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Encoding.FT_ENCODING_BIG5">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Encoding.FT_ENCODING_WANSUNG">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Encoding.FT_ENCODING_JOHAB">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Encoding.FT_ENCODING_MS_SJIS">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Encoding.FT_ENCODING_MS_GB2312">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Encoding.FT_ENCODING_MS_BIG5">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Encoding.FT_ENCODING_MS_WANSUNG">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Encoding.FT_ENCODING_MS_JOHAB">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Encoding.FT_ENCODING_ADOBE_STANDARD">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Encoding.FT_ENCODING_ADOBE_EXPERT">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Encoding.FT_ENCODING_ADOBE_CUSTOM">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Encoding.FT_ENCODING_ADOBE_LATIN_1">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Encoding.FT_ENCODING_OLD_LATIN_2">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Encoding.FT_ENCODING_APPLE_ROMAN">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Tao.FreeType.FT_Render_Mode">
+            <summary>
+            An enumeration type that lists the render modes supported by FreeType 2. Each mode corresponds to a specific type of scanline conversion performed on the outline.
+            For bitmap fonts the ‘bitmap->pixel_mode’ field in the FT_GlyphSlotRec structure gives the format of the returned bitmap.
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Render_Mode.FT_RENDER_MODE_NORMAL">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Render_Mode.FT_RENDER_MODE_LIGHT">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Render_Mode.FT_RENDER_MODE_MONO">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Render_Mode.FT_RENDER_MODE_LCD">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Render_Mode.FT_RENDER_MODE_LCD_V">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Render_Mode.FT_RENDER_MODE_MAX">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Tao.FreeType.FT_Kerning_Mode">
+            <summary>
+            An enumeration used to specify which kerning values to return in FT_Get_Kerning.
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Kerning_Mode.FT_KERNING_DEFAULT">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Kerning_Mode.FT_KERNING_UNFITTED">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT_Kerning_Mode.FT_KERNING_UNSCALED">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Tao.FreeType.FT">
+            <summary>
+            Main FreeType method class. Call FT_Init_FreeType to initialise
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.FT_NATIVE_LIBRARY">
+            <summary>
+            Specifies the FT native library used in the bindings
+            </summary>
+            <remarks>
+            The Windows dll is specified here universally - note that
+            under Mono the non-windows native library can be mapped using
+            the ".config" file mechanism.  Kudos to the Mono team for this
+            simple yet elegant solution.
+            </remarks>
+        </member>
+        <member name="F:Tao.FreeType.FT.CALLING_CONVENTION">
+            <summary>
+                Specifies the calling convention used for the binding.
+            </summary>
+            <remarks>
+                Specifies <see cref="F:System.Runtime.InteropServices.CallingConvention.Cdecl"/>
+                for the bindings.
+            </remarks>
+        </member>
+        <member name="F:Tao.FreeType.FT.ft_open_driver">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.ft_open_memory">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.ft_open_params">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.ft_open_pathname">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.ft_open_stream">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.ft_outline_even_odd_fill">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.ft_outline_high_precision">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.ft_outline_ignore_dropouts">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.ft_outline_none">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.ft_outline_owner">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.ft_outline_reverse_fill">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.ft_outline_single_pass">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.ft_raster_flag_aa">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.ft_raster_flag_clip">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.ft_raster_flag_default">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.ft_raster_flag_direct">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.FREETYPE_MAJOR">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.FREETYPE_MINOR">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.FREETYPE_PATCH">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.ALIGNMENT">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Curve_Tag_Conic">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Curve_Tag_Cubic">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Curve_Tag_On">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Curve_Tag_Touch_X">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Curve_Tag_Touch_Y">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.CURVE_TAG_CONIC">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.CURVE_TAG_CUBIC">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.CURVE_TAG_ON">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.CURVE_TAG_TOUCH_X">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.CURVE_TAG_TOUCH_Y">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.FT_LOAD_CROP_BITMAP">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.FT_LOAD_DEFAULT">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.FT_LOAD_FORCE_AUTOHINT">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.FT_LOAD_IGNORE_GLOBAL_ADVANCE_WIDTH">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.FT_LOAD_IGNORE_TRANSFORM">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.FT_LOAD_LINEAR_DESIGN">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.FT_LOAD_MONOCHROME">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.FT_LOAD_NO_BITMAP">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.FT_LOAD_NO_HINTING">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.FT_LOAD_NO_RECURSE">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.FT_LOAD_NO_SCALE">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.FT_LOAD_PEDANTIC">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.FT_LOAD_RENDER">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.FT_LOAD_SBITS_ONLY">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.FT_LOAD_VERTICAL_LAYOUT">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.MAX_MODULES">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.FT_OPEN_DRIVER">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.FT_OPEN_MEMORY">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.FT_OPEN_PARAMS">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.FT_OPEN_PATHNAME">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.FT_OPEN_STREAM">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.FT_OUTLINE_EVEN_ODD_FILL">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.FT_OUTLINE_HIGH_PRECISION">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.FT_OUTLINE_IGNORE_DROPOUTS">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.FT_OUTLINE_NONE">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.FT_OUTLINE_OWNER">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.FT_OUTLINE_REVERSE_FILL">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.FT_OUTLINE_SINGLE_PASS">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.FT_RASTER_FLAG_AA">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.FT_RASTER_FLAG_CLIP">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.FT_RASTER_FLAG_DEFAULT">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.FT_RASTER_FLAG_DIRECT">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.HAVE_FCNTL_H">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.HAVE_UNISTD_H">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.T1_MAX_CHARSTRINGS_OPERANDS">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.T1_MAX_DICT_DEPTH">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.T1_MAX_SUBRS_CALLS">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Mod_Err_Base">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Mod_Err_Autohint">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Mod_Err_BDF">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Mod_Err_Cache">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Mod_Err_CFF">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Mod_Err_CID">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Mod_Err_Gzip">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Mod_Err_LZW">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Mod_Err_PCF">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Mod_Err_PFR">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Mod_Err_PSaux">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Mod_Err_PShinter">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Mod_Err_PSnames">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Mod_Err_Raster">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Mod_Err_SFNT">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Mod_Err_Smooth">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Mod_Err_TrueType">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Mod_Err_Type1">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Mod_Err_Type42">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Mod_Err_Winfonts">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Mod_Err_Max">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Ok">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Cannot_Open_Resource">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Unknown_File_Format">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Invalid_File_Format">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Invalid_Version">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Lower_Module_Version">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Invalid_Argument">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Unimplemented_Feature">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Invalid_Table">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Invalid_Offset">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Invalid_Glyph_Index">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Invalid_Character_Code">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Invalid_Glyph_Format">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Cannot_Render_Glyph">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Invalid_Outline">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Invalid_Composite">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Too_Many_Hints">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Invalid_Pixel_Size">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Invalid_Handle">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Invalid_Library_Handle">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Invalid_Driver_Handle">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Invalid_Face_Handle">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Invalid_Size_Handle">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Invalid_Slot_Handle">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Invalid_CharMap_Handle">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Invalid_Cache_Handle">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Invalid_Stream_Handle">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Too_Many_Drivers">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Too_Many_Extensions">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Out_Of_Memory">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Unlisted_Object">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Cannot_Open_Stream">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Invalid_Stream_Seek">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Invalid_Stream_Skip">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Invalid_Stream_Read">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Invalid_Stream_Operation">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Invalid_Frame_Operation">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Nested_Frame_Access">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Invalid_Frame_Read">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Raster_Uninitialized">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Raster_Corrupted">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Raster_Overflow">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Raster_Negative_Height">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Too_Many_Caches">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Invalid_Opcode">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Too_Few_Arguments">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Stack_Overflow">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Code_Overflow">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Bad_Argument">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Divide_By_Zero">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Invalid_Reference">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Debug_OpCode">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_ENDF_In_Exec_Stream">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Nested_DEFS">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Invalid_CodeRange">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Execution_Too_Long">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Too_Many_Function_Defs">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Too_Many_Instruction_Defs">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Table_Missing">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Horiz_Header_Missing">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Locations_Missing">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Name_Table_Missing">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_CMap_Table_Missing">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Hmtx_Table_Missing">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Post_Table_Missing">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Invalid_Horiz_Metrics">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Invalid_CharMap_Format">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Invalid_PPem">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Invalid_Vert_Metrics">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Could_Not_Find_Context">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Invalid_Post_Table_Format">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Invalid_Post_Table">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Syntax_Error">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Stack_Underflow">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Ignore">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Missing_Startfont_Field">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Missing_Font_Field">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Missing_Size_Field">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Missing_Chars_Field">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Missing_Startchar_Field">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Missing_Encoding_Field">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.Err_Missing_Bbx_Field">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tao.FreeType.FT.ErrorStrings">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Tao.FreeType.FT.FT_Init_FreeType(System.IntPtr@)">
+            <summary>
+            Initialize a new FreeType library object. The set of modules that are registered by this function is determined at build time.
+            </summary>
+            <param name="alibrary">A handle to a new library object.</param>
+            <returns>FreeType error code. 0 means success.</returns>
+        </member>
+        <member name="M:Tao.FreeType.FT.FT_Library_Version(System.IntPtr,System.Int32@,System.Int32@,System.Int32@)">
+            <summary>
+            Return the version of the FreeType library being used. This is useful when dynamically linking to the library, since one cannot use the macros FREETYPE_MAJOR, FREETYPE_MINOR, and FREETYPE_PATCH.
+            </summary>
+            <param name="library">A source library handle.</param>
+            <param name="amajor">The major version number.</param>
+            <param name="aminor">The minor version number</param>
+            <param name="apatch">The patch version number</param>
+        </member>
+        <member name="M:Tao.FreeType.FT.FT_Done_FreeType(System.IntPtr)">
+            <summary>
+            Destroy a given FreeType library object and all of its children, including resources, drivers, faces, sizes, etc.
+            </summary>
+            <param name="library">A handle to the target library object</param>
+            <returns>FreeType error code. 0 means success</returns>
+        </member>
+        <member name="M:Tao.FreeType.FT.FT_New_Face(System.IntPtr,System.String,System.Int32,System.IntPtr@)">
+            <summary>
+            This function calls FT_Open_Face to open a font by its pathname.
+            </summary>
+            <param name="library">A handle to the library resource.</param>
+            <param name="filepathname">A path to the font file</param>
+            <param name="face_index">The index of the face within the font. The first face has index 0</param>
+            <param name="aface"> A handle to a new face object. If ‘face_index’ is greater than or equal to zero, it must be non-NULL. See FT_Open_Face for more details.</param>
+            <returns>FreeType error code. 0 means success.</returns>
+        </member>
+        <member name="M:Tao.FreeType.FT.FT_New_Memory_Face(System.IntPtr,System.Byte[],System.Int32,System.Int32,System.IntPtr)">
+            <summary>
+            This function calls FT_Open_Face to open a font which has been loaded into memory.
+            You must not deallocate the memory before calling FT_Done_Face.
+            </summary>
+            <param name="library">A handle to the library resource</param>
+            <param name="file_base">A pointer to the beginning of the font data</param>
+            <param name="file_size">The size of the memory chunk used by the font data</param>
+            <param name="face_index">The index of the face within the font. The first face has index 0</param>
+            <param name="aface">A handle to a new face object. If ‘face_index’ is greater than or equal to zero, it must be non-NULL. See FT_Open_Face for more details.</param>
+            <returns>FreeType error code. 0 means success.</returns>
+        </member>
+        <member name="M:Tao.FreeType.FT.FT_Open_Face(System.IntPtr,Tao.FreeType.FT_Open_Args,System.Int32,System.IntPtr)">
+            <summary>
+            Create a face object from a given resource described by FT_Open_Args.
+            Unlike FreeType 1.x, this function automatically creates a glyph slot for the face object which can be accessed directly through ‘face->glyph’.
+            FT_Open_Face can be used to quickly check whether the font format of a given font resource is supported by FreeType. If the ‘face_index’ field is negative, the function's return value is 0 if the font format is recognized, or non-zero otherwise; the function returns a more or less empty face handle in ‘*aface’ (if ‘aface’ isn't NULL). The only useful field in this special case is ‘face->num_faces’ which gives the number of faces within the font file. After examination, the returned FT_Face structure should be deallocated with a call to FT_Done_Face.
+            Each new face object created with this function also owns a default FT_Size object, accessible as ‘face->size’.
+            </summary>
+            <param name="library">A handle to the library resource</param>
+            <param name="args">A pointer to an ‘FT_Open_Args’ structure which must be filled by the caller.</param>
+            <param name="face_index">The index of the face within the font. The first face has index 0</param>
+            <param name="aface">A handle to a new face object. If ‘face_index’ is greater than or equal to zero, it must be non-NULL. See note below</param>
+            <returns>FreeType error code. 0 means success</returns>
+        </member>
+        <member name="M:Tao.FreeType.FT.FT_Attach_File(System.IntPtr,System.String)">
+            <summary>
+            This function calls FT_Attach_Stream to attach a file.
+            </summary>
+            <param name="face">The target face object.</param>
+            <param name="filepathname">The pathname</param>
+            <returns>FreeType error code. 0 means success</returns>
+        </member>
+        <member name="M:Tao.FreeType.FT.FT_Attach_Stream(System.IntPtr,Tao.FreeType.FT_Open_Args@)">
+            <summary>
+            ‘Attach’ data to a face object. Normally, this is used to read additional information for the face object. For example, you can attach an AFM file that comes with a Type 1 font to get the kerning values and other metrics
+            </summary>
+            <param name="face">The target face object</param>
+            <param name="parameters">A pointer to FT_Open_Args which must be filled by the caller</param>
+            <returns>FreeType error code. 0 means success</returns>
+        </member>
+        <member name="M:Tao.FreeType.FT.FT_Done_Face(System.IntPtr)">
+            <summary>
+            Discard a given face object, as well as all of its child slots and sizes.
+            </summary>
+            <param name="face">A handle to a target face object.</param>
+            <returns>FreeType error code. 0 means success</returns>
+        </member>
+        <member name="M:Tao.FreeType.FT.FT_Set_Char_Size(System.IntPtr,System.Int32,System.Int32,System.UInt32,System.UInt32)">
+            <summary>
+            This function calls FT_Request_Size to request the nominal size (in points).
+            If either the character width or height is zero, it is set equal to the other value.
+            If either the horizontal or vertical resolution is zero, it is set equal to the other value.
+            A character width or height smaller than 1pt is set to 1pt; if both resolution values are zero, they are set to 72dpi.
+            </summary>
+            <param name="face">A handle to a target face object</param>
+            <param name="char_width">The nominal width, in 26.6 fractional points</param>
+            <param name="char_height">The nominal height, in 26.6 fractional points</param>
+            <param name="horz_resolution">The horizontal resolution in dpi</param>
+            <param name="vert_resolution">The vertical resolution in dpi</param>
+            <returns>FreeType error code. 0 means success</returns>
+        </member>
+        <member name="M:Tao.FreeType.FT.FT_Set_Pixel_Sizes(System.IntPtr,System.UInt32,System.UInt32)">
+            <summary>
+            This function calls FT_Request_Size to request the nominal size (in pixels).
+            </summary>
+            <param name="face">A handle to the target face object.</param>
+            <param name="pixel_width">The nominal width, in pixels.</param>
+            <param name="pixel_height">The nominal height, in pixels</param>
+            <returns>FreeType error code. 0 means success</returns>
+        </member>
+        <member name="M:Tao.FreeType.FT.FT_Load_Glyph(System.IntPtr,System.UInt32,System.Int32)">
+            <summary>
+            A function used to load a single glyph into the glyph slot of a face object.
+            The loaded glyph may be transformed. See FT_Set_Transform for the details.
+            </summary>
+            <param name="face">A handle to the target face object where the glyph is loaded.</param>
+            <param name="glyph_index">The index of the glyph in the font file. For CID-keyed fonts (either in PS or in CFF format) this argument specifies the CID value.</param>
+            <param name="load_flags">A flag indicating what to load for this glyph. The FT_LOAD_XXX constants can be used to control the glyph loading process (e.g., whether the outline should be scaled, whether to load bitmaps or not, whether to hint the outline, etc).</param>
+            <returns>FreeType error code. 0 means success.</returns>
+        </member>
+        <member name="M:Tao.FreeType.FT.FT_Load_Char(System.IntPtr,System.UInt32,System.Int32)">
+            <summary>
+            A function used to load a single glyph into the glyph slot of a face object, according to its character code.
+            This function simply calls FT_Get_Char_Index and FT_Load_Glyph.
+            </summary>
+            <param name="face">A handle to a target face object where the glyph is loaded.</param>
+            <param name="char_code">The glyph's character code, according to the current charmap used in the face</param>
+            <param name="load_flags">A flag indicating what to load for this glyph. The FT_LOAD_XXX constants can be used to control the glyph loading process (e.g., whether the outline should be scaled, whether to load bitmaps or not, whether to hint the outline, etc).</param>
+            <returns>FreeType error code. 0 means success</returns>
+        </member>
+        <member name="M:Tao.FreeType.FT.FT_Set_Transform(System.IntPtr,Tao.FreeType.FT_Matrix@,Tao.FreeType.FT_Vector@)">
+            <summary>
+            A function used to set the transformation that is applied to glyph images when they are loaded into a glyph slot through FT_Load_Glyph.
+            The transformation is only applied to scalable image formats after the glyph has been loaded. It means that hinting is unaltered by the transformation and is performed on the character size given in the last call to FT_Set_Char_Size or FT_Set_Pixel_Sizes.
+            Note that this also transforms the ‘face.glyph.advance’ field, but not the values in ‘face.glyph.metrics’
+            </summary>
+            <param name="face">A handle to the source face object</param>
+            <param name="matrix">A pointer to the transformation's 2x2 matrix. Use 0 for the identity matrix</param>
+            <param name="delta">A pointer to the translation vector. Use 0 for the null vector</param>
+        </member>
+        <member name="M:Tao.FreeType.FT.FT_Render_Glyph(Tao.FreeType.FT_GlyphSlotRec@,Tao.FreeType.FT_Render_Mode)">
+            <summary>
+            Convert a given glyph image to a bitmap. It does so by inspecting the glyph image format, finding the relevant renderer, and invoking it
+            </summary>
+            <param name="slot">A handle to the glyph slot containing the image to convert</param>
+            <param name="render_mode">This is the render mode used to render the glyph image into a bitmap. See FT_Render_Mode for a list of possible values</param>
+            <returns>FreeType error code. 0 means success</returns>
+        </member>
+        <member name="M:Tao.FreeType.FT.FT_Get_Kerning(System.IntPtr,System.UInt32,System.UInt32,System.UInt32,Tao.FreeType.FT_Vector@)">
+            <summary>
+            Return the kerning vector between two glyphs of a same face
+            </summary>
+            <param name="face">A handle to a source face object</param>
+            <param name="left_glyph">The index of the left glyph in the kern pair</param>
+            <param name="right_glyph">The index of the right glyph in the kern pair</param>
+            <param name="kern_mode">See FT_Kerning_Mode for more information. Determines the scale and dimension of the returned kerning vector</param>
+            <param name="akerning">The kerning vector. This is either in font units or in pixels (26.6 format) for scalable formats, and in pixels for fixed-sizes formats</param>
+            <returns>FreeType error code. 0 means success</returns>
+        </member>
+        <member name="M:Tao.FreeType.FT.FT_Get_Glyph_Name(System.IntPtr,System.UInt32,System.IntPtr,System.UInt32)">
+            <summary>
+            Retrieve the ASCII name of a given glyph in a face. This only works for those faces where FT_HAS_GLYPH_NAMES(face) returns 1
+            An error is returned if the face doesn't provide glyph names or if the glyph index is invalid. In all cases of failure, the first byte of ‘buffer’ is set to 0 to indicate an empty name.
+            The glyph name is truncated to fit within the buffer if it is too long. The returned string is always zero-terminated.
+            This function is not compiled within the library if the config macro ‘FT_CONFIG_OPTION_NO_GLYPH_NAMES’ is defined in ‘include/freetype/config/ftoptions.h’
+            </summary>
+            <param name="face">A handle to a source face object</param>
+            <param name="glyph_index">The glyph index</param>
+            <param name="buffer">A pointer to a target buffer where the name is copied to</param>
+            <param name="buffer_max">The maximal number of bytes available in the buffer</param>
+            <returns>FreeType error code. 0 means success</returns>
+        </member>
+        <member name="M:Tao.FreeType.FT.FT_Get_Postscript_Name(System.IntPtr)">
+            <summary>
+            Retrieve the ASCII Postscript name of a given face, if available. This only works with Postscript and TrueType fonts
+            The returned pointer is owned by the face and is destroyed with it
+            </summary>
+            <param name="face">A handle to the source face object</param>
+            <returns>A pointer to the face's Postscript name. NULL if unavailable</returns>
+        </member>
+        <member name="M:Tao.FreeType.FT.FT_Select_Charmap(System.IntPtr,Tao.FreeType.FT_Encoding)">
+            <summary>
+            Select a given charmap by its encoding tag (as listed in ‘freetype.h’).
+            This function returns an error if no charmap in the face corresponds to the encoding queried here.
+            Because many fonts contain more than a single cmap for Unicode encoding, this function has some special code to select the one which covers Unicode best. It is thus preferable to FT_Set_Charmap in this case
+            </summary>
+            <param name="face">A handle to the source face object</param>
+            <param name="encoding">A handle to the selected encoding</param>
+            <returns>FreeType error code. 0 means success</returns>
+        </member>
+        <member name="M:Tao.FreeType.FT.FT_Set_Charmap(System.IntPtr,Tao.FreeType.FT_CharMapRec@)">
+            <summary>
+            Select a given charmap for character code to glyph index mapping
+            This function returns an error if the charmap is not part of the face (i.e., if it is not listed in the ‘face->charmaps’ table)
+            </summary>
+            <param name="face">A handle to the source face object</param>
+            <param name="charmap">A handle to the selected charmap</param>
+            <returns>FreeType error code. 0 means success</returns>
+        </member>
+        <member name="M:Tao.FreeType.FT.FT_Get_Charmap_Index(Tao.FreeType.FT_CharMapRec@)">
+            <summary>
+            Retrieve index of a given charmap
+            </summary>
+            <param name="charmap">A handle to a charmap</param>
+            <returns>The index into the array of character maps within the face to which ‘charmap’ belongs</returns>
+        </member>
+        <member name="M:Tao.FreeType.FT.FT_Get_Char_Index(System.IntPtr,System.UInt32)">
+            <summary>
+            Return the glyph index of a given character code. This function uses a charmap object to do the mapping
+            If you use FreeType to manipulate the contents of font files directly, be aware that the glyph index returned by this function doesn't always correspond to the internal indices used within the file. This is done to ensure that value 0 always corresponds to the ‘missing glyph’.
+            </summary>
+            <param name="face">A handle to the source face object</param>
+            <param name="charcode">The character code</param>
+            <returns>The glyph index. 0 means ‘undefined character code’</returns>
+        </member>
+        <member name="M:Tao.FreeType.FT.FT_Get_First_Char(System.IntPtr,System.UInt32[])">
+            <summary>
+            This function is used to return the first character code in the current charmap of a given face. It also returns the corresponding glyph index.
+            You should use this function with FT_Get_Next_Char to be able to parse all character codes available in a given charmap.
+            Note that ‘agindex’ is set to 0 if the charmap is empty. The result itself can be 0 in two cases: if the charmap is empty or when the value 0 is the first valid character code
+            </summary>
+            <param name="face">A handle to the source face object</param>
+            <param name="agindex">Glyph index of first character code. 0 if charmap is empty</param>
+            <returns>The charmap's first character code</returns>
+        </member>
+        <member name="M:Tao.FreeType.FT.FT_Get_Next_Char(System.IntPtr,System.UInt32,System.UInt32[])">
+            <summary>
+            This function is used to return the next character code in the current charmap of a given face following the value ‘char_code’, as well as the corresponding glyph index.
+            You should use this function with FT_Get_First_Char to walk over all character codes available in a given charmap. See the note for this function for a simple code example.
+            Note that ‘*agindex’ is set to 0 when there are no more codes in the charmap.
+            </summary>
+            <param name="face">A handle to the source face object</param>
+            <param name="char_code">The starting character code</param>
+            <param name="agindex">Glyph index of first character code. 0 if charmap is empty</param>
+            <returns>The charmap's next character code</returns>
+        </member>
+        <member name="M:Tao.FreeType.FT.FT_Get_Name_Index(System.IntPtr,System.SByte[])">
+            <summary>
+            Return the glyph index of a given glyph name. This function uses driver specific objects to do the translation
+            </summary>
+            <param name="face">A handle to the source face object</param>
+            <param name="glyph_name">The glyph name</param>
+            <returns>The glyph index. 0 means ‘undefined character code’</returns>
+        </member>
+        <member name="M:Tao.FreeType.FT.FT_MulDiv(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            A very simple function used to perform the computation ‘(a*b)/c’ with maximal accuracy (it uses a 64-bit intermediate integer whenever necessary).
+            This function isn't necessarily as fast as some processor specific operations, but is at least completely portable.
+            </summary>
+            <param name="a">The first multiplier</param>
+            <param name="b">The second multiplier</param>
+            <param name="c">The divisor</param>
+            <returns>The result of ‘(a*b)/c’. This function never traps when trying to divide by zero; it simply returns ‘MaxInt’ or ‘MinInt’ depending on the signs of ‘a’ and ‘b’</returns>
+        </member>
+        <member name="M:Tao.FreeType.FT.FT_MulFix(System.Int32,System.Int32)">
+            <summary>
+            A very simple function used to perform the computation ‘(a*b)/0x10000’ with maximal accuracy. Most of the time this is used to multiply a given value by a 16.16 fixed float factor
+            This function has been optimized for the case where the absolute value of ‘a’ is less than 2048, and ‘b’ is a 16.16 scaling factor. As this happens mainly when scaling from notional units to fractional pixels in FreeType, it resulted in noticeable speed improvements between versions 2.x and 1.x.
+            As a conclusion, always try to place a 16.16 factor as the second argument of this function; this can make a great difference
+            </summary>
+            <param name="a">The first multiplier</param>
+            <param name="b">The second multiplier. Use a 16.16 factor here whenever possible</param>
+            <returns>The result of ‘(a*b)/0x10000’</returns>
+        </member>
+        <member name="M:Tao.FreeType.FT.FT_DivFix(System.Int32,System.Int32)">
+            <summary>
+            A very simple function used to perform the computation ‘(a*0x10000)/b’ with maximal accuracy. Most of the time, this is used to divide a given value by a 16.16 fixed float factor
+            The optimization for FT_DivFix() is simple: If (a &lt;&lt; 16) fits in 32 bits, then the division is computed directly. Otherwise, we use a specialized version of FT_MulDiv
+            </summary>
+            <param name="a">The first multiplier</param>
+            <param name="b">The second multiplier. Use a 16.16 factor here whenever possible</param>
+            <returns>The result of ‘(a*0x10000)/b’</returns>
+        </member>
+        <member name="M:Tao.FreeType.FT.FT_RoundFix(System.Int32)">
+            <summary>
+            A very simple function used to round a 16.16 fixed number
+            </summary>
+            <param name="a">The number to be rounded</param>
+            <returns>The result of ‘(a + 0x8000) &amp; -0x10000’</returns>
+        </member>
+        <member name="M:Tao.FreeType.FT.FT_CeilFix(System.Int32)">
+            <summary>
+            A very simple function used to compute the ceiling function of a 16.16 fixed number
+            </summary>
+            <param name="a">The number for which the ceiling function is to be computed</param>
+            <returns>The result of ‘(a + 0x10000 - 1) &amp;-0x10000’</returns>
+        </member>
+        <member name="M:Tao.FreeType.FT.FT_FloorFix(System.Int32)">
+            <summary>
+            A very simple function used to compute the floor function of a 16.16 fixed number
+            </summary>
+            <param name="a">The number for which the floor function is to be computed</param>
+            <returns>The result of ‘a &amp; -0x10000’</returns>
+        </member>
+        <member name="M:Tao.FreeType.FT.FT_Vector_Transform(Tao.FreeType.FT_Vector@,Tao.FreeType.FT_Matrix@)">
+            <summary>
+            Transform a single vector through a 2x2 matrix.  
+            The result is undefined if either ‘vector’ or ‘matrix’ is invalid 
+            </summary>
+            <param name="vec">The target vector to transform</param>
+            <param name="matrix">A pointer to the source 2x2 matrix</param>
+        </member>
+    </members>
+</doc>
