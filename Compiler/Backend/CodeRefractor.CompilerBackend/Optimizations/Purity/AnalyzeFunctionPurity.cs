@@ -33,6 +33,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
         {
             if (intermediateCode == null)
                 return false;
+            intermediateCode.MidRepresentation.UpdateUseDef();
             var operations = intermediateCode.MidRepresentation.UseDef.GetLocalOperations();
             foreach (var localOperation in operations)
             {

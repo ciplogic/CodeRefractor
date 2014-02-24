@@ -54,6 +54,18 @@ namespace CodeRefractor.RuntimeBase.FrontEnd
                 .ToArray();
             return resolvers;
         }
+        public static CrTypeResolver GetTypeResolver(MethodBase method)
+        {
+            if (method.DeclaringType == null)
+                return null;
+            var assembly = method.DeclaringType.Assembly;
+            if (assembly.GlobalAssemblyCache)
+                return null;
+            CrTypeResolver result;
+            if (!TypeResolvers.TryGetValue(assembly, out result))
+                return null;
+            return result;
+        }
 
         private static void SetupTypeResolverIfNecesary(MethodBase method)
         {
@@ -64,13 +76,17 @@ namespace CodeRefractor.RuntimeBase.FrontEnd
             if (hasValue)
                 return;
             var resolverType = assembly.GetType("TypeResolver");
-            
+            if (resolverType == null)
+            {
+                resolverType = assembly.GetTypes().FirstOrDefault(t => t.Name == "TypeResolver");
+            }
             CrTypeResolver resolver=null;
             if(resolverType!=null)
                 resolver = (CrTypeResolver) Activator.CreateInstance(resolverType);
             TypeResolvers[assembly] = resolver;
         }
         static readonly Dictionary<MethodBase, string> CachedKeys = new Dictionary<MethodBase, string>(); 
+
         public static string GenerateKey(this MethodBase method)
         {
             string result;
@@ -84,9 +100,9 @@ namespace CodeRefractor.RuntimeBase.FrontEnd
         {
             var methodDefinitionKey = GenerateKey(method);
             MethodInterpreter result;
-            if (!Interpreters.TryGetValue(methodDefinitionKey, out result))
-                return null;
-            return result;
+            if (Interpreters.TryGetValue(methodDefinitionKey, out result)) return result;
+
+            return null;
         }
 
         public static MethodBase GetReversedMethod(this MethodBase methodInfo)

@@ -1,9 +1,8 @@
-#region Usings
+#region Uses
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using CodeRefractor.CodeWriter.BasicOperations;
 using CodeRefractor.CodeWriter.Linker;
 using CodeRefractor.RuntimeBase.FrontEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd;
@@ -101,6 +100,8 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
                 var info = declaringType.TypeInitializer;
                 
                 var interpreter = info.GetInterpreter();
+                if(interpreter==null)
+                    continue;
                 result[interpreter.ToKey()] = interpreter;
                 UpdateMethodEntryClosure(interpreter, result);
             }

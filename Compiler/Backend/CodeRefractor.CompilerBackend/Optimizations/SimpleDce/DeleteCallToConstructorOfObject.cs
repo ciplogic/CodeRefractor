@@ -26,6 +26,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
                 if (!info.IsConstructor) continue;
                 if (info.DeclaringType != typeof (object) &&
                     info.DeclaringType != interpreter.Method.DeclaringType) continue;
+                if(methodData.Interpreter.MidRepresentation.LocalOperations.Count>1)
+                    continue;
                 localOps.RemoveAt(index);
                 Result = true;
                 return;

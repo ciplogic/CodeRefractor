@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace CodeRefractor.RuntimeBase.Analyze
 {
@@ -27,13 +28,32 @@ namespace CodeRefractor.RuntimeBase.Analyze
 
         public static readonly UsedTypeList Instance  = new UsedTypeList();
 
-        public static List<Type> GetUsedTypes()
+        public static HashSet<Type> GetFieldTypeDependencies(Type type)
         {
-            return Instance.UserTypeDesc.Keys.ToList();
-        }
-        public static List<TypeDescription> GetDescribedTypes()
-        {
-            return Instance.UserTypeDesc.Values.ToList();
+
+            var fields = type.GetFields().ToList();
+
+            fields.AddRange(type.GetFields(
+                BindingFlags.NonPublic
+                | BindingFlags.Instance
+                | BindingFlags.Static));
+
+            var result = new HashSet<Type>();
+            result.AddRange(fields
+                .Select(field=>field.FieldType)
+                .Select(fieldType =>
+                {
+                    if (fieldType.IsSubclassOf(typeof(Array)))
+                        return fieldType.GetElementType();
+
+                    if (fieldType.IsPointer || fieldType.IsByRef)
+                        fieldType = fieldType.GetElementType();
+                    return fieldType;
+
+                })
+                );
+
+            return result;
         }
     }
 }

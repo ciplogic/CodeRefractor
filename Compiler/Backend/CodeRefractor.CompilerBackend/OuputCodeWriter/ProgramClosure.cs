@@ -30,7 +30,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 
         public ProgramClosure(MethodInfo entryMethod, ProgramOptimizationsTable table)
         {
-            EntryInterpreter = entryMethod.Register();
+             EntryInterpreter = entryMethod.Register();
 
             BuildMethodClosure();
             MetaLinkerOptimizer.ApplyOptimizations(MethodClosure.Values.ToList());
@@ -41,6 +41,10 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             if (!UsedTypes.Contains(typeof (CrString)))
             {
                 UsedTypes.Add(typeof (CrString));
+            }
+            if (UsedTypes.Contains(typeof(string)))
+            {
+                UsedTypes.Remove(typeof(string));
             }
             if (!UsedTypes.Contains(typeof(object)))
             {

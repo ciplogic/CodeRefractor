@@ -95,9 +95,11 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
                     var mappedType = type.ReversedType();
                     if (type.IsPrimitive)
                         continue;
+
+                    var fieldTypes = UsedTypeList.GetFieldTypeDependencies(type);
+                    toAdd.AddRange(fieldTypes);
                     var fields = mappedType.GetFields().ToList();
-                    if (fields.Count == 0)
-                        continue;
+
                     fields.AddRange(mappedType.GetFields(
                         BindingFlags.NonPublic
                         | BindingFlags.Instance
