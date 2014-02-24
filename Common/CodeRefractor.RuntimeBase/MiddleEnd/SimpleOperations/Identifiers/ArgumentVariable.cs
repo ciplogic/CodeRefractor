@@ -17,7 +17,10 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers
 
         public override IdentifierValue Clone()
         {
-            return new ArgumentVariable(Name);
+            return new ArgumentVariable(Name)
+            {
+                Id = Id
+            };
         }
     }
 }

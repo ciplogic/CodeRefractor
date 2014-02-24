@@ -51,6 +51,10 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
             var result = false;
             var optimizationsList = new List<OptimizationPass>(optimizationPasses);
             var didOptimize = true;
+            if (interpreter.Method.Name == "pollEvents")
+            {
+                
+            }
             while (didOptimize)
             {
                 interpreter.MidRepresentation.UpdateUseDef();

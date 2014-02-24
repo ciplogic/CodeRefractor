@@ -599,7 +599,7 @@ vreg_7 = vreg_6->sym;
 vreg_8 = (vreg_7 == 27)?1:0;
 local_1 = (vreg_8 == 0)?1:0;
 if(local_1) goto label_105;
-1->fin = 1;
+_this->fin = 1;
 label_105:
 vreg_10 = &_this->e;
 vreg_11 = &vreg_10->key;

@@ -49,15 +49,16 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Inliner
             }
             if (interpreter == null)
                 return;
-            InlineMethod(methodInterpreter.MidRepresentation, interpreter, methodData, pos);
+            InlineMethod(methodInterpreter.MidRepresentation, methodData, pos);
+            Result = true;
         }
 
         public static void InlineMethod(
             MetaMidRepresentation intermediateCode,
-            MethodInterpreter methodToInlineInterpreter,
             MethodData methodData,
             int pos)
         {
+            var methodToInlineInterpreter = methodData.Interpreter;
             var mappedParameters = BuildMappedParameters(methodToInlineInterpreter,
                 methodData);
 
@@ -71,9 +72,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Inliner
 
             var localOperationsToInline = BuildLocalOperationsToInline(methodToInlineInterpreter,
                 mappedParameters,
-                mappedVregs,
-                assignment.Result,
-                mappedLocals);
+                assignment.Result);
 
             MergeVRegs(intermediateCode, methodToInlineInterpreter, mappedVregs);
             MergeLocalVariables(intermediateCode, methodToInlineInterpreter, mappedLocals);
@@ -128,13 +127,10 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Inliner
         #region Instruction mapped
 
         private static List<LocalOperation> BuildLocalOperationsToInline(
-            MethodInterpreter interpreter, Dictionary<string, IdentifierValue> mappedNames,
-            Dictionary<int, int> mappedVregs, LocalVariable result,
-            Dictionary<int, LocalVariable> mappedLocals)
+            MethodInterpreter interpreter, Dictionary<LocalVariable, IdentifierValue> mappedNames, LocalVariable result)
         {
             var localOperationsToInline = new List<LocalOperation>();
             var localOperations = interpreter.MidRepresentation.LocalOperations.ToList();
-            var useDef = interpreter.MidRepresentation.UseDef;
             for (var index = 0; index < localOperations.Count; index++)
             {
                 var localOperation = localOperations[index];
@@ -144,8 +140,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Inliner
                     break;
                 }
                 var clone = localOperation.Clone();
-                var usages = useDef.GetUsages(index);
-                SwitchUsageClones(mappedNames, mappedVregs, mappedLocals, usages, clone);
+                SwitchUsageClones(mappedNames, clone);
                 localOperationsToInline.Add(clone);
             }
             return localOperationsToInline;
@@ -170,45 +165,12 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Inliner
             localOperationsToInline.Add(assignmentReturn);
         }
 
-        private static void SwitchUsageClones(Dictionary<string, IdentifierValue> mappedNames,
-            Dictionary<int, int> mappedVregs, Dictionary<int, LocalVariable> mappedLocals,
-            LocalVariable[] usages, LocalOperation clone)
+        private static void SwitchUsageClones(Dictionary<LocalVariable, IdentifierValue> mappedNames, LocalOperation clone)
         {
-            foreach (var localVariable in usages)
+            foreach (var localVariable in mappedNames)
             {
-                switch (localVariable.Kind)
-                {
-                    case VariableKind.Vreg:
-                    {
-                        int newVregId;
-                        if (mappedVregs.TryGetValue(localVariable.Id, out newVregId))
-                        {
-                            var newVreg = (LocalVariable) localVariable.Clone();
-                            newVreg.Id = newVregId;
-                            clone.SwitchUsageWithDefinition(localVariable, newVreg);
-                        }
-                    }
-                        break;
-                    case VariableKind.Local:
-                    {
-                        LocalVariable newLocalId;
-                        if (mappedLocals.TryGetValue(localVariable.Id, out newLocalId))
-                        {
-                            clone.SwitchUsageWithDefinition(localVariable, newLocalId);
-                        }
-                    }
-                        break;
-                    case VariableKind.Argument:
-                    {
-                        var argumentName = localVariable.Name;
-                        IdentifierValue argumentValue;
-                        if (mappedNames.TryGetValue(argumentName, out argumentValue))
-                        {
-                            clone.SwitchUsageWithDefinition(localVariable, argumentValue);
-                        }
-                    }
-                        break;
-                }
+                clone.SwitchUsageWithDefinition(localVariable.Key, localVariable.Value);
+
             }
         }
 
@@ -247,15 +209,16 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Inliner
             return mappedNames;
         }
 
-        private static Dictionary<string, IdentifierValue> BuildMappedParameters(MethodInterpreter interpreter,
+        private static Dictionary<LocalVariable, IdentifierValue> BuildMappedParameters(MethodInterpreter interpreter,
             MethodData methodData)
         {
-            var mappedNames = new Dictionary<string, IdentifierValue>();
+            var mappedNames = new Dictionary<LocalVariable, IdentifierValue>();
             for (var i = 0; i < methodData.Parameters.Count; i++)
             {
                 var identifierValue = methodData.Parameters[i];
                 var argumentVariable = interpreter.MidRepresentation.Vars.Arguments[i];
-                mappedNames[argumentVariable.Name] = identifierValue;
+                argumentVariable.Id = i;
+                mappedNames[argumentVariable] = identifierValue;
             }
             return mappedNames;
         }

@@ -33,7 +33,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Inliner
                     || AnalyzeFunctionIsEmpty.ReadProperty(interpreter)
                     )
                 {
-                    SmallFunctionsInliner.InlineMethod(methodInterpreter.MidRepresentation, interpreter, methodData,
+                    SmallFunctionsInliner.InlineMethod(methodInterpreter.MidRepresentation, methodData,
                         index);
                     Result = true;
                     return;
