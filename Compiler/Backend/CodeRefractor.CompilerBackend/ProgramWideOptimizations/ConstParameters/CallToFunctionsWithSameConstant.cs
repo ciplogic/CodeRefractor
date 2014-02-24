@@ -56,6 +56,8 @@ namespace CodeRefractor.CompilerBackend.ProgramWideOptimizations.ConstParameters
                 var op = allOps[callOp];
                 var methodData = (MethodData) op.Value;
                 var callingInterpreter = methodData.Interpreter;
+                if(callingInterpreter.Kind!=MethodKind.Default)
+                    continue;
                 var interpreterData = ConstantParametersData.GetInterpreterData(callingInterpreter);
                 updatedHappen |= interpreterData.UpdateTable(methodData);
             }

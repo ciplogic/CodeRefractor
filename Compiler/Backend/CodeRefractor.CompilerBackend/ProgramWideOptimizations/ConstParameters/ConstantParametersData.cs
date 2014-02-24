@@ -51,7 +51,8 @@ namespace CodeRefractor.CompilerBackend.ProgramWideOptimizations.ConstParameters
                     ConstValueKind constKind;
                     result = !ConstKinds.TryGetValue(argumentVar, out constKind)
                         || constKind==ConstValueKind.NonConstant;
-                    
+                    if (!result)
+                        continue;
                     ConstKinds[argumentVar] = ConstValueKind.NonConstant;
                     continue;
                 }
@@ -62,15 +63,18 @@ namespace CodeRefractor.CompilerBackend.ProgramWideOptimizations.ConstParameters
                     ConstValueKind constKind;
                     result = !ConstKinds.TryGetValue(argumentVar, out constKind)
                         || constKind == ConstValueKind.AssignedConstant;
+                    if(!result)
+                        continue;
                     ConstKinds[argumentVar] = ConstValueKind.AssignedConstant;
                     continue;
                 }
                 if (!storedConst.ValueEquals(constValue))
                 {
-
                     ConstValueKind constKind;
                     result = !ConstKinds.TryGetValue(argumentVar, out constKind)
                              || constKind == ConstValueKind.NonConstant;
+                    if (!result)
+                        continue;
                     ConstKinds[argumentVar] = ConstValueKind.NonConstant;
                 }
             }

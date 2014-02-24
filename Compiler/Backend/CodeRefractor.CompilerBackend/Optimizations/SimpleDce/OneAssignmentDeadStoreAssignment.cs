@@ -50,6 +50,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
                 var op = localOperations[index];
                 var assign = (Assignment) op.Value;
                 var assignedTo = assign.AssignedTo;
+                if(assignedTo.Kind == VariableKind.Argument)
+                    continue;
                 var constAssignedValue = assign.Right as ConstValue;
                 if (constAssignedValue == null)
                     continue;
