@@ -43,10 +43,6 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             {
                 Method = DeclaringType.ClrType.GetMethod(method.Name);
             }
-            if (Method == null)
-            {
-                
-            }
         }
 
         public MethodInterpreter(MethodBase method)
@@ -55,7 +51,6 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             var pureAttribute = method.GetCustomAttribute<PureMethodAttribute>();
             if (pureAttribute != null)
                 AnalyzeProperties.IsPure = true;
-            this.ResolveByTypeResolver();
             MidRepresentation.Vars.SetupArguments(Method);
         }
 

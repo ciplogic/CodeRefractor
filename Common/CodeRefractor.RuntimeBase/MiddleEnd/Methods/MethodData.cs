@@ -29,7 +29,6 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.Methods
 
             Interpreter = info.Register();
 
-            Interpreter.ResolveByTypeResolver();
         }
 
         public MethodBase Info { get; set; }
