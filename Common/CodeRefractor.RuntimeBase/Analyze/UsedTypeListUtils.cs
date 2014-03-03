@@ -1,5 +1,4 @@
 using System;
-using CodeRefractor.RuntimeBase.FrontEnd;
 
 namespace CodeRefractor.RuntimeBase.Analyze
 {

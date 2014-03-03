@@ -1,6 +1,5 @@
 ﻿#region Usings
 
-using CodeRefractor.RuntimeBase.FrontEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 
 #endregion

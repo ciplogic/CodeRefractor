@@ -1,11 +1,11 @@
-#region Uses
+#region Usings
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using CodeRefractor.CodeWriter.BasicOperations;
 using CodeRefractor.CodeWriter.Linker;
-using CodeRefractor.RuntimeBase;
-using CodeRefractor.RuntimeBase.FrontEnd;
+using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
@@ -24,10 +24,6 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
 
         private static Dictionary<MethodInterpreterKey, MethodInterpreter> GetClosureDictionary(this MethodInterpreter entryPoints)
         {
-            if (entryPoints.Method.Name == "InitGL")
-            {
-
-            }
             var result = new Dictionary<MethodInterpreterKey, MethodInterpreter> { { entryPoints.ToKey(), entryPoints } };
             UpdateMethodEntryClosure(entryPoints, result);
             return result;
@@ -41,27 +37,20 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
         } 
         public static List<MethodInterpreter> GetMultiMethodsClosure(this List<MethodInterpreter> entryPoints)
         {
-            var finalResult = new Dictionary<MethodInterpreterKey, MethodInterpreter>();
-            var initialCount = 0;
-            do
+            var results = new List<Dictionary<MethodInterpreterKey, MethodInterpreter>>();
+            foreach (var interpreter in entryPoints)
             {
-                initialCount = finalResult.Count;
-                var results = new List<Dictionary<MethodInterpreterKey, MethodInterpreter>>();
-                foreach (var interpreter in entryPoints)
+                var result = GetClosureDictionary(interpreter);
+                results.Add(result);
+            }
+            var finalResult = new Dictionary<MethodInterpreterKey, MethodInterpreter>();
+            foreach (var result in results)
+            {
+                foreach (var entry in result)
                 {
-                    MetaLinker.Interpret(interpreter);
-                    var result = GetClosureDictionary(interpreter);
-                    results.Add(result);
+                    finalResult[entry.Key] = entry.Value;
                 }
-                foreach (var result in results)
-                {
-                    foreach (var entry in result)
-                    {
-                        finalResult[entry.Key] = entry.Value;
-                    }
-                }
-                entryPoints = finalResult.Values.ToList();
-            } while (initialCount != finalResult.Count);
+            }
             return finalResult.Values.ToList();
         }
 
@@ -69,7 +58,6 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
             Dictionary<MethodInterpreterKey, MethodInterpreter> result)
         {
             var useDef = entryPoint.MidRepresentation.UseDef;
-            entryPoint.MidRepresentation.UpdateUseDef();
             var ops = useDef.GetLocalOperations();
             var callList = useDef.GetOperationsOfKind(OperationKind.Call).ToList();
             callList.AddRange(useDef.GetOperationsOfKind(OperationKind.CallVirtual));
@@ -113,8 +101,6 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
                 var info = declaringType.TypeInitializer;
                 
                 var interpreter = info.GetInterpreter();
-                if(interpreter==null)
-                    continue;
                 result[interpreter.ToKey()] = interpreter;
                 UpdateMethodEntryClosure(interpreter, result);
             }

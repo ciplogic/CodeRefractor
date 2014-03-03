@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Text;
 using CodeRefractor.CodeWriter.Linker;
 using CodeRefractor.RuntimeBase;
-using CodeRefractor.RuntimeBase.FrontEnd;
+using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;

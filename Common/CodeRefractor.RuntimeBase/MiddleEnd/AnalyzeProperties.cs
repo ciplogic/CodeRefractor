@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
-namespace CodeRefractor.RuntimeBase.FrontEnd
+namespace CodeRefractor.RuntimeBase.MiddleEnd
 {
     public class AnalyzeProperties
     {

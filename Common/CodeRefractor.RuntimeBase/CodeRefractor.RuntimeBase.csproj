@@ -66,8 +66,8 @@
     <Compile Include="Analyze\UsedTypeList.cs" />
     <Compile Include="Analyze\UsedTypeListUtils.cs" />
     <Compile Include="CilMethodAttribute.cs" />
-    <Compile Include="FrontEnd\AnalyzeProperties.cs" />
-    <Compile Include="FrontEnd\GlobalMethodPool.cs" />
+    <Compile Include="MiddleEnd\AnalyzeProperties.cs" />
+    <Compile Include="Analyze\GlobalMethodPool.cs" />
     <Compile Include="MiddleEnd\CppLibMethodInvokeRepresentation.cs" />
     <Compile Include="MiddleEnd\GlobalTable\GlobalTableManager.cs" />
     <Compile Include="MiddleEnd\MethodDescription.cs" />

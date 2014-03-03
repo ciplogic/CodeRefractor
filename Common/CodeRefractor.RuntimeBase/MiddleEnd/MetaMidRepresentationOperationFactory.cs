@@ -3,7 +3,6 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using CodeRefractor.RuntimeBase.Analyze;
-using CodeRefractor.RuntimeBase.FrontEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.ConstTable;

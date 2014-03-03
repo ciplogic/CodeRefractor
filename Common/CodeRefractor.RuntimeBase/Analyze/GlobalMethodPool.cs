@@ -3,41 +3,36 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 
-namespace CodeRefractor.RuntimeBase.FrontEnd
+namespace CodeRefractor.RuntimeBase.Analyze
 {
     public static class GlobalMethodPool
     {
-        private static readonly SortedDictionary<string, MethodInterpreter> Interpreters = new SortedDictionary<string, MethodInterpreter>();
+        private static readonly SortedDictionary<MethodInterpreterKey, MethodInterpreter> Interpreters = 
+            new SortedDictionary<MethodInterpreterKey, MethodInterpreter>();
 
-        public static Dictionary<Assembly, CrTypeResolver> TypeResolvers = new Dictionary<Assembly, CrTypeResolver>();  
+        public static readonly Dictionary<Assembly, CrTypeResolver> TypeResolvers 
+            = new Dictionary<Assembly, CrTypeResolver>();  
 
         public static void Register(MethodInterpreter interpreter)
         {
             var method = interpreter.Method;
             if(method==null)
                 throw new InvalidDataException("Method is not mapped correctly");
-            var methodDefinitionKey = GenerateKey(method);
-            Interpreters[methodDefinitionKey] = interpreter;
-            
+            Interpreters[interpreter.ToKey()] = interpreter;
         }
 
         public static MethodInterpreter Register(this MethodBase method)
         {
             SetupTypeResolverIfNecesary(method);
-           
-            var interpreter = GetRegisteredInterpreter(method);
-            if (interpreter != null)
-                return interpreter;
-            interpreter = new MethodInterpreter(method);
+            var interpreter = new MethodInterpreter(method);
             Register(interpreter);
-            ResolveByTypeResolver(interpreter);
+            Resolve(interpreter);
             return interpreter;
         }
 
-        public static void ResolveByTypeResolver(this MethodInterpreter interpreter)
+        static void Resolve(MethodInterpreter interpreter)
         {
             var resolvers = GetTypeResolvers();
             foreach (var resolver in resolvers)
@@ -54,18 +49,6 @@ namespace CodeRefractor.RuntimeBase.FrontEnd
                 .ToArray();
             return resolvers;
         }
-        public static CrTypeResolver GetTypeResolver(MethodBase method)
-        {
-            if (method.DeclaringType == null)
-                return null;
-            var assembly = method.DeclaringType.Assembly;
-            if (assembly.GlobalAssemblyCache)
-                return null;
-            CrTypeResolver result;
-            if (!TypeResolvers.TryGetValue(assembly, out result))
-                return null;
-            return result;
-        }
 
         private static void SetupTypeResolverIfNecesary(MethodBase method)
         {
@@ -76,17 +59,13 @@ namespace CodeRefractor.RuntimeBase.FrontEnd
             if (hasValue)
                 return;
             var resolverType = assembly.GetType("TypeResolver");
-            if (resolverType == null)
-            {
-                resolverType = assembly.GetTypes().FirstOrDefault(t => t.Name == "TypeResolver");
-            }
+            
             CrTypeResolver resolver=null;
             if(resolverType!=null)
                 resolver = (CrTypeResolver) Activator.CreateInstance(resolverType);
             TypeResolvers[assembly] = resolver;
         }
         static readonly Dictionary<MethodBase, string> CachedKeys = new Dictionary<MethodBase, string>(); 
-
         public static string GenerateKey(this MethodBase method)
         {
             string result;
@@ -94,15 +73,6 @@ namespace CodeRefractor.RuntimeBase.FrontEnd
             result = method.WriteHeaderMethod(false);
             CachedKeys[method] = result;
             return result;
-        }
-
-        public static MethodInterpreter GetRegisteredInterpreter(this MethodBase method)
-        {
-            var methodDefinitionKey = GenerateKey(method);
-            MethodInterpreter result;
-            if (Interpreters.TryGetValue(methodDefinitionKey, out result)) return result;
-
-            return null;
         }
 
         public static MethodBase GetReversedMethod(this MethodBase methodInfo)
