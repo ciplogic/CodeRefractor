@@ -6,13 +6,12 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using CodeRefactor.OpenRuntime;
 using CodeRefractor.CodeWriter.TypeInfoWriter;
 using CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering;
 using CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure;
 using CodeRefractor.CompilerBackend.ProgramWideOptimizations;
-using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
+using CodeRefractor.RuntimeBase.Backend;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 
 #endregion
@@ -38,10 +37,6 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                 MetaLinkerOptimizer.ApplyOptimizations(MethodClosure.Values.ToList());
 
             BuildMethodClosure();
-            if (!UsedTypes.Contains(typeof (CrString)))
-            {
-                UsedTypes.Add(typeof (CrString));
-            }
             if (!UsedTypes.Contains(typeof(object)))
             {
                 UsedTypes.Add(typeof(object));
@@ -71,7 +66,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
         {
             var entryInterpreter = EntryInterpreter;
 
-            var result = TypesClosureLinker.BuildClosureForEntry(entryInterpreter);
+            var result = TypesClosureLinker.BuildClosureForEntry(entryInterpreter, this);
 
             MethodClosure = result.MethodInterpreters;
             UsedTypes = result.UsedTypes.ToList();

@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using CodeRefractor.CompilerBackend.OuputCodeWriter;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
@@ -69,13 +70,13 @@ namespace CodeRefractor.RuntimeBase
         }
 
 
-        public static void Interpret(MethodInterpreter methodInterpreter)
+        public static void Interpret(MethodInterpreter methodInterpreter, ProgramClosure programClosure)
         {
             if(methodInterpreter.Kind!=MethodKind.Default)
                 return;
             if(methodInterpreter.Interpreted)
                 return;
-            methodInterpreter.Process();
+            methodInterpreter.Process(programClosure);
         }
     }
 }

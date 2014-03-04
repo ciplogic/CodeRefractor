@@ -42,6 +42,8 @@ namespace CodeRefractor.Compiler
             optimizationsTable.Add(new CallToFunctionsWithSameConstant());
 
             var programClosure = new ProgramClosure(definition, optimizationsTable);
+
+            CrRuntimeLibrary.Instance.ScanAssembly(typeof(CrString).Assembly, programClosure);
             var sb = programClosure.BuildFullSourceCode();
             var end = Environment.TickCount - start;
             Console.WriteLine("Compilation time: {0} ms", end);
@@ -57,7 +59,6 @@ namespace CodeRefractor.Compiler
             commandLineParse.Process(args);
 
 
-            CrRuntimeLibrary.Instance.ScanAssembly(typeof (CrString).Assembly);
             OptimizationLevelBase.Instance = new OptimizationLevels();
             NativeCompilationUtils.SetCompilerOptions("gcc");
             CommandLineParse.OptimizerLevel =2;

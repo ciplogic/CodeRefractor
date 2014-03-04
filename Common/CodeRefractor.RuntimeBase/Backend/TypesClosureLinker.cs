@@ -2,22 +2,23 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using CodeRefractor.RuntimeBase;
+using CodeRefractor.CompilerBackend.OuputCodeWriter;
+using CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.Runtime;
 
-namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
+namespace CodeRefractor.RuntimeBase.Backend
 {
     public static class TypesClosureLinker
     {
-        public static ClosureResult BuildClosureForEntry(MethodInterpreter entryInterpreter)
+        public static ClosureResult BuildClosureForEntry(MethodInterpreter entryInterpreter, ProgramClosure programClosure)
         {
             var result = new ClosureResult();
             var methodInterpreters = new Dictionary<MethodInterpreterKey, MethodInterpreter>();
             methodInterpreters.Clear();
             methodInterpreters[entryInterpreter.ToKey()] = entryInterpreter;
-            MetaLinker.Interpret(entryInterpreter);
+            MetaLinker.Interpret(entryInterpreter, programClosure);
 
             var canContinue = true;
             var dependencies = entryInterpreter.GetMethodClosure();
@@ -25,7 +26,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
             {
                 foreach (var interpreter in dependencies)
                 {
-                    MetaLinker.Interpret(interpreter);
+                    MetaLinker.Interpret(interpreter, programClosure);
                 }
                 foreach (var dependency in dependencies)
                 {
@@ -35,7 +36,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
                 var foundMethodCount = methodInterpreters.Count;
                 dependencies = methodInterpreters.Values.ToList();
                 bool foundNewMethods;
-                result.UsedTypes = new HashSet<Type>(GetTypesClosure(dependencies, out foundNewMethods));
+                result.UsedTypes = new HashSet<Type>(GetTypesClosure(dependencies, out foundNewMethods, programClosure));
                 foreach (var dependency in dependencies)
                 {
                     methodInterpreters[dependency.ToKey()] = dependency;
@@ -46,7 +47,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
             return result;
         }
 
-        public static HashSet<Type> GetTypesClosure(List<MethodInterpreter> methodList, out bool foundNewMethods)
+        public static HashSet<Type> GetTypesClosure(List<MethodInterpreter> methodList, out bool foundNewMethods, ProgramClosure programClosure)
         {
             var typesSet = ScanMethodParameters(methodList);
 
@@ -68,7 +69,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
                     if (methodDict.ContainsKey(implMethod.ClangMethodSignature()))
                         continue;
                     var implInterpreter = implMethod.Register();
-                    MetaLinker.Interpret(implInterpreter);
+                    MetaLinker.Interpret(implInterpreter, programClosure);
                     methodList.Add(implInterpreter);
                     foundNewMethods = true;
                 }

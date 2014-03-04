@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using CodeRefractor.CompilerBackend.OuputCodeWriter;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
@@ -24,7 +25,7 @@ namespace CodeRefractor.RuntimeBase.Runtime
             get { return StaticInstance; }
         }
 
-        public void ScanAssembly(Assembly assembly)
+        public void ScanAssembly(Assembly assembly, ProgramClosure programClosure)
         {
             foreach (var item in assembly.GetTypes())
             {
@@ -34,17 +35,17 @@ namespace CodeRefractor.RuntimeBase.Runtime
             }
 			foreach (var item in MappedTypes) 
 			{
-				ScanMethodFunctions(item.Value, item.Key);
+                ScanMethodFunctions(item.Value, item.Key, programClosure);
 			}
         }
 
-		private void ScanMethodFunctions(Type item, Type mappedType)
+		private void ScanMethodFunctions(Type item, Type mappedType, ProgramClosure programClosure)
         {
 			ScanType(item, mappedType);
-			ScanTypeForCilMethods(item, mappedType);
+			ScanTypeForCilMethods(item, mappedType, programClosure);
         }
 
-		private void ScanTypeForCilMethods(Type item, Type mappedType)
+		private void ScanTypeForCilMethods(Type item, Type mappedType, ProgramClosure programClosure)
         {
             var methodsToScan = new List<MethodBase>();
             methodsToScan.AddRange(item.GetMethods());
@@ -59,11 +60,11 @@ namespace CodeRefractor.RuntimeBase.Runtime
 				iKey.MapTypes (Instance.MappedTypes);
 				
 				Instance.SupportedMethods [iKey] = interpreter;
-                MetaLinker.Interpret(interpreter);
+                MetaLinker.Interpret(interpreter, programClosure);
                 var dependencies = MetaLinker.ComputeDependencies(methodInfo);
                 foreach (var dependency in dependencies)
                 {
-                    MetaLinker.Interpret(dependency);
+                    MetaLinker.Interpret(dependency,programClosure);
                 }
             }
         }

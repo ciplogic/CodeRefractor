@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using CodeRefractor.CompilerBackend.OuputCodeWriter;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.Shared;
@@ -143,7 +144,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             labels.Add(offset);
         }
 
-        public void Process()
+        public void Process(ProgramClosure programClosure)
         {
             if (Interpreted)
                 return;

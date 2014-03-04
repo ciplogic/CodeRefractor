@@ -17,10 +17,10 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 {
     public static class MetaLinkerOptimizer
     {
-        public static MethodInterpreter CreateLinkerFromEntryPoint(this MethodInfo definition)
+        public static MethodInterpreter CreateLinkerFromEntryPoint(this MethodInfo definition, ProgramClosure programClosure)
         {
             var methodInterpreter = definition.Register();
-            MetaLinker.Interpret(methodInterpreter);
+            MetaLinker.Interpret(methodInterpreter, programClosure);
 
             OptimizeMethods(LinkerInterpretersTable.Methods);
             var foundMethodCount = 1;
@@ -32,7 +32,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                 foundMethodCount = dependencies.Count;
                 foreach (var interpreter in dependencies)
                 {
-                    MetaLinker.Interpret(interpreter);
+                    MetaLinker.Interpret(interpreter,programClosure);
                 }
                 OptimizeMethods(LinkerInterpretersTable.Methods);
             }

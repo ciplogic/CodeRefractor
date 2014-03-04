@@ -91,9 +91,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Common\CodeRefractor.RuntimeBase\CodeRefractor.RuntimeBase.csproj">
+    <ProjectReference Include="..\Common\CodeRefractor.RuntimeBase\CodeRefractor.Compiler.Internals.csproj">
       <Project>{10CEF783-53C3-42A7-940A-73773A2AF24F}</Project>
-      <Name>CodeRefractor.RuntimeBase</Name>
+      <Name>CodeRefractor.Compiler.Internals</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

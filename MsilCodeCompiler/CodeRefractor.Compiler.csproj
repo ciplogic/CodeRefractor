@@ -70,13 +70,9 @@
       <Project>{6C4BC5D1-CE1E-4152-AB7D-0EE10C64496D}</Project>
       <Name>CodeRefactor.OpenRuntime</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Common\CodeRefractor.RuntimeBase\CodeRefractor.RuntimeBase.csproj">
+    <ProjectReference Include="..\Common\CodeRefractor.RuntimeBase\CodeRefractor.Compiler.Internals.csproj">
       <Project>{10CEF783-53C3-42A7-940A-73773A2AF24F}</Project>
-      <Name>CodeRefractor.RuntimeBase</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Compiler\Backend\CodeRefractor.CompilerBackend\CodeRefractor.CompilerBackend.csproj">
-      <Project>{F6805C3F-DF9C-424A-A27F-2BBFF2707221}</Project>
-      <Name>CodeRefractor.CompilerBackend</Name>
+      <Name>CodeRefractor.Compiler.Internals</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

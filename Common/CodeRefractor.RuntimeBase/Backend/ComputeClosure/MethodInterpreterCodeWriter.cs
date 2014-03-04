@@ -2,34 +2,27 @@
 
 using System;
 using System.Collections.Generic;
-<<<<<<< HEAD
 using System.Diagnostics;
-using System.Reflection;
-using System.Text;
-using CodeRefractor.CompilerBackend.Linker;
-=======
-using CodeRefractor.CompilerBackend.OuputCodeWriter.BasicOperations;
-using CodeRefractor.CompilerBackend.OuputCodeWriter.Platform;
->>>>>>> 3d2a80fadaff73ea2d4c2f870e07831b228e79e0
+using CodeRefractor.CodeWriter.BasicOperations;
+using CodeRefractor.CodeWriter.Platform;
+using CodeRefractor.CodeWriter.TypeInfoWriter;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.Optimizations;
-using Compiler.CodeWriter.BasicOperations;
-using Compiler.CodeWriter.Platform;
 
 #endregion
 
-namespace CodeRefractor.CompilerBackend.OuputCodeWriter
+namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
 {
     public static class MethodInterpreterCodeWriter
     {
-      
-        public static string WriteMethodCode(MethodInterpreter interpreter)
+        public static string WriteMethodCode(MethodInterpreter interpreter, TypeDescriptionTable typeTable)
         {
-            return CppMethodCodeWriter.WriteCode(interpreter);
+            return CppMethodCodeWriter.WriteCode(interpreter, typeTable);
         }
+
         public static string WriteMethodSignature(MethodInterpreter interpreter)
         {
-            if(interpreter.Method==null)
+            if (interpreter.Method == null)
             {
                 Console.WriteLine("Should not be null");
                 return "";
@@ -43,29 +36,39 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             return interpreter.WritePlatformInvokeMethod();
         }
 
-        internal static string WriteDelegateCallCode(MethodInterpreter interpreter)
+        public static string WriteDelegateCallCode(MethodInterpreter interpreter)
         {
             return interpreter.WriteDelegateCallCode();
         }
-        public static bool ApplyLocalOptimizations(IEnumerable<OptimizationPass> optimizationPasses, MethodInterpreter interpreter)
+
+        public static bool ApplyLocalOptimizations(IEnumerable<OptimizationPass> optimizationPasses,
+            MethodInterpreter interpreter)
         {
             if (optimizationPasses == null)
+                return false;
+            if (interpreter.Method.IsAbstract)
                 return false;
             var result = false;
             var optimizationsList = new List<OptimizationPass>(optimizationPasses);
             var didOptimize = true;
+            if (interpreter.Method.Name == "pollEvents")
+            {
+                
+            }
             while (didOptimize)
             {
                 interpreter.MidRepresentation.UpdateUseDef();
                 didOptimize = false;
                 foreach (var optimizationPass in optimizationsList)
                 {
-                    if(!optimizationPass.CheckPreconditions(interpreter))
-                        continue;   
+                    if (!optimizationPass.CheckPreconditions(interpreter))
+                        continue;
                     didOptimize = optimizationPass.Optimize(interpreter);
+
                     if (!didOptimize) continue;
+                    var useDef = interpreter.MidRepresentation.UseDef;
+                    var optimizationName = optimizationPass.GetType().Name;
                     interpreter.MidRepresentation.UpdateUseDef();
-                    //var optimizationName = optimizationPass.GetType().Name;
                     //Console.WriteLine(String.Format("Applied optimization: {0}", optimizationName));
                     result = true;
                     break;
