@@ -73,7 +73,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
                 new DceNewObjectOrArray(),
                 new ConstantVariableBranchOperatorPropagation(),
                 new ConstantVariableEvaluation(),
-                new EvaluatePureFunctionWithConstantCall(),
+                //new EvaluatePureFunctionWithConstantCall(),
                 new RemoveDeadStoresToFunctionCalls(),
                 new RemoveDeadPureFunctionCalls(), 
                          

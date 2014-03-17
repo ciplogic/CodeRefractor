@@ -56,3 +56,5 @@ bin/Tao.Platform.Windows.xml
 bin/Tao.Sdl.xml
 Lib/Qt5Examples/build*
 */obj/*
+Views/CR.Code.Editor/obj/*
+Views/CR.Code.Editor/bin/*

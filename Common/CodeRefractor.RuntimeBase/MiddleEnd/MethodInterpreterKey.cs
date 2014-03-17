@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace CodeRefractor.RuntimeBase.MiddleEnd
 {
-    public class MethodInterpreterKey
+    public class MethodInterpreterKey : IComparable
     {
         private readonly MethodInterpreter _interpreter;
         private int _hash;
@@ -81,7 +81,20 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             return _hash;
         }
 
-		public override string ToString ()
+        public int CompareTo(object obj)
+        {
+            var objKey = obj as MethodInterpreterKey;
+            if (objKey== null)
+                return -2;
+            if (_hash == objKey._hash)
+                return 0;
+            if (_hash < objKey._hash)
+                return -1;
+
+            return 1;
+        }
+
+        public override string ToString ()
 		{
 			var declaringType = DeclaringType.ToCppMangling ();
 			var functionParams = _parameterList

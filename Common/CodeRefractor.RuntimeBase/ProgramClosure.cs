@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CodeRefractor.CodeWriter.TypeInfoWriter;
 using CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering;
-using CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure;
+using CodeRefractor.CompilerBackend.OuputCodeWriter;
 using CodeRefractor.CompilerBackend.ProgramWideOptimizations;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.Backend;
@@ -16,7 +16,7 @@ using CodeRefractor.RuntimeBase.MiddleEnd;
 
 #endregion
 
-namespace CodeRefractor.CompilerBackend.OuputCodeWriter
+namespace CodeRefractor.RuntimeBase
 {
     public class ProgramClosure
     {

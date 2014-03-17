@@ -1,4 +1,5 @@
 ﻿using CodeRefractor.CompilerBackend.OuputCodeWriter;
+using CodeRefractor.RuntimeBase;
 
 namespace CodeRefractor.CompilerBackend.ProgramWideOptimizations
 {
