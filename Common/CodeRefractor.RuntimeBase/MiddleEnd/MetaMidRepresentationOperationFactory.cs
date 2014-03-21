@@ -647,6 +647,11 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         {
             if (constructorInfo.DeclaringType == typeof (object))
                 return;
+            var mappedType = crRuntime.GetMappedType(constructorInfo.DeclaringType);
+            if (mappedType != null && mappedType != constructorInfo.DeclaringType)
+            {
+                constructorInfo = crRuntime.GetMappedConstructor(constructorInfo);
+            }
             constructorInfo.Register();
             var result = SetNewVReg();
             result.FixedType = new TypeDescription(constructorInfo.DeclaringType);
@@ -656,7 +661,6 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 AssignedTo = result,
                 Right = constructedObject
             };
-            new TypeDescription(constructorInfo.DeclaringType);
             AddOperation(OperationKind.NewObject, assignment);
             var methodData = new MethodData(constructedObject.Info);
             CallMethodData(constructedObject.Info, methodData, OperationKind.Call, crRuntime);

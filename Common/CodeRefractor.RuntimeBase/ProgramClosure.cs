@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using CodeRefractor.CodeWriter.TypeInfoWriter;
+using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering;
 using CodeRefractor.CompilerBackend.OuputCodeWriter;
 using CodeRefractor.CompilerBackend.ProgramWideOptimizations;
@@ -35,6 +36,8 @@ namespace CodeRefractor.RuntimeBase
             Runtime = crRuntime;
             EntryInterpreter = entryMethod.Register();
 
+            ResultingInFunctionOptimizationPass.Runtime = Runtime;
+            ResultingGlobalOptimizationPass.Runtime = Runtime;
             BuildMethodClosure();
             MetaLinkerOptimizer.ApplyOptimizations(MethodClosure.Values.ToList());
             if(table.Optimize(this))

@@ -32,8 +32,9 @@ namespace CodeRefractor.RuntimeBase.Analyze
             return interpreter;
         }
 
-        static void Resolve(MethodInterpreter interpreter)
+        public static void Resolve(MethodInterpreter interpreter)
         {
+            SetupTypeResolverIfNecesary(interpreter.Method);
             var resolvers = GetTypeResolvers();
             foreach (var resolver in resolvers)
             {
@@ -58,7 +59,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
             var hasValue = TypeResolvers.ContainsKey(assembly);
             if (hasValue)
                 return;
-            var resolverType = assembly.GetType("TypeResolver");
+            var resolverType = assembly.GetTypes().FirstOrDefault(t =>t.Name == "TypeResolver");
             
             CrTypeResolver resolver=null;
             if(resolverType!=null)

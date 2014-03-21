@@ -41,6 +41,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
             foreach (var interpreter in entryPoints)
             {
                 var result = GetClosureDictionary(interpreter, crRuntime);
+                GlobalMethodPool.Resolve(interpreter);
                 results.Add(result);
             }
             var finalResult = new Dictionary<MethodInterpreterKey, MethodInterpreter>();
@@ -57,6 +58,8 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
         public static void UpdateMethodEntryClosure(MethodInterpreter entryPoint,
             Dictionary<MethodInterpreterKey, MethodInterpreter> result, CrRuntimeLibrary crRuntime)
         {
+            if (entryPoint.Kind != MethodKind.Default)
+                return;
             var useDef = entryPoint.MidRepresentation.UseDef;
             entryPoint.MidRepresentation.UpdateUseDef();
             var ops = useDef.GetLocalOperations();

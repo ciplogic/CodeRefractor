@@ -22,18 +22,19 @@ namespace CodeRefractor.RuntimeBase.Analyze
         public string Namespace { get; set; }
         public bool IsPointer { get; private set; }
         static readonly HashSet<Type> IgnoredSet = new HashSet<Type>(
-             new []
+             new[]
              {
                  typeof(object),
                  typeof(IntPtr)
              }
             );
-            
-            
-           public List<FieldDescription> Layout { get; set; }
+
+
+        public List<FieldDescription> Layout { get; set; }
 
         public TypeDescription(Type clrType)
         {
+            Layout = new List<FieldDescription>();
             ClrType = clrType;
 
             Name = clrType.Name;
@@ -43,7 +44,6 @@ namespace CodeRefractor.RuntimeBase.Analyze
 
         public void ExtractInformation(CrRuntimeLibrary crRuntime)
         {
-            Layout = new List<FieldDescription>();
             ClrTypeCode = Type.GetTypeCode(ClrType);
 
             if (IgnoredSet.Contains(ClrType))
@@ -54,11 +54,11 @@ namespace CodeRefractor.RuntimeBase.Analyze
                 return;
             }
 
-            if (ClrType.BaseType != typeof (object))
+            if (ClrType.BaseType != typeof(object))
             {
                 BaseType = new TypeDescription(ClrType.BaseType);
             }
-            if(ClrType.IsPrimitive)
+            if (ClrType.IsPrimitive)
                 return;
 
             if (ClrTypeCode == TypeCode.Object)
@@ -74,18 +74,18 @@ namespace CodeRefractor.RuntimeBase.Analyze
                 return;
             if (clrType.IsInterface)
                 return;
-            var fields = clrType.GetFields(BindingFlags.NonPublic|
-                BindingFlags.Public|BindingFlags.Instance
-                |BindingFlags.DeclaredOnly|BindingFlags.Static
+            var fields = clrType.GetFields(BindingFlags.NonPublic |
+                BindingFlags.Public | BindingFlags.Instance
+                | BindingFlags.DeclaredOnly | BindingFlags.Static
                 ).ToArray();
-            if(fields.Length==0)
+            if (fields.Length == 0)
                 return;
             foreach (var fieldInfo in fields)
             {
                 if (fieldInfo.IsLiteral)
                     continue;
                 var typeOfField = new TypeDescription(fieldInfo.FieldType);
-          
+
                 var fieldDescription = new FieldDescription
                 {
                     Name = fieldInfo.Name,
@@ -114,7 +114,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
                 sb.AppendLine("union {");
                 WriteFieldListToLayout(sb, fieldList);
                 sb.AppendLine("};");
-            } 
+            }
             WriteFieldListToLayout(sb, noOffsetFields);
         }
 
@@ -142,7 +142,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
             {
                 if (fieldData.TypeDescription.ContainsGenericParameters)
                 {
-                    
+
                 }
                 var staticString = fieldData.IsStatic ? "static" : "";
                 sb.AppendFormat("{2} {0} {1};",
@@ -180,7 +180,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
             fieldInfos.AddRange(mappedType.GetFields(BindingFlags.NonPublic | BindingFlags.Instance));
             foreach (var fieldData in Layout)
             {
-                if(!fieldData.IsStatic)
+                if (!fieldData.IsStatic)
                     continue;
                 sb.AppendFormat(" /* static*/ {0} {3}::{1} = {2};",
                         fieldData.TypeDescription.ClrType.ToCppName(true),
@@ -190,6 +190,6 @@ namespace CodeRefractor.RuntimeBase.Analyze
                         .AppendLine();
             }
         }
-        
+
     }
 }

@@ -35,6 +35,14 @@ namespace CodeRefactor.OpenRuntime
                 Text[i] = value[i];
         }
 
+        [CilMethod]
+        public CrString(char[] value, int startPos, int length)
+        {
+            Text = new char[length];
+            for (var i = 0; i <= length; i++)
+                Text[i] = value[i];
+        }
+
         private static unsafe int StrLen(byte* data)
         {
             var result = 0;
@@ -44,6 +52,11 @@ namespace CodeRefactor.OpenRuntime
                 data++;
             }
             return result;
+        }
+
+        public override string ToString()
+        {
+            return string.Empty;
         }
     }
 }

@@ -126,5 +126,13 @@ namespace CodeRefractor.RuntimeBase.Runtime
             var arguments = methodInfo.GetParameters().Select(par => par.ParameterType).ToArray();
             return mappedDeclaredType.GetMethod(methodName, arguments);
         }
+
+        public ConstructorInfo GetMappedConstructor(ConstructorInfo constructorInfo)
+        {
+            var mappedDeclaredType = GetMappedType(constructorInfo.DeclaringType);
+            var arguments = constructorInfo.GetParameters().Select(par => par.ParameterType).ToArray();
+            return mappedDeclaredType.GetConstructor(arguments);
+            
+        }
     }
 }
