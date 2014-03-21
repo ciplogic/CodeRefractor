@@ -20,19 +20,19 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
         public static MethodInterpreter CreateLinkerFromEntryPoint(this MethodInfo definition, ProgramClosure programClosure)
         {
             var methodInterpreter = definition.Register();
-            MetaLinker.Interpret(methodInterpreter, programClosure);
+            MetaLinker.Interpret(methodInterpreter, programClosure.Runtime);
 
             OptimizeMethods(LinkerInterpretersTable.Methods);
             var foundMethodCount = 1;
             var canContinue = true;
             while (canContinue)
             {
-                var dependencies = methodInterpreter.GetMethodClosure();
+                var dependencies = methodInterpreter.GetMethodClosure(programClosure.Runtime);
                 canContinue = foundMethodCount != dependencies.Count;
                 foundMethodCount = dependencies.Count;
                 foreach (var interpreter in dependencies)
                 {
-                    MetaLinker.Interpret(interpreter,programClosure);
+                    MetaLinker.Interpret(interpreter, programClosure.Runtime);
                 }
                 OptimizeMethods(LinkerInterpretersTable.Methods);
             }

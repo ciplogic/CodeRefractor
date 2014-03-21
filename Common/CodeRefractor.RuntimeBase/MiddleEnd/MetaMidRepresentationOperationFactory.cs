@@ -8,6 +8,7 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.ConstTable;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
+using CodeRefractor.RuntimeBase.Runtime;
 using CodeRefractor.RuntimeBase.Shared;
 using MsilReader;
 
@@ -75,8 +76,6 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         private void AssignValueToStack(object value)
         {
             PushStack(new ConstValue(value));
-            UsedTypeList.Set(value.GetType());
-            
         }
 
         public void CopyLocalVariableIntoStack(int value)
@@ -173,14 +172,13 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             var firstVar = (LocalVariable)_evaluator.Pop();
 
             var result = SetNewVReg();
-            result.FixedType = UsedTypeList.Set(firstVar.FixedType.ClrType.GetElementType());
             var arrayVariable = new ArrayVariable( firstVar, secondVar);
             var assignment = new Assignment
             {
                 AssignedTo = result,
                 Right = arrayVariable
             };
-            result.FixedType =UsedTypeList.Set(arrayVariable.GetElementType());
+            result.FixedType =new TypeDescription(arrayVariable.GetElementType());
             AddOperation(OperationKind.GetArrayItem, assignment);
         }
 
@@ -190,14 +188,14 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             var firstVar = (LocalVariable)_evaluator.Pop();
 
             var result = SetNewVReg();
-            result.FixedType = UsedTypeList.Set(firstVar.FixedType.ClrType.GetElementType());
+            result.FixedType = new TypeDescription(firstVar.FixedType.ClrType.GetElementType());
             var arrayVariable = new ArrayVariable(firstVar, secondVar);
             var assignment = new Assignment
             {
                 AssignedTo = result,
                 Right = arrayVariable
             };
-            result.FixedType = UsedTypeList.Set(elementType);
+            result.FixedType = new TypeDescription(elementType);
             AddOperation(OperationKind.GetArrayItem, assignment);
         }
 
@@ -226,18 +224,18 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         public void ConvI()
         {
             SetUnaryOperator(OpcodeOperatorNames.ConvI);
-            _evaluator.Top.FixedType = UsedTypeList.Set(typeof(IntPtr));
+            _evaluator.Top.FixedType = new TypeDescription(typeof(IntPtr));
         }
 
         public void ConvI4()
         {
             SetUnaryOperator(OpcodeOperatorNames.ConvI4);
-            _evaluator.Top.FixedType = UsedTypeList.Set(typeof (int));
+            _evaluator.Top.FixedType = new TypeDescription(typeof(int));
         }
         public void ConvU1()
         {
             SetUnaryOperator(OpcodeOperatorNames.ConvU1);
-            _evaluator.Top.FixedType = UsedTypeList.Set(typeof(byte));
+            _evaluator.Top.FixedType = new TypeDescription(typeof(byte));
         }
 
         public void Not()
@@ -255,25 +253,25 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         {
             SetUnaryOperator(OpcodeOperatorNames.LoadLen);
 
-            _evaluator.Top.FixedType = UsedTypeList.Set(typeof(int));
+            _evaluator.Top.FixedType = new TypeDescription(typeof(int));
         }
 
         public void ConvI8()
         {
             SetUnaryOperator(OpcodeOperatorNames.ConvI8);
-            _evaluator.Top.FixedType = UsedTypeList.Set(typeof(Int64));
+            _evaluator.Top.FixedType = new TypeDescription(typeof(Int64));
         }
 
         public void ConvR4()
         {
             SetUnaryOperator(OpcodeOperatorNames.ConvR4);
-            _evaluator.Top.FixedType = UsedTypeList.Set(typeof(float));
+            _evaluator.Top.FixedType = new TypeDescription(typeof(float));
         }
 
         public void ConvR8()
         {
             SetUnaryOperator(OpcodeOperatorNames.ConvR8);
-            _evaluator.Top.FixedType = UsedTypeList.Set(typeof(double));
+            _evaluator.Top.FixedType = new TypeDescription(typeof(double));
         }
 
 
@@ -382,34 +380,34 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         }
 
 
-        public void Call(object operand)
+        public void Call(object operand, CrRuntimeLibrary crRuntime)
         {
             var methodInfo = (MethodBase)operand;
             var methodData = new MethodData(methodInfo);
 
 
-            CallMethodData(methodInfo, methodData, OperationKind.Call);
+            CallMethodData(methodInfo, methodData, OperationKind.Call,crRuntime);
         }
 
-        public void CallVirtual(object operand)
+        public void CallVirtual(object operand, CrRuntimeLibrary crRuntime)
         {
             var methodInfo = (MethodBase)operand;
             var methodData = new MethodData(methodInfo);
 
 
-            CallMethodData(methodInfo, methodData, OperationKind.CallVirtual);
+            CallMethodData(methodInfo, methodData, OperationKind.CallVirtual, crRuntime);
         }
 
-        public void CallInterface(object operand)
+        public void CallInterface(object operand, CrRuntimeLibrary crRuntime)
         {
             var methodInfo = (MethodBase)operand;
             var methodData = new MethodData(methodInfo);
 
 
-            CallMethodData(methodInfo, methodData, OperationKind.CallVirtual);
+            CallMethodData(methodInfo, methodData, OperationKind.CallVirtual,crRuntime);
         }
 
-        private void CallMethodData(MethodBase methodInfo, MethodData methodData, OperationKind operationKind)
+        private void CallMethodData(MethodBase methodInfo, MethodData methodData, OperationKind operationKind, CrRuntimeLibrary crRuntime)
         {
             if (HandleRuntimeHelpersMethod(methodInfo))
             {
@@ -420,6 +418,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             if(methodInfo.IsConstructor && methodInfo.DeclaringType==typeof(object))
                 return;
             methodData.ExtractNeededValuesFromStack(_evaluator);
+            
             if (!methodData.IsStatic && methodData.Parameters.Count > 0)
             {
                 methodData.Info = ClassHierarchyAnalysis.GetBestVirtualMatch(methodData.Info,
@@ -432,14 +431,20 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 DelegateManager.RegisterType(declaringType, signature);
             }
 
+            var mappedType = crRuntime.GetMappedType(declaringType);
+            if (mappedType!=null && mappedType != declaringType)
+            {
+                methodData.Info = crRuntime.GetMappedMethodInfo(methodInfo);
+                
+            }
 
             if (!methodData.IsVoid)
             {
                 var vreg = SetNewVReg();
-                    vreg.FixedType = UsedTypeList.Set(methodInfo.GetReturnType());
+                    vreg.FixedType = new TypeDescription(methodInfo.GetReturnType());
                 methodData.Result = vreg;
             }
-            methodData.FixedType = UsedTypeList.Set(methodInfo.GetReturnType());
+            methodData.FixedType = new TypeDescription(methodInfo.GetReturnType());
             AddOperation(operationKind, methodData);
            
         }
@@ -556,7 +561,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         public void LoadAddressIntoEvaluationStack(LocalVariableInfo index)
         {
             var vreg = SetNewVReg();
-            vreg.FixedType = UsedTypeList.Set(
+            vreg.FixedType = new TypeDescription(
                 index.LocalType.MakeByRefType());
 
             var argument = _representation.Vars.LocalVars.First(v=>v.Id ==index.LocalIndex);
@@ -571,7 +576,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         {
             var firstVar = (LocalVariable)_evaluator.Pop();
             var vreg = SetNewVReg();
-            vreg.FixedType = UsedTypeList.Set(fieldInfo.FieldType.MakeByRefType());
+            vreg.FixedType = new TypeDescription(fieldInfo.FieldType.MakeByRefType());
 
             var assignment = new FieldRefAssignment
             {
@@ -589,10 +594,10 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             var computedType = firstVar.ComputedType();
             if(computedType.ClrType.IsByRef)
             {
-                computedType = UsedTypeList.Set(computedType.ClrType.GetElementType());
+                computedType = new TypeDescription(computedType.ClrType.GetElementType());
             }
             vreg.FixedType = 
-                UsedTypeList.Set(
+                new TypeDescription(
                 computedType.ClrType.LocateField(fieldName).FieldType);
             var assignment = new FieldGetter
                                  {
@@ -611,7 +616,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             var declaringType = operand.DeclaringType;
             if (declaringType == typeof (IntPtr) && fieldName=="Zero")
             {
-                var voidPtr = UsedTypeList.Set(typeof(IntPtr));
+                var voidPtr = new TypeDescription(typeof(IntPtr));
                 vreg.FixedType = voidPtr;
                 var nullPtrAssign = new Assignment
                 {
@@ -624,8 +629,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 return;
             }
             vreg.FixedType =
-                UsedTypeList.Set(declaringType.LocateField(fieldName, true).FieldType);
-            var typeData = UsedTypeList.Set(declaringType);
+                new TypeDescription(declaringType.LocateField(fieldName, true).FieldType);
+            var typeData = new TypeDescription(declaringType);
             var assignment = new Assignment
             {
                 AssignedTo = vreg,
@@ -638,25 +643,25 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             AddOperation(OperationKind.GetStaticField, assignment);
         }
 
-        public void NewObject(ConstructorInfo constructorInfo)
+        public void NewObject(ConstructorInfo constructorInfo, CrRuntimeLibrary crRuntime)
         {
             if (constructorInfo.DeclaringType == typeof (object))
                 return;
             constructorInfo.Register();
             var result = SetNewVReg();
-            result.FixedType = UsedTypeList.Set(constructorInfo.DeclaringType);
+            result.FixedType = new TypeDescription(constructorInfo.DeclaringType);
             var constructedObject = new NewConstructedObject(constructorInfo);
             var assignment = new Assignment
             {
                 AssignedTo = result,
                 Right = constructedObject
             };
-            UsedTypeList.Set(constructorInfo.DeclaringType);
+            new TypeDescription(constructorInfo.DeclaringType);
             AddOperation(OperationKind.NewObject, assignment);
             var methodData = new MethodData(constructedObject.Info);
-            CallMethodData(constructedObject.Info, methodData, OperationKind.Call);
+            CallMethodData(constructedObject.Info, methodData, OperationKind.Call, crRuntime);
             var vreg = SetNewVReg();
-            vreg.FixedType = UsedTypeList.Set(methodData.Info.DeclaringType);
+            vreg.FixedType = new TypeDescription(methodData.Info.DeclaringType);
             var assign = new Assignment
             {
                 AssignedTo = vreg,
@@ -679,7 +684,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                     ArrayLength = arrayLength
                 }
             };
-            result.FixedType = UsedTypeList.Set(typeArray.MakeArrayType());
+            result.FixedType = new TypeDescription(typeArray.MakeArrayType());
             AddOperation(OperationKind.NewArray, assignment);
         }
 
@@ -713,7 +718,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 AssignedTo = vreg,
                 Right = new ConstByteArrayValue(rightConstant)
             };
-            vreg.FixedType = UsedTypeList.Set(typeof(byte[]));
+            vreg.FixedType = new TypeDescription(typeof(byte[]));
             AddOperation(OperationKind.CopyArrayInitializer, assign);
         }
 
@@ -726,7 +731,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         {
             var nullConst = new ConstValue(null)
             {
-                FixedType = UsedTypeList.Set(typeof (object))
+                FixedType = new TypeDescription(typeof (object))
             };
             PushStack(nullConst);
         }
@@ -734,7 +739,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         public void LoadFunction(MethodInfo operand)
         {
             var result = SetNewVReg();
-            result.FixedType = UsedTypeList.Set(operand.GetType());
+            result.FixedType = new TypeDescription(operand.GetType());
             result.CustomData = operand;
             var ptr = operand.MethodHandle.GetFunctionPointer();
             var store = new FunctionPointerStore()
@@ -774,7 +779,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 AssignedTo = result,
                 Right = operand
             };
-            result.FixedType = UsedTypeList.Set(typeof(int));
+            result.FixedType = new TypeDescription(typeof(int));
             AddOperation(OperationKind.SizeOf, assign);
         }
 
@@ -790,7 +795,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 Right = firstVar
             };
             var ptrType = firstVar.ComputedType();
-            result.FixedType = UsedTypeList.Set(ptrType.ClrType.GetElementType());
+            result.FixedType = new TypeDescription(ptrType.ClrType.GetElementType());
             AddOperation(OperationKind.DerefAssignment, assignment);
         }
 
@@ -811,7 +816,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 Index = indexVar,
                 ArrayVar = arrayVar
             };
-            assignment.Left.FixedType = UsedTypeList.Set(operand.MakeByRefType());
+            assignment.Left.FixedType = new TypeDescription(operand.MakeByRefType());
             AddOperation(OperationKind.AddressOfArrayItem, assignment);
 
         }
@@ -827,7 +832,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 AssignedTo = arrayVariable,
                 Right = value
             };
-            arrayVariable.FixedType = UsedTypeList.Set(elemInfo);
+            arrayVariable.FixedType = new TypeDescription(elemInfo);
             AddOperation(OperationKind.SetArrayItem, assignment);
         }
 

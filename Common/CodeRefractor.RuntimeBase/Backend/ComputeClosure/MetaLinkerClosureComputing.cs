@@ -17,15 +17,15 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
 {
     public static class MetaLinkerClosureComputing
     {
-        public static List<MethodInterpreter> GetMethodClosure(this MethodInterpreter entryPoints)
+        public static List<MethodInterpreter> GetMethodClosure(this MethodInterpreter entryPoints, CrRuntimeLibrary crRuntime)
         {
-            return GetClosureDictionary(entryPoints).Values.ToList();
+            return GetClosureDictionary(entryPoints, crRuntime).Values.ToList();
         }
 
-        private static Dictionary<MethodInterpreterKey, MethodInterpreter> GetClosureDictionary(this MethodInterpreter entryPoints)
+        private static Dictionary<MethodInterpreterKey, MethodInterpreter> GetClosureDictionary(this MethodInterpreter entryPoints, CrRuntimeLibrary crRuntime)
         {
             var result = new Dictionary<MethodInterpreterKey, MethodInterpreter> { { entryPoints.ToKey(), entryPoints } };
-            UpdateMethodEntryClosure(entryPoints, result);
+            UpdateMethodEntryClosure(entryPoints, result,crRuntime);
             return result;
         }
 
@@ -35,12 +35,12 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
             var result = usedTypes.Where(usedType => usedType.IsSubclassOf(t)).ToList();
             return result;
         } 
-        public static List<MethodInterpreter> GetMultiMethodsClosure(this List<MethodInterpreter> entryPoints)
+        public static List<MethodInterpreter> GetMultiMethodsClosure(this List<MethodInterpreter> entryPoints, CrRuntimeLibrary crRuntime)
         {
             var results = new List<Dictionary<MethodInterpreterKey, MethodInterpreter>>();
             foreach (var interpreter in entryPoints)
             {
-                var result = GetClosureDictionary(interpreter);
+                var result = GetClosureDictionary(interpreter, crRuntime);
                 results.Add(result);
             }
             var finalResult = new Dictionary<MethodInterpreterKey, MethodInterpreter>();
@@ -55,25 +55,26 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
         }
 
         public static void UpdateMethodEntryClosure(MethodInterpreter entryPoint,
-            Dictionary<MethodInterpreterKey, MethodInterpreter> result)
+            Dictionary<MethodInterpreterKey, MethodInterpreter> result, CrRuntimeLibrary crRuntime)
         {
             var useDef = entryPoint.MidRepresentation.UseDef;
+            entryPoint.MidRepresentation.UpdateUseDef();
             var ops = useDef.GetLocalOperations();
             var callList = useDef.GetOperationsOfKind(OperationKind.Call).ToList();
             callList.AddRange(useDef.GetOperationsOfKind(OperationKind.CallVirtual));
             callList.AddRange(useDef.GetOperationsOfKind(OperationKind.CallInterface));
             var localOperations = callList.Select(i=>ops[i]).ToArray();
-            var toAdd = HandleCallInstructions(result, localOperations);
+            var toAdd = HandleCallInstructions(result, localOperations, crRuntime);
             var funcList = useDef.GetOperationsOfKind(OperationKind.LoadFunction).ToList();
             localOperations = funcList.Select(i => ops[i]).ToArray();
-            HandleLoadFunctionInstructions(result, localOperations, toAdd);
+            HandleLoadFunctionInstructions(result, localOperations, toAdd, crRuntime);
 
-            HandleTypeInitializers(result, toAdd);
+            HandleTypeInitializers(result, toAdd, crRuntime);
 
-            HandleGenerics(result, toAdd);
+            HandleGenerics(result, toAdd, crRuntime);
         }
 
-        private static void HandleGenerics(Dictionary<MethodInterpreterKey, MethodInterpreter> result, List<MethodInterpreter> toAdd)
+        private static void HandleGenerics(Dictionary<MethodInterpreterKey, MethodInterpreter> result, List<MethodInterpreter> toAdd, CrRuntimeLibrary crRuntime)
         {
             foreach (var interpreter in toAdd)
             {
@@ -81,33 +82,34 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
                 {
                     //var genericSpecialization = interpreter.Clone();
                     //genericSpecialization.Specialize();
-                    UpdateMethodEntryClosure(interpreter, result);
+                    UpdateMethodEntryClosure(interpreter, result, crRuntime);
                 }
                 else
-                    UpdateMethodEntryClosure(interpreter, result);
+                    UpdateMethodEntryClosure(interpreter, result, crRuntime);
             }
         }
 
-        private static void HandleTypeInitializers(Dictionary<MethodInterpreterKey, MethodInterpreter> result,
-            List<MethodInterpreter> toAdd)
+        private static void HandleTypeInitializers(Dictionary<MethodInterpreterKey, MethodInterpreter> result, List<MethodInterpreter> toAdd, CrRuntimeLibrary crRuntime)
         {
             foreach (var it in toAdd)
             {
                 var declaringType = it.Method.DeclaringType;
                 if (declaringType == null)
                     continue;
-                declaringType = declaringType.GetReversedType();
+                declaringType = crRuntime.GetMappedType(declaringType);
+                if(declaringType==null)
+                    continue;
+                declaringType = declaringType.GetReversedType(crRuntime);
                 if (declaringType.TypeInitializer == null) continue;
                 var info = declaringType.TypeInitializer;
                 
-                var interpreter = info.GetInterpreter();
+                var interpreter = info.GetInterpreter(crRuntime);
                 result[interpreter.ToKey()] = interpreter;
-                UpdateMethodEntryClosure(interpreter, result);
+                UpdateMethodEntryClosure(interpreter, result,crRuntime);
             }
         }
 
-        private static void HandleLoadFunctionInstructions(Dictionary<MethodInterpreterKey, MethodInterpreter> result,
-            LocalOperation[] localOperations, List<MethodInterpreter> toAdd)
+        private static void HandleLoadFunctionInstructions(Dictionary<MethodInterpreterKey, MethodInterpreter> result, LocalOperation[] localOperations, List<MethodInterpreter> toAdd, CrRuntimeLibrary crRuntime)
         {
             if (localOperations.Length == 0)
                 return;
@@ -115,7 +117,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
             {
                 var functionPointer = (FunctionPointerStore) localOperation.Value;
                 var info = functionPointer.FunctionPointer;
-                var interpreter = info.GetInterpreter();
+                var interpreter = info.GetInterpreter(crRuntime);
                 if (interpreter == null)
                     continue;
                 result[interpreter.ToKey()] = interpreter;
@@ -123,8 +125,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
             }
         }
 
-        private static List<MethodInterpreter> HandleCallInstructions(Dictionary<MethodInterpreterKey, MethodInterpreter> result,
-            LocalOperation[] localOperations)
+        private static List<MethodInterpreter> HandleCallInstructions(Dictionary<MethodInterpreterKey, MethodInterpreter> result, LocalOperation[] localOperations, CrRuntimeLibrary crRuntime)
         {
             var toAdd = new List<MethodInterpreter>();
             if (localOperations.Length == 0)
@@ -151,7 +152,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
                 if (!interpreterExists)
                 {
                     result[descInfo] = interpreter;
-                    UpdateMethodEntryClosure(interpreter, result);
+                    UpdateMethodEntryClosure(interpreter, result,crRuntime);
                 }
 
                 toAdd.Add(interpreter);

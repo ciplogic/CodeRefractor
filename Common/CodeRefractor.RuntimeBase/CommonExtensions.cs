@@ -140,9 +140,9 @@ namespace CodeRefractor.RuntimeBase
                 String.Format("{0} {1}", param.ParameterType.ToCppName(), param.Name));
         }
 
-        public static Type ReversedType(this Type type)
+        public static Type ReversedType(this Type type, CrRuntimeLibrary crRuntime)
         {
-            return CrRuntimeLibrary.Instance.GetReverseType(type) ?? type;
+            return crRuntime.GetReverseType(type) ?? type;
         }
 
         public static bool IsBranchOperation(this LocalOperation operation, bool andLabels = true)

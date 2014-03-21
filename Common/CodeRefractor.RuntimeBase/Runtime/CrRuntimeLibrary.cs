@@ -19,13 +19,8 @@ namespace CodeRefractor.RuntimeBase.Runtime
 		public Dictionary<MethodInterpreterKey, MethodInterpreter> SupportedMethods = 
 			new Dictionary<MethodInterpreterKey, MethodInterpreter>();
 
-        private static readonly CrRuntimeLibrary StaticInstance = new CrRuntimeLibrary();
-        public static CrRuntimeLibrary Instance
-        {
-            get { return StaticInstance; }
-        }
 
-        public void ScanAssembly(Assembly assembly, ProgramClosure programClosure)
+        public void ScanAssembly(Assembly assembly)
         {
             foreach (var item in assembly.GetTypes())
             {
@@ -35,17 +30,17 @@ namespace CodeRefractor.RuntimeBase.Runtime
             }
 			foreach (var item in MappedTypes) 
 			{
-                ScanMethodFunctions(item.Value, item.Key, programClosure);
+                ScanMethodFunctions(item.Value, item.Key);
 			}
         }
 
-		private void ScanMethodFunctions(Type item, Type mappedType, ProgramClosure programClosure)
+		private void ScanMethodFunctions(Type item, Type mappedType)
         {
 			ScanType(item, mappedType);
-			ScanTypeForCilMethods(item, mappedType, programClosure);
+			ScanTypeForCilMethods(item, mappedType);
         }
 
-		private void ScanTypeForCilMethods(Type item, Type mappedType, ProgramClosure programClosure)
+		private void ScanTypeForCilMethods(Type item, Type mappedType)
         {
             var methodsToScan = new List<MethodBase>();
             methodsToScan.AddRange(item.GetMethods());
@@ -57,14 +52,14 @@ namespace CodeRefractor.RuntimeBase.Runtime
                     continue;
                 var interpreter = methodInfo.Register();
 				var iKey = interpreter.ToKey (item);
-				iKey.MapTypes (Instance.MappedTypes);
+				iKey.MapTypes (MappedTypes);
 				
-				Instance.SupportedMethods [iKey] = interpreter;
-                MetaLinker.Interpret(interpreter, programClosure);
+				SupportedMethods [iKey] = interpreter;
+                MetaLinker.Interpret(interpreter, this);
                 var dependencies = MetaLinker.ComputeDependencies(methodInfo);
                 foreach (var dependency in dependencies)
                 {
-                    MetaLinker.Interpret(dependency,programClosure);
+                    MetaLinker.Interpret(dependency, this);
                 }
             }
         }
@@ -122,6 +117,14 @@ namespace CodeRefractor.RuntimeBase.Runtime
             var methods = item.GetMethods();
             foreach (var method in methods)
 				ScanCppMethod(method, mappedType);
+        }
+
+        public MethodBase GetMappedMethodInfo(MethodBase methodInfo)
+        {
+            var mappedDeclaredType = GetMappedType(methodInfo.DeclaringType);
+            var methodName = methodInfo.Name;
+            var arguments = methodInfo.GetParameters().Select(par => par.ParameterType).ToArray();
+            return mappedDeclaredType.GetMethod(methodName, arguments);
         }
     }
 }

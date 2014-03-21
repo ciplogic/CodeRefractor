@@ -11,6 +11,7 @@ using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.ConstTable;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
+using CodeRefractor.RuntimeBase.Runtime;
 
 #endregion
 
@@ -18,14 +19,14 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 {
     public static class CppMethodCodeWriter
     {
-        public static string WriteCode(MethodInterpreter interpreter, TypeDescriptionTable typeTable)
+        public static string WriteCode(MethodInterpreter interpreter, TypeDescriptionTable typeTable, CrRuntimeLibrary crRuntime)
         {
             var operations = interpreter.MidRepresentation.LocalOperations;
             var headerSb = new StringBuilder();
-            var sb = CppWriteSignature.WriteSignature(interpreter);
+            var sb = CppWriteSignature.WriteSignature(interpreter, crRuntime);
             headerSb.AppendLine(sb.ToString());
             headerSb.Append("{");
-            var bodySb = ComputeBodySb(operations, interpreter.MidRepresentation.Vars, typeTable, interpreter);
+            var bodySb = ComputeBodySb(operations, interpreter.MidRepresentation.Vars, typeTable, interpreter, crRuntime);
             var variablesSb = ComputeVariableSb(interpreter.MidRepresentation, interpreter);
             var finalSb = new StringBuilder();
             finalSb.AppendLine(headerSb.ToString());
@@ -34,7 +35,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             return finalSb.ToString();
         }
 
-        private static StringBuilder ComputeBodySb(List<LocalOperation> operations, MidRepresentationVariables vars, TypeDescriptionTable typeTable, MethodInterpreter interpreter)
+        private static StringBuilder ComputeBodySb(List<LocalOperation> operations, MidRepresentationVariables vars, TypeDescriptionTable typeTable, MethodInterpreter interpreter, CrRuntimeLibrary crRuntime)
         {
             var bodySb = new StringBuilder();
             foreach (var operation in operations)
@@ -56,13 +57,13 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                         CppHandleBranches.HandleBranchOperator(operation, bodySb);
                         break;
                     case OperationKind.Call:
-                        CppHandleCalls.HandleCall(operation, bodySb, vars,interpreter);
+                        CppHandleCalls.HandleCall(operation, bodySb, vars,interpreter, crRuntime);
                         break;
                     case OperationKind.CallInterface:
-                        CppHandleCalls.HandleCallInterface(operation, bodySb, vars, interpreter);
+                        CppHandleCalls.HandleCallInterface(operation, bodySb, vars, interpreter, crRuntime);
                         break;
                     case OperationKind.CallVirtual:
-                        CppHandleCalls.HandleCallVirtual(operation, bodySb, vars, interpreter);
+                        CppHandleCalls.HandleCallVirtual(operation, bodySb, vars, interpreter, crRuntime);
                         break;
                     case OperationKind.CallRuntime:
                         CppHandleCalls.HandleCallRuntime(operation, bodySb);

@@ -47,7 +47,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
 
                     case OperationKind.Call:
                         var operationData = (MethodData) localOperation.Value;
-                        var readPurity = LinkerInterpretersTableUtils.ReadPurity(operationData.Info);
+                        var readPurity = LinkerInterpretersTableUtils.ReadPurity(operationData.Info, Runtime);
                         if (!readPurity)
                             return false;
                         break;

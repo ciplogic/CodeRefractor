@@ -13,6 +13,7 @@ using CodeRefractor.CompilerBackend.ProgramWideOptimizations;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.Backend;
 using CodeRefractor.RuntimeBase.MiddleEnd;
+using CodeRefractor.RuntimeBase.Runtime;
 
 #endregion
 
@@ -22,13 +23,16 @@ namespace CodeRefractor.RuntimeBase
     {
         public List<Type> UsedTypes;
         public MethodInterpreter EntryInterpreter { get; set; }
+        public CrRuntimeLibrary Runtime { get; set; }
+
         public Dictionary<MethodInterpreterKey, MethodInterpreter> MethodClosure = new Dictionary<MethodInterpreterKey, MethodInterpreter>();
         private readonly Dictionary<Type, int> _typeDictionary;
 
         VirtualMethodTable _virtualMethodTable;
 
-        public ProgramClosure(MethodInfo entryMethod, ProgramOptimizationsTable table)
+        public ProgramClosure(MethodInfo entryMethod, ProgramOptimizationsTable table, CrRuntimeLibrary crRuntime)
         {
+            Runtime = crRuntime;
             EntryInterpreter = entryMethod.Register();
 
             BuildMethodClosure();
@@ -41,7 +45,7 @@ namespace CodeRefractor.RuntimeBase
             {
                 UsedTypes.Add(typeof(object));
             }
-            TypesClosureLinker.SortTypeClosure(UsedTypes);
+            TypesClosureLinker.SortTypeClosure(UsedTypes, crRuntime);
 
             var typeTable = new TypeDescriptionTable(UsedTypes);
             _typeDictionary = typeTable.ExtractInformation();
@@ -84,19 +88,18 @@ namespace CodeRefractor.RuntimeBase
                 }
                 Parallel.ForEach(methodClosures, methodInterpreter =>
                     //foreach (var methodInterpreter in methodClosures)
-                { loweringVars.Optimize(methodInterpreter); }
-                    );
+                    loweringVars.Optimize(methodInterpreter));
 
             }
 
             
         }
 
-        public StringBuilder BuildFullSourceCode()
+        public StringBuilder BuildFullSourceCode(CrRuntimeLibrary crRuntime)
         {
             ComputeEscapeAnalysis(MethodClosure.Values.ToList());
 
-            return CppCodeGenerator.GenerateSourceStringBuilder(EntryInterpreter, UsedTypes, MethodClosure.Values.ToList(), _virtualMethodTable);
+            return CppCodeGenerator.GenerateSourceStringBuilder(EntryInterpreter, UsedTypes, MethodClosure.Values.ToList(), _virtualMethodTable, crRuntime);
         }
     }
 }

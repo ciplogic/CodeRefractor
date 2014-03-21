@@ -6,6 +6,7 @@ using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
+using CodeRefractor.RuntimeBase.Runtime;
 
 namespace CodeRefractor.CodeWriter.Linker
 {
@@ -29,16 +30,16 @@ namespace CodeRefractor.CodeWriter.Linker
             return constValue.Name;
         }
 
-        public static MethodInterpreter GetInterpreter(this MethodData methodData)
+        public static MethodInterpreter GetInterpreter(this MethodData methodData, CrRuntimeLibrary crRuntime)
         {
             var methodBase = methodData.Info;
-            return GetInterpreter(methodBase);
+            return GetInterpreter(methodBase, crRuntime);
         }
 
-        public static MethodInterpreter GetInterpreter(this MethodBase methodBase)
+        public static MethodInterpreter GetInterpreter(this MethodBase methodBase, CrRuntimeLibrary crRuntime)
         {
             var declaringType = methodBase.DeclaringType;
-            var typeToSearch = declaringType.ReversedType();
+            var typeToSearch = declaringType.ReversedType(crRuntime);
             var isGacType = typeToSearch.Assembly.GlobalAssemblyCache;
 
             if (isGacType)
@@ -48,9 +49,9 @@ namespace CodeRefractor.CodeWriter.Linker
 
         public const string EscapeName = "NonEscapingArgs";
 
-        public static Dictionary<int, bool> EscapingParameterData(this MethodBase info)
+        public static Dictionary<int, bool> EscapingParameterData(this MethodBase info, CrRuntimeLibrary crRuntime)
         {
-            var interpreter = info.GetInterpreter();
+            var interpreter = info.GetInterpreter(crRuntime);
             if (interpreter == null)
                 return null;
             var calledMethod = interpreter.MidRepresentation;
@@ -61,12 +62,12 @@ namespace CodeRefractor.CodeWriter.Linker
             }
             return otherMethodData;
         }
-        public static bool[] BuildEscapingBools(this MethodBase method)
+        public static bool[] BuildEscapingBools(this MethodBase method, CrRuntimeLibrary crRuntime)
         {
             var parameters = method.GetParameters();
             var escapingBools = new bool[parameters.Length + 1];
 
-            var escapeData = method.EscapingParameterData();
+            var escapeData = method.EscapingParameterData(crRuntime);
             if (escapeData != null)
             {
                 foreach (var escaping in escapeData)

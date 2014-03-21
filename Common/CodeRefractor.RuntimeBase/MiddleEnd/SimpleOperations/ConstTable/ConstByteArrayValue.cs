@@ -10,7 +10,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.ConstTable
         public ConstByteArrayValue(int id) : base(id)
         {
             Id = id;
-            FixedType = UsedTypeList.Set(typeof (byte));
+            FixedType = new TypeDescription(typeof (byte));
             Value = ConstByteArrayList.Instance.ItemList[id];
         }
     }

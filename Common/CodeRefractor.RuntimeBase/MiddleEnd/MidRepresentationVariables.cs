@@ -27,13 +27,13 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 Arguments.Add(
                     new ArgumentVariable("_this")
                     {
-                        FixedType = UsedTypeList.Set(_method.DeclaringType)
+                        FixedType = new TypeDescription(_method.DeclaringType)
                     });
             }
             var argumentVariables = _method.GetParameters()
                 .Select(param => new ArgumentVariable(param.Name)
                 {
-                    FixedType = UsedTypeList.Set(param.ParameterType),
+                    FixedType = new TypeDescription(param.ParameterType),
                     Id = pos++
                 })
                 .ToArray();
@@ -49,7 +49,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
             var varsToAdd = VariableInfos.Select((v, index) => new LocalVariable
             {
-                FixedType = UsedTypeList.Set(v.LocalType),
+                FixedType = new TypeDescription(v.LocalType),
                 Id = index,
                 Kind = VariableKind.Local
             }).ToList();

@@ -11,6 +11,7 @@ using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
+using CodeRefractor.RuntimeBase.Runtime;
 
 #endregion
 
@@ -29,7 +30,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         }
 
 
-        public static void HandleCall(LocalOperation operation, StringBuilder sbCode, MidRepresentationVariables vars, MethodInterpreter interpreter)
+        public static void HandleCall(LocalOperation operation, StringBuilder sbCode, MidRepresentationVariables vars, MethodInterpreter interpreter, CrRuntimeLibrary crRuntime)
         {
             var operationData = (MethodData) operation.Value;
             var sb = new StringBuilder();
@@ -42,12 +43,12 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 
             sb.AppendFormat("{0}", methodInfo.ClangMethodSignature());
 
-            if (WriteParametersToSb(operationData, methodInfo, sb, interpreter)) return;
+            if (WriteParametersToSb(operationData, methodInfo, sb, interpreter, crRuntime)) return;
 
             sbCode.Append(sb);
         }
 
-        public static void HandleCallInterface(LocalOperation operation, StringBuilder sbCode, MidRepresentationVariables vars, MethodInterpreter interpreter)
+        public static void HandleCallInterface(LocalOperation operation, StringBuilder sbCode, MidRepresentationVariables vars, MethodInterpreter interpreter, CrRuntimeLibrary crRuntime)
         {
             var operationData = (MethodData)operation.Value;
             var sb = new StringBuilder();
@@ -60,12 +61,12 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 
             sb.AppendFormat("{0}_icall", methodInfo.ClangMethodSignature());
 
-            if (WriteParametersToSb(operationData, methodInfo, sb,interpreter)) return;
+            if (WriteParametersToSb(operationData, methodInfo, sb,interpreter, crRuntime)) return;
 
             sbCode.Append(sb);
         }
 
-        public static void HandleCallVirtual(LocalOperation operation, StringBuilder sbCode, MidRepresentationVariables vars, MethodInterpreter interpreter)
+        public static void HandleCallVirtual(LocalOperation operation, StringBuilder sbCode, MidRepresentationVariables vars, MethodInterpreter interpreter, CrRuntimeLibrary crRuntime)
         {
             var operationData = (MethodData)operation.Value;
             var sb = new StringBuilder();
@@ -78,17 +79,16 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 
             sb.AppendFormat("{0}_vcall", methodInfo.ClangMethodSignature());
 
-            if (WriteParametersToSb(operationData, methodInfo, sb,interpreter)) return;
+            if (WriteParametersToSb(operationData, methodInfo, sb,interpreter, crRuntime)) return;
 
             sbCode.Append(sb);
         }
 
-        private static bool WriteParametersToSb(MethodData operationData, MethodBase methodInfo,
-            StringBuilder sb, MethodInterpreter interpreter)
+        private static bool WriteParametersToSb(MethodData operationData, MethodBase methodInfo, StringBuilder sb, MethodInterpreter interpreter, CrRuntimeLibrary crRuntime)
         {
             var identifierValues = operationData.Parameters;
 
-            var escapingData = methodInfo.BuildEscapingBools();
+            var escapingData = methodInfo.BuildEscapingBools(crRuntime);
             if (escapingData == null)
             {
                 var argumentsCall = String.Join(", ", identifierValues.Select(p =>

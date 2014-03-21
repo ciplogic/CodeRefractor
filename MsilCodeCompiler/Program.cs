@@ -41,10 +41,12 @@ namespace CodeRefractor.Compiler
             optimizationsTable.Add(new DevirtualizerIfOneImplemetor());
             optimizationsTable.Add(new CallToFunctionsWithSameConstant());
 
-            var programClosure = new ProgramClosure(definition, optimizationsTable);
+            var crRuntime = new CrRuntimeLibrary();
+            crRuntime.ScanAssembly(typeof(CrString).Assembly);
+            
+            var programClosure = new ProgramClosure(definition, optimizationsTable, crRuntime);
 
-            CrRuntimeLibrary.Instance.ScanAssembly(typeof(CrString).Assembly, programClosure);
-            var sb = programClosure.BuildFullSourceCode();
+            var sb = programClosure.BuildFullSourceCode(programClosure.Runtime);
             var end = Environment.TickCount - start;
             Console.WriteLine("Compilation time: {0} ms", end);
 

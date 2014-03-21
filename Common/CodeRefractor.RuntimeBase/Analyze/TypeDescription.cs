@@ -41,7 +41,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
             ContainsGenericParameters = clrType.ContainsGenericParameters;
         }
 
-        public void ExtractInformation()
+        public void ExtractInformation(CrRuntimeLibrary crRuntime)
         {
             Layout = new List<FieldDescription>();
             ClrTypeCode = Type.GetTypeCode(ClrType);
@@ -50,35 +50,30 @@ namespace CodeRefractor.RuntimeBase.Analyze
                 return;
             if (ClrType.IsPointer || ClrType.IsByRef)
             {
-                UsedTypeList.Set(ClrType.GetElementType());
                 IsPointer = ClrType.IsPointer;
                 return;
             }
 
             if (ClrType.BaseType != typeof (object))
             {
-                BaseType = UsedTypeList.Set(ClrType.BaseType);
+                BaseType = new TypeDescription(ClrType.BaseType);
             }
             if(ClrType.IsPrimitive)
                 return;
 
             if (ClrTypeCode == TypeCode.Object)
             {
-                ExtractFieldsTypes();
+                ExtractFieldsTypes(crRuntime);
             }
         }
 
-        private void ExtractFieldsTypes()
+        private void ExtractFieldsTypes(CrRuntimeLibrary crRuntime)
         {
-            var clrType = ClrType.GetReversedType();
+            var clrType = ClrType.GetReversedType(crRuntime);
             if (clrType.Assembly.GlobalAssemblyCache)
                 return;
             if (clrType.IsInterface)
                 return;
-            if (clrType.IsSubclassOf(typeof (Array)))
-            {
-                UsedTypeList.Set(clrType.GetElementType());
-            }
             var fields = clrType.GetFields(BindingFlags.NonPublic|
                 BindingFlags.Public|BindingFlags.Instance
                 |BindingFlags.DeclaredOnly|BindingFlags.Static
@@ -89,9 +84,8 @@ namespace CodeRefractor.RuntimeBase.Analyze
             {
                 if (fieldInfo.IsLiteral)
                     continue;
-                var typeOfField = UsedTypeList.Set(fieldInfo.FieldType);
-                if (typeOfField== null)
-                    continue;
+                var typeOfField = new TypeDescription(fieldInfo.FieldType);
+          
                 var fieldDescription = new FieldDescription
                 {
                     Name = fieldInfo.Name,

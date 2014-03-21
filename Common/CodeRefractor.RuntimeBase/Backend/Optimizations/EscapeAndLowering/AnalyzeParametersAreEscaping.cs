@@ -10,6 +10,7 @@ using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
+using CodeRefractor.RuntimeBase.Runtime;
 
 #endregion
 
@@ -22,22 +23,22 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
             if (interpreter.Kind != MethodKind.Default)
                 return;
 
-            var originalSnapshot = interpreter.Method.BuildEscapingBools();
+            var originalSnapshot = interpreter.Method.BuildEscapingBools(Runtime);
 
             var localOperations = interpreter.MidRepresentation.UseDef.GetLocalOperations();
             if (ComputeEscapeTable(interpreter, localOperations, interpreter)) return;
 
-            var finalSnapshot = interpreter.Method.BuildEscapingBools();
+            var finalSnapshot = interpreter.Method.BuildEscapingBools(Runtime);
             CheckForChanges(finalSnapshot, originalSnapshot);
         }
 
         private static bool ComputeEscapeTable(MethodInterpreter intermediateCode, LocalOperation[] operations, MethodInterpreter interpreter)
         {
-            var argEscaping = ComputeEscapingArgList(intermediateCode.MidRepresentation, operations);
+            var argEscaping = ComputeEscapingArgList(intermediateCode.MidRepresentation, operations, Runtime);
             var escaping = ComputeArgsEscaping(operations, argEscaping);
             if (argEscaping.Count == 0) return true;
             intermediateCode.MidRepresentation.SetAdditionalValue(LinkerUtils.EscapeName, escaping);
-            var escapingBools = intermediateCode.Method.BuildEscapingBools();
+            var escapingBools = intermediateCode.Method.BuildEscapingBools(Runtime);
             var variables = intermediateCode.MidRepresentation.Vars;
             foreach (var variable in variables.Arguments)
             {
@@ -65,8 +66,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
             }
         }
 
-        public static HashSet<LocalVariable> ComputeEscapingArgList(MetaMidRepresentation intermediateCode,
-            LocalOperation[] operations)
+        public static HashSet<LocalVariable> ComputeEscapingArgList(MetaMidRepresentation intermediateCode, LocalOperation[] operations, CrRuntimeLibrary crRuntime)
         {
             var argumentList = new HashSet<LocalVariable>();
             argumentList.Clear();
@@ -83,7 +83,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
                 var usages = useDef.GetUsages(index);
                 foreach (var localVariable in usages.Where(argumentList.Contains))
                 {
-                    InFunctionLoweringVars.RemoveCandidatesIfEscapes(localVariable, argumentList, op);
+                    InFunctionLoweringVars.RemoveCandidatesIfEscapes(localVariable, argumentList, op, crRuntime);
                 }
             }
             return argumentList;
@@ -126,7 +126,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
         public static Dictionary<int, bool> GetEscapingParameterData(MethodData methodData)
         {
             var info = methodData.Info;
-            return info.EscapingParameterData();
+            return info.EscapingParameterData(Runtime);
         }
     }
 }

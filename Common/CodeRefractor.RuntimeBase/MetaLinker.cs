@@ -7,6 +7,7 @@ using CodeRefractor.CompilerBackend.OuputCodeWriter;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
+using CodeRefractor.RuntimeBase.Runtime;
 using CodeRefractor.RuntimeBase.Shared;
 using MsilReader;
 
@@ -70,13 +71,13 @@ namespace CodeRefractor.RuntimeBase
         }
 
 
-        public static void Interpret(MethodInterpreter methodInterpreter, ProgramClosure programClosure)
+        public static void Interpret(MethodInterpreter methodInterpreter, CrRuntimeLibrary crRuntime)
         {
             if(methodInterpreter.Kind!=MethodKind.Default)
                 return;
             if(methodInterpreter.Interpreted)
                 return;
-            methodInterpreter.Process(programClosure);
+            methodInterpreter.Process(crRuntime);
         }
     }
 }

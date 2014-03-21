@@ -54,7 +54,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
         public static MethodData ComputeAndEvaluatePurityOfCall(LocalOperation operation)
         {
             var operationData = (MethodData) operation.Value;
-            var methodInterpreter = operationData.Info.GetInterpreter();
+            var methodInterpreter = operationData.Info.GetInterpreter(Runtime);
             if (AnalyzeFunctionPurity.ReadPurity(methodInterpreter))
             {
                 operationData.Interpreter.AnalyzeProperties.IsPure = true;

@@ -2,13 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using CodeRefractor.RuntimeBase.Runtime;
 
 namespace CodeRefractor.RuntimeBase.Analyze
 {
     public class UsedTypeList
     {
         public readonly Dictionary<Type, TypeDescription> UserTypeDesc = new Dictionary<Type, TypeDescription>(); 
-        public static TypeDescription Set(Type type)
+        public static TypeDescription Set(Type type, CrRuntimeLibrary crRuntime)
         {
             if (type == null)
                 return null;
@@ -22,7 +23,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
             }
             var typeDescription = new TypeDescription(type);
             Instance.UserTypeDesc[type] = typeDescription;
-            typeDescription.ExtractInformation();
+            typeDescription.ExtractInformation(crRuntime);
             return typeDescription;
         }
 

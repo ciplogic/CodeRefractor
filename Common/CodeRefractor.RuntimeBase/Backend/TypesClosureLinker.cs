@@ -18,15 +18,15 @@ namespace CodeRefractor.RuntimeBase.Backend
             var methodInterpreters = new Dictionary<MethodInterpreterKey, MethodInterpreter>();
             methodInterpreters.Clear();
             methodInterpreters[entryInterpreter.ToKey()] = entryInterpreter;
-            MetaLinker.Interpret(entryInterpreter, programClosure);
+            MetaLinker.Interpret(entryInterpreter, programClosure.Runtime);
 
             var canContinue = true;
-            var dependencies = entryInterpreter.GetMethodClosure();
+            var dependencies = entryInterpreter.GetMethodClosure(programClosure.Runtime);
             while (canContinue)
             {
                 foreach (var interpreter in dependencies)
                 {
-                    MetaLinker.Interpret(interpreter, programClosure);
+                    MetaLinker.Interpret(interpreter, programClosure.Runtime);
                 }
                 foreach (var dependency in dependencies)
                 {
@@ -36,24 +36,29 @@ namespace CodeRefractor.RuntimeBase.Backend
                 var foundMethodCount = methodInterpreters.Count;
                 dependencies = methodInterpreters.Values.ToList();
                 bool foundNewMethods;
-                result.UsedTypes = new HashSet<Type>(GetTypesClosure(dependencies, out foundNewMethods, programClosure));
+                result.UsedTypes = new HashSet<Type>(GetTypesClosure(dependencies, out foundNewMethods, programClosure, programClosure.Runtime));
                 foreach (var dependency in dependencies)
                 {
                     methodInterpreters[dependency.ToKey()] = dependency;
                 }
-                dependencies = methodInterpreters.Values.ToList().GetMultiMethodsClosure();
+                foreach (var interpreter in methodInterpreters.Values)
+                {
+                    interpreter.Process(programClosure.Runtime);
+                }
+                
+                dependencies = methodInterpreters.Values.ToList().GetMultiMethodsClosure(programClosure.Runtime);
                 canContinue = foundMethodCount != dependencies.Count;
             }
             return result;
         }
 
-        public static HashSet<Type> GetTypesClosure(List<MethodInterpreter> methodList, out bool foundNewMethods, ProgramClosure programClosure)
+        public static HashSet<Type> GetTypesClosure(List<MethodInterpreter> methodList, out bool foundNewMethods, ProgramClosure programClosure, CrRuntimeLibrary crRuntime)
         {
-            var typesSet = ScanMethodParameters(methodList);
+            var typesSet = ScanMethodParameters(methodList, crRuntime);
 
             foundNewMethods = false;
 
-            var resultTypes = BuildScannedDictionaryFromTypesAndInstructions(typesSet);
+            var resultTypes = BuildScannedDictionaryFromTypesAndInstructions(typesSet, crRuntime);
             var methodDict = methodList.ToDictionary(method => method.Method.ClangMethodSignature());
             var virtMethods = methodList.Where(m => m.Method.IsVirtual).ToArray();
             foreach (var virt in virtMethods)
@@ -69,7 +74,7 @@ namespace CodeRefractor.RuntimeBase.Backend
                     if (methodDict.ContainsKey(implMethod.ClangMethodSignature()))
                         continue;
                     var implInterpreter = implMethod.Register();
-                    MetaLinker.Interpret(implInterpreter, programClosure);
+                    MetaLinker.Interpret(implInterpreter, crRuntime);
                     methodList.Add(implInterpreter);
                     foundNewMethods = true;
                 }
@@ -78,7 +83,7 @@ namespace CodeRefractor.RuntimeBase.Backend
             return resultTypes;
         }
 
-        private static HashSet<Type> BuildScannedDictionaryFromTypesAndInstructions(HashSet<Type> typesSet)
+        private static HashSet<Type> BuildScannedDictionaryFromTypesAndInstructions(HashSet<Type> typesSet, CrRuntimeLibrary crRuntime)
         {
             bool isAdded;
             do
@@ -87,7 +92,7 @@ namespace CodeRefractor.RuntimeBase.Backend
                 foreach (var type in typesSet)
                 {
                     AddBaseTypesToHash(type, toAdd);
-                    var mappedType = type.ReversedType();
+                    var mappedType = type.ReversedType(crRuntime);
                     if (type.IsPrimitive)
                         continue;
 
@@ -109,7 +114,7 @@ namespace CodeRefractor.RuntimeBase.Backend
                         if (fieldType.IsPointer || fieldType.IsByRef)
                             fieldType = fieldType.GetElementType();
 
-                        var typeDesc = UsedTypeList.Set(type);
+                        var typeDesc = UsedTypeList.Set(type, crRuntime);
                         if (typeDesc == null)
                             continue;
                         toAdd.Add(fieldType);
@@ -123,7 +128,7 @@ namespace CodeRefractor.RuntimeBase.Backend
                 IsRefClassType(t) && !t.IsInterface).ToList();
             foreach (var type in typesClosure)
             {
-                UsedTypeList.Set(type);
+                UsedTypeList.Set(type,crRuntime);
             }
 
             typesSet.Remove(typeof (void));
@@ -144,9 +149,9 @@ namespace CodeRefractor.RuntimeBase.Backend
             }
         }
 
-        public static void SortTypeClosure(List<Type> types)
+        public static void SortTypeClosure(List<Type> types, CrRuntimeLibrary crRuntime)
         {
-            var typeComparer = new ClosureTypeComparer(types);
+            var typeComparer = new ClosureTypeComparer(types, crRuntime);
             typeComparer.Sort();
         }
 
@@ -160,7 +165,7 @@ namespace CodeRefractor.RuntimeBase.Backend
             return true;
         }
 
-        private static HashSet<Type> ScanMethodParameters(List<MethodInterpreter> closure)
+        private static HashSet<Type> ScanMethodParameters(List<MethodInterpreter> closure, CrRuntimeLibrary crRuntime)
         {
             var typesSet = new HashSet<Type>();
             foreach (var interpreter in closure)
@@ -174,9 +179,9 @@ namespace CodeRefractor.RuntimeBase.Backend
                         continue;
                     if (parameterType.IsByRef)
                         parameterType = parameterType.GetElementType();
-                    typesSet.Add(parameterType.GetReversedType());
+                    typesSet.Add(parameterType.GetReversedType(crRuntime));
                 }
-                typesSet.Add(method.DeclaringType.GetReversedType());
+                typesSet.Add(method.DeclaringType.GetReversedType(crRuntime));
             }
             return typesSet;
         }

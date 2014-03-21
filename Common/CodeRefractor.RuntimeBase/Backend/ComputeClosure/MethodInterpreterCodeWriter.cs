@@ -8,6 +8,7 @@ using CodeRefractor.CodeWriter.Platform;
 using CodeRefractor.CodeWriter.TypeInfoWriter;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.Optimizations;
+using CodeRefractor.RuntimeBase.Runtime;
 
 #endregion
 
@@ -15,19 +16,19 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
 {
     public static class MethodInterpreterCodeWriter
     {
-        public static string WriteMethodCode(MethodInterpreter interpreter, TypeDescriptionTable typeTable)
+        public static string WriteMethodCode(MethodInterpreter interpreter, TypeDescriptionTable typeTable, CrRuntimeLibrary crRuntime)
         {
-            return CppMethodCodeWriter.WriteCode(interpreter, typeTable);
+            return CppMethodCodeWriter.WriteCode(interpreter, typeTable, crRuntime);
         }
 
-        public static string WriteMethodSignature(MethodInterpreter interpreter)
+        public static string WriteMethodSignature(MethodInterpreter interpreter, CrRuntimeLibrary crRuntime)
         {
             if (interpreter.Method == null)
             {
                 Console.WriteLine("Should not be null");
                 return "";
             }
-            var sb = CppWriteSignature.WriteSignature(interpreter, true);
+            var sb = CppWriteSignature.WriteSignature(interpreter, crRuntime, writeEndColon: true);
             return sb.ToString();
         }
 
@@ -69,7 +70,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
                     var useDef = interpreter.MidRepresentation.UseDef;
                     var optimizationName = optimizationPass.GetType().Name;
                     interpreter.MidRepresentation.UpdateUseDef();
-                    //Console.WriteLine(String.Format("Applied optimization: {0}", optimizationName));
+                    Console.WriteLine(String.Format("Applied optimization: {0}", optimizationName));
                     result = true;
                     break;
                 }

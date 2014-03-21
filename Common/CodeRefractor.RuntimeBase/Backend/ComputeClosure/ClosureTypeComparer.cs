@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using CodeRefractor.RuntimeBase.Analyze;
+using CodeRefractor.RuntimeBase.Runtime;
 
 namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
 {
@@ -9,12 +10,12 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
     {
         private readonly List<Type> _typesToSort;
         readonly Dictionary<Type, HashSet<Type>> _dictionary = new Dictionary<Type, HashSet<Type>>(); 
-        public ClosureTypeComparer(List<Type> typesToSort)
+        public ClosureTypeComparer(List<Type> typesToSort, CrRuntimeLibrary crRuntime)
         {
             _typesToSort = typesToSort;
             foreach (var type in typesToSort)
             {
-                var typeDesc = UsedTypeList.Set(type);
+                var typeDesc = UsedTypeList.Set(type,crRuntime);
 
                 var layout = typeDesc.Layout.Where(kind => kind.TypeDescription.ClrTypeCode == TypeCode.Object)
                     .Select(field =>field.TypeDescription.ClrType)

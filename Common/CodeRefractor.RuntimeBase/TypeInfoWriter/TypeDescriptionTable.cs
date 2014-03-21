@@ -34,7 +34,7 @@ namespace CodeRefractor.CodeWriter.TypeInfoWriter
         {
             foreach (var type in _typeClosure)
             {
-                var typeDesc = UsedTypeList.Set(type);
+                var typeDesc = new TypeDescription(type);
 
                 var layout = typeDesc.Layout
                     .Select(field => field.TypeDescription.ClrType)

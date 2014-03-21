@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using CodeRefractor.CompilerBackend.OuputCodeWriter;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
+using CodeRefractor.RuntimeBase.Runtime;
 using CodeRefractor.RuntimeBase.Shared;
 using MsilReader;
 
@@ -33,7 +34,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
         public void SetDeclaringType(MethodBase method)
         {
-            DeclaringType = UsedTypeList.Set(method.DeclaringType);
+            DeclaringType = new TypeDescription(method.DeclaringType);
             if (!DeclaringType.ClrType.IsGenericType)
             {
                 Method = method;
@@ -144,7 +145,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             labels.Add(offset);
         }
 
-        public void Process(ProgramClosure programClosure)
+        public void Process(CrRuntimeLibrary crRuntime)
         {
             if (Interpreted)
                 return;
@@ -165,13 +166,13 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             for (int index = 0; index < instructions.Length; index++)
             {
                 var instruction = instructions[index];
-                EvaluateInstuction(instruction, operationFactory, labelList);
+                EvaluateInstuction(instruction, operationFactory, labelList,crRuntime);
             }
             AnalyzeProperties.Setup(MidRepresentation.Vars.Arguments, MidRepresentation.Vars.VirtRegs, MidRepresentation.Vars.LocalVars);
             Interpreted = true;
         }
 
-        private void EvaluateInstuction(Instruction instruction, MetaMidRepresentationOperationFactory operationFactory, HashSet<int> labelList)
+        private void EvaluateInstuction(Instruction instruction, MetaMidRepresentationOperationFactory operationFactory, HashSet<int> labelList, CrRuntimeLibrary crRuntime)
         {
             var opcodeStr = instruction.OpCode.ToString();
             var offset = 0;
@@ -187,7 +188,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 return;
             var opcodeValue = instruction.OpCode.Value;
             operationFactory.AddCommentInstruction(instruction.ToString());
-            if (HandleCalls(instruction, operationFactory, opcodeValue)) 
+            if (HandleCalls(instruction, operationFactory, opcodeValue,crRuntime)) 
                 return;
 
             if (HandleStores(opcodeStr, instruction, operationFactory))
@@ -204,8 +205,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             throw new InvalidOperationException(String.Format("Unknown instruction: {0}", instruction));
         }
 
-        private bool HandleExtraInstructions(Instruction instruction, MetaMidRepresentationOperationFactory operationFactory,
-            string opcodeStr)
+        private bool HandleExtraInstructions(Instruction instruction, MetaMidRepresentationOperationFactory operationFactory, string opcodeStr)
         {
             if (opcodeStr == "ret")
             {
@@ -334,27 +334,26 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             return false;
         }
 
-        private static bool HandleCalls(Instruction instruction, MetaMidRepresentationOperationFactory operationFactory,
-            short opcodeValue)
+        private static bool HandleCalls(Instruction instruction, MetaMidRepresentationOperationFactory operationFactory, short opcodeValue, CrRuntimeLibrary crRuntime)
         {
             switch (opcodeValue)
             {
                 case ObcodeIntValues.Nop:
                     return true;
                 case ObcodeIntValues.Call:
-                    operationFactory.Call(instruction.Operand);
+                    operationFactory.Call(instruction.Operand, crRuntime);
                     return true;
                 case ObcodeIntValues.CallVirt:
-                    operationFactory.CallVirtual(instruction.Operand);
+                    operationFactory.CallVirtual(instruction.Operand, crRuntime);
                     return true;
                     
                 case ObcodeIntValues.CallInterface:
-                    operationFactory.CallInterface(instruction.Operand);
+                    operationFactory.CallInterface(instruction.Operand, crRuntime);
                     return true;
                 case ObcodeIntValues.NewObj:
                 {
                     var consInfo = (ConstructorInfo) instruction.Operand;
-                    operationFactory.NewObject(consInfo);
+                    operationFactory.NewObject(consInfo, crRuntime);
                 }
                     return true;
             }

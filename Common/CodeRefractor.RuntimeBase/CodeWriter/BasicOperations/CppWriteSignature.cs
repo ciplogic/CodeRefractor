@@ -6,16 +6,17 @@ using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
+using CodeRefractor.RuntimeBase.Runtime;
 
 namespace CodeRefractor.CodeWriter.BasicOperations
 {
     public static class CppWriteSignature
     {
-        public static string GetArgumentsAsTextWithEscaping(this MethodInterpreter interpreter)
+        public static string GetArgumentsAsTextWithEscaping(this MethodInterpreter interpreter, CrRuntimeLibrary crRuntime)
         {
             MethodBase method = interpreter.Method;
             var parameterInfos = method.GetParameters();
-            var escapingBools = method.BuildEscapingBools();
+            var escapingBools = method.BuildEscapingBools(crRuntime);
             var sb = new StringBuilder();
             var index = 0;
             var analyze = interpreter.AnalyzeProperties;
@@ -24,7 +25,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 var parameterData = analyze.GetVariableData(new ArgumentVariable("_this"));
                 if(parameterData!=EscapingMode.Unused)
                 {
-                    var argumentTypeDescription = UsedTypeList.Set(method.DeclaringType.GetMappedType());
+                    var argumentTypeDescription = UsedTypeList.Set(method.DeclaringType.GetMappedType(),crRuntime);
                     var thisText = String.Format("const {0}& _this", argumentTypeDescription.ClrType.ToCppName(true));
                     if (!escapingBools[0])
                     {
@@ -50,7 +51,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 }
                 var isSmartPtr = escapingBools[index];
                 var nonEscapingMode = isSmartPtr ? EscapingMode.Smart : EscapingMode.Pointer;
-                var argumentTypeDescription = UsedTypeList.Set(parameterInfo.ParameterType.GetMappedType());
+                var argumentTypeDescription = UsedTypeList.Set(parameterInfo.ParameterType.GetMappedType(), crRuntime);
                 sb.AppendFormat("{0} {1}",
                     argumentTypeDescription.ClrType.ToCppName(true, nonEscapingMode),
                     parameterInfo.Name);
@@ -59,7 +60,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         }
 
 
-        public static string WriteHeaderMethodWithEscaping(this MethodInterpreter interpreter, bool writeEndColon = true)
+        public static string WriteHeaderMethodWithEscaping(this MethodInterpreter interpreter, CrRuntimeLibrary crRuntime, bool writeEndColon = true)
         {
             MethodBase methodBase = interpreter.Method;
             var retType = methodBase.GetReturnType().ToCppName(true);
@@ -74,7 +75,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                     sb.AppendLine(genericTypeCount.GetTypeTemplatePrefix());
             }
 
-            var arguments = interpreter.GetArgumentsAsTextWithEscaping();
+            var arguments = interpreter.GetArgumentsAsTextWithEscaping(crRuntime);
 
             sb.AppendFormat("{0} {1}({2})",
                             retType, methodBase.ClangMethodSignature(), arguments);
@@ -85,12 +86,12 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             return sb.ToString();
         }
 
-        public static StringBuilder WriteSignature(MethodInterpreter interpreter, bool writeEndColon = false)
+        public static StringBuilder WriteSignature(MethodInterpreter interpreter, CrRuntimeLibrary crRuntime, bool writeEndColon = false)
         {
             var sb = new StringBuilder();
             if (interpreter == null)
                 return sb;
-            var text = interpreter.WriteHeaderMethodWithEscaping(writeEndColon);
+            var text = interpreter.WriteHeaderMethodWithEscaping(crRuntime, writeEndColon: writeEndColon);
             sb.Append(text);
             return sb;
         }
