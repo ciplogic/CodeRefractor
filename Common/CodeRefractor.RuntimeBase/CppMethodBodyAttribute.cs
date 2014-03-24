@@ -11,6 +11,8 @@ namespace CodeRefractor.RuntimeBase
         public string Header { get; set; }
 
         public string Code { get; set; }
+        public string Libraries { get; set; }
+
     }
 
     public class CppLibMethodAttribute : Attribute

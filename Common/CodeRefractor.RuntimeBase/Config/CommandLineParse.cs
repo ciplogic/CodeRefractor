@@ -104,6 +104,7 @@ namespace CodeRefractor.RuntimeBase.Config
 
 
         public string OutputCpp = "output.cpp";
+        public string OutputPro = "output.pro";
         public string ApplicationInputAssembly = "SimpleAdditions.exe";
         public string ApplicationNativeExe = string.Empty;
         public static List<OptimizationPass> OptimizationPasses;

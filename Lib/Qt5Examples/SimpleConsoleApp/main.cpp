@@ -1,10 +1,26 @@
 #include <QCoreApplication>
 
 #include <QString>
-#include <QString>
 #include <QDebug>
+#include <QFile>
 
 #include <iostream>
+
+void ReadAllLines(){
+    QFile inputFile(":/input.txt");
+    if (inputFile.open(QIODevice::ReadOnly))
+    {
+       QTextStream in(&inputFile);
+       QVector<QString> lines;
+       while ( !in.atEnd() )
+       {
+          auto line = in.readLine();
+          lines.append(line);
+
+       }
+       inputFile.close();
+    }
+}
 
 int main(int argc, char *argv[])
 {

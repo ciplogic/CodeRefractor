@@ -1,11 +1,8 @@
-﻿#region Usings
-
-using System;
+﻿using System;
 using System.IO;
 using System.Reflection;
 using CodeRefactor.OpenRuntime;
 using CodeRefractor.CompilerBackend.Optimizations.Util;
-using CodeRefractor.CompilerBackend.OuputCodeWriter;
 using CodeRefractor.CompilerBackend.ProgramWideOptimizations;
 using CodeRefractor.CompilerBackend.ProgramWideOptimizations.ConstParameters;
 using CodeRefractor.CompilerBackend.ProgramWideOptimizations.Virtual;
@@ -14,11 +11,9 @@ using CodeRefractor.RuntimeBase.Config;
 using CodeRefractor.RuntimeBase.Runtime;
 using CodeRefractor.RuntimeBase.Util;
 
-#endregion
-
-namespace CodeRefractor.Compiler
+namespace CrQt
 {
-    public static class Program
+    class Program
     {
         public static void CallCompiler(string inputAssemblyName, string outputExeName)
         {
@@ -29,8 +24,9 @@ namespace CodeRefractor.Compiler
             }
             if (!String.IsNullOrEmpty(outputExeName))
             {
-                commandLineParse.ApplicationNativeExe = outputExeName;
+                commandLineParse.ApplicationNativeExe = outputExeName; 
                 commandLineParse.OutputCpp = Path.ChangeExtension(commandLineParse.ApplicationNativeExe, ".cpp");
+
             }
             var dir = Directory.GetCurrentDirectory();
             inputAssemblyName = Path.Combine(dir, commandLineParse.ApplicationInputAssembly);
@@ -38,13 +34,13 @@ namespace CodeRefractor.Compiler
             var definition = asm.EntryPoint;
             var start = Environment.TickCount;
 
-            var optimizationsTable=new ProgramOptimizationsTable();
+            var optimizationsTable = new ProgramOptimizationsTable();
             optimizationsTable.Add(new DevirtualizerIfOneImplemetor());
             optimizationsTable.Add(new CallToFunctionsWithSameConstant());
 
             var crRuntime = new CrRuntimeLibrary();
             crRuntime.ScanAssembly(typeof(CrString).Assembly);
-            
+
             var programClosure = new ProgramClosure(definition, optimizationsTable, crRuntime);
 
             var sb = programClosure.BuildFullSourceCode(programClosure.Runtime);
@@ -56,7 +52,7 @@ namespace CodeRefractor.Compiler
                                                          commandLineParse.ApplicationNativeExe);
         }
 
-        private static void Main(string[] args)
+        static void Main(string[] args)
         {
             var commandLineParse = CommandLineParse.Instance;
             commandLineParse.Process(args);
@@ -64,7 +60,7 @@ namespace CodeRefractor.Compiler
 
             OptimizationLevelBase.Instance = new OptimizationLevels();
             NativeCompilationUtils.SetCompilerOptions("gcc");
-            CommandLineParse.OptimizerLevel =2;
+            CommandLineParse.OptimizerLevel = 2;
             CallCompiler("", "");
         }
     }

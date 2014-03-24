@@ -58,3 +58,5 @@ Lib/Qt5Examples/build*
 */obj/*
 Views/CR.Code.Editor/obj/*
 Views/CR.Code.Editor/bin/*
+Source/CrQt/bin/*
+Source/CrQt/obj/*

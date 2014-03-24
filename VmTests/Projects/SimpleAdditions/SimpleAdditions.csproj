@@ -56,7 +56,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>MainResources.resx</DependentUpon>
     </Compile>
-    <Compile Include="NBody.cs" />
     <Compile Include="TypeResolver.cs" />
   </ItemGroup>
   <ItemGroup>

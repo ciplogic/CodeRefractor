@@ -24,5 +24,27 @@ return ret;
         {
             return File.ReadAllBytes(path);
         }
+
+        [CppMethodBody(
+            Header = "QString;QFile"
+            ,Code = "" +
+                    "QFile inputFile(\"path\");"+
+    @" if (inputFile.open(QIODevice::ReadOnly))
+    {
+       QTextStream in(&inputFile);
+       QVector<QString> lines;
+       while ( !in.atEnd() )
+       {
+          auto line = in.readLine();
+          lines.append(line);
+
+       }
+       inputFile.close();
+    }"
+            )]
+        public static string ReadAllText(string path)
+        {
+            return string.Empty;
+        }
     }
 }
