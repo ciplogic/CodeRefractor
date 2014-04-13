@@ -36,6 +36,7 @@ return ret;
        while ( !in.atEnd() )
        {
           auto line = in.readLine();
+//in.readAll()
           lines.append(line);
 
        }

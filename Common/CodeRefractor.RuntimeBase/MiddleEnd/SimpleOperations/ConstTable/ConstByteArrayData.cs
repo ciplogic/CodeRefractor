@@ -7,7 +7,7 @@ using System.IO;
 
 namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.ConstTable
 {
-    public struct ConstByteArrayData
+    public class ConstByteArrayData
     {
         public readonly byte[] Data;
 
@@ -19,7 +19,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.ConstTable
         public override int GetHashCode()
         {
             if (Data == null)
-                throw new InvalidDataException("Constant byte array should be initialized");
+                return -1;
             return Data.GetHashCode();
         }
 

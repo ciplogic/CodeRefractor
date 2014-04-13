@@ -16,6 +16,7 @@ void ReadAllLines(){
        {
           auto line = in.readLine();
           lines.append(line);
+          in.readAll()
 
        }
        inputFile.close();
