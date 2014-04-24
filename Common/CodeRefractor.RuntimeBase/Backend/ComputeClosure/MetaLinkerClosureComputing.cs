@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using CodeRefractor.CodeWriter.BasicOperations;
 using CodeRefractor.CodeWriter.Linker;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
@@ -13,7 +12,7 @@ using CodeRefractor.RuntimeBase.Runtime;
 
 #endregion
 
-namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
+namespace CodeRefractor.RuntimeBase.Backend.ComputeClosure
 {
     public static class MetaLinkerClosureComputing
     {
@@ -58,8 +57,6 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
         public static void UpdateMethodEntryClosure(MethodInterpreter entryPoint,
             Dictionary<MethodInterpreterKey, MethodInterpreter> result, CrRuntimeLibrary crRuntime)
         {
-            if (entryPoint.Kind != MethodKind.Default)
-                return;
             var useDef = entryPoint.MidRepresentation.UseDef;
             entryPoint.MidRepresentation.UpdateUseDef();
             var ops = useDef.GetLocalOperations();
@@ -143,7 +140,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
                 var descInfo = methodData.Interpreter.ToKey();
                 if (result.ContainsKey(descInfo))
                     continue;
-                var interpreter = info.Register();
+                var interpreter = info.Register(crRuntime);
                 if (interpreter == null)
                     continue;
                 var isGenericDeclaringType = interpreter.IsGenericDeclaringType();

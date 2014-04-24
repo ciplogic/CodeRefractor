@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using CodeRefractor.RuntimeBase.MiddleEnd;
+using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
+using CodeRefractor.RuntimeBase.Runtime;
 
 namespace CodeRefractor.RuntimeBase.Analyze
 {
@@ -23,24 +25,35 @@ namespace CodeRefractor.RuntimeBase.Analyze
             Interpreters[interpreter.ToKey()] = interpreter;
         }
 
-        public static MethodInterpreter Register(this MethodBase method)
+        public static MethodInterpreter Register(this MethodBase method, CrRuntimeLibrary crRuntime = null)
         {
             SetupTypeResolverIfNecesary(method);
             var interpreter = new MethodInterpreter(method);
             Register(interpreter);
-            Resolve(interpreter);
+
+            if (Resolve(interpreter))
+            {
+                return interpreter;
+            }
+            if (crRuntime != null)
+            {
+                var methodKind = crRuntime.ResolveInterpreter(interpreter.ToKey());
+                //interpreter.Kind = methodKind;
+
+            };
             return interpreter;
         }
 
-        public static void Resolve(MethodInterpreter interpreter)
+        public static bool Resolve(MethodInterpreter interpreter)
         {
             SetupTypeResolverIfNecesary(interpreter.Method);
             var resolvers = GetTypeResolvers();
             foreach (var resolver in resolvers)
             {
                 if(resolver.Resolve(interpreter))
-                    return;
+                    return true;
             }
+            return false;
         }
 
         public static CrTypeResolver[] GetTypeResolvers()

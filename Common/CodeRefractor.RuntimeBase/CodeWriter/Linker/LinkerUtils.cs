@@ -41,9 +41,16 @@ namespace CodeRefractor.CodeWriter.Linker
             var declaringType = methodBase.DeclaringType;
             var typeToSearch = declaringType.ReversedType(crRuntime);
             var isGacType = typeToSearch.Assembly.GlobalAssemblyCache;
-
             if (isGacType)
+            {
+                var interpreter = new MethodInterpreter(methodBase);
+                if (crRuntime.ResolveInterpreter(interpreter.ToKey()))
+                {
+                    return interpreter;
+                }
+            
                 return null;
+            }
             return methodBase.Register();
         }
 

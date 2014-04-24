@@ -16,7 +16,7 @@ namespace CodeRefractor.RuntimeBase.Runtime
 {
     public class CrRuntimeLibrary{
         public readonly Dictionary<Type, Type> MappedTypes = new Dictionary<Type, Type>();
-		public Dictionary<MethodInterpreterKey, MethodInterpreter> SupportedMethods = 
+		public readonly Dictionary<MethodInterpreterKey, MethodInterpreter> SupportedMethods = 
 			new Dictionary<MethodInterpreterKey, MethodInterpreter>();
 
 
@@ -93,12 +93,12 @@ namespace CodeRefractor.RuntimeBase.Runtime
             if (type == null)
                 return null;
 
-            Type result;
-            if(!MappedTypes.TryGetValue(type, out result))
+            foreach (var mappedType in MappedTypes)
             {
-                return null;
+                if (mappedType.Value == type)
+                    return mappedType.Key;
             }
-            return result;
+            return null;
         }
 
 
@@ -133,6 +133,16 @@ namespace CodeRefractor.RuntimeBase.Runtime
             var arguments = constructorInfo.GetParameters().Select(par => par.ParameterType).ToArray();
             return mappedDeclaredType.GetConstructor(arguments);
             
+        }
+
+        public bool ResolveInterpreter(MethodInterpreterKey interpreter)
+        {
+            MethodInterpreter result;
+            if (SupportedMethods.TryGetValue(interpreter, out result))
+            {
+                
+            }
+            return false;
         }
     }
 }
