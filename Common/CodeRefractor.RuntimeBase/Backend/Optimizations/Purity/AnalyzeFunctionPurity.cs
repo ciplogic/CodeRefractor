@@ -1,14 +1,15 @@
 ﻿#region Usings
 
-using CodeRefractor.CompilerBackend.Linker;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
+using CodeRefractor.CompilerBackend.Optimizations.Purity;
+using CodeRefractor.RuntimeBase.Backend.Linker;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 
 #endregion
 
-namespace CodeRefractor.CompilerBackend.Optimizations.Purity
+namespace CodeRefractor.RuntimeBase.Backend.Optimizations.Purity
 {
     public class AnalyzeFunctionPurity : ResultingGlobalOptimizationPass
     {

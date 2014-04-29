@@ -4,7 +4,7 @@ using System.Linq;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.Runtime;
 
-namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
+namespace CodeRefractor.RuntimeBase.Backend.ComputeClosure
 {
     public class ClosureTypeComparer : IComparer<Type>
     {

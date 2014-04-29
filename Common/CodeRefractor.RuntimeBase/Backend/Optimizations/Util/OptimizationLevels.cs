@@ -14,6 +14,7 @@ using CodeRefractor.CompilerBackend.Optimizations.Purity;
 using CodeRefractor.CompilerBackend.Optimizations.ReachabilityDfa;
 using CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions;
 using CodeRefractor.CompilerBackend.Optimizations.SimpleDce;
+using CodeRefractor.RuntimeBase.Backend.Optimizations.Purity;
 using CodeRefractor.RuntimeBase.Config;
 using CodeRefractor.RuntimeBase.Optimizations;
 

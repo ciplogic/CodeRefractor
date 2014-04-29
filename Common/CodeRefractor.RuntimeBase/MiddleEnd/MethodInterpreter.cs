@@ -147,6 +147,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
         public void Process(CrRuntimeLibrary crRuntime)
         {
+            if(Kind!=MethodKind.Default)
+                return;
             if (Interpreted)
                 return;
             if (HandlePlatformInvokeMethod(Method))

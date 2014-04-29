@@ -1,17 +1,14 @@
 #region Usings
 
 using System.Reflection;
-using CodeRefractor.CodeWriter.BasicOperations;
 using CodeRefractor.CodeWriter.Linker;
 using CodeRefractor.CompilerBackend.Optimizations.Purity;
-using CodeRefractor.RuntimeBase;
-using CodeRefractor.RuntimeBase.Analyze;
+using CodeRefractor.RuntimeBase.Backend.Optimizations.Purity;
 using CodeRefractor.RuntimeBase.Runtime;
-using CodeRefractor.RuntimeBase.Shared;
 
 #endregion
 
-namespace CodeRefractor.CompilerBackend.Linker
+namespace CodeRefractor.RuntimeBase.Backend.Linker
 {
     public static class LinkerInterpretersTableUtils
     {

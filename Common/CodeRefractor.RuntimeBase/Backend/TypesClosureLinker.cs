@@ -135,6 +135,8 @@ namespace CodeRefractor.RuntimeBase.Backend
             typesSet.Remove(typeof (void));
             typesSet.Remove(typeof (IntPtr));
             typesSet.Remove(typeof(Array));
+
+            typesSet.RemoveWhere(t => t.IsInterface);
             typesSet.RemoveWhere(t => t.IsPrimitive);
             typesSet.RemoveWhere(t => t.IsSubclassOf(typeof (Array)));
             typesSet.RemoveWhere(t => t.GetMappedType() == t && string.IsNullOrEmpty(t.FullName));
