@@ -44,7 +44,7 @@ namespace CodeRefractor.CodeWriter.Linker
             if (isGacType)
             {
                 var interpreter = new MethodInterpreter(methodBase);
-                if (crRuntime.ResolveInterpreter(interpreter.ToKey()))
+                if (crRuntime.ResolveInterpreter(interpreter.ToKey(), ref interpreter))
                 {
                     return interpreter;
                 }

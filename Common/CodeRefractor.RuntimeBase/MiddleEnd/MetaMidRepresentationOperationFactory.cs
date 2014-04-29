@@ -383,7 +383,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         public void Call(object operand, CrRuntimeLibrary crRuntime)
         {
             var methodInfo = (MethodBase)operand;
-            var methodData = new MethodData(methodInfo);
+            var interpreter = methodInfo.Register(crRuntime);
+            var methodData = new MethodData(interpreter);
 
 
             CallMethodData(methodInfo, methodData, OperationKind.Call,crRuntime);
@@ -392,7 +393,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         public void CallVirtual(object operand, CrRuntimeLibrary crRuntime)
         {
             var methodInfo = (MethodBase)operand;
-            var methodData = new MethodData(methodInfo);
+            var interpreter = methodInfo.Register(crRuntime);
+            var methodData = new MethodData(interpreter);
 
 
             CallMethodData(methodInfo, methodData, OperationKind.CallVirtual, crRuntime);
@@ -401,7 +403,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         public void CallInterface(object operand, CrRuntimeLibrary crRuntime)
         {
             var methodInfo = (MethodBase)operand;
-            var methodData = new MethodData(methodInfo);
+            var interpreter = methodInfo.Register(crRuntime);
+            var methodData = new MethodData(interpreter);
 
 
             CallMethodData(methodInfo, methodData, OperationKind.CallVirtual,crRuntime);
@@ -662,7 +665,9 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 Right = constructedObject
             };
             AddOperation(OperationKind.NewObject, assignment);
-            var methodData = new MethodData(constructedObject.Info);
+
+            var interpreter = constructedObject.Info.Register(crRuntime);
+            var methodData = new MethodData(interpreter);
             CallMethodData(constructedObject.Info, methodData, OperationKind.Call, crRuntime);
             var vreg = SetNewVReg();
             vreg.FixedType = new TypeDescription(methodData.Info.DeclaringType);

@@ -37,7 +37,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
             }
             if (crRuntime != null)
             {
-                var methodKind = crRuntime.ResolveInterpreter(interpreter.ToKey());
+                var methodKind = crRuntime.ResolveInterpreter(interpreter.ToKey(), ref interpreter);
                 //interpreter.Kind = methodKind;
 
             };

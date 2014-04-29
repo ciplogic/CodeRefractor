@@ -16,18 +16,24 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.Methods
         public bool IsStatic;
         public bool IsVoid;
         public LocalVariable Result;
+        private MethodInterpreter _interpreter;
         public List<IdentifierValue> Parameters { get; set; }
 
-        public MethodInterpreter Interpreter { get; set; }
-
-        public MethodData(MethodBase info)
+        public MethodInterpreter Interpreter
         {
-            Info = info;
-            IsStatic = info.IsStatic;
-            Parameters = new List<IdentifierValue>();
-            IsVoid = info.GetReturnType() == typeof (void);
+            get { return _interpreter; }
+            set
+            {
+                _interpreter = value;
+            }
+        }
 
-            Interpreter = info.Register();
+        public MethodData(MethodInterpreter interpreter)
+        {
+            Parameters = new List<IdentifierValue>();
+            
+            Interpreter = interpreter;
+            Info = interpreter.Method;
 
         }
 

@@ -78,14 +78,9 @@ namespace CodeRefractor.RuntimeBase.Runtime
             var pureAttribute = method.GetCustomAttribute<PureMethodAttribute>();
             if (pureAttribute != null)
                 interpreter.AnalyzeProperties.IsPure = true;
-
-        }
-
-        public string GetMethodDescription(MethodBase methodInfo)
-        {
-            var methodBase  = methodInfo.GetReversedMethod();
-
-            return methodBase.GenerateKey();
+		    var methodInterpreterKey = interpreter.ToKey();
+		    methodInterpreterKey.DeclaringType = mappedType;
+		    SupportedMethods[methodInterpreterKey] = interpreter;
         }
 
         public Type GetReverseType(Type type)
@@ -135,12 +130,13 @@ namespace CodeRefractor.RuntimeBase.Runtime
             
         }
 
-        public bool ResolveInterpreter(MethodInterpreterKey interpreter)
+        public bool ResolveInterpreter(MethodInterpreterKey interpreter, ref MethodInterpreter finalInterpreter)
         {
             MethodInterpreter result;
             if (SupportedMethods.TryGetValue(interpreter, out result))
             {
-                
+                finalInterpreter = result;
+                return true;
             }
             return false;
         }
