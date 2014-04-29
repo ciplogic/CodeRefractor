@@ -13,7 +13,6 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.Methods
 {
     public class MethodData : IdentifierValue
     {
-        public bool IsStatic;
         public bool IsVoid;
         public LocalVariable Result;
         private MethodInterpreter _interpreter;
@@ -34,7 +33,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.Methods
             
             Interpreter = interpreter;
             Info = interpreter.Method;
-
+            
         }
 
         public MethodBase Info { get; set; }
@@ -51,7 +50,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.Methods
             }
             foreach (var t in methodParams)
                 Parameters.Insert(0, evaluatorStack.Pop());
-            if (!IsStatic)
+            if (!Info.IsStatic)
                 Parameters.Insert(0, evaluatorStack.Pop());
 
         }

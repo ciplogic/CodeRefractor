@@ -31,7 +31,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
             {
                 var operation = operations[i];
                 var operationData = ComputeAndEvaluatePurityOfCall(operation);
-                if (!operationData.Interpreter.AnalyzeProperties.IsPure || !operationData.IsStatic)
+                if (!operationData.Interpreter.AnalyzeProperties.IsPure || !operationData.Info.IsStatic)
                     continue;
                 var methodInfo = operationData.Info;
                 var constParams = new List<object>();

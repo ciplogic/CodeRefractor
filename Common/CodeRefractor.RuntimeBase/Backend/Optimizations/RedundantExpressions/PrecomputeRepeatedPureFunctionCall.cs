@@ -70,7 +70,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions
                 if (operation.Kind != OperationKind.Call)
                     continue;
                 var operationData = EvaluatePureFunctionWithConstantCall.ComputeAndEvaluatePurityOfCall(operation);
-                if (!operationData.Interpreter.AnalyzeProperties.IsPure || !operationData.IsStatic)
+                if (!operationData.Interpreter.AnalyzeProperties.IsPure || !operationData.Info.IsStatic)
                     continue;
                 calls.Add(index);
             }

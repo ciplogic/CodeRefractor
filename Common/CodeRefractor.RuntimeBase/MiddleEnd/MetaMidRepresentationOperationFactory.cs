@@ -422,7 +422,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 return;
             methodData.ExtractNeededValuesFromStack(_evaluator);
             
-            if (!methodData.IsStatic && methodData.Parameters.Count > 0)
+            if (!methodData.Info.IsStatic && methodData.Parameters.Count > 0)
             {
                 methodData.Info = ClassHierarchyAnalysis.GetBestVirtualMatch(methodData.Info,
                                                                              methodData.Parameters[0].ComputedType().ClrType);
@@ -432,13 +432,6 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             {
                 var signature = declaringType.GetMethod("Invoke");
                 DelegateManager.RegisterType(declaringType, signature);
-            }
-
-            var mappedType = crRuntime.GetMappedType(declaringType);
-            if (mappedType!=null && mappedType != declaringType)
-            {
-                methodData.Info = crRuntime.GetMappedMethodInfo(methodInfo);
-                
             }
 
             if (!methodData.IsVoid)
