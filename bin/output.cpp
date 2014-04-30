@@ -43,7 +43,7 @@ return;
 void initializeRuntime();
 int main(int argc, char**argv) {
 auto argsAsList = System::getArgumentsAsList(argc, argv);
-initializeRuntime(); 
+initializeRuntime();
 _NBody_Main();
 return 0;
 }

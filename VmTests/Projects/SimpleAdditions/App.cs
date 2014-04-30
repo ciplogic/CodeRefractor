@@ -2,9 +2,11 @@ using System;
 
 class NBody
 {
-    public static void Main(String[] args)
+    public static void Main()
     {
-        Console.WriteLine("test");
+        var nbody = new NBodySystem();
+        nbody.Advance(3);
+        Console.WriteLine(nbody.Energy());
     }
 }
 
