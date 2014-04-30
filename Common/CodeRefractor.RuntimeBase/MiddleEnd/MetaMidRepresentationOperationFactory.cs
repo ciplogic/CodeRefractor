@@ -25,6 +25,16 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             _leaveOffset = offsetToLeave;
         }
 
+        public override string ToString()
+        {
+            var method = _representation.ToString();
+            var stackText = _evaluator.ToString();
+            return string.Format("Stack: {2} items: ({0}) Method: {1}", 
+                stackText, 
+                method,
+                _evaluator.Count);
+        }
+
         public bool SkipInstruction(int offset)
         {
             if (_leaveOffset == -1)

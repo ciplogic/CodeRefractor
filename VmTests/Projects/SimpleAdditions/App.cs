@@ -4,6 +4,7 @@ class NBody
 {
     public static void Main()
     {
+        Console.WriteLine("Starting: ");
         var nbody = new NBodySystem();
         nbody.Advance(3);
         Console.WriteLine(nbody.Energy());

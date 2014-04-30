@@ -12,6 +12,7 @@ using CodeRefractor.CompilerBackend.OuputCodeWriter;
 using CodeRefractor.CompilerBackend.ProgramWideOptimizations;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.Backend;
+using CodeRefractor.RuntimeBase.Backend.Optimizations.EscapeAndLowering;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.Runtime;
 using CodeRefractor.RuntimeBase.TypeInfoWriter;
@@ -83,15 +84,16 @@ namespace CodeRefractor.RuntimeBase
         {
             var escapeParameters = new AnalyzeParametersAreEscaping();
             var loweringVars = new InFunctionLoweringVars();
-            for (var i = 0; i < 2; i++)
+            for (var i = 0; i < 5; i++)
             {
                 foreach (var methodInterpreter in methodClosures)
                 {
                     escapeParameters.Optimize(methodInterpreter);
                 }
-                Parallel.ForEach(methodClosures, methodInterpreter =>
-                    //foreach (var methodInterpreter in methodClosures)
-                    loweringVars.Optimize(methodInterpreter));
+                //Parallel.ForEach(methodClosures, methodInterpreter =>
+                foreach (var methodInterpreter in methodClosures)
+                    loweringVars.Optimize(methodInterpreter);
+                //);
 
             }
 

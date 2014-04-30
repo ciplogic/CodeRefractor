@@ -141,7 +141,6 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
         public static void AddLabelIfDoesntExist(int offset, HashSet<int> labels)
         {
-
             labels.Add(offset);
         }
 
@@ -170,6 +169,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 var instruction = instructions[index];
                 EvaluateInstuction(instruction, operationFactory, labelList,crRuntime);
             }
+            //Ensure.IsTrue(evaluator.Count == 0, "Stack not empty!");
             AnalyzeProperties.Setup(MidRepresentation.Vars.Arguments, MidRepresentation.Vars.VirtRegs, MidRepresentation.Vars.LocalVars);
             Interpreted = true;
         }
@@ -315,14 +315,18 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 operationFactory.NewArray((Type) instruction.Operand);
                 return true;
             }
-            if (opcodeStr == "stelem.ref"
-                || opcodeStr == "stelem.i1"
+            if ( opcodeStr == "stelem.i1"
                 || opcodeStr == "stelem.i2"
                 || opcodeStr == "stelem.i4"
                 || opcodeStr == "stelem.i8"
                 || opcodeStr == "stelem.r4"
                 || opcodeStr == "stelem.r8"
                 || opcodeStr == "stelem.i2")
+            {
+                operationFactory.SetArrayElementValue();
+                return true;
+            }
+            if (opcodeStr == "stelem.ref")
             {
                 operationFactory.SetArrayElementValue();
                 return true;

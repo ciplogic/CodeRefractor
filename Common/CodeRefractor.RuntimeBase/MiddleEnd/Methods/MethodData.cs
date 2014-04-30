@@ -13,7 +13,13 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.Methods
 {
     public class MethodData : IdentifierValue
     {
-        public bool IsVoid;
+        public bool IsVoid
+        {
+            get
+            {
+                return _interpreter.Method.GetReturnType() == typeof (void);
+            }
+        }
         public LocalVariable Result;
         private MethodInterpreter _interpreter;
         public List<IdentifierValue> Parameters { get; set; }

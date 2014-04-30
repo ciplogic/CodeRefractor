@@ -1,6 +1,10 @@
 #region Usings
 
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using CodeRefractor.CodeWriter.Linker;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
@@ -14,7 +18,14 @@ namespace CodeRefractor.RuntimeBase
 
         public override string ToString()
         {
-            return _stack.ToArray().ToString();
+            var items = _stack.ToArray()
+                .Select(id => 
+                     string.Format(
+                        id is ConstValue ?"'{0}'" : "{0}", 
+                        id.Name));
+
+            
+            return String.Join("; ", items);
         }
 
         private int _vRegId;
@@ -36,6 +47,10 @@ namespace CodeRefractor.RuntimeBase
             _stack.Push(newLocal);
         }
 
+        public int Count
+        {
+            get { return _stack.Count; }
+        }
 
         public IdentifierValue Top
         {

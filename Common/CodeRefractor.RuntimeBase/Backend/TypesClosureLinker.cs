@@ -60,7 +60,7 @@ namespace CodeRefractor.RuntimeBase.Backend
             foundNewMethods = false;
 
             var resultTypes = BuildScannedDictionaryFromTypesAndInstructions(typesSet, crRuntime);
-            var methodDict = methodList.ToDictionary(method => method.Method.ClangMethodSignature());
+            var methodDict = methodList.ToDictionary(method => method.Method.Register(crRuntime).ToKey());
             var virtMethods = methodList.Where(m => m.Method.IsVirtual).ToArray();
             foreach (var virt in virtMethods)
             {
@@ -72,7 +72,7 @@ namespace CodeRefractor.RuntimeBase.Backend
                     if (!type.IsSubclassOf(baseClass))
                         continue;
                     var implMethod = type.GetMethod(methodName, methodArgs);
-                    if (methodDict.ContainsKey(implMethod.ClangMethodSignature()))
+                    if (methodDict.ContainsKey(implMethod.Register(crRuntime).ToKey()))
                         continue;
                     var implInterpreter = implMethod.Register();
                     MetaLinker.Interpret(implInterpreter, crRuntime);

@@ -151,6 +151,7 @@
     <Compile Include="CodeWriter\Platform\PlatformInvokeCodeWriter.cs" />
     <Compile Include="CodeWriter\Platform\PlatformInvokeDllImports.cs" />
     <Compile Include="CodeWriter\Platform\PlatformInvokeDllMethod.cs" />
+    <Compile Include="Ensure.cs" />
     <Compile Include="MiddleEnd\AnalyzeProperties.cs" />
     <Compile Include="Analyze\GlobalMethodPool.cs" />
     <Compile Include="MiddleEnd\CppLibMethodInvokeRepresentation.cs" />
