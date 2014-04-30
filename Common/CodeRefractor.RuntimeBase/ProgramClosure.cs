@@ -53,10 +53,10 @@ namespace CodeRefractor.RuntimeBase
             var typeTable = new TypeDescriptionTable(UsedTypes);
             _typeDictionary = typeTable.ExtractInformation();
 
-            BuildVirtualMethodTable(typeTable);
+            BuildVirtualMethodTable(typeTable, MethodClosure);
         }
 
-        private void BuildVirtualMethodTable(TypeDescriptionTable typeTable)
+        private void BuildVirtualMethodTable(TypeDescriptionTable typeTable, Dictionary<MethodInterpreterKey, MethodInterpreter> methodClosure)
         {
             _virtualMethodTable = new VirtualMethodTable(typeTable);
             foreach (var type in _typeDictionary.Keys)
@@ -64,7 +64,7 @@ namespace CodeRefractor.RuntimeBase
                 var methods = type.GetMethods();
                 foreach (var method in methods)
                 {
-                    _virtualMethodTable.RegisterMethod(method);
+                    _virtualMethodTable.RegisterMethod(method, methodClosure);
                 }
             }
         }

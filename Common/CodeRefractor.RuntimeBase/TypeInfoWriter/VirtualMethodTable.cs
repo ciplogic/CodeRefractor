@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
+using CodeRefractor.RuntimeBase.MiddleEnd;
+using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 
 namespace CodeRefractor.CodeWriter.TypeInfoWriter
 {
@@ -18,24 +20,50 @@ namespace CodeRefractor.CodeWriter.TypeInfoWriter
             get { return _typeTable; }
         }
 
-        public void RegisterMethod(MethodInfo method)
+        public void RegisterMethod(MethodInfo method, Dictionary<MethodInterpreterKey, MethodInterpreter> methodClosure)
         {
             if(!method.IsVirtual || method.IsAbstract)
                 return;
-            var matchFound = false;
             foreach (var virtualMethod in VirtualMethods)
             {
-                matchFound = virtualMethod.MethodMatches(method);
+                var matchFound = virtualMethod.MethodMatches(method);
                 if(matchFound)
-                    break;
+                    return;
             }
-            if (!matchFound)
+            var isInClosure = false;
+            foreach (var interpreter in methodClosure)
             {
-                var declaringType = method.GetBaseDefinition().DeclaringType;
-                var virtMethod = new VirtualMethodDescription(method, declaringType);
-                virtMethod.MethodMatches(method);
-                VirtualMethods.Add(virtMethod);
+                var key = interpreter.Key;
+                if(key.Interpreter.Kind!=MethodKind.Default)
+                    continue;
+                var methodInKey = key.Interpreter.Method;
+                if(methodInKey.Name!=method.Name)
+                    continue;
+                var keyParameterInfos = methodInKey.GetParameters();
+                var parameterInfos = method.GetParameters();
+                if(keyParameterInfos.Length !=parameterInfos.Length)
+                    continue;
+                var parameterMatch = true;
+                for (int index = 0; index < keyParameterInfos.Length; index++)
+                {
+                    var keyParameterInfo = keyParameterInfos[index];
+                    var parameterInfo = parameterInfos[index];
+                    if (keyParameterInfo.ParameterType != parameterInfo.ParameterType)
+                    {
+                        parameterMatch = false;
+                        break;
+                    }
+                }
+                if(!parameterMatch)
+                    continue;
+                isInClosure = true;
             }
+            if(!isInClosure)
+                return;
+            var declaringType = method.GetBaseDefinition().DeclaringType;
+            var virtMethod = new VirtualMethodDescription(method, declaringType);
+            virtMethod.MethodMatches(method);
+            VirtualMethods.Add(virtMethod);
         }
     }
 }
