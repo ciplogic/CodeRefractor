@@ -3,17 +3,16 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
-namespace CodeRefractor.CodeWriter.TypeInfoWriter
+namespace CodeRefractor.RuntimeBase.TypeInfoWriter
 {
     public class TypeDescriptionTable : IComparer<Type>
     {
         private readonly List<Type> _typeClosure;
 
-        Dictionary<Type, HashSet<Type>> _dictionary = new Dictionary<Type, HashSet<Type>>();
+        readonly Dictionary<Type, HashSet<Type>> _dictionary = new Dictionary<Type, HashSet<Type>>();
 
         readonly Dictionary<Type, int> _result = new Dictionary<Type, int>(); 
 

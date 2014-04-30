@@ -6,7 +6,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using CodeRefractor.CodeWriter.TypeInfoWriter;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering;
 using CodeRefractor.CompilerBackend.OuputCodeWriter;
@@ -15,6 +14,7 @@ using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.Backend;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.Runtime;
+using CodeRefractor.RuntimeBase.TypeInfoWriter;
 
 #endregion
 

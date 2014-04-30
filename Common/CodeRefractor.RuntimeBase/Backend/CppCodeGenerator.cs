@@ -9,19 +9,18 @@ using System.Text;
 using CodeRefractor.CodeWriter.BasicOperations;
 using CodeRefractor.CodeWriter.Linker;
 using CodeRefractor.CodeWriter.Platform;
-using CodeRefractor.CodeWriter.TypeInfoWriter;
-using CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure;
-using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
+using CodeRefractor.RuntimeBase.Backend.ComputeClosure;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.ConstTable;
 using CodeRefractor.RuntimeBase.Runtime;
 using CodeRefractor.RuntimeBase.Shared;
+using CodeRefractor.RuntimeBase.TypeInfoWriter;
 
 #endregion
 
-namespace CodeRefractor.CompilerBackend.OuputCodeWriter
+namespace CodeRefractor.RuntimeBase.Backend
 {
     public static class CppCodeGenerator
     {

@@ -3,7 +3,7 @@ using System.Reflection;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 
-namespace CodeRefractor.CodeWriter.TypeInfoWriter
+namespace CodeRefractor.RuntimeBase.TypeInfoWriter
 {
     public class VirtualMethodTable
     {

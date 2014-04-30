@@ -102,7 +102,7 @@ namespace CodeRefractor.RuntimeBase.Runtime
             Type result;
             if (!MappedTypes.TryGetValue(type, out result))
             {
-                return null;
+                return type;
             }
             return result;
         }

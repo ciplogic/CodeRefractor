@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using CodeRefractor.CodeWriter.TypeInfoWriter;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.MiddleEnd;
+using CodeRefractor.RuntimeBase.TypeInfoWriter;
 
 namespace CodeRefractor.CodeWriter.BasicOperations
 {

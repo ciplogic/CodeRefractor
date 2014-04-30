@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace CodeRefractor.CodeWriter.TypeInfoWriter
+namespace CodeRefractor.RuntimeBase.TypeInfoWriter
 {
     public class VirtualMethodDescription
     {
         public HashSet<Type> UsingImplementations { get; private set; }
-
 
         public string Name { get; set; }
         public Type[] Parameters;

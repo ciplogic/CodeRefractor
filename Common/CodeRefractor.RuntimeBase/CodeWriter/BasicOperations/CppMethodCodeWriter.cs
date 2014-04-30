@@ -5,17 +5,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using CodeRefractor.CodeWriter.TypeInfoWriter;
-using CodeRefractor.RuntimeBase;
+using CodeRefractor.CodeWriter.BasicOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.ConstTable;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.RuntimeBase.Runtime;
+using CodeRefractor.RuntimeBase.TypeInfoWriter;
 
 #endregion
 
-namespace CodeRefractor.CodeWriter.BasicOperations
+namespace CodeRefractor.RuntimeBase.CodeWriter.BasicOperations
 {
     public static class CppMethodCodeWriter
     {

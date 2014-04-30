@@ -2,17 +2,17 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using CodeRefractor.CodeWriter.BasicOperations;
 using CodeRefractor.CodeWriter.Platform;
-using CodeRefractor.CodeWriter.TypeInfoWriter;
+using CodeRefractor.RuntimeBase.CodeWriter.BasicOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.Optimizations;
 using CodeRefractor.RuntimeBase.Runtime;
+using CodeRefractor.RuntimeBase.TypeInfoWriter;
 
 #endregion
 
-namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
+namespace CodeRefractor.RuntimeBase.Backend.ComputeClosure
 {
     public static class MethodInterpreterCodeWriter
     {
@@ -28,7 +28,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
                 Console.WriteLine("Should not be null");
                 return "";
             }
-            var sb = CppWriteSignature.WriteSignature(interpreter, crRuntime, writeEndColon: true);
+            var sb = CppWriteSignature.WriteSignature(interpreter, crRuntime, true);
             return sb.ToString();
         }
 

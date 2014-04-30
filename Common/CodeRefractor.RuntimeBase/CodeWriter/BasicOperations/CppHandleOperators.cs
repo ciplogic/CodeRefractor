@@ -4,7 +4,6 @@ using System;
 using System.IO;
 using System.Text;
 using CodeRefractor.CodeWriter.Linker;
-using CodeRefractor.CodeWriter.TypeInfoWriter;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
@@ -12,6 +11,7 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
 using CodeRefractor.RuntimeBase.Shared;
+using CodeRefractor.RuntimeBase.TypeInfoWriter;
 
 #endregion
 

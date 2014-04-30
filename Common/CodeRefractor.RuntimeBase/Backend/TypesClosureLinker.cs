@@ -93,7 +93,7 @@ namespace CodeRefractor.RuntimeBase.Backend
                 foreach (var type in typesSet)
                 {
                     AddBaseTypesToHash(type, toAdd);
-                    var mappedType = type.ReversedType(crRuntime);
+                    var mappedType = crRuntime.GetMappedType(type);
                     if (type.IsPrimitive)
                         continue;
 
