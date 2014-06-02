@@ -37,7 +37,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
                 //new OneDefUsedPreviousLinePropagation(), //??
                            
                         
-                new ConstantDfaAnalysis()
+                //new ConstantDfaAnalysis()
             }.ToList();
         }
 
@@ -48,13 +48,13 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
             {
                 new OneAssignmentDeadStoreAssignment(), //??
                 //  //?? 
-                           
+                           /*
                 // CSE
                 new PrecomputeRepeatedPureFunctionCall(),
                 new PrecomputeRepeatedBinaryOperators(),
                 new PrecomputeRepeatedUnaryOperators(),
                 new PrecomputeRepeatedFieldGets(), 
-             
+             */
                 // new AssignmentWithVregPrevLineFolding(),
             }.ToList();
         }
@@ -65,6 +65,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
             return new OptimizationPass[]
             {
                 new DeleteAssignmentWithSelf(),
+                /*
                 new RemoveDeadStoresInBlockOptimizationPass(),
                 new OperatorPartialConstantFolding(),
                 new OperatorConstantFolding(),
@@ -107,6 +108,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
                 new LoopInvariantCodeMotion(),
                 new ClearInFunctionUnusedArguments(),
                 new ReplaceCallsToFunctionsWithUnusedArguments(), 
+                 * */
             }.ToList();
         }
     }

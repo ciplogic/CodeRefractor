@@ -67,19 +67,28 @@ class NBodySystem
             },
         };
 
-        pairs = new Pair[bodies.Length * (bodies.Length - 1) / 2];
+        CalculatePairs();
+    }
+
+    private void CalculatePairs()
+    {
+        pairs = new Pair[bodies.Length*(bodies.Length - 1)/2];
         int pi = 0;
         for (int i = 0; i < bodies.Length - 1; i++)
             for (int j = i + 1; j < bodies.Length; j++)
-                pairs[pi++] = new Pair() { bi = bodies[i], bj = bodies[j] };
+                pairs[pi++] = new Pair() {bi = bodies[i], bj = bodies[j]};
 
         double px = 0.0, py = 0.0, pz = 0.0;
         foreach (var b in bodies)
         {
-            px += b.vx * b.mass; py += b.vy * b.mass; pz += b.vz * b.mass;
+            px += b.vx*b.mass;
+            py += b.vy*b.mass;
+            pz += b.vz*b.mass;
         }
         var sol = bodies[0];
-        sol.vx = -px / Solarmass; sol.vy = -py / Solarmass; sol.vz = -pz / Solarmass;
+        sol.vx = -px/Solarmass;
+        sol.vy = -py/Solarmass;
+        sol.vz = -pz/Solarmass;
     }
 
     public void Advance(double dt)

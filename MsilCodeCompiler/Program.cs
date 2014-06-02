@@ -5,7 +5,6 @@ using System.IO;
 using System.Reflection;
 using CodeRefactor.OpenRuntime;
 using CodeRefractor.CompilerBackend.Optimizations.Util;
-using CodeRefractor.CompilerBackend.OuputCodeWriter;
 using CodeRefractor.CompilerBackend.ProgramWideOptimizations;
 using CodeRefractor.CompilerBackend.ProgramWideOptimizations.ConstParameters;
 using CodeRefractor.CompilerBackend.ProgramWideOptimizations.Virtual;

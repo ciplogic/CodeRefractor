@@ -1,4 +1,5 @@
 using System;
+using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
 namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators
@@ -18,8 +19,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators
         {
             return String.Format("Branch operator {0} {2} {1}? jump label_{3}", 
                 CompareValue, SecondValue, 
-                Name, 
-                JumpTo);
+                Name,
+                JumpTo.ToHex());
         }
     }
 }

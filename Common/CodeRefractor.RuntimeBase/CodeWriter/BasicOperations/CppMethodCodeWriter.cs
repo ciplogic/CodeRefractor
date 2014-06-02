@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using CodeRefractor.CodeWriter.BasicOperations;
+using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.ConstTable;
@@ -115,7 +116,7 @@ namespace CodeRefractor.RuntimeBase.CodeWriter.BasicOperations
             foreach (var instructionLabelId in instructionLabelIds)
             {
                 bodySb.AppendFormat("case {0}:", pos++);
-                bodySb.AppendFormat("\tgoto label_{0};", instructionLabelId);
+                bodySb.AppendFormat("\tgoto label_{0};", instructionLabelId.ToHex());
                 bodySb.AppendLine();
             }
             bodySb.AppendLine("}");
@@ -191,13 +192,13 @@ namespace CodeRefractor.RuntimeBase.CodeWriter.BasicOperations
 
         private static void HandleAlwaysBranchOperator(LocalOperation operation, StringBuilder sb)
         {
-            sb.AppendFormat("goto label_{0};", operation.Value);
+            sb.AppendFormat("goto label_{0};", ((int)operation.Value).ToHex());
         }
 
 
         private static void WriteLabel(StringBuilder sb, int value)
         {
-            sb.AppendFormat("label_{0}:", value);
+            sb.AppendFormat("label_{0}:", value.ToHex());
         }
 
         #region Call

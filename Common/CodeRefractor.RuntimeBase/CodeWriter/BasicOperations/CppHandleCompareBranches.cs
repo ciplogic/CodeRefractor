@@ -1,6 +1,7 @@
 ﻿#region Usings
 
 using System.Text;
+using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
 #endregion
@@ -15,7 +16,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         {
             var local = localVar.Name;
             var second = secondVar.Name;
-            sb.AppendFormat("if({0}{3}{1}) goto label_{2};", local, second, jumpAddress, comparisonOperator);
+            sb.AppendFormat("if({0}{3}{1}) goto label_{2};", local, second, jumpAddress.ToHex(), comparisonOperator);
         }
 
         public static void HandleBne(IdentifierValue localVar, IdentifierValue secondVar, StringBuilder sb,

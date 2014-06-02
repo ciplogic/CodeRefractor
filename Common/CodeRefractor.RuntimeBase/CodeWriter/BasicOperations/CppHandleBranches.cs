@@ -2,6 +2,7 @@
 
 using System;
 using System.Text;
+using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
@@ -58,13 +59,13 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         private static void HandleBrFalse(IdentifierValue localVar, StringBuilder sb, int jumpAddress)
         {
             var local = localVar.Name;
-            sb.AppendFormat("if(!({0})) goto label_{1};", local, jumpAddress);
+            sb.AppendFormat("if(!({0})) goto label_{1};", local, jumpAddress.ToHex());
         }
 
         private static void HandleBrTrue(IdentifierValue localVar, StringBuilder sb, int jumpAddress)
         {
             var local = localVar.Name;
-            sb.AppendFormat("if({0}) goto label_{1};", local, jumpAddress);
+            sb.AppendFormat("if({0}) goto label_{1};", local, jumpAddress.ToHex());
         }
     }
 }

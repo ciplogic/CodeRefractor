@@ -10,6 +10,10 @@ namespace CodeRefractor.RuntimeBase.Analyze
 {
     public static class InstructionsUtils
     {
+        public static string ToHex(this int value)
+        {
+            return value.ToString("X");
+        }
         public static bool Contains<T>(this T[] items, T value)
         {
             foreach (var item in items)
