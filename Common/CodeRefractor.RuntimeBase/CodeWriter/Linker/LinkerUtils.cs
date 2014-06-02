@@ -38,6 +38,15 @@ namespace CodeRefractor.CodeWriter.Linker
 
         public static MethodInterpreter GetInterpreter(this MethodBase methodBase, CrRuntimeLibrary crRuntime)
         {
+            var closure = crRuntime.Closure;
+            if (closure != null)
+            {
+                var key = methodBase.ToKey(closure);
+                if (key != null)
+                {
+                    return key.Interpreter;
+                }
+            }
             var declaringType = methodBase.DeclaringType;
             var typeToSearch = declaringType.ReversedType(crRuntime);
             var isGacType = typeToSearch.Assembly.GlobalAssemblyCache;

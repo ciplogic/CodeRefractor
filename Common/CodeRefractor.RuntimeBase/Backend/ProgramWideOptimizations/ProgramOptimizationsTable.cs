@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using CodeRefractor.CompilerBackend.OuputCodeWriter;
-using CodeRefractor.RuntimeBase;
+﻿using System.Collections.Generic;
+using CodeRefractor.CompilerBackend.ProgramWideOptimizations;
 
-namespace CodeRefractor.CompilerBackend.ProgramWideOptimizations
+namespace CodeRefractor.RuntimeBase.Backend.ProgramWideOptimizations
 {
     public class ProgramOptimizationsTable
     {
-        public List<ProgramOptimizationBase> Optimizations = new List<ProgramOptimizationBase>();
+        public readonly List<ProgramOptimizationBase> Optimizations = new List<ProgramOptimizationBase>();
 
         public void Add(ProgramOptimizationBase optimization)
         {

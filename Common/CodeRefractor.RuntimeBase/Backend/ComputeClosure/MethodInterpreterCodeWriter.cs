@@ -62,13 +62,13 @@ namespace CodeRefractor.RuntimeBase.Backend.ComputeClosure
                 didOptimize = false;
                 foreach (var optimizationPass in optimizationsList)
                 {
+                    var optimizationName = optimizationPass.GetType().Name;
                     if (!optimizationPass.CheckPreconditions(interpreter))
                         continue;
                     didOptimize = optimizationPass.Optimize(interpreter);
 
                     if (!didOptimize) continue;
                     var useDef = interpreter.MidRepresentation.UseDef;
-                    var optimizationName = optimizationPass.GetType().Name;
                     interpreter.MidRepresentation.UpdateUseDef();
                     Console.WriteLine(String.Format("Applied optimization: {0}", optimizationName));
                     result = true;

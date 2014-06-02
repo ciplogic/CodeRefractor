@@ -10,9 +10,12 @@ using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering;
 using CodeRefractor.CompilerBackend.OuputCodeWriter;
 using CodeRefractor.CompilerBackend.ProgramWideOptimizations;
+using CodeRefractor.CompilerBackend.ProgramWideOptimizations.ConstParameters;
+using CodeRefractor.CompilerBackend.ProgramWideOptimizations.Virtual;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.Backend;
 using CodeRefractor.RuntimeBase.Backend.Optimizations.EscapeAndLowering;
+using CodeRefractor.RuntimeBase.Backend.ProgramWideOptimizations;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.Runtime;
 using CodeRefractor.RuntimeBase.TypeInfoWriter;
@@ -32,19 +35,21 @@ namespace CodeRefractor.RuntimeBase
 
         VirtualMethodTable _virtualMethodTable;
 
-        public ProgramClosure(MethodInfo entryMethod, ProgramOptimizationsTable table, CrRuntimeLibrary crRuntime)
+        public ProgramClosure(MethodInfo entryMethod, CrRuntimeLibrary crRuntime)
         {
+            var optimizationsTable = BuildProgramWideOptimizationsTable();
             Runtime = crRuntime;
+            Runtime.Closure = this;
             EntryInterpreter = entryMethod.Register();
 
             ResultingInFunctionOptimizationPass.Runtime = Runtime;
             ResultingGlobalOptimizationPass.Runtime = Runtime;
             BuildMethodClosure();
             MetaLinkerOptimizer.ApplyOptimizations(MethodClosure.Values.ToList());
-            if(table.Optimize(this))
+            if (optimizationsTable.Optimize(this))
                 MetaLinkerOptimizer.ApplyOptimizations(MethodClosure.Values.ToList());
 
-            BuildMethodClosure();
+            //BuildMethodClosure();
             if (!UsedTypes.Contains(typeof(object)))
             {
                 UsedTypes.Add(typeof(object));
@@ -55,6 +60,14 @@ namespace CodeRefractor.RuntimeBase
             _typeDictionary = typeTable.ExtractInformation();
 
             BuildVirtualMethodTable(typeTable, MethodClosure);
+        }
+
+        private static ProgramOptimizationsTable BuildProgramWideOptimizationsTable()
+        {
+            var optimizationsTable = new ProgramOptimizationsTable();
+            optimizationsTable.Add(new DevirtualizerIfOneImplemetor());
+            optimizationsTable.Add(new CallToFunctionsWithSameConstant());
+            return optimizationsTable;
         }
 
         private void BuildVirtualMethodTable(TypeDescriptionTable typeTable, Dictionary<MethodInterpreterKey, MethodInterpreter> methodClosure)
@@ -77,7 +90,14 @@ namespace CodeRefractor.RuntimeBase
             var result = TypesClosureLinker.BuildClosureForEntry(entryInterpreter, this);
 
             MethodClosure = result.MethodInterpreters;
+            
             UsedTypes = result.UsedTypes.ToList();
+            foreach (var methodInterpreter in MethodClosure)
+            {
+                methodInterpreter.Value.Process(Runtime);
+
+                methodInterpreter.Value.MidRepresentation.UpdateUseDef();
+            }
         }
 
         public static void ComputeEscapeAnalysis(List<MethodInterpreter> methodClosures)

@@ -1,12 +1,13 @@
 #region Usings
 
 using CodeRefractor.CompilerBackend.Optimizations.Common;
+using CodeRefractor.CompilerBackend.Optimizations.Purity;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 
 #endregion
 
-namespace CodeRefractor.CompilerBackend.Optimizations.Purity
+namespace CodeRefractor.RuntimeBase.Backend.Optimizations.Purity
 {
     public class AnalyzeFunctionIsGetter : ResultingGlobalOptimizationPass
     {
@@ -19,13 +20,13 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
         {
             if (ReadProperty(interpreter))
                 return;
-            var functionIsPure = ComputeFunctionPurity(interpreter);
+            var functionIsPure = ComputeFunctionIsGetter(interpreter);
 
             if (!functionIsPure) return;
             interpreter.MidRepresentation.GetProperties().IsGetter = true;
         }
 
-        public static bool ComputeFunctionPurity(MethodInterpreter intermediateCode)
+        public static bool ComputeFunctionIsGetter(MethodInterpreter intermediateCode)
         {
             if (intermediateCode == null)
                 return false;

@@ -7,6 +7,7 @@ using CodeRefractor.CompilerBackend.ProgramWideOptimizations;
 using CodeRefractor.CompilerBackend.ProgramWideOptimizations.ConstParameters;
 using CodeRefractor.CompilerBackend.ProgramWideOptimizations.Virtual;
 using CodeRefractor.RuntimeBase;
+using CodeRefractor.RuntimeBase.Backend.ProgramWideOptimizations;
 using CodeRefractor.RuntimeBase.Config;
 using CodeRefractor.RuntimeBase.Runtime;
 using CodeRefractor.RuntimeBase.Util;
@@ -41,7 +42,7 @@ namespace CrQt
             var crRuntime = new CrRuntimeLibrary();
             crRuntime.ScanAssembly(typeof(CrString).Assembly);
 
-            var programClosure = new ProgramClosure(definition, optimizationsTable, crRuntime);
+            var programClosure = new ProgramClosure(definition, crRuntime);
 
             var sb = programClosure.BuildFullSourceCode(programClosure.Runtime);
             var end = Environment.TickCount - start;

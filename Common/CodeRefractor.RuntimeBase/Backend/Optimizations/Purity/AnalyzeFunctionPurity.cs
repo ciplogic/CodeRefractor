@@ -26,7 +26,10 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.Purity
                 return;
             var functionIsPure = ComputeFunctionPurity(interpreter);
             if (!functionIsPure) return;
-            interpreter.MidRepresentation.GetProperties().IsPure = true;
+
+            if (interpreter.AnalyzeProperties.IsPure)
+                return;
+            interpreter.AnalyzeProperties.IsPure = true;
             Result = true;
         }
 
@@ -34,7 +37,6 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.Purity
         {
             if (intermediateCode == null)
                 return false;
-            intermediateCode.MidRepresentation.UpdateUseDef();
             var operations = intermediateCode.MidRepresentation.UseDef.GetLocalOperations();
             foreach (var localOperation in operations)
             {

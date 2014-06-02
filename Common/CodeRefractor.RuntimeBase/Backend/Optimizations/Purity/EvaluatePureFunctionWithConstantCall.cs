@@ -39,7 +39,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
                 if (!paramsAreConst)
                     continue;
                 var result = methodInfo.Invoke(null, constParams.ToArray());
-                operations[i] = new LocalOperation
+                interpreter.MidRepresentation.LocalOperations[i] = new LocalOperation
                 {
                     Kind = OperationKind.Assignment,
                     Value = new Assignment
@@ -48,6 +48,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
                         Right = new ConstValue(result)
                     }
                 };
+                Result = true;
             }
         }
 

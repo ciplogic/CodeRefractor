@@ -2,6 +2,7 @@
 
 using System;
 using System.Text;
+using CodeRefractor.CodeWriter.BasicOperations;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
@@ -10,7 +11,7 @@ using CodeRefractor.RuntimeBase.Shared;
 
 #endregion
 
-namespace CodeRefractor.CodeWriter.BasicOperations
+namespace CodeRefractor.RuntimeBase.CodeWriter.BasicOperations
 {
     internal static class CppHandleBranches
     {
