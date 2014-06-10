@@ -1,6 +1,10 @@
+#region Usings
+
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using CodeRefractor.RuntimeBase.Analyze;
+
+#endregion
 
 namespace CodeRefractor.RuntimeBase.MiddleEnd
 {
@@ -10,6 +14,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         {
             IsStatic = true;
         }
+
         public TypeDescription DeclaringType { get; set; }
         public bool IsStatic { get; set; }
         public CallingConvention CallingConvention { get; set; }

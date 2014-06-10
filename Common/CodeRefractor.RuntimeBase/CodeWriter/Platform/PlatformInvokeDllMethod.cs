@@ -1,5 +1,9 @@
+#region Usings
+
 using System;
 using System.Runtime.InteropServices;
+
+#endregion
 
 namespace CodeRefractor.CodeWriter.Platform
 {
@@ -15,7 +19,7 @@ namespace CodeRefractor.CodeWriter.Platform
         {
             Name = name;
             CallingConvention = callingConvention;
-            EntryPoint = !String.IsNullOrEmpty(entryPoint)? entryPoint:name;
+            EntryPoint = !String.IsNullOrEmpty(entryPoint) ? entryPoint : name;
         }
 
 

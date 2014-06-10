@@ -1,26 +1,29 @@
+#region Usings
+
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using CodeRefractor.RuntimeBase.MiddleEnd;
-using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.Runtime;
+
+#endregion
 
 namespace CodeRefractor.RuntimeBase.Analyze
 {
     public static class GlobalMethodPool
     {
-        private static readonly SortedDictionary<MethodInterpreterKey, MethodInterpreter> Interpreters = 
+        private static readonly SortedDictionary<MethodInterpreterKey, MethodInterpreter> Interpreters =
             new SortedDictionary<MethodInterpreterKey, MethodInterpreter>();
 
-        public static readonly Dictionary<Assembly, CrTypeResolver> TypeResolvers 
-            = new Dictionary<Assembly, CrTypeResolver>();  
+        public static readonly Dictionary<Assembly, CrTypeResolver> TypeResolvers
+            = new Dictionary<Assembly, CrTypeResolver>();
 
         public static void Register(MethodInterpreter interpreter)
         {
             var method = interpreter.Method;
-            if(method==null)
+            if (method == null)
                 throw new InvalidDataException("Method is not mapped correctly");
             Interpreters[interpreter.ToKey()] = interpreter;
         }
@@ -39,8 +42,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
             {
                 var methodKind = crRuntime.ResolveInterpreter(interpreter.ToKey(), ref interpreter);
                 //interpreter.Kind = methodKind;
-
-            };
+            }
             return interpreter;
         }
 
@@ -50,7 +52,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
             var resolvers = GetTypeResolvers();
             foreach (var resolver in resolvers)
             {
-                if(resolver.Resolve(interpreter))
+                if (resolver.Resolve(interpreter))
                     return true;
             }
             return false;
@@ -72,14 +74,16 @@ namespace CodeRefractor.RuntimeBase.Analyze
             var hasValue = TypeResolvers.ContainsKey(assembly);
             if (hasValue)
                 return;
-            var resolverType = assembly.GetTypes().FirstOrDefault(t =>t.Name == "TypeResolver");
-            
-            CrTypeResolver resolver=null;
-            if(resolverType!=null)
+            var resolverType = assembly.GetTypes().FirstOrDefault(t => t.Name == "TypeResolver");
+
+            CrTypeResolver resolver = null;
+            if (resolverType != null)
                 resolver = (CrTypeResolver) Activator.CreateInstance(resolverType);
             TypeResolvers[assembly] = resolver;
         }
-        static readonly Dictionary<MethodBase, string> CachedKeys = new Dictionary<MethodBase, string>(); 
+
+        private static readonly Dictionary<MethodBase, string> CachedKeys = new Dictionary<MethodBase, string>();
+
         public static string GenerateKey(this MethodBase method)
         {
             string result;
@@ -92,7 +96,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
         public static MethodBase GetReversedMethod(this MethodBase methodInfo)
         {
             var reverseType = methodInfo.DeclaringType.GetMappedType();
-            if (reverseType == methodInfo.DeclaringType) 
+            if (reverseType == methodInfo.DeclaringType)
                 return methodInfo;
             var originalParameters = methodInfo.GetParameters();
             var memberInfos = reverseType.GetMember(methodInfo.Name);
@@ -105,7 +109,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
                 var parameters = methodBase.GetParameters();
                 if (parameters.Length != originalParameters.Length)
                     continue;
-                bool found = true;
+                var found = true;
                 for (var index = 0; index < parameters.Length; index++)
                 {
                     var parameter = parameters[index];

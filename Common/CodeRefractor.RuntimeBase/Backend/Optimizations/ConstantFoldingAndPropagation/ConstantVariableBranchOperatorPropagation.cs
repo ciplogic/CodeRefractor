@@ -9,7 +9,7 @@ using CodeRefractor.RuntimeBase.Shared;
 
 #endregion
 
-namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagation
+namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndPropagation
 {
     public class ConstantVariableBranchOperatorPropagation : ConstantVariablePropagationBase
     {

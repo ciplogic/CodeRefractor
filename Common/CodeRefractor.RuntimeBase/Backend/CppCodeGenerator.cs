@@ -24,7 +24,8 @@ namespace CodeRefractor.RuntimeBase.Backend
 {
     public static class CppCodeGenerator
     {
-        public static StringBuilder GenerateSourceStringBuilder(MethodInterpreter interpreter, List<Type> typeClosure, List<MethodInterpreter> closure, 
+        public static StringBuilder GenerateSourceStringBuilder(MethodInterpreter interpreter, List<Type> typeClosure,
+            List<MethodInterpreter> closure,
             VirtualMethodTable typeTable, CrRuntimeLibrary crRuntime)
         {
             var sb = new StringBuilder();
@@ -47,7 +48,7 @@ namespace CodeRefractor.RuntimeBase.Backend
             sb.AppendLine(PlatformInvokeCodeWriter.LoadDllMethods());
             sb.AppendLine(ConstByteArrayList.BuildConstantTable());
             sb.AppendLine(LinkingData.Instance.Strings.BuildStringTable());
-            
+
             return sb;
         }
 
@@ -68,17 +69,19 @@ namespace CodeRefractor.RuntimeBase.Backend
             }
         }
 
-        private static void WriteClosureMethods(List<MethodInterpreter> closure, StringBuilder sb, TypeDescriptionTable typeTable, CrRuntimeLibrary crRuntime)
+        private static void WriteClosureMethods(List<MethodInterpreter> closure, StringBuilder sb,
+            TypeDescriptionTable typeTable, CrRuntimeLibrary crRuntime)
         {
             WriteClosureBodies(closure, sb, typeTable, crRuntime);
         }
 
-        private static void WriteClosureHeaders(List<MethodInterpreter> closure, StringBuilder sb, CrRuntimeLibrary crRuntime)
+        private static void WriteClosureHeaders(List<MethodInterpreter> closure, StringBuilder sb,
+            CrRuntimeLibrary crRuntime)
         {
             foreach (var interpreter in closure)
             {
                 if (interpreter.Kind != MethodKind.Default)
-                    continue; 
+                    continue;
                 if (interpreter.Method.IsAbstract)
                     continue;
                 sb.AppendLine(MethodInterpreterCodeWriter.WriteMethodSignature(interpreter, crRuntime));
@@ -119,24 +122,23 @@ namespace CodeRefractor.RuntimeBase.Backend
                     }
                     sb.AppendFormat("template <{0}> ", string.Join(", ", typeNames)).AppendLine();
                 }
-                if (!type.IsValueType &&type.BaseType != null)
+                if (!type.IsValueType && type.BaseType != null)
                 {
                     sb.AppendFormat("struct {0} : public {1} {{", type.ToCppMangling(), type.BaseType.ToCppMangling());
                 }
                 else
                 {
-
                     sb.AppendFormat("struct {0} {{", type.ToCppMangling());
                 }
                 sb.AppendLine();
-                if (type == typeof(object))
+                if (type == typeof (object))
                 {
                     sb.AppendLine("int _typeId;");
                 }
                 WriteClassFieldsBody(sb, mappedType, crRuntime);
                 sb.AppendFormat("}};").AppendLine();
 
-                var typedesc = UsedTypeList.Set(type,crRuntime);
+                var typedesc = UsedTypeList.Set(type, crRuntime);
                 typedesc.WriteStaticFieldInitialization(sb);
             }
         }
@@ -159,7 +161,8 @@ namespace CodeRefractor.RuntimeBase.Backend
             sb.AppendLine(DelegateManager.Instance.BuildDelegateContent());
         }
 
-        private static void WriteClosureBodies(List<MethodInterpreter> closure, StringBuilder sb, TypeDescriptionTable typeTable, CrRuntimeLibrary crRuntime)
+        private static void WriteClosureBodies(List<MethodInterpreter> closure, StringBuilder sb,
+            TypeDescriptionTable typeTable, CrRuntimeLibrary crRuntime)
         {
             sb.AppendLine("///--- PInvoke code --- ");
             foreach (var interpreter in closure)

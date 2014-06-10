@@ -19,24 +19,25 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 {
     internal static class CppHandleOperators
     {
-        public static bool HandleAssignmentOperations(MidRepresentationVariables vars, StringBuilder bodySb, LocalOperation operation, OperationKind kind, TypeDescriptionTable typeTable, MethodInterpreter interpreter)
+        public static bool HandleAssignmentOperations(MidRepresentationVariables vars, StringBuilder bodySb,
+            LocalOperation operation, OperationKind kind, TypeDescriptionTable typeTable, MethodInterpreter interpreter)
         {
             switch (kind)
             {
                 case OperationKind.Assignment:
-                    HandleAssign(bodySb, operation, vars, typeTable,interpreter);
+                    HandleAssign(bodySb, operation, vars, typeTable, interpreter);
                     break;
                 case OperationKind.BinaryOperator:
                     HandleOperator(operation.Value, bodySb);
                     break;
                 case OperationKind.UnaryOperator:
-                    HandleUnaryOperator((UnaryOperator)operation.Value, bodySb);
+                    HandleUnaryOperator((UnaryOperator) operation.Value, bodySb);
                     break;
                 case OperationKind.SetField:
                     HandleSetField(operation, bodySb);
                     break;
                 case OperationKind.GetField:
-                    HandleLoadField(operation, bodySb,interpreter);
+                    HandleLoadField(operation, bodySb, interpreter);
                     break;
                 case OperationKind.SetStaticField:
                     HandleSetStaticField(operation, bodySb);
@@ -45,7 +46,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                     HandleLoadStaticField(operation, bodySb);
                     break;
                 case OperationKind.GetArrayItem:
-                    HandleReadArrayItem(operation, bodySb,interpreter);
+                    HandleReadArrayItem(operation, bodySb, interpreter);
                     break;
 
                 case OperationKind.SetArrayItem:
@@ -83,9 +84,10 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         }
 
 
-        private static void HandleAssign(StringBuilder sb, LocalOperation operation, MidRepresentationVariables vars, TypeDescriptionTable typeTable, MethodInterpreter interpreter)
+        private static void HandleAssign(StringBuilder sb, LocalOperation operation, MidRepresentationVariables vars,
+            TypeDescriptionTable typeTable, MethodInterpreter interpreter)
         {
-            var assignment = (Assignment)operation.Value;
+            var assignment = (Assignment) operation.Value;
 
             if (assignment.Right is NewConstructedObject)
             {
@@ -109,8 +111,9 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 var assignedToData = interpreter.AnalyzeProperties.GetVariableData(assignedTo);
                 var localVariableData = interpreter.AnalyzeProperties.GetVariableData(localVariable);
                 var rightVar = localVariable;
-                if (assignedToData == localVariableData
-                    || assignedTo.ComputedType().ClrTypeCode != TypeCode.Object)
+                var description = assignedTo.ComputedType();
+                if (description.ClrTypeCode != TypeCode.Object || 
+                    assignedToData == localVariableData)
                 {
                     sb.AppendFormat("{0} = {1};", assignedTo.Name, rightVar.Name);
                     return;
@@ -139,41 +142,41 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 sb.AppendFormat("{0} = {1};", assignedTo.Name, assignment.Right.ComputedValue());
             }
         }
+
         private static void HandleGetAddressOfArrayItem(LocalOperation operation, StringBuilder bodySb)
         {
-            var value = (RefArrayItemAssignment)operation.Value;
+            var value = (RefArrayItemAssignment) operation.Value;
             bodySb.AppendFormat("{0} = & ({1}->Items[{2}]);", value.Left.Name, value.ArrayVar.Name, value.Index.Name);
         }
 
         private static void HandleLoadFunction(LocalOperation operation, StringBuilder bodySb)
         {
-            var assign = (FunctionPointerStore)operation.Value;
+            var assign = (FunctionPointerStore) operation.Value;
             var leftData = assign.AssignedTo;
             var info = assign.FunctionPointer;
             var methodName = info.ClangMethodSignature();
             bodySb.AppendFormat("{0}=&({1});", leftData.Name, methodName);
-
         }
 
         private static void HandleSizeOf(LocalOperation operation, StringBuilder bodySb)
         {
-            var assign = (SizeOfAssignment)operation.Value;
-            var leftData = (IdentifierValue)assign.AssignedTo;
+            var assign = (SizeOfAssignment) operation.Value;
+            var leftData = (IdentifierValue) assign.AssignedTo;
             var rightData = assign.Right.ToCppName();
             bodySb.AppendFormat("{0} = sizeof({1});", leftData.Name, rightData);
         }
 
         private static void HandleRefAssignment(LocalOperation operation, StringBuilder bodySb)
         {
-            var assign = (RefAssignment)operation.Value;
-            var leftData = (IdentifierValue)assign.Left;
-            var rightData = (IdentifierValue)assign.Right;
+            var assign = (RefAssignment) operation.Value;
+            var leftData = (IdentifierValue) assign.Left;
+            var rightData = (IdentifierValue) assign.Right;
             bodySb.AppendFormat("{0} = &{1};", leftData.Name, rightData.Name);
         }
 
         private static void HandleFieldRefAssignment(LocalOperation operation, StringBuilder bodySb)
         {
-            var assign = (FieldRefAssignment)operation.Value;
+            var assign = (FieldRefAssignment) operation.Value;
             var leftData = assign.Left;
             var rightData = assign.Right;
             var fieldName = assign.Field.Name;
@@ -182,16 +185,16 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 
         private static void HandleDerefAssignment(LocalOperation operation, StringBuilder bodySb)
         {
-            var assign = (DerefAssignment)operation.Value;
-            var leftData = (IdentifierValue)assign.Left;
-            var rightData = (IdentifierValue)assign.Right;
+            var assign = (DerefAssignment) operation.Value;
+            var leftData = (IdentifierValue) assign.Left;
+            var rightData = (IdentifierValue) assign.Right;
             bodySb.AppendFormat("{0} = *{1};", leftData.Name, rightData.Name);
         }
 
         private static void HandleLoadStaticField(LocalOperation operation, StringBuilder bodySb)
         {
-            var assign = (Assignment)operation.Value;
-            var rightData = (StaticFieldGetter)assign.Right;
+            var assign = (Assignment) operation.Value;
+            var rightData = (StaticFieldGetter) assign.Right;
             bodySb.AppendFormat("{0} = {1}::{2};", assign.AssignedTo.Name,
                 rightData.DeclaringType.ClrType.ToCppMangling(),
                 rightData.FieldName.ValidName());
@@ -199,8 +202,8 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 
         private static void HandleSetStaticField(LocalOperation operation, StringBuilder bodySb)
         {
-            var assign = (Assignment)operation.Value;
-            var rightData = (StaticFieldSetter)assign.AssignedTo;
+            var assign = (Assignment) operation.Value;
+            var rightData = (StaticFieldSetter) assign.AssignedTo;
             bodySb.AppendFormat("{1}::{2} = {0};", assign.Right.Name,
                 rightData.DeclaringType.ToCppMangling(),
                 rightData.FieldName.ValidName());
@@ -208,7 +211,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 
         public static void HandleOperator(object operation, StringBuilder sb)
         {
-            var instructionOperator = (OperatorBase)operation;
+            var instructionOperator = (OperatorBase) operation;
             var localOperator = instructionOperator;
             var binaryOperator = instructionOperator as BinaryOperator;
             var unaryOperator = instructionOperator as UnaryOperator;
@@ -361,6 +364,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             var operat = localVar;
             sb.AppendFormat("{0} = -{1};", localVar.AssignedTo.Name, operat.Left.Name);
         }
+
         private static void HandleConvR4(UnaryOperator unaryOperator, StringBuilder sb)
         {
             sb.AppendFormat("{0} = (float){1};", unaryOperator.AssignedTo.Name, unaryOperator.Left.Name);
@@ -380,6 +384,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         {
             sb.AppendFormat("{0} = (System_Byte){1};", unaryOperator.AssignedTo.Name, unaryOperator.Left.Name);
         }
+
         private static void HandleConvI4(UnaryOperator unaryOperator, StringBuilder sb)
         {
             sb.AppendFormat("{0} = (int){1};", unaryOperator.AssignedTo.Name, unaryOperator.Left.Name);
@@ -460,7 +465,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         }
 
         private static void GetBinaryOperandNames(BinaryOperator localVar, out string right,
-                                                  out string left, out string local)
+            out string left, out string local)
         {
             local = localVar.AssignedTo.Name;
             var leftVar = localVar.Left as LocalVariable;
@@ -486,7 +491,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         {
             string right, left, local;
             GetBinaryOperandNames(localVar, out right, out left, out local);
-            if (localVar.Right.ComputedType().ClrType == typeof(IntPtr))
+            if (localVar.Right.ComputedType().ClrType == typeof (IntPtr))
             {
                 sb.AppendFormat("{0} = {1}+(size_t){2};", local, left, right);
 
@@ -497,10 +502,11 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         }
 
 
-        private static void HandleSetArrayValue(LocalOperation operation, StringBuilder sb, MethodInterpreter interpreter)
+        private static void HandleSetArrayValue(LocalOperation operation, StringBuilder sb,
+            MethodInterpreter interpreter)
         {
-            var assignment = (Assignment)operation.Value;
-            var arrayItem = (ArrayVariable)assignment.AssignedTo;
+            var assignment = (Assignment) operation.Value;
+            var arrayItem = (ArrayVariable) assignment.AssignedTo;
             var variableData = interpreter.AnalyzeProperties.GetVariableData(arrayItem.Parent);
             switch (variableData)
             {
@@ -519,10 +525,11 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             }
         }
 
-        private static void HandleReadArrayItem(LocalOperation operation, StringBuilder bodySb,MethodInterpreter interpreter)
+        private static void HandleReadArrayItem(LocalOperation operation, StringBuilder bodySb,
+            MethodInterpreter interpreter)
         {
-            var value = (Assignment)operation.Value;
-            var valueSrc = (ArrayVariable)value.Right;
+            var value = (Assignment) operation.Value;
+            var valueSrc = (ArrayVariable) value.Right;
             var parentType = valueSrc.Parent.ComputedType();
             var variableData = interpreter.AnalyzeProperties.GetVariableData(value.AssignedTo);
             switch (variableData)
@@ -540,13 +547,13 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                         value.AssignedTo.Name, valueSrc.Parent.Name, valueSrc.Index.Name);
 
                     return;
-
             }
         }
 
-        private static void HandleLoadField(LocalOperation operation, StringBuilder bodySb, MethodInterpreter interpreter)
+        private static void HandleLoadField(LocalOperation operation, StringBuilder bodySb,
+            MethodInterpreter interpreter)
         {
-            var fieldGetterInfo = (FieldGetter)operation.Value;
+            var fieldGetterInfo = (FieldGetter) operation.Value;
             var assignedFrom = fieldGetterInfo.Instance;
             var assignedFromData = interpreter.AnalyzeProperties.GetVariableData(assignedFrom);
             var isOnStack = assignedFromData == EscapingMode.Stack;
@@ -569,8 +576,8 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 
         private static void HandleSetField(LocalOperation operation, StringBuilder bodySb)
         {
-            var assign = (Assignment)operation.Value;
-            var fieldSetter = (FieldSetter)assign.AssignedTo;
+            var assign = (Assignment) operation.Value;
+            var fieldSetter = (FieldSetter) assign.AssignedTo;
 
             bodySb.AppendFormat("{0}->{1} = {2};", fieldSetter.Instance.Name,
                 fieldSetter.FieldName.ValidName(), assign.Right.Name);
@@ -578,8 +585,8 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 
         private static void HandleNewArray(LocalOperation operation, StringBuilder bodySb, MethodInterpreter interpreter)
         {
-            var assignment = (Assignment)operation.Value;
-            var arrayData = (NewArrayObject)assignment.Right;
+            var assignment = (Assignment) operation.Value;
+            var arrayData = (NewArrayObject) assignment.Right;
 
             var assignedData = interpreter.AnalyzeProperties.GetVariableData(assignment.AssignedTo);
             switch (assignedData)
@@ -600,25 +607,26 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         }
 
 
-        private static void HandleNewObject(LocalOperation operation, StringBuilder bodySb, MidRepresentationVariables vars, 
+        private static void HandleNewObject(LocalOperation operation, StringBuilder bodySb,
+            MidRepresentationVariables vars,
             TypeDescriptionTable typeTable, MethodInterpreter interpreter)
         {
-            var value = (Assignment)operation.Value;
-            var rightValue = (NewConstructedObject)value.Right;
+            var value = (Assignment) operation.Value;
+            var rightValue = (NewConstructedObject) value.Right;
             var localValue = rightValue.Info;
 
             var declaringType = localValue.DeclaringType;
             var cppName = declaringType.ToDeclaredVariableType(true, EscapingMode.Stack);
             var assignedData = interpreter.AnalyzeProperties.GetVariableData(value.AssignedTo);
-            bool isStack = assignedData == EscapingMode.Stack;
+            var isStack = assignedData == EscapingMode.Stack;
             if (isStack)
             {
                 bodySb
                     .AppendFormat("{1} {0};", value.AssignedTo.Name, cppName);
             }
             else
-            {       
-                bodySb.AppendFormat("{0} = std::make_shared<{1}>();", value.AssignedTo.Name, cppName);     
+            {
+                bodySb.AppendFormat("{0} = std::make_shared<{1}>();", value.AssignedTo.Name, cppName);
             }
             bodySb.AppendLine();
             typeTable.SetIdOfInstance(bodySb, value.AssignedTo, declaringType, isStack);

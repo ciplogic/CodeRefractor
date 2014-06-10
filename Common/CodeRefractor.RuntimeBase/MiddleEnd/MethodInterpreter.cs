@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using CodeRefractor.CompilerBackend.OuputCodeWriter;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.Runtime;
@@ -28,7 +27,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
         public MetaMidRepresentation MidRepresentation = new MetaMidRepresentation();
         public readonly CppRepresentation CppRepresentation = new CppRepresentation();
-        public readonly MethodDescription Description =  new MethodDescription();
+        public readonly MethodDescription Description = new MethodDescription();
 
         public bool Interpreted { get; set; }
 
@@ -121,13 +120,13 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                     case ObcodeIntValues.Leave:
                     case ObcodeIntValues.LeaveS:
                     {
-                        var offset = ((Instruction)instruction.Operand).Offset;
+                        var offset = ((Instruction) instruction.Operand).Offset;
                         AddLabelIfDoesntExist(offset, labels);
                     }
                         break;
                     case ObcodeIntValues.Switch:
                     {
-                        var offsets = (Instruction[])instruction.Operand;
+                        var offsets = (Instruction[]) instruction.Operand;
                         foreach (var offset in offsets)
                         {
                             AddLabelIfDoesntExist(offset.Offset, labels);
@@ -146,13 +145,13 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
         public void Process(CrRuntimeLibrary crRuntime)
         {
-            if(Kind!=MethodKind.Default)
+            if (Kind != MethodKind.Default)
                 return;
             if (Interpreted)
                 return;
             if (HandlePlatformInvokeMethod(Method))
                 return;
-            if(Method.GetMethodBody()==null)
+            if (Method.GetMethodBody() == null)
                 return;
             var instructions = MethodBodyReader.GetInstructions(Method);
 
@@ -164,17 +163,19 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             var evaluator = new EvaluatorStack();
             var operationFactory = new MetaMidRepresentationOperationFactory(MidRepresentation, evaluator);
 
-            for (int index = 0; index < instructions.Length; index++)
+            for (var index = 0; index < instructions.Length; index++)
             {
                 var instruction = instructions[index];
-                EvaluateInstuction(instruction, operationFactory, labelList,crRuntime);
+                EvaluateInstuction(instruction, operationFactory, labelList, crRuntime);
             }
             //Ensure.IsTrue(evaluator.Count == 0, "Stack not empty!");
-            AnalyzeProperties.Setup(MidRepresentation.Vars.Arguments, MidRepresentation.Vars.VirtRegs, MidRepresentation.Vars.LocalVars);
+            AnalyzeProperties.Setup(MidRepresentation.Vars.Arguments, MidRepresentation.Vars.VirtRegs,
+                MidRepresentation.Vars.LocalVars);
             Interpreted = true;
         }
 
-        private void EvaluateInstuction(Instruction instruction, MetaMidRepresentationOperationFactory operationFactory, HashSet<int> labelList, CrRuntimeLibrary crRuntime)
+        private void EvaluateInstuction(Instruction instruction, MetaMidRepresentationOperationFactory operationFactory,
+            HashSet<int> labelList, CrRuntimeLibrary crRuntime)
         {
             var opcodeStr = instruction.OpCode.ToString();
             var offset = 0;
@@ -186,11 +187,11 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             {
                 operationFactory.SetLabel(instruction.Offset);
             }
-            if(operationFactory.SkipInstruction(instruction.Offset))
+            if (operationFactory.SkipInstruction(instruction.Offset))
                 return;
             var opcodeValue = instruction.OpCode.Value;
             operationFactory.AddCommentInstruction(instruction.ToString());
-            if (HandleCalls(instruction, operationFactory, opcodeValue,crRuntime)) 
+            if (HandleCalls(instruction, operationFactory, opcodeValue, crRuntime))
                 return;
 
             if (HandleStores(opcodeStr, instruction, operationFactory))
@@ -207,7 +208,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             throw new InvalidOperationException(String.Format("Unknown instruction: {0}", instruction));
         }
 
-        private bool HandleExtraInstructions(Instruction instruction, MetaMidRepresentationOperationFactory operationFactory, string opcodeStr)
+        private bool HandleExtraInstructions(Instruction instruction,
+            MetaMidRepresentationOperationFactory operationFactory, string opcodeStr)
         {
             if (opcodeStr == "ret")
             {
@@ -315,7 +317,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 operationFactory.NewArray((Type) instruction.Operand);
                 return true;
             }
-            if ( opcodeStr == "stelem.i1"
+            if (opcodeStr == "stelem.i1"
                 || opcodeStr == "stelem.i2"
                 || opcodeStr == "stelem.i4"
                 || opcodeStr == "stelem.i8"
@@ -333,14 +335,15 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             }
             if (opcodeStr == "stelem")
             {
-                var elemInfo = (Type)instruction.Operand;
+                var elemInfo = (Type) instruction.Operand;
                 operationFactory.StoreElement(elemInfo);
                 return true;
             }
             return false;
         }
 
-        private static bool HandleCalls(Instruction instruction, MetaMidRepresentationOperationFactory operationFactory, short opcodeValue, CrRuntimeLibrary crRuntime)
+        private static bool HandleCalls(Instruction instruction, MetaMidRepresentationOperationFactory operationFactory,
+            short opcodeValue, CrRuntimeLibrary crRuntime)
         {
             switch (opcodeValue)
             {
@@ -352,7 +355,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 case ObcodeIntValues.CallVirt:
                     operationFactory.CallVirtual(instruction.Operand, crRuntime);
                     return true;
-                    
+
                 case ObcodeIntValues.CallInterface:
                     operationFactory.CallInterface(instruction.Operand, crRuntime);
                     return true;
@@ -366,7 +369,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             return false;
         }
 
-        private static bool ConversionOperations(string opcodeStr, MetaMidRepresentationOperationFactory operationFactory)
+        private static bool ConversionOperations(string opcodeStr,
+            MetaMidRepresentationOperationFactory operationFactory)
         {
             if (opcodeStr == "conv.u1")
             {
@@ -415,7 +419,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             return true;
         }
 
-        private static bool HandleStores(string opcodeStr, Instruction instruction, MetaMidRepresentationOperationFactory operationFactory)
+        private static bool HandleStores(string opcodeStr, Instruction instruction,
+            MetaMidRepresentationOperationFactory operationFactory)
         {
             if (opcodeStr == "stloc.s" || opcodeStr == "stloc")
             {
@@ -427,8 +432,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 var pushedIntValue = opcodeStr.Remove(0, "stloc.".Length).ToInt();
                 operationFactory.CopyStackIntoLocalVariable(pushedIntValue);
                 return true;
-            } 
-            
+            }
+
             if (opcodeStr.StartsWith("starg."))
             {
                 var parameter = (ParameterInfo) instruction.Operand;
@@ -446,7 +451,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             return false;
         }
 
-        private static bool HandleLoads(string opcodeStr, Instruction instruction, MetaMidRepresentationOperationFactory operationFactory)
+        private static bool HandleLoads(string opcodeStr, Instruction instruction,
+            MetaMidRepresentationOperationFactory operationFactory)
         {
             if (opcodeStr == "ldelem.ref")
             {
@@ -469,13 +475,13 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 )
             {
                 operationFactory.LoadReferenceInArray();
-                
+
                 return true;
             }
 
             if (opcodeStr == "ldelem")
             {
-                operationFactory.LoadReferenceInArrayTyped((Type)instruction.Operand);
+                operationFactory.LoadReferenceInArrayTyped((Type) instruction.Operand);
                 return true;
             }
 
@@ -511,17 +517,17 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
             if (opcodeStr == "ldstr")
             {
-                operationFactory.PushString((string)instruction.Operand);
+                operationFactory.PushString((string) instruction.Operand);
                 return true;
             }
             if (opcodeStr == "ldc.r8")
             {
-                operationFactory.PushDouble((double)instruction.Operand);
+                operationFactory.PushDouble((double) instruction.Operand);
                 return true;
             }
             if (opcodeStr == "ldc.r4")
             {
-                operationFactory.PushDouble((float)instruction.Operand);
+                operationFactory.PushDouble((float) instruction.Operand);
                 return true;
             }
             if (opcodeStr.StartsWith("ldarg."))
@@ -551,10 +557,10 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             return false;
         }
 
-        private static bool HandleBranching(string opcodeStr, int offset, MetaMidRepresentationOperationFactory operationFactory)
+        private static bool HandleBranching(string opcodeStr, int offset,
+            MetaMidRepresentationOperationFactory operationFactory)
         {
             #region Branching
-
 
             if (opcodeStr == OpcodeBranchNames.Leave
                 || opcodeStr == OpcodeBranchNames.LeaveS

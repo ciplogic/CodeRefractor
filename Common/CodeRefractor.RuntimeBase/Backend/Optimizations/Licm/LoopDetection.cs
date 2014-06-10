@@ -8,7 +8,7 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
 
 #endregion
 
-namespace CodeRefractor.CompilerBackend.Optimizations.Licm
+namespace CodeRefractor.RuntimeBase.Backend.Optimizations.Licm
 {
     internal static class LoopDetection
     {

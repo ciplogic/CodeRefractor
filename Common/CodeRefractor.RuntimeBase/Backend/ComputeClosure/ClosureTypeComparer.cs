@@ -1,24 +1,29 @@
+#region Usings
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.Runtime;
 
+#endregion
+
 namespace CodeRefractor.RuntimeBase.Backend.ComputeClosure
 {
     public class ClosureTypeComparer : IComparer<Type>
     {
         private readonly List<Type> _typesToSort;
-        readonly Dictionary<Type, HashSet<Type>> _dictionary = new Dictionary<Type, HashSet<Type>>(); 
+        private readonly Dictionary<Type, HashSet<Type>> _dictionary = new Dictionary<Type, HashSet<Type>>();
+
         public ClosureTypeComparer(List<Type> typesToSort, CrRuntimeLibrary crRuntime)
         {
             _typesToSort = typesToSort;
             foreach (var type in typesToSort)
             {
-                var typeDesc = UsedTypeList.Set(type,crRuntime);
+                var typeDesc = UsedTypeList.Set(type, crRuntime);
 
                 var layout = typeDesc.Layout.Where(kind => kind.TypeDescription.ClrTypeCode == TypeCode.Object)
-                    .Select(field =>field.TypeDescription.ClrType)
+                    .Select(field => field.TypeDescription.ClrType)
                     .ToArray();
                 var hashSet = new HashSet<Type>(layout);
                 _dictionary[type] = hashSet;
@@ -46,7 +51,7 @@ namespace CodeRefractor.RuntimeBase.Backend.ComputeClosure
             return false;
         }
 
-        class Matcher
+        private class Matcher
         {
             private readonly Type _left;
             private readonly Type _right;
@@ -62,6 +67,7 @@ namespace CodeRefractor.RuntimeBase.Backend.ComputeClosure
                 return (MatchCondition(matcher, _left, _right, out order));
             }
         }
+
         public int Compare(Type left, Type right)
         {
             int order;
@@ -79,8 +85,8 @@ namespace CodeRefractor.RuntimeBase.Backend.ComputeClosure
                 return order;
             }
             var leftLayout = _dictionary[left];
-            var rightLayout = _dictionary[right]; 
-            if (leftLayout.Count== 0 && rightLayout.Count== 0)
+            var rightLayout = _dictionary[right];
+            if (leftLayout.Count == 0 && rightLayout.Count == 0)
                 return 0;
             if (rightLayout.Contains(left))
                 return -1;
@@ -89,7 +95,7 @@ namespace CodeRefractor.RuntimeBase.Backend.ComputeClosure
             var countLeft = leftLayout.Count;
             var countRight = rightLayout.Count;
             if (countLeft == countRight) return 0;
-            var compare = countLeft-countRight;
+            var compare = countLeft - countRight;
             return compare;
         }
     }

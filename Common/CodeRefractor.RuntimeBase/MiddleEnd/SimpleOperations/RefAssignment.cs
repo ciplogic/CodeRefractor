@@ -18,6 +18,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
             return String.Format("{0} = {1}", Left.Name, Right);
         }
     }
+
     public class FieldRefAssignment
     {
         public LocalVariable Left;

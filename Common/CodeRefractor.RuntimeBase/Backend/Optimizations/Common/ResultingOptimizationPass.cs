@@ -5,7 +5,7 @@ using CodeRefractor.RuntimeBase.Optimizations;
 
 #endregion
 
-namespace CodeRefractor.CompilerBackend.Optimizations.Common
+namespace CodeRefractor.RuntimeBase.Backend.Optimizations.Common
 {
     public abstract class ResultingOptimizationPass : OptimizationPass
     {

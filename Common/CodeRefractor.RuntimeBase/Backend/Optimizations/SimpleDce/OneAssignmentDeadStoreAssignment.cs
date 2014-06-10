@@ -1,15 +1,15 @@
 #region Usings
 
 using System.Collections.Generic;
-using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.Analyze;
+using CodeRefractor.RuntimeBase.Backend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
 #endregion
 
-namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
+namespace CodeRefractor.RuntimeBase.Backend.Optimizations.SimpleDce
 {
     internal class OneAssignmentDeadStoreAssignment : ResultingInFunctionOptimizationPass
     {
@@ -41,7 +41,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
             }
         }
 
-        private Dictionary<LocalVariable, ConstValue> GetAssignToConstOperations(LocalOperation[] localOperations, UseDefDescription useDef)
+        private Dictionary<LocalVariable, ConstValue> GetAssignToConstOperations(LocalOperation[] localOperations,
+            UseDefDescription useDef)
         {
             var constValues = new Dictionary<LocalVariable, ConstValue>();
             var assignmentIds = useDef.GetOperationsOfKind(OperationKind.Assignment);
@@ -50,7 +51,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
                 var op = localOperations[index];
                 var assign = (Assignment) op.Value;
                 var assignedTo = assign.AssignedTo;
-                if(assignedTo.Kind == VariableKind.Argument)
+                if (assignedTo.Kind == VariableKind.Argument)
                     continue;
                 var constAssignedValue = assign.Right as ConstValue;
                 if (constAssignedValue == null)
@@ -61,14 +62,14 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
             {
                 var op = localOperations[index];
                 var definition = useDef.GetDefinition(index);
-                if (definition==null)
+                if (definition == null)
                     continue;
                 if (op.Kind != OperationKind.Assignment)
                 {
                     constValues.Remove(definition);
                     continue;
                 }
-                var assign = (Assignment)op.Value;
+                var assign = (Assignment) op.Value;
                 var constAssignedValue = assign.Right as ConstValue;
                 if (constAssignedValue == null)
                 {

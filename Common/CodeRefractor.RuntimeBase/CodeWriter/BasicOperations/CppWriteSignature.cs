@@ -1,5 +1,6 @@
+#region Usings
+
 using System;
-using System.Reflection;
 using System.Text;
 using CodeRefractor.CodeWriter.Linker;
 using CodeRefractor.RuntimeBase;
@@ -8,13 +9,16 @@ using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.RuntimeBase.Runtime;
 
+#endregion
+
 namespace CodeRefractor.CodeWriter.BasicOperations
 {
     public static class CppWriteSignature
     {
-        public static string GetArgumentsAsTextWithEscaping(this MethodInterpreter interpreter, CrRuntimeLibrary crRuntime)
+        public static string GetArgumentsAsTextWithEscaping(this MethodInterpreter interpreter,
+            CrRuntimeLibrary crRuntime)
         {
-            MethodBase method = interpreter.Method;
+            var method = interpreter.Method;
             var parameterInfos = method.GetParameters();
             var escapingBools = method.BuildEscapingBools(crRuntime);
             var sb = new StringBuilder();
@@ -23,13 +27,14 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             if (!method.IsStatic)
             {
                 var parameterData = analyze.GetVariableData(new ArgumentVariable("_this"));
-                if(parameterData!=EscapingMode.Unused)
+                if (parameterData != EscapingMode.Unused)
                 {
-                    var argumentTypeDescription = UsedTypeList.Set(method.DeclaringType.GetMappedType(),crRuntime);
+                    var argumentTypeDescription = UsedTypeList.Set(method.DeclaringType.GetMappedType(), crRuntime);
                     var thisText = String.Format("const {0}& _this", argumentTypeDescription.ClrType.ToCppName(true));
                     if (!escapingBools[0])
                     {
-                        thisText = String.Format("{0} _this", argumentTypeDescription.ClrType.ToCppName(true, EscapingMode.Pointer));
+                        thisText = String.Format("{0} _this",
+                            argumentTypeDescription.ClrType.ToCppName(true, EscapingMode.Pointer));
                     }
                     sb.Append(thisText);
                     index++;
@@ -40,9 +45,9 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             {
                 var parameterInfo = parameterInfos[index];
                 var parameterData = analyze.GetVariableData(new ArgumentVariable(parameterInfo.Name));
-                if(parameterData == EscapingMode.Unused)
+                if (parameterData == EscapingMode.Unused)
                     continue;
-                
+
                 if (isFirst)
                     isFirst = false;
                 else
@@ -60,9 +65,10 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         }
 
 
-        public static string WriteHeaderMethodWithEscaping(this MethodInterpreter interpreter, CrRuntimeLibrary crRuntime, bool writeEndColon = true)
+        public static string WriteHeaderMethodWithEscaping(this MethodInterpreter interpreter,
+            CrRuntimeLibrary crRuntime, bool writeEndColon = true)
         {
-            MethodBase methodBase = interpreter.Method;
+            var methodBase = interpreter.Method;
             var retType = methodBase.GetReturnType().ToCppName(true);
 
             var sb = new StringBuilder();
@@ -78,7 +84,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             var arguments = interpreter.GetArgumentsAsTextWithEscaping(crRuntime);
 
             sb.AppendFormat("{0} {1}({2})",
-                            retType, methodBase.ClangMethodSignature(), arguments);
+                retType, methodBase.ClangMethodSignature(), arguments);
             if (writeEndColon)
                 sb.Append(";");
 
@@ -86,7 +92,8 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             return sb.ToString();
         }
 
-        public static StringBuilder WriteSignature(MethodInterpreter interpreter, CrRuntimeLibrary crRuntime, bool writeEndColon = false)
+        public static StringBuilder WriteSignature(MethodInterpreter interpreter, CrRuntimeLibrary crRuntime,
+            bool writeEndColon = false)
         {
             var sb = new StringBuilder();
             if (interpreter == null)
@@ -95,6 +102,5 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             sb.Append(text);
             return sb;
         }
-
     }
 }

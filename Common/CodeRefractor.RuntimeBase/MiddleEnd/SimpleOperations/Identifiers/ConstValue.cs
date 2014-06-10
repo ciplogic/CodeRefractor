@@ -37,7 +37,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers
 
         public override TypeDescription ComputedType()
         {
-            return new TypeDescription(Value == null ? typeof(void) : Value.GetType());
+            return new TypeDescription(Value == null ? typeof (void) : Value.GetType());
         }
 
         public string Description

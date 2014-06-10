@@ -1,5 +1,8 @@
-﻿using CodeRefractor.CompilerBackend.OuputCodeWriter;
+﻿#region Usings
+
 using CodeRefractor.RuntimeBase;
+
+#endregion
 
 namespace CodeRefractor.CompilerBackend.ProgramWideOptimizations
 {

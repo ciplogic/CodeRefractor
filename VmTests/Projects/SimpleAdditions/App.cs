@@ -4,33 +4,12 @@ class NBody
 {
     public static void Main()
     {
-        Console.WriteLine("Prime numbers: ");
-        var len = 1000000;
-        var primes = AddPrimes(len);
-        Console.Write(primes);
-
-    }
-
-    private static int AddPrimes(int len)
-    {
-        var primes = 0;
-        for (var i = 2; i < len; i++)
-        {
-            if (i%2 == 0)
-                continue;
-            var isPrime = true;
-            for (var j = 2; j*j <= i; j++)
-            {
-                if (i%j == 0)
-                {
-                    isPrime = false;
-                    break;
-                }
-            }
-            if (isPrime)
-                primes++;
-        }
-        return primes;
+        Console.WriteLine("NBody");
+        int n = 500000;
+        NBodySystem bodies = new NBodySystem();
+        Console.WriteLine(bodies.Energy());
+        for (int i = 0; i < n; i++) bodies.Advance(0.01);
+        Console.WriteLine(bodies.Energy());
     }
 }
 
@@ -90,38 +69,19 @@ class NBodySystem
             },
         };
 
-        CalculatePairs();
-    }
-
-    private void CalculatePairs()
-    {
-        SetupDefaultParis();
+        pairs = new Pair[bodies.Length * (bodies.Length - 1) / 2];
+        int pi = 0;
+        for (int i = 0; i < bodies.Length - 1; i++)
+            for (int j = i + 1; j < bodies.Length; j++)
+                pairs[pi++] = new Pair() { bi = bodies[i], bj = bodies[j] };
 
         double px = 0.0, py = 0.0, pz = 0.0;
         foreach (var b in bodies)
         {
-            px += b.vx*b.mass;
-            py += b.vy*b.mass;
-            pz += b.vz*b.mass;
+            px += b.vx * b.mass; py += b.vy * b.mass; pz += b.vz * b.mass;
         }
         var sol = bodies[0];
-        sol.vx = -px/Solarmass;
-        sol.vy = -py/Solarmass;
-        sol.vz = -pz/Solarmass;
-    }
-
-    private void SetupDefaultParis()
-    {
-        pairs = new Pair[bodies.Length*(bodies.Length - 1)/2];
-        int pi = 0;
-        for (int i = 0; i < bodies.Length - 1; i++)
-            for (int j = i + 1; j < bodies.Length; j++)
-            {
-                pairs[pi] = new Pair();
-                pairs[pi].bi = bodies[i];
-                pairs[pi].bj = bodies[j];
-                pi++;
-            }
+        sol.vx = -px / Solarmass; sol.vy = -py / Solarmass; sol.vz = -pz / Solarmass;
     }
 
     public void Advance(double dt)

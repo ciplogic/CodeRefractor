@@ -1,5 +1,6 @@
 #region Usings
 
+using CodeRefractor.RuntimeBase.Backend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.Optimizations;
 using CodeRefractor.RuntimeBase.Runtime;
 
@@ -10,6 +11,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Common
     public abstract class ResultingGlobalOptimizationPass : ResultingOptimizationPass
     {
         public static CrRuntimeLibrary Runtime { get; set; }
+
         public ResultingGlobalOptimizationPass()
             : base(OptimizationKind.Global)
         {

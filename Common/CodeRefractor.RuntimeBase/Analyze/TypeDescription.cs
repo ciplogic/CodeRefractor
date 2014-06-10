@@ -1,3 +1,5 @@
+#region Usings
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,12 +9,19 @@ using System.Text;
 using CodeRefractor.RuntimeBase.Runtime;
 using CodeRefractor.RuntimeBase.Shared;
 
+#endregion
+
 namespace CodeRefractor.RuntimeBase.Analyze
 {
     public class TypeDescription
     {
         public Type ClrType { get; private set; }
-        public TypeCode ClrTypeCode { get; private set; }
+
+        public TypeCode ClrTypeCode
+        {
+            get { return Type.GetTypeCode(ClrType); }
+            
+        }
         public TypeDescription BaseType { get; private set; }
 
         public bool ContainsGenericParameters { get; set; }
@@ -21,12 +30,13 @@ namespace CodeRefractor.RuntimeBase.Analyze
         public string Name { get; private set; }
         public string Namespace { get; set; }
         public bool IsPointer { get; private set; }
-        static readonly HashSet<Type> IgnoredSet = new HashSet<Type>(
-             new[]
-             {
-                 typeof(object),
-                 typeof(IntPtr)
-             }
+
+        private static readonly HashSet<Type> IgnoredSet = new HashSet<Type>(
+            new[]
+            {
+                typeof (object),
+                typeof (IntPtr)
+            }
             );
 
 
@@ -44,8 +54,6 @@ namespace CodeRefractor.RuntimeBase.Analyze
 
         public void ExtractInformation(CrRuntimeLibrary crRuntime)
         {
-            ClrTypeCode = Type.GetTypeCode(ClrType);
-
             if (IgnoredSet.Contains(ClrType))
                 return;
             if (ClrType.IsPointer || ClrType.IsByRef)
@@ -54,7 +62,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
                 return;
             }
 
-            if (ClrType.BaseType != typeof(object))
+            if (ClrType.BaseType != typeof (object))
             {
                 BaseType = new TypeDescription(ClrType.BaseType);
             }
@@ -75,8 +83,8 @@ namespace CodeRefractor.RuntimeBase.Analyze
             if (clrType.IsInterface)
                 return;
             var fields = clrType.GetFields(BindingFlags.NonPublic |
-                BindingFlags.Public | BindingFlags.Instance
-                | BindingFlags.DeclaredOnly | BindingFlags.Static
+                                           BindingFlags.Public | BindingFlags.Instance
+                                           | BindingFlags.DeclaredOnly | BindingFlags.Static
                 ).ToArray();
             if (fields.Length == 0)
                 return;
@@ -118,7 +126,8 @@ namespace CodeRefractor.RuntimeBase.Analyze
             WriteFieldListToLayout(sb, noOffsetFields);
         }
 
-        private void BuildUnionLayouts(List<FieldDescription> noOffsetFields, SortedDictionary<int, List<FieldDescription>> dictionary)
+        private void BuildUnionLayouts(List<FieldDescription> noOffsetFields,
+            SortedDictionary<int, List<FieldDescription>> dictionary)
         {
             foreach (var fieldData in Layout)
             {
@@ -142,7 +151,6 @@ namespace CodeRefractor.RuntimeBase.Analyze
             {
                 if (fieldData.TypeDescription.ContainsGenericParameters)
                 {
-
                 }
                 var staticString = fieldData.IsStatic ? "static" : "";
                 sb.AppendFormat("{2} {0} {1};",
@@ -183,13 +191,12 @@ namespace CodeRefractor.RuntimeBase.Analyze
                 if (!fieldData.IsStatic)
                     continue;
                 sb.AppendFormat(" /* static*/ {0} {3}::{1} = {2};",
-                        fieldData.TypeDescription.ClrType.ToCppName(true),
-                        fieldData.Name.ValidName(),
-                        GetDefault(fieldData.TypeDescription.ClrType),
-                        ClrType.ToCppMangling())
-                        .AppendLine();
+                    fieldData.TypeDescription.ClrType.ToCppName(true),
+                    fieldData.Name.ValidName(),
+                    GetDefault(fieldData.TypeDescription.ClrType),
+                    ClrType.ToCppMangling())
+                    .AppendLine();
             }
         }
-
     }
 }

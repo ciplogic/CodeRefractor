@@ -44,8 +44,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.ConstTable
                 var rightArrayItems = string.Join(", ", rightArray);
 
                 sb.AppendFormat("AddConstantByteArray(new byte[{0}] {{ {1} }} );",
-                                rightArray.Length,
-                                rightArrayItems);
+                    rightArray.Length,
+                    rightArrayItems);
             }
             sb.AppendLine("}");
 

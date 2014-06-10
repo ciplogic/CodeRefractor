@@ -18,7 +18,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             return result != null && (bool) result;
         }
 
-        public static void SetAdditionalValue(this MetaMidRepresentation intermediateCode, string itemName, object valueToSet)
+        public static void SetAdditionalValue(this MetaMidRepresentation intermediateCode, string itemName,
+            object valueToSet)
         {
             var additionalData = intermediateCode.AuxiliaryObjects;
             additionalData[itemName] = valueToSet;

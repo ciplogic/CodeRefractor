@@ -16,25 +16,27 @@ namespace CodeRefractor.RuntimeBase.Analyze
     public static class UseDefHelper
     {
         #region GetUsages
+
         public static List<LocalVariable> GetUsages(this LocalOperation operation)
         {
             var result = new List<LocalVariable>(2);
             switch (operation.Kind)
             {
                 case OperationKind.Assignment:
-                    result.AddUsage(((Assignment)operation.Value).Right);
+                    result.AddUsage(((Assignment) operation.Value).Right);
                     break;
                 case OperationKind.UnaryOperator:
-                    var unaryOperator = ((UnaryOperator)operation.Value);
+                    var unaryOperator = ((UnaryOperator) operation.Value);
                     result.AddUsage(unaryOperator.Left);
                     break;
                 case OperationKind.BranchOperator:
-                    var branchOperator = ((BranchOperator)operation.Value);
-                    result.AddUsage(branchOperator.CompareValue); ;
+                    var branchOperator = ((BranchOperator) operation.Value);
+                    result.AddUsage(branchOperator.CompareValue);
+                    ;
                     result.AddUsage(branchOperator.SecondValue);
                     break;
                 case OperationKind.BinaryOperator:
-                    var binaryOperator = ((BinaryOperator)operation.Value);
+                    var binaryOperator = ((BinaryOperator) operation.Value);
                     result.AddUsage(binaryOperator.Left);
                     result.AddUsage(binaryOperator.Right);
                     break;
@@ -94,26 +96,26 @@ namespace CodeRefractor.RuntimeBase.Analyze
 
         private static void AddUsagesOfRefAssignment(LocalOperation operation, List<LocalVariable> result)
         {
-            var refData = (RefAssignment)operation.Value;
+            var refData = (RefAssignment) operation.Value;
             result.Add(refData.Left);
             result.Add(refData.Right);
         }
 
         private static void AddUsagesOfFieldRefAssignment(LocalOperation operation, List<LocalVariable> result)
         {
-            var refFieldValue = (FieldRefAssignment)operation.Value;
+            var refFieldValue = (FieldRefAssignment) operation.Value;
             result.Add(refFieldValue.Right);
         }
 
         private static void AddUsagesOfSetStaticField(LocalOperation operation, List<LocalVariable> result)
         {
-            var assignment = (Assignment)operation.Value;
+            var assignment = (Assignment) operation.Value;
             result.AddUsage(assignment.Right);
         }
 
         private static void AddUsagesOfCall(LocalOperation operation, List<LocalVariable> result)
         {
-            var assignment = (MethodData)operation.Value;
+            var assignment = (MethodData) operation.Value;
             var parameters = assignment.Parameters;
             foreach (var parameter in parameters)
             {
@@ -126,32 +128,33 @@ namespace CodeRefractor.RuntimeBase.Analyze
             var returnedValue = operation.Get<IdentifierValue>();
 
             result.AddUsage(returnedValue);
-
         }
+
         private static void AddUsagesOfGetField(LocalOperation operation, List<LocalVariable> result)
         {
-            var arrayVar = (FieldGetter)operation.Value;
+            var arrayVar = (FieldGetter) operation.Value;
             result.AddUsage(arrayVar.Instance);
         }
+
         private static void AddUsagesOfSetField(LocalOperation operation, List<LocalVariable> result)
         {
-            var assignment = (Assignment)operation.Value;
-            var arrayVar = (FieldSetter)assignment.AssignedTo;
+            var assignment = (Assignment) operation.Value;
+            var arrayVar = (FieldSetter) assignment.AssignedTo;
             result.AddUsage(arrayVar.Instance);
             result.AddUsage(assignment.Right);
         }
 
         private static void AddUsagesOfNewArray(LocalOperation operation, List<LocalVariable> result)
         {
-            var assignment = (Assignment)operation.Value;
-            var arrayVar = (NewArrayObject)assignment.Right;
+            var assignment = (Assignment) operation.Value;
+            var arrayVar = (NewArrayObject) assignment.Right;
             result.AddUsage(arrayVar.ArrayLength);
         }
 
         private static void AddUsagesOfGetArrayItem(LocalOperation operation, List<LocalVariable> result)
         {
-            var assignment = (Assignment)operation.Value;
-            var arrayVar = (ArrayVariable)assignment.Right;
+            var assignment = (Assignment) operation.Value;
+            var arrayVar = (ArrayVariable) assignment.Right;
             result.AddUsage(arrayVar.Parent);
             result.AddUsage(arrayVar.Index);
         }
@@ -159,8 +162,8 @@ namespace CodeRefractor.RuntimeBase.Analyze
 
         private static void AddUsagesOfSetArrayItem(LocalOperation operation, List<LocalVariable> result)
         {
-            var assignment = (Assignment)operation.Value;
-            var arrayVar = (ArrayVariable)assignment.AssignedTo;
+            var assignment = (Assignment) operation.Value;
+            var arrayVar = (ArrayVariable) assignment.AssignedTo;
             result.AddUsage(arrayVar.Parent);
             result.AddUsage(arrayVar.Index);
             result.AddUsage(assignment.Right);
@@ -188,6 +191,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
         #endregion  //GetUsages
 
         #region GetDefinition
+
         public static LocalVariable GetDefinition(this LocalOperation operation)
         {
             var kind = operation.Kind;
@@ -210,23 +214,23 @@ namespace CodeRefractor.RuntimeBase.Analyze
                     var assign = operation.GetAssignment();
                     return assign.AssignedTo;
                 case OperationKind.GetField:
-                    var fieldGetter = (FieldGetter)operation.Value;
+                    var fieldGetter = (FieldGetter) operation.Value;
                     return fieldGetter.AssignedTo;
                 case OperationKind.BinaryOperator:
                 case OperationKind.UnaryOperator:
-                    var binOp = (OperatorBase)operation.Value;
+                    var binOp = (OperatorBase) operation.Value;
                     return binOp.AssignedTo;
                 case OperationKind.Call:
                 case OperationKind.CallVirtual:
                 case OperationKind.CallInterface:
-                    var value = (MethodData)operation.Value;
+                    var value = (MethodData) operation.Value;
                     return value.Result;
                 case OperationKind.FieldRefAssignment:
-                    var refFieldValue = (FieldRefAssignment)operation.Value;
+                    var refFieldValue = (FieldRefAssignment) operation.Value;
                     return refFieldValue.Left;
 
                 case OperationKind.RefAssignment:
-                    var refValue = (RefAssignment)operation.Value;
+                    var refValue = (RefAssignment) operation.Value;
                     return refValue.Left;
                 default:
                     throw new InvalidDataException("Case not handled");
@@ -235,17 +239,19 @@ namespace CodeRefractor.RuntimeBase.Analyze
 
         #endregion
 
-        public static HashSet<LocalVariable> GetAllUsedVariables(MethodInterpreter interpreter, bool includeDefinitions = false)
+        public static HashSet<LocalVariable> GetAllUsedVariables(MethodInterpreter interpreter,
+            bool includeDefinitions = false)
         {
             var useDef = interpreter.MidRepresentation.UseDef;
             return GetAllUsedVariables(useDef, includeDefinitions);
         }
 
-        public static HashSet<LocalVariable> GetAllUsedVariables(this UseDefDescription useDef,bool includeDefinitions=false)
+        public static HashSet<LocalVariable> GetAllUsedVariables(this UseDefDescription useDef,
+            bool includeDefinitions = false)
         {
             var result = new HashSet<LocalVariable>();
             var operations = useDef.GetLocalOperations();
-            for (int index = 0; index < operations.Length; index++)
+            for (var index = 0; index < operations.Length; index++)
             {
                 var op = operations[index];
                 var usages = useDef.GetUsages(index);
@@ -274,7 +280,8 @@ namespace CodeRefractor.RuntimeBase.Analyze
             return result;
         }
 
-        public static List<int> GetVariableUsages(IList<LocalOperation> localOperations, LocalVariable variable, int startIndex, int endIndex)
+        public static List<int> GetVariableUsages(IList<LocalOperation> localOperations, LocalVariable variable,
+            int startIndex, int endIndex)
         {
             var result = new List<int>();
             for (var index = startIndex; index <= endIndex; index++)
@@ -298,9 +305,10 @@ namespace CodeRefractor.RuntimeBase.Analyze
             }
 
             midRep.UpdateUseDef();
-
         }
+
         #region SwitchUsageWithDefinition
+
         public static void SwitchUsageWithDefinition(this LocalOperation op, LocalVariable usageVariable,
             IdentifierValue definitionIdentifier)
         {
@@ -366,34 +374,37 @@ namespace CodeRefractor.RuntimeBase.Analyze
                         string.Format("Switch usage is not implemented for this operation '{0}'", op.Kind));
             }
         }
-        private static void SwitchUsageInRefAssignment(LocalOperation op, LocalVariable usageVariable, IdentifierValue definitionIdentifier)
+
+        private static void SwitchUsageInRefAssignment(LocalOperation op, LocalVariable usageVariable,
+            IdentifierValue definitionIdentifier)
         {
             var returnValue = op.Get<RefAssignment>();
             if (usageVariable.Equals(returnValue.Right))
             {
-                returnValue.Right = (LocalVariable)definitionIdentifier;
+                returnValue.Right = (LocalVariable) definitionIdentifier;
             }
             if (usageVariable.Equals(returnValue.Left))
             {
-                returnValue.Left = (LocalVariable)definitionIdentifier;
+                returnValue.Left = (LocalVariable) definitionIdentifier;
             }
         }
 
-        private static void SwitchUsageInFieldRefAssignment(LocalOperation op, LocalVariable usageVariable, IdentifierValue definitionIdentifier)
+        private static void SwitchUsageInFieldRefAssignment(LocalOperation op, LocalVariable usageVariable,
+            IdentifierValue definitionIdentifier)
         {
             var returnValue = op.Get<FieldRefAssignment>();
             if (usageVariable.Equals(returnValue.Right))
             {
-                returnValue.Right = (LocalVariable)definitionIdentifier;
+                returnValue.Right = (LocalVariable) definitionIdentifier;
             }
             if (usageVariable.Equals(returnValue.Left))
             {
-                returnValue.Left = (LocalVariable)definitionIdentifier;
+                returnValue.Left = (LocalVariable) definitionIdentifier;
             }
         }
 
         private static void SwitchUsageInReturn(LocalOperation op, LocalVariable usageVariable,
-                                                IdentifierValue definitionIdentifier)
+            IdentifierValue definitionIdentifier)
         {
             var returnValue = op.Get<IdentifierValue>();
             if (usageVariable.Equals(returnValue))
@@ -403,18 +414,18 @@ namespace CodeRefractor.RuntimeBase.Analyze
         }
 
         private static void SwitchUsageInNewArray(LocalOperation op, LocalVariable usageVariable,
-                                                  IdentifierValue definitionIdentifier)
+            IdentifierValue definitionIdentifier)
         {
             var assign = op.GetAssignment();
-            var arrayVar = (NewArrayObject)assign.Right;
+            var arrayVar = (NewArrayObject) assign.Right;
             if (usageVariable.Equals(assign.AssignedTo))
-                assign.AssignedTo = (LocalVariable)definitionIdentifier;
+                assign.AssignedTo = (LocalVariable) definitionIdentifier;
             if (usageVariable.Equals(arrayVar.ArrayLength))
                 arrayVar.ArrayLength = definitionIdentifier;
         }
 
         private static void SwitchUsageInCall(LocalOperation op, LocalVariable usageVariable,
-                                              IdentifierValue definitionIdentifier)
+            IdentifierValue definitionIdentifier)
         {
             var methodData = op.Get<MethodData>();
             for (var index = 0; index < methodData.Parameters.Count; index++)
@@ -426,13 +437,13 @@ namespace CodeRefractor.RuntimeBase.Analyze
         }
 
         private static void SwitchUsageInGetArrayItem(LocalOperation op, LocalVariable usageVariable,
-                                                      IdentifierValue definitionIdentifier)
+            IdentifierValue definitionIdentifier)
         {
-            var opGetArrayItem = (Assignment)op.Value;
-            var getArrayData = (ArrayVariable)opGetArrayItem.Right;
+            var opGetArrayItem = (Assignment) op.Value;
+            var getArrayData = (ArrayVariable) opGetArrayItem.Right;
             if (usageVariable.Equals(getArrayData.Parent))
             {
-                getArrayData.Parent = (LocalVariable)definitionIdentifier;
+                getArrayData.Parent = (LocalVariable) definitionIdentifier;
             }
             if (usageVariable.Equals(getArrayData.Index))
             {
@@ -440,18 +451,18 @@ namespace CodeRefractor.RuntimeBase.Analyze
             }
             if (usageVariable.Equals(opGetArrayItem.AssignedTo))
             {
-                opGetArrayItem.AssignedTo = (LocalVariable)definitionIdentifier;
+                opGetArrayItem.AssignedTo = (LocalVariable) definitionIdentifier;
             }
         }
 
         private static void SwitchUsageInSetArrayItem(LocalOperation op, LocalVariable usageVariable,
-                                                      IdentifierValue definitionIdentifier)
+            IdentifierValue definitionIdentifier)
         {
-            var opSetArrayItem = (Assignment)op.Value;
-            var setArrayData = (ArrayVariable)opSetArrayItem.AssignedTo;
+            var opSetArrayItem = (Assignment) op.Value;
+            var setArrayData = (ArrayVariable) opSetArrayItem.AssignedTo;
             if (usageVariable.Equals(setArrayData.Parent))
             {
-                setArrayData.Parent = (LocalVariable)definitionIdentifier;
+                setArrayData.Parent = (LocalVariable) definitionIdentifier;
             }
             if (usageVariable.Equals(setArrayData.Index))
             {
@@ -464,10 +475,10 @@ namespace CodeRefractor.RuntimeBase.Analyze
         }
 
         private static void SwitchUsageInSetField(LocalOperation op, LocalVariable usageVariable,
-                                                  IdentifierValue definitionIdentifier)
+            IdentifierValue definitionIdentifier)
         {
-            var opSetField = (Assignment)op.Value;
-            var setFieldData = (FieldSetter)opSetField.AssignedTo;
+            var opSetField = (Assignment) op.Value;
+            var setFieldData = (FieldSetter) opSetField.AssignedTo;
             if (usageVariable.Equals(setFieldData.Instance))
             {
                 setFieldData.Instance = definitionIdentifier;
@@ -478,13 +489,14 @@ namespace CodeRefractor.RuntimeBase.Analyze
             }
             if (usageVariable.Equals(opSetField.AssignedTo))
             {
-                opSetField.AssignedTo = (LocalVariable)definitionIdentifier;
+                opSetField.AssignedTo = (LocalVariable) definitionIdentifier;
             }
         }
 
-        private static void SwitchUsageInSetStaticField(LocalOperation op, LocalVariable usageVariable, IdentifierValue definitionIdentifier)
+        private static void SwitchUsageInSetStaticField(LocalOperation op, LocalVariable usageVariable,
+            IdentifierValue definitionIdentifier)
         {
-            var opSetField = (Assignment)op.Value;
+            var opSetField = (Assignment) op.Value;
 
             if (usageVariable.Equals(opSetField.Right))
             {
@@ -494,25 +506,25 @@ namespace CodeRefractor.RuntimeBase.Analyze
 
 
         private static void SwichUsageInGetField(LocalOperation op, LocalVariable usageVariable,
-                                                 IdentifierValue definitionIdentifier)
+            IdentifierValue definitionIdentifier)
         {
-            var getFieldData = (FieldGetter)op.Value;
+            var getFieldData = (FieldGetter) op.Value;
             if (!(definitionIdentifier is LocalVariable))
                 return;
             if (usageVariable.Equals(getFieldData.Instance))
             {
-                getFieldData.Instance = (LocalVariable)definitionIdentifier;
+                getFieldData.Instance = (LocalVariable) definitionIdentifier;
             }
             if (usageVariable.Equals(getFieldData.AssignedTo))
             {
-                getFieldData.AssignedTo = (LocalVariable)definitionIdentifier;
+                getFieldData.AssignedTo = (LocalVariable) definitionIdentifier;
             }
         }
 
         private static void SwitchUsageInBranchOperator(LocalOperation op, LocalVariable usageVariable,
-                                                        IdentifierValue definitionIdentifier)
+            IdentifierValue definitionIdentifier)
         {
-            var opBranchOperator = (BranchOperator)op.Value;
+            var opBranchOperator = (BranchOperator) op.Value;
             if (usageVariable.Equals(opBranchOperator.CompareValue))
             {
                 opBranchOperator.CompareValue = definitionIdentifier;
@@ -524,26 +536,26 @@ namespace CodeRefractor.RuntimeBase.Analyze
         }
 
         private static void SwitchUsageInUnaryOperator(LocalOperation op, LocalVariable usageVariable,
-                                                       IdentifierValue definitionIdentifier)
+            IdentifierValue definitionIdentifier)
         {
-            var opUnaryOperator = (UnaryOperator)op.Value;
+            var opUnaryOperator = (UnaryOperator) op.Value;
             if (usageVariable.Equals(opUnaryOperator.Left))
             {
                 opUnaryOperator.Left = definitionIdentifier;
             }
             if (usageVariable.Equals(opUnaryOperator.AssignedTo))
             {
-                opUnaryOperator.AssignedTo = (LocalVariable)definitionIdentifier;
+                opUnaryOperator.AssignedTo = (LocalVariable) definitionIdentifier;
             }
         }
 
         private static void SwitchUsageInBinaryOperator(LocalOperation op, LocalVariable usageVariable,
-                                                        IdentifierValue definitionIdentifier)
+            IdentifierValue definitionIdentifier)
         {
-            var opBinaryOperator = (BinaryOperator)op.Value;
+            var opBinaryOperator = (BinaryOperator) op.Value;
             if (usageVariable.Equals(opBinaryOperator.AssignedTo))
             {
-                opBinaryOperator.AssignedTo = (LocalVariable)definitionIdentifier;
+                opBinaryOperator.AssignedTo = (LocalVariable) definitionIdentifier;
             }
             if (usageVariable.Equals(opBinaryOperator.Right))
             {
@@ -556,18 +568,19 @@ namespace CodeRefractor.RuntimeBase.Analyze
         }
 
         private static void SwitchUsageInAssignment(LocalOperation op, LocalVariable usageVariable,
-                                                    IdentifierValue definitionIdentifier)
+            IdentifierValue definitionIdentifier)
         {
-            var opAssignment = (Assignment)op.Value;
+            var opAssignment = (Assignment) op.Value;
             if (usageVariable.Equals(opAssignment.AssignedTo))
             {
-                opAssignment.AssignedTo = (LocalVariable)definitionIdentifier;
+                opAssignment.AssignedTo = (LocalVariable) definitionIdentifier;
             }
             if (usageVariable.Equals(opAssignment.Right))
             {
                 opAssignment.Right = definitionIdentifier;
             }
         }
+
         #endregion // SwitchUsageWithDefinition
     }
 }

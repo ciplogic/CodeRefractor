@@ -1,13 +1,14 @@
-﻿using System;
+﻿#region Usings
+
 using System.Linq;
-using CodeRefractor.CompilerBackend.OuputCodeWriter;
-using CodeRefractor.CompilerBackend.ProgramWideOptimizations.Virtual;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
+
+#endregion
 
 namespace CodeRefractor.CompilerBackend.ProgramWideOptimizations.ConstParameters
 {
@@ -16,27 +17,27 @@ namespace CodeRefractor.CompilerBackend.ProgramWideOptimizations.ConstParameters
         protected override void DoOptimize(ProgramClosure closure)
         {
             var methodInterpreters = closure.MethodClosure.Values
-                .Where(m=>m.Kind == MethodKind.Default)
+                .Where(m => m.Kind == MethodKind.Default)
                 .ToList();
             var updateHappen = false;
             foreach (var interpreter in methodInterpreters)
             {
                 updateHappen |= HandleInterpreterInstructions(interpreter);
             }
-            if(!updateHappen)
+            if (!updateHappen)
                 return;
             var parametersDatas = methodInterpreters
                 .Select(ConstantParametersData.GetInterpreterData)
                 .ToList();
-            for (int index = 0; index < methodInterpreters.Count; index++)
+            for (var index = 0; index < methodInterpreters.Count; index++)
             {
                 var interpreter = methodInterpreters[index];
                 var parametersData = parametersDatas[index];
-                if(!parametersData.ConstKinds.ContainsValue(ConstantParametersData.ConstValueKind.AssignedConstant))
+                if (!parametersData.ConstKinds.ContainsValue(ConstantParametersData.ConstValueKind.AssignedConstant))
                     continue;
                 foreach (var constKind in parametersData.ConstKinds)
                 {
-                    if(constKind.Value!= ConstantParametersData.ConstValueKind.AssignedConstant)
+                    if (constKind.Value != ConstantParametersData.ConstValueKind.AssignedConstant)
                         continue;
                     var assignedConstant = parametersData.ConstValues[constKind.Key];
                     interpreter.SwitchAllUsagesWithDefinition(constKind.Key, assignedConstant);
@@ -57,7 +58,7 @@ namespace CodeRefractor.CompilerBackend.ProgramWideOptimizations.ConstParameters
                 var op = allOps[callOp];
                 var methodData = (MethodData) op.Value;
                 var callingInterpreter = methodData.Interpreter;
-                if(callingInterpreter.Kind!=MethodKind.Default)
+                if (callingInterpreter.Kind != MethodKind.Default)
                     continue;
                 var interpreterData = ConstantParametersData.GetInterpreterData(callingInterpreter);
                 updatedHappen |= interpreterData.UpdateTable(methodData);

@@ -19,12 +19,12 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 
         public LocalOperation Clone()
         {
-            var value = (IClonableOperation)Value;
+            var value = (IClonableOperation) Value;
             return new LocalOperation
-                       {
-                           Kind = Kind,
-                           Value = value.Clone()
-                       };
+            {
+                Kind = Kind,
+                Value = value.Clone()
+            };
         }
     }
 }

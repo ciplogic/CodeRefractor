@@ -1,14 +1,16 @@
+#region Usings
+
 using System;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
+
+#endregion
 
 namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 {
     public class RefArrayItemAssignment
     {
-        public LocalVariable ArrayVar
-        { get; set; }
-        public IdentifierValue Index
-        { get; set; }
+        public LocalVariable ArrayVar { get; set; }
+        public IdentifierValue Index { get; set; }
 
         public LocalVariable Left { get; set; }
 

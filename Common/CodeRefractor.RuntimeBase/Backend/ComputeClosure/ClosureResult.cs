@@ -1,7 +1,10 @@
+#region Usings
+
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using CodeRefractor.RuntimeBase.MiddleEnd;
+
+#endregion
 
 namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
 {
@@ -15,6 +18,5 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
         public Dictionary<MethodInterpreterKey, MethodInterpreter> MethodInterpreters { get; set; }
 
         public HashSet<Type> UsedTypes { get; set; }
-
     }
 }

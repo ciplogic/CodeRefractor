@@ -1,4 +1,8 @@
+#region Usings
+
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
+
+#endregion
 
 namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 {
@@ -7,6 +11,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
         public LocalVariable AssignedTo;
         public LocalVariable Instance;
         public string FieldName;
+
         public object Clone()
         {
             return new FieldGetter

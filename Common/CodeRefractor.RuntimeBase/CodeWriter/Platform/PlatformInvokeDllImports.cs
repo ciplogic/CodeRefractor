@@ -14,6 +14,8 @@ namespace CodeRefractor.CodeWriter.Platform
         }
 
         public string DllName { get; set; }
-        public readonly Dictionary<string, PlatformInvokeDllMethod> Methods = new Dictionary<string, PlatformInvokeDllMethod>();
+
+        public readonly Dictionary<string, PlatformInvokeDllMethod> Methods =
+            new Dictionary<string, PlatformInvokeDllMethod>();
     }
 }

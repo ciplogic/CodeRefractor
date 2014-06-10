@@ -1,7 +1,7 @@
 ﻿#region Usings
 
 using System.Collections.Generic;
-using CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagation;
+using CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndPropagation;
 using CodeRefractor.RuntimeBase.Optimizations;
 using MsilCodeCompiler.Tests.Shared;
 using NUnit.Framework;

@@ -1,4 +1,4 @@
-#region Uses
+#region Usings
 
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +22,7 @@ namespace CodeRefractor.RuntimeBase
             var body = definition.GetMethodBody();
             if (body == null)
             {
-                return new List<MethodInterpreter>(); 
+                return new List<MethodInterpreter>();
             }
             var instructions = MethodBodyReader.GetInstructions(definition);
 
@@ -34,21 +34,21 @@ namespace CodeRefractor.RuntimeBase
                     case ObcodeIntValues.CallVirt:
                     case ObcodeIntValues.Call:
                     case ObcodeIntValues.CallInterface:
-                        {
-                            var operand = (MethodBase) instruction.Operand;
-                            if (operand == null)
-                                break;
-                            AddMethodIfNecessary(operand, resultDict);
+                    {
+                        var operand = (MethodBase) instruction.Operand;
+                        if (operand == null)
                             break;
-                        }
+                        AddMethodIfNecessary(operand, resultDict);
+                        break;
+                    }
                     case ObcodeIntValues.NewObj:
-                        {
-                            var operand = (ConstructorInfo) instruction.Operand;
-                            if (operand == null)
-                                break;
-                            AddMethodIfNecessary(operand, resultDict);
+                    {
+                        var operand = (ConstructorInfo) instruction.Operand;
+                        if (operand == null)
                             break;
-                        }
+                        AddMethodIfNecessary(operand, resultDict);
+                        break;
+                    }
                 }
             }
             return resultDict.Values.ToList();
@@ -72,9 +72,9 @@ namespace CodeRefractor.RuntimeBase
 
         public static void Interpret(MethodInterpreter methodInterpreter, CrRuntimeLibrary crRuntime)
         {
-            if(methodInterpreter.Kind!=MethodKind.Default)
+            if (methodInterpreter.Kind != MethodKind.Default)
                 return;
-            if(methodInterpreter.Interpreted)
+            if (methodInterpreter.Interpreted)
                 return;
             methodInterpreter.Process(crRuntime);
         }

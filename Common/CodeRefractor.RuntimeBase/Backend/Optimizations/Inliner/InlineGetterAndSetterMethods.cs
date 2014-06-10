@@ -10,7 +10,7 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 
 #endregion
 
-namespace CodeRefractor.CompilerBackend.Optimizations.Inliner
+namespace CodeRefractor.RuntimeBase.Backend.Optimizations.Inliner
 {
     public class InlineGetterAndSetterMethods : ResultingGlobalOptimizationPass
     {

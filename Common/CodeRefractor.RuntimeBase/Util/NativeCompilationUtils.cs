@@ -1,6 +1,7 @@
 #region Usings
 
 using System;
+using System.IO;
 using CodeRefractor.RuntimeBase.DataBase.SerializeXml;
 
 #endregion
@@ -9,6 +10,7 @@ namespace CodeRefractor.RuntimeBase.Util
 {
     public static class NativeCompilationUtils
     {
+        public static Options CompilerOptions = new GccOptions();
         private class ClangOptions : Options
         {
             public ClangOptions()
@@ -23,21 +25,21 @@ namespace CodeRefractor.RuntimeBase.Util
         {
             public GccOptions()
             {
-                PathOfCompilerTools = @"C:\Oss\Dev-Cpp\MinGW32\bin\";
+                PathOfCompilerTools = @"C:\Dev-Cpp\MinGW64\bin\";
                 CompilerExe = "g++.exe";
                 OptimizationFlags = "-Ofast -fomit-frame-pointer -ffast-math -std=c++11 -static-libgcc ";
                 LinkerOptions = "";
             }
         }
 
-        private class LinuxGccOptions : Options
+        private class WindowsClOptions : Options
         {
-            public LinuxGccOptions()
+            public WindowsClOptions()
             {
-                PathOfCompilerTools = @"";
-                CompilerExe = "g++";
-                OptimizationFlags = "-Ofast -fomit-frame-pointer -ffast-math -std=c++11 -static-libgcc ";
-                LinkerOptions = "-L. -lCRRuntimeLinux -ldl";
+                PathOfCompilerTools = @"C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\";
+                CompilerExe = "cl.exe";
+                OptimizationFlags = "";
+                LinkerOptions = "";
             }
         }
 
@@ -52,7 +54,6 @@ namespace CodeRefractor.RuntimeBase.Util
             public string LinkerOptions;
         }
 
-        public static Options CompilerOptions = new LinuxGccOptions();
 
         public static void SetCompilerOptions(string compilerKind)
         {
@@ -61,32 +62,34 @@ namespace CodeRefractor.RuntimeBase.Util
                 case "gcc":
                     CompilerOptions = new GccOptions();
                     break;
-                case "linx_gcc":
-                    CompilerOptions = new LinuxGccOptions();
-                    break;
                 case "clang":
                     CompilerOptions = new ClangOptions();
                     break;
                 case "msvc":
-                    CompilerOptions = new ClangOptions();
+                    CompilerOptions = new WindowsClOptions();
                     break;
             }
         }
 
         public static void CompileAppToNativeExe(string outputCpp, string applicationNativeExe)
         {
+            var fileInfo = new FileInfo(outputCpp);
+            if (!fileInfo.Exists)
+            {
+                throw new InvalidDataException(string.Format("Filename: {0} does not exist!", outputCpp));
+            }
+            outputCpp = fileInfo.FullName;
             var pathToGpp = CompilerOptions.PathOfCompilerTools + CompilerOptions.CompilerExe;
 
-            var commandLineFormat = "{0} " + CompilerOptions.OptimizationFlags + " {2} -o {1}";
+            var commandLineFormat = "{0} " + CompilerOptions.OptimizationFlags + " {2}";
 
             var arguments = String.Format(commandLineFormat, outputCpp, applicationNativeExe,
-                                          CompilerOptions.LinkerOptions);
-            var standardOutput = pathToGpp.ExecuteCommand(arguments);
+                CompilerOptions.LinkerOptions);
+            var standardOutput = pathToGpp.ExecuteCommand(arguments, CompilerOptions.PathOfCompilerTools);
             if (!String.IsNullOrWhiteSpace(standardOutput))
             {
                 throw new InvalidOperationException(String.Format("Errors when compiling: {0}", standardOutput));
             }
-            (CompilerOptions.PathOfCompilerTools + "strip").ExecuteCommand(applicationNativeExe);
         }
     }
-}   
+}

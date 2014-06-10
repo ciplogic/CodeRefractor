@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using CodeRefractor.CodeWriter.Linker;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
-using CodeRefractor.RuntimeBase;
-using CodeRefractor.RuntimeBase.Backend.Optimizations.EscapeAndLowering;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
@@ -14,7 +12,7 @@ using CodeRefractor.RuntimeBase.Runtime;
 
 #endregion
 
-namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
+namespace CodeRefractor.RuntimeBase.Backend.Optimizations.EscapeAndLowering
 {
     internal class AnalyzeParametersAreEscaping : ResultingGlobalOptimizationPass
     {
@@ -32,7 +30,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
             CheckForChanges(finalSnapshot, originalSnapshot);
         }
 
-        private static bool ComputeEscapeTable(MethodInterpreter intermediateCode, LocalOperation[] operations, MethodInterpreter interpreter)
+        private static bool ComputeEscapeTable(MethodInterpreter intermediateCode, LocalOperation[] operations,
+            MethodInterpreter interpreter)
         {
             var argEscaping = ComputeEscapingArgList(intermediateCode.MidRepresentation, operations, Runtime);
             var escaping = ComputeArgsEscaping(operations, argEscaping);
@@ -66,7 +65,8 @@ namespace CodeRefractor.CompilerBackend.Optimizations.EscapeAndLowering
             }
         }
 
-        public static HashSet<LocalVariable> ComputeEscapingArgList(MetaMidRepresentation intermediateCode, LocalOperation[] operations, CrRuntimeLibrary crRuntime)
+        public static HashSet<LocalVariable> ComputeEscapingArgList(MetaMidRepresentation intermediateCode,
+            LocalOperation[] operations, CrRuntimeLibrary crRuntime)
         {
             var argumentList = new HashSet<LocalVariable>();
             argumentList.Clear();

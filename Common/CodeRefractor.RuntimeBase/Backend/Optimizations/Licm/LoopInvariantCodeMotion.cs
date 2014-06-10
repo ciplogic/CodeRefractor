@@ -10,7 +10,7 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
 #endregion
 
-namespace CodeRefractor.CompilerBackend.Optimizations.Licm
+namespace CodeRefractor.RuntimeBase.Backend.Optimizations.Licm
 {
     internal class LoopInvariantCodeMotion : ResultingGlobalOptimizationPass
     {

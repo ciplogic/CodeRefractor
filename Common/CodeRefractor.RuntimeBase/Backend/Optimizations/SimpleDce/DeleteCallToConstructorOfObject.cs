@@ -1,13 +1,13 @@
 ﻿#region Usings
 
-using CodeRefractor.CompilerBackend.Optimizations.Common;
+using CodeRefractor.RuntimeBase.Backend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 
 #endregion
 
-namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
+namespace CodeRefractor.RuntimeBase.Backend.Optimizations.SimpleDce
 {
     internal class DeleteCallToConstructorOfObject : ResultingInFunctionOptimizationPass
     {
@@ -26,7 +26,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
                 if (!info.IsConstructor) continue;
                 if (info.DeclaringType != typeof (object) &&
                     info.DeclaringType != interpreter.Method.DeclaringType) continue;
-                if(methodData.Interpreter.MidRepresentation.LocalOperations.Count>1)
+                if (methodData.Interpreter.MidRepresentation.LocalOperations.Count > 1)
                     continue;
                 localOps.RemoveAt(index);
                 Result = true;

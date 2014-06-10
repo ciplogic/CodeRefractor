@@ -1,7 +1,11 @@
+#region Usings
+
 using System;
 using System.Collections.Generic;
 using System.Text;
 using CodeRefractor.RuntimeBase;
+
+#endregion
 
 namespace CodeRefractor.CodeWriter.Linker
 {
@@ -9,6 +13,7 @@ namespace CodeRefractor.CodeWriter.Linker
     {
         private readonly Dictionary<string, int> _stringsDictionary = new Dictionary<string, int>();
         private readonly List<string> _table = new List<string>();
+
         public int GetStringId(string text)
         {
             int result;
@@ -19,12 +24,12 @@ namespace CodeRefractor.CodeWriter.Linker
             return result;
         }
 
-        static short[] TextData(string text)
+        private static short[] TextData(string text)
         {
             var result = new short[text.Length + 1];
             for (var i = 0; i < text.Length; i++)
             {
-                result[i] = (short)text[i];
+                result[i] = (short) text[i];
             }
             result[text.Length] = 0;
             return result;
@@ -51,7 +56,7 @@ namespace CodeRefractor.CodeWriter.Linker
 
             sb.AppendLine("} // buildStringTable");
 
-            var stringTableContent = String.Join(", "+Environment.NewLine, stringDataBuilder);
+            var stringTableContent = String.Join(", " + Environment.NewLine, stringDataBuilder);
             var length = jump == 0 ? 1 : jump;
             sb.AppendFormat("const wchar_t _stringTable[{0}] = {{", length).AppendLine();
             sb.AppendLine(jump == 0 ? "0" : stringTableContent);

@@ -1,11 +1,16 @@
-﻿using System;
+﻿#region Usings
+
+using System;
 using System.Collections.Generic;
+
+#endregion
 
 namespace CodeRefractor.RuntimeBase.MiddleEnd.GlobalTable
 {
     public class GlobalTableManager
     {
         public Dictionary<Type, GlobalFieldDefinition> GlobalConstants { get; set; }
+
         public void DefineConstant(Type parentType, string fieldName, object value)
         {
             var constDefinition = new GlobalFieldDefinition

@@ -30,7 +30,8 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         }
 
 
-        public static void HandleCall(LocalOperation operation, StringBuilder sbCode, MidRepresentationVariables vars, MethodInterpreter interpreter, CrRuntimeLibrary crRuntime)
+        public static void HandleCall(LocalOperation operation, StringBuilder sbCode, MidRepresentationVariables vars,
+            MethodInterpreter interpreter, CrRuntimeLibrary crRuntime)
         {
             var operationData = (MethodData) operation.Value;
             var sb = new StringBuilder();
@@ -48,9 +49,10 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             sbCode.Append(sb);
         }
 
-        public static void HandleCallInterface(LocalOperation operation, StringBuilder sbCode, MidRepresentationVariables vars, MethodInterpreter interpreter, CrRuntimeLibrary crRuntime)
+        public static void HandleCallInterface(LocalOperation operation, StringBuilder sbCode,
+            MidRepresentationVariables vars, MethodInterpreter interpreter, CrRuntimeLibrary crRuntime)
         {
-            var operationData = (MethodData)operation.Value;
+            var operationData = (MethodData) operation.Value;
             var sb = new StringBuilder();
             var methodInfo = operationData.Info.GetReversedMethod();
             var isVoidMethod = methodInfo.GetReturnType().IsVoid();
@@ -61,14 +63,15 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 
             sb.AppendFormat("{0}_icall", methodInfo.ClangMethodSignature());
 
-            if (WriteParametersToSb(operationData, methodInfo, sb,interpreter, crRuntime)) return;
+            if (WriteParametersToSb(operationData, methodInfo, sb, interpreter, crRuntime)) return;
 
             sbCode.Append(sb);
         }
 
-        public static void HandleCallVirtual(LocalOperation operation, StringBuilder sbCode, MidRepresentationVariables vars, MethodInterpreter interpreter, CrRuntimeLibrary crRuntime)
+        public static void HandleCallVirtual(LocalOperation operation, StringBuilder sbCode,
+            MidRepresentationVariables vars, MethodInterpreter interpreter, CrRuntimeLibrary crRuntime)
         {
-            var operationData = (MethodData)operation.Value;
+            var operationData = (MethodData) operation.Value;
             var sb = new StringBuilder();
             var methodInfo = operationData.Info.GetReversedMethod();
             var isVoidMethod = methodInfo.GetReturnType().IsVoid();
@@ -79,12 +82,13 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 
             sb.AppendFormat("{0}_vcall", methodInfo.ClangMethodSignature());
 
-            if (WriteParametersToSb(operationData, methodInfo, sb,interpreter, crRuntime)) return;
+            if (WriteParametersToSb(operationData, methodInfo, sb, interpreter, crRuntime)) return;
 
             sbCode.Append(sb);
         }
 
-        private static bool WriteParametersToSb(MethodData operationData, MethodBase methodInfo, StringBuilder sb, MethodInterpreter interpreter, CrRuntimeLibrary crRuntime)
+        private static bool WriteParametersToSb(MethodData operationData, MethodBase methodInfo, StringBuilder sb,
+            MethodInterpreter interpreter, CrRuntimeLibrary crRuntime)
         {
             var identifierValues = operationData.Parameters;
 
@@ -94,7 +98,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 var argumentsCall = String.Join(", ", identifierValues.Select(p =>
                 {
                     var computeValue = p.ComputedValue();
-                    
+
                     return computeValue;
                 }));
 
@@ -102,19 +106,20 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 return true;
             }
 
-
             #region Parameters
 
             sb.Append("(");
             var pos = 0;
-            var isFirst = true;               
-            var argumentUsages = operationData.Interpreter.AnalyzeProperties.GetUsedArguments(operationData.Interpreter.MidRepresentation.Vars.Arguments);
+            var isFirst = true;
+            var argumentUsages =
+                operationData.Interpreter.AnalyzeProperties.GetUsedArguments(
+                    operationData.Interpreter.MidRepresentation.Vars.Arguments);
 
             var argumentTypes = operationData.Info.GetMethodArgumentTypes();
-            for (int index = 0; index < identifierValues.Count; index++)
+            for (var index = 0; index < identifierValues.Count; index++)
             {
                 var value = identifierValues[index];
-                if(!argumentUsages[index])
+                if (!argumentUsages[index])
                     continue;
                 if (isFirst)
                     isFirst = false;
@@ -122,7 +127,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                     sb.Append(", ");
                 var localValue = value as LocalVariable;
                 var argumentData = argumentTypes[pos];
-                bool isEscaping = escapingData[pos];
+                var isEscaping = escapingData[pos];
                 pos++;
                 if (localValue == null)
                 {
@@ -185,7 +190,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             else
             {
                 sb.AppendFormat("{1} = {0}", methodInfo.ClangMethodSignature(),
-                                operationData.Result.Name);
+                    operationData.Result.Name);
             }
             var identifierValues = operationData.Parameters;
             var argumentsCall = String.Join(", ", identifierValues.Select(p => p.Name));

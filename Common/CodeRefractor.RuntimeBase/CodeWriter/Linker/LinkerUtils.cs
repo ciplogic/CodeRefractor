@@ -1,3 +1,5 @@
+#region Usings
+
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -7,6 +9,8 @@ using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.RuntimeBase.Runtime;
+
+#endregion
 
 namespace CodeRefractor.CodeWriter.Linker
 {
@@ -23,7 +27,7 @@ namespace CodeRefractor.CodeWriter.Linker
             if (Type.GetTypeCode(computeType.ClrType) == TypeCode.String)
             {
                 var stringTable = LinkingData.Instance.Strings;
-                var stringId = stringTable.GetStringId((string)constValue.Value);
+                var stringId = stringTable.GetStringId((string) constValue.Value);
 
                 return String.Format("_str({0})", stringId);
             }
@@ -57,7 +61,7 @@ namespace CodeRefractor.CodeWriter.Linker
                 {
                     return interpreter;
                 }
-            
+
                 return null;
             }
             return methodBase.Register();
@@ -71,13 +75,14 @@ namespace CodeRefractor.CodeWriter.Linker
             if (interpreter == null)
                 return null;
             var calledMethod = interpreter.MidRepresentation;
-            var otherMethodData = (Dictionary<int, bool>)calledMethod.GetAdditionalProperty(EscapeName);
+            var otherMethodData = (Dictionary<int, bool>) calledMethod.GetAdditionalProperty(EscapeName);
             if (otherMethodData == null)
             {
                 return null;
             }
             return otherMethodData;
         }
+
         public static bool[] BuildEscapingBools(this MethodBase method, CrRuntimeLibrary crRuntime)
         {
             var parameters = method.GetParameters();

@@ -1,9 +1,13 @@
+#region Usings
+
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.TypeInfoWriter;
+
+#endregion
 
 namespace CodeRefractor.CodeWriter.BasicOperations
 {
@@ -19,7 +23,8 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             _validVirtualMethods = CalculateValidVirtualMethods(typeTable, methodNames);
         }
 
-        public static List<VirtualMethodDescription> CalculateValidVirtualMethods(VirtualMethodTable typeTable, HashSet<string> methodNames)
+        public static List<VirtualMethodDescription> CalculateValidVirtualMethods(VirtualMethodTable typeTable,
+            HashSet<string> methodNames)
         {
             var validVirtMethods = new List<VirtualMethodDescription>();
             foreach (var virtualMethod in typeTable.VirtualMethods)
@@ -42,11 +47,11 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             sb.AppendLine("void setupTypeTable();")
                 .AppendLine();
 
-            
+
             foreach (var virtualMethod in _validVirtualMethods)
             {
                 var methodName = virtualMethod.BaseMethod.ClangMethodSignature();
-                var parametersString = GetParametersString(virtualMethod); 
+                var parametersString = GetParametersString(virtualMethod);
 
                 sb.Append("typedef ");
                 sb.Append(virtualMethod.ReturnType.ToCppMangling());
@@ -83,9 +88,9 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 {
                     var typeId = _typeTable.TypeTable.GetTypeId(implementation);
 
-                    sb.AppendFormat("case {0}:",typeId).AppendLine();
+                    sb.AppendFormat("case {0}:", typeId).AppendLine();
 
-                    var isVoid = virtualMethod.BaseMethod.ReturnType == typeof(void);
+                    var isVoid = virtualMethod.BaseMethod.ReturnType == typeof (void);
                     if (!isVoid)
                     {
                         sb.Append("return ");

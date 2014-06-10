@@ -56,7 +56,6 @@ namespace CodeRefractor.Compiler
 
 
             OptimizationLevelBase.Instance = new OptimizationLevels();
-            NativeCompilationUtils.SetCompilerOptions("gcc");
             CommandLineParse.OptimizerLevel =2;
             CallCompiler("", "");
         }
