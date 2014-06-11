@@ -13,6 +13,7 @@ using CodeRefractor.RuntimeBase.Backend.Optimizations.Jumps;
 using CodeRefractor.RuntimeBase.Backend.Optimizations.Licm;
 using CodeRefractor.RuntimeBase.Backend.Optimizations.Purity;
 using CodeRefractor.RuntimeBase.Backend.Optimizations.ReachabilityDfa;
+using CodeRefractor.RuntimeBase.Backend.Optimizations.RedundantExpressions;
 using CodeRefractor.RuntimeBase.Backend.Optimizations.SimpleDce;
 using CodeRefractor.RuntimeBase.Config;
 using CodeRefractor.RuntimeBase.Optimizations;
@@ -45,7 +46,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
         {
             return new OptimizationPass[]
             {
-                new OneAssignmentDeadStoreAssignment(), //??
+                //new OneAssignmentDeadStoreAssignment(), //??
                 //  //?? 
                           
                 // CSE
@@ -66,7 +67,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
                 new RemoveDeadStoresInBlockOptimizationPass(),
                 new OperatorPartialConstantFolding(),
                 new OperatorConstantFolding(),
-                new FoldVariablesDefinitionsOptimizationPass(),
+                //new FoldVariablesDefinitionsOptimizationPass(),
                 new PropagationVariablesOptimizationPass(),
                 new DceNewObjectOrArray(),
                 new ConstantVariableBranchOperatorPropagation(),

@@ -22,7 +22,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndProp
             var usagesDictionary = new Dictionary<LocalVariable, int>();
 
             var metaMidRepresentation = interpreter.MidRepresentation;
-            var localOperations = metaMidRepresentation.LocalOperations.ToArray();
+            var localOperations = interpreter.MidRepresentation.UseDef.GetLocalOperations();
             definitionsDictionary.Clear();
             BuildDefinitionDictionary(localOperations, metaMidRepresentation.UseDef, definitionsDictionary,
                 usagesDictionary);

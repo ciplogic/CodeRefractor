@@ -73,7 +73,12 @@ class NBodySystem
         int pi = 0;
         for (int i = 0; i < bodies.Length - 1; i++)
             for (int j = i + 1; j < bodies.Length; j++)
-                pairs[pi++] = new Pair() { bi = bodies[i], bj = bodies[j] };
+            {
+                pairs[pi] = new Pair();
+                pairs[pi].bi = bodies[i];
+                pairs[pi].bj = bodies[j];
+                pi++;
+            }
 
         double px = 0.0, py = 0.0, pz = 0.0;
         foreach (var b in bodies)

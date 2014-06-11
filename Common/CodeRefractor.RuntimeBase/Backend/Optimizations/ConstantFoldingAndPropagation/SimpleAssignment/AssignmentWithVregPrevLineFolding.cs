@@ -33,6 +33,12 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndProp
                 var destOperation = operations[index - 1];
                 var destOperationDefiniton = destOperation.GetDefinition();
                 if (destOperationDefiniton == null || !destOperationDefiniton.Equals(vregAssignment)) continue;
+                var localRight = (LocalVariable)localAssignment.Right;
+                var usagesArr = operations.GetVariableUsages(localRight);
+                if (usagesArr.Count != 1)
+                {
+                    return;
+                }
                 destOperation.SwitchUsageWithDefinition((LocalVariable) localAssignment.Right, localAssignment.AssignedTo);
                 interpreter.MidRepresentation.LocalOperations.RemoveAt(index);
                 Result = true;

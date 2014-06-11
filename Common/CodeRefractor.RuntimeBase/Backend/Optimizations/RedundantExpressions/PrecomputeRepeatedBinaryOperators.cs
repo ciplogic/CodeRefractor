@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.Analyze;
+using CodeRefractor.RuntimeBase.Backend.Optimizations.RedundantExpressions;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
@@ -36,12 +37,12 @@ namespace CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions
             return false;
         }
 
-        private static void ApplyOptimization(MethodInterpreter midRepresentation, int i, int j)
+        private static void ApplyOptimization(MethodInterpreter interpreter, int i, int j)
         {
-            var localOps = midRepresentation.MidRepresentation.LocalOperations;
+            var localOps = interpreter.MidRepresentation.LocalOperations;
             var firstOperator = localOps[i].GetBinaryOperator();
             var secondOperator = localOps[j].GetBinaryOperator();
-            var newVreg = midRepresentation.CreateCacheVariable(firstOperator.ComputedType());
+            var newVreg = interpreter.CreateCacheVariable(firstOperator.ComputedType());
             var assignLocalOperation = PrecomputeRepeatedUtils.CreateAssignLocalOperation(firstOperator.AssignedTo,
                 newVreg);
             localOps.Insert(i + 1, assignLocalOperation);
