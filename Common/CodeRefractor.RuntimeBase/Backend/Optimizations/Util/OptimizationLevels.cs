@@ -53,7 +53,6 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
                 new PrecomputeRepeatedBinaryOperators(),
                 new PrecomputeRepeatedUnaryOperators(),
                 new PrecomputeRepeatedFieldGets(),
-                new AssignmentWithVregPrevLineFolding(),
             }.ToList();
         }
 
@@ -62,6 +61,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
         {
             return new OptimizationPass[]
             {
+                new AssignmentWithVregPrevLineFolding(),
                 new DeleteAssignmentWithSelf(),
                 new RemoveDeadStoresInBlockOptimizationPass(),
                 new OperatorPartialConstantFolding(),

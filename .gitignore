@@ -65,3 +65,6 @@ bin/DebuggingApp/Release/*
 bin/DebuggingApp/DebuggingApp.sdf
 bin/DebuggingApp/DebuggingApp.vcxproj.filters
 Release/DebuggingApp.exe
+Debug/DebuggingApp.exe
+Debug/DebuggingApp.ilk
+bin/DebuggingApp/DebuggingApp.opensdf

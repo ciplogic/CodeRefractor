@@ -49,17 +49,22 @@ namespace CodeRefractor.RuntimeBase
             if (optimizationsTable.Optimize(this))
                 MetaLinkerOptimizer.ApplyOptimizations(MethodClosure.Values.ToList());
 
-            //BuildMethodClosure();
-            if (!UsedTypes.Contains(typeof (object)))
-            {
-                UsedTypes.Add(typeof (object));
-            }
+            BuildMethodClosure();
+            AddAlwaysUsedType(typeof(object));
             TypesClosureLinker.SortTypeClosure(UsedTypes, crRuntime);
 
             var typeTable = new TypeDescriptionTable(UsedTypes);
             _typeDictionary = typeTable.ExtractInformation();
 
             BuildVirtualMethodTable(typeTable, MethodClosure);
+        }
+
+        private void AddAlwaysUsedType(Type alwaysUsedType)
+        {
+            if (!UsedTypes.Contains(alwaysUsedType))
+            {
+                UsedTypes.Add(alwaysUsedType);
+            }
         }
 
         private static ProgramOptimizationsTable BuildProgramWideOptimizationsTable()
