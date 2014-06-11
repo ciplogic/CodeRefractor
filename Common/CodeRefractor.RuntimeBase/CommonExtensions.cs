@@ -209,16 +209,15 @@ namespace CodeRefractor.RuntimeBase
             }
         }
 
-        public static string ExecuteCommand(this string pathToGpp, string arguments, string pathOfCompilerTools)
+        public static string ExecuteCommand(this string pathToGpp, string arguments, string workingDirectory)
         {
-            var currentPath = Directory.GetCurrentDirectory();
             var p = new Process
             {
                 StartInfo =
                 {
                     FileName = pathToGpp,
                     Arguments = arguments,
-                    WorkingDirectory = pathOfCompilerTools,
+                    WorkingDirectory = workingDirectory,
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                     UseShellExecute = false

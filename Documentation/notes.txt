@@ -10,7 +10,7 @@ Citirea instructiunilor va face ca sa rescrie instructiunile masinii virtuale pe
 
 Apoi se vor aplica optimizari, care pot fi diferite in functie de cat de mare este secventa de instructiuni ce le citeste: o instructiune, o secventa de instructiuni fara salturi, instructiuni globale - adica ce lucreaza peste mai multe blocuri de instructiuni in intreg corpul functiei, sau optimizari peste intreaga functie.
 
-Optimizarile bazate pe blocuri: majoritatea optimizarilor din literatura sunt suportate
+Optimizarile bazate pe blocuri: majoritatea optimizarilor din literatura sunt suportate.
 
 CodeRefractor indexeaza folosirile de variabile, etichete si tipurilor de instructiuni, ce face posibil ca majoritatea optimizarilor sa fie globale, dar fara a folosi algoritmi avansati de optimizare
 
@@ -18,4 +18,4 @@ Sunt pentru referinta si cateva optimizari globale: dataflow analysis ca fiind C
 
 InterProcedural Optimizations - CodeRefractor face inline automat la proprietati simple dar este posibil (cel putin in viitor) sa faca si inlining la alte parti de cod.
 
-Doua optimizari ce sunt acceptate dar nu sunt in practica implementate in lumea .Net (dar cel putin a EA e implementata in HotSpot): calcularea puritatii functiilor ce imbunatateste multe optimizari, respectiv Escape Analysis ce elimina in multe situatii RefCounting-ul.
+Doua optimizari ce sunt acceptate dar nu sunt in practica implementate in lumea .Net (dar cel putin EA e implementata in HotSpot): calcularea puritatii functiilor ce imbunatateste multe optimizari, respectiv Escape Analysis ce elimina in multe situatii RefCounting-ul.

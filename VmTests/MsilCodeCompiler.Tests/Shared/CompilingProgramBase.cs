@@ -74,7 +74,7 @@ class C {{
             code.DeleteFile();
 
             var startCpp = Environment.TickCount;
-            var actualOutput = applicationNativeExe.ExecuteCommand();
+            var actualOutput = applicationNativeExe.ExecuteCommand(string.Empty, Directory.GetCurrentDirectory());
             var endCpp = Environment.TickCount - startCpp;
             Console.WriteLine("Time1: {0}", endCpp);
             applicationNativeExe.DeleteFile();
@@ -97,7 +97,7 @@ class C {{
             var assembly = CompileSource(code);
             Assert.IsNotNull(assembly);
             var start = Environment.TickCount;
-            expectedInput = assm.ExecuteCommand();
+            expectedInput = assm.ExecuteCommand("", Directory.GetCurrentDirectory());
             var end = Environment.TickCount - start;
             Console.WriteLine("Time1: {0}", end);
             if (optimizationPasses == null)
