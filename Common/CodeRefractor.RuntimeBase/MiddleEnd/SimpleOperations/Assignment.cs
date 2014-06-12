@@ -20,10 +20,10 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
         public object Clone()
         {
             return new Assignment
-                       {
-                           AssignedTo = (LocalVariable) AssignedTo.Clone(),
-                           Right = Right.Clone()
-                       };
+            {
+                AssignedTo = (LocalVariable) AssignedTo.Clone(),
+                Right = Right.Clone()
+            };
         }
     }
 }

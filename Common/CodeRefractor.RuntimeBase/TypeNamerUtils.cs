@@ -1,8 +1,12 @@
+#region Usings
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
+
+#endregion
 
 namespace CodeRefractor.RuntimeBase
 {
@@ -32,9 +36,7 @@ namespace CodeRefractor.RuntimeBase
             resultList.AddRange(arguments.Select(arg => arg.ParameterType));
 
             return resultList.ToArray();
-
         }
-
 
 
         public static string GetCommaSeparatedParameters(Type[] parameters)
@@ -42,12 +44,12 @@ namespace CodeRefractor.RuntimeBase
             return string.Join(",", parameters.Select(paramType => paramType.ToCppMangling()));
         }
 
-        public static string ToCppMangling(this Type type, bool handleGenerics =false)
+        public static string ToCppMangling(this Type type, bool handleGenerics = false)
         {
              var name = type.Name.Replace("<>","__");
             if (IsVoid(type)) return "void";
             var typesCount = 0;
-            if (handleGenerics  && type.IsGenericType)
+            if (handleGenerics && type.IsGenericType)
             {
                 typesCount = type.GetGenericArguments().Length;
             }
@@ -64,7 +66,7 @@ namespace CodeRefractor.RuntimeBase
             return type.ContainsGenericParameters && !type.IsGenericTypeDefinition;
         }
 
-        public static string ToCppMangling(this string s, string nameSpace = "", int genericTypeCount=0)
+        public static string ToCppMangling(this string s, string nameSpace = "", int genericTypeCount = 0)
         {
             if (String.IsNullOrEmpty(s))
                 return String.Empty;
@@ -74,16 +76,15 @@ namespace CodeRefractor.RuntimeBase
             {
                 s = s.Remove(s.IndexOf('`'));
             }
-            if ( genericTypeCount > 0)
+            if (genericTypeCount > 0)
             {
                 var typeNames = new List<string>();
                 for (var i = 1; i <= genericTypeCount; i++)
                 {
-                    typeNames.Add("T"+i);
+                    typeNames.Add("T" + i);
                 }
-                s = string.Format("{0}<{1}>", s, 
+                s = string.Format("{0}<{1}>", s,
                     String.Join(", ", typeNames));
-
             }
             var fullName = nameSpace + "_" + s;
             if (s.EndsWith("[]"))
@@ -124,7 +125,7 @@ namespace CodeRefractor.RuntimeBase
                     return String.Format("{0}* ", elementTypeCppName);
                 }
                 var typeParameters = type.GetGenericArguments();
-                if (typeParameters.Length!=0)
+                if (typeParameters.Length != 0)
                 {
                     var genericSpecializations = typeParameters.Select(
                         t => t.ToCppMangling()
@@ -134,7 +135,8 @@ namespace CodeRefractor.RuntimeBase
                     switch (isSmartPtr)
                     {
                         case EscapingMode.Smart:
-                            return String.Format(StdSharedPtr + "<{0} <{1}> >", type.ToCppMangling(), genericSpecializationString);
+                            return String.Format(StdSharedPtr + "<{0} <{1}> >", type.ToCppMangling(),
+                                genericSpecializationString);
                         case EscapingMode.Pointer:
                             return String.Format("{0} <{1}>*", type.ToCppMangling(), genericSpecializationString);
                         case EscapingMode.Stack:
@@ -153,9 +155,9 @@ namespace CodeRefractor.RuntimeBase
             }
             if (!type.IsClass || isSmartPtr != EscapingMode.Smart)
             {
-                return type.IsSubclassOf(typeof(Enum))
-                           ? "int"
-                           : type.Name.ToCppMangling(type.Namespace);
+                return type.IsSubclassOf(typeof (Enum))
+                    ? "int"
+                    : type.Name.ToCppMangling(type.Namespace);
             }
             if (type.IsByRef)
             {
@@ -164,7 +166,9 @@ namespace CodeRefractor.RuntimeBase
             }
             return String.Format(StdSharedPtr + "<{0}>", type.ToCppMangling());
         }
-        public static string ToCppName(this Type type, bool handleGenerics = true, EscapingMode isSmartPtr = EscapingMode.Smart)
+
+        public static string ToCppName(this Type type, bool handleGenerics = true,
+            EscapingMode isSmartPtr = EscapingMode.Smart)
         {
 
             if (type == null)
@@ -182,7 +186,6 @@ namespace CodeRefractor.RuntimeBase
                     case EscapingMode.Stack:
                         return String.Format("Array < {0} > ", fullTypeName);
                 }
-
             }
             if (type.IsClass || isSmartPtr != EscapingMode.Smart)
             {
@@ -208,9 +211,9 @@ namespace CodeRefractor.RuntimeBase
             }
             if (!type.IsClass || isSmartPtr != EscapingMode.Smart)
             {
-                return type.IsSubclassOf(typeof(Enum))
-                           ? "int"
-                           : type.Name.ToCppMangling(type.Namespace);
+                return type.IsSubclassOf(typeof (Enum))
+                    ? "int"
+                    : type.Name.ToCppMangling(type.Namespace);
             }
             if (type.IsByRef)
             {
@@ -218,7 +221,6 @@ namespace CodeRefractor.RuntimeBase
                 return String.Format("{0}*", elementType.ToCppMangling());
             }
             return String.Format(StdSharedPtr + "<{0}>", type.ToCppMangling());
-        
         }
 
         public static string GetTypeTemplatePrefix(this int genericTypeCount)
@@ -228,13 +230,13 @@ namespace CodeRefractor.RuntimeBase
             {
                 typeList.Add(string.Format("class T{0}", i));
             }
-            var result = string.Join(", ", typeList); 
+            var result = string.Join(", ", typeList);
             return string.Format("template <{0}> ", result);
         }
 
         public static bool IsVoid(this Type type)
         {
-            return type == typeof(void);
+            return type == typeof (void);
         }
     }
 }

@@ -34,7 +34,7 @@
 
         public const string BrZero = "brzero";
         public const string BrZeroS = "brzero.s";
-        
+
         public const string Leave = "leave";
         public const string LeaveS = "leave.s";
     }

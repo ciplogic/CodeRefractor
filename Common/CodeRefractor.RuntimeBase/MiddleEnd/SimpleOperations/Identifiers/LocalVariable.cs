@@ -14,12 +14,12 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers
         public override IdentifierValue Clone()
         {
             var result = new LocalVariable
-                             {
-                                 FixedType = FixedType,
-                                 Id = Id,
-                                 Kind = Kind,
-                                 CustomData = CustomData
-                             };
+            {
+                FixedType = FixedType,
+                Id = Id,
+                Kind = Kind,
+                CustomData = CustomData
+            };
             return result;
         }
 

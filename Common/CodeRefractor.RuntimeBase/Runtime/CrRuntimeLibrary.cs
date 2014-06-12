@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using CodeRefractor.CompilerBackend.OuputCodeWriter;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
@@ -14,12 +13,15 @@ using CodeRefractor.RuntimeBase.Shared;
 
 namespace CodeRefractor.RuntimeBase.Runtime
 {
-    public class CrRuntimeLibrary{
+    public class CrRuntimeLibrary
+    {
         public readonly Dictionary<Type, Type> MappedTypes = new Dictionary<Type, Type>();
-		public readonly Dictionary<MethodInterpreterKey, MethodInterpreter> SupportedMethods = 
-			new Dictionary<MethodInterpreterKey, MethodInterpreter>();
+
+        public readonly Dictionary<MethodInterpreterKey, MethodInterpreter> SupportedMethods =
+            new Dictionary<MethodInterpreterKey, MethodInterpreter>();
 
         public ProgramClosure Closure { get; set; }
+
         public void ScanAssembly(Assembly assembly)
         {
             foreach (var item in assembly.GetTypes())
@@ -28,19 +30,19 @@ namespace CodeRefractor.RuntimeBase.Runtime
                 if (mapTypeAttr == null) continue;
                 MappedTypes[mapTypeAttr.MappedType] = item;
             }
-			foreach (var item in MappedTypes) 
-			{
+            foreach (var item in MappedTypes)
+            {
                 ScanMethodFunctions(item.Value, item.Key);
-			}
+            }
         }
 
-		private void ScanMethodFunctions(Type item, Type mappedType)
+        private void ScanMethodFunctions(Type item, Type mappedType)
         {
-			ScanType(item, mappedType);
-			ScanTypeForCilMethods(item, mappedType);
+            ScanType(item, mappedType);
+            ScanTypeForCilMethods(item, mappedType);
         }
 
-		private void ScanTypeForCilMethods(Type item, Type mappedType)
+        private void ScanTypeForCilMethods(Type item, Type mappedType)
         {
             var methodsToScan = new List<MethodBase>();
             methodsToScan.AddRange(item.GetMethods());
@@ -51,10 +53,10 @@ namespace CodeRefractor.RuntimeBase.Runtime
                 if (methodNativeDescription == null)
                     continue;
                 var interpreter = methodInfo.Register();
-				var iKey = interpreter.ToKey (item);
-				iKey.MapTypes (MappedTypes);
-				
-				SupportedMethods [iKey] = interpreter;
+                var iKey = interpreter.ToKey(item);
+                iKey.MapTypes(MappedTypes);
+
+                SupportedMethods[iKey] = interpreter;
                 MetaLinker.Interpret(interpreter, this);
                 var dependencies = MetaLinker.ComputeDependencies(methodInfo);
                 foreach (var dependency in dependencies)
@@ -64,7 +66,7 @@ namespace CodeRefractor.RuntimeBase.Runtime
             }
         }
 
-		private void ScanCppMethod(MethodBase method, Type mappedType)
+        private void ScanCppMethod(MethodBase method, Type mappedType)
         {
             var methodNativeDescription = method.GetCustomAttribute<CppMethodBodyAttribute>();
             if (methodNativeDescription == null) return;
@@ -78,9 +80,9 @@ namespace CodeRefractor.RuntimeBase.Runtime
             var pureAttribute = method.GetCustomAttribute<PureMethodAttribute>();
             if (pureAttribute != null)
                 interpreter.AnalyzeProperties.IsPure = true;
-		    var methodInterpreterKey = interpreter.ToKey();
-		    methodInterpreterKey.DeclaringType = mappedType;
-		    SupportedMethods[methodInterpreterKey] = interpreter;
+            var methodInterpreterKey = interpreter.ToKey();
+            methodInterpreterKey.DeclaringType = mappedType;
+            SupportedMethods[methodInterpreterKey] = interpreter;
         }
 
         public Type GetReverseType(Type type)
@@ -107,11 +109,11 @@ namespace CodeRefractor.RuntimeBase.Runtime
             return result;
         }
 
-		private void ScanType(Type item, Type mappedType)
+        private void ScanType(Type item, Type mappedType)
         {
             var methods = item.GetMethods();
             foreach (var method in methods)
-				ScanCppMethod(method, mappedType);
+                ScanCppMethod(method, mappedType);
         }
 
         public MethodBase GetMappedMethodInfo(MethodBase methodInfo)
@@ -127,7 +129,6 @@ namespace CodeRefractor.RuntimeBase.Runtime
             var mappedDeclaredType = GetMappedType(constructorInfo.DeclaringType);
             var arguments = constructorInfo.GetParameters().Select(par => par.ParameterType).ToArray();
             return mappedDeclaredType.GetConstructor(arguments);
-            
         }
 
         public bool ResolveInterpreter(MethodInterpreterKey interpreter, ref MethodInterpreter finalInterpreter)

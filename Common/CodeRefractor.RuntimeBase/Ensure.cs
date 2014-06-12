@@ -1,4 +1,8 @@
+#region Usings
+
 using System;
+
+#endregion
 
 namespace CodeRefractor.RuntimeBase
 {
@@ -9,9 +13,10 @@ namespace CodeRefractor.RuntimeBase
             if (!expected.Equals(actual))
                 throw new InvalidOperationException(message);
         }
+
         public static void IsTrue(bool value, string message)
         {
-            if(!value)
+            if (!value)
                 throw new InvalidOperationException(message);
         }
     }

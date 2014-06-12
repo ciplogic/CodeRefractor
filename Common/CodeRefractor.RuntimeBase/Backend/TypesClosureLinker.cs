@@ -1,19 +1,23 @@
+#region Usings
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using CodeRefractor.CompilerBackend.OuputCodeWriter;
 using CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.Backend.ComputeClosure;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.Runtime;
 
+#endregion
+
 namespace CodeRefractor.RuntimeBase.Backend
 {
     public static class TypesClosureLinker
     {
-        public static ClosureResult BuildClosureForEntry(MethodInterpreter entryInterpreter, ProgramClosure programClosure)
+        public static ClosureResult BuildClosureForEntry(MethodInterpreter entryInterpreter,
+            ProgramClosure programClosure)
         {
             var result = new ClosureResult();
             var methodInterpreters = new Dictionary<MethodInterpreterKey, MethodInterpreter>();
@@ -37,7 +41,9 @@ namespace CodeRefractor.RuntimeBase.Backend
                 var foundMethodCount = methodInterpreters.Count;
                 dependencies = methodInterpreters.Values.ToList();
                 bool foundNewMethods;
-                result.UsedTypes = new HashSet<Type>(GetTypesClosure(dependencies, out foundNewMethods, programClosure, programClosure.Runtime));
+                result.UsedTypes =
+                    new HashSet<Type>(GetTypesClosure(dependencies, out foundNewMethods, programClosure,
+                        programClosure.Runtime));
                 foreach (var dependency in dependencies)
                 {
                     methodInterpreters[dependency.ToKey()] = dependency;
@@ -46,14 +52,15 @@ namespace CodeRefractor.RuntimeBase.Backend
                 {
                     interpreter.Process(programClosure.Runtime);
                 }
-                
+
                 dependencies = methodInterpreters.Values.ToList().GetMultiMethodsClosure(programClosure.Runtime);
                 canContinue = foundMethodCount != dependencies.Count;
             }
             return result;
         }
 
-        public static HashSet<Type> GetTypesClosure(List<MethodInterpreter> methodList, out bool foundNewMethods, ProgramClosure programClosure, CrRuntimeLibrary crRuntime)
+        public static HashSet<Type> GetTypesClosure(List<MethodInterpreter> methodList, out bool foundNewMethods,
+            ProgramClosure programClosure, CrRuntimeLibrary crRuntime)
         {
             var typesSet = ScanMethodParameters(methodList, crRuntime);
 
@@ -79,12 +86,12 @@ namespace CodeRefractor.RuntimeBase.Backend
                     methodList.Add(implInterpreter);
                     foundNewMethods = true;
                 }
-
             }
             return resultTypes;
         }
 
-        private static HashSet<Type> BuildScannedDictionaryFromTypesAndInstructions(HashSet<Type> typesSet, CrRuntimeLibrary crRuntime)
+        private static HashSet<Type> BuildScannedDictionaryFromTypesAndInstructions(HashSet<Type> typesSet,
+            CrRuntimeLibrary crRuntime)
         {
             bool isAdded;
             do
@@ -110,7 +117,7 @@ namespace CodeRefractor.RuntimeBase.Backend
                         var fieldType = fieldInfo.FieldType;
                         if (fieldType.IsInterface)
                             continue;
-                        if (fieldType.IsSubclassOf(typeof(Array)))
+                        if (fieldType.IsSubclassOf(typeof (Array)))
                             fieldType = fieldType.GetElementType();
                         if (fieldType.IsPointer || fieldType.IsByRef)
                             fieldType = fieldType.GetElementType();
@@ -129,12 +136,12 @@ namespace CodeRefractor.RuntimeBase.Backend
                 IsRefClassType(t) && !t.IsInterface).ToList();
             foreach (var type in typesClosure)
             {
-                UsedTypeList.Set(type,crRuntime);
+                UsedTypeList.Set(type, crRuntime);
             }
 
             typesSet.Remove(typeof (void));
             typesSet.Remove(typeof (IntPtr));
-            typesSet.Remove(typeof(Array));
+            typesSet.Remove(typeof (Array));
 
             typesSet.RemoveWhere(t => t.IsInterface);
             typesSet.RemoveWhere(t => t.IsPrimitive);
@@ -178,7 +185,7 @@ namespace CodeRefractor.RuntimeBase.Backend
                 {
                     var parameterType = parameter.ParameterType;
 
-                    if (parameterType.IsSubclassOf(typeof(Array)))
+                    if (parameterType.IsSubclassOf(typeof (Array)))
                         continue;
                     if (parameterType.IsByRef)
                         parameterType = parameterType.GetElementType();

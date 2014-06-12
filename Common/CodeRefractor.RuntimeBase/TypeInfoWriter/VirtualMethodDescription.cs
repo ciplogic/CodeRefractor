@@ -1,7 +1,11 @@
-﻿using System;
+﻿#region Usings
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+
+#endregion
 
 namespace CodeRefractor.RuntimeBase.TypeInfoWriter
 {
@@ -48,7 +52,7 @@ namespace CodeRefractor.RuntimeBase.TypeInfoWriter
             if (arguments.Length != Parameters.Length)
                 return false;
 
-            for (int index = 0; index < arguments.Length; index++)
+            for (var index = 0; index < arguments.Length; index++)
             {
                 var argument = arguments[index];
                 var parameter = Parameters[index];
@@ -59,6 +63,5 @@ namespace CodeRefractor.RuntimeBase.TypeInfoWriter
                 UsingImplementations.Add(declaringType);
             return true;
         }
-
     }
 }

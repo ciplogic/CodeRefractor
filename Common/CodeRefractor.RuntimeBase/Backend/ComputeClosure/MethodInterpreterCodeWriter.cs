@@ -16,7 +16,8 @@ namespace CodeRefractor.RuntimeBase.Backend.ComputeClosure
 {
     public static class MethodInterpreterCodeWriter
     {
-        public static string WriteMethodCode(MethodInterpreter interpreter, TypeDescriptionTable typeTable, CrRuntimeLibrary crRuntime)
+        public static string WriteMethodCode(MethodInterpreter interpreter, TypeDescriptionTable typeTable,
+            CrRuntimeLibrary crRuntime)
         {
             return CppMethodCodeWriter.WriteCode(interpreter, typeTable, crRuntime);
         }
@@ -54,7 +55,6 @@ namespace CodeRefractor.RuntimeBase.Backend.ComputeClosure
             var didOptimize = true;
             if (interpreter.Method.Name == "pollEvents")
             {
-                
             }
             while (didOptimize)
             {

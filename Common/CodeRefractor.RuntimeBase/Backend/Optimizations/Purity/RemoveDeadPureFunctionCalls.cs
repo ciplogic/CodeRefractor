@@ -2,8 +2,8 @@
 
 using System.Collections.Generic;
 using CodeRefractor.CodeWriter.Linker;
-using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.Analyze;
+using CodeRefractor.RuntimeBase.Backend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
@@ -28,7 +28,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
                 var interpreter = methodData.GetInterpreter(Runtime);
                 if (interpreter == null)
                     continue;
-                if(methodData.Result!=null)
+                if (methodData.Result != null)
                     continue;
                 var properties = interpreter.AnalyzeProperties;
                 if (properties.IsReadOnly || properties.IsPure)

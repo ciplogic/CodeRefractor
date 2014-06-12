@@ -1,14 +1,14 @@
 #region Usings
 
-using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.Analyze;
+using CodeRefractor.RuntimeBase.Backend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
 #endregion
 
-namespace CodeRefractor.CompilerBackend.Optimizations.SimpleDce
+namespace CodeRefractor.RuntimeBase.Backend.Optimizations.SimpleDce
 {
     /// <summary>
     ///     This optimization in case of two assignments of the form:

@@ -1,9 +1,12 @@
-﻿using CodeRefractor.CompilerBackend.OuputCodeWriter;
+﻿#region Usings
+
 using CodeRefractor.RuntimeBase;
+
+#endregion
 
 namespace CodeRefractor.CompilerBackend.ProgramWideOptimizations
 {
-    public abstract class ResultingProgramOptimizationBase:ProgramOptimizationBase
+    public abstract class ResultingProgramOptimizationBase : ProgramOptimizationBase
     {
         public override bool Optimize(ProgramClosure closure)
         {
@@ -19,7 +22,7 @@ namespace CodeRefractor.CompilerBackend.ProgramWideOptimizations
         }
 
         protected abstract void DoOptimize(ProgramClosure closure);
-        
+
         public bool Result { get; protected set; }
     }
 }

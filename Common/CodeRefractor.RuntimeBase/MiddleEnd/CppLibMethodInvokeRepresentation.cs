@@ -5,6 +5,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         RuntimeLibrary,
         StaticLibrary,
     }
+
     public class CppRepresentation
     {
         public CppKinds Kind { get; set; }
@@ -14,6 +15,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         public string Source { get; set; }
         public string Header { get; set; }
     }
+
     public class CppLibMethodInvokeRepresentation
     {
         public string LibraryName { get; set; }

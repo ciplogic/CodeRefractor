@@ -20,7 +20,8 @@ namespace CodeRefractor.RuntimeBase.CodeWriter.BasicOperations
 {
     public static class CppMethodCodeWriter
     {
-        public static string WriteCode(MethodInterpreter interpreter, TypeDescriptionTable typeTable, CrRuntimeLibrary crRuntime)
+        public static string WriteCode(MethodInterpreter interpreter, TypeDescriptionTable typeTable,
+            CrRuntimeLibrary crRuntime)
         {
             var operations = interpreter.MidRepresentation.LocalOperations;
             var headerSb = new StringBuilder();
@@ -36,12 +37,14 @@ namespace CodeRefractor.RuntimeBase.CodeWriter.BasicOperations
             return finalSb.ToString();
         }
 
-        private static StringBuilder ComputeBodySb(List<LocalOperation> operations, MidRepresentationVariables vars, TypeDescriptionTable typeTable, MethodInterpreter interpreter, CrRuntimeLibrary crRuntime)
+        private static StringBuilder ComputeBodySb(List<LocalOperation> operations, MidRepresentationVariables vars,
+            TypeDescriptionTable typeTable, MethodInterpreter interpreter, CrRuntimeLibrary crRuntime)
         {
             var bodySb = new StringBuilder();
             foreach (var operation in operations)
             {
-                if (CppHandleOperators.HandleAssignmentOperations(vars, bodySb, operation, operation.Kind, typeTable, interpreter))
+                if (CppHandleOperators.HandleAssignmentOperations(vars, bodySb, operation, operation.Kind, typeTable,
+                    interpreter))
                 {
                     bodySb.AppendLine();
                     continue;
@@ -49,7 +52,7 @@ namespace CodeRefractor.RuntimeBase.CodeWriter.BasicOperations
                 switch (operation.Kind)
                 {
                     case OperationKind.Label:
-                        WriteLabel(bodySb, (int)operation.Value);
+                        WriteLabel(bodySb, (int) operation.Value);
                         break;
                     case OperationKind.AlwaysBranch:
                         HandleAlwaysBranchOperator(operation, bodySb);
@@ -58,7 +61,7 @@ namespace CodeRefractor.RuntimeBase.CodeWriter.BasicOperations
                         CppHandleBranches.HandleBranchOperator(operation, bodySb);
                         break;
                     case OperationKind.Call:
-                        CppHandleCalls.HandleCall(operation, bodySb, vars,interpreter, crRuntime);
+                        CppHandleCalls.HandleCall(operation, bodySb, vars, interpreter, crRuntime);
                         break;
                     case OperationKind.CallInterface:
                         CppHandleCalls.HandleCallInterface(operation, bodySb, vars, interpreter, crRuntime);
@@ -106,8 +109,8 @@ namespace CodeRefractor.RuntimeBase.CodeWriter.BasicOperations
 
         private static void HandleSwitch(LocalOperation operation, StringBuilder bodySb)
         {
-            var assign = (Assignment)operation.Value;
-            var instructionTable = (int[])((ConstValue)assign.Right).Value;
+            var assign = (Assignment) operation.Value;
+            var instructionTable = (int[]) ((ConstValue) assign.Right).Value;
 
             var instructionLabelIds = instructionTable;
             bodySb.AppendFormat("switch({0}) {{", assign.AssignedTo.Name);
@@ -124,36 +127,37 @@ namespace CodeRefractor.RuntimeBase.CodeWriter.BasicOperations
 
         private static void HandleCopyArrayInitializer(LocalOperation operation, StringBuilder sb)
         {
-            var assignment = (Assignment)operation.Value;
+            var assignment = (Assignment) operation.Value;
             var left = assignment.AssignedTo;
-            var right = (ConstByteArrayValue)assignment.Right;
-            var rightArrayData = (ConstByteArrayData)right.Value;
+            var right = (ConstByteArrayValue) assignment.Right;
+            var rightArrayData = (ConstByteArrayData) right.Value;
             var rightArray = rightArrayData.Data;
             sb.AppendFormat("{0} = std::make_shared<Array<System::Byte> >(" +
                             "{1}, RuntimeHelpers_GetBytes({2}) ); ",
-                            left.Name,
-                            rightArray.Length,
-                            right.Id);
+                left.Name,
+                rightArray.Length,
+                right.Id);
         }
 
-        private static StringBuilder ComputeVariableSb(MetaMidRepresentation midRepresentation, MethodInterpreter interpreter)
+        private static StringBuilder ComputeVariableSb(MetaMidRepresentation midRepresentation,
+            MethodInterpreter interpreter)
         {
             var variablesSb = new StringBuilder();
             var vars = midRepresentation.Vars;
             foreach (var variableInfo in vars.LocalVars)
             {
-                AddVariableContent(variablesSb, "{0} local_{1};", variableInfo, vars,interpreter);
+                AddVariableContent(variablesSb, "{0} local_{1};", variableInfo, vars, interpreter);
             }
             foreach (var localVariable in vars.VirtRegs)
             {
-                AddVariableContent(variablesSb, "{0} vreg_{1};", localVariable, vars,interpreter);
+                AddVariableContent(variablesSb, "{0} vreg_{1};", localVariable, vars, interpreter);
             }
             return variablesSb;
         }
 
-        static string ComputeCommaSeparatedParameterTypes(LocalVariable localVariable)
+        private static string ComputeCommaSeparatedParameterTypes(LocalVariable localVariable)
         {
-            var methodInfo = (MethodInfo)localVariable.CustomData;
+            var methodInfo = (MethodInfo) localVariable.CustomData;
 
             var parameters = methodInfo.GetMethodArgumentTypes().ToArray();
 
@@ -161,12 +165,13 @@ namespace CodeRefractor.RuntimeBase.CodeWriter.BasicOperations
             return parametersFormat;
         }
 
-        private static void AddVariableContent(StringBuilder variablesSb, string format, LocalVariable localVariable, MidRepresentationVariables vars, MethodInterpreter interpreter)
+        private static void AddVariableContent(StringBuilder variablesSb, string format, LocalVariable localVariable,
+            MidRepresentationVariables vars, MethodInterpreter interpreter)
         {
             var localVariableData = interpreter.AnalyzeProperties.GetVariableData(localVariable);
             if (localVariableData == EscapingMode.Stack)
                 return;
-            if (localVariable.ComputedType().ClrType.IsSubclassOf(typeof(MethodInfo)))
+            if (localVariable.ComputedType().ClrType.IsSubclassOf(typeof (MethodInfo)))
             {
                 variablesSb
                     .AppendFormat("void (*{0})({1});",
@@ -186,13 +191,13 @@ namespace CodeRefractor.RuntimeBase.CodeWriter.BasicOperations
             }
             variablesSb
                 .AppendFormat(format, localVariable.ComputedType()
-                .ClrType.ToDeclaredVariableType(true, localVariableData), localVariable.Id)
+                    .ClrType.ToDeclaredVariableType(true, localVariableData), localVariable.Id)
                 .AppendLine();
         }
 
         private static void HandleAlwaysBranchOperator(LocalOperation operation, StringBuilder sb)
         {
-            sb.AppendFormat("goto label_{0};", ((int)operation.Value).ToHex());
+            sb.AppendFormat("goto label_{0};", ((int) operation.Value).ToHex());
         }
 
 

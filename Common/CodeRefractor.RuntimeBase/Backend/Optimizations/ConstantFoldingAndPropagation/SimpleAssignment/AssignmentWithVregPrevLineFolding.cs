@@ -1,7 +1,7 @@
 #region Usings
 
-using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.Analyze;
+using CodeRefractor.RuntimeBase.Backend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
@@ -9,40 +9,39 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
 
 #endregion
 
-namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagation.SimpleAssignment
+namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndPropagation.SimpleAssignment
 {
     public class AssignmentWithVregPrevLineFolding : ResultingInFunctionOptimizationPass
     {
         public override void OptimizeOperations(MethodInterpreter interpreter)
         {
-            var operations = interpreter.MidRepresentation.LocalOperations;
+            var useDef = interpreter.MidRepresentation.UseDef;
+            var operations = useDef.GetLocalOperations();
+            var assigns = useDef.GetOperationsOfKind(OperationKind.Assignment);
 
-            for (var index = operations.Count - 1; index >= 1; index--)
+            foreach (var index in assigns)
             {
+                if(index==0)
+                    return;
                 var localOperation = operations[index];
-                if (localOperation.Kind != OperationKind.Assignment)
-                    continue;
 
-                var assignment = localOperation.GetAssignment();
-                var vregAssignment = assignment.Right as LocalVariable;
+                var localAssignment = localOperation.GetAssignment();
+                var vregAssignment = localAssignment.Right as LocalVariable;
 
                 if (vregAssignment == null || vregAssignment.Kind != VariableKind.Vreg) continue;
 
                 var destOperation = operations[index - 1];
                 var destOperationDefiniton = destOperation.GetDefinition();
                 if (destOperationDefiniton == null || !destOperationDefiniton.Equals(vregAssignment)) continue;
-                switch (destOperation.Kind)
+                var localRight = (LocalVariable)localAssignment.Right;
+                var usagesArr = operations.GetVariableUsages(localRight);
+                if (usagesArr.Count != 1)
                 {
-                    case OperationKind.UnaryOperator:
-                    case OperationKind.BinaryOperator:
-                        var operatorData = (OperatorBase) destOperation.Value;
-                        operatorData.AssignedTo = assignment.AssignedTo;
-                        break;
-                    default:
-                        continue;
+                    return;
                 }
+                destOperation.SwitchUsageWithDefinition((LocalVariable) localAssignment.Right, localAssignment.AssignedTo);
+                interpreter.MidRepresentation.LocalOperations.RemoveAt(index);
                 Result = true;
-                operations.RemoveAt(index);
                 return;
             }
         }

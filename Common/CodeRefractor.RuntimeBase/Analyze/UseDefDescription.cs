@@ -1,14 +1,18 @@
+#region Usings
+
 using System.Collections.Generic;
 using System.Linq;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
+#endregion
+
 namespace CodeRefractor.RuntimeBase.Analyze
 {
     public class UseDefDescription
     {
-        private volatile LocalVariable[][] _usages = { };
-        private volatile LocalVariable[] _definitions = { };
+        private volatile LocalVariable[][] _usages = {};
+        private volatile LocalVariable[] _definitions = {};
 
         private Dictionary<int, int> _labelTable;
         private readonly Dictionary<OperationKind, int[]> _instructionMix = new Dictionary<OperationKind, int[]>();
@@ -62,7 +66,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
         private Dictionary<OperationKind, List<int>> BuildInstructionMix(LocalOperation[] operations)
         {
             var instructionMix = new Dictionary<OperationKind, List<int>>();
-            for (int index = 0; index < operations.Length; index++)
+            for (var index = 0; index < operations.Length; index++)
             {
                 var operation = operations[index];
                 var operationUsages = operation.GetUsages();
@@ -85,7 +89,6 @@ namespace CodeRefractor.RuntimeBase.Analyze
             var usages = _usages[i];
             if (usages == null)
             {
-
             }
             return usages;
         }

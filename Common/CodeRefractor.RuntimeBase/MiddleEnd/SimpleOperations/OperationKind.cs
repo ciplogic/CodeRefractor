@@ -41,6 +41,5 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 
 
         Comment,
-
     }
 }

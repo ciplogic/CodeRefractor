@@ -1,12 +1,12 @@
 #region Usings
 
-using CodeRefractor.CompilerBackend.Optimizations.Common;
+using CodeRefractor.RuntimeBase.Backend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
 #endregion
 
-namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagation
+namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndPropagation
 {
     public abstract class ConstantVariablePropagationBase : ResultingInFunctionOptimizationPass
     {

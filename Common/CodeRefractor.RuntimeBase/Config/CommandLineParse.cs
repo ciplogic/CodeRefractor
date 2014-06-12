@@ -108,8 +108,10 @@ namespace CodeRefractor.RuntimeBase.Config
         public string ApplicationInputAssembly = "SimpleAdditions.exe";
         public string ApplicationNativeExe = string.Empty;
         public static List<OptimizationPass> OptimizationPasses;
-        public static Dictionary<OptimizationKind, List<OptimizationPass> >SortedOptimizations 
+
+        public static Dictionary<OptimizationKind, List<OptimizationPass>> SortedOptimizations
             = new Dictionary<OptimizationKind, List<OptimizationPass>>();
+
         private static int _optimizerLevel;
 
         public static int OptimizerLevel
@@ -137,7 +139,7 @@ namespace CodeRefractor.RuntimeBase.Config
             foreach (var optimizationPass in OptimizationPasses)
             {
                 List<OptimizationPass> list;
-                if(!SortedOptimizations.TryGetValue(optimizationPass.Kind, out list))
+                if (!SortedOptimizations.TryGetValue(optimizationPass.Kind, out list))
                 {
                     list = new List<OptimizationPass>();
                     SortedOptimizations[optimizationPass.Kind] = list;

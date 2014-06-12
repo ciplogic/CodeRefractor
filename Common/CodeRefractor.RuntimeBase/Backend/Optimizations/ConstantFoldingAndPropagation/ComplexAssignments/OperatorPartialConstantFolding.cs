@@ -1,7 +1,7 @@
 #region Usings
 
 using System;
-using CodeRefractor.CompilerBackend.Optimizations.Common;
+using CodeRefractor.RuntimeBase.Backend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
@@ -10,7 +10,7 @@ using CodeRefractor.RuntimeBase.Shared;
 
 #endregion
 
-namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagation.ComplexAssignments
+namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndPropagation.ComplexAssignments
 {
     /// <summary>
     ///     This class reduces operators that are operated with simple constants to an equivalent assignment: a = b*0 => a = 0

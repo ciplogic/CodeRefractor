@@ -1,4 +1,6 @@
-﻿using System;
+﻿#region Usings
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -6,15 +8,17 @@ using System.Text;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
+#endregion
+
 namespace CodeRefractor.RuntimeBase.TypeInfoWriter
 {
     public class TypeDescriptionTable : IComparer<Type>
     {
         private readonly List<Type> _typeClosure;
 
-        readonly Dictionary<Type, HashSet<Type>> _dictionary = new Dictionary<Type, HashSet<Type>>();
+        private readonly Dictionary<Type, HashSet<Type>> _dictionary = new Dictionary<Type, HashSet<Type>>();
 
-        readonly Dictionary<Type, int> _result = new Dictionary<Type, int>(); 
+        private readonly Dictionary<Type, int> _result = new Dictionary<Type, int>();
 
         public TypeDescriptionTable(List<Type> typeClosure)
         {
@@ -53,7 +57,6 @@ namespace CodeRefractor.RuntimeBase.TypeInfoWriter
             foreach (var type in _typeClosure)
             {
                 _result[type] = index++;
-
             }
             return _result;
         }
@@ -78,11 +81,11 @@ namespace CodeRefractor.RuntimeBase.TypeInfoWriter
         public void SetIdOfInstance(StringBuilder sb, LocalVariable variable, Type type, bool isStack)
         {
             int typeId;
-            if(!_result.TryGetValue(type, out typeId))
+            if (!_result.TryGetValue(type, out typeId))
                 throw new InvalidDataException(
                     string.Format(
-                    "Type id for type: '{0}' is not defined ", type.ToCppMangling(true)
-                    ));
+                        "Type id for type: '{0}' is not defined ", type.ToCppMangling(true)
+                        ));
             if (isStack)
             {
                 sb.AppendFormat("{0}._typeId = {1};", variable.Name, typeId);

@@ -2,15 +2,15 @@
 
 using System;
 using System.Collections.Generic;
-using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.Analyze;
+using CodeRefractor.RuntimeBase.Backend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
 #endregion
 
-namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagation.SimpleAssignment
+namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndPropagation.SimpleAssignment
 {
     public class AssignmentVregWithConstNextLineFolding : ResultingInFunctionOptimizationPass
     {
@@ -29,9 +29,10 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
 
         public override void OptimizeOperations(MethodInterpreter interpreter)
         {
-            var operations = interpreter.MidRepresentation.LocalOperations;
+            var useDef = interpreter.MidRepresentation.UseDef;
+            var operations = useDef.GetLocalOperations();
             var toFix = new List<ToFixAssignment>();
-            for (var index = 0; index < operations.Count - 1; index++)
+            for (var index = 0; index < operations.Length - 1; index++)
             {
                 var localOperation = operations[index];
                 if (localOperation.Kind != OperationKind.Assignment)

@@ -1,5 +1,9 @@
+#region Usings
+
 using System;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
+
+#endregion
 
 namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 {
@@ -10,7 +14,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 
         public StaticFieldSetter()
         {
-            this.Id = -1;
+            Id = -1;
         }
     }
 }

@@ -1,5 +1,9 @@
-﻿using System.Collections.Generic;
+﻿#region Usings
+
+using System.Collections.Generic;
 using CodeRefractor.CompilerBackend.ProgramWideOptimizations;
+
+#endregion
 
 namespace CodeRefractor.RuntimeBase.Backend.ProgramWideOptimizations
 {
@@ -17,7 +21,7 @@ namespace CodeRefractor.RuntimeBase.Backend.ProgramWideOptimizations
             var result = false;
             foreach (var optimization in Optimizations)
             {
-                result|=optimization.Optimize(program);
+                result |= optimization.Optimize(program);
             }
             return result;
         }

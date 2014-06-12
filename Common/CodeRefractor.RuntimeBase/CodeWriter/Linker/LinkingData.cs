@@ -1,5 +1,9 @@
-﻿using System.Collections.Generic;
+﻿#region Usings
+
+using System.Collections.Generic;
 using CodeRefractor.CodeWriter.Platform;
+
+#endregion
 
 namespace CodeRefractor.CodeWriter.Linker
 {
@@ -8,13 +12,19 @@ namespace CodeRefractor.CodeWriter.Linker
         public static readonly List<PlatformInvokeDllImports> Libraries = new List<PlatformInvokeDllImports>();
         public static int LibraryMethodCount;
 
-        public StringTable Strings =new StringTable();
+        public StringTable Strings = new StringTable();
 
         #region Singleton instance
-        static readonly LinkingData StaticInstance = new LinkingData();
-        public static LinkingData Instance {get { return StaticInstance; }}
+
+        private static readonly LinkingData StaticInstance = new LinkingData();
+
+        public static LinkingData Instance
+        {
+            get { return StaticInstance; }
+        }
 
         public static readonly HashSet<string> Includes = new HashSet<string>();
+
         #endregion
 
         public static bool SetInclude(string include)

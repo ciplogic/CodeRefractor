@@ -1,7 +1,11 @@
-﻿using System.Collections.Generic;
+﻿#region Usings
+
+using System.Collections.Generic;
 using System.Reflection;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
+
+#endregion
 
 namespace CodeRefractor.RuntimeBase.TypeInfoWriter
 {
@@ -22,29 +26,29 @@ namespace CodeRefractor.RuntimeBase.TypeInfoWriter
 
         public void RegisterMethod(MethodInfo method, Dictionary<MethodInterpreterKey, MethodInterpreter> methodClosure)
         {
-            if(!method.IsVirtual || method.IsAbstract)
+            if (!method.IsVirtual || method.IsAbstract)
                 return;
             foreach (var virtualMethod in VirtualMethods)
             {
                 var matchFound = virtualMethod.MethodMatches(method);
-                if(matchFound)
+                if (matchFound)
                     return;
             }
             var isInClosure = false;
             foreach (var interpreter in methodClosure)
             {
                 var key = interpreter.Key;
-                if(key.Interpreter.Kind!=MethodKind.Default)
+                if (key.Interpreter.Kind != MethodKind.Default)
                     continue;
                 var methodInKey = key.Interpreter.Method;
-                if(methodInKey.Name!=method.Name)
+                if (methodInKey.Name != method.Name)
                     continue;
                 var keyParameterInfos = methodInKey.GetParameters();
                 var parameterInfos = method.GetParameters();
-                if(keyParameterInfos.Length !=parameterInfos.Length)
+                if (keyParameterInfos.Length != parameterInfos.Length)
                     continue;
                 var parameterMatch = true;
-                for (int index = 0; index < keyParameterInfos.Length; index++)
+                for (var index = 0; index < keyParameterInfos.Length; index++)
                 {
                     var keyParameterInfo = keyParameterInfos[index];
                     var parameterInfo = parameterInfos[index];
@@ -54,11 +58,11 @@ namespace CodeRefractor.RuntimeBase.TypeInfoWriter
                         break;
                     }
                 }
-                if(!parameterMatch)
+                if (!parameterMatch)
                     continue;
                 isInClosure = true;
             }
-            if(!isInClosure)
+            if (!isInClosure)
                 return;
             var declaringType = method.GetBaseDefinition().DeclaringType;
             var virtMethod = new VirtualMethodDescription(method, declaringType);

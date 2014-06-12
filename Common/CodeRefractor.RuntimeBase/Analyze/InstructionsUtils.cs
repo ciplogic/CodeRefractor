@@ -14,6 +14,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
         {
             return value.ToString("X");
         }
+
         public static bool Contains<T>(this T[] items, T value)
         {
             foreach (var item in items)
@@ -30,9 +31,8 @@ namespace CodeRefractor.RuntimeBase.Analyze
             foreach (var i in labelOperations)
             {
                 var operation = operations[i];
-                var jumpTo = (int)operation.Value;
+                var jumpTo = (int) operation.Value;
                 labelTable[jumpTo] = i;
-
             }
             return labelTable;
         }
@@ -44,7 +44,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
         }
 
         public static void DeleteInstructions(this MetaMidRepresentation intermediateCode,
-                                              IEnumerable<int> instructionsToBeDeleted)
+            IEnumerable<int> instructionsToBeDeleted)
         {
             var pos = 0;
             var liveOperations = new List<LocalOperation>();

@@ -1,5 +1,9 @@
+#region Usings
+
 using System;
 using CodeRefractor.RuntimeBase.Analyze;
+
+#endregion
 
 namespace CodeRefractor.RuntimeBase.Runtime
 {
@@ -8,7 +12,7 @@ namespace CodeRefractor.RuntimeBase.Runtime
         public static Type GetReversedType(this Type type, CrRuntimeLibrary crRuntime)
         {
             Type result;
-            if (crRuntime.MappedTypes.TryGetValue(type, out result)) 
+            if (crRuntime.MappedTypes.TryGetValue(type, out result))
                 return result;
             var newType = type.ResolveTypeByResolvers();
             if (newType != type)

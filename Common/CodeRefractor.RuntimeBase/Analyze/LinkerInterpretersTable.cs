@@ -1,8 +1,12 @@
-﻿using System;
+﻿#region Usings
+
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using CodeRefractor.RuntimeBase.MiddleEnd;
+
+#endregion
 
 namespace CodeRefractor.RuntimeBase.Analyze
 {
@@ -13,14 +17,14 @@ namespace CodeRefractor.RuntimeBase.Analyze
             var retType = methodBase.GetReturnType().ToCppName(true);
 
             var genericTypeCount = methodBase.DeclaringType.GetGenericArguments().Length;
-            
+
             var sb = new StringBuilder();
             if (genericTypeCount > 0)
             {
                 sb.AppendLine(genericTypeCount.GetTypeTemplatePrefix());
             }
-                
-                var arguments = methodBase.GetArgumentsAsText();
+
+            var arguments = methodBase.GetArgumentsAsText();
 
             sb.AppendFormat("{0} {1}({2})",
                 retType, methodBase.ClangMethodSignature(), arguments);
@@ -46,11 +50,13 @@ namespace CodeRefractor.RuntimeBase.Analyze
             return arguments;
         }
 
-        
+
         public static readonly Dictionary<string, MethodInterpreter> Methods =
             new Dictionary<string, MethodInterpreter>();
+
         public static readonly Dictionary<string, MethodBase> RuntimeMethods =
             new Dictionary<string, MethodBase>();
+
         public static void Clear()
         {
             Methods.Clear();

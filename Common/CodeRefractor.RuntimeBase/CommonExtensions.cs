@@ -12,7 +12,6 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.RuntimeBase.Runtime;
 using CodeRefractor.RuntimeBase.Shared;
 
@@ -34,7 +33,7 @@ namespace CodeRefractor.RuntimeBase
             return fullName;
         }
 
-        public static void AddRange<T>( this HashSet<T> collection, IEnumerable<T> toAdd )
+        public static void AddRange<T>(this HashSet<T> collection, IEnumerable<T> toAdd)
         {
             foreach (var item in toAdd)
             {
@@ -87,10 +86,10 @@ namespace CodeRefractor.RuntimeBase
             var rawdata = new byte[rawsize];
             var handle =
                 GCHandle.Alloc(rawdata,
-                               GCHandleType.Pinned);
+                    GCHandleType.Pinned);
             Marshal.StructureToPtr(value,
-                                   handle.AddrOfPinnedObject(),
-                                   false);
+                handle.AddrOfPinnedObject(),
+                false);
             handle.Free();
             if (maxLength >= rawdata.Length)
                 return rawdata;
@@ -137,7 +136,7 @@ namespace CodeRefractor.RuntimeBase
         {
             return parameterInfos.Select(
                 param =>
-                String.Format("{0} {1}", param.ParameterType.ToCppName(), param.Name));
+                    String.Format("{0} {1}", param.ParameterType.ToCppName(), param.Name));
         }
 
         public static Type ReversedType(this Type type, CrRuntimeLibrary crRuntime)
@@ -210,31 +209,30 @@ namespace CodeRefractor.RuntimeBase
             }
         }
 
-        public static string ExecuteCommand(this string pathToGpp, string arguments = "")
+        public static string ExecuteCommand(this string pathToGpp, string arguments, string workingDirectory)
         {
-            var currentPath = Directory.GetCurrentDirectory();
-            var finalGccPath = Path.Combine(currentPath, pathToGpp);
             var p = new Process
-                        {
-                            StartInfo =
-                                {
-                                    FileName = finalGccPath,
-                                    Arguments = arguments,
-                                    RedirectStandardOutput = true,
-                                    RedirectStandardError = true,
-                                    UseShellExecute = false
-                                }
-                        };
+            {
+                StartInfo =
+                {
+                    FileName = pathToGpp,
+                    Arguments = arguments,
+                    WorkingDirectory = workingDirectory,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false
+                }
+            };
             p.Start();
             p.WaitForExit();
 
             var standardOutput = p.StandardOutput.ReadToEnd();
             var standardError = p.StandardError.ReadToEnd();
             return String.IsNullOrWhiteSpace(standardOutput)
-                       ? standardError
-                       : String.IsNullOrWhiteSpace(standardError)
-                             ? standardOutput
-                             : standardOutput + Environment.NewLine + standardError;
+                ? standardError
+                : String.IsNullOrWhiteSpace(standardError)
+                    ? standardOutput
+                    : standardOutput + Environment.NewLine + standardError;
         }
 
         public static void DeleteFile(this string fileName)

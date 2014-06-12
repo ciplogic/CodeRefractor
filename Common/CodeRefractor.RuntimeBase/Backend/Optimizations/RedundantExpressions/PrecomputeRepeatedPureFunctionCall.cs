@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.CompilerBackend.Optimizations.Purity;
 using CodeRefractor.RuntimeBase.Analyze;
+using CodeRefractor.RuntimeBase.Backend.Optimizations.RedundantExpressions;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
@@ -19,7 +20,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions
             LocalOperation[] operations)
         {
             var localOperations = midRepresentation.MidRepresentation.LocalOperations;
-            var calls = FindCallsToPureFunctions(localOperations, startRange, endRange);
+            var calls = FindCallsToPureFunctions(midRepresentation.MidRepresentation.UseDef, startRange, endRange);
             if (calls.Count < 2)
                 return false;
             for (var i = 0; i < calls.Count - 1; i++)
@@ -60,15 +61,16 @@ namespace CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions
             localOps.Insert(j + 1, destAssignment);
         }
 
-        public static List<int> FindCallsToPureFunctions(List<LocalOperation> localOperations, int startRange,
-            int endRange)
+        public static List<int> FindCallsToPureFunctions(UseDefDescription useDef, int startRange, int endRange)
         {
             var calls = new List<int>();
-            for (var index = startRange; index <= endRange; index++)
+            var opArr = useDef.GetLocalOperations();
+            var callIds = useDef.GetOperationsOfKind(OperationKind.Call);
+            
+            foreach (var index in callIds)
             {
-                var operation = localOperations[index];
-                if (operation.Kind != OperationKind.Call)
-                    continue;
+                if(index < startRange || index > endRange)continue;
+                var operation = opArr[index];
                 var operationData = EvaluatePureFunctionWithConstantCall.ComputeAndEvaluatePurityOfCall(operation);
                 if (!operationData.Interpreter.AnalyzeProperties.IsPure || !operationData.Info.IsStatic)
                     continue;

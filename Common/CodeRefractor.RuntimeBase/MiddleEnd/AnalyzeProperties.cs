@@ -1,5 +1,9 @@
-﻿using System.Collections.Generic;
+﻿#region Usings
+
+using System.Collections.Generic;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
+
+#endregion
 
 namespace CodeRefractor.RuntimeBase.MiddleEnd
 {
@@ -12,8 +16,10 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         public bool IsReadOnly { get; set; }
 
 
-        public readonly Dictionary<LocalVariable, EscapingMode> LocalVarEscaping = new Dictionary<LocalVariable, EscapingMode>();
-        public void Setup(List<ArgumentVariable> arguments,List<LocalVariable> virtRegs,List<LocalVariable> localVars)
+        public readonly Dictionary<LocalVariable, EscapingMode> LocalVarEscaping =
+            new Dictionary<LocalVariable, EscapingMode>();
+
+        public void Setup(List<ArgumentVariable> arguments, List<LocalVariable> virtRegs, List<LocalVariable> localVars)
         {
             LocalVarEscaping.Clear();
             foreach (var variable in arguments)
@@ -43,6 +49,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 return EscapingMode.Smart;
             return LocalVarEscaping[variable];
         }
+
         public void SetVariableData(LocalVariable variable, EscapingMode escaping)
         {
             LocalVarEscaping[variable] = escaping;
@@ -51,7 +58,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         public bool[] GetUsedArguments(List<ArgumentVariable> arguments)
         {
             var result = new bool[arguments.Count];
-            for (int index = 0; index < arguments.Count; index++)
+            for (var index = 0; index < arguments.Count; index++)
             {
                 var argument = arguments[index];
                 result[index] = GetVariableData(argument) != EscapingMode.Unused;

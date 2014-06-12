@@ -25,11 +25,11 @@ namespace CodeRefractor.CodeWriter.Platform
                 findItem = new PlatformInvokeDllImports(dll);
                 LinkingData.Libraries.Add(findItem);
             }
-            
+
             var dllId = new PlatformInvokeDllMethod(method, callingConvention, entryPoint)
-                            {
-                                Id = id
-                            };
+            {
+                Id = id
+            };
 
             findItem.Methods.Add(method, dllId);
             return dllId.FormattedName();
@@ -47,7 +47,8 @@ namespace CodeRefractor.CodeWriter.Platform
                 sb.AppendLine();
                 foreach (var method in library.Methods.Values)
                 {
-                    sb.AppendFormat("{0} = ({0}_type)LoadNativeMethod(lib_{2}, \"{1}\");", method.FormattedName(), method.EntryPoint, pos);
+                    sb.AppendFormat("{0} = ({0}_type)LoadNativeMethod(lib_{2}, \"{1}\");", method.FormattedName(),
+                        method.EntryPoint, pos);
                     sb.AppendLine();
                 }
                 pos++;
@@ -75,10 +76,10 @@ namespace CodeRefractor.CodeWriter.Platform
             }
 
             sb.AppendFormat("typedef {0} ({3} *{1}_type)({2})",
-                            retType, 
-                            methodDll, 
-                            arguments,
-                            callConventionStr);
+                retType,
+                methodDll,
+                arguments,
+                callConventionStr);
 
             sb.AppendLine(";");
             sb.AppendFormat("{0}_type {0};", methodDll);
@@ -97,9 +98,9 @@ namespace CodeRefractor.CodeWriter.Platform
         public static string WritePlatformInvokeMethod(this MethodInterpreter platformInvoke)
         {
             var methodId = Import(platformInvoke.Description.LibraryName,
-                                  platformInvoke.Description.MethodName,
-                                  platformInvoke.Description.CallingConvention,
-                                  platformInvoke.Description.EntryPoint);
+                platformInvoke.Description.MethodName,
+                platformInvoke.Description.CallingConvention,
+                platformInvoke.Description.EntryPoint);
 
             var sb = new StringBuilder();
 

@@ -20,6 +20,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 return localVarInfo.LocalIndex;
             return instruction.Operand.ToString().ToInt();
         }
+
         public static long GetLongOperand(this Instruction instruction)
         {
             var localVarInfo = instruction.Operand as LocalVariableInfo;
@@ -34,7 +35,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 return genericType;
             var result = genericType.Assembly.GetType(
                 string.Format("{0}.{1}",
-                genericType.Namespace, genericType.Name));
+                    genericType.Namespace, genericType.Name));
             return result;
         }
 
@@ -58,7 +59,6 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 }
                 catch
                 {
-
                 }
             }
 
@@ -79,6 +79,5 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             }
             return result;
         }
-
     }
 }

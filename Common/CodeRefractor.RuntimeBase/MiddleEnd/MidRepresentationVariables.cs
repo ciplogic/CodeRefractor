@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using CodeRefractor.RuntimeBase.Analyze;
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
 #endregion
@@ -41,7 +40,6 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         }
 
 
-
         public void SetupLocalVariables(MethodBase value)
         {
             VariableInfos.Clear();
@@ -56,7 +54,5 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             LocalVars.Clear();
             LocalVars.AddRange(varsToAdd);
         }
-
-
     }
 }

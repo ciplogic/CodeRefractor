@@ -11,7 +11,7 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
 
 #endregion
 
-namespace CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions
+namespace CodeRefractor.RuntimeBase.Backend.Optimizations.RedundantExpressions
 {
     internal static class PrecomputeRepeatedUtils
     {
@@ -76,13 +76,13 @@ namespace CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions
             return (BinaryOperator) localOperation.Value;
         }
 
-        public static FieldGetter GetFieldOperation(this List<LocalOperation> localOperations, List<int> calls, int i)
+        public static FieldGetter GetFieldOperation(this LocalOperation[] localOperations, int[] calls, int i)
         {
             var index = calls[i];
             return GetFieldOperation(localOperations, index);
         }
 
-        public static FieldGetter GetFieldOperation(this List<LocalOperation> localOperations, int index)
+        public static FieldGetter GetFieldOperation(this LocalOperation[] localOperations, int index)
         {
             return (FieldGetter) localOperations[index].Value;
         }

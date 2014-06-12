@@ -106,11 +106,11 @@ namespace CodeRefractor.RuntimeBase.DataBase.SerializeXml
             switch (typeCode)
             {
                 case TypeCode.Boolean:
-                    {
-                        bool boolResult;
-                        var canParseBool = bool.TryParse(itemValue, out boolResult);
-                        return canParseBool && boolResult;
-                    }
+                {
+                    bool boolResult;
+                    var canParseBool = bool.TryParse(itemValue, out boolResult);
+                    return canParseBool && boolResult;
+                }
                 case TypeCode.Int32:
                     return int.Parse(itemValue);
                 case TypeCode.Double:

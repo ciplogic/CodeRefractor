@@ -1,5 +1,9 @@
+#region Usings
+
 using System;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
+
+#endregion
 
 namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 {
@@ -16,10 +20,10 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
         public object Clone()
         {
             return new SizeOfAssignment
-                {
-                    AssignedTo = (LocalVariable) AssignedTo.Clone(),
-                    Right = Right
-                };
+            {
+                AssignedTo = (LocalVariable) AssignedTo.Clone(),
+                Right = Right
+            };
         }
     }
 }

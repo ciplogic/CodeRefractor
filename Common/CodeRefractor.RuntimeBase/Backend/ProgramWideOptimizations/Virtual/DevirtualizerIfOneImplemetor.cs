@@ -1,13 +1,15 @@
-﻿using System;
+﻿#region Usings
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using CodeRefractor.CompilerBackend.OuputCodeWriter;
-using CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Backend.ComputeClosure;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
+
+#endregion
 
 namespace CodeRefractor.CompilerBackend.ProgramWideOptimizations.Virtual
 {
@@ -24,7 +26,8 @@ namespace CodeRefractor.CompilerBackend.ProgramWideOptimizations.Virtual
             }
         }
 
-        private  void HandleInterpreterInstructions(MethodInterpreter interpreter, List<MethodInterpreter> methodInterpreters, List<Type> usedTypes)
+        private void HandleInterpreterInstructions(MethodInterpreter interpreter,
+            List<MethodInterpreter> methodInterpreters, List<Type> usedTypes)
         {
             var useDef = interpreter.MidRepresentation.UseDef;
             var calls = useDef.GetOperationsOfKind(OperationKind.CallVirtual).ToList();
@@ -32,11 +35,11 @@ namespace CodeRefractor.CompilerBackend.ProgramWideOptimizations.Virtual
             foreach (var callOp in calls)
             {
                 var op = allOps[callOp];
-                var methodData = (MethodData)op.Value;
+                var methodData = (MethodData) op.Value;
                 var callingInterpreterKey = methodData.Interpreter.ToKey();
                 var declaringType = callingInterpreterKey.Interpreter.DeclaringType;
                 var implementors = declaringType.ClrType.ImplementorsOfT(usedTypes);
-                if(implementors.Count>0)
+                if (implementors.Count > 0)
                     continue;
                 op.Kind = OperationKind.Call;
                 Result = true;

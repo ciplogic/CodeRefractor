@@ -2,8 +2,8 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.Analyze;
+using CodeRefractor.RuntimeBase.Backend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
@@ -12,7 +12,7 @@ using CodeRefractor.RuntimeBase.Optimizations;
 
 #endregion
 
-namespace CodeRefractor.CompilerBackend.Optimizations.Inliner
+namespace CodeRefractor.RuntimeBase.Backend.Optimizations.Inliner
 {
     internal class SmallFunctionsInliner : ResultingOptimizationPass
     {
@@ -164,12 +164,12 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Inliner
             localOperationsToInline.Add(assignmentReturn);
         }
 
-        private static void SwitchUsageClones(Dictionary<LocalVariable, IdentifierValue> mappedNames, LocalOperation clone)
+        private static void SwitchUsageClones(Dictionary<LocalVariable, IdentifierValue> mappedNames,
+            LocalOperation clone)
         {
             foreach (var localVariable in mappedNames)
             {
                 clone.SwitchUsageWithDefinition(localVariable.Key, localVariable.Value);
-
             }
         }
 

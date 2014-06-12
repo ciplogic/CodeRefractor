@@ -1,7 +1,7 @@
 #region Usings
 
 using System.Collections.Generic;
-using CodeRefractor.CompilerBackend.Optimizations.Common;
+using CodeRefractor.RuntimeBase.Backend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
@@ -10,7 +10,7 @@ using CodeRefractor.RuntimeBase.Shared;
 
 #endregion
 
-namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagation.ComplexAssignments
+namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndPropagation.ComplexAssignments
 {
     public class OperatorConstantFolding : ResultingInFunctionOptimizationPass
     {
@@ -151,19 +151,22 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
         }
 
 
-        private void HandleCeq(ConstValue constLeft, ConstValue constRight, List<LocalOperation> localOperations, int pos)
+        private void HandleCeq(ConstValue constLeft, ConstValue constRight, List<LocalOperation> localOperations,
+            int pos)
         {
             var result = ComputeConstantOperator.ComputeCeq(constLeft, constRight);
             FoldConstant(result, localOperations, pos);
         }
 
-        private void HandleClt(ConstValue constLeft, ConstValue constRight, List<LocalOperation> localOperations, int pos)
+        private void HandleClt(ConstValue constLeft, ConstValue constRight, List<LocalOperation> localOperations,
+            int pos)
         {
             var result = ComputeConstantOperator.ComputeClt(constLeft, constRight);
             FoldConstant(result, localOperations, pos);
         }
 
-        private void HandleCgt(ConstValue constLeft, ConstValue constRight, List<LocalOperation> localOperations, int pos)
+        private void HandleCgt(ConstValue constLeft, ConstValue constRight, List<LocalOperation> localOperations,
+            int pos)
         {
             var result = ComputeConstantOperator.ComputeCgt(constLeft, constRight);
             FoldConstant(result, localOperations, pos);
@@ -171,32 +174,37 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
 
         #region Compute math operations
 
-        private void HandleAdd(ConstValue constLeft, ConstValue constRight, List<LocalOperation> localOperations, int pos)
+        private void HandleAdd(ConstValue constLeft, ConstValue constRight, List<LocalOperation> localOperations,
+            int pos)
         {
             var result = ComputeConstantOperator.ComputeAdd(constLeft, constRight);
             FoldConstant(result, localOperations, pos);
         }
 
-        private void HandleSub(ConstValue constLeft, ConstValue constRight, List<LocalOperation> localOperations, int pos)
+        private void HandleSub(ConstValue constLeft, ConstValue constRight, List<LocalOperation> localOperations,
+            int pos)
         {
             var result = ComputeConstantOperator.ComputeSub(constLeft, constRight);
             FoldConstant(result, localOperations, pos);
         }
 
 
-        private void HandleMul(ConstValue constLeft, ConstValue constRight, List<LocalOperation> localOperations, int pos)
+        private void HandleMul(ConstValue constLeft, ConstValue constRight, List<LocalOperation> localOperations,
+            int pos)
         {
             var result = ComputeConstantOperator.ComputeMul(constLeft, constRight);
             FoldConstant(result, localOperations, pos);
         }
 
-        private void HandleRem(ConstValue constLeft, ConstValue constRight, List<LocalOperation> localOperations, int pos)
+        private void HandleRem(ConstValue constLeft, ConstValue constRight, List<LocalOperation> localOperations,
+            int pos)
         {
             var result = ComputeConstantOperator.ComputeRem(constLeft, constRight);
             FoldConstant(result, localOperations, pos);
         }
 
-        private void HandleDiv(ConstValue constLeft, ConstValue constRight, List<LocalOperation> localOperations, int pos)
+        private void HandleDiv(ConstValue constLeft, ConstValue constRight, List<LocalOperation> localOperations,
+            int pos)
         {
             var result = ComputeConstantOperator.ComputeDiv(constLeft, constRight);
             FoldConstant(result, localOperations, pos);
@@ -206,13 +214,15 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantFoldingAndPropagat
 
         #region Evaluate bit operations
 
-        private void HandleXor(ConstValue constLeft, ConstValue constRight, List<LocalOperation> localOperations, int pos)
+        private void HandleXor(ConstValue constLeft, ConstValue constRight, List<LocalOperation> localOperations,
+            int pos)
         {
             var result = ComputeConstantOperator.ComputeXor(constLeft, constRight);
             FoldConstant(result, localOperations, pos);
         }
 
-        private void HandleAnd(ConstValue constLeft, ConstValue constRight, List<LocalOperation> localOperations, int pos)
+        private void HandleAnd(ConstValue constLeft, ConstValue constRight, List<LocalOperation> localOperations,
+            int pos)
         {
             var result = ComputeConstantOperator.ComputeAnd(constLeft, constRight);
             FoldConstant(result, localOperations, pos);

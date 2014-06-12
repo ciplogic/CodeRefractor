@@ -3,7 +3,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.Backend.ComputeClosure;
@@ -18,7 +17,8 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
 {
     public static class MetaLinkerOptimizer
     {
-        public static MethodInterpreter CreateLinkerFromEntryPoint(this MethodInfo definition, ProgramClosure programClosure)
+        public static MethodInterpreter CreateLinkerFromEntryPoint(this MethodInfo definition,
+            ProgramClosure programClosure)
         {
             var methodInterpreter = definition.Register();
             MetaLinker.Interpret(methodInterpreter, programClosure.Runtime);

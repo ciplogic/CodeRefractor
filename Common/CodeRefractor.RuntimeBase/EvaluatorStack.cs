@@ -3,9 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using CodeRefractor.CodeWriter.Linker;
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
 #endregion
@@ -19,12 +16,12 @@ namespace CodeRefractor.RuntimeBase
         public override string ToString()
         {
             var items = _stack.ToArray()
-                .Select(id => 
-                     string.Format(
-                        id is ConstValue ?"'{0}'" : "{0}", 
+                .Select(id =>
+                    string.Format(
+                        id is ConstValue ? "'{0}'" : "{0}",
                         id.Name));
 
-            
+
             return String.Join("; ", items);
         }
 
@@ -34,10 +31,10 @@ namespace CodeRefractor.RuntimeBase
         {
             _vRegId++;
             var newLocal = new LocalVariable
-                               {
-                                   Kind = VariableKind.Vreg,
-                                   Id = _vRegId
-                               };
+            {
+                Kind = VariableKind.Vreg,
+                Id = _vRegId
+            };
             Push(newLocal);
             return newLocal;
         }

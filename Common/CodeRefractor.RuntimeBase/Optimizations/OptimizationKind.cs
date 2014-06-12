@@ -5,6 +5,5 @@ namespace CodeRefractor.RuntimeBase.Optimizations
         InFunction,
         Global,
         InterProcedural
-
     }
 }

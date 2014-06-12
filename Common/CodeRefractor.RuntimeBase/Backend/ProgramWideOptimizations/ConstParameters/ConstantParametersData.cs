@@ -1,15 +1,20 @@
-﻿using System.Collections.Generic;
+﻿#region Usings
+
+using System.Collections.Generic;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
+#endregion
+
 namespace CodeRefractor.CompilerBackend.ProgramWideOptimizations.ConstParameters
 {
-    class ConstantParametersData
+    internal class ConstantParametersData
     {
         public const string Name = "ConstantParametersData";
-        public Dictionary<LocalVariable, ConstValue>ConstValues = new Dictionary<LocalVariable, ConstValue>();
-        public Dictionary<LocalVariable, ConstValueKind> ConstKinds = new Dictionary<LocalVariable, ConstValueKind>(); 
+        public Dictionary<LocalVariable, ConstValue> ConstValues = new Dictionary<LocalVariable, ConstValue>();
+        public Dictionary<LocalVariable, ConstValueKind> ConstKinds = new Dictionary<LocalVariable, ConstValueKind>();
+
         public enum ConstValueKind
         {
             Unused,
@@ -41,7 +46,7 @@ namespace CodeRefractor.CompilerBackend.ProgramWideOptimizations.ConstParameters
                 .ToArray();
             var result = false;
             var parameters = methodData.Parameters;
-            for (int index = 0; index < parameters.Count; index++)
+            for (var index = 0; index < parameters.Count; index++)
             {
                 var argumentVar = arguments[index];
                 var param = parameters[index];
@@ -50,7 +55,7 @@ namespace CodeRefractor.CompilerBackend.ProgramWideOptimizations.ConstParameters
                 {
                     ConstValueKind constKind;
                     result = !ConstKinds.TryGetValue(argumentVar, out constKind)
-                        || constKind==ConstValueKind.NonConstant;
+                             || constKind == ConstValueKind.NonConstant;
                     if (!result)
                         continue;
                     ConstKinds[argumentVar] = ConstValueKind.NonConstant;
@@ -62,8 +67,8 @@ namespace CodeRefractor.CompilerBackend.ProgramWideOptimizations.ConstParameters
                     ConstValues[argumentVar] = constValue;
                     ConstValueKind constKind;
                     result = !ConstKinds.TryGetValue(argumentVar, out constKind)
-                        || constKind == ConstValueKind.AssignedConstant;
-                    if(!result)
+                             || constKind == ConstValueKind.AssignedConstant;
+                    if (!result)
                         continue;
                     ConstKinds[argumentVar] = ConstValueKind.AssignedConstant;
                     continue;
