@@ -30,6 +30,7 @@ namespace CodeRefractor.RuntimeBase.Backend
             var sb = new StringBuilder();
 
             sb.AppendLine("#include \"sloth.h\"");
+            sb.AppendLine("#include <functional>");
 
             var virtualMethodTableCodeWriter = new VirtualMethodTableCodeWriter(typeTable, closure);
 

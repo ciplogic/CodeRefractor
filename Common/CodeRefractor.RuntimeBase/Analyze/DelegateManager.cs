@@ -49,7 +49,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
                 id, parametersFormat)
                 .AppendLine();
             * */
-            sb.AppendFormat("struct {0} {{", delegateType.Key.ToCppMangling())
+            sb.AppendFormat("struct {0} : System_Object {{", delegateType.Key.ToCppMangling())
                 .AppendLine();
 
             sb.AppendFormat("	std::vector< std::function<void({0})> > _functions;", parametersFormat)
@@ -80,10 +80,21 @@ namespace CodeRefractor.RuntimeBase.Analyze
 
             sb.AppendLine("  _delegate->Register(fn);");
             sb.AppendLine("}");
-            sb.AppendFormat("void {0}_Invoke(const std::shared_ptr<{0}>& _delegate, {1}){{",
+            if (!String.IsNullOrEmpty(namedTypeArgs))
+            {
+                sb.AppendFormat("void {0}_Invoke(const std::shared_ptr<{0}>& _delegate, {1}){{",
                     delegateType.Key.ToCppMangling(),
                     namedTypeArgs)
-              .AppendLine();
+                    .AppendLine();
+            }
+            else
+            {
+                sb.AppendFormat("void {0}_Invoke(const std::shared_ptr<{0}>& _delegate){{",
+                    delegateType.Key.ToCppMangling(),
+                    namedTypeArgs)
+                    .AppendLine();
+               
+            }
 
             sb.AppendFormat("  _delegate->Invoke({0});", namedArgs)
                 .AppendLine();

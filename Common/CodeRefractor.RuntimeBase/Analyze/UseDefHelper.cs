@@ -79,6 +79,11 @@ namespace CodeRefractor.RuntimeBase.Analyze
                 case OperationKind.RefAssignment:
                     AddUsagesOfRefAssignment(operation, result);
                     break;
+
+                case  OperationKind.DerefAssignment:
+                    AddUsagesOfDerefAssignment(operation, result);
+                    break;
+                    
                 case OperationKind.CopyArrayInitializer:
                 case OperationKind.GetStaticField:
                 case OperationKind.LoadFunction:
@@ -98,6 +103,15 @@ namespace CodeRefractor.RuntimeBase.Analyze
             result.Add(refData.Left);
             result.Add(refData.Right);
         }
+
+        private static void AddUsagesOfDerefAssignment(LocalOperation operation, List<LocalVariable> result)
+        {
+            var refData = (DerefAssignment)operation.Value;
+            result.Add(refData.Left);
+            result.Add(refData.Right);
+        }
+
+        
 
         private static void AddUsagesOfFieldRefAssignment(LocalOperation operation, List<LocalVariable> result)
         {
@@ -228,6 +242,16 @@ namespace CodeRefractor.RuntimeBase.Analyze
                 case OperationKind.RefAssignment:
                     var refValue = (RefAssignment)operation.Value;
                     return refValue.Left;
+
+                case OperationKind.DerefAssignment:
+                    var refValue2 = (DerefAssignment)operation.Value;
+                    return refValue2.Left;
+
+                case OperationKind.LoadFunction:
+                     var val = (FunctionPointerStore)operation.Value;
+                  //  return null;
+                     return (LocalVariable) val.AssignedTo;
+
                 default:
                     throw new InvalidDataException("Case not handled");
             }

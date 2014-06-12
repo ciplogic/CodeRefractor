@@ -31,9 +31,9 @@ namespace CodeRefractor.RuntimeBase
                 var opcodeStr = instruction.OpCode.Value;
                 switch (opcodeStr)
                 {
-                    case ObcodeIntValues.CallVirt:
-                    case ObcodeIntValues.Call:
-                    case ObcodeIntValues.CallInterface:
+                    case OpcodeIntValues.CallVirt:
+                    case OpcodeIntValues.Call:
+                    case OpcodeIntValues.CallInterface:
                         {
                             var operand = (MethodBase) instruction.Operand;
                             if (operand == null)
@@ -41,7 +41,7 @@ namespace CodeRefractor.RuntimeBase
                             AddMethodIfNecessary(operand, resultDict);
                             break;
                         }
-                    case ObcodeIntValues.NewObj:
+                    case OpcodeIntValues.NewObj:
                         {
                             var operand = (ConstructorInfo) instruction.Operand;
                             if (operand == null)

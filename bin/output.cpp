@@ -1,23 +1,59 @@
 #include "sloth.h"
+#include <functional>
 struct System_Object; 
 struct System_ValueType; 
-struct _NBody; 
+struct System_Delegate; 
+struct System_MulticastDelegate; 
+struct System_Action; 
 struct System_String; 
+struct ___c__DisplayClass1; 
+struct _NBody; 
 struct System_Console; 
 struct System_Object {
 int _typeId;
 };
 struct System_ValueType : public System_Object {
 };
-struct _NBody : public System_Object {
+struct System_Delegate : public System_Object {
+};
+struct System_MulticastDelegate : public System_Delegate {
 };
 struct System_String : public System_Object {
  std::shared_ptr< Array < System_Char > > Text;
 };
+struct ___c__DisplayClass1 : public System_Object {
+ System_Int32 len;
+};
+struct _NBody : public System_Object {
+};
 struct System_Console : public System_Object {
 };
+struct System_Action : System_Object {
+	std::vector< std::function<void()> > _functions;
+void Register(std::function<void() > fn) {
+_functions.push_back(fn);
+}
+void Invoke() {
+for(auto it : _functions)
+	(it)();
+}
+}; //end of class delegate
+void System_Action_ctor(const std::shared_ptr<System_Action>& _delegate, void*, std::function<void()> fn){
+  _delegate->Register(fn);
+}
+void System_Action_Invoke(const std::shared_ptr<System_Action>& _delegate){
+  _delegate->Invoke();
+}
 
 System_Void _NBody_Main();
+
+System_Void ___c__DisplayClass1_ctor();
+
+System_Void System_Action_ctor();
+
+System_Void System_Action_Invoke();
+
+System_Void ___c__DisplayClass1__Main_b__0(___c__DisplayClass1 * _this);
 
 System_Int32 _NBody_AddPrimes(System_Int32 len);
 
@@ -25,6 +61,16 @@ System_Int32 _NBody_AddPrimes(System_Int32 len);
 // --- Begin definition of virtual method tables ---
 void setupTypeTable();
 
+typedef void (*System_Action_InvokeVirtPtr)(const std::shared_ptr<System_Action> &_this);
+void System_Action_Invoke_vcall(const std::shared_ptr<System_Action> &_this);
+void System_Action_Invoke_vcall(const std::shared_ptr<System_Action> &_this){
+switch(_this->_typeId)
+{
+case 4:
+System_Action_Invoke(_this);
+return;
+}
+}
 // --- End of definition of virtual method tables ---
 
 #include "stdio.h"
@@ -37,9 +83,50 @@ System_Void System_Console_Write(System_Int32 value)
 System_Void _NBody_Main()
 
 {
+void (*vreg_3)(___c__DisplayClass1);
 
+___c__DisplayClass1  vreg_1;
+vreg_1._typeId = 0;
 System_Console_WriteLine(_str(0));
-System_Console_Write(78497);
+vreg_1->len = 1000000;
+vreg_3=&(___c__DisplayClass1__Main_b__0);
+return;
+}
+
+
+System_Void ___c__DisplayClass1_ctor()
+
+{
+
+return;
+}
+
+
+System_Void System_Action_ctor()
+
+{
+
+}
+
+
+System_Void System_Action_Invoke()
+
+{
+
+}
+
+
+System_Void ___c__DisplayClass1__Main_b__0(___c__DisplayClass1 * _this)
+
+{
+System_Int32 local_0;
+System_Int32 vreg_1;
+System_Int32 vreg_2;
+
+vreg_1 = _this->len;
+vreg_2 = _NBody_AddPrimes(vreg_1);
+System_Console_Write(vreg_2);
+System_Console_WriteLine(_str(1));
 return;
 }
 
@@ -113,8 +200,10 @@ void RuntimeHelpersBuildConstantTable() {
 
 void buildStringTable() {
 _AddJumpAndLength(0, 15);
+_AddJumpAndLength(16, 17);
 } // buildStringTable
-const wchar_t _stringTable[16] = {
-80, 114, 105, 109, 101, 32, 110, 117, 109, 98, 101, 114, 115, 58, 32, 0 /* "Prime numbers: " */
+const wchar_t _stringTable[34] = {
+80, 114, 105, 109, 101, 32, 110, 117, 109, 98, 101, 114, 115, 58, 32, 0 /* "Prime numbers: " */, 
+83, 105, 109, 112, 108, 101, 114, 32, 69, 120, 97, 109, 112, 108, 101, 58, 32, 0 /* "Simpler Example: " */
 }; // _stringTable 
 

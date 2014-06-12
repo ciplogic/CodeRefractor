@@ -6,8 +6,15 @@ class NBody
     {
         Console.WriteLine("Prime numbers: ");
         var len = 1000000;
-        var primes = AddPrimes(len);
-        Console.Write(primes);
+
+        var pr = new Action(() =>
+        {
+            var primes = AddPrimes(len);
+            Console.Write(primes);
+            Console.WriteLine("Simpler Example: ");
+        });
+
+        pr();
 
     }
 

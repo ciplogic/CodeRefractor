@@ -807,7 +807,15 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 Right = firstVar
             };
             var ptrType = firstVar.ComputedType();
+
+            if (ptrType.ClrType.GetElementType()!=null)
             result.FixedType = new TypeDescription(ptrType.ClrType.GetElementType());
+
+            else
+            {
+
+                result.FixedType = new TypeDescription(ptrType.ClrType);
+            }
             AddOperation(OperationKind.DerefAssignment, assignment);
         }
 

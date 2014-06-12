@@ -17,6 +17,7 @@ namespace CodeRefractor.RuntimeBase
             var methodName = method.Name;
             if (method is ConstructorInfo)
                 methodName = "ctor";
+            methodName = methodName.Replace("<", "_").Replace(">", "_"); //TODO: MSVC++ does not expect names with angle brackets
             return String.Format("{0}_{1}", typeName, methodName);
         }
 
@@ -43,6 +44,7 @@ namespace CodeRefractor.RuntimeBase
 
         public static string ToCppMangling(this Type type, bool handleGenerics =false)
         {
+             var name = type.Name.Replace("<>","__");
             if (IsVoid(type)) return "void";
             var typesCount = 0;
             if (handleGenerics  && type.IsGenericType)
@@ -53,7 +55,7 @@ namespace CodeRefractor.RuntimeBase
             {
                 return string.Format("T{0}", type.GenericParameterPosition + 1);
             }
-            return type.Name.ToCppMangling(type.Namespace,
+            return name.ToCppMangling(type.Namespace,
                 typesCount);
         }
 
@@ -164,6 +166,7 @@ namespace CodeRefractor.RuntimeBase
         }
         public static string ToCppName(this Type type, bool handleGenerics = true, EscapingMode isSmartPtr = EscapingMode.Smart)
         {
+
             if (type == null)
                 return "void*";
             if (type.IsArray)
