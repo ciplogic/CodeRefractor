@@ -59,7 +59,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.Methods
                 Parameters.Select(
                     par =>
                         string.Format("{0}:{1}", par.Name, par.ComputedType().Name)));
-            return String.Format("Call {0} = {1}({2});", Result != null ? Result.Name : "void", Info.Name, paramData);
+            return String.Format("Call {0} = {1}({2});", Result != null ? Result.Name : "System_Void", Info.Name, paramData);
         }
     }
 }

@@ -47,7 +47,7 @@ namespace CodeRefractor.RuntimeBase
         public static string ToCppMangling(this Type type, bool handleGenerics = false)
         {
              var name = type.Name.Replace("<>","__");
-            if (IsVoid(type)) return "void";
+             if (IsVoid(type)) return "System_Void";
             var typesCount = 0;
             if (handleGenerics && type.IsGenericType)
             {
@@ -99,7 +99,7 @@ namespace CodeRefractor.RuntimeBase
             EscapingMode isSmartPtr = EscapingMode.Smart)
         {
             if (type == null)
-                return "void*";
+                return "System_Void*";
             if (type.IsArray)
             {
                 var elementType = type.GetElementType();
@@ -172,7 +172,7 @@ namespace CodeRefractor.RuntimeBase
         {
 
             if (type == null)
-                return "void*";
+                return "System_Void*";
             if (type.IsArray)
             {
                 var elementType = type.GetElementType();

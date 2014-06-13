@@ -56,16 +56,16 @@ namespace CodeRefractor.RuntimeBase.Analyze
             sb.AppendFormat("struct {0} : System_Object {{", delegateType.Key.ToCppMangling())
                 .AppendLine();
 
-            sb.AppendFormat("	std::vector< std::function<void({0})> > _functions;", parametersFormat)
+            sb.AppendFormat("	std::vector< std::function<System_Void({0})> > _functions;", parametersFormat)
                 .AppendLine();
 
-            sb.AppendFormat("void Register(std::function<void({0}) > fn) {{", parametersFormat)
+            sb.AppendFormat("System_Void Register(std::function<System_Void({0}) > fn) {{", parametersFormat)
                 .AppendLine();
             sb.AppendFormat("_functions.push_back(fn);")
                 .AppendLine()
                 .AppendLine("}");
 
-            sb.AppendFormat("void Invoke(");
+            sb.AppendFormat("System_Void Invoke(");
 
             sb.Append(namedTypeArgs);
             sb.AppendLine(") {");
@@ -77,12 +77,8 @@ namespace CodeRefractor.RuntimeBase.Analyze
 
             sb.AppendLine("}; //end of class delegate");
 
-            sb.AppendFormat(
-                "void {0}_ctor(const std::shared_ptr<{0}>& _delegate, void*, std::function<void({1})> fn){{",
-                delegateType.Key.ToCppMangling(),
-                parametersFormat)
-                .AppendLine();
-            sb.AppendFormat("void {0}_ctor(const std::shared_ptr<{0}>& _delegate, void*, std::function<void({1})> fn){{",
+          
+            sb.AppendFormat("System_Void {0}_ctor(const std::shared_ptr<{0}>& _delegate, System_Void*, std::function<System_Void({1})> fn){{",
                     delegateType.Key.ToCppMangling(),
                     parametersFormat)
               .AppendLine();
@@ -91,14 +87,14 @@ namespace CodeRefractor.RuntimeBase.Analyze
             sb.AppendLine("}");
             if (!String.IsNullOrEmpty(namedTypeArgs))
             {
-                sb.AppendFormat("void {0}_Invoke(const std::shared_ptr<{0}>& _delegate, {1}){{",
+                sb.AppendFormat("System_Void {0}_Invoke(const std::shared_ptr<{0}>& _delegate, {1}){{",
                     delegateType.Key.ToCppMangling(),
                     namedTypeArgs)
                 .AppendLine();
             }
             else
             {
-                sb.AppendFormat("void {0}_Invoke(const std::shared_ptr<{0}>& _delegate){{",
+                sb.AppendFormat("System_Void {0}_Invoke(const std::shared_ptr<{0}>& _delegate){{",
                     delegateType.Key.ToCppMangling(),
                     namedTypeArgs)
                     .AppendLine();
