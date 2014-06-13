@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <memory>
 #include <vector>
+#include <functional>
 
 #include "CodeRefactorRuntime/System_Primitives.h"
 #include "CodeRefactorRuntime/System_Console.h"

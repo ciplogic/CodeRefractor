@@ -18,7 +18,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
         }
 
         public static DelegateManager Instance = new DelegateManager();
-        private readonly Dictionary<Type, MethodInfo> _delegateTypes = new Dictionary<Type, MethodInfo>();
+        readonly Dictionary<Type, MethodInfo> _delegateTypes =new Dictionary<Type, MethodInfo>();
 
         public string BuildDelegateContent()
         {
@@ -53,7 +53,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
                 id, parametersFormat)
                 .AppendLine();
             * */
-            sb.AppendFormat("struct {0} {{", delegateType.Key.ToCppMangling())
+            sb.AppendFormat("struct {0} : System_Object {{", delegateType.Key.ToCppMangling())
                 .AppendLine();
 
             sb.AppendFormat("	std::vector< std::function<void({0})> > _functions;", parametersFormat)
@@ -82,13 +82,28 @@ namespace CodeRefractor.RuntimeBase.Analyze
                 delegateType.Key.ToCppMangling(),
                 parametersFormat)
                 .AppendLine();
+            sb.AppendFormat("void {0}_ctor(const std::shared_ptr<{0}>& _delegate, void*, std::function<void({1})> fn){{",
+                    delegateType.Key.ToCppMangling(),
+                    parametersFormat)
+              .AppendLine();
 
             sb.AppendLine("  _delegate->Register(fn);");
             sb.AppendLine("}");
-            sb.AppendFormat("void {0}_Invoke(const std::shared_ptr<{0}>& _delegate, {1}){{",
-                delegateType.Key.ToCppMangling(),
-                namedTypeArgs)
+            if (!String.IsNullOrEmpty(namedTypeArgs))
+            {
+                sb.AppendFormat("void {0}_Invoke(const std::shared_ptr<{0}>& _delegate, {1}){{",
+                    delegateType.Key.ToCppMangling(),
+                    namedTypeArgs)
                 .AppendLine();
+            }
+            else
+            {
+                sb.AppendFormat("void {0}_Invoke(const std::shared_ptr<{0}>& _delegate){{",
+                    delegateType.Key.ToCppMangling(),
+                    namedTypeArgs)
+                    .AppendLine();
+               
+            }
 
             sb.AppendFormat("  _delegate->Invoke({0});", namedArgs)
                 .AppendLine();

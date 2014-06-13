@@ -205,7 +205,7 @@
     <Compile Include="MiddleEnd\SimpleOperations\RefAssignment.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\StaticFieldGetter.cs" />
     <Compile Include="PureMethodAttribute.cs" />
-    <Compile Include="Shared\ObcodeIntValues.cs" />
+    <Compile Include="Shared\OpcodeIntValues.cs" />
     <Compile Include="Shared\ReflectionUtils.cs" />
     <Compile Include="CommonExtensions.cs" />
     <Compile Include="EvaluatorStack.cs" />

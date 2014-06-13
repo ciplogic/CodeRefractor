@@ -10,6 +10,10 @@ class NBody
         Console.WriteLine(bodies.Energy());
         for (int i = 0; i < n; i++) bodies.Advance(0.01);
         Console.WriteLine(bodies.Energy());
+            Console.WriteLine("Simpler Example: ");
+        });
+
+        pr();
     }
 }
 
