@@ -23,17 +23,18 @@ namespace VisualCompiler
     /// </summary>
     public partial class MainWindow : MetroWindow
     {
+        public MainWindowViewModel ViewModel
+        {
+            get { return (MainWindowViewModel) DataContext; }
+        }
         public MainWindow()
         {
            
 
             InitializeComponent();
-
+            ViewModel.Window = this;
            
-            DataContext = new MainWindowViewModel(this);
-          
-
-            TextEditor.Text = ((MainWindowViewModel)DataContext).SourceCode;
+            TextEditor.Text = ViewModel.SourceCode;
             TextEditor.TextArea.TextEntering += textEditor_TextArea_TextEntering;
             TextEditor.TextArea.TextEntered += textEditor_TextArea_TextEntered;
             TextEditor.TextArea.IndentationStrategy = new ICSharpCode.AvalonEdit.Indentation.CSharp.CSharpIndentationStrategy(TextEditor.Options);
@@ -55,7 +56,7 @@ namespace VisualCompiler
         private void TextEditor_OnTextChanged(object sender, EventArgs e)
         {
             if(DataContext!=null)
-                ((MainWindowViewModel)DataContext).SourceCode = TextEditor.Text;
+                ViewModel.SourceCode = TextEditor.Text;
         }
 
 

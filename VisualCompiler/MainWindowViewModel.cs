@@ -18,7 +18,7 @@ using Microsoft.CSharp;
 
 namespace VisualCompiler
 {
-    public class MainWindowViewModel : INotifyPropertyChanged
+    public class MainWindowViewModel : NotificationViewModel
     {
         public static string InitialCode = @"using System;
 
@@ -190,7 +190,7 @@ class NBodySystem
 }";
 
 
-        private MainWindow mainWindow;
+        public MainWindow Window { get; set; }
         private static CSharpCodeProvider codeProvider = new CSharpCodeProvider();
         public static ICodeCompiler icc = codeProvider.CreateCompiler();
 
@@ -332,7 +332,7 @@ class NBodySystem
             {
                 _sourceCode = value;
                 Recompile();
-                OnPropertyChanged("SourceCode");
+                Changed(()=>SourceCode);
             }
         }
 
@@ -345,8 +345,8 @@ class NBodySystem
             set
             {
                 _ilCode = value;
-                mainWindow.IL.Text = value;
-                OnPropertyChanged("IL");
+                Window.IL.Text = value;
+                Changed(() => ILCode);
             }
         }
 
@@ -357,8 +357,8 @@ class NBodySystem
             set
             {
                 _outputCode = value;
-                mainWindow.Output.Text = value;
-                OnPropertyChanged("OutputCode");
+                Window.Output.Text = value;
+                Changed(()=>OutputCode);
             }
         }
 
@@ -369,7 +369,7 @@ class NBodySystem
             set
             {
                 _compilerErrors = value;
-                OnPropertyChanged("CompilerErrors");
+                Changed(() => CompilerErrors);
             }
         }
 
@@ -377,7 +377,7 @@ class NBodySystem
 
         public MainWindowViewModel(MainWindow window)
         {
-            mainWindow = window;
+            Window = window;
           
             _sourceCode = InitialCode;
             Recompile();
@@ -390,17 +390,5 @@ class NBodySystem
 
         }
 
-        #region INotifyPropertyChanged
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        #endregion
     }
 }

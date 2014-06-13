@@ -22,6 +22,9 @@
                      xmlns:visualCompiler="clr-namespace:VisualCompiler"
                      Title="CR Visual Compiler" 
 					 Height="800" Width="1000">
+    <Window.DataContext>
+        <visualCompiler:MainWindowViewModel />
+    </Window.DataContext>
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
