@@ -174,7 +174,7 @@ namespace CodeRefractor.RuntimeBase.CodeWriter.BasicOperations
             if (localVariable.ComputedType().ClrType.IsSubclassOf(typeof (MethodInfo)))
             {
                 variablesSb
-                    .AppendFormat("void (*{0})({1});",
+                    .AppendFormat("System_Void (*{0})({1}*);", //TODO: Added * to deal with pointers, is this the right approach ?
                         localVariable.Name,
                         ComputeCommaSeparatedParameterTypes(localVariable))
                     .AppendLine();

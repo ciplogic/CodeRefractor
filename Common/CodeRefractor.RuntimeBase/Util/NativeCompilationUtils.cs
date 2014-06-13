@@ -90,7 +90,7 @@ namespace CodeRefractor.RuntimeBase.Util
             {
                 throw new InvalidOperationException(String.Format("Errors when compiling: {0}", standardOutput));
             }
-            (CompilerOptions.PathOfCompilerTools + "strip").ExecuteCommand(applicationNativeExe);
+            (CompilerOptions.PathOfCompilerTools + "strip").ExecuteCommand(applicationNativeExe,Path.GetDirectoryName(applicationNativeExe));
         }
     }
 }

@@ -54,7 +54,7 @@ namespace ClassOpenRuntimeCodeGenerator
         {
             sb.Append("public static ");
             var isVoid = methodInfo.ReturnType == typeof(void);
-            sb.Append(isVoid ? "void" : methodInfo.ReturnType.FullName);
+            sb.Append(isVoid ? "System_Void" : methodInfo.ReturnType.FullName);
             sb.AppendFormat(" {0} (", methodInfo.Name);
             var methodParameters = methodInfo.GetParameters();
             var parameterList = methodParameters.Select(

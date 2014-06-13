@@ -38,7 +38,7 @@ namespace CodeRefractor.CodeWriter.Linker
         public string BuildStringTable()
         {
             var sb = new StringBuilder();
-            sb.AppendLine("void buildStringTable() {");
+            sb.AppendLine("System_Void buildStringTable() {");
 
             var stringDataBuilder = new List<string>();
 
