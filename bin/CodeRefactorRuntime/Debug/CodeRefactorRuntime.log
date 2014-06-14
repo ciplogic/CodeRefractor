@@ -1,0 +1,162 @@
+﻿Build started 6/14/2014 9:28:26 PM.
+     1>Project "C:\ProjectHub\Experiments\CodeRefractor\bin\CodeRefactorRuntime\CodeRefactorRuntime.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Oss\LLVM\msbuild-bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt -fmsc-version=1800 System_Console.cpp
+     1>clang-cl.exe : warning : argument unused during compilation: '/ZI'
+     1>clang-cl.exe : warning : argument unused during compilation: '/Gm'
+     1>clang-cl.exe : warning : argument unused during compilation: '/EHsc'
+     1>clang-cl.exe : warning : argument unused during compilation: '/GS'
+     1>clang-cl.exe : warning : argument unused during compilation: '/fp:precise'
+     1>clang-cl.exe : warning : argument unused during compilation: '/FdDebug\vc120.pdb'
+     1>clang-cl.exe : warning : argument unused during compilation: '/Gd'
+         In file included from System_Console.cpp:1:
+         In file included from ./System_Console.h:4:
+         In file included from ./System_Primitives.h:4:
+         In file included from C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\memory:6:
+         In file included from C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\xmemory:6:
+         In file included from C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\xmemory0:9:
+         In file included from C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\xutility:8:
+         In file included from C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\utility:8:
+     1>C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\type_traits(620,32): error : '_Ty' does not refer to a value
+                         : _Cat_base<_IS_CONSTRUCTIBLE(_Ty, _Args...)>
+                                                       ^
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\type_traits(617,15) :  note: declared here
+         template<class _Ty,
+                        ^
+     1>C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\type_traits(621,1): error : expected class name
+                 {       // determine whether _Ty(_Args...) is constructible
+                 ^
+     1>C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\type_traits(746,19): error : '_Ty' does not refer to a value
+                         _IS_DESTRUCTIBLE(_Ty)
+                                          ^
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\type_traits(48,31) :  note: expanded from macro '_IS_DESTRUCTIBLE'
+                 : _Cat_base<__is_destructible(_Ty)>
+                                               ^
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\type_traits(744,15) :  note: declared here
+         template<class _Ty>
+                        ^
+     1>C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\type_traits(747,1): error : expected class name
+                 {       // determine whether _Ty has a destructor
+                 ^
+     1>C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\type_traits(887,40): error : '_Ty' does not refer to a value
+                         : _Cat_base<_IS_NOTHROW_CONSTRUCTIBLE(_Ty, _Args...)>
+                                                               ^
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\type_traits(884,15) :  note: declared here
+         template<class _Ty,
+                        ^
+     1>C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\type_traits(888,1): error : expected class name
+                 {       // determine whether _Ty(_Args...) is nothrow constructible
+                 ^
+     1>C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\type_traits(951,25): error : '_To' does not refer to a value
+                         _IS_NOTHROW_ASSIGNABLE(_To, _From)
+                                                ^
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\type_traits(50,37) :  note: expanded from macro '_IS_NOTHROW_ASSIGNABLE'
+                 : _Cat_base<__is_nothrow_assignable(_To, _From)>
+                                                     ^
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\type_traits(947,15) :  note: declared here
+         template<class _To,
+                        ^
+     1>C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\type_traits(953,1): error : expected class name
+                 {       // determine whether _From can be assigned to _To, nothrow
+                 ^
+     1>C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\type_traits(1000,27): error : '_Ty' does not refer to a value
+                         _IS_NOTHROW_DESTRUCTIBLE(_Ty)
+                                                  ^
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\type_traits(52,39) :  note: expanded from macro '_IS_NOTHROW_DESTRUCTIBLE'
+                 : _Cat_base<__is_nothrow_destructible(_Ty)>
+                                                       ^
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\type_traits(997,15) :  note: declared here
+         template<class _Ty>
+                        ^
+     1>C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\type_traits(1002,1): error : expected class name
+                 {       // determine whether _Ty has a nothrow destructor
+                 ^
+         In file included from System_Console.cpp:1:
+         In file included from ./System_Console.h:4:
+         In file included from ./System_Primitives.h:75:
+         In file included from C:\Program Files (x86)\Windows Kits\8.1\Include\um\Windows.h:164:
+         In file included from C:\Program Files (x86)\Windows Kits\8.1\Include\shared\windef.h:24:
+         In file included from C:\Program Files (x86)\Windows Kits\8.1\Include\shared\minwindef.h:182:
+     1>C:\Program Files (x86)\Windows Kits\8.1\Include\um\winnt.h(5779): error : C++ requires a type specifier for all declarations
+         _mm_prefetch (
+         ^~~~~~~~~~~~~~
+         C:\Oss\LLVM\msbuild-bin\..\lib\clang\3.4.1\include\xmmintrin.h(678,50) :  note: expanded from macro '_mm_prefetch'
+         #define _mm_prefetch(a, sel) (__builtin_prefetch((void *)(a), 0, (sel)))
+                                                          ~^
+         In file included from System_Console.cpp:1:
+         In file included from ./System_Console.h:4:
+         In file included from ./System_Primitives.h:75:
+         In file included from C:\Program Files (x86)\Windows Kits\8.1\Include\um\Windows.h:164:
+         In file included from C:\Program Files (x86)\Windows Kits\8.1\Include\shared\windef.h:24:
+         In file included from C:\Program Files (x86)\Windows Kits\8.1\Include\shared\minwindef.h:182:
+     1>C:\Program Files (x86)\Windows Kits\8.1\Include\um\winnt.h(5779): error : function cannot return function type 'int (const CHAR *)'
+         C:\Oss\LLVM\msbuild-bin\..\lib\clang\3.4.1\include\xmmintrin.h(678,49) :  note: expanded from macro '_mm_prefetch'
+         #define _mm_prefetch(a, sel) (__builtin_prefetch((void *)(a), 0, (sel)))
+                                                          ^
+         In file included from System_Console.cpp:1:
+         In file included from ./System_Console.h:4:
+         In file included from ./System_Primitives.h:75:
+         In file included from C:\Program Files (x86)\Windows Kits\8.1\Include\um\Windows.h:164:
+         In file included from C:\Program Files (x86)\Windows Kits\8.1\Include\shared\windef.h:24:
+         In file included from C:\Program Files (x86)\Windows Kits\8.1\Include\shared\minwindef.h:182:
+     1>C:\Program Files (x86)\Windows Kits\8.1\Include\um\winnt.h(5779): error : expected parameter declarator
+         C:\Oss\LLVM\msbuild-bin\..\lib\clang\3.4.1\include\xmmintrin.h(678,62) :  note: expanded from macro '_mm_prefetch'
+         #define _mm_prefetch(a, sel) (__builtin_prefetch((void *)(a), 0, (sel)))
+                                                                       ^
+         In file included from System_Console.cpp:1:
+         In file included from ./System_Console.h:4:
+         In file included from ./System_Primitives.h:75:
+         In file included from C:\Program Files (x86)\Windows Kits\8.1\Include\um\Windows.h:164:
+         In file included from C:\Program Files (x86)\Windows Kits\8.1\Include\shared\windef.h:24:
+         In file included from C:\Program Files (x86)\Windows Kits\8.1\Include\shared\minwindef.h:182:
+     1>C:\Program Files (x86)\Windows Kits\8.1\Include\um\winnt.h(5779): error : expected ')'
+         C:\Oss\LLVM\msbuild-bin\..\lib\clang\3.4.1\include\xmmintrin.h(678,62) :  note: expanded from macro '_mm_prefetch'
+         #define _mm_prefetch(a, sel) (__builtin_prefetch((void *)(a), 0, (sel)))
+                                                                       ^
+         C:\Program Files (x86)\Windows Kits\8.1\Include\um\winnt.h(5779,0) :  note: to match this '('
+         C:\Oss\LLVM\msbuild-bin\..\lib\clang\3.4.1\include\xmmintrin.h(678,48) :  note: expanded from macro '_mm_prefetch'
+         #define _mm_prefetch(a, sel) (__builtin_prefetch((void *)(a), 0, (sel)))
+                                                         ^
+     1>System_Console.cpp(10,17): error : 'System::String' is an incomplete type
+                         (*result)[i] = System::String(argv[i]);
+                                        ^
+         ./System_Console.h(12,8) :  note: forward declaration of 'System::String'
+                 struct String;
+                        ^
+         In file included from System_Console.cpp:1:
+         In file included from ./System_Console.h:4:
+     1>./System_Primitives.h(45,15): error : invalid application of 'sizeof' to an incomplete type 'System::String'
+                         auto sizeT = sizeof(T);
+                                      ^~~~~~~~~
+         ./System_Primitives.h(35,2) :  note: in instantiation of member function 'Array<System::String>::AllocateLength' requested here
+                         AllocateLength(newSize);
+                         ^
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\memory(932,28) :  note: in instantiation of member function 'Array<System::String>::Array' requested here
+                         ::new ((void *)&_Storage) _Ty(_STD forward<_Types>(_Args)...);
+                                                   ^
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\memory(1003,6) :  note: in instantiation of function template specialization 'std::_Ref_count_obj<Array<System::String> >::_Ref_count_obj<int &>' requested here
+                         new _Ref_count_obj<_Ty>(_STD forward<_Types>(_Args)...);
+                             ^
+         System_Console.cpp(8,20) :  note: in instantiation of function template specialization 'std::make_shared<Array<System::String>, int &>' requested here
+                 auto result = std::make_shared<Array < System::String> >(argc);
+                                    ^
+         ./System_Console.h(12,8) :  note: forward declaration of 'System::String'
+                 struct String;
+                        ^
+         In file included from System_Console.cpp:1:
+         In file included from ./System_Console.h:4:
+     1>./System_Primitives.h(51,9): error : subscript of pointer to incomplete type 'System::String'
+                         return Items[idx];
+                                ^~~~~
+         System_Console.cpp(10,11) :  note: in instantiation of member function 'Array<System::String>::operator[]' requested here
+                         (*result)[i] = System::String(argv[i]);
+                                  ^
+         ./System_Console.h(12,8) :  note: forward declaration of 'System::String'
+                 struct String;
+                        ^
+         17 errors generated.
+     1>Done Building Project "C:\ProjectHub\Experiments\CodeRefractor\bin\CodeRefactorRuntime\CodeRefactorRuntime.vcxproj" (Build target(s)) -- FAILED.
+
+Build FAILED.
+
+Time Elapsed 00:00:01.06

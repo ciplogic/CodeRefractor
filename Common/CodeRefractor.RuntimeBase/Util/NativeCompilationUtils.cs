@@ -81,7 +81,7 @@ namespace CodeRefractor.RuntimeBase.Util
             outputCpp = fileInfo.FullName;
             var pathToGpp = CompilerOptions.PathOfCompilerTools + CompilerOptions.CompilerExe;
 
-            var commandLineFormat = "{0} " + CompilerOptions.OptimizationFlags + " {2}";
+            var commandLineFormat = "{0} " + CompilerOptions.OptimizationFlags + " {2} -o {1}";
 
             var arguments = String.Format(commandLineFormat, outputCpp, applicationNativeExe,
                 CompilerOptions.LinkerOptions);

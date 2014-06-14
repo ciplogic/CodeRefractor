@@ -208,7 +208,7 @@ namespace CodeRefractor.RuntimeBase.Backend
         {
             sb.AppendLine("System_Void initializeRuntime();");
             sb.AppendFormat("int main(int argc, char**argv) {{").AppendLine();
-            sb.AppendFormat("auto argsAsList = System::getArgumentsAsList(argc, argv);").AppendLine();
+            sb.AppendFormat("auto argsAsList = System_getArgumentsAsList(argc, argv);").AppendLine();
             sb.AppendLine("initializeRuntime();");
             var entryPoint = interpreter.Method as MethodInfo;
             if (entryPoint.ReturnType != typeof (void))

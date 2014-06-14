@@ -1,0 +1,2 @@
+#TargetFrameworkVersion=v4.0:PlatformToolSet=LLVM-vs2013:EnableManagedIncrementalBuild=false:VCToolArchitecture=Native32Bit
+Debug|Win32|C:\ProjectHub\Experiments\CodeRefractor\bin\CodeRefactorRuntime\|

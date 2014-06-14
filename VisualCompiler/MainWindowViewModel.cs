@@ -194,13 +194,13 @@ class NBodySystem
         private static CSharpCodeProvider codeProvider = new CSharpCodeProvider();
         public static ICodeCompiler icc = codeProvider.CreateCompiler();
 
-        public static System.CodeDom.Compiler.CompilerParameters parameters = new CompilerParameters()
+        public static CompilerParameters parameters = new CompilerParameters()
         {
             GenerateExecutable = true,
 
         };
 
-
+        public  string LastCompiledExecutable;
         public void CompileAndRunCode(string name, string code)
         {
             try
@@ -208,22 +208,20 @@ class NBodySystem
 
            
              CompilerErrors = string.Empty;
-            var testfilename = "Test" + name + ".cs";
             var outputExeName = "Test" +DateTime.Now.Ticks + name + ".exe";
             var outputNativeName = "TestNative" + name + ".exe";
 
             //Structure: Generate File, Compile  and Run It
 
             //Call Mcs / Csc
-
+            LastCompiledExecutable = outputExeName;
             parameters.OutputAssembly = outputExeName;
 
             CompilerResults results = icc.CompileAssemblyFromSource(parameters, code);
 
             if (results.Errors.Count > 0)
             {
-                //TODO: Add Errors to output
-                //throw new Exception("Errors During Compilation ");
+                
 
                 foreach (var error in results.Errors)
                 {
@@ -274,11 +272,11 @@ class NBodySystem
 
             var sb = programClosure.BuildFullSourceCode(programClosure.Runtime);
             var end = Environment.TickCount - start;
-            Console.WriteLine("Compilation time: {0} ms", end);
+             CompilerErrors +=String.Format("Compilation time: {0} ms", end);
 
             var opcodes = programClosure.MethodClosure;
 
-            var intermediateOutput = "\n";
+            var intermediateOutput = "";
 
             foreach (var opcode in opcodes)
             {
@@ -292,7 +290,8 @@ class NBodySystem
 
                 foreach (var op in opcode.Value.MidRepresentation.LocalOperations)
                 {
-                    intermediateOutput += "     " + op +"\n";
+                    var oper = string.Format("{1}\t({0})", op.Kind, op.Value ?? ""); ;
+                    intermediateOutput += "     " + oper + "\n";
                 }
 
                 intermediateOutput += "\n";
@@ -303,21 +302,7 @@ class NBodySystem
 
             ILCode = intermediateOutput;
 
-//            sb.ToFile(commandLineParse.OutputCpp);
 
-//            NativeCompilationUtils.CompileAppToNativeExe(commandLineParse.OutputCpp,
-//                                                         commandLineParse.ApplicationNativeExe);
-
-//            var programClosure = new ProgramClosure(definition, optimizationsTable);
-//            var sb = programClosure.BuildFullSourceCode();
-//            var end = Environment.TickCount - start;
-//            Console.WriteLine("Compilation time: {0} ms", end);
-//
-//            sb.ToFile(commandLineParse.OutputCpp);
-//
-//            NativeCompilationUtils.SetCompilerOptions("gcc");
-//            NativeCompilationUtils.CompileAppToNativeExe(commandLineParse.OutputCpp,
-//                commandLineParse.ApplicationNativeExe);
 
             //TODO: Make this call all the different compilers i.e. TestHelloWorld_GCC.exe etc...
 
@@ -331,6 +316,8 @@ class NBodySystem
             set
             {
                 _sourceCode = value;
+                OutputCode = "";
+                ILCode = "";
                 Recompile();
                 OnPropertyChanged("SourceCode");
             }
@@ -357,7 +344,16 @@ class NBodySystem
             set
             {
                 _outputCode = value;
-                mainWindow.Output.Text = value;
+                try
+                {
+                    mainWindow.Output.Text = value;
+                }
+                catch (Exception)
+                {
+                    
+                   
+                }
+               
                 OnPropertyChanged("OutputCode");
             }
         }
