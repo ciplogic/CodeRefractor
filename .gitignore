@@ -70,3 +70,8 @@ Debug/DebuggingApp.ilk
 bin/DebuggingApp/DebuggingApp.opensdf
 VisualCompiler/bin/Debug/*.exe
 VisualCompiler/bin/Debug/*.dll
+bin/*DS_Store
+bin/CodeRefactorRuntime/Debug/CodeRefa*
+bin/CodeRefactorRuntime/CodeRefactorRuntime.sdf
+*.sdsettings
+*.OpenCover.Settings

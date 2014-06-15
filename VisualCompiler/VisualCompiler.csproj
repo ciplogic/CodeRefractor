@@ -13,12 +13,22 @@
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
+    <NoWin32Manifest>False</NoWin32Manifest>
+    <SignAssembly>False</SignAssembly>
+    <DelaySign>False</DelaySign>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
+    <NoStdLib>False</NoStdLib>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
+    <RunCodeAnalysis>False</RunCodeAnalysis>
+    <SourceAnalysisOverrideSettingsFile>C:\Users\Ciprian Khlud\AppData\Roaming\ICSharpCode\SharpDevelop5\Settings.SourceAnalysis</SourceAnalysisOverrideSettingsFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+    <DebugType>Full</DebugType>
+    <Optimize>False</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -35,6 +45,17 @@
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>VisualCompiler.App</StartupObject>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+    <BaseIntermediateOutputPath>obj\</BaseIntermediateOutputPath>
+    <StartAction>Project</StartAction>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
+    <BaseAddress>4194304</BaseAddress>
+    <Prefer32Bit>True</Prefer32Bit>
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ICSharpCode.AvalonEdit">
@@ -117,26 +138,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Common\CodeRefactor.OpenRuntime\CodeRefactor.OpenRuntime.csproj">
-      <Project>{6C4BC5D1-CE1E-4152-AB7D-0EE10C64496D}</Project>
-      <Name>CodeRefactor.OpenRuntime</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Common\CodeRefractor.RuntimeBase\CodeRefractor.Compiler.Internals.csproj">
-      <Project>{10CEF783-53C3-42A7-940A-73773A2AF24F}</Project>
-      <Name>CodeRefractor.Compiler.Internals</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="OpenRuntime\CodeRefactor.OpenRuntime.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="OpenRuntime\CodeRefactor.OpenRuntime.pdb">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="OpenRuntime\CodeRefractor.RuntimeBase.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="OpenRuntime\CodeRefractor.RuntimeBase.pdb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="OpenRuntime\runtime_base.hpp">
@@ -175,6 +180,16 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icons\run.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common\CodeRefactor.OpenRuntime\CodeRefactor.OpenRuntime.csproj">
+      <Project>{6c4bc5d1-ce1e-4152-ab7d-0ee10c64496d}</Project>
+      <Name>CodeRefactor.OpenRuntime</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Common\CodeRefractor.RuntimeBase\CodeRefractor.Compiler.Internals.csproj">
+      <Project>{10cef783-53c3-42a7-940a-73773a2af24f}</Project>
+      <Name>CodeRefractor.Compiler.Internals</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
