@@ -1,12 +1,10 @@
 #region Usings
 
+using CodeRefractor.RuntimeBase.Backend.Optimizations.Common;
+using CodeRefractor.RuntimeBase.Shared;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using CodeRefractor.RuntimeBase.Backend.Optimizations.Common;
-using CodeRefractor.RuntimeBase.DataBase;
-using CodeRefractor.RuntimeBase.MiddleEnd;
-using System;
-using CodeRefractor.RuntimeBase.Shared;
 
 #endregion
 
@@ -56,9 +54,10 @@ namespace CodeRefractor.RuntimeBase.Optimizations
 
 	    public List<string> ChildrenRelations(string parent)
 	    {
-	        return (Relations
-                .Where(relation => relation.Value == parent)
-                .Select(relation => relation.Key)).ToList();
+	        return Relations
+	            .Where(relation => relation.Value == parent)
+	            .Select(relation => relation.Key)
+                .ToList();
 	    }
 
 	    public IEnumerable<ResultingOptimizationPass> Closure(IEnumerable<string> capabilies)
