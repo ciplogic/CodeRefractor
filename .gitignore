@@ -68,3 +68,4 @@ Release/DebuggingApp.exe
 Debug/DebuggingApp.exe
 Debug/DebuggingApp.ilk
 bin/DebuggingApp/DebuggingApp.opensdf
+VisualCompiler/bin/Debug/*.exe
