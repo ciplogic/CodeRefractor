@@ -3,11 +3,13 @@
 using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
+using CodeRefractor.RuntimeBase.Optimizations;
 
 #endregion
 
 namespace CodeRefractor.CompilerBackend.Optimizations.Purity
 {
+	[Optimization(Category = OptimizationCategories.Analysis)]
     public class AnalyzeFunctionIsEmpty : ResultingGlobalOptimizationPass
     {
         public static bool ReadProperty(MethodInterpreter intermediateCode)
