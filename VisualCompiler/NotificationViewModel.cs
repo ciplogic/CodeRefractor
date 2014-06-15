@@ -7,7 +7,7 @@ namespace VisualCompiler
     public class NotificationViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
-        // Create the OnPropertyChanged method to raise the event 
+        // Create the OnPropertyChanged method to raise the event
         void Changed(string name)
         {
             var handler = PropertyChanged;

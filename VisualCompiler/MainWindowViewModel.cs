@@ -1,7 +1,6 @@
 ﻿using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Reflection;
 using CodeRefactor.OpenRuntime;
@@ -20,187 +19,20 @@ namespace VisualCompiler
 {
     public class MainWindowViewModel : NotificationViewModel
     {
-        public static string InitialCode = @"using System;
-
-class NBody
-{
-    public static void Main()
-    {
-        Console.WriteLine(""Prime numbers: "");
-        var len = 1000000;
-
-        var pr = new Action(() =>
-        {
-            var primes = AddPrimes(len);
-            Console.Write(primes);
-            Console.WriteLine(""Simpler Example: "");
-        });
-
-        pr();
-
-    }
-
-    private static int AddPrimes(int len)
-    {
-        var primes = 0;
-        for (var i = 2; i < len; i++)
-        {
-            if (i%2 == 0)
-                continue;
-            var isPrime = true;
-            for (var j = 2; j*j <= i; j++)
-            {
-                if (i%j == 0)
-                {
-                    isPrime = false;
-                    break;
-                }
-            }
-            if (isPrime)
-                primes++;
-        }
-        return primes;
-    }
-}
-
-class Body { public double x, y, z, vx, vy, vz, mass; }
-class Pair { public Body bi, bj; }
-
-class NBodySystem
-{
-    private Body[] bodies;
-    private Pair[] pairs;
-
-    const double Pi = 3.141592653589793;
-    const double Solarmass = 4 * Pi * Pi;
-    const double DaysPeryear = 365.24;
-
-    public NBodySystem()
-    {
-        bodies = new Body[] {
-            new Body() { // Sun
-                mass = Solarmass,
-            },
-            new Body() { // Jupiter
-                x = 4.84143144246472090e+00,
-                y = -1.16032004402742839e+00,
-                z = -1.03622044471123109e-01,
-                vx = 1.66007664274403694e-03 * DaysPeryear,
-                vy = 7.69901118419740425e-03 * DaysPeryear,
-                vz = -6.90460016972063023e-05 * DaysPeryear,
-                mass = 9.54791938424326609e-04 * Solarmass,
-            },
-            new Body() { // Saturn
-                x = 8.34336671824457987e+00,
-                y = 4.12479856412430479e+00,
-                z = -4.03523417114321381e-01,
-                vx = -2.76742510726862411e-03 * DaysPeryear,
-                vy = 4.99852801234917238e-03 * DaysPeryear,
-                vz = 2.30417297573763929e-05 * DaysPeryear,
-                mass = 2.85885980666130812e-04 * Solarmass,
-            },
-            new Body() { // Uranus
-                x = 1.28943695621391310e+01,
-                y = -1.51111514016986312e+01,
-                z = -2.23307578892655734e-01,
-                vx = 2.96460137564761618e-03 * DaysPeryear,
-                vy = 2.37847173959480950e-03 * DaysPeryear,
-                vz = -2.96589568540237556e-05 * DaysPeryear,
-                mass = 4.36624404335156298e-05 * Solarmass,
-            },
-            new Body() { // Neptune
-                x = 1.53796971148509165e+01,
-                y = -2.59193146099879641e+01,
-                z = 1.79258772950371181e-01,
-                vx = 2.68067772490389322e-03 * DaysPeryear,
-                vy = 1.62824170038242295e-03 * DaysPeryear,
-                vz = -9.51592254519715870e-05 * DaysPeryear,
-                mass = 5.15138902046611451e-05 * Solarmass,
-            },
-        };
-
-        CalculatePairs();
-    }
-
-    private void CalculatePairs()
-    {
-        SetupDefaultParis();
-
-        double px = 0.0, py = 0.0, pz = 0.0;
-        foreach (var b in bodies)
-        {
-            px += b.vx*b.mass;
-            py += b.vy*b.mass;
-            pz += b.vz*b.mass;
-        }
-        var sol = bodies[0];
-        sol.vx = -px/Solarmass;
-        sol.vy = -py/Solarmass;
-        sol.vz = -pz/Solarmass;
-    }
-
-    private void SetupDefaultParis()
-    {
-        pairs = new Pair[bodies.Length*(bodies.Length - 1)/2];
-        int pi = 0;
-        for (int i = 0; i < bodies.Length - 1; i++)
-            for (int j = i + 1; j < bodies.Length; j++)
-            {
-                pairs[pi] = new Pair();
-                pairs[pi].bi = bodies[i];
-                pairs[pi].bj = bodies[j];
-                pi++;
-            }
-    }
-
-    public void Advance(double dt)
-    {
-        foreach (var p in pairs)
-        {
-            Body bi = p.bi, bj = p.bj;
-            double dx = bi.x - bj.x, dy = bi.y - bj.y, dz = bi.z - bj.z;
-            double d2 = dx * dx + dy * dy + dz * dz;
-            double mag = dt / (d2 * Math.Sqrt(d2));
-            bi.vx -= dx * bj.mass * mag; bj.vx += dx * bi.mass * mag;
-            bi.vy -= dy * bj.mass * mag; bj.vy += dy * bi.mass * mag;
-            bi.vz -= dz * bj.mass * mag; bj.vz += dz * bi.mass * mag;
-        }
-        foreach (var b in bodies)
-        {
-            b.x += dt * b.vx; b.y += dt * b.vy; b.z += dt * b.vz;
-        }
-    }
-
-    public double Energy()
-    {
-        double e = 0.0;
-        for (int i = 0; i < bodies.Length; i++)
-        {
-            var bi = bodies[i];
-            e += 0.5 * bi.mass * (bi.vx * bi.vx + bi.vy * bi.vy + bi.vz * bi.vz);
-            for (int j = i + 1; j < bodies.Length; j++)
-            {
-                var bj = bodies[j];
-                double dx = bi.x - bj.x, dy = bi.y - bj.y, dz = bi.z - bj.z;
-                e -= (bi.mass * bj.mass) / Math.Sqrt(dx * dx + dy * dy + dz * dz);
-            }
-        }
-        return e;
-    }
-}";
+        
 
 
-        public MainWindow Window { get; set; }
+        public MainWindow Window;
         private static CSharpCodeProvider codeProvider = new CSharpCodeProvider();
         public static ICodeCompiler icc = codeProvider.CreateCompiler();
 
-        public static System.CodeDom.Compiler.CompilerParameters parameters = new CompilerParameters()
+        public static CompilerParameters parameters = new CompilerParameters()
         {
             GenerateExecutable = true,
 
         };
 
-
+        public  string LastCompiledExecutable;
         public void CompileAndRunCode(string name, string code)
         {
             try
@@ -208,22 +40,20 @@ class NBodySystem
 
            
              CompilerErrors = string.Empty;
-            var testfilename = "Test" + name + ".cs";
             var outputExeName = "Test" +DateTime.Now.Ticks + name + ".exe";
             var outputNativeName = "TestNative" + name + ".exe";
 
             //Structure: Generate File, Compile  and Run It
 
             //Call Mcs / Csc
-
+            LastCompiledExecutable = outputExeName;
             parameters.OutputAssembly = outputExeName;
 
             CompilerResults results = icc.CompileAssemblyFromSource(parameters, code);
 
             if (results.Errors.Count > 0)
             {
-                //TODO: Add Errors to output
-                //throw new Exception("Errors During Compilation ");
+                
 
                 foreach (var error in results.Errors)
                 {
@@ -274,11 +104,11 @@ class NBodySystem
 
             var sb = programClosure.BuildFullSourceCode(programClosure.Runtime);
             var end = Environment.TickCount - start;
-            Console.WriteLine("Compilation time: {0} ms", end);
+             CompilerErrors +=String.Format("Compilation time: {0} ms", end);
 
             var opcodes = programClosure.MethodClosure;
 
-            var intermediateOutput = "\n";
+            var intermediateOutput = "";
 
             foreach (var opcode in opcodes)
             {
@@ -292,7 +122,8 @@ class NBodySystem
 
                 foreach (var op in opcode.Value.MidRepresentation.LocalOperations)
                 {
-                    intermediateOutput += "     " + op +"\n";
+                    var oper = string.Format("{1}\t({0})", op.Kind, op.Value ?? ""); ;
+                    intermediateOutput += "     " + oper + "\n";
                 }
 
                 intermediateOutput += "\n";
@@ -303,21 +134,7 @@ class NBodySystem
 
             ILCode = intermediateOutput;
 
-//            sb.ToFile(commandLineParse.OutputCpp);
 
-//            NativeCompilationUtils.CompileAppToNativeExe(commandLineParse.OutputCpp,
-//                                                         commandLineParse.ApplicationNativeExe);
-
-//            var programClosure = new ProgramClosure(definition, optimizationsTable);
-//            var sb = programClosure.BuildFullSourceCode();
-//            var end = Environment.TickCount - start;
-//            Console.WriteLine("Compilation time: {0} ms", end);
-//
-//            sb.ToFile(commandLineParse.OutputCpp);
-//
-//            NativeCompilationUtils.SetCompilerOptions("gcc");
-//            NativeCompilationUtils.CompileAppToNativeExe(commandLineParse.OutputCpp,
-//                commandLineParse.ApplicationNativeExe);
 
             //TODO: Make this call all the different compilers i.e. TestHelloWorld_GCC.exe etc...
 
@@ -330,9 +147,15 @@ class NBodySystem
             get { return _sourceCode; }
             set
             {
-                _sourceCode = value;
-                Recompile();
-                Changed(()=>SourceCode);
+                if (_sourceCode != value)
+                {
+                   
+                    _sourceCode = value;
+                    OutputCode = "";
+                    ILCode = "";
+                    Recompile();
+                    Changed(() => SourceCode);
+                }
             }
         }
 
@@ -344,9 +167,12 @@ class NBodySystem
             get { return _ilCode; }
             set
             {
-                _ilCode = value;
-                Window.IL.Text = value;
-                Changed(() => ILCode);
+                if (_ilCode != value)
+                {
+                    _ilCode = value;
+                    Window.IL.Text = value;
+                    Changed(() => ILCode);
+                }
             }
         }
 
@@ -356,9 +182,21 @@ class NBodySystem
             get { return _outputCode; }
             set
             {
-                _outputCode = value;
-                Window.Output.Text = value;
-                Changed(()=>OutputCode);
+                if (_outputCode != value)
+                {
+                    _outputCode = value;
+                    try
+                    {
+
+                        Window.Output.Text = value;
+                    }
+                    catch (Exception)
+                    {
+
+
+                    }
+                    Changed(() => OutputCode);
+                }
             }
         }
 
@@ -375,12 +213,11 @@ class NBodySystem
 
 
 
-        public MainWindowViewModel(MainWindow window)
+        public MainWindowViewModel( )
         {
-            Window = window;
+         
           
-            _sourceCode = InitialCode;
-            Recompile();
+          
         }
 
         private void Recompile()

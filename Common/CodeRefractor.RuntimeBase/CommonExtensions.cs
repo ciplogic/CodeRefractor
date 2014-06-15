@@ -209,17 +209,24 @@ namespace CodeRefractor.RuntimeBase
             }
         }
 
-        public static string ExecuteCommand(this string pathToGpp, string arguments, string workingDirectory)
+        public static string ExecuteCommand(this string pathToExe, string arguments="", string workingDirectory="")
         {
+            if (workingDirectory == "")
+            {
+                workingDirectory = Path.GetDirectoryName(pathToExe);
+            }
+
             var p = new Process
             {
                 StartInfo =
                 {
-                    FileName = pathToGpp,
+
+                    FileName = pathToExe,
                     Arguments = arguments,
                     WorkingDirectory = workingDirectory,
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
+                    WindowStyle = ProcessWindowStyle.Hidden,
                     UseShellExecute = false
                 }
             };
