@@ -10,7 +10,13 @@ namespace CodeRefractor.RuntimeBase.Config
 {
     public class OptimizationLevelBase
     {
-        public virtual List<OptimizationPass> BuildOptimizationPasses0()
+		public List<string> EnabledCategories {get;set;}
+		public OptimizationLevelBase()
+		{
+			EnabledCategories = new List<string> ();
+		}
+
+		public virtual List<OptimizationPass> BuildOptimizationPasses0()
         {
             throw new NotImplementedException();
         }

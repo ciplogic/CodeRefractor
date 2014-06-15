@@ -39,7 +39,7 @@ namespace CodeRefractor.CodeWriter.Platform
         {
             var sb = new StringBuilder();
 
-            sb.AppendLine("void mapLibs() {");
+            sb.AppendLine("System_Void mapLibs() {");
             var pos = 0;
             foreach (var library in LinkingData.Libraries)
             {

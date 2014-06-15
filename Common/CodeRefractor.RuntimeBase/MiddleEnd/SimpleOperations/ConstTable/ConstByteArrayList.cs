@@ -37,7 +37,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.ConstTable
         public static string BuildConstantTable()
         {
             var sb = new StringBuilder();
-            sb.AppendLine("void RuntimeHelpersBuildConstantTable() {");
+            sb.AppendLine("System_Void RuntimeHelpersBuildConstantTable() {");
             foreach (var item in Instance.ItemList)
             {
                 var rightArray = item.Data;

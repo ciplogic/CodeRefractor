@@ -101,30 +101,30 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 var opcodeStr = instruction.OpCode.Value;
                 switch (opcodeStr)
                 {
-                    case ObcodeIntValues.Beq:
-                    case ObcodeIntValues.BeqS:
-                    case ObcodeIntValues.Bne:
-                    case ObcodeIntValues.BneS:
-                    case ObcodeIntValues.Bge:
-                    case ObcodeIntValues.BgeS:
-                    case ObcodeIntValues.Bgt:
-                    case ObcodeIntValues.BgtS:
-                    case ObcodeIntValues.BrTrueS:
-                    case ObcodeIntValues.BrTrue:
-                    case ObcodeIntValues.BrZero:
-                    case ObcodeIntValues.BrZeroS:
-                    case ObcodeIntValues.Blt:
-                    case ObcodeIntValues.BltS:
-                    case ObcodeIntValues.BrS:
-                    case ObcodeIntValues.Br:
-                    case ObcodeIntValues.Leave:
-                    case ObcodeIntValues.LeaveS:
+                    case OpcodeIntValues.Beq:
+                    case OpcodeIntValues.BeqS:
+                    case OpcodeIntValues.Bne:
+                    case OpcodeIntValues.BneS:
+                    case OpcodeIntValues.Bge:
+                    case OpcodeIntValues.BgeS:
+                    case OpcodeIntValues.Bgt:
+                    case OpcodeIntValues.BgtS:
+                    case OpcodeIntValues.BrTrueS:
+                    case OpcodeIntValues.BrTrue:
+                    case OpcodeIntValues.BrZero:
+                    case OpcodeIntValues.BrZeroS:
+                    case OpcodeIntValues.Blt:
+                    case OpcodeIntValues.BltS:
+                    case OpcodeIntValues.BrS:
+                    case OpcodeIntValues.Br:
+                    case OpcodeIntValues.Leave:
+                    case OpcodeIntValues.LeaveS:
                     {
                         var offset = ((Instruction) instruction.Operand).Offset;
                         AddLabelIfDoesntExist(offset, labels);
                     }
                         break;
-                    case ObcodeIntValues.Switch:
+                    case OpcodeIntValues.Switch:
                     {
                         var offsets = (Instruction[]) instruction.Operand;
                         foreach (var offset in offsets)
@@ -347,19 +347,19 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         {
             switch (opcodeValue)
             {
-                case ObcodeIntValues.Nop:
+                case OpcodeIntValues.Nop:
                     return true;
-                case ObcodeIntValues.Call:
+                case OpcodeIntValues.Call:
                     operationFactory.Call(instruction.Operand, crRuntime);
                     return true;
-                case ObcodeIntValues.CallVirt:
+                case OpcodeIntValues.CallVirt:
                     operationFactory.CallVirtual(instruction.Operand, crRuntime);
                     return true;
 
-                case ObcodeIntValues.CallInterface:
+                case OpcodeIntValues.CallInterface:
                     operationFactory.CallInterface(instruction.Operand, crRuntime);
                     return true;
-                case ObcodeIntValues.NewObj:
+                case OpcodeIntValues.NewObj:
                 {
                     var consInfo = (ConstructorInfo) instruction.Operand;
                     operationFactory.NewObject(consInfo, crRuntime);

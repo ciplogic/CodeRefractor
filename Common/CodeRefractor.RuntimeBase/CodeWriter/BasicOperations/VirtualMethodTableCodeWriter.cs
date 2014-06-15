@@ -44,7 +44,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         {
             var sb = new StringBuilder();
             sb.AppendLine("// --- Begin definition of virtual method tables ---");
-            sb.AppendLine("void setupTypeTable();")
+            sb.AppendLine("System_Void setupTypeTable();")
                 .AppendLine();
 
 

@@ -31,6 +31,7 @@ namespace CodeRefractor.RuntimeBase.Backend
             var sb = new StringBuilder();
 
             sb.AppendLine("#include \"sloth.h\"");
+            sb.AppendLine("#include <functional>");
 
             var virtualMethodTableCodeWriter = new VirtualMethodTableCodeWriter(typeTable, closure);
 
@@ -205,7 +206,7 @@ namespace CodeRefractor.RuntimeBase.Backend
 
         private static void WriteMainBody(MethodInterpreter interpreter, StringBuilder sb)
         {
-            sb.AppendLine("void initializeRuntime();");
+            sb.AppendLine("System_Void initializeRuntime();");
             sb.AppendFormat("int main(int argc, char**argv) {{").AppendLine();
             sb.AppendFormat("auto argsAsList = System::getArgumentsAsList(argc, argv);").AppendLine();
             sb.AppendLine("initializeRuntime();");
