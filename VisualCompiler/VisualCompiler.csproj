@@ -89,6 +89,10 @@
     <Compile Include="BraceFoldingStrategy.cs" />
     <Compile Include="CustomizedBrush.cs" />
     <Compile Include="MainWindowViewModel.cs" />
+    <Compile Include="Views\Dialogs\CompilerOptionsViewModel.cs" />
+    <Compile Include="Views\Dialogs\CompilerOptionsWindow.xaml.cs">
+      <DependentUpon>CompilerOptionsWindow.xaml</DependentUpon>
+    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -101,6 +105,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\Dialogs\CompilerOptionsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="NotificationViewModel.cs" />

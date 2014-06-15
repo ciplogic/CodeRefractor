@@ -3,7 +3,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using CodeRefractor.CompilerBackend.Optimizations.Purity;
-using CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions;
+using CodeRefractor.RuntimeBase.Backend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndPropagation;
 using CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndPropagation.ComplexAssignments;
 using CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndPropagation.SimpleAssignment;
@@ -16,6 +16,9 @@ using CodeRefractor.RuntimeBase.Backend.Optimizations.ReachabilityDfa;
 using CodeRefractor.RuntimeBase.Backend.Optimizations.RedundantExpressions;
 using CodeRefractor.RuntimeBase.Backend.Optimizations.SimpleDce;
 using CodeRefractor.RuntimeBase.Config;
+using CodeRefractor.RuntimeBase.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.SimpleAssignment;
+using CodeRefractor.RuntimeBase.MiddleEnd.Optimizations.Purity;
+using CodeRefractor.RuntimeBase.MiddleEnd.Optimizations.RedundantExpressions;
 using CodeRefractor.RuntimeBase.Optimizations;
 
 #endregion
@@ -25,14 +28,14 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
     public class OptimizationLevels : OptimizationLevelBase
     {
 
-        public override List<OptimizationPass> BuildOptimizationPasses0()
+        public override List<ResultingOptimizationPass> BuildOptimizationPasses0()
         {
-            return new List<OptimizationPass>();
+            return new List<ResultingOptimizationPass>();
         }
 
-        public override List<OptimizationPass> BuildOptimizationPasses3()
+        public override List<ResultingOptimizationPass> BuildOptimizationPasses3()
         {
-            return new OptimizationPass[]
+            return new ResultingOptimizationPass[]
             {
                 //new OneDefUsedNextLinePropagation(), //??
                 //new OneDefUsedPreviousLinePropagation(), //??
@@ -43,25 +46,26 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
         }
 
 
-        public override List<OptimizationPass> BuildOptimizationPasses2()
+        public override List<ResultingOptimizationPass> BuildOptimizationPasses2()
         {
-            return new OptimizationPass[]
+            this.EnabledCategories.Add(OptimizationCategories.CommonSubexpressionsElimination);
+            return new ResultingOptimizationPass[]
             {
                 //new OneAssignmentDeadStoreAssignment(), //??
                 //  //?? 
                           
                 // CSE
-                new PrecomputeRepeatedPureFunctionCall(),
-                new PrecomputeRepeatedBinaryOperators(),
-                new PrecomputeRepeatedUnaryOperators(),
-                new PrecomputeRepeatedFieldGets(),
             }.ToList();
         }
 
 
-        public override List<OptimizationPass> BuildOptimizationPasses1()
+        public override List<ResultingOptimizationPass> BuildOptimizationPasses1()
         {
-            return new OptimizationPass[]
+            
+            EnabledCategories.Add(OptimizationCategories.Propagation);
+            EnabledCategories.Add(OptimizationCategories.DeadCodeElimination);
+
+            return new ResultingOptimizationPass[]
             {
                 new AssignmentWithVregPrevLineFolding(),
                 new DeleteAssignmentWithSelf(),

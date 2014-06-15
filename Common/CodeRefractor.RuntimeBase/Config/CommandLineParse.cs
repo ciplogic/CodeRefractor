@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using CodeRefractor.RuntimeBase.Backend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.Optimizations;
 using CodeRefractor.RuntimeBase.Util;
 
@@ -28,7 +29,7 @@ namespace CodeRefractor.RuntimeBase.Config
 
         private static void InitializeOptimizationKindList(OptimizationKind optimizationKind)
         {
-            SortedOptimizations[optimizationKind] = new List<OptimizationPass>();
+            SortedOptimizations[optimizationKind] = new List<ResultingOptimizationPass>();
         }
 
         public void Process(string[] args)
@@ -107,10 +108,10 @@ namespace CodeRefractor.RuntimeBase.Config
         public string OutputPro = "output.pro";
         public string ApplicationInputAssembly = "SimpleAdditions.exe";
         public string ApplicationNativeExe = string.Empty;
-        public static List<OptimizationPass> OptimizationPasses;
+        public static List<ResultingOptimizationPass> OptimizationPasses;
 
-        public static Dictionary<OptimizationKind, List<OptimizationPass>> SortedOptimizations
-            = new Dictionary<OptimizationKind, List<OptimizationPass>>();
+        public static Dictionary<OptimizationKind, List<ResultingOptimizationPass>> SortedOptimizations
+            = new Dictionary<OptimizationKind, List<ResultingOptimizationPass>>();
 
         private static int _optimizerLevel;
 
@@ -130,6 +131,11 @@ namespace CodeRefractor.RuntimeBase.Config
                     optimizationList.AddRange(OptimizationLevelBase.Instance.BuildOptimizationPasses2());
                 }
                 OptimizationPasses = optimizationList;
+                var categories = new OptimizationCategories();
+                categories.BuildRelationsByReflection();
+                IEnumerable<ResultingOptimizationPass> closure = categories.Closure(OptimizationLevelBase.Instance.EnabledCategories);
+                OptimizationPasses.AddRange(closure);
+
                 SortOptimizations();
             }
         }
@@ -138,10 +144,10 @@ namespace CodeRefractor.RuntimeBase.Config
         {
             foreach (var optimizationPass in OptimizationPasses)
             {
-                List<OptimizationPass> list;
+                List<ResultingOptimizationPass> list;
                 if (!SortedOptimizations.TryGetValue(optimizationPass.Kind, out list))
                 {
-                    list = new List<OptimizationPass>();
+                    list = new List<ResultingOptimizationPass>();
                     SortedOptimizations[optimizationPass.Kind] = list;
                 }
                 list.Add(optimizationPass);

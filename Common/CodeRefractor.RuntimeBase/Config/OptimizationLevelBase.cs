@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using CodeRefractor.RuntimeBase.Backend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.Optimizations;
 
 #endregion
@@ -10,28 +11,29 @@ namespace CodeRefractor.RuntimeBase.Config
 {
     public class OptimizationLevelBase
     {
-		public List<string> EnabledCategories {get;set;}
+		public HashSet<string> EnabledCategories {get; private set;}
+
 		public OptimizationLevelBase()
 		{
-			EnabledCategories = new List<string> ();
+			EnabledCategories = new HashSet<string>();
 		}
 
-		public virtual List<OptimizationPass> BuildOptimizationPasses0()
+        public virtual List<ResultingOptimizationPass> BuildOptimizationPasses0()
         {
             throw new NotImplementedException();
         }
 
-        public virtual List<OptimizationPass> BuildOptimizationPasses3()
+        public virtual List<ResultingOptimizationPass> BuildOptimizationPasses3()
         {
             throw new NotImplementedException();
         }
 
-        public virtual List<OptimizationPass> BuildOptimizationPasses2()
+        public virtual List<ResultingOptimizationPass> BuildOptimizationPasses2()
         {
             throw new NotImplementedException();
         }
 
-        public virtual List<OptimizationPass> BuildOptimizationPasses1()
+        public virtual List<ResultingOptimizationPass> BuildOptimizationPasses1()
         {
             throw new NotImplementedException();
         }

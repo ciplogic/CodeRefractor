@@ -23,6 +23,7 @@ using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Folding;
 using ICSharpCode.AvalonEdit.Highlighting;
 using MahApps.Metro.Controls;
+using VisualCompiler.Views.Dialogs;
 using Path = System.IO.Path;
 
 namespace VisualCompiler
@@ -475,6 +476,16 @@ class NBodySystem
         return e;
     }
 }";
-    
+
+        private void OnShowCompilerOptions(object sender, RoutedEventArgs e)
+        {
+            var optionsWindow = new CompilerOptionsWindow();
+            optionsWindow.ShowDialog();
+            if(!optionsWindow.ViewModel.Accepted)
+                return;
+            var selectedCapabilities = optionsWindow.ViewModel.Capabilities;
+            
+
+        }
     }
 }

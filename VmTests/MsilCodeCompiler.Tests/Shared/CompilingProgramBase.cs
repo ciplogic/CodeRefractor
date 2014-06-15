@@ -9,6 +9,7 @@ using CodeRefractor.Compiler;
 using CodeRefractor.CompilerBackend;
 using CodeRefractor.CompilerBackend.OuputCodeWriter;
 using CodeRefractor.RuntimeBase;
+using CodeRefractor.RuntimeBase.Backend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.Optimizations;
 using CodeRefractor.RuntimeBase.Runtime;
 using CodeRefractor.RuntimeBase.Util;
@@ -20,7 +21,7 @@ namespace MsilCodeCompiler.Tests.Shared
 {
     public class CompilingProgramBase
     {
-        protected bool EvalCSharpMain(string bodyOfMain, List<OptimizationPass> optimizationPasses = null)
+        protected bool EvalCSharpMain(string bodyOfMain, List<ResultingOptimizationPass> optimizationPasses = null)
         {
             var code = String.Format(@"
 using System;
@@ -31,7 +32,7 @@ class C {{
             return EvaluateCSharpToNative(code, optimizationPasses);
         }
 
-        protected bool TryCSharpMain(string bodyOfMain, List<OptimizationPass> optimizationPasses = null)
+        protected bool TryCSharpMain(string bodyOfMain, List<ResultingOptimizationPass> optimizationPasses = null)
         {
             var code = String.Format(@"
 using System;
@@ -55,9 +56,9 @@ class C {{
 
         private string assm;
 
-        public static List<OptimizationPass> DefaultOptimizationPasses()
+        public static List<ResultingOptimizationPass> DefaultOptimizationPasses()
         {
-            return new OptimizationPass[]
+            return new ResultingOptimizationPass[]
             {
                 //new VRegConstantFolding(),
                 //new DceVRegUnused(),
@@ -65,7 +66,7 @@ class C {{
             }.ToList();
         }
 
-        protected bool EvaluateCSharpToNative(string code, List<OptimizationPass> optimizationPasses = null)
+        protected bool EvaluateCSharpToNative(string code, List<ResultingOptimizationPass> optimizationPasses = null)
         {
             string expectedInput;
             var outputCpp = GenerateOutputCppFromCode(code, optimizationPasses, out expectedInput);
@@ -81,7 +82,7 @@ class C {{
             return actualOutput == expectedInput;
         }
 
-        protected bool TryCompileCSharp(string code, List<OptimizationPass> optimizationPasses = null)
+        protected bool TryCompileCSharp(string code, List<ResultingOptimizationPass> optimizationPasses = null)
         {
             string expectedInput;
             var outputCpp = GenerateOutputCppFromCode(code, optimizationPasses, out expectedInput);
@@ -90,7 +91,7 @@ class C {{
             return result;
         }
 
-        private string GenerateOutputCppFromCode(string code, List<OptimizationPass> optimizationPasses,
+        private string GenerateOutputCppFromCode(string code, List<ResultingOptimizationPass> optimizationPasses,
             out string expectedInput)
         {
             const string outputCpp = "output.cpp";

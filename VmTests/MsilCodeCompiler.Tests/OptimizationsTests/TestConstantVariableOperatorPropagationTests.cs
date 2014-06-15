@@ -1,6 +1,7 @@
 ﻿#region Usings
 
 using System.Collections.Generic;
+using CodeRefractor.RuntimeBase.Backend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndPropagation;
 using CodeRefractor.RuntimeBase.Optimizations;
 using MsilCodeCompiler.Tests.Shared;
@@ -16,7 +17,7 @@ namespace MsilCodeCompiler.Tests.OptimizationsTests
         [Test]
         public void TestSimple()
         {
-            var optimizations = new List<OptimizationPass>
+            var optimizations = new List<ResultingOptimizationPass>
             {
                 new ConstantVariableOperatorPropagation()
             };

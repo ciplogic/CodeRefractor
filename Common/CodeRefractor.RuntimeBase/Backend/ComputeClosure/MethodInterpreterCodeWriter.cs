@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using CodeRefractor.CodeWriter.BasicOperations;
 using CodeRefractor.CodeWriter.Platform;
+using CodeRefractor.RuntimeBase.Backend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.CodeWriter.BasicOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.Optimizations;
@@ -43,7 +44,7 @@ namespace CodeRefractor.RuntimeBase.Backend.ComputeClosure
             return interpreter.WriteDelegateCallCode();
         }
 
-        public static bool ApplyLocalOptimizations(IEnumerable<OptimizationPass> optimizationPasses,
+        public static bool ApplyLocalOptimizations(IEnumerable<ResultingOptimizationPass> optimizationPasses,
             MethodInterpreter interpreter)
         {
             if (optimizationPasses == null)
@@ -51,7 +52,7 @@ namespace CodeRefractor.RuntimeBase.Backend.ComputeClosure
             if (interpreter.Method.IsAbstract)
                 return false;
             var result = false;
-            var optimizationsList = new List<OptimizationPass>(optimizationPasses);
+            var optimizationsList = new List<ResultingOptimizationPass>(optimizationPasses);
             var didOptimize = true;
             if (interpreter.Method.Name == "pollEvents")
             {

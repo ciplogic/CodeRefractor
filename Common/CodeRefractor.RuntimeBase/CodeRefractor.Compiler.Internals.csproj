@@ -170,7 +170,6 @@
     <Compile Include="MiddleEnd\SimpleOperations\NewConstructedObject.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\Operators\UnaryOperator.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\Identifiers\VariableKind.cs" />
-    <Compile Include="Optimizations\OptimizationPass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Shared\OpcodeBranchNames.cs" />
     <Compile Include="Shared\OpcodeOperatorNames.cs" />

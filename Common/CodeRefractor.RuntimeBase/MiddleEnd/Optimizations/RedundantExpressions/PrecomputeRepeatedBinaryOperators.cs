@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.Backend.Optimizations.RedundantExpressions;
-using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
@@ -12,9 +11,9 @@ using CodeRefractor.RuntimeBase.Optimizations;
 
 #endregion
 
-namespace CodeRefractor.CompilerBackend.Optimizations.RedundantExpressions
+namespace CodeRefractor.RuntimeBase.MiddleEnd.Optimizations.RedundantExpressions
 {	
-	[Optimization(Category = OptimizationCategories.CommonSubexpressions)]
+	[Optimization(Category = OptimizationCategories.CommonSubexpressionsElimination)]
     internal class PrecomputeRepeatedBinaryOperators : BlockOptimizationPass
     {
         public override bool OptimizeBlock(MethodInterpreter midRepresentation, int startRange, int endRange,

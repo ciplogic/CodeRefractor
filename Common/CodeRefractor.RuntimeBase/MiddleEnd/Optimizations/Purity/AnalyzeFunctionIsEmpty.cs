@@ -1,13 +1,13 @@
 #region Usings
 
 using CodeRefractor.CompilerBackend.Optimizations.Common;
-using CodeRefractor.RuntimeBase.MiddleEnd;
+using CodeRefractor.CompilerBackend.Optimizations.Purity;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.Optimizations;
 
 #endregion
 
-namespace CodeRefractor.CompilerBackend.Optimizations.Purity
+namespace CodeRefractor.RuntimeBase.MiddleEnd.Optimizations.Purity
 {
 	[Optimization(Category = OptimizationCategories.Analysis)]
     public class AnalyzeFunctionIsEmpty : ResultingGlobalOptimizationPass

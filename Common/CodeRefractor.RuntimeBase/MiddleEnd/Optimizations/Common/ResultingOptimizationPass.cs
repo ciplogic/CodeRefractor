@@ -7,7 +7,7 @@ using CodeRefractor.RuntimeBase.Optimizations;
 
 namespace CodeRefractor.RuntimeBase.Backend.Optimizations.Common
 {
-    public abstract class ResultingOptimizationPass : OptimizationPass
+    public abstract class ResultingOptimizationPass
     {
         //returns true if it succeed to apply any optimizations
         //Try to return false by default
@@ -15,8 +15,9 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.Common
 
         private bool _result;
 
-        protected ResultingOptimizationPass(OptimizationKind kind) : base(kind)
+        protected ResultingOptimizationPass(OptimizationKind kind)
         {
+            Kind = kind;
         }
 
         public bool Result
@@ -27,8 +28,19 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.Common
 
         public abstract void OptimizeOperations(MethodInterpreter interpreter);
 
+    
 
-        public override bool Optimize(MethodInterpreter intermediateCode)
+
+        public OptimizationKind Kind { get; set; }
+
+        public virtual bool CheckPreconditions(MethodInterpreter midRepresentation)
+        {
+            return true;
+        }
+         //returns true if it succeed to apply any optimizations
+        //Try to return false by default
+        //If the code succeeded to optimize something that other optimizations may benefit, return true
+        public bool Optimize(MethodInterpreter intermediateCode)
         {
             _result = false;
             try

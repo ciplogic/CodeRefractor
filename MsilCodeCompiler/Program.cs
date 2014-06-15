@@ -7,6 +7,7 @@ using CodeRefactor.OpenRuntime;
 using CodeRefractor.CompilerBackend.Optimizations.Util;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Config;
+using CodeRefractor.RuntimeBase.Optimizations;
 using CodeRefractor.RuntimeBase.Runtime;
 using CodeRefractor.RuntimeBase.Util;
 
@@ -57,6 +58,7 @@ namespace CodeRefractor.Compiler
 
             OptimizationLevelBase.Instance = new OptimizationLevels();
             CommandLineParse.OptimizerLevel =2;
+            OptimizationLevelBase.Instance.EnabledCategories.Add(OptimizationCategories.All);
             CallCompiler("", "");
         }
     }
