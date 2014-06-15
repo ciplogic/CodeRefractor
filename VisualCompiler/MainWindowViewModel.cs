@@ -1,10 +1,8 @@
 ﻿using System;
 using System.CodeDom.Compiler;
-using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using CodeRefactor.OpenRuntime;
-using CodeRefractor.CompilerBackend.Optimizations.Util;
 using CodeRefractor.CompilerBackend.ProgramWideOptimizations.ConstParameters;
 using CodeRefractor.CompilerBackend.ProgramWideOptimizations.Virtual;
 using CodeRefractor.RuntimeBase;
@@ -12,16 +10,12 @@ using CodeRefractor.RuntimeBase.Backend.ProgramWideOptimizations;
 using CodeRefractor.RuntimeBase.Config;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.Runtime;
-using CodeRefractor.RuntimeBase.Util;
 using Microsoft.CSharp;
 
 namespace VisualCompiler
 {
     public class MainWindowViewModel : NotificationViewModel
     {
-        
-
-
         public MainWindow Window;
         private static CSharpCodeProvider codeProvider = new CSharpCodeProvider();
         public static ICodeCompiler icc = codeProvider.CreateCompiler();
@@ -93,9 +87,11 @@ namespace VisualCompiler
             var definition = asm.EntryPoint;
             var start = Environment.TickCount;
 
-            var optimizationsTable = new ProgramOptimizationsTable();
-            optimizationsTable.Add(new DevirtualizerIfOneImplemetor());
-            optimizationsTable.Add(new CallToFunctionsWithSameConstant());
+            var optimizationsTable = new ProgramOptimizationsTable
+            {
+                new DevirtualizerIfOneImplemetor(),
+                new CallToFunctionsWithSameConstant()
+            };
 
             var crRuntime = new CrRuntimeLibrary();
             crRuntime.ScanAssembly(typeof(CrString).Assembly);
@@ -114,7 +110,7 @@ namespace VisualCompiler
             {
                 intermediateOutput += " " + opcode.Key + ": \n";
 
-                if (opcode.Value.Kind == MethodKind.RuntimeCppMethod || opcode.Value.Kind == MethodKind.RuntimeLibrary)
+                if (opcode.Value.Kind != MethodKind.Default)
                 {
                     intermediateOutput += "// Provided By Framework     \n\n";
                     continue;

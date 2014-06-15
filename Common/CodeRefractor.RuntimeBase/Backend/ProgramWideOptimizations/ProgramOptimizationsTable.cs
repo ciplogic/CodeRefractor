@@ -1,5 +1,6 @@
 ﻿#region Usings
 
+using System.Collections;
 using System.Collections.Generic;
 using CodeRefractor.CompilerBackend.ProgramWideOptimizations;
 
@@ -7,7 +8,7 @@ using CodeRefractor.CompilerBackend.ProgramWideOptimizations;
 
 namespace CodeRefractor.RuntimeBase.Backend.ProgramWideOptimizations
 {
-    public class ProgramOptimizationsTable
+    public class ProgramOptimizationsTable : IEnumerable<ProgramOptimizationBase>
     {
         public readonly List<ProgramOptimizationBase> Optimizations = new List<ProgramOptimizationBase>();
 
@@ -24,6 +25,16 @@ namespace CodeRefractor.RuntimeBase.Backend.ProgramWideOptimizations
                 result |= optimization.Optimize(program);
             }
             return result;
+        }
+
+        public IEnumerator<ProgramOptimizationBase> GetEnumerator()
+        {
+            return Optimizations.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return ((IEnumerable) Optimizations).GetEnumerator();
         }
     }
 }

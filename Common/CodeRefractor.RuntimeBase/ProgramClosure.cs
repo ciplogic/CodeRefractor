@@ -69,9 +69,11 @@ namespace CodeRefractor.RuntimeBase
 
         private static ProgramOptimizationsTable BuildProgramWideOptimizationsTable()
         {
-            var optimizationsTable = new ProgramOptimizationsTable();
-            optimizationsTable.Add(new DevirtualizerIfOneImplemetor());
-            optimizationsTable.Add(new CallToFunctionsWithSameConstant());
+            var optimizationsTable = new ProgramOptimizationsTable
+            {
+                new DevirtualizerIfOneImplemetor(),
+                new CallToFunctionsWithSameConstant()
+            };
             return optimizationsTable;
         }
 

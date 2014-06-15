@@ -35,9 +35,6 @@ namespace CrQt
             var definition = asm.EntryPoint;
             var start = Environment.TickCount;
 
-            var optimizationsTable = new ProgramOptimizationsTable();
-            optimizationsTable.Add(new DevirtualizerIfOneImplemetor());
-            optimizationsTable.Add(new CallToFunctionsWithSameConstant());
 
             var crRuntime = new CrRuntimeLibrary();
             crRuntime.ScanAssembly(typeof(CrString).Assembly);
