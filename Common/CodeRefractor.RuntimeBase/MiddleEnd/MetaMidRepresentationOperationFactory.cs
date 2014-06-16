@@ -534,8 +534,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
         private void BranchTwoOperators(int jumpTo, string opcode)
         {
+            var secondVar = _evaluator.Pop(); // Seems the order here was in reverse
             var firstVar = _evaluator.Pop();
-            var secondVar = _evaluator.Pop();
 
             AddOperation(OperationKind.BranchOperator,
                 new BranchOperator(opcode)

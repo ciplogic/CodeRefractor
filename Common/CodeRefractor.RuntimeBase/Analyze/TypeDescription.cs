@@ -168,7 +168,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
                 var obj = Activator.CreateInstance(type);
                 return obj.ToString();
             }
-            var result = string.Format("std::shared_ptr <{0}>(0)", type.ToCppName(true));
+            var result = string.Format("{0}(0)", type.ToCppName(true));
             return result;
         }
 

@@ -113,6 +113,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                     case OpcodeIntValues.BrTrue:
                     case OpcodeIntValues.BrZero:
                     case OpcodeIntValues.BrZeroS:
+                    case OpcodeIntValues.Ble: // Were missing leading to no labels being generated
+                    case OpcodeIntValues.BleS:
                     case OpcodeIntValues.Blt:
                     case OpcodeIntValues.BltS:
                     case OpcodeIntValues.BrS:

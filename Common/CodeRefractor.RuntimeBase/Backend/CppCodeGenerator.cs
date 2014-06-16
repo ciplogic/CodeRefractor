@@ -100,12 +100,23 @@ namespace CodeRefractor.RuntimeBase.Backend
 
         private static void WriteClosureStructBodies(Type[] typeDatas, StringBuilder sb, CrRuntimeLibrary crRuntime)
         {
+           
+
             foreach (var typeData in typeDatas)
             {
                 var mappedType = typeData.GetMappedType();
                 if (!mappedType.IsGenericType)
                     sb.AppendFormat("struct {0}; ", mappedType.ToCppMangling()).AppendLine();
             }
+
+
+            //Order typedefs so that parents are declared before children, seems sometimes compiler complains of invalid use and forward declarations
+            typeDatas = typeDatas.Select(x => new { key = (x.BaseType ?? x).Name, item = x })
+           .OrderBy(x => x.item.BaseType == null)
+           .ThenBy(x => x.key)
+           .ThenBy(x => x.item.BaseType != null)
+           .Select(x => x.item).Reverse().ToArray(); 
+
             foreach (var typeData in typeDatas)
             {
                 if (DelegateManager.IsTypeDelegate(typeData))
