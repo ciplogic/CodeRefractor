@@ -29,6 +29,28 @@ void System_Array_Resize(std::shared_ptr< Array<T> >* arr, int newSize)
 	(*arr)->Items = (T*)realloc((*arr)->Items, sizeof(T)*newSize);
 }
 
+
+template<class T>
+struct BoxedT : public System_Object
+{
+	T Data;
+};
+template<class T>
+std::shared_ptr<System_Object> box_value(T value, int typeId){
+	auto result = std::make_shared<BoxedT< T > >();
+	result->_typeId = typeId;
+	result->Data = value;
+	return result;
+}
+
+template<class T>
+T unbox_value(std::shared_ptr<System_Object> value){
+	auto resultObject = value.get();
+	auto castedUnboxing = (BoxedT<T>*)resultObject;
+	return castedUnboxing->Data;
+}
+
+
 extern const wchar_t _stringTable[];
 std::shared_ptr<System_String> _str(int index)
 {

@@ -38,7 +38,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
         FieldRefAssignment,
         SizeOf,
         AddressOfArrayItem,
-
+        Box,
+        Unbox,
 
         Comment,
     }

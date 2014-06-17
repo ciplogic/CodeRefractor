@@ -869,5 +869,31 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         {
             _evaluator.Clear();
         }
+
+        public void Box()
+        {
+            var valueToBox = _evaluator.Pop(); 
+            var result = SetNewVReg();
+            result.FixedType = new TypeDescription(typeof(object));
+            var boxing = new Boxing()
+            {
+                AssignedTo = result,
+                Value = valueToBox
+            };
+            AddOperation(OperationKind.Box, boxing);
+        }
+
+        public void Unbox(Type operand)
+        {
+            var valueToBox = _evaluator.Pop();
+            var result = SetNewVReg();
+            result.FixedType = new TypeDescription(operand);
+            var boxing = new Unboxing()
+            {
+                AssignedTo = result,
+                Value = valueToBox
+            };
+            AddOperation(OperationKind.Unbox, boxing);
+        }
     }
 }

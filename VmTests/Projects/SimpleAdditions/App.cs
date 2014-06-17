@@ -2,21 +2,16 @@ using System;
 
 class NBody
 {
+    static void Log(object data)
+    {
+        int a = (int) data;
+        Console.WriteLine(a);
+    }
     public static void Main()
     {
         Console.WriteLine("NBody");
         int n = 500000;
-        NBodySystem bodies = new NBodySystem();
-        Console.WriteLine(bodies.Energy());
-        var action = new Action(() =>
-        {
-            for (int i = 0; i < n; i++) bodies.Advance(0.01);
-            Console.WriteLine(bodies.Energy());
-            Console.WriteLine("Simpler Example: ");
-        });
-
-        action();
-
+        Log(n);
 
 
     }

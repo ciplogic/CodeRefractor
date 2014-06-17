@@ -205,6 +205,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
             if (HandleBranching(opcodeStr, offset, operationFactory))
                 return;
+            if (HandleBoxing(opcodeStr, offset, operationFactory, instruction))
+                return;
 
             if (HandleExtraInstructions(instruction, operationFactory, opcodeStr)) return;
             throw new InvalidOperationException(String.Format("Unknown instruction: {0}", instruction));
@@ -556,6 +558,28 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 operationFactory.LoadNull();
                 return true;
             }
+            return false;
+        }
+
+        private static bool HandleBoxing(string opcodeStr, int offset, MetaMidRepresentationOperationFactory operationFactory, Instruction instruction)
+        {
+            #region Branching
+
+            if (opcodeStr == "box"
+                )
+            {
+                operationFactory.Box();
+                return true;
+            }
+            if (opcodeStr == "unbox.any"
+              )
+            {
+                operationFactory.Unbox((Type)instruction.Operand);
+                return true;
+            }
+
+            #endregion
+
             return false;
         }
 

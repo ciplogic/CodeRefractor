@@ -25,6 +25,13 @@ namespace CodeRefractor.RuntimeBase.Analyze
                 case OperationKind.Assignment:
                     result.AddUsage(((Assignment) operation.Value).Right);
                     break;
+
+                case OperationKind.Box:
+                    result.AddUsage(((Boxing)operation.Value).Value);
+                    break;
+                case OperationKind.Unbox:
+                    result.AddUsage(((Unboxing)operation.Value).Value);
+                    break;
                 case OperationKind.UnaryOperator:
                     var unaryOperator = ((UnaryOperator) operation.Value);
                     result.AddUsage(unaryOperator.Left);
@@ -230,6 +237,12 @@ namespace CodeRefractor.RuntimeBase.Analyze
                 case OperationKind.GetField:
                     var fieldGetter = (FieldGetter) operation.Value;
                     return fieldGetter.AssignedTo;
+                case OperationKind.Box:
+                    var boxing = (Boxing)operation.Value;
+                    return boxing.AssignedTo;
+                case OperationKind.Unbox:
+                    var unboxing = (Unboxing)operation.Value;
+                    return unboxing.AssignedTo;
                 case OperationKind.BinaryOperator:
                 case OperationKind.UnaryOperator:
                     var binOp = (OperatorBase) operation.Value;

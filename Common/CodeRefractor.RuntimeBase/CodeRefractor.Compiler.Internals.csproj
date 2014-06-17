@@ -100,6 +100,7 @@
     <Compile Include="MiddleEnd\MethodInterpreterKey.cs" />
     <Compile Include="MiddleEnd\MethodInterpreterKeyUtils.cs" />
     <Compile Include="MiddleEnd\RuntimeLibraryDescription.cs" />
+    <Compile Include="MiddleEnd\SimpleOperations\Boxing.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\Identifiers\EscapingMode.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\RefArrayItemAssignment.cs" />
     <Compile Include="ProgramClosure.cs" />

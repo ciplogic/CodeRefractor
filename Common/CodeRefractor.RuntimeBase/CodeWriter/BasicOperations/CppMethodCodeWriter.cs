@@ -87,6 +87,12 @@ namespace CodeRefractor.RuntimeBase.CodeWriter.BasicOperations
                     case OperationKind.Comment:
                         HandleComment(operation.Value.ToString(), bodySb);
                         break;
+                    case OperationKind.Box:
+                        HandleBox((Boxing)operation.Value, bodySb, typeTable);
+                        break;
+                    case OperationKind.Unbox:
+                        HandleUnbox((Unboxing)operation.Value, bodySb, typeTable);
+                        break;
 
                     default:
                         throw new InvalidOperationException(
@@ -99,6 +105,26 @@ namespace CodeRefractor.RuntimeBase.CodeWriter.BasicOperations
             }
             bodySb.AppendLine("}");
             return bodySb;
+        }
+
+        private static void HandleUnbox(Unboxing unboxing, StringBuilder bodySb, TypeDescriptionTable typeTable)
+        {
+            var typeDescription = unboxing.AssignedTo.ComputedType();
+            bodySb
+                .AppendFormat("{0} = unbox_value<{2}>({1});",
+                    unboxing.AssignedTo.Name,
+                    unboxing.Value.Name,
+                    typeDescription.ClrType.ToDeclaredVariableType(true, EscapingMode.Stack));
+        }
+        private static void HandleBox(Boxing boxing, StringBuilder bodySb, TypeDescriptionTable typeTable)
+        {
+            TypeDescription typeDescription = boxing.Value.ComputedType();
+            bodySb
+                .AppendFormat("{0} = box_value<{2}>({1}, {3});",
+                    boxing.AssignedTo.Name,
+                    boxing.Value.Name,
+                    typeDescription.ClrType.ToDeclaredVariableType(true, EscapingMode.Stack),
+                    typeTable.GetTypeId(typeDescription.ClrType));
         }
 
         private static void HandleComment(string toString, StringBuilder bodySb)
