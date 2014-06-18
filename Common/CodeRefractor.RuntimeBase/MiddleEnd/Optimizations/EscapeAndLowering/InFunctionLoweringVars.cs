@@ -106,9 +106,11 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.EscapeAndLowering
                     break;
 
                 case OperationKind.Call:
+                    HandleCall(localVariable, candidateVariables, op, crRuntime);
+                    break;
                 case OperationKind.CallVirtual:
                 case OperationKind.CallInterface:
-                    HandleCall(localVariable, candidateVariables, op, crRuntime);
+                    HandleCallVirtual( candidateVariables, op);
                     break;
                 case OperationKind.BinaryOperator:
                 case OperationKind.UnaryOperator:
@@ -130,6 +132,18 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.EscapeAndLowering
                     break;
                 default:
                     throw new NotImplementedException();
+            }
+        }
+
+        private static void HandleCallVirtual( HashSet<LocalVariable> candidateVariables, LocalOperation op)
+        {
+            var methodData = (MethodData)op.Value;
+            foreach (var identifierValue in methodData.Parameters)
+            {
+                var localVariable = identifierValue as LocalVariable;
+                if(localVariable==null)
+                    continue;
+                candidateVariables.Remove(localVariable);
             }
         }
 
