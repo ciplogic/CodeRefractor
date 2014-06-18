@@ -4,16 +4,19 @@ using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
+using CodeRefractor.RuntimeBase.Optimizations;
 
 #endregion
 
 namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndPropagation
 {
+    [Optimization(Category = OptimizationCategories.Constants)]
     public class ConstantVariablePropagationInCall : ConstantVariablePropagationBase
     {
         public override void OptimizeOperations(MethodInterpreter interpreter)
         {
-            var operations = interpreter.MidRepresentation.LocalOperations.ToArray();
+            var useDef = interpreter.MidRepresentation.UseDef;
+            var operations = useDef.GetLocalOperations();
             for (var i = 0; i < operations.Length - 1; i++)
             {
                 Assignment srcVariableDefinition;

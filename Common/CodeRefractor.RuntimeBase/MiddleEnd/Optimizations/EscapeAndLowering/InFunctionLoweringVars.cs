@@ -10,12 +10,14 @@ using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
+using CodeRefractor.RuntimeBase.Optimizations;
 using CodeRefractor.RuntimeBase.Runtime;
 
 #endregion
 
 namespace CodeRefractor.RuntimeBase.Backend.Optimizations.EscapeAndLowering
 {
+    [Optimization(Category = OptimizationCategories.Analysis)]
     internal class InFunctionLoweringVars : ResultingInFunctionOptimizationPass
     {
         public override void OptimizeOperations(MethodInterpreter interpreter)

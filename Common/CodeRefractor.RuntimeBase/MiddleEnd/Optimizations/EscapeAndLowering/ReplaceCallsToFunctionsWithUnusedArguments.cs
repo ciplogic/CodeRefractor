@@ -6,11 +6,13 @@ using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
+using CodeRefractor.RuntimeBase.Optimizations;
 
 #endregion
 
 namespace CodeRefractor.RuntimeBase.Backend.Optimizations.EscapeAndLowering
 {
+    [Optimization(Category = OptimizationCategories.Global)]
     internal class ReplaceCallsToFunctionsWithUnusedArguments : ResultingInFunctionOptimizationPass
     {
         public override void OptimizeOperations(MethodInterpreter interpreter)

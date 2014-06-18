@@ -16,6 +16,7 @@ using CodeRefractor.RuntimeBase.Backend.Optimizations.ReachabilityDfa;
 using CodeRefractor.RuntimeBase.Backend.Optimizations.RedundantExpressions;
 using CodeRefractor.RuntimeBase.Backend.Optimizations.SimpleDce;
 using CodeRefractor.RuntimeBase.Config;
+using CodeRefractor.RuntimeBase.MiddleEnd.Optimizations.ConstantFoldingAndPropagation;
 using CodeRefractor.RuntimeBase.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.SimpleAssignment;
 using CodeRefractor.RuntimeBase.MiddleEnd.Optimizations.Purity;
 using CodeRefractor.RuntimeBase.MiddleEnd.Optimizations.RedundantExpressions;
@@ -30,9 +31,6 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
         static OptimizationLevels()
         {
             OptimizationCategories.Instance.AddChildToParentOptimizationRelation(
-                OptimizationCategories.Level1, OptimizationCategories.BlockBased
-                );
-            OptimizationCategories.Instance.AddChildToParentOptimizationRelation(
                 OptimizationCategories.Level1, OptimizationCategories.Propagation
                 );
             OptimizationCategories.Instance.AddChildToParentOptimizationRelation(
@@ -42,7 +40,25 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
                 OptimizationCategories.Level3, OptimizationCategories.Level2
                 );
             OptimizationCategories.Instance.AddChildToParentOptimizationRelation(
+                OptimizationCategories.All, OptimizationCategories.Level3
+                );
+
+            //level 1 optimizations
+            OptimizationCategories.Instance.AddChildToParentOptimizationRelation(
                 OptimizationCategories.Level1, OptimizationCategories.BlockBased
+                );
+
+            //level 2 optimizations
+            OptimizationCategories.Instance.AddChildToParentOptimizationRelation(
+                OptimizationCategories.Level1, OptimizationCategories.Analysis
+                );
+            
+            //level 3 optimizations
+            OptimizationCategories.Instance.AddChildToParentOptimizationRelation(
+                OptimizationCategories.Level3, OptimizationCategories.Global
+                );
+            OptimizationCategories.Instance.AddChildToParentOptimizationRelation(
+                OptimizationCategories.Level3, OptimizationCategories.Inliner
                 );
         }
         public override List<ResultingOptimizationPass> BuildOptimizationPasses0()

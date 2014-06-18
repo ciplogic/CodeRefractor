@@ -1,25 +1,28 @@
 #region Usings
 
 using System;
-using CodeRefractor.RuntimeBase.MiddleEnd;
+using CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndPropagation;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
+using CodeRefractor.RuntimeBase.Optimizations;
 using CodeRefractor.RuntimeBase.Shared;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndPropagation
+namespace CodeRefractor.RuntimeBase.MiddleEnd.Optimizations.ConstantFoldingAndPropagation
 {
+    [Optimization(Category = OptimizationCategories.Constants)]
     public class ConstantVariableBranchOperatorPropagation : ConstantVariablePropagationBase
     {
         public override void OptimizeOperations(MethodInterpreter interpreter)
         {
-            var operations = interpreter.MidRepresentation.LocalOperations;
-            for (var i = 0; i < operations.Count - 1; i++)
+            var useDef = interpreter.MidRepresentation.UseDef;
+            var operations = useDef.GetLocalOperations();
+            var branchOperations = useDef.GetOperationsOfKind(OperationKind.BranchOperator);
+            foreach (var i in branchOperations)
             {
                 var destOperation = operations[i];
-                if (destOperation.Kind != OperationKind.BranchOperator) continue;
                 var destAssignment = (BranchOperator) destOperation.Value;
                 if (destAssignment.Name != OpcodeBranchNames.BrTrue && destAssignment.Name != OpcodeBranchNames.BrFalse)
                     continue;
@@ -27,21 +30,28 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndProp
                 if (constValue == null)
                     continue;
                 Result = true;
-                var expressionValue = Convert.ToInt32(constValue.Value) != 0;
-                var isTrue = (expressionValue) ^ (destAssignment.Name != OpcodeBranchNames.BrTrue);
-                if (isTrue)
-                {
-                    operations[i] = new LocalOperation
-                    {
-                        Kind = OperationKind.AlwaysBranch,
-                        Value = destAssignment.JumpTo
-                    };
-                }
-                else
-                {
-                    operations.RemoveAt(i);
-                }
+                ApplyChange(interpreter, constValue, destAssignment, i);
                 return;
+            }
+        }
+
+        private static void ApplyChange(MethodInterpreter interpreter, ConstValue constValue, BranchOperator destAssignment,
+            int i)
+        {
+            var expressionValue = Convert.ToInt32(constValue.Value) != 0;
+            var isTrue = (expressionValue) ^ (destAssignment.Name != OpcodeBranchNames.BrTrue);
+            var operationList = interpreter.MidRepresentation.LocalOperations;
+            if (isTrue)
+            {
+                operationList[i] = new LocalOperation
+                {
+                    Kind = OperationKind.AlwaysBranch,
+                    Value = destAssignment.JumpTo
+                };
+            }
+            else
+            {
+                operationList.RemoveAt(i);
             }
         }
     }

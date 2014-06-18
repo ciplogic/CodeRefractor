@@ -15,10 +15,12 @@ namespace VisualCompiler.Views.Dialogs
                 OptimizationCategories.Analysis,
                 OptimizationCategories.BlockBased,
                 OptimizationCategories.CommonSubexpressionsElimination,
+                OptimizationCategories.Constants,
                 OptimizationCategories.DeadCodeElimination,
+                OptimizationCategories.Global,
+                OptimizationCategories.Inliner,
                 OptimizationCategories.Propagation,
                 OptimizationCategories.Purity,
-                OptimizationCategories.All,
             };
         }
 

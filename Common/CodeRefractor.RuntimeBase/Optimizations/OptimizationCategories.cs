@@ -14,6 +14,7 @@ namespace CodeRefractor.RuntimeBase.Optimizations
 	public class OptimizationCategories
 	{
 	    private static OptimizationCategories StaticInstance = new OptimizationCategories();
+        
 	    public const string Level1 = "Level1";
         public const string Level2 = "Level2";
         public const string Level3 = "Level3";
@@ -24,10 +25,14 @@ namespace CodeRefractor.RuntimeBase.Optimizations
 		public const string Purity = "Purity";
 		public const string UseDef = "UseDef";
 
-        public const string Propagation = "Propagation";
+        public const string Constants = "Constants";
         public const string CommonSubexpressionsElimination = "CommonSubexpressionsElimination";
 		public const string DeadCodeElimination = "DeadCodeElimination";
-	    public const string All = "All";
+        public const string Global = "Global";
+
+        public const string Inliner = "Inliner";
+        public const string Propagation = "Propagation";
+        public const string All = "All";
 
         public Dictionary<string, string> Relations { get; set; }
         public Dictionary<string, Type> OptimizationTypes { get; set; }

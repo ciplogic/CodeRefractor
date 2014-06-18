@@ -14,6 +14,7 @@ using CodeRefractor.RuntimeBase.Optimizations;
 
 namespace CodeRefractor.RuntimeBase.Backend.Optimizations.Inliner
 {
+    [Optimization(Category = OptimizationCategories.Inliner)]
     internal class SmallFunctionsInliner : ResultingOptimizationPass
     {
         public static int MaxLengthInliner = 200;

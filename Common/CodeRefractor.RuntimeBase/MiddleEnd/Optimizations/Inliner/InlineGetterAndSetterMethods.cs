@@ -8,11 +8,14 @@ using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.Optimizations.Purity;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
+using CodeRefractor.RuntimeBase.Optimizations;
 
 #endregion
 
 namespace CodeRefractor.RuntimeBase.Backend.Optimizations.Inliner
 {
+
+    [Optimization(Category = OptimizationCategories.Inliner)]
     public class InlineGetterAndSetterMethods : ResultingGlobalOptimizationPass
     {
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)

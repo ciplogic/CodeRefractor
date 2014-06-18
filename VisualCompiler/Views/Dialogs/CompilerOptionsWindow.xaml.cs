@@ -34,5 +34,21 @@ namespace VisualCompiler.Views.Dialogs
             ViewModel.Accepted = false;
             Close();
         }
+
+        private void OnSelectAll(object sender, RoutedEventArgs e)
+        {
+            foreach (var optimization in ViewModel.OptimizationList)
+            {
+                ListBox.SelectedItems.Add(optimization);
+            }
+        }
+
+        private void OnUnselectAll(object sender, RoutedEventArgs e)
+        {
+            foreach (var optimization in ViewModel.OptimizationList)
+            {
+                ListBox.SelectedItems.Remove(optimization);
+            }
+        }
     }
 }

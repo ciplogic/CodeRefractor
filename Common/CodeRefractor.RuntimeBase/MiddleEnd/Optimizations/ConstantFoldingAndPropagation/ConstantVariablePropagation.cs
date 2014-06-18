@@ -3,11 +3,13 @@
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
+using CodeRefractor.RuntimeBase.Optimizations;
 
 #endregion
 
 namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndPropagation
 {
+    [Optimization(Category = OptimizationCategories.Constants)]
     public class ConstantVariablePropagation : ConstantVariablePropagationBase
     {
         public override void OptimizeOperations(MethodInterpreter interpreter)

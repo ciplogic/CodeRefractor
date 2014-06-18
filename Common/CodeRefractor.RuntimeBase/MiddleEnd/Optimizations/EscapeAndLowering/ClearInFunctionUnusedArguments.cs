@@ -5,11 +5,13 @@ using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
+using CodeRefractor.RuntimeBase.Optimizations;
 
 #endregion
 
 namespace CodeRefractor.RuntimeBase.Backend.Optimizations.EscapeAndLowering
 {
+    [Optimization(Category = OptimizationCategories.DeadCodeElimination)]
     internal class ClearInFunctionUnusedArguments : ResultingGlobalOptimizationPass
     {
         public override void OptimizeOperations(MethodInterpreter interpreter)

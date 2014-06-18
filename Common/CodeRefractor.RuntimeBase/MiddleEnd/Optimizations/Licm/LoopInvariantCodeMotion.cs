@@ -7,11 +7,13 @@ using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
+using CodeRefractor.RuntimeBase.Optimizations;
 
 #endregion
 
 namespace CodeRefractor.RuntimeBase.Backend.Optimizations.Licm
 {
+    [Optimization(Category = OptimizationCategories.CommonSubexpressionsElimination)]
     internal class LoopInvariantCodeMotion : ResultingGlobalOptimizationPass
     {
         public override bool CheckPreconditions(MethodInterpreter midRepresentation)
