@@ -13,7 +13,13 @@ namespace CodeRefractor.RuntimeBase.Optimizations
 
 	public class OptimizationCategories
 	{
-	    public const string BlockBased = "BlockBased";
+	    private static OptimizationCategories StaticInstance = new OptimizationCategories();
+	    public const string Level1 = "Level1";
+        public const string Level2 = "Level2";
+        public const string Level3 = "Level3";
+
+        
+        public const string BlockBased = "BlockBased";
 		public const string Analysis = "Analysis";
 		public const string Purity = "Purity";
 		public const string UseDef = "UseDef";
@@ -31,6 +37,9 @@ namespace CodeRefractor.RuntimeBase.Optimizations
 	        Relations = new Dictionary<string, string>();
             OptimizationTypes = new Dictionary<string, Type>();
 	    }
+
+        public static OptimizationCategories Instance { get { return StaticInstance; } }
+	    
 	    public void AddChildToParentOptimizationRelation(string parent, string child)
 	    {
 	        Relations[child] = parent;

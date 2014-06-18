@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -89,7 +90,7 @@ namespace VisualCompiler
                 rules.Add(highlightingRule);
 
                
-                TextEditor.Text = InitialCode;
+                TextEditor.Text = VisualCompilerConstants.InitialCode;
       
         }
 
@@ -212,6 +213,8 @@ namespace VisualCompiler
 
         public string CSharpOutput;
         public string CppOutput;
+        private IList _selectedCapabilities;
+
         /// <summary>
         /// This gets executed in the temporary appdomain.
         /// No error handling to simplify demo.
@@ -308,55 +311,15 @@ namespace VisualCompiler
 
 
 
-        public static string InitialCode = @"using System;
-
-class NBody
-{
-
-
-
- public static void Main()
-    {
-        Console.WriteLine(""Prime numbers: "");
-        var len = 1000000;
-        var primes = AddPrimes(len);
-        Console.Write(primes);
-
-    }
-
-    private static int AddPrimes(int len)
-    {
-        var primes = 0;
-        for (var i = 2; i < len; i++)
-        {
-            if (i%2 == 0)
-                continue;
-            var isPrime = true;
-            for (var j = 2; j*j <= i; j++)
-            {
-                if (i%j == 0)
-                {
-                    isPrime = false;
-                    break;
-                }
-            }
-            if (isPrime)
-                primes++;
-        }
-        return primes;
-    }
-    
-}";
-
         private void OnShowCompilerOptions(object sender, RoutedEventArgs e)
         {
             var optionsWindow = new CompilerOptionsWindow();
             optionsWindow.ShowDialog();
             if(!optionsWindow.ViewModel.Accepted)
                 return;
-            var selectedCapabilities = optionsWindow.ViewModel.Capabilities;
-            
+            ViewModel.OptimizationList.AddRange(optionsWindow.ViewModel.Capabilities);
 
         }
     }
 }
+

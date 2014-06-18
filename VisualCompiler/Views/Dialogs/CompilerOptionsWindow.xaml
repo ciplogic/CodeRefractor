@@ -13,7 +13,7 @@
             <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
         <GroupBox Header="OptimizationList">
-            <ListBox ItemsSource="{Binding OptimizationList}" x:Name="ListBox"></ListBox>
+            <ListBox ItemsSource="{Binding OptimizationList}" SelectionMode="Multiple" x:Name="ListBox"></ListBox>
         </GroupBox>
         <UniformGrid HorizontalAlignment="Right" Grid.Row="1" Rows="1">
             <Button Click="OnOk" Margin="4">OK</Button>

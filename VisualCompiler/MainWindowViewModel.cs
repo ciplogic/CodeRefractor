@@ -1,8 +1,11 @@
 ﻿using System;
 using System.CodeDom.Compiler;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Windows.Documents;
 using CodeRefactor.OpenRuntime;
+using CodeRefractor.CompilerBackend.Optimizations.Util;
 using CodeRefractor.CompilerBackend.ProgramWideOptimizations.ConstParameters;
 using CodeRefractor.CompilerBackend.ProgramWideOptimizations.Virtual;
 using CodeRefractor.RuntimeBase;
@@ -96,8 +99,12 @@ namespace VisualCompiler
             var crRuntime = new CrRuntimeLibrary();
             crRuntime.ScanAssembly(typeof(CrString).Assembly);
 
+            OptimizationLevelBase.Instance = new OptimizationLevels();
+            OptimizationLevelBase.Instance.EnabledCategories.Clear();
+            OptimizationLevelBase.Instance.EnabledCategories.AddRange(OptimizationList);
+            OptimizationLevelBase.UpdateOptimizationsFromCategories(CommandLineParse.OptimizationPasses);
+            CommandLineParse.SortOptimizations();
             var programClosure = new ProgramClosure(definition, crRuntime);
-
             var sb = programClosure.BuildFullSourceCode(programClosure.Runtime);
             var end = Environment.TickCount - start;
              CompilerErrors +=String.Format("Compilation time: {0} ms", end);
@@ -207,12 +214,15 @@ namespace VisualCompiler
             }
         }
 
+        public List<string> OptimizationList { get; set; }
+
 
 
         public MainWindowViewModel( )
         {
-         
-          
+
+
+            OptimizationList = new List<string>();
           
         }
 

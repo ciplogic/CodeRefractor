@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using CodeRefractor.RuntimeBase.Optimizations;
 
 namespace VisualCompiler.Views.Dialogs
 {
@@ -11,15 +12,17 @@ namespace VisualCompiler.Views.Dialogs
         {
             _optimizationList = new List<string>()
             {
-                "Level0",
-                "Level1",
-                "Level2",
-                "Level3",
-                "DCE",
+                OptimizationCategories.Analysis,
+                OptimizationCategories.BlockBased,
+                OptimizationCategories.CommonSubexpressionsElimination,
+                OptimizationCategories.DeadCodeElimination,
+                OptimizationCategories.Propagation,
+                OptimizationCategories.Purity,
+                OptimizationCategories.All,
             };
         }
 
-        public IList Capabilities { get; set; }
+        public List<string> Capabilities { get; set; }
         public bool Accepted { get; set; }
 
         public List<string> OptimizationList

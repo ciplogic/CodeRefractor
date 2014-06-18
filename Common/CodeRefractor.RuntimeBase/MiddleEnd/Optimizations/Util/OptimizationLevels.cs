@@ -27,7 +27,24 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Util
 {
     public class OptimizationLevels : OptimizationLevelBase
     {
-
+        static OptimizationLevels()
+        {
+            OptimizationCategories.Instance.AddChildToParentOptimizationRelation(
+                OptimizationCategories.Level1, OptimizationCategories.BlockBased
+                );
+            OptimizationCategories.Instance.AddChildToParentOptimizationRelation(
+                OptimizationCategories.Level1, OptimizationCategories.Propagation
+                );
+            OptimizationCategories.Instance.AddChildToParentOptimizationRelation(
+                OptimizationCategories.Level2, OptimizationCategories.Level1
+                );
+            OptimizationCategories.Instance.AddChildToParentOptimizationRelation(
+                OptimizationCategories.Level3, OptimizationCategories.Level2
+                );
+            OptimizationCategories.Instance.AddChildToParentOptimizationRelation(
+                OptimizationCategories.Level1, OptimizationCategories.BlockBased
+                );
+        }
         public override List<ResultingOptimizationPass> BuildOptimizationPasses0()
         {
             return new List<ResultingOptimizationPass>();

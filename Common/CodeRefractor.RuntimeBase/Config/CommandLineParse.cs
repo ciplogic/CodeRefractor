@@ -108,7 +108,7 @@ namespace CodeRefractor.RuntimeBase.Config
         public string OutputPro = "output.pro";
         public string ApplicationInputAssembly = "SimpleAdditions.exe";
         public string ApplicationNativeExe = string.Empty;
-        public static List<ResultingOptimizationPass> OptimizationPasses;
+        public static List<ResultingOptimizationPass> OptimizationPasses= new List<ResultingOptimizationPass>();
 
         public static Dictionary<OptimizationKind, List<ResultingOptimizationPass>> SortedOptimizations
             = new Dictionary<OptimizationKind, List<ResultingOptimizationPass>>();
@@ -131,16 +131,14 @@ namespace CodeRefractor.RuntimeBase.Config
                     optimizationList.AddRange(OptimizationLevelBase.Instance.BuildOptimizationPasses2());
                 }
                 OptimizationPasses = optimizationList;
-                var categories = new OptimizationCategories();
-                categories.BuildRelationsByReflection();
-                IEnumerable<ResultingOptimizationPass> closure = categories.Closure(OptimizationLevelBase.Instance.EnabledCategories);
-                OptimizationPasses.AddRange(closure);
+                OptimizationLevelBase.UpdateOptimizationsFromCategories(OptimizationPasses);
 
                 SortOptimizations();
             }
         }
 
-        private static void SortOptimizations()
+
+        public static void SortOptimizations()
         {
             foreach (var optimizationPass in OptimizationPasses)
             {
