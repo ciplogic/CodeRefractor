@@ -471,6 +471,11 @@ namespace CodeRefractor.RuntimeBase.Analyze
                 if (usageVariable.Equals(identifierValue))
                     methodData.Parameters[index] = definitionIdentifier;
             }
+            if (methodData.Result != null && definitionIdentifier is LocalVariable)
+            {
+                if (usageVariable.Equals(methodData.Result))
+                    methodData.Result = (LocalVariable) definitionIdentifier;
+            }
         }
 
         private static void SwitchUsageInGetArrayItem(LocalOperation op, LocalVariable usageVariable,
