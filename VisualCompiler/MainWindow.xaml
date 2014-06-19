@@ -42,30 +42,26 @@
             </Style>
         </ResourceDictionary>
     </Window.Resources>
-    <DockPanel>
-        <Menu DockPanel.Dock="Top">
-            <MenuItem Header="_Optimizations">
-                <MenuItem Header="Common"  IsCheckable="True"/>
-                <MenuItem Header="ConstantDfa" IsCheckable="True"/>
-                <MenuItem Header="Inliner" IsCheckable="True"/>
-                <MenuItem Header="Constant Folding And Propagation" IsCheckable="True"/>
-                <MenuItem Header="EscapeAndLowering" IsCheckable="True"/>
-
-                <Separator/>
-                <MenuItem Header="Jumps"  IsCheckable="True"/>
-                <MenuItem Header="Licm" IsCheckable="True"/>
-                <MenuItem Header="Purity" IsCheckable="True"/>
-                <MenuItem Header="ReachabilityDfa" IsCheckable="True"/>
-                <MenuItem Header="RedundantExpressions" IsCheckable="True"/>
-                <MenuItem Header="SimpleDce" IsCheckable="True"/>
-
-            </MenuItem>
-            <MenuItem Header="Options">
-                <MenuItem Header="Compiler" Click="OnShowCompilerOptions"></MenuItem>
-            </MenuItem>
-           
-        </Menu>
-        <Grid>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Button 
+                    Margin="4"
+                    Click="OnFileOpen">
+                    <TextBlock Text="Open" />
+                </Button>
+                <Button 
+                    Margin="4"
+                    Click="OnShowCompilerOptions">
+                    <TextBlock Text="Optimizations" />
+                </Button>
+            </StackPanel>
+        </StackPanel>
+        <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
@@ -147,6 +143,6 @@
 				 Margin="10" BorderBrush="LightGray" BorderThickness="1" IsReadOnly="True" />
             </Grid>
         </Grid>
-    </DockPanel>
+    </Grid>
     
 </mahapps:MetroWindow>

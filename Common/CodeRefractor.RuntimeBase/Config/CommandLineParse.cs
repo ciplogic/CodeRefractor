@@ -29,7 +29,7 @@ namespace CodeRefractor.RuntimeBase.Config
 
         private static void InitializeOptimizationKindList(OptimizationKind optimizationKind)
         {
-            SortedOptimizations[optimizationKind] = new List<ResultingOptimizationPass>();
+            OptimizationLevelBase.SortedOptimizations[optimizationKind] = new List<ResultingOptimizationPass>();
         }
 
         public void Process(string[] args)
@@ -108,48 +108,5 @@ namespace CodeRefractor.RuntimeBase.Config
         public string OutputPro = "output.pro";
         public string ApplicationInputAssembly = "SimpleAdditions.exe";
         public string ApplicationNativeExe = string.Empty;
-        public static List<ResultingOptimizationPass> OptimizationPasses= new List<ResultingOptimizationPass>();
-
-        public static Dictionary<OptimizationKind, List<ResultingOptimizationPass>> SortedOptimizations
-            = new Dictionary<OptimizationKind, List<ResultingOptimizationPass>>();
-
-        private static int _optimizerLevel;
-
-        public static int OptimizerLevel
-        {
-            get { return _optimizerLevel; }
-            set
-            {
-                _optimizerLevel = value;
-                var optimizationList = OptimizationLevelBase.Instance.BuildOptimizationPasses0();
-                if (_optimizerLevel >= 1)
-                {
-                    optimizationList.AddRange(OptimizationLevelBase.Instance.BuildOptimizationPasses1());
-                }
-                if (_optimizerLevel >= 2)
-                {
-                    optimizationList.AddRange(OptimizationLevelBase.Instance.BuildOptimizationPasses2());
-                }
-                OptimizationPasses = optimizationList;
-                OptimizationLevelBase.UpdateOptimizationsFromCategories(OptimizationPasses);
-
-                SortOptimizations();
-            }
-        }
-
-
-        public static void SortOptimizations()
-        {
-            foreach (var optimizationPass in OptimizationPasses)
-            {
-                List<ResultingOptimizationPass> list;
-                if (!SortedOptimizations.TryGetValue(optimizationPass.Kind, out list))
-                {
-                    list = new List<ResultingOptimizationPass>();
-                    SortedOptimizations[optimizationPass.Kind] = list;
-                }
-                list.Add(optimizationPass);
-            }
-        }
     }
 }

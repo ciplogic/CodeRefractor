@@ -95,15 +95,15 @@ namespace VisualCompiler
                 new DevirtualizerIfOneImplemetor(),
                 new CallToFunctionsWithSameConstant()
             };
-
+             
             var crRuntime = new CrRuntimeLibrary();
             crRuntime.ScanAssembly(typeof(CrString).Assembly);
-
+            OptimizationLevelBase.ClearOptimizations();
             OptimizationLevelBase.Instance = new OptimizationLevels();
             OptimizationLevelBase.Instance.EnabledCategories.Clear();
             OptimizationLevelBase.Instance.EnabledCategories.AddRange(OptimizationList);
-            OptimizationLevelBase.UpdateOptimizationsFromCategories(CommandLineParse.OptimizationPasses);
-            CommandLineParse.SortOptimizations();
+            OptimizationLevelBase.UpdateOptimizationsFromCategories(OptimizationLevelBase.OptimizationPasses);
+            OptimizationLevelBase.SortOptimizations();
             var programClosure = new ProgramClosure(definition, crRuntime);
             var sb = programClosure.BuildFullSourceCode(programClosure.Runtime);
             var end = Environment.TickCount - start;

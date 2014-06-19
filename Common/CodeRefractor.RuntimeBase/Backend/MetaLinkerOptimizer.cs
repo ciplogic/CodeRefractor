@@ -6,6 +6,7 @@ using System.Reflection;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.Backend.ComputeClosure;
+using CodeRefractor.RuntimeBase.Backend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.Config;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
@@ -60,7 +61,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                 {
                     methodsToOptimize.Remove(item);
                 }
-                var inFunctionOptimizations = CommandLineParse.SortedOptimizations[OptimizationKind.InFunction];
+                var inFunctionOptimizations = GetOptimizationByOptimizationKind(OptimizationKind.InFunction);
                 var methodsArray = methodsToOptimize.ToArray();
                 //Parallel.ForEach(methodsToOptimize, methodBase=> 
                 foreach (var methodBase in methodsArray)
@@ -76,9 +77,18 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                     var interpreter = methodBase;
                     //Console.WriteLine("Optimize globally: {0}", methodBase);
                     doOptimize |= MethodInterpreterCodeWriter.ApplyLocalOptimizations(
-                        CommandLineParse.SortedOptimizations[OptimizationKind.Global], interpreter);
+                        GetOptimizationByOptimizationKind(OptimizationKind.Global), interpreter);
                 }
             } while (doOptimize);
+        }
+
+        private static List<ResultingOptimizationPass> GetOptimizationByOptimizationKind(OptimizationKind optimizationKind)
+        {
+            List<ResultingOptimizationPass> inFunctionOptimizations = new List<ResultingOptimizationPass>();
+            List<ResultingOptimizationPass> inFunction;
+            if (OptimizationLevelBase.SortedOptimizations.TryGetValue(optimizationKind, out inFunction))
+                inFunctionOptimizations = inFunction;
+            return inFunctionOptimizations;
         }
     }
 }
