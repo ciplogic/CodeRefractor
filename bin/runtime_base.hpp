@@ -107,7 +107,7 @@ void* LoadNativeMethod(void* module, const char* methodName)
 #include <stdio.h>
 #include <math.h>
 
-std::shared_ptr<Array < std::shared_ptr<System::String> > > System::getArgumentsAsList (int argc, char**argv)
+std::shared_ptr<Array < std::shared_ptr<System::String> > > System_getArgumentsAsList (int argc, char**argv)
 {
 	auto result = new Array <std::shared_ptr<System::String> > (argc);
 	for(auto i=0;i<argc;i++){
