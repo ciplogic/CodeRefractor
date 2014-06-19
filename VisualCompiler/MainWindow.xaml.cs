@@ -39,7 +39,7 @@ namespace VisualCompiler
            
 
             InitializeComponent();
-
+            MainWindowUtils.DeleteFilesByWildcards("Test*.exe");
 
             ViewModel.Window = this;
           
@@ -317,6 +317,7 @@ namespace VisualCompiler
             optionsWindow.ShowDialog();
             if(!optionsWindow.ViewModel.Accepted)
                 return;
+            ViewModel.OptimizationList.Clear();
             ViewModel.OptimizationList.AddRange(optionsWindow.ViewModel.Capabilities);
 
         }

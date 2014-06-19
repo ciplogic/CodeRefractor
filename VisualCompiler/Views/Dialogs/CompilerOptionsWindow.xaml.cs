@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Windows;
-using System.Windows.Documents;
 
 namespace VisualCompiler.Views.Dialogs
 {

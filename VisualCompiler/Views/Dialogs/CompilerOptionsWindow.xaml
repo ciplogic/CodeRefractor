@@ -17,20 +17,20 @@
         <GroupBox Header="OptimizationList">
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition></RowDefinition>
                 </Grid.RowDefinitions>
-                <ListBox ItemsSource="{Binding OptimizationList}" SelectionMode="Multiple" x:Name="ListBox"></ListBox>
-                <UniformGrid Rows="1" Grid.Row="1" HorizontalAlignment="Left">
+                <UniformGrid Rows="1" Grid.Row="0" HorizontalAlignment="Left">
                     <Button Margin="4" Click="OnSelectAll">Select all</Button>
                     <Button Margin="4" Click="OnUnselectAll">Unselect all</Button>
                 </UniformGrid>
+                <ListBox 
+                     Grid.Row="1"
+                    ItemsSource="{Binding OptimizationList}" SelectionMode="Multiple" x:Name="ListBox"></ListBox>
             </Grid>
         </GroupBox>
         <UniformGrid HorizontalAlignment="Right" Grid.Row="1" Rows="1">
-            <Button Click="OnOk" Margin="4">OK</Button>
-            <Button Click="OnCancel" Margin="4">Cancel</Button>
-
+            <Button Click="OnOk" Margin="4">Close</Button>
         </UniformGrid>
     </Grid>
 </Window>

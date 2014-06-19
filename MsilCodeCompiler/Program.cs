@@ -57,7 +57,7 @@ namespace CodeRefractor.Compiler
 
 
             OptimizationLevelBase.Instance = new OptimizationLevels();
-            CommandLineParse.OptimizerLevel =2;
+            OptimizationLevelBase.OptimizerLevel =2;
             OptimizationLevelBase.Instance.EnabledCategories.Add(OptimizationCategories.All);
             CallCompiler("", "");
         }

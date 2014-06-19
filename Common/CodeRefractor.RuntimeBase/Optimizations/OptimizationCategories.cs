@@ -54,6 +54,7 @@ namespace CodeRefractor.RuntimeBase.Optimizations
 	    public void BuildRelationsByReflection()
 	    {
 	        var assembly = GetType().Assembly;
+            OptimizationTypes.Clear();
 	        foreach (var type in assembly.GetTypes())
 	        {
 	            if(!type.IsSubclassOf(typeof(ResultingOptimizationPass)))

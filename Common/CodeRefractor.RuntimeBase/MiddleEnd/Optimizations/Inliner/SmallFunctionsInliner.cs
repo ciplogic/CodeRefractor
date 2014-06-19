@@ -14,7 +14,7 @@ using CodeRefractor.RuntimeBase.Optimizations;
 
 namespace CodeRefractor.RuntimeBase.Backend.Optimizations.Inliner
 {
-    [Optimization(Category = OptimizationCategories.Inliner)]
+    //[Optimization(Category = OptimizationCategories.Inliner)]
     internal class SmallFunctionsInliner : ResultingOptimizationPass
     {
         public static int MaxLengthInliner = 200;
@@ -72,7 +72,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.Inliner
 
             var localOperationsToInline = BuildLocalOperationsToInline(methodToInlineInterpreter,
                 mappedParameters,
-                assignment.Result);
+                assignment != null? assignment.Result:null);
 
             MergeVRegs(intermediateCode, methodToInlineInterpreter, mappedVregs);
             MergeLocalVariables(intermediateCode, methodToInlineInterpreter, mappedLocals);
@@ -185,7 +185,10 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.Inliner
             var mappedVregs = new Dictionary<int, int>();
             var virtRegs = interpreter.MidRepresentation.Vars.VirtRegs;
 
-            var countSourceVregs = intermediateCode.Vars.VirtRegs.Max(vreg => vreg.Id) + 1;
+            List<LocalVariable> localVariables = intermediateCode.Vars.VirtRegs;
+            var countSourceVregs = localVariables.Count==0
+                ? 1
+                : localVariables.Max(vreg => vreg.Id) + 1;
             for (var i = 0; i < virtRegs.Count; i++)
             {
                 var vreg = virtRegs[i];

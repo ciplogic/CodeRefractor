@@ -88,6 +88,7 @@
     </ApplicationDefinition>
     <Compile Include="BraceFoldingStrategy.cs" />
     <Compile Include="CustomizedBrush.cs" />
+    <Compile Include="MainWindowUtils.cs" />
     <Compile Include="MainWindowViewModel.cs" />
     <Compile Include="Views\Dialogs\CompilerOptionsViewModel.cs" />
     <Compile Include="Views\Dialogs\CompilerOptionsWindow.xaml.cs">
@@ -144,12 +145,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="OpenRuntime\CodeRefactor.OpenRuntime.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="OpenRuntime\CodeRefractor.RuntimeBase.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="OpenRuntime\runtime_base.hpp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
