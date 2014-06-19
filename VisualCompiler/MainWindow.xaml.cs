@@ -320,6 +320,11 @@ namespace VisualCompiler
             ViewModel.OptimizationList.AddRange(optionsWindow.ViewModel.Capabilities);
 
         }
+
+        private void OnFileOpen(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
 
