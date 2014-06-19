@@ -442,8 +442,11 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 return;
             methodData.ExtractNeededValuesFromStack(_evaluator);
 
-            if (!methodData.Info.IsStatic && methodData.Parameters.Count > 0)
+            
+            if (!methodData.Info.IsStatic && methodData.Parameters.Count > 0 )
             {
+                //TODO: GetBestVirtualMatch does not work  with base class constructors
+                if(!methodInfo.IsConstructor && methodData.Parameters[0].ComputedType().ClrType.DeclaringType!=methodInfo.DeclaringType)
                 methodData.Info = ClassHierarchyAnalysis.GetBestVirtualMatch(methodData.Info,
                     methodData.Parameters[0].ComputedType().ClrType);
             }

@@ -27,7 +27,7 @@ namespace CodeRefractor.RuntimeBase.Util
             {
                 PathOfCompilerTools = @"C:\MinGW\bin\";
                 CompilerExe = "g++.exe";
-                OptimizationFlags = "-Ofast -fomit-frame-pointer -ffast-math -std=c++11 -static-libgcc ";
+                OptimizationFlags = "-Ofast -fomit-frame-pointer -ffast-math -std=c++11 -static-libgcc -fpermissive";
                 LinkerOptions = "";
             }
         }
@@ -86,9 +86,14 @@ namespace CodeRefractor.RuntimeBase.Util
             var arguments = String.Format(commandLineFormat, outputCpp, applicationNativeExe,
                 CompilerOptions.LinkerOptions);
             var standardOutput = pathToGpp.ExecuteCommand(arguments, CompilerOptions.PathOfCompilerTools);
-            if (!String.IsNullOrWhiteSpace(standardOutput))
+            if (!String.IsNullOrWhiteSpace(standardOutput) && standardOutput.Contains("error"))
             {
                 throw new InvalidOperationException(String.Format("Errors when compiling: {0}", standardOutput));
+            }
+            else
+            {
+                //TODO: this is a temp fix for permissive casting
+
             }
             (CompilerOptions.PathOfCompilerTools + "strip").ExecuteCommand(applicationNativeExe,Path.GetDirectoryName(applicationNativeExe));
         }

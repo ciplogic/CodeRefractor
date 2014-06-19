@@ -17,6 +17,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
             if (method.DeclaringType == instance)
                 return method;
             var methodsToSearch = new List<MethodBase>();
+            //TODO: this lacks base class methods
             methodsToSearch.AddRange(instance.GetMethods(BindingFlags.Instance | BindingFlags.Public));
             methodsToSearch.AddRange(instance.GetMethods(BindingFlags.Static | BindingFlags.Public));
             methodsToSearch.AddRange(instance.GetConstructors());

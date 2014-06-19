@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.MiddleEnd;
+using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.RuntimeBase.TypeInfoWriter;
 
 #endregion
@@ -76,7 +77,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 
                 var parametersString = GetParametersString(virtualMethod);
                 var parametersCallString = "_this";
-                sb.Append(virtualMethod.ReturnType.ToCppMangling());
+                sb.Append(virtualMethod.ReturnType.ToCppName(true,EscapingMode.Smart));
                 sb.Append(" ");
                 sb.Append(methodName);
                 sb.Append("_vcall(")
@@ -116,7 +117,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 
         private static string GetParametersString(VirtualMethodDescription virtualMethod)
         {
-            var parametersString = string.Format("const {0} &_this", virtualMethod.BaseType.ToDeclaredVariableType());
+            var parametersString = string.Format("const {0} _this", virtualMethod.BaseType.ToDeclaredVariableType(true,EscapingMode.Pointer));
             return parametersString;
         }
 
