@@ -135,12 +135,15 @@
                 <StackPanel  Grid.Column="0" Grid.Row="0" Orientation="Horizontal">
                     <Label Margin="10,0,5,0" FontSize="19">Actions</Label>
                 <Button  Margin="10,0,5,0" Content="Test"  FontSize="19" Name="TestButton" Click="TestButton_Click" />
-                    <Button  Margin="10,0,5,0" Content="Save Test"  FontSize="19" />
+                    <Button  Margin="10,0,5,0" Content="STATUS"  FontSize="19"  Name="TestStatus"/>
                 </StackPanel>
                 <Label Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1" Style="{StaticResource HeaderStyleFaded}" Content="Output"/>
-
-                <TextBox Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="2" Text="{Binding CompilerErrors, Mode=OneWay}" TextWrapping="WrapWithOverflow"
+                <ScrollViewer Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="2">
+                    <TextBox  Text="{Binding CompilerErrors, Mode=OneWay}"  TextWrapping="Wrap"
+         AcceptsReturn="True"
+         VerticalScrollBarVisibility="Visible"
 				 Margin="10" BorderBrush="LightGray" BorderThickness="1" IsReadOnly="True" />
+                   </ScrollViewer>
             </Grid>
         </Grid>
     </Grid>

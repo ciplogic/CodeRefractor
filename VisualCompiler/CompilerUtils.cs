@@ -3,7 +3,7 @@ using System.IO;
 
 namespace VisualCompiler
 {
-    public static class MainWindowUtils
+    public static class CompilerUtils
     {
         public static void DeleteFilesByWildcards(string pattern, string path = "./")
         {

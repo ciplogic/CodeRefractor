@@ -14,14 +14,24 @@ namespace CodeRefractor.RuntimeBase
     {
         public const string StdSharedPtr = "std::shared_ptr";
 
-        public static string ClangMethodSignature(this MethodBase method)
+        public static string ClangMethodSignature(this MethodBase method,bool isvirtualmethod = false)
         {
             var mappedType = method.DeclaringType;
             var typeName = mappedType.ToCppMangling();
+            if (isvirtualmethod)
+            {
+                while ((mappedType.BaseType != typeof(Object))) // Match top level virtual dispatch
+                {
+                    mappedType = mappedType.BaseType;
+                    typeName = mappedType.ToCppMangling();
+                }
+                
+            }
+            
             var methodName = method.Name;
             if (method is ConstructorInfo)
                 methodName = "ctor";
-            methodName = methodName.Replace("<", "_").Replace(">", "_"); //TODO: MSVC++ does not expect names with angle brackets
+            methodName = methodName.Replace("<", "_").Replace(">", "_"); //TODO: C++ does not expect names with angle brackets
             return String.Format("{0}_{1}", typeName, methodName);
         }
 

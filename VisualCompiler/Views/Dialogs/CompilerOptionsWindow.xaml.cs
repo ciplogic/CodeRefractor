@@ -12,6 +12,11 @@ namespace VisualCompiler.Views.Dialogs
         {
             get { return (CompilerOptionsViewModel) DataContext; }
         }
+
+        public MainWindow MainWindow
+        {
+            get { return (MainWindow)Application.Current.MainWindow; }
+        }
         public CompilerOptionsWindow()
         {
             InitializeComponent();
@@ -24,6 +29,7 @@ namespace VisualCompiler.Views.Dialogs
                 .Select(selectedItem => selectedItem.ToString()))
                 .ToList();
             ViewModel.Capabilities = result;
+            MainWindow.Update();
             Close();
         }
 

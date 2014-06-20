@@ -80,7 +80,10 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 sb.AppendFormat("{0} = ", operationData.Result.Name);
             }
 
-            sb.AppendFormat("{0}_vcall", methodInfo.ClangMethodSignature());
+            //Virtual Method Dispatch Table is on base class only
+
+
+            sb.AppendFormat("{0}_vcall", methodInfo.ClangMethodSignature(true));
 
             if (WriteParametersToSb(operationData, methodInfo, sb, interpreter, crRuntime)) return;
 

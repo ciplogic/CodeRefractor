@@ -88,7 +88,7 @@
     </ApplicationDefinition>
     <Compile Include="BraceFoldingStrategy.cs" />
     <Compile Include="CustomizedBrush.cs" />
-    <Compile Include="MainWindowUtils.cs" />
+    <Compile Include="CompilerUtils.cs" />
     <Compile Include="MainWindowViewModel.cs" />
     <Compile Include="Views\Dialogs\CompilerOptionsViewModel.cs" />
     <Compile Include="Views\Dialogs\CompilerOptionsWindow.xaml.cs">

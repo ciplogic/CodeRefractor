@@ -109,15 +109,32 @@ namespace CodeRefractor.RuntimeBase.Backend
                     sb.AppendFormat("struct {0}; ", mappedType.ToCppMangling()).AppendLine();
             }
 
+            //Better Algorithm for sorting typedefs so that parents are declared before children, seems sometimes compiler complains of invalid use and forward declarations
 
-            //Order typedefs so that parents are declared before children, seems sometimes compiler complains of invalid use and forward declarations
-            typeDatas = typeDatas.Select(x => new { key = (x.BaseType ?? x).Name, item = x })
-           .OrderBy(x => x.item.BaseType == null)
-           .ThenBy(x => x.key)
-           .ThenBy(x => x.item.BaseType != null)
-           .Select(x => x.item).Reverse().ToArray(); 
+            var typeDataList = typeDatas.ToList();
+            //start with base classes
+            var sortedTypeData = new List<Type>();
+            sortedTypeData.Add(typeof(System.Object));
+            typeDataList.Remove(typeof(Object));
 
-            foreach (var typeData in typeDatas)
+            while (typeDataList.Count > 0)
+            {
+                foreach (var typeData in typeDatas)
+                {
+                    if (sortedTypeData.Contains(typeData.BaseType))
+                    {
+                        sortedTypeData.Add(typeData);
+                        typeDataList.Remove(typeData);
+                    }
+                    if(typeDataList.Count == 0)
+                        break;
+                }
+            }
+
+
+     
+
+            foreach (var typeData in sortedTypeData)
             {
                 if (DelegateManager.IsTypeDelegate(typeData))
                     continue;

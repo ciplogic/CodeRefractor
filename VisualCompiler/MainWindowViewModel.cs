@@ -154,17 +154,23 @@ namespace VisualCompiler
                 {
                    
                     _sourceCode = value;
-                    OutputCode = "";
-                    ILCode = "";
-                    Recompile();
-                    Changed(() => SourceCode);
+                 
+                    RecompileSource();
                 }
             }
         }
 
-        
+        public void RecompileSource()
+        {
+           
+            OutputCode = "";
+            ILCode = "";
+            Recompile();
+            Changed(() => SourceCode);
+        }
 
-             private string _ilCode;
+
+        private string _ilCode;
              public string ILCode
         {
             get { return _ilCode; }
@@ -226,7 +232,7 @@ namespace VisualCompiler
           
         }
 
-        private void Recompile()
+        public void Recompile()
         {
 
             CompileAndRunCode("HelloWorld",SourceCode);

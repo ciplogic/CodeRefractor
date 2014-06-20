@@ -226,10 +226,14 @@ namespace CodeRefractor.RuntimeBase
                     WorkingDirectory = workingDirectory,
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
-                    WindowStyle = ProcessWindowStyle.Hidden,
+                    CreateNoWindow = true,
+                    WindowStyle = ProcessWindowStyle.Hidden | ProcessWindowStyle.Minimized,
                     UseShellExecute = false
                 }
             };
+
+        
+
             p.Start();
             p.WaitForExit();
 

@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Collections;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
@@ -25,6 +26,7 @@ using ICSharpCode.AvalonEdit.Folding;
 using ICSharpCode.AvalonEdit.Highlighting;
 using MahApps.Metro.Controls;
 using VisualCompiler.Views.Dialogs;
+using Color = System.Drawing.Color;
 using Path = System.IO.Path;
 
 namespace VisualCompiler
@@ -39,7 +41,7 @@ namespace VisualCompiler
            
 
             InitializeComponent();
-            MainWindowUtils.DeleteFilesByWildcards("Test*.exe");
+            CompilerUtils.DeleteFilesByWildcards("Test*.exe");
 
             ViewModel.Window = this;
           
@@ -95,6 +97,11 @@ namespace VisualCompiler
         }
 
 
+
+        public void Update()
+        {
+           ViewModel.  RecompileSource();
+        }
 
         private void TextEditor_OnTextChanged(object sender, EventArgs e)
         {
@@ -296,17 +303,40 @@ namespace VisualCompiler
 
         private void TestButton_Click(object sender, RoutedEventArgs e)
         {
+            if (ResetStatus != null)
+                ResetStatus.Stop();
+           
             CompileCSharp(false);
             CompileCpp(false);
             if (CSharpOutput == CppOutput)
             {
+                TestStatus.Content = "PASSED";
+                TestStatus.Background = new SolidColorBrush( System.Windows.Media.Color.FromRgb(Color.GreenYellow.R,Color.GreenYellow.G,Color.GreenYellow.B));
+
                 ViewModel.CompilerErrors = String.Format("Test Passed:\n\nCSharpOutput:\n{0}CPPOutPut:\n{1}",CSharpOutput,CppOutput) ;
             }
             else
             {
+                TestStatus.Content = "FAILED";
+                TestStatus.Background = new SolidColorBrush(System.Windows.Media.Color.FromRgb(Color.Red.R, Color.Red.G, Color.Red.B));
                 ViewModel.CompilerErrors = "Test Failed\n" +ViewModel.CompilerErrors;
             }
+            if (ResetStatus == null)
+            {
+                ResetStatus = new Timer(4000);
+                ResetStatus.AutoReset = false;
+                ResetStatus.Elapsed += (o, args) => Dispatcher.Invoke(() =>
+                {
+                    TestStatus.Content = "TEST STATUS";
+                    TestStatus.Background =
+                        new SolidColorBrush(System.Windows.Media.Color.FromRgb(Color.White.R, Color.White.G,
+                            Color.White.B));
+                });
+            }
+            ResetStatus.Start();
         }
+
+        private Timer ResetStatus;
 
 
 
@@ -314,6 +344,7 @@ namespace VisualCompiler
         private void OnShowCompilerOptions(object sender, RoutedEventArgs e)
         {
             var optionsWindow = new CompilerOptionsWindow();
+            optionsWindow.Owner = this;
             optionsWindow.ShowDialog();
             if(!optionsWindow.ViewModel.Accepted)
                 return;
