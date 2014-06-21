@@ -116,11 +116,12 @@ namespace VisualCompiler
 
         private void Output_OnTextChanged(object sender, EventArgs e)
         {
+           
             if (DataContext != null)
             {
-
-
-                ViewModel.OutputCode = Output.Text;
+               
+                          ViewModel.OutputCode = Output.Text;
+             
             }
         }
 

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Windows.Documents;
+using System.Windows.Threading;
 using CodeRefactor.OpenRuntime;
 using CodeRefractor.CompilerBackend.Optimizations.Util;
 using CodeRefractor.CompilerBackend.ProgramWideOptimizations.ConstParameters;
@@ -193,18 +194,20 @@ namespace VisualCompiler
             {
                 if (_outputCode != value)
                 {
-                    _outputCode = value;
-                    try
-                    {
+                   
+                        _outputCode = value;
+                        try
+                        {
+                            if (OutputCode != Window.Output.Text) //Seems there was a loop here
+                                Window.Output.Text = value;
+                        }
+                        catch (Exception)
+                        {
 
-                        Window.Output.Text = value;
-                    }
-                    catch (Exception)
-                    {
 
-
-                    }
-                    Changed(() => OutputCode);
+                        }
+                        Changed(() => OutputCode);
+                  
                 }
             }
         }

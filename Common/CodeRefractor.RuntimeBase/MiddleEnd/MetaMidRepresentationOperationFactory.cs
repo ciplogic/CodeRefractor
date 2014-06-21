@@ -445,10 +445,11 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             
             if (!methodData.Info.IsStatic && methodData.Parameters.Count > 0 )
             {
+                //GetBestVirtualMatch not required as the appropriate method is called in CppHandleCalls and VirtualMethod
                 //TODO: GetBestVirtualMatch does not work  with base class constructors
-                if(!methodInfo.IsConstructor && methodData.Parameters[0].ComputedType().ClrType.DeclaringType!=methodInfo.DeclaringType)
-                methodData.Info = ClassHierarchyAnalysis.GetBestVirtualMatch(methodData.Info,
-                    methodData.Parameters[0].ComputedType().ClrType);
+               // if(!methodInfo.IsConstructor && methodData.Parameters[0].ComputedType().ClrType.DeclaringType!=methodInfo.DeclaringType)
+              //  methodData.Info = ClassHierarchyAnalysis.GetBestVirtualMatch(methodData.Info,
+              //      methodData.Parameters[0].ComputedType().ClrType);
             }
             var declaringType = methodData.Info.DeclaringType;
             if (declaringType.IsSubclassOf(typeof (Delegate)))
