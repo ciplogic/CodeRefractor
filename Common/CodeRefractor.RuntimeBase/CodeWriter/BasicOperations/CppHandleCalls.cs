@@ -81,9 +81,25 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             }
 
             //Virtual Method Dispatch Table is on base class only
+            //Also we need to take care of the call if this is not a virtual call 
+            // C# compiler seems to use virtual calls when derived class uses new operator on non-virtual base class method
 
-
-            sb.AppendFormat("{0}_vcall", methodInfo.ClangMethodSignature(true));
+            if (methodInfo.IsVirtual)
+            {
+                if (methodInfo.DeclaringType.GetMethod(methodInfo.Name).DeclaringType == methodInfo.DeclaringType)
+                {
+                    
+                    sb.AppendFormat("{0}_vcall", methodInfo.ClangMethodSignature(true));
+                }
+                else
+                {
+                    sb.AppendFormat("{0}", methodInfo.DeclaringType.BaseType.GetMethod(methodInfo.Name).ClangMethodSignature(false));
+                }
+            }
+            else
+            {
+                sb.AppendFormat("{0}", methodInfo.ClangMethodSignature(false));
+            }
 
             if (WriteParametersToSb(operationData, methodInfo, sb, interpreter, crRuntime)) return;
 

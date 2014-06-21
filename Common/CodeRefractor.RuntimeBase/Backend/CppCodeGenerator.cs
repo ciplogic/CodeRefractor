@@ -41,7 +41,7 @@ namespace CodeRefractor.RuntimeBase.Backend
 
             sb.AppendLine("#include \"runtime_base.hpp\"");
 
-            sb.AppendLine(virtualMethodTableCodeWriter.GenerateTypeTableCode());
+            sb.AppendLine(virtualMethodTableCodeWriter.GenerateTypeTableCode(typeClosure.ToArray())); // We need to use this type table to generate missing jumps for subclasses  that dont override a base method
             WriteCppMethods(closure, sb);
             WriteClosureMethods(closure, sb, typeTable.TypeTable, crRuntime);
 
@@ -121,6 +121,9 @@ namespace CodeRefractor.RuntimeBase.Backend
             {
                 foreach (var typeData in typeDatas)
                 {
+                    if(sortedTypeData.Contains(typeData)) // Prevent repeats
+                        continue;
+
                     if (sortedTypeData.Contains(typeData.BaseType))
                     {
                         sortedTypeData.Add(typeData);

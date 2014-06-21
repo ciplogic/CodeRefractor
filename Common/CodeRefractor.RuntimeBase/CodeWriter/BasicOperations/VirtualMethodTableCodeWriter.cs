@@ -1,9 +1,11 @@
 #region Usings
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using CodeRefractor.RuntimeBase;
+using CodeRefractor.RuntimeBase.Backend.ComputeClosure;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.RuntimeBase.TypeInfoWriter;
@@ -41,7 +43,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             return validVirtMethods;
         }
 
-        public string GenerateTypeTableCode()
+        public string GenerateTypeTableCode(Type[] types)
         {
             var sb = new StringBuilder();
             sb.AppendLine("// --- Begin definition of virtual method tables ---");
@@ -106,7 +108,38 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                     {
                         sb.Append("return;").AppendLine();
                     }
+                    
                 }
+
+                // Deal with subclasses that don't override this method
+                var remainingSubclasses = virtualMethod.BaseMethod.DeclaringType.ImplementorsOfT(types).Except(virtualMethod.UsingImplementations); //types.Where(k => k.ImplementorsOfT() is ());
+               
+
+                foreach (var implementation in remainingSubclasses)
+                {
+                    var typeId = _typeTable.TypeTable.GetTypeId(implementation);
+
+                    sb.AppendFormat("case {0}:", typeId).AppendLine();
+
+                    var isVoid = virtualMethod.BaseMethod.ReturnType == typeof(void);
+                    if (!isVoid)
+                    {
+                        sb.Append("return ");
+                    }
+
+
+                    var methodImpl = implementation.GetMethod(virtualMethod.Name).ClangMethodSignature();
+                    sb
+                        .AppendFormat("{0}(", methodImpl)
+                        .AppendFormat("{0});", parametersCallString)
+                        .AppendLine();
+                    if (isVoid)
+                    {
+                        sb.Append("return;").AppendLine();
+                    }
+
+                }
+
                 sb.AppendLine("}");
                 sb.AppendLine("}");
             }

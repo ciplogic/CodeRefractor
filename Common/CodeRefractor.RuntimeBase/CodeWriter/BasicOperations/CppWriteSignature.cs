@@ -31,7 +31,8 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 {
                     var argumentTypeDescription = UsedTypeList.Set(method.DeclaringType.GetMappedType(), crRuntime);
                     var thisText = String.Format("const {0}& _this", argumentTypeDescription.ClrType.ToCppName(true));
-                    if (!escapingBools[0])
+                    //For some reason at three Virtual Test 4 fails this, is something wrong with the escaping ?
+                    if ((!escapingBools[0])||method.IsVirtual)
                     {
                         thisText = String.Format("{0} _this",
                             argumentTypeDescription.ClrType.ToCppName(true, EscapingMode.Pointer));
@@ -81,6 +82,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                     sb.AppendLine(genericTypeCount.GetTypeTemplatePrefix());
             }
 
+            
             var arguments = interpreter.GetArgumentsAsTextWithEscaping(crRuntime);
 
             sb.AppendFormat("{0} {1}({2})",

@@ -38,13 +38,13 @@ namespace VisualCompiler
     {
         public MainWindow()
         {
-           
+
 
             InitializeComponent();
             CompilerUtils.DeleteFilesByWildcards("Test*.exe");
 
             ViewModel.Window = this;
-          
+
 
             TextEditor.Text = ViewModel.SourceCode;
             TextEditor.TextArea.TextEntering += textEditor_TextArea_TextEntering;
@@ -59,57 +59,57 @@ namespace VisualCompiler
 
 
             if (foldingManager == null)
-                    foldingManager = FoldingManager.Install(TextEditor.TextArea);
-                foldingStrategy.UpdateFoldings(foldingManager, TextEditor.Document);
+                foldingManager = FoldingManager.Install(TextEditor.TextArea);
+            foldingStrategy.UpdateFoldings(foldingManager, TextEditor.Document);
 
-                // Dynamic syntax highlighting for Intermediate Representation
-                var rules = IL.SyntaxHighlighting.MainRuleSet.Rules;
+            // Dynamic syntax highlighting for Intermediate Representation
+            var rules = IL.SyntaxHighlighting.MainRuleSet.Rules;
 
-                var highlightingRule = new HighlightingRule();
-                highlightingRule.Color = new HighlightingColor()
-                {
-                   
-                      Foreground = new CustomizedBrush(Color.Green),
-                    FontWeight = FontWeight.FromOpenTypeWeight(130)
-                };
+            var highlightingRule = new HighlightingRule();
+            highlightingRule.Color = new HighlightingColor()
+            {
 
-                var wordList = ILOperatorKeywords; 
-                var regex = String.Format(@"\b({0})\b", String.Join("|", wordList));
-                highlightingRule.Regex = new Regex(regex);
+                Foreground = new CustomizedBrush(Color.Green),
+                FontWeight = FontWeight.FromOpenTypeWeight(130)
+            };
 
-                rules.Add(highlightingRule);
+            var wordList = ILOperatorKeywords;
+            var regex = String.Format(@"\b({0})\b", String.Join("|", wordList));
+            highlightingRule.Regex = new Regex(regex);
 
-                highlightingRule = new HighlightingRule();
-                highlightingRule.Color = new HighlightingColor()
-                {
-                    Foreground = new CustomizedBrush(Color.Red)
-                };
+            rules.Add(highlightingRule);
 
-                wordList = ILKeywords; 
-                 regex = String.Format(@"\b({0})\b", String.Join("|", wordList));
-                highlightingRule.Regex = new Regex(regex);
+            highlightingRule = new HighlightingRule();
+            highlightingRule.Color = new HighlightingColor()
+            {
+                Foreground = new CustomizedBrush(Color.Red)
+            };
 
-                rules.Add(highlightingRule);
+            wordList = ILKeywords;
+            regex = String.Format(@"\b({0})\b", String.Join("|", wordList));
+            highlightingRule.Regex = new Regex(regex);
 
-               
-                TextEditor.Text = VisualCompilerConstants.InitialCode;
-      
+            rules.Add(highlightingRule);
+
+
+            TextEditor.Text = VisualCompilerConstants.InitialCode;
+
         }
 
 
 
         public void Update()
         {
-           ViewModel.  RecompileSource();
+            ViewModel.RecompileSource();
         }
 
         private void TextEditor_OnTextChanged(object sender, EventArgs e)
         {
             if (DataContext != null)
             {
-              
-                    ViewModel.SourceCode = TextEditor.Text;
-                   
+
+                ViewModel.SourceCode = TextEditor.Text;
+
             }
         }
 
@@ -118,35 +118,35 @@ namespace VisualCompiler
         {
             if (DataContext != null)
             {
-              
-               
-                    ViewModel.OutputCode = Output.Text;
+
+
+                ViewModel.OutputCode = Output.Text;
             }
         }
 
 
-        
+
 
         CompletionWindow completionWindow;
 
         void textEditor_TextArea_TextEntered(object sender, TextCompositionEventArgs e)
         {
-//            if (e.Text == ".")
-//            {
-//                // open code completion after the user has pressed dot:
-//                completionWindow = new CompletionWindow(TextEditor.TextArea);
-//                // provide AvalonEdit with the data:
-//                IList<ICompletionData> data = completionWindow.CompletionList.CompletionData;
-//                data.Add(new MyCompletionData("Item1"));
-//                data.Add(new MyCompletionData("Item2"));
-//                data.Add(new MyCompletionData("Item3"));
-//                data.Add(new MyCompletionData("Another item"));
-//                completionWindow.Show();
-//                completionWindow.Closed += delegate
-//                {
-//                    completionWindow = null;
-//                };
-//            }
+            //            if (e.Text == ".")
+            //            {
+            //                // open code completion after the user has pressed dot:
+            //                completionWindow = new CompletionWindow(TextEditor.TextArea);
+            //                // provide AvalonEdit with the data:
+            //                IList<ICompletionData> data = completionWindow.CompletionList.CompletionData;
+            //                data.Add(new MyCompletionData("Item1"));
+            //                data.Add(new MyCompletionData("Item2"));
+            //                data.Add(new MyCompletionData("Item3"));
+            //                data.Add(new MyCompletionData("Another item"));
+            //                completionWindow.Show();
+            //                completionWindow.Closed += delegate
+            //                {
+            //                    completionWindow = null;
+            //                };
+            //            }
         }
 
         void textEditor_TextArea_TextEntering(object sender, TextCompositionEventArgs e)
@@ -179,7 +179,7 @@ namespace VisualCompiler
         #region Folding
         FoldingManager foldingManager;
         AbstractFoldingStrategy foldingStrategy;
-       
+
 
 
         void foldingUpdateTimer_Tick(object sender, EventArgs e)
@@ -193,29 +193,43 @@ namespace VisualCompiler
 
         private void RunCSharpButton_Click(object sender, RoutedEventArgs e)
         {
+           
+                this.ViewModel.CompilerErrors = String.Empty;
             CompileCSharp(true);
         }
 
         private void CompileCSharp(bool clearoutput)
         {
-            CSharpOutput = "";
-            if(clearoutput)
-            this.ViewModel.CompilerErrors = String.Empty;
-            TextWriter originalConsoleOutput = Console.Out;
-            StringWriter writer = new StringWriter();
-            Console.SetOut(writer);
+            try
+            {
+                CSharpOutput = "";
+             
+                TextWriter originalConsoleOutput = Console.Out;
+                StringWriter writer = new StringWriter();
+                Console.SetOut(writer);
 
-            AppDomain appDomain = AppDomain.CreateDomain("Loading Domain");
+                AppDomain appDomain = AppDomain.CreateDomain("Loading Domain");
 
 
-            this.Execute(ViewModel.LastCompiledExecutable);
-            AppDomain.Unload(appDomain);
 
-            Console.SetOut(originalConsoleOutput);
-            string result = writer.ToString();
-            CSharpOutput = result;
-            this.ViewModel.CompilerErrors += String.Format("Running {0}:\n\n{1}", ViewModel.LastCompiledExecutable,
-                (CSharpOutput));
+                var start = Environment.TickCount;
+
+                this.Execute(ViewModel.LastCompiledExecutable);
+                var end = Environment.TickCount - start;
+
+                 this.ViewModel.CompilerErrors +=  String.Format("CS time: {0} ms\n", end);
+                AppDomain.Unload(appDomain);
+
+                Console.SetOut(originalConsoleOutput);
+                string result = writer.ToString();
+                CSharpOutput = result;
+                this.ViewModel.CompilerErrors += (CSharpOutput);
+            }
+            catch (Exception ex)
+            {
+
+                this.ViewModel.CompilerErrors += ex.Message + "\n" + ex.StackTrace;
+            }
         }
 
         public string CSharpOutput;
@@ -233,25 +247,29 @@ namespace VisualCompiler
             byte[] bytes = File.ReadAllBytes(exeName);
             Assembly assembly = Assembly.Load(bytes);
             MethodInfo main = assembly.EntryPoint;
-            main.Invoke(null,null);
+            main.Invoke(null, null);
         }
 
 
 
         public MainWindowViewModel ViewModel
         {
-            get { return (MainWindowViewModel) DataContext; }
+            get { return (MainWindowViewModel)DataContext; }
         }
 
         private void RunCPPButton_Click(object sender, RoutedEventArgs e)
         {
-            CompileCpp(true);
+           
+
+           
+            ViewModel.CompilerErrors = String.Empty;
+            CompileCpp();
+         
         }
 
-        private void CompileCpp(bool clearoutput)
+        private void CompileCpp()
         {
-            if (clearoutput)
-                ViewModel.CompilerErrors = String.Empty;
+          
             CppOutput = String.Empty;
             var outputcpp = "OpenRuntime/" + ViewModel.LastCompiledExecutable.Replace(".exe", ".cpp");
 
@@ -259,7 +277,7 @@ namespace VisualCompiler
             outputcpp = fileInfo.FullName;
 
             var outputexe = outputcpp.Replace(".cpp", "_CPP.exe");
-           
+
             try
             {
                 var sb = new StringBuilder(ViewModel.OutputCode);
@@ -281,14 +299,18 @@ namespace VisualCompiler
                 p.StartInfo.FileName = outputexe;
                 p.StartInfo.WorkingDirectory = Path.GetDirectoryName(outputexe);
                 p.Start();
+                var start = Environment.TickCount;
+             
                 // Do not wait for the child process to exit before
                 // reading to the end of its redirected stream.
                 // p.WaitForExit();
                 // Read the output stream first and then wait.
                 string output = outputexe.ExecuteCommand("");
                 p.WaitForExit();
-                CppOutput = output;
-                ViewModel.CompilerErrors += output + p.StandardError.ReadToEnd();
+                var end = Environment.TickCount - start;
+               
+                CppOutput =   output;
+                ViewModel.CompilerErrors +=   String.Format("CPP time: {0} ms\n", end) +output + p.StandardError.ReadToEnd();
             }
             catch (Exception ex)
             {
@@ -305,21 +327,21 @@ namespace VisualCompiler
         {
             if (ResetStatus != null)
                 ResetStatus.Stop();
-           
+
             CompileCSharp(false);
-            CompileCpp(false);
+            CompileCpp();
             if (CSharpOutput == CppOutput)
             {
                 TestStatus.Content = "PASSED";
-                TestStatus.Background = new SolidColorBrush( System.Windows.Media.Color.FromRgb(Color.GreenYellow.R,Color.GreenYellow.G,Color.GreenYellow.B));
+                TestStatus.Background = new SolidColorBrush(System.Windows.Media.Color.FromRgb(Color.GreenYellow.R, Color.GreenYellow.G, Color.GreenYellow.B));
 
-                ViewModel.CompilerErrors = String.Format("Test Passed:\n\nCSharpOutput:\n{0}CPPOutPut:\n{1}",CSharpOutput,CppOutput) ;
+                ViewModel.CompilerErrors = String.Format("Test Passed:\n\nCSharpOutput:\n{0}CPPOutPut:\n{1}", CSharpOutput, CppOutput);
             }
             else
             {
                 TestStatus.Content = "FAILED";
                 TestStatus.Background = new SolidColorBrush(System.Windows.Media.Color.FromRgb(Color.Red.R, Color.Red.G, Color.Red.B));
-                ViewModel.CompilerErrors = "Test Failed\n" +ViewModel.CompilerErrors;
+                ViewModel.CompilerErrors = "Test Failed\n" + ViewModel.CompilerErrors;
             }
             if (ResetStatus == null)
             {
@@ -346,7 +368,7 @@ namespace VisualCompiler
             var optionsWindow = new CompilerOptionsWindow();
             optionsWindow.Owner = this;
             optionsWindow.ShowDialog();
-            if(!optionsWindow.ViewModel.Accepted)
+            if (!optionsWindow.ViewModel.Accepted)
                 return;
             ViewModel.OptimizationList.Clear();
             ViewModel.OptimizationList.AddRange(optionsWindow.ViewModel.Capabilities);
