@@ -30,13 +30,13 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 if (parameterData != EscapingMode.Unused)
                 {
                     var argumentTypeDescription = UsedTypeList.Set(method.DeclaringType.GetMappedType(), crRuntime);
-                    var thisText = String.Format("const {0}& _this", argumentTypeDescription.ClrType.ToCppName(true));
+                    var thisText = String.Format("const {0}& _this", argumentTypeDescription.ClrType.ToCppName(true)); // all "_this" should be smart pointers
                     //For some reason at three Virtual Test 4 fails this, is something wrong with the escaping ?
-                    if ((!escapingBools[0])||method.IsVirtual)
-                    {
-                        thisText = String.Format("{0} _this",
-                            argumentTypeDescription.ClrType.ToCppName(true, EscapingMode.Pointer));
-                    }
+//                    if ((!escapingBools[0]))
+//                    {
+//                        thisText = String.Format("{0} _this",
+//                            argumentTypeDescription.ClrType.ToCppName(true, EscapingMode.Pointer));
+//                    }
                     sb.Append(thisText);
                     index++;
                 }

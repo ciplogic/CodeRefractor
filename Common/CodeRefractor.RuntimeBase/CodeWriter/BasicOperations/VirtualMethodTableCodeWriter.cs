@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Backend.ComputeClosure;
@@ -57,7 +58,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 var parametersString = GetParametersString(virtualMethod);
 
                 sb.Append("typedef ");
-                sb.Append(virtualMethod.ReturnType.ToCppMangling());
+                sb.Append(virtualMethod.ReturnType.ToCppName(true,EscapingMode.Smart));
 
                 sb.Append(" (*");
                 sb.Append(methodName);
@@ -65,7 +66,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 sb.AppendFormat(parametersString);
                 sb.AppendLine(");");
 
-                sb.Append(virtualMethod.ReturnType.ToCppMangling());
+                sb.Append(virtualMethod.ReturnType.ToCppName(true, EscapingMode.Smart));
                 sb.Append(" ");
                 sb.Append(methodName);
                 sb.Append("_vcall(");
@@ -78,7 +79,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 var methodName = virtualMethod.BaseMethod.ClangMethodSignature();
 
                 var parametersString = GetParametersString(virtualMethod);
-                var parametersCallString = "_this";
+             
                 sb.Append(virtualMethod.ReturnType.ToCppName(true,EscapingMode.Smart));
                 sb.Append(" ");
                 sb.Append(methodName);
@@ -98,12 +99,14 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                     {
                         sb.Append("return ");
                     }
-
-                    var methodImpl = implementation.GetMethod(virtualMethod.Name).ClangMethodSignature();
+                    var method = implementation.GetMethod(virtualMethod.Name);
+                    var methodImpl = method.ClangMethodSignature();
+                    var parametersCallString = GetCall(virtualMethod,method);
+                   
                     sb
-                        .AppendFormat("{0}(", methodImpl)
-                        .AppendFormat("{0});", parametersCallString)
-                        .AppendLine();
+                      .AppendFormat("{0}(", methodImpl)
+                      .AppendFormat("{0});",  parametersCallString)
+                      .AppendLine();
                     if (isVoid)
                     {
                         sb.Append("return;").AppendLine();
@@ -127,10 +130,11 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                         sb.Append("return ");
                     }
 
-
-                    var methodImpl = implementation.GetMethod(virtualMethod.Name).ClangMethodSignature();
+                    var method = implementation.GetMethod(virtualMethod.Name);
+                    var methodImpl = method.ClangMethodSignature();
+                    var parametersCallString = GetCall(virtualMethod, method);
                     sb
-                        .AppendFormat("{0}(", methodImpl)
+                        .AppendFormat("{0}(",methodImpl)
                         .AppendFormat("{0});", parametersCallString)
                         .AppendLine();
                     if (isVoid)
@@ -150,7 +154,38 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 
         private static string GetParametersString(VirtualMethodDescription virtualMethod)
         {
-            var parametersString = string.Format("const {0} _this", virtualMethod.BaseType.ToDeclaredVariableType(true,EscapingMode.Pointer));
+            var parametersString = string.Format("const {0} _this", virtualMethod.BaseType.ToDeclaredVariableType(true,EscapingMode.Smart));
+            //Add Rest of parameters
+            if (virtualMethod.Parameters.Length > 0)
+            {
+                var paramTypes = virtualMethod.Parameters;
+                int c = 0;
+                parametersString += ", ";
+                parametersString = paramTypes.Aggregate(parametersString, (current, paramType) => current + (paramType.ToDeclaredVariableType(true, EscapingMode.Smart) + " param" + (c++) + ", "));
+                
+                    parametersString = parametersString.Substring(0, parametersString.Length - 2);
+                
+                                  
+            }
+            return parametersString;
+        }
+
+        private static string GetCall(VirtualMethodDescription virtualMethod, MethodInfo method)
+        {
+            var parametersString = string.Format("std::static_pointer_cast<{0}>(_this)", method.DeclaringType.ToCppName(true, EscapingMode.Unused));
+            //Add Rest of parameters
+            if (virtualMethod.Parameters.Length > 0)
+            {
+                var paramTypes = virtualMethod.Parameters;
+                int c = 0;
+                parametersString += ", ";
+               
+                parametersString = paramTypes.Aggregate(parametersString, (current, paramType) => current + " param" + (c++) + ", ");
+
+                parametersString = parametersString.Substring(0, parametersString.Length - 2);
+
+
+            }
             return parametersString;
         }
 

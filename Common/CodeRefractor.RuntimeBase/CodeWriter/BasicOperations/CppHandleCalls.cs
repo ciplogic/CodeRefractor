@@ -167,12 +167,12 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 var localValueData = interpreter.AnalyzeProperties.GetVariableData(localValue);
                 switch (localValueData)
                 {
-                    case EscapingMode.Smart:
-                        if (!isEscaping && localValue.ComputedType().ClrType.IsClass)
-                        {
-                            sb.AppendFormat("{0}.get()", localValue.Name);
-                        }
-                        else
+                    case EscapingMode.Smart: // Want to use dynamic_casts instead
+//                        if ((!isEscaping && localValue.ComputedType().ClrType.IsClass )|| (operationData.Info.IsVirtual && index==0))
+//                        {
+//                            sb.AppendFormat("{0}.get()", localValue.Name);
+//                        }
+//                        else
                         {
                             sb.AppendFormat("{0}", localValue.Name);
                         }
