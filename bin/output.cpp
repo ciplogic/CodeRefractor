@@ -1,246 +1,207 @@
 #include "sloth.h"
 #include <functional>
 struct System_Object;
-struct _Program;
-struct _A;
-struct _B;
-struct _C;
-struct _D;
-struct System_Console;
-struct System_ValueType;
-struct System_String;
+struct Obj_Test;
+struct Obj_A;
+struct Obj_B;
 struct System_Object {
 	int _typeId;
 };
-struct _Program : public System_Object {
+struct Obj_Test : public System_Object {
 };
-struct _A : public System_Object {
+struct Obj_A : public System_Object {
 };
-struct _B : public _A {
-};
-struct _C : public _B {
-};
-struct _D : public _C {
-};
-struct System_Console : public System_Object {
-};
-struct System_ValueType : public System_Object {
-};
-struct System_String : public System_Object {
-	std::shared_ptr< Array < System_Char > > Text;
+struct Obj_B : public Obj_A {
 };
 
-System_Void _Program_Main();
+System_Int32 Obj_Test_Main();
 
-System_Void _A_ctor(const std::shared_ptr<_A>& _this);
+System_Void Obj_B_ctor(const std::shared_ptr<Obj_B>& _this);
 
-System_Void _B_ctor(const std::shared_ptr<_B>& _this);
+System_Int32 Obj_B_F(const std::shared_ptr<Obj_B>& _this);
 
-System_Void _C_ctor(const std::shared_ptr<_C>& _this);
+System_Int32 Obj_B_H(const std::shared_ptr<Obj_B>& _this);
 
-System_Void _D_ctor(const std::shared_ptr<_D>& _this);
+System_Int32 Obj_A_F(const std::shared_ptr<Obj_A>& _this);
 
-System_Void _A_Test(const std::shared_ptr<_A>& _this);
+System_Int32 Obj_A_G(const std::shared_ptr<Obj_A>& _this);
 
-std::shared_ptr<_B> _A_NotAnA(const std::shared_ptr<_A>& _this, System_Int32 count, std::shared_ptr<System_String> message);
+System_Int32 Obj_A_H(const std::shared_ptr<Obj_A>& _this);
 
-System_Void _B_Test(const std::shared_ptr<_B>& _this);
+System_Int32 Obj_B_G(const std::shared_ptr<Obj_B>& _this);
 
-System_Void _C_Test(const std::shared_ptr<_C>& _this);
-
-std::shared_ptr<_B> _B_NotAnA(const std::shared_ptr<_B>& _this, System_Int32 count, std::shared_ptr<System_String> message);
+System_Void Obj_A_ctor(const std::shared_ptr<Obj_A>& _this);
 
 #include "runtime_base.hpp"
 // --- Begin definition of virtual method tables ---
 System_Void setupTypeTable();
 
-typedef System_Void(*_A_TestVirtPtr)(const std::shared_ptr<_A> _this);
-System_Void _A_Test_vcall(const std::shared_ptr<_A> _this);
-typedef std::shared_ptr<_B>(*_A_NotAnAVirtPtr)(const std::shared_ptr<_A> _this, System_Int32 param0, std::shared_ptr<System_String> param1);
-std::shared_ptr<_B> _A_NotAnA_vcall(const std::shared_ptr<_A> _this, System_Int32 param0, std::shared_ptr<System_String> param1);
-System_Void _A_Test_vcall(const std::shared_ptr<_A> _this){
+typedef System_Int32(*Obj_A_GVirtPtr)(const std::shared_ptr<Obj_A> _this);
+System_Int32 Obj_A_G_vcall(const std::shared_ptr<Obj_A> _this);
+typedef System_Int32(*Obj_A_HVirtPtr)(const std::shared_ptr<Obj_A> _this);
+System_Int32 Obj_A_H_vcall(const std::shared_ptr<Obj_A> _this);
+System_Int32 Obj_A_G_vcall(const std::shared_ptr<Obj_A> _this){
 	switch (_this->_typeId)
 	{
 	case 2:
-		_A_Test(std::static_pointer_cast<_A>(_this));
-		return;
+		return Obj_A_G(std::static_pointer_cast<Obj_A>(_this));
 	case 3:
-		_B_Test(std::static_pointer_cast<_B>(_this));
-		return;
-	case 4:
-		_C_Test(std::static_pointer_cast<_C>(_this));
-		return;
-	case 5:
-		_C_Test(std::static_pointer_cast<_C>(_this));
-		return;
+		return Obj_B_G(std::static_pointer_cast<Obj_B>(_this));
 	}
 }
-std::shared_ptr<_B> _A_NotAnA_vcall(const std::shared_ptr<_A> _this, System_Int32 param0, std::shared_ptr<System_String> param1){
+System_Int32 Obj_A_H_vcall(const std::shared_ptr<Obj_A> _this){
 	switch (_this->_typeId)
 	{
 	case 2:
-		return _A_NotAnA(std::static_pointer_cast<_A>(_this), param0, param1);
+		return Obj_A_H(std::static_pointer_cast<Obj_A>(_this));
 	case 3:
-		return _B_NotAnA(std::static_pointer_cast<_B>(_this), param0, param1);
-	case 4:
-		return _B_NotAnA(std::static_pointer_cast<_B>(_this), param0, param1);
-	case 5:
-		return _B_NotAnA(std::static_pointer_cast<_B>(_this), param0, param1);
+		return Obj_B_H(std::static_pointer_cast<Obj_B>(_this));
 	}
 }
 // --- End of definition of virtual method tables ---
 
-System_Void System_Console_WriteLine(std::shared_ptr<System_String> value)
-{
-	printf("%ls\n", value.get()->Text->Items);
-}
-System_Void System_Console_WriteLine(System_Int32 value)
-{
-	printf("%d\n", value);
-}
 ///--- PInvoke code --- 
 ///---Begin closure code --- 
-System_Void _Program_Main()
+System_Int32 Obj_Test_Main()
 
 {
-	std::shared_ptr<_A> local_0;
-	std::shared_ptr<_B> local_1;
-	std::shared_ptr<_A> local_2;
-	std::shared_ptr<_B> local_3;
-	std::shared_ptr<_A> local_4;
-	std::shared_ptr<_A> local_5;
-	std::shared_ptr<_A> vreg_1;
-	std::shared_ptr<_A> vreg_2;
-	std::shared_ptr<_B> vreg_3;
-	std::shared_ptr<_B> vreg_4;
-	std::shared_ptr<_B> vreg_5;
-	std::shared_ptr<_B> vreg_6;
-	std::shared_ptr<_C> vreg_7;
-	std::shared_ptr<_C> vreg_8;
-	std::shared_ptr<_D> vreg_9;
-	std::shared_ptr<_D> vreg_10;
+	System_Int32 local_0;
+	std::shared_ptr<Obj_B> local_1;
+	std::shared_ptr<Obj_A> local_2;
+	std::shared_ptr<Obj_B> vreg_1;
+	std::shared_ptr<Obj_B> vreg_2;
+	System_Int32 vreg_3;
+	System_Int32 vreg_4;
+	System_Int32 vreg_5;
+	System_Int32 vreg_6;
+	System_Int32 vreg_7;
+	System_Int32 vreg_8;
+	System_Int32 vreg_9;
+	System_Int32 vreg_10;
+	System_Int32 vreg_11;
+	System_Int32 vreg_12;
+	System_Int32 vreg_13;
+	System_Int32 vreg_14;
+	System_Int32 vreg_15;
+	System_Int32 vreg_16;
+	std::shared_ptr<Obj_B> vreg_17;
+	System_Int32 vreg_18;
+	System_Int32 vreg_19;
 
-	vreg_1 = std::make_shared<_A >();
-	vreg_1->_typeId = 2;
-	_A_ctor(vreg_1);
-	vreg_2 = vreg_1;
-	local_0 = vreg_2;
-	_A_Test_vcall(local_0);
-	vreg_3 = _A_NotAnA_vcall(local_0, 0, _str(1));
-	local_1 = vreg_3;
-	_A_Test_vcall(local_1);
-	vreg_4 = std::make_shared<_B >();
-	vreg_4->_typeId = 3;
-	_B_ctor(vreg_4);
-	vreg_5 = vreg_4;
-	local_2 = vreg_5;
-	_A_Test_vcall(local_2);
-	vreg_6 = _A_NotAnA_vcall(local_2, 0, _str(2));
-	local_3 = vreg_6;
-	_A_Test_vcall(local_3);
-	vreg_7 = std::make_shared<_C >();
-	vreg_7->_typeId = 4;
-	_C_ctor(vreg_7);
-	vreg_8 = vreg_7;
-	local_4 = vreg_8;
-	_A_Test_vcall(local_4);
-	vreg_9 = std::make_shared<_D >();
-	vreg_9->_typeId = 5;
-	_D_ctor(vreg_9);
-	vreg_10 = vreg_9;
-	local_5 = vreg_10;
-	_A_Test_vcall(local_5);
-	return;
-}
-
-
-System_Void _A_ctor(const std::shared_ptr<_A>& _this)
-
-{
-
-	return;
-}
-
-
-System_Void _B_ctor(const std::shared_ptr<_B>& _this)
-
-{
-
-	_A_ctor(_this);
-	return;
-}
-
-
-System_Void _C_ctor(const std::shared_ptr<_C>& _this)
-
-{
-
-	_B_ctor(_this);
-	return;
-}
-
-
-System_Void _D_ctor(const std::shared_ptr<_D>& _this)
-
-{
-
-	_C_ctor(_this);
-	return;
-}
-
-
-System_Void _A_Test(const std::shared_ptr<_A>& _this)
-
-{
-
-	System_Console_WriteLine(_str(3));
-	return;
-}
-
-
-std::shared_ptr<_B> _A_NotAnA(const std::shared_ptr<_A>& _this, System_Int32 count, std::shared_ptr<System_String> message)
-
-{
-	std::shared_ptr<_B> vreg_1;
-	std::shared_ptr<_B> vreg_2;
-
-	System_Console_WriteLine(count);
-	System_Console_WriteLine(message);
-	System_Console_WriteLine(_str(3));
-	vreg_1 = std::make_shared<_B >();
+	local_0 = 0;
+	vreg_1 = std::make_shared<Obj_B >();
 	vreg_1->_typeId = 3;
-	_B_ctor(vreg_1);
+	Obj_B_ctor(vreg_1);
 	vreg_2 = vreg_1;
-	return vreg_2;
+	local_1 = vreg_2;
+	local_2 = local_1;
+	vreg_3 = Obj_A_F(local_2);
+	if (vreg_3 == 1) goto label_17;
+	vreg_4 = local_0 | 1;
+	local_0 = vreg_4;
+label_17:
+	vreg_5 = Obj_B_F(local_1);
+	if (vreg_5 == 3) goto label_24;
+	vreg_6 = local_0 | 2;
+	local_0 = vreg_6;
+label_24:
+	vreg_7 = Obj_A_G_vcall(local_1);
+	if (vreg_7 == 4) goto label_31;
+	vreg_8 = local_0 | 4;
+	local_0 = vreg_8;
+label_31:
+	vreg_9 = Obj_A_G_vcall(local_2);
+	if (vreg_9 == 4) goto label_3E;
+	vreg_10 = local_0 | 8;
+	local_0 = vreg_10;
+label_3E:
+	vreg_11 = Obj_A_H_vcall(local_2);
+	if (vreg_11 == 10) goto label_4D;
+	vreg_12 = local_0 | 16;
+	local_0 = vreg_12;
+label_4D:
+	vreg_13 = Obj_B_H(local_1);
+	if (vreg_13 == 11) goto label_5C;
+	vreg_14 = local_0 | 32;
+	local_0 = vreg_14;
+label_5C:
+	vreg_15 = Obj_A_H_vcall(local_1);
+	if (vreg_15 == 10) goto label_6B;
+	vreg_16 = local_0 | 64;
+	local_0 = vreg_16;
+label_6B:
+	vreg_17 = std::static_pointer_cast<Obj_B >(local_2);
+	vreg_18 = Obj_B_H(vreg_17);
+	if (vreg_18 == 11) goto label_82;
+	vreg_19 = local_0 | 128;
+	local_0 = vreg_19;
+label_82:
+	return local_0;
 }
 
 
-System_Void _B_Test(const std::shared_ptr<_B>& _this)
+System_Void Obj_B_ctor(const std::shared_ptr<Obj_B>& _this)
 
 {
 
-	System_Console_WriteLine(_str(4));
+	Obj_A_ctor(_this);
 	return;
 }
 
 
-System_Void _C_Test(const std::shared_ptr<_C>& _this)
+System_Int32 Obj_B_F(const std::shared_ptr<Obj_B>& _this)
 
 {
 
-	System_Console_WriteLine(_str(5));
-	return;
+	return 3;
 }
 
 
-std::shared_ptr<_B> _B_NotAnA(const std::shared_ptr<_B>& _this, System_Int32 count, std::shared_ptr<System_String> message)
+System_Int32 Obj_B_H(const std::shared_ptr<Obj_B>& _this)
 
 {
 
-	System_Console_WriteLine(count);
-	System_Console_WriteLine(message);
-	System_Console_WriteLine(_str(3));
-	return _this;
+	return 11;
+}
+
+
+System_Int32 Obj_A_F(const std::shared_ptr<Obj_A>& _this)
+
+{
+
+	return 1;
+}
+
+
+System_Int32 Obj_A_G(const std::shared_ptr<Obj_A>& _this)
+
+{
+
+	return 2;
+}
+
+
+System_Int32 Obj_A_H(const std::shared_ptr<Obj_A>& _this)
+
+{
+
+	return 10;
+}
+
+
+System_Int32 Obj_B_G(const std::shared_ptr<Obj_B>& _this)
+
+{
+
+	return 4;
+}
+
+
+System_Void Obj_A_ctor(const std::shared_ptr<Obj_A>& _this)
+
+{
+
+	return;
 }
 
 
@@ -249,7 +210,7 @@ System_Void initializeRuntime();
 int main(int argc, char**argv) {
 	auto argsAsList = System_getArgumentsAsList(argc, argv);
 	initializeRuntime();
-	_Program_Main();
+	return Obj_Test_Main();
 	return 0;
 }
 System_Void mapLibs() {
@@ -260,18 +221,8 @@ System_Void RuntimeHelpersBuildConstantTable() {
 
 System_Void buildStringTable() {
 	_AddJumpAndLength(0, 15);
-	_AddJumpAndLength(16, 5);
-	_AddJumpAndLength(22, 5);
-	_AddJumpAndLength(28, 6);
-	_AddJumpAndLength(35, 6);
-	_AddJumpAndLength(42, 6);
 } // buildStringTable
-const wchar_t _stringTable[49] = {
-	80, 114, 105, 109, 101, 32, 110, 117, 109, 98, 101, 114, 115, 58, 32, 0 /* "Prime numbers: " */,
-	116, 101, 115, 116, 49, 0 /* "test1" */,
-	116, 101, 115, 116, 50, 0 /* "test2" */,
-	65, 46, 84, 101, 115, 116, 0 /* "A.Test" */,
-	66, 46, 84, 101, 115, 116, 0 /* "B.Test" */,
-	67, 46, 84, 101, 115, 116, 0 /* "C.Test" */
+const wchar_t _stringTable[16] = {
+	80, 114, 105, 109, 101, 32, 110, 117, 109, 98, 101, 114, 115, 58, 32, 0 /* "Prime numbers: " */
 }; // _stringTable 
 

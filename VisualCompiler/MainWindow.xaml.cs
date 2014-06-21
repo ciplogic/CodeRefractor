@@ -260,103 +260,116 @@ namespace VisualCompiler
 
         private void RunCPPButton_Click(object sender, RoutedEventArgs e)
         {
-           
 
-           
-            ViewModel.CompilerErrors = String.Empty;
-            CompileCpp();
+            Dispatcher.InvokeAsync(() =>
+            {
+
+                ViewModel.CompilerErrors = String.Empty;
+                CompileCpp();
+            });
+         
          
         }
 
         private void CompileCpp()
         {
-          
-            CppOutput = String.Empty;
-            var outputcpp = "OpenRuntime/" + ViewModel.LastCompiledExecutable.Replace(".exe", ".cpp");
-
-            var fileInfo = new FileInfo(outputcpp);
-            outputcpp = fileInfo.FullName;
-
-            var outputexe = outputcpp.Replace(".cpp", "_CPP.exe");
-
-            try
+            Dispatcher.InvokeAsync(() =>
             {
-                var sb = new StringBuilder(ViewModel.OutputCode);
+                CppOutput = String.Empty;
+                var outputcpp = "OpenRuntime/" + ViewModel.LastCompiledExecutable.Replace(".exe", ".cpp");
+
+                var fileInfo = new FileInfo(outputcpp);
+                outputcpp = fileInfo.FullName;
+
+                var outputexe = outputcpp.Replace(".cpp", "_CPP.exe");
+
+                try
+                {
+                    var sb = new StringBuilder(ViewModel.OutputCode);
 
 
-                sb.ToFile(outputcpp);
+                    sb.ToFile(outputcpp);
 
-                NativeCompilationUtils.SetCompilerOptions("gcc");
-                NativeCompilationUtils.CompileAppToNativeExe(outputcpp, outputexe);
+                    NativeCompilationUtils.SetCompilerOptions("gcc");
+                    NativeCompilationUtils.CompileAppToNativeExe(outputcpp, outputexe);
 
 
-                // Start the child process.
-                Process p = new Process();
-                // Redirect the output stream of the child process.
-                p.StartInfo.UseShellExecute = false;
-                p.StartInfo.RedirectStandardOutput = true;
-                p.StartInfo.RedirectStandardError = true;
-                p.StartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
-                p.StartInfo.FileName = outputexe;
-                p.StartInfo.WorkingDirectory = Path.GetDirectoryName(outputexe);
-                p.Start();
-                var start = Environment.TickCount;
-             
-                // Do not wait for the child process to exit before
-                // reading to the end of its redirected stream.
-                // p.WaitForExit();
-                // Read the output stream first and then wait.
-                string output = outputexe.ExecuteCommand("");
-                p.WaitForExit();
-                var end = Environment.TickCount - start;
-               
-                CppOutput =   output;
-                ViewModel.CompilerErrors +=   String.Format("CPP time: {0} ms\n", end) +output + p.StandardError.ReadToEnd();
-            }
-            catch (Exception ex)
-            {
-                ViewModel.CompilerErrors += ex.Message + "\nStackTrace: \n" + ex.StackTrace;
-            }
-            finally
-            {
-                File.Delete(outputcpp);
-                File.Delete(outputexe);
-            }
+                    // Start the child process.
+                    Process p = new Process();
+                    // Redirect the output stream of the child process.
+                    p.StartInfo.UseShellExecute = false;
+                    p.StartInfo.RedirectStandardOutput = true;
+                    p.StartInfo.RedirectStandardError = true;
+                    p.StartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+                    p.StartInfo.FileName = outputexe;
+                    p.StartInfo.WorkingDirectory = Path.GetDirectoryName(outputexe);
+                    p.Start();
+                    var start = Environment.TickCount;
+
+                    // Do not wait for the child process to exit before
+                    // reading to the end of its redirected stream.
+                    // p.WaitForExit();
+                    // Read the output stream first and then wait.
+                    string output = outputexe.ExecuteCommand("");
+                    p.WaitForExit();
+                    var end = Environment.TickCount - start;
+
+                    CppOutput = output;
+                    ViewModel.CompilerErrors += String.Format("CPP time: {0} ms\n", end) + output +
+                                                p.StandardError.ReadToEnd();
+                }
+                catch (Exception ex)
+                {
+                    ViewModel.CompilerErrors += ex.Message + "\nStackTrace: \n" + ex.StackTrace;
+                }
+                finally
+                {
+                    File.Delete(outputcpp);
+                    File.Delete(outputexe);
+                }
+            });
         }
 
         private void TestButton_Click(object sender, RoutedEventArgs e)
         {
+
             if (ResetStatus != null)
                 ResetStatus.Stop();
-
-            CompileCSharp(false);
-            CompileCpp();
-            if (CSharpOutput == CppOutput)
+            Dispatcher.InvokeAsync(() =>
             {
-                TestStatus.Content = "PASSED";
-                TestStatus.Background = new SolidColorBrush(System.Windows.Media.Color.FromRgb(Color.GreenYellow.R, Color.GreenYellow.G, Color.GreenYellow.B));
-
-                ViewModel.CompilerErrors = String.Format("Test Passed:\n\nCSharpOutput:\n{0}CPPOutPut:\n{1}", CSharpOutput, CppOutput);
-            }
-            else
-            {
-                TestStatus.Content = "FAILED";
-                TestStatus.Background = new SolidColorBrush(System.Windows.Media.Color.FromRgb(Color.Red.R, Color.Red.G, Color.Red.B));
-                ViewModel.CompilerErrors = "Test Failed\n" + ViewModel.CompilerErrors;
-            }
-            if (ResetStatus == null)
-            {
-                ResetStatus = new Timer(4000);
-                ResetStatus.AutoReset = false;
-                ResetStatus.Elapsed += (o, args) => Dispatcher.Invoke(() =>
+                CompileCSharp(false);
+                CompileCpp();
+                if (CSharpOutput == CppOutput)
                 {
-                    TestStatus.Content = "TEST STATUS";
+                    TestStatus.Content = "PASSED";
                     TestStatus.Background =
-                        new SolidColorBrush(System.Windows.Media.Color.FromRgb(Color.White.R, Color.White.G,
-                            Color.White.B));
-                });
-            }
-            ResetStatus.Start();
+                        new SolidColorBrush(System.Windows.Media.Color.FromRgb(Color.GreenYellow.R,
+                            Color.GreenYellow.G, Color.GreenYellow.B));
+
+                    ViewModel.CompilerErrors = String.Format("Test Passed:\n\nCSharpOutput:\n{0}CPPOutPut:\n{1}",
+                        CSharpOutput, CppOutput);
+                }
+                else
+                {
+                    TestStatus.Content = "FAILED";
+                    TestStatus.Background =
+                        new SolidColorBrush(System.Windows.Media.Color.FromRgb(Color.Red.R, Color.Red.G, Color.Red.B));
+                    ViewModel.CompilerErrors = "Test Failed\n" + ViewModel.CompilerErrors;
+                }
+                if (ResetStatus == null)
+                {
+                    ResetStatus = new Timer(4000);
+                    ResetStatus.AutoReset = false;
+                    ResetStatus.Elapsed += (o, args) => Dispatcher.Invoke(() =>
+                    {
+                        TestStatus.Content = "TEST STATUS";
+                        TestStatus.Background =
+                            new SolidColorBrush(System.Windows.Media.Color.FromRgb(Color.White.R, Color.White.G,
+                                Color.White.B));
+                    });
+                }
+                ResetStatus.Start();
+            });
         }
 
         private Timer ResetStatus;

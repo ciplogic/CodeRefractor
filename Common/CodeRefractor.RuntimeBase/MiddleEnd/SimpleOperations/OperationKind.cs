@@ -41,6 +41,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
         Box,
         Unbox,
 
+        CastClass,
+
         Comment,
     }
 }

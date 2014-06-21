@@ -2,7 +2,7 @@
 #include <string>
 #include <memory>
 
-static std::vector<std::shared_ptr<System_String> > _stringJumps;
+static std::vector<std::shared_ptr<System::String> > _stringJumps;
 
 void buildStringTable();
 void mapLibs();
@@ -52,7 +52,7 @@ T unbox_value(std::shared_ptr<System_Object> value){
 
 
 extern const wchar_t _stringTable[];
-std::shared_ptr<System_String> _str(int index)
+std::shared_ptr<System::String> _str(int index)
 {
 	return _stringJumps[index];
 }
@@ -61,7 +61,7 @@ void _AddJumpAndLength(int jump, int length)
 {
 	auto resultData = &(_stringTable[jump]);
 	
-	auto result = std::make_shared<System_String>(); 
+	auto result = std::make_shared<System::String>();
 	auto value = std::make_shared<Array < System_Char >>(length+1, resultData);
 	result->Text =  value;
 	_stringJumps.push_back(result);

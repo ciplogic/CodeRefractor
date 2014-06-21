@@ -208,6 +208,10 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             if (HandleBoxing(opcodeStr, offset, operationFactory, instruction))
                 return;
 
+            if (HandleClassCast(opcodeStr, offset, operationFactory, instruction))
+                return;
+            
+
             if (HandleExtraInstructions(instruction, operationFactory, opcodeStr)) return;
             throw new InvalidOperationException(String.Format("Unknown instruction: {0}", instruction));
         }
@@ -560,6 +564,21 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             }
             return false;
         }
+
+        private static bool HandleClassCast(string opcodeStr, int offset, MetaMidRepresentationOperationFactory operationFactory, Instruction instruction)
+        {
+
+
+            if (opcodeStr == "castclass"
+                )
+            {
+                operationFactory.CastClass((Type)instruction.Operand);
+                return true;
+            }
+          
+            return false;
+        }
+
 
         private static bool HandleBoxing(string opcodeStr, int offset, MetaMidRepresentationOperationFactory operationFactory, Instruction instruction)
         {

@@ -90,6 +90,11 @@ namespace CodeRefractor.RuntimeBase.CodeWriter.BasicOperations
                     case OperationKind.Box:
                         HandleBox((Boxing)operation.Value, bodySb, typeTable);
                         break;
+
+                    case OperationKind.CastClass:
+                        HandleCastClass((ClassCasting)operation.Value, bodySb, typeTable);
+                        break;
+
                     case OperationKind.Unbox:
                         HandleUnbox((Unboxing)operation.Value, bodySb, typeTable);
                         break;
@@ -127,6 +132,17 @@ namespace CodeRefractor.RuntimeBase.CodeWriter.BasicOperations
                     typeTable.GetTypeId(typeDescription.ClrType));
         }
 
+
+        private static void HandleCastClass(ClassCasting casting, StringBuilder bodySb, TypeDescriptionTable typeTable)
+        {
+            var typeDescription = casting.AssignedTo.ComputedType();
+            bodySb
+                .AppendFormat("{0} = std::static_pointer_cast<{2}>({1});",
+                    casting.AssignedTo.Name,
+                    casting.Value.Name,
+                    typeDescription.ClrType.ToDeclaredVariableType(true, EscapingMode.Stack));
+        }
+        
         private static void HandleComment(string toString, StringBuilder bodySb)
         {
             bodySb

@@ -106,6 +106,7 @@ namespace VisualCompiler
             OptimizationLevelBase.UpdateOptimizationsFromCategories(OptimizationLevelBase.OptimizationPasses);
             OptimizationLevelBase.SortOptimizations();
             var programClosure = new ProgramClosure(definition, crRuntime);
+            programClosure.AddAlwaysUsedType(typeof(CrString));
             var sb = programClosure.BuildFullSourceCode(programClosure.Runtime);
             var end = Environment.TickCount - start;
              CompilerErrors +=String.Format("Compilation time: {0} ms", end);

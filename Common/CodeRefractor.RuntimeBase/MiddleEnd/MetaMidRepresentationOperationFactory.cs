@@ -874,6 +874,23 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             _evaluator.Clear();
         }
 
+
+        
+        public void CastClass(Type operand)
+        {
+             
+
+            var valueToCast = _evaluator.Pop(); 
+            var result = SetNewVReg();
+            result.FixedType = new TypeDescription(operand);
+            var casting = new ClassCasting()
+            {
+                AssignedTo = result,
+                Value = valueToCast
+            };
+            AddOperation(OperationKind.CastClass, casting);
+        }
+
         public void Box()
         {
             var valueToBox = _evaluator.Pop(); 

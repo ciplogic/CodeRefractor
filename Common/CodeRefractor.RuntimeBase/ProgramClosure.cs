@@ -51,6 +51,7 @@ namespace CodeRefractor.RuntimeBase
 
             BuildMethodClosure();
             AddAlwaysUsedType(typeof(object));
+          
             TypesClosureLinker.SortTypeClosure(UsedTypes, crRuntime);
 
             var typeTable = new TypeDescriptionTable(UsedTypes);
@@ -59,7 +60,7 @@ namespace CodeRefractor.RuntimeBase
             BuildVirtualMethodTable(typeTable, MethodClosure);
         }
 
-        private void AddAlwaysUsedType(Type alwaysUsedType)
+        public void AddAlwaysUsedType(Type alwaysUsedType)
         {
             if (!UsedTypes.Contains(alwaysUsedType))
             {

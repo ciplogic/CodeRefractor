@@ -235,7 +235,7 @@ namespace CodeRefractor.RuntimeBase
         
 
             p.Start();
-            p.WaitForExit();
+            p.WaitForExit(10000);
 
             var standardOutput = p.StandardOutput.ReadToEnd();
             var standardError = p.StandardError.ReadToEnd();

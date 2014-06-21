@@ -117,6 +117,8 @@ namespace CodeRefractor.RuntimeBase.Backend
             sortedTypeData.Add(typeof(System.Object));
             typeDataList.Remove(typeof(Object));
 
+           
+                
             while (typeDataList.Count > 0)
             {
                 foreach (var typeData in typeDatas)
@@ -134,8 +136,8 @@ namespace CodeRefractor.RuntimeBase.Backend
                 }
             }
 
-
-     
+           
+           
 
             foreach (var typeData in sortedTypeData)
             {

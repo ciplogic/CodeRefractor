@@ -32,6 +32,10 @@ namespace CodeRefractor.RuntimeBase.Analyze
                 case OperationKind.Unbox:
                     result.AddUsage(((Unboxing)operation.Value).Value);
                     break;
+                case OperationKind.CastClass:
+                    result.AddUsage(((ClassCasting)operation.Value).AssignedTo);
+                    break;
+
                 case OperationKind.UnaryOperator:
                     var unaryOperator = ((UnaryOperator) operation.Value);
                     result.AddUsage(unaryOperator.Left);
@@ -243,6 +247,11 @@ namespace CodeRefractor.RuntimeBase.Analyze
                 case OperationKind.Unbox:
                     var unboxing = (Unboxing)operation.Value;
                     return unboxing.AssignedTo;
+
+                case OperationKind.CastClass:
+                    var cast = (ClassCasting)operation.Value;
+                    return cast.AssignedTo;
+
                 case OperationKind.BinaryOperator:
                 case OperationKind.UnaryOperator:
                     var binOp = (OperatorBase) operation.Value;
