@@ -49,7 +49,7 @@ namespace CodeRefractor.RuntimeBase
             if (optimizationsTable.Optimize(this))
                 MetaLinkerOptimizer.ApplyOptimizations(MethodClosure.Values.ToList());
 
-            //BuildMethodClosure();
+            BuildMethodClosure();
             AddAlwaysUsedType(typeof(object));
             TypesClosureLinker.SortTypeClosure(UsedTypes, crRuntime);
 
