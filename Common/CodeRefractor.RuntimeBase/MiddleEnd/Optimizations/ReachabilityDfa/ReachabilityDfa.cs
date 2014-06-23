@@ -53,12 +53,12 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ReachabilityDfa
                         Interpret(labelTable[branchOperator.JumpTo], operations, labelTable, reached);
                         break;
                     case OperationKind.AlwaysBranch:
-                        var jumpTo = (int) operation.Value;
+                        var jumpTo = ((AlwaysBranch) operation.Value).JumpTo;
                         Interpret(labelTable[jumpTo], operations, labelTable, reached);
                         return;
                     case OperationKind.Switch:
-                        var switchAssign = operation.GetAssignment();
-                        var jumps = (int[]) ((ConstValue) switchAssign.Right).Value;
+                        var switchAssign = (Switch)operation.Value;
+                        var jumps = switchAssign.Jumps;
                         foreach (var jump in jumps)
                         {
                             Interpret(labelTable[jump], operations, labelTable, reached);

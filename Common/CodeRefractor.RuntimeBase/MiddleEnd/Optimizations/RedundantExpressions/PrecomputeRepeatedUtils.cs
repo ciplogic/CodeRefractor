@@ -24,7 +24,6 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.RedundantExpressions
             };
             var localOperation = new LocalOperation()
             {
-                Kind = OperationKind.Assignment,
                 Value = assignment
             };
             return localOperation;

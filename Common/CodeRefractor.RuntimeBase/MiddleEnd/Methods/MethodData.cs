@@ -4,13 +4,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
 #endregion
 
 namespace CodeRefractor.RuntimeBase.MiddleEnd.Methods
 {
-    public class MethodData : IdentifierValue
+    public class MethodData : BaseOperation
     {
         public bool IsVoid
         {
@@ -27,7 +28,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.Methods
             set { _interpreter = value; }
         }
 
-        public MethodData(MethodInterpreter interpreter)
+        public MethodData(MethodInterpreter interpreter, OperationKind kind) : base(kind)
         {
             Parameters = new List<IdentifierValue>();
 

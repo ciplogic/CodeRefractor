@@ -20,6 +20,7 @@ using CodeRefractor.RuntimeBase.MiddleEnd.Optimizations.ConstantFoldingAndPropag
 using CodeRefractor.RuntimeBase.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.SimpleAssignment;
 using CodeRefractor.RuntimeBase.MiddleEnd.Optimizations.Purity;
 using CodeRefractor.RuntimeBase.MiddleEnd.Optimizations.RedundantExpressions;
+using CodeRefractor.RuntimeBase.MiddleEnd.Optimizations.SimpleDce;
 using CodeRefractor.RuntimeBase.Optimizations;
 
 #endregion

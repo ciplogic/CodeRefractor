@@ -6,11 +6,11 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
 namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators
 {
-    public class OperatorBase
+    public class OperatorBase : BaseOperation
     {
         public LocalVariable AssignedTo { get; set; }
 
-        public OperatorBase(string name)
+        public OperatorBase(string name, OperationKind kind) : base(kind)
         {
             Name = name;
         }

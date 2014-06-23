@@ -28,8 +28,8 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.Jumps
                     continue;
 
                 var operation = operations[i];
-                var jumpId = (int) operation.Value;
-                var jumpId2 = (int) operation2.Value;
+                var jumpId = ((Label) operation.Value).JumpTo;
+                var jumpId2 = ((Label)operation2.Value).JumpTo; ;
                 OptimizeConsecutiveLabels(operations, jumpId, jumpId2);
                 interpreter.DeleteInstructions(new[] {i + 1});
                 Result = true;
@@ -46,9 +46,9 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.Jumps
                 switch (operation.Kind)
                 {
                     case OperationKind.AlwaysBranch:
-                        var jumpTo = (int) operation.Value;
+                        var jumpTo = ((Label) operation.Value).JumpTo;
                         if (jumpId2 == jumpTo)
-                            operation.Value = jumpId;
+                            ((Label)operation.Value).JumpTo = jumpId;
                         break;
                     case OperationKind.BranchOperator:
                         var destAssignment = (BranchOperator) operation.Value;

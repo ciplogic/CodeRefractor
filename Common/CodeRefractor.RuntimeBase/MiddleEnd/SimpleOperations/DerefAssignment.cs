@@ -7,10 +7,15 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
 namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 {
-    public class DerefAssignment
+    public class DerefAssignment : BaseOperation
     {
         public LocalVariable Left;
         public LocalVariable Right;
+
+        public DerefAssignment()
+            : base(OperationKind.DerefAssignment)
+        {
+        }
 
         public override string ToString()
         {

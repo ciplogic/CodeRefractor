@@ -43,6 +43,6 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 
         CastClass,
 
-        Comment,
+        Comment
     }
 }

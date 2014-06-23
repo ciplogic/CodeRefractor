@@ -149,17 +149,16 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.Inliner
         private static void HandleReturn(LocalVariable result, List<LocalOperation> localOperationsToInline,
             LocalOperation localOperation)
         {
-            var identifierValue = localOperation.Get<IdentifierValue>();
+            var identifierValue = localOperation.Get<Return>();
             if (identifierValue == null)
                 return;
             var assignOp = new Assignment()
             {
                 AssignedTo = result,
-                Right = identifierValue
+                Right = identifierValue.Returning
             };
             var assignmentReturn = new LocalOperation
             {
-                Kind = OperationKind.Assignment,
                 Value = assignOp
             };
             localOperationsToInline.Add(assignmentReturn);

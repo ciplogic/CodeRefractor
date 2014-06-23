@@ -47,7 +47,8 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.Licm
 
         public static int GetEndLoop(LocalOperation[] localOps, int startPos)
         {
-            var jumpTarget = (int) localOps[startPos + 1].Value;
+            var label = (Label) localOps[startPos + 1].Value;
+            var jumpTarget = label.JumpTo;
 
             var result = -1;
             for (var index = 0; index < localOps.Length; index++)

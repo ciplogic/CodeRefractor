@@ -10,7 +10,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators
     public class UnaryOperator : OperatorBase
     {
         public UnaryOperator(string name)
-            : base(name)
+            : base(name, OperationKind.UnaryOperator)
         {
         }
 

@@ -150,9 +150,9 @@ namespace CodeRefractor.RuntimeBase.Analyze
 
         private static void AddUsagesOfReturn(LocalOperation operation, List<LocalVariable> result)
         {
-            var returnedValue = operation.Get<IdentifierValue>();
+            var returnedValue = operation.Get<Return>();
 
-            result.AddUsage(returnedValue);
+            result.AddUsage(returnedValue.Returning);
         }
 
         private static void AddUsagesOfGetField(LocalOperation operation, List<LocalVariable> result)
@@ -452,10 +452,10 @@ namespace CodeRefractor.RuntimeBase.Analyze
         private static void SwitchUsageInReturn(LocalOperation op, LocalVariable usageVariable,
             IdentifierValue definitionIdentifier)
         {
-            var returnValue = op.Get<IdentifierValue>();
-            if (usageVariable.Equals(returnValue))
+            var returnValue = op.Get<Return>();
+            if (usageVariable.Equals(returnValue.Returning))
             {
-                op.Value = definitionIdentifier;
+                returnValue.Returning = definitionIdentifier;
             }
         }
 

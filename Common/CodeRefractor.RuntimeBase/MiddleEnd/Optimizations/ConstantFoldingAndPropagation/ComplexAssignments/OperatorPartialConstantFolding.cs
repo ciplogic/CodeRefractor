@@ -56,8 +56,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndProp
         {
             localOperations[pos] = new LocalOperation()
             {
-                Kind = OperationKind.Assignment,
-                Value = constResult
+                Value = new Assignment() { Right = constResult } 
             };
         }
 
@@ -76,7 +75,6 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndProp
             if (constValue != null && constValue.Value is int && (int) constValue.Value == 0)
             {
                 FoldAssign(constValue, localOperations, pos);
-                destOperation.Kind = OperationKind.Assignment;
                 Result = true;
             }
             if (constLeft != null && constLeft.Value is double && (double) constValue.Value == 0.0)

@@ -57,11 +57,10 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         }
 
 
-        private void AddOperation(OperationKind operationKind, object value = null)
+        private void AddOperation(BaseOperation value = null)
         {
             var result = new LocalOperation
             {
-                Kind = operationKind,
                 Value = value
             };
 
@@ -102,7 +101,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
         public LocalVariable GetVirtReg(int value)
         {
-            return  _representation.Vars.VirtRegs.First(v => v.Id == value);
+            return _representation.Vars.VirtRegs.First(v => v.Id == value);
         }
 
 
@@ -144,7 +143,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 Right = topVariable
             };
 
-            AddOperation(OperationKind.Assignment, assingment);
+            AddOperation(assingment);
         }
 
         public void CopyStackIntoLocalVariable(int value)
@@ -157,7 +156,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 AssignedTo = newLocal,
                 Right = topVariable
             };
-            AddOperation(OperationKind.Assignment, assingment);
+            AddOperation(assingment);
         }
 
         private static bool ShowComments = false;
@@ -166,7 +165,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         {
             if (ShowComments)
             {
-                AddOperation(OperationKind.Comment, comment);
+                AddOperation(new Comment() { Message = comment });
             }
         }
 
@@ -185,13 +184,13 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 Right = secondVar
             };
             assignment.AssignedTo.FixedType = secondVar.ComputedType();
-            AddOperation(OperationKind.SetField, assignment);
+            AddOperation(assignment);
         }
 
         public void LoadReferenceInArray()
         {
             var secondVar = _evaluator.Pop();
-            var firstVar = (LocalVariable) _evaluator.Pop();
+            var firstVar = (LocalVariable)_evaluator.Pop();
 
             var result = SetNewVReg();
             var arrayVariable = new ArrayVariable(firstVar, secondVar);
@@ -201,13 +200,13 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 Right = arrayVariable
             };
             result.FixedType = new TypeDescription(arrayVariable.GetElementType());
-            AddOperation(OperationKind.GetArrayItem, assignment);
+            AddOperation(assignment);
         }
 
         public void LoadReferenceInArrayTyped(Type elementType)
         {
             var secondVar = _evaluator.Pop();
-            var firstVar = (LocalVariable) _evaluator.Pop();
+            var firstVar = (LocalVariable)_evaluator.Pop();
 
             var result = SetNewVReg();
             result.FixedType = new TypeDescription(firstVar.FixedType.ClrType.GetElementType());
@@ -218,13 +217,13 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 Right = arrayVariable
             };
             result.FixedType = new TypeDescription(elementType);
-            AddOperation(OperationKind.GetArrayItem, assignment);
+            AddOperation(assignment);
         }
 
         public void Return(bool isVoid)
         {
             var returnValue = isVoid ? null : _evaluator.Pop();
-            AddOperation(OperationKind.Return, returnValue);
+            AddOperation(new Return(){Returning = returnValue}); 
         }
 
 
@@ -240,25 +239,25 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 Left = firstVar,
             };
             assign.AssignedTo.FixedType = firstVar.ComputedType();
-            AddOperation(OperationKind.UnaryOperator, assign);
+            AddOperation(assign);
         }
 
         public void ConvI()
         {
             SetUnaryOperator(OpcodeOperatorNames.ConvI);
-            _evaluator.Top.FixedType = new TypeDescription(typeof (IntPtr));
+            _evaluator.Top.FixedType = new TypeDescription(typeof(IntPtr));
         }
 
         public void ConvI4()
         {
             SetUnaryOperator(OpcodeOperatorNames.ConvI4);
-            _evaluator.Top.FixedType = new TypeDescription(typeof (int));
+            _evaluator.Top.FixedType = new TypeDescription(typeof(int));
         }
 
         public void ConvU1()
         {
             SetUnaryOperator(OpcodeOperatorNames.ConvU1);
-            _evaluator.Top.FixedType = new TypeDescription(typeof (byte));
+            _evaluator.Top.FixedType = new TypeDescription(typeof(byte));
         }
 
         public void Not()
@@ -276,25 +275,25 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         {
             SetUnaryOperator(OpcodeOperatorNames.LoadLen);
 
-            _evaluator.Top.FixedType = new TypeDescription(typeof (int));
+            _evaluator.Top.FixedType = new TypeDescription(typeof(int));
         }
 
         public void ConvI8()
         {
             SetUnaryOperator(OpcodeOperatorNames.ConvI8);
-            _evaluator.Top.FixedType = new TypeDescription(typeof (Int64));
+            _evaluator.Top.FixedType = new TypeDescription(typeof(Int64));
         }
 
         public void ConvR4()
         {
             SetUnaryOperator(OpcodeOperatorNames.ConvR4);
-            _evaluator.Top.FixedType = new TypeDescription(typeof (float));
+            _evaluator.Top.FixedType = new TypeDescription(typeof(float));
         }
 
         public void ConvR8()
         {
             SetUnaryOperator(OpcodeOperatorNames.ConvR8);
-            _evaluator.Top.FixedType = new TypeDescription(typeof (double));
+            _evaluator.Top.FixedType = new TypeDescription(typeof(double));
         }
 
 
@@ -308,7 +307,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 Right = variable
             };
             vreg.FixedType = variable.ComputedType();
-            AddOperation(OperationKind.Assignment, assign);
+            AddOperation(assign);
         }
 
         public void Pop()
@@ -330,12 +329,12 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 Right = secondVar
             };
             result.FixedType = assign.ComputedType();
-            AddOperation(OperationKind.BinaryOperator, assign);
+            AddOperation(assign);
         }
 
         public void SetLabel(int offset)
         {
-            AddOperation(OperationKind.Label, offset);
+            AddOperation(new Label() { JumpTo = offset });
         }
 
         public void Cgt()
@@ -400,15 +399,15 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         public static bool HandleRuntimeHelpersMethod(MethodBase method)
         {
             var declType = method.DeclaringType;
-            return declType == typeof (RuntimeHelpers);
+            return declType == typeof(RuntimeHelpers);
         }
 
 
         public void Call(object operand, CrRuntimeLibrary crRuntime)
         {
-            var methodInfo = (MethodBase) operand;
+            var methodInfo = (MethodBase)operand;
             var interpreter = methodInfo.Register(crRuntime);
-            var methodData = new MethodData(interpreter);
+            var methodData = new MethodData(interpreter,OperationKind.Call);
 
 
             CallMethodData(methodInfo, methodData, OperationKind.Call, crRuntime);
@@ -416,9 +415,9 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
         public void CallVirtual(object operand, CrRuntimeLibrary crRuntime)
         {
-            var methodInfo = (MethodBase) operand;
+            var methodInfo = (MethodBase)operand;
             var interpreter = methodInfo.Register(crRuntime);
-            var methodData = new MethodData(interpreter);
+            var methodData = new MethodData(interpreter, OperationKind.CallVirtual);
 
 
             CallMethodData(methodInfo, methodData, OperationKind.CallVirtual, crRuntime);
@@ -426,12 +425,12 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
         public void CallInterface(object operand, CrRuntimeLibrary crRuntime)
         {
-            var methodInfo = (MethodBase) operand;
+            var methodInfo = (MethodBase)operand;
             var interpreter = methodInfo.Register(crRuntime);
-            var methodData = new MethodData(interpreter);
+            var methodData = new MethodData(interpreter, OperationKind.CallInterface);
 
 
-            CallMethodData(methodInfo, methodData, OperationKind.CallVirtual, crRuntime);
+            CallMethodData(methodInfo, methodData, OperationKind.CallInterface, crRuntime);
         }
 
         private void CallMethodData(MethodBase methodInfo, MethodData methodData, OperationKind operationKind,
@@ -440,24 +439,24 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             if (HandleRuntimeHelpersMethod(methodInfo))
             {
                 methodData.ExtractNeededValuesFromStack(_evaluator);
-                AddOperation(OperationKind.CallRuntime, methodData);
+                AddOperation(methodData);
                 return;
             }
-            if (methodInfo.IsConstructor && methodInfo.DeclaringType == typeof (object))
+            if (methodInfo.IsConstructor && methodInfo.DeclaringType == typeof(object))
                 return;
             methodData.ExtractNeededValuesFromStack(_evaluator);
 
-            
-            if (!methodData.Info.IsStatic && methodData.Parameters.Count > 0 )
+
+            if (!methodData.Info.IsStatic && methodData.Parameters.Count > 0)
             {
                 //GetBestVirtualMatch not required as the appropriate method is called in CppHandleCalls and VirtualMethod
                 //TODO: GetBestVirtualMatch does not work  with base class constructors
-               // if(!methodInfo.IsConstructor && methodData.Parameters[0].ComputedType().ClrType.DeclaringType!=methodInfo.DeclaringType)
-              //  methodData.Info = ClassHierarchyAnalysis.GetBestVirtualMatch(methodData.Info,
-              //      methodData.Parameters[0].ComputedType().ClrType);
+                // if(!methodInfo.IsConstructor && methodData.Parameters[0].ComputedType().ClrType.DeclaringType!=methodInfo.DeclaringType)
+                //  methodData.Info = ClassHierarchyAnalysis.GetBestVirtualMatch(methodData.Info,
+                //      methodData.Parameters[0].ComputedType().ClrType);
             }
             var declaringType = methodData.Info.DeclaringType;
-            if (declaringType.IsSubclassOf(typeof (Delegate)))
+            if (declaringType.IsSubclassOf(typeof(Delegate)))
             {
                 var signature = declaringType.GetMethod("Invoke");
                 DelegateManager.RegisterType(declaringType, signature);
@@ -469,8 +468,9 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 vreg.FixedType = new TypeDescription(methodInfo.GetReturnType());
                 methodData.Result = vreg;
             }
-            methodData.FixedType = new TypeDescription(methodInfo.GetReturnType());
-            AddOperation(operationKind, methodData);
+            if(methodData.Result!=null)
+                methodData.Result.FixedType = new TypeDescription(methodInfo.GetReturnType());
+            AddOperation(methodData);
         }
 
 
@@ -488,7 +488,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 Right = firstVar
             };
             assignment.AssignedTo.FixedType = firstVar.ComputedType();
-            AddOperation(OperationKind.SetStaticField, assignment);
+            AddOperation(assignment);
         }
 
 
@@ -497,13 +497,13 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             var varAddress = _evaluator.Pop();
             var varValue = _evaluator.Pop();
 
-            var assignment = new DerefAssignment
+            var assignment = new DerefAssignment()
             {
-                Left = (LocalVariable) varAddress,
-                Right = (LocalVariable) varValue
+                Left = (LocalVariable)varAddress,
+                Right = (LocalVariable)varValue
             };
 
-            AddOperation(OperationKind.DerefAssignment, assignment);
+            AddOperation(assignment);
         }
 
         #region Branching operators
@@ -511,8 +511,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         public void BranchIfTrue(int pushedIntValue)
         {
             var firstVar = _evaluator.Pop();
-            AddOperation(OperationKind.BranchOperator,
-                new BranchOperator(OpcodeBranchNames.BrTrue)
+            AddOperation(new BranchOperator(OpcodeBranchNames.BrTrue)
                 {
                     JumpTo = pushedIntValue,
                     CompareValue = firstVar
@@ -522,8 +521,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         public void BranchIfFalse(int pushedIntValue)
         {
             var firstVar = _evaluator.Pop();
-            AddOperation(OperationKind.BranchOperator,
-                new BranchOperator(OpcodeBranchNames.BrFalse)
+            AddOperation(new BranchOperator(OpcodeBranchNames.BrFalse)
                 {
                     JumpTo = pushedIntValue,
                     CompareValue = firstVar
@@ -533,7 +531,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
         public void AlwaysBranch(int offset)
         {
-            AddOperation(OperationKind.AlwaysBranch, offset);
+            AddOperation(new AlwaysBranch(){JumpTo = offset}); 
         }
 
         public void BranchIfEqual(int jumpTo)
@@ -546,8 +544,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             var secondVar = _evaluator.Pop(); // Seems the order here was in reverse
             var firstVar = _evaluator.Pop();
 
-            AddOperation(OperationKind.BranchOperator,
-                new BranchOperator(opcode)
+            AddOperation(new BranchOperator(opcode)
                 {
                     JumpTo = jumpTo,
                     CompareValue = firstVar,
@@ -594,12 +591,12 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 Left = vreg,
                 Right = argument
             };
-            AddOperation(OperationKind.RefAssignment, assignment);
+            AddOperation(assignment);
         }
 
         public void LoadFieldAddressIntoEvaluationStack(FieldInfo fieldInfo)
         {
-            var firstVar = (LocalVariable) _evaluator.Pop();
+            var firstVar = (LocalVariable)_evaluator.Pop();
             var vreg = SetNewVReg();
             vreg.FixedType = new TypeDescription(fieldInfo.FieldType.MakeByRefType());
 
@@ -609,7 +606,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 Right = firstVar,
                 Field = fieldInfo
             };
-            AddOperation(OperationKind.FieldRefAssignment, assignment);
+            AddOperation(assignment);
         }
 
         public void LoadField(string fieldName)
@@ -629,9 +626,9 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             {
                 AssignedTo = vreg,
                 FieldName = fieldName,
-                Instance = (LocalVariable) firstVar
+                Instance = (LocalVariable)firstVar
             };
-            AddOperation(OperationKind.GetField, assignment);
+            AddOperation(assignment);
         }
 
         public void LoadStaticField(FieldInfo operand)
@@ -639,9 +636,9 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             var vreg = SetNewVReg();
             var fieldName = operand.Name;
             var declaringType = operand.DeclaringType;
-            if (declaringType == typeof (IntPtr) && fieldName == "Zero")
+            if (declaringType == typeof(IntPtr) && fieldName == "Zero")
             {
-                var voidPtr = new TypeDescription(typeof (IntPtr));
+                var voidPtr = new TypeDescription(typeof(IntPtr));
                 vreg.FixedType = voidPtr;
                 var nullPtrAssign = new Assignment
                 {
@@ -651,7 +648,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                         FixedType = voidPtr
                     }
                 };
-                AddOperation(OperationKind.Assignment, nullPtrAssign);
+                AddOperation(nullPtrAssign);
                 return;
             }
             vreg.FixedType =
@@ -666,12 +663,12 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                     DeclaringType = typeData
                 }
             };
-            AddOperation(OperationKind.GetStaticField, assignment);
+            AddOperation(assignment);
         }
 
         public void NewObject(ConstructorInfo constructorInfo, CrRuntimeLibrary crRuntime)
         {
-            if (constructorInfo.DeclaringType == typeof (object))
+            if (constructorInfo.DeclaringType == typeof(object))
                 return;
             var mappedType = crRuntime.GetMappedType(constructorInfo.DeclaringType);
             if (mappedType != null && mappedType != constructorInfo.DeclaringType)
@@ -687,10 +684,10 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 AssignedTo = result,
                 Right = constructedObject
             };
-            AddOperation(OperationKind.NewObject, assignment);
+            AddOperation(assignment);
 
             var interpreter = constructedObject.Info.Register(crRuntime);
-            var methodData = new MethodData(interpreter);
+            var methodData = new MethodData(interpreter, OperationKind.Call);
             CallMethodData(constructedObject.Info, methodData, OperationKind.Call, crRuntime);
             var vreg = SetNewVReg();
             vreg.FixedType = new TypeDescription(methodData.Info.DeclaringType);
@@ -700,7 +697,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 Right = methodData.Parameters.First()
             };
 
-            AddOperation(OperationKind.Assignment, assign);
+            AddOperation(assign);
         }
 
         public void NewArray(Type typeArray)
@@ -717,14 +714,14 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 }
             };
             result.FixedType = new TypeDescription(typeArray.MakeArrayType());
-            AddOperation(OperationKind.NewArray, assignment);
+            AddOperation(assignment);
         }
 
         public void SetArrayElementValue()
         {
             var value = _evaluator.Pop();
             var index = _evaluator.Pop();
-            var array = (LocalVariable) _evaluator.Pop();
+            var array = (LocalVariable)_evaluator.Pop();
             var arrayVariable = new ArrayVariable(array, index);
             var assignment = new Assignment
             {
@@ -732,7 +729,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 Right = value
             };
             arrayVariable.FixedType = value.ComputedType();
-            AddOperation(OperationKind.SetArrayItem, assignment);
+            AddOperation(assignment);
         }
 
         public void SetToken(FieldInfo operand)
@@ -750,8 +747,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 AssignedTo = vreg,
                 Right = new ConstByteArrayValue(rightConstant)
             };
-            vreg.FixedType = new TypeDescription(typeof (byte[]));
-            AddOperation(OperationKind.CopyArrayInitializer, assign);
+            vreg.FixedType = new TypeDescription(typeof(byte[]));
+            AddOperation(assign);
         }
 
         public void LoadNull()
@@ -763,7 +760,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         {
             var nullConst = new ConstValue(null)
             {
-                FixedType = new TypeDescription(typeof (object))
+                FixedType = new TypeDescription(typeof(object))
             };
             PushStack(nullConst);
         }
@@ -780,19 +777,18 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 FunctionPointer = operand
             };
 
-            AddOperation(OperationKind.LoadFunction, store);
+            AddOperation(store);
         }
 
         public void Switch(Instruction[] instructions)
         {
-            var firstVar = (LocalVariable) _evaluator.Pop();
+            var firstVar = (LocalVariable)_evaluator.Pop();
             var offsets = instructions.Select(inst => inst.Offset).ToArray();
 
             var pos = 0;
             foreach (var offset in offsets)
             {
-                AddOperation(OperationKind.BranchOperator,
-                    new BranchOperator(OpcodeBranchNames.Beq)
+                AddOperation(new BranchOperator(OpcodeBranchNames.Beq)
                     {
                         JumpTo = offset,
                         CompareValue = firstVar,
@@ -810,13 +806,13 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 AssignedTo = result,
                 Right = operand
             };
-            result.FixedType = new TypeDescription(typeof (int));
-            AddOperation(OperationKind.SizeOf, assign);
+            result.FixedType = new TypeDescription(typeof(int));
+            AddOperation(assign);
         }
 
         public void LoadValueFromAddress()
         {
-            var firstVar = (LocalVariable) _evaluator.Pop();
+            var firstVar = (LocalVariable)_evaluator.Pop();
 
 
             var result = SetNewVReg();
@@ -827,15 +823,15 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             };
             var ptrType = firstVar.ComputedType();
 
-            if (ptrType.ClrType.GetElementType()!=null)
-            result.FixedType = new TypeDescription(ptrType.ClrType.GetElementType());
+            if (ptrType.ClrType.GetElementType() != null)
+                result.FixedType = new TypeDescription(ptrType.ClrType.GetElementType());
 
             else
             {
 
                 result.FixedType = new TypeDescription(ptrType.ClrType);
             }
-            AddOperation(OperationKind.DerefAssignment, assignment);
+            AddOperation(assignment);
         }
 
         public void InitObject()
@@ -846,7 +842,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         public void LoadAddressOfArrayItemIntoStack(Type operand)
         {
             var indexVar = _evaluator.Pop();
-            var arrayVar = (LocalVariable) _evaluator.Pop();
+            var arrayVar = (LocalVariable)_evaluator.Pop();
 
             var result = SetNewVReg();
             var assignment = new RefArrayItemAssignment
@@ -856,14 +852,14 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 ArrayVar = arrayVar
             };
             assignment.Left.FixedType = new TypeDescription(operand.MakeByRefType());
-            AddOperation(OperationKind.AddressOfArrayItem, assignment);
+            AddOperation(assignment);
         }
 
         public void StoreElement(Type elemInfo)
         {
             var value = _evaluator.Pop();
             var index = _evaluator.Pop();
-            var array = (LocalVariable) _evaluator.Pop();
+            var array = (LocalVariable)_evaluator.Pop();
             var arrayVariable = new ArrayVariable(array, index);
             var assignment = new Assignment
             {
@@ -871,7 +867,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 Right = value
             };
             arrayVariable.FixedType = new TypeDescription(elemInfo);
-            AddOperation(OperationKind.SetArrayItem, assignment);
+            AddOperation(assignment);
         }
 
         public void ClearStack()
@@ -883,27 +879,27 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         {
 
             var valueToCast = _evaluator.Pop();
-          
-        //    var result = SetNewVReg();
-//            var fieldName = fieldInfo.Name;
-//            var assignment = new Assignment
-//            {
-//                AssignedTo = new StaticFieldSetter
-//                {
-//                    DeclaringType = fieldInfo.DeclaringType,
-//                    FieldName = fieldName
-//                },
-//                Right = firstVar
-//            };
-//            assignment.AssignedTo.FixedType = firstVar.ComputedType();
-//            AddOperation(OperationKind.SetStaticField, assignment);
+
+            //    var result = SetNewVReg();
+            //            var fieldName = fieldInfo.Name;
+            //            var assignment = new Assignment
+            //            {
+            //                AssignedTo = new StaticFieldSetter
+            //                {
+            //                    DeclaringType = fieldInfo.DeclaringType,
+            //                    FieldName = fieldName
+            //                },
+            //                Right = firstVar
+            //            };
+            //            assignment.AssignedTo.FixedType = firstVar.ComputedType();
+            //            AddOperation(OperationKind.SetStaticField, assignment);
         }
-        
+
         public void CastClass(Type operand)
         {
-             
 
-            var valueToCast = _evaluator.Pop(); 
+
+            var valueToCast = _evaluator.Pop();
             var result = SetNewVReg();
             result.FixedType = new TypeDescription(operand);
             var casting = new ClassCasting()
@@ -911,12 +907,12 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 AssignedTo = result,
                 Value = valueToCast
             };
-            AddOperation(OperationKind.CastClass, casting);
+            AddOperation(casting);
         }
 
         public void Box()
         {
-            var valueToBox = _evaluator.Pop(); 
+            var valueToBox = _evaluator.Pop();
             var result = SetNewVReg();
             result.FixedType = new TypeDescription(typeof(object));
             var boxing = new Boxing()
@@ -924,7 +920,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 AssignedTo = result,
                 Value = valueToBox
             };
-            AddOperation(OperationKind.Box, boxing);
+            AddOperation(boxing);
         }
 
         public void Unbox(Type operand)
@@ -937,7 +933,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 AssignedTo = result,
                 Value = valueToBox
             };
-            AddOperation(OperationKind.Unbox, boxing);
+            AddOperation(boxing);
         }
 
         public void LoadObject(Type operand) // TODO: Fix this
@@ -945,24 +941,24 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             var valueAddress = (LocalVariable)_evaluator.Pop();
 
             //Look up instance
-           var localvar=  GetVirtReg(valueAddress.Id);
-           AssignValueToStack(localvar);
+            var localvar = GetVirtReg(valueAddress.Id);
+            AssignValueToStack(localvar);
         }
 
         public void StoreObject(Type operand)// TODO: Fix this
-        {  
+        {
             var value = _evaluator.Pop();
             var valueAddress = (LocalVariable)_evaluator.Pop();
-          
+
             //Look up instance
             var assign = new Assignment
             {
                 AssignedTo = valueAddress,
                 Right = value
             };
-          
-            AddOperation(OperationKind.Assignment, assign);
-            
+
+            AddOperation(assign);
+
         }
     }
 }

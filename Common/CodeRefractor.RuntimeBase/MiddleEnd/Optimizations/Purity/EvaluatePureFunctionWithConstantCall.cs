@@ -43,7 +43,6 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
                 var result = methodInfo.Invoke(null, constParams.ToArray());
                 interpreter.MidRepresentation.LocalOperations[i] = new LocalOperation
                 {
-                    Kind = OperationKind.Assignment,
                     Value = new Assignment
                     {
                         AssignedTo = operationData.Result,

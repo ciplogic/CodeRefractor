@@ -7,10 +7,15 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
 namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 {
-    public class Assignment : IClonableOperation
+    public class Assignment : BaseOperation, IClonableOperation
     {
         public LocalVariable AssignedTo;
         public IdentifierValue Right;
+
+        public Assignment()
+            : base(OperationKind.Assignment)
+        {
+        }
 
         public override string ToString()
         {

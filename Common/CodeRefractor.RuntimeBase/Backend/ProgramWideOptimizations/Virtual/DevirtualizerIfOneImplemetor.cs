@@ -22,12 +22,11 @@ namespace CodeRefractor.CompilerBackend.ProgramWideOptimizations.Virtual
                 .ToList();
             foreach (var interpreter in methodInterpreters)
             {
-                HandleInterpreterInstructions(interpreter, methodInterpreters, closure.UsedTypes);
+                HandleInterpreterInstructions(interpreter, closure.UsedTypes);
             }
         }
 
-        private void HandleInterpreterInstructions(MethodInterpreter interpreter,
-            List<MethodInterpreter> methodInterpreters, List<Type> usedTypes)
+        private void HandleInterpreterInstructions(MethodInterpreter interpreter, List<Type> usedTypes)
         {
             var useDef = interpreter.MidRepresentation.UseDef;
             var calls = useDef.GetOperationsOfKind(OperationKind.CallVirtual).ToList();
@@ -41,7 +40,6 @@ namespace CodeRefractor.CompilerBackend.ProgramWideOptimizations.Virtual
                 var implementors = declaringType.ClrType.ImplementorsOfT(usedTypes);
                 if (implementors.Count > 0)
                     continue;
-                op.Kind = OperationKind.Call;
                 Result = true;
             }
             if (Result)
