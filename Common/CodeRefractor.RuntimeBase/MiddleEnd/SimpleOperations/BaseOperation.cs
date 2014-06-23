@@ -9,7 +9,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 
         public OperationKind Kind { get; private set; }
 
-        public LocalOperation Clone()
+        public virtual LocalOperation Clone()
         {
             throw new System.NotImplementedException();
         }
