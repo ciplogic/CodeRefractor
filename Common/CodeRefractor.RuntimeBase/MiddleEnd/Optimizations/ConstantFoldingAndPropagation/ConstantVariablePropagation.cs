@@ -32,7 +32,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndProp
                     {
                         case OperationKind.Assignment:
                         {
-                            var destAssignment = (Assignment) destOperation.Value;
+                            var destAssignment = (Assignment) destOperation;
                             if (SameVariable(destAssignment.AssignedTo, srcVariableDefinition.AssignedTo))
                                 break;
                             if (!SameVariable(destAssignment.Right as LocalVariable, srcVariableDefinition.AssignedTo))
@@ -43,7 +43,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndProp
                             break;
                         case OperationKind.NewArray:
                         {
-                            var destAssignment = (Assignment) destOperation.Value;
+                            var destAssignment = (Assignment) destOperation;
                             var arrayCreationInfo = (NewArrayObject) destAssignment.Right;
                             if (
                                 !SameVariable(arrayCreationInfo.ArrayLength as LocalVariable,
@@ -55,7 +55,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndProp
                             break;
                         case OperationKind.SetField:
                         {
-                            var destAssignment = (Assignment) destOperation.Value;
+                            var destAssignment = (Assignment) destOperation;
                             if (!SameVariable(destAssignment.Right as LocalVariable, srcVariableDefinition.AssignedTo))
                                 continue;
                             destAssignment.Right = constValue;

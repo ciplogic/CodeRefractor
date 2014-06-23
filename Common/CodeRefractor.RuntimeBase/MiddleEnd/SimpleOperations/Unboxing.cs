@@ -2,9 +2,9 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
 namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 {
-    public class Unboxing : BaseOperation
+    public class Unboxing : LocalOperation
     {
-        public IdentifierValue Value;
+        public IdentifierValue Right;
         public LocalVariable AssignedTo;
 
         public Unboxing()
@@ -15,7 +15,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
         public override string ToString()
         {
             return string.Format("{0} = unbox( {1})",
-                Value.Name,
+                Right.Name,
                 AssignedTo.Name);
         }
     }

@@ -7,7 +7,7 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
 namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 {
-    public class Assignment : BaseOperation, IClonableOperation
+    public class Assignment : LocalOperation, IClonableOperation
     {
         public LocalVariable AssignedTo;
         public IdentifierValue Right;

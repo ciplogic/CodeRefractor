@@ -2,7 +2,7 @@
 
 namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 {
-    public class ClassCasting : BaseOperation
+    public class ClassCasting : LocalOperation
     {
         public IdentifierValue Value;
         public LocalVariable AssignedTo;

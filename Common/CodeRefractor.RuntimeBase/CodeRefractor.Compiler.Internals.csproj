@@ -105,6 +105,8 @@
     <Compile Include="MiddleEnd\SimpleOperations\BaseOperation.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\Boxing.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\ClassCasting.cs" />
+    <Compile Include="MiddleEnd\SimpleOperations\Comment.cs" />
+    <Compile Include="MiddleEnd\SimpleOperations\FieldRefAssignment.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\Identifiers\EscapingMode.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\Label.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\RefArrayItemAssignment.cs" />
@@ -172,7 +174,6 @@
     <Compile Include="MiddleEnd\SimpleOperations\Operators\BranchOperator.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\Identifiers\ConstValue.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\Identifiers\IdentifierValue.cs" />
-    <Compile Include="MiddleEnd\SimpleOperations\LocalOperation.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\Identifiers\LocalVariable.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\NewArrayObject.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\NewConstructedObject.cs" />

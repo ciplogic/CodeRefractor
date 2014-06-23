@@ -1,15 +1,15 @@
 namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 {
-    public class BaseOperation
+    public class LocalOperation
     {
-        public BaseOperation(OperationKind kind)
+        public LocalOperation(OperationKind kind)
         {
             Kind = kind;
         }
 
         public OperationKind Kind { get; private set; }
 
-        public BaseOperation Clone()
+        public LocalOperation Clone()
         {
             throw new System.NotImplementedException();
         }

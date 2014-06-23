@@ -36,7 +36,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.Inliner
                 pos++;
                 if (localOperation.Kind != OperationKind.Call) continue;
 
-                methodData = (MethodData) localOperation.Value;
+                methodData = (MethodData) localOperation;
                 var methodBase = methodData.Info;
                 interpreter = methodBase.Register();
                 if (interpreter == null)
@@ -68,7 +68,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.Inliner
             var mappedVregs = BuildMappedVregs(intermediateCode, methodToInlineInterpreter);
 
             var indexCall = pos;
-            var assignment = (MethodData) intermediateCode.LocalOperations[indexCall].Value;
+            var assignment = (MethodData) intermediateCode.LocalOperations[indexCall];
 
             var localOperationsToInline = BuildLocalOperationsToInline(methodToInlineInterpreter,
                 mappedParameters,
@@ -157,10 +157,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.Inliner
                 AssignedTo = result,
                 Right = identifierValue.Returning
             };
-            var assignmentReturn = new LocalOperation
-            {
-                Value = assignOp
-            };
+            var assignmentReturn = assignOp;
             localOperationsToInline.Add(assignmentReturn);
         }
 

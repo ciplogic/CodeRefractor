@@ -6,7 +6,7 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
 namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators
 {
-    public class OperatorBase : BaseOperation
+    public class OperatorBase : LocalOperation
     {
         public LocalVariable AssignedTo { get; set; }
 

@@ -30,7 +30,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndProp
                         break;
                     if (destOperation.Kind != OperationKind.BinaryOperator &&
                         destOperation.Kind != OperationKind.UnaryOperator) continue;
-                    var destAssignment = (OperatorBase) destOperation.Value;
+                    var destAssignment = (OperatorBase) destOperation;
                     if (SameVariable(destAssignment.AssignedTo, srcVariableDefinition.AssignedTo))
                         break;
 

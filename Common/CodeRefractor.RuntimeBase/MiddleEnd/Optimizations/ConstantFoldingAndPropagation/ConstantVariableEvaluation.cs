@@ -22,7 +22,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndProp
         {
             var operations = interpreter.MidRepresentation.LocalOperations
                 .Where(op => op.Kind == OperationKind.BranchOperator)
-                .Select(operation => (BranchOperator) operation.Value)
+                .Select(operation => (BranchOperator) operation)
                 .ToArray();
             foreach (var operation in operations)
             {

@@ -30,7 +30,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndProp
         {
             foreach (var pos in unaryOperations)
             {
-                var unaryAssignment = (UnaryOperator) localOperations[pos].Value;
+                var unaryAssignment = (UnaryOperator) localOperations[pos];
 
                 var constLeft = unaryAssignment.Left as ConstValue;
                 if (constLeft == null)
@@ -55,7 +55,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndProp
         {
             foreach (var pos in binaryOperations)
             {
-                var baseOperator = (OperatorBase) localOperations[pos].Value;
+                var baseOperator = (OperatorBase) localOperations[pos];
 
                 var unaryAssignment = (BinaryOperator) baseOperator;
 
@@ -238,17 +238,14 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndProp
 
         private void FoldConstant(object result, List<LocalOperation> localOperations, int pos)
         {
-            var baseOperator = (OperatorBase) localOperations[pos].Value;
+            var baseOperator = (OperatorBase) localOperations[pos];
             var resultAssignment = new Assignment
             {
                 AssignedTo = baseOperator.AssignedTo,
                 Right = new ConstValue(result)
             };
             localOperations[pos] =
-                new LocalOperation
-                {
-                    Value = resultAssignment
-                };
+                resultAssignment;
             Result = true;
         }
     }

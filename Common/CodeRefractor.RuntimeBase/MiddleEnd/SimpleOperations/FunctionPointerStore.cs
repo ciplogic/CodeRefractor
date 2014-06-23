@@ -7,7 +7,7 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
 namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 {
-    public class FunctionPointerStore : BaseOperation
+    public class FunctionPointerStore : LocalOperation
     {
         public FunctionPointerStore()
             : base(OperationKind.LoadFunction)

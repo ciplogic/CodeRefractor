@@ -18,7 +18,7 @@ namespace CodeRefractor.RuntimeBase.CodeWriter.BasicOperations
         public static void HandleBranchOperator(object operation, StringBuilder sb)
         {
             var localBranch = (LocalOperation) operation;
-            var objList = (BranchOperator) localBranch.Value;
+            var objList = (BranchOperator) localBranch;
             var operationName = objList.Name;
             var jumpAddress = objList.JumpTo;
             var localVar = objList.CompareValue;

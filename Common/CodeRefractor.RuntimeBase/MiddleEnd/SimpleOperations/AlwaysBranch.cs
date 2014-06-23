@@ -1,6 +1,6 @@
 namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 {
-    public class AlwaysBranch : BaseOperation
+    public class AlwaysBranch : LocalOperation
     {
         public AlwaysBranch()
             : base(OperationKind.AlwaysBranch)

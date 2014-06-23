@@ -101,7 +101,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.EscapeAndLowering
                 switch (op.Kind)
                 {
                     case OperationKind.Call:
-                        var methodData = (MethodData) op.Value;
+                        var methodData = (MethodData) op;
                         var otherMethodData = GetEscapingParameterData(methodData);
                         if (otherMethodData == null)
                             break;

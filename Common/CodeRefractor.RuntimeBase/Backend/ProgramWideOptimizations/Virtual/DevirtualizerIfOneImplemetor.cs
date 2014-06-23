@@ -34,7 +34,7 @@ namespace CodeRefractor.CompilerBackend.ProgramWideOptimizations.Virtual
             foreach (var callOp in calls)
             {
                 var op = allOps[callOp];
-                var methodData = (MethodData) op.Value;
+                var methodData = (MethodData) op;
                 var callingInterpreterKey = methodData.Interpreter.ToKey();
                 var declaringType = callingInterpreterKey.Interpreter.DeclaringType;
                 var implementors = declaringType.ClrType.ImplementorsOfT(usedTypes);

@@ -1,19 +1,16 @@
-#region Usings
-
 using System;
+using System.Reflection;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
-
-#endregion
 
 namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 {
-    public class RefAssignment : LocalOperation
+    public class FieldRefAssignment : LocalOperation
     {
         public LocalVariable Left;
         public LocalVariable Right;
+        public FieldInfo Field;
 
-        public RefAssignment()
-            : base(OperationKind.RefAssignment)
+        public FieldRefAssignment() : base(OperationKind.FieldRefAssignment)
         {
         }
 

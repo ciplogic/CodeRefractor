@@ -41,13 +41,11 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
                 if (!paramsAreConst)
                     continue;
                 var result = methodInfo.Invoke(null, constParams.ToArray());
-                interpreter.MidRepresentation.LocalOperations[i] = new LocalOperation
-                {
-                    Value = new Assignment
+                interpreter.MidRepresentation.LocalOperations[i] = new Assignment
                     {
                         AssignedTo = operationData.Result,
                         Right = new ConstValue(result)
-                    }
+                    
                 };
                 Result = true;
             }
@@ -55,7 +53,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
 
         public static MethodData ComputeAndEvaluatePurityOfCall(LocalOperation operation)
         {
-            var operationData = (MethodData) operation.Value;
+            var operationData = (MethodData) operation;
             var methodInterpreter = operationData.Info.GetInterpreter(Runtime);
             if (AnalyzeFunctionPurity.ReadPurity(methodInterpreter))
             {

@@ -47,7 +47,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.Licm
 
         public static int GetEndLoop(LocalOperation[] localOps, int startPos)
         {
-            var label = (Label) localOps[startPos + 1].Value;
+            var label = (Label) localOps[startPos + 1];
             var jumpTarget = label.JumpTo;
 
             var result = -1;
@@ -57,7 +57,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.Licm
                 if (op.Kind != OperationKind.BranchOperator)
                     continue;
 
-                var branchOperator = (BranchOperator) op.Value;
+                var branchOperator = (BranchOperator) op;
                 if (branchOperator.JumpTo != jumpTarget) continue;
                 result = index;
                 break;

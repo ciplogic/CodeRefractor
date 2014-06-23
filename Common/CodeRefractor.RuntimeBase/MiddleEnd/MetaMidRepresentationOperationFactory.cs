@@ -57,21 +57,16 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         }
 
 
-        private void AddOperation(BaseOperation value = null)
+        private void AddOperation(LocalOperation value = null)
         {
-            var result = new LocalOperation
-            {
-                Value = value
-            };
-
-            _representation.LocalOperations.Add(result);
-            var assignment = result.Value as Assignment;
+            _representation.LocalOperations.Add(value);
+            var assignment = value as Assignment;
             if (assignment != null)
             {
                 if (assignment.AssignedTo.FixedType == null)
                     throw new InvalidOperationException(
                         String.Format("The data introduced in the IR should be well typed. " +
-                                      Environment.NewLine + "Operation: {0}", result));
+                                      Environment.NewLine + "Operation: {0}", value));
             }
         }
 
@@ -918,7 +913,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             var boxing = new Boxing()
             {
                 AssignedTo = result,
-                Value = valueToBox
+                Right = valueToBox
             };
             AddOperation(boxing);
         }
@@ -931,7 +926,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             var boxing = new Unboxing()
             {
                 AssignedTo = result,
-                Value = valueToBox
+                Right = valueToBox
             };
             AddOperation(boxing);
         }

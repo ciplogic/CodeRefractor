@@ -63,14 +63,14 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndProp
                 switch (destOperation.Kind)
                 {
                     case OperationKind.Assignment:
-                        var operatorAssig = (Assignment) destOperation.Value;
+                        var operatorAssig = (Assignment) destOperation;
                         operatorAssig.AssignedTo = assignment.AssignedTo;
                         Result = true;
 
                         break;
                     case OperationKind.UnaryOperator:
                     case OperationKind.BinaryOperator:
-                        var operatorData = (OperatorBase) destOperation.Value;
+                        var operatorData = (OperatorBase) destOperation;
                         operatorData.AssignedTo = assignment.AssignedTo;
                         Result = true;
                         break;

@@ -7,7 +7,7 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
 namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 {
-    public class SizeOfAssignment : BaseOperation
+    public class SizeOfAssignment : LocalOperation
     {
         public LocalVariable AssignedTo;
         public Type Right;

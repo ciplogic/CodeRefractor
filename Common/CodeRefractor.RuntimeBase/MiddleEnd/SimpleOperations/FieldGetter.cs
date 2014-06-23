@@ -6,7 +6,7 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
 namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 {
-    public class FieldGetter : BaseOperation,IClonableOperation
+    public class FieldGetter : LocalOperation, IClonableOperation
     {
         public LocalVariable AssignedTo;
         public LocalVariable Instance;

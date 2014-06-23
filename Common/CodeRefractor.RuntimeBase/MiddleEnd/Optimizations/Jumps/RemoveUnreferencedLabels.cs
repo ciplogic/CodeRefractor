@@ -32,7 +32,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.Jumps
                 var operation = operations[index];
                 if (operation.Kind == OperationKind.BranchOperator)
                 {
-                    var destAssignment = (BranchOperator) operation.Value;
+                    var destAssignment = (BranchOperator) operation;
                     candidateLabelTable.Remove(destAssignment.JumpTo);
                     continue;
                 }

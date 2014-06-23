@@ -127,8 +127,7 @@ namespace VisualCompiler
 
                 foreach (var op in opcode.Value.MidRepresentation.LocalOperations)
                 {
-                    var oper = string.Format("{1}\t({0})", op.Kind, op.Value == null ?string.Empty
-                        : op.Value.ToString()); ;
+                    var oper = string.Format("{1}\t({0})", op.Kind, op); ;
                     intermediateOutput += "     " + oper + "\n";
                 }
 

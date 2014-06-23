@@ -32,7 +32,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndProp
                     if (destOperation.Kind == OperationKind.BranchOperator)
                         break;
                     if (destOperation.Kind != OperationKind.Call) continue;
-                    var callData = (MethodData) destOperation.Value;
+                    var callData = (MethodData) destOperation;
                     if (SameVariable(callData.Result, srcVariableDefinition.AssignedTo))
                         break;
                     var pos = -1;

@@ -2,18 +2,9 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
 namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 {
-    public class Comment : BaseOperation
+    public class Boxing : LocalOperation
     {
-        public Comment()
-            : base(OperationKind.Comment)
-        {
-        }
-
-        public string Message { get; set; }
-    }
-    public class Boxing : BaseOperation
-    {
-        public IdentifierValue Value;
+        public IdentifierValue Right;
         public LocalVariable AssignedTo;
 
         public Boxing()
@@ -23,8 +14,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 
         public override string ToString()
         {
-            return string.Format("{0} = box( {1})", 
-                Value.Name, 
+            return string.Format("{0} = box( {1})",
+                Right.Name, 
                 AssignedTo.Name);
         }
     }

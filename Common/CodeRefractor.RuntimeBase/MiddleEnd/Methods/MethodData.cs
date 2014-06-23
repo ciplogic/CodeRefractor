@@ -11,7 +11,7 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
 namespace CodeRefractor.RuntimeBase.MiddleEnd.Methods
 {
-    public class MethodData : BaseOperation
+    public class MethodData : LocalOperation
     {
         public bool IsVoid
         {

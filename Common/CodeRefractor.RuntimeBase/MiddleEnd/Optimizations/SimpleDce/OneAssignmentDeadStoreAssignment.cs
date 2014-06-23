@@ -49,7 +49,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.SimpleDce
             foreach (var index in assignmentIds)
             {
                 var op = localOperations[index];
-                var assign = (Assignment) op.Value;
+                var assign = (Assignment) op;
                 var assignedTo = assign.AssignedTo;
                 if (assignedTo.Kind == VariableKind.Argument)
                     continue;
@@ -69,7 +69,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.SimpleDce
                     constValues.Remove(definition);
                     continue;
                 }
-                var assign = (Assignment) op.Value;
+                var assign = (Assignment) op;
                 var constAssignedValue = assign.Right as ConstValue;
                 if (constAssignedValue == null)
                 {

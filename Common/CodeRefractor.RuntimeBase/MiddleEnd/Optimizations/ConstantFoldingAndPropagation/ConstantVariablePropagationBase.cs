@@ -21,7 +21,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndProp
 
         public static ConstValue ConstantFromOperation(out Assignment srcVariableDefinition, LocalOperation srcOperation)
         {
-            srcVariableDefinition = (Assignment) srcOperation.Value;
+            srcVariableDefinition = (Assignment) srcOperation;
             var constValue = srcVariableDefinition.Right as ConstValue;
             return constValue;
         }

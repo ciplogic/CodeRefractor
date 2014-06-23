@@ -125,7 +125,7 @@ namespace CodeRefractor.RuntimeBase.Backend.ComputeClosure
                 return;
             foreach (var localOperation in localOperations)
             {
-                var functionPointer = (FunctionPointerStore) localOperation.Value;
+                var functionPointer = (FunctionPointerStore) localOperation;
                 var info = functionPointer.FunctionPointer;
                 var interpreter = info.GetInterpreter(crRuntime);
                 if (interpreter == null)
@@ -144,7 +144,7 @@ namespace CodeRefractor.RuntimeBase.Backend.ComputeClosure
                 return toAdd;
             foreach (var localOperation in localOperations)
             {
-                var methodData = (MethodData) localOperation.Value;
+                var methodData = (MethodData) localOperation;
                 var info = methodData.Info;
                 if (info.DeclaringType == typeof (object)
                     || info.DeclaringType == typeof (IntPtr))

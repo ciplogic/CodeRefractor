@@ -137,7 +137,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.EscapeAndLowering
 
         private static void HandleCallVirtual( HashSet<LocalVariable> candidateVariables, LocalOperation op)
         {
-            var methodData = (MethodData)op.Value;
+            var methodData = (MethodData)op;
             foreach (var identifierValue in methodData.Parameters)
             {
                 var localVariable = identifierValue as LocalVariable;
@@ -150,7 +150,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.EscapeAndLowering
         private static void HandleRefAssignment(LocalVariable localVariable, HashSet<LocalVariable> candidateVariables,
             LocalOperation op)
         {
-            var value = (RefAssignment) op.Value;
+            var value = (RefAssignment) op;
             candidateVariables.Remove(localVariable);
             candidateVariables.Remove(value.Right);
         }
@@ -180,7 +180,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.EscapeAndLowering
         private static void HandleCall(LocalVariable localVariable, HashSet<LocalVariable> candidateVariables,
             LocalOperation op, CrRuntimeLibrary crRuntime)
         {
-            var methodData = (MethodData) op.Value;
+            var methodData = (MethodData) op;
             var escapeData = AnalyzeParametersAreEscaping.GetEscapingParameterData(methodData);
             if (escapeData == null)
             {
@@ -202,7 +202,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.EscapeAndLowering
 
         private static void HandleSetArrayItem(ICollection<LocalVariable> candidateVariables, LocalOperation op)
         {
-            var assignSetArray = (Assignment) op.Value;
+            var assignSetArray = (Assignment) op;
             var right = assignSetArray.Right as LocalVariable;
             if (right != null)
             {

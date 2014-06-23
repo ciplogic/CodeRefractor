@@ -52,7 +52,7 @@ namespace CodeRefractor.RuntimeBase.CodeWriter.BasicOperations
                 switch (operation.Kind)
                 {
                     case OperationKind.Label:
-                        WriteLabel(bodySb, ((Label) operation.Value).JumpTo);
+                        WriteLabel(bodySb, ((Label) operation).JumpTo);
                         break;
                     case OperationKind.AlwaysBranch:
                         HandleAlwaysBranchOperator(operation, bodySb);
@@ -85,18 +85,18 @@ namespace CodeRefractor.RuntimeBase.CodeWriter.BasicOperations
                         break;
 
                     case OperationKind.Comment:
-                        HandleComment(operation.Value.ToString(), bodySb);
+                        HandleComment(operation.ToString(), bodySb);
                         break;
                     case OperationKind.Box:
-                        HandleBox((Boxing)operation.Value, bodySb, typeTable);
+                        HandleBox((Boxing)operation, bodySb, typeTable);
                         break;
 
                     case OperationKind.CastClass:
-                        HandleCastClass((ClassCasting)operation.Value, bodySb, typeTable);
+                        HandleCastClass((ClassCasting)operation, bodySb, typeTable);
                         break;
 
                     case OperationKind.Unbox:
-                        HandleUnbox((Unboxing)operation.Value, bodySb, typeTable);
+                        HandleUnbox((Unboxing)operation, bodySb, typeTable);
                         break;
 
                     default:
@@ -104,7 +104,7 @@ namespace CodeRefractor.RuntimeBase.CodeWriter.BasicOperations
                             string.Format(
                                 "Invalid operation '{0}' is introduced in intermediary representation\nValue: {1}",
                                 operation.Kind,
-                                operation.Value));
+                                operation));
                 }
                 bodySb.AppendLine();
             }
@@ -118,16 +118,16 @@ namespace CodeRefractor.RuntimeBase.CodeWriter.BasicOperations
             bodySb
                 .AppendFormat("{0} = unbox_value<{2}>({1});",
                     unboxing.AssignedTo.Name,
-                    unboxing.Value.Name,
+                    unboxing.Right.Name,
                     typeDescription.ClrType.ToDeclaredVariableType(true, EscapingMode.Stack));
         }
         private static void HandleBox(Boxing boxing, StringBuilder bodySb, TypeDescriptionTable typeTable)
         {
-            TypeDescription typeDescription = boxing.Value.ComputedType();
+            TypeDescription typeDescription = boxing.Right.ComputedType();
             bodySb
                 .AppendFormat("{0} = box_value<{2}>({1}, {3});",
                     boxing.AssignedTo.Name,
-                    boxing.Value.Name,
+                    boxing.Right.Name,
                     typeDescription.ClrType.ToDeclaredVariableType(true, EscapingMode.Stack),
                     typeTable.GetTypeId(typeDescription.ClrType));
         }
@@ -151,7 +151,7 @@ namespace CodeRefractor.RuntimeBase.CodeWriter.BasicOperations
 
         private static void HandleSwitch(LocalOperation operation, StringBuilder bodySb)
         {
-            var assign = (Assignment) operation.Value;
+            var assign = (Assignment) operation;
             var instructionTable = (int[]) ((ConstValue) assign.Right).Value;
 
             var instructionLabelIds = instructionTable;
@@ -169,7 +169,7 @@ namespace CodeRefractor.RuntimeBase.CodeWriter.BasicOperations
 
         private static void HandleCopyArrayInitializer(LocalOperation operation, StringBuilder sb)
         {
-            var assignment = (Assignment) operation.Value;
+            var assignment = (Assignment) operation;
             var left = assignment.AssignedTo;
             var right = (ConstByteArrayValue) assignment.Right;
             var rightArrayData = (ConstByteArrayData) right.Value;
@@ -239,7 +239,7 @@ namespace CodeRefractor.RuntimeBase.CodeWriter.BasicOperations
 
         private static void HandleAlwaysBranchOperator(LocalOperation operation, StringBuilder sb)
         {
-            sb.AppendFormat("goto label_{0};", ((AlwaysBranch)operation.Value).JumpTo.ToHex());
+            sb.AppendFormat("goto label_{0};", ((AlwaysBranch)operation).JumpTo.ToHex());
         }
 
 

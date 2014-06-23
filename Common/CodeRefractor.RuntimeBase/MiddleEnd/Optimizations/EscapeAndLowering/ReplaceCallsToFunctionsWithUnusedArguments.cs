@@ -26,7 +26,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.EscapeAndLowering
             foreach (var call in calls)
             {
                 var opCall = localOperations[call];
-                var methodData = (MethodData) opCall.Value;
+                var methodData = (MethodData) opCall;
                 var properties = methodData.Interpreter.AnalyzeProperties;
                 var argumentUsages = properties.GetUsedArguments(methodData.Interpreter.MidRepresentation.Vars.Arguments);
                 if (!argumentUsages.Any(it => !it))

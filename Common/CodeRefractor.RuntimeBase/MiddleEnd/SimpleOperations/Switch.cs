@@ -1,6 +1,6 @@
 namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 {
-    public class Switch : BaseOperation
+    public class Switch : LocalOperation
     {
         public Switch()
             : base(OperationKind.Switch)

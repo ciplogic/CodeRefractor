@@ -23,7 +23,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.Optimizations.ConstantFoldingAndPr
             foreach (var i in branchOperations)
             {
                 var destOperation = operations[i];
-                var destAssignment = (BranchOperator) destOperation.Value;
+                var destAssignment = (BranchOperator)destOperation;
                 if (destAssignment.Name != OpcodeBranchNames.BrTrue && destAssignment.Name != OpcodeBranchNames.BrFalse)
                     continue;
                 var constValue = destAssignment.CompareValue as ConstValue;
@@ -43,9 +43,9 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.Optimizations.ConstantFoldingAndPr
             var operationList = interpreter.MidRepresentation.LocalOperations;
             if (isTrue)
             {
-                operationList[i] = new LocalOperation
+                operationList[i] = new AlwaysBranch
                 {
-                    Value = new AlwaysBranch { JumpTo = destAssignment.JumpTo } 
+                    JumpTo = destAssignment.JumpTo
                 };
             }
             else

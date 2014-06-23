@@ -35,7 +35,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ReachabilityDfa
                         continue;
                     case OperationKind.BranchOperator:
 
-                        var destAssignment = (BranchOperator) operation.Value;
+                        var destAssignment = (BranchOperator) operation;
                         var jumpTo = labelTable[destAssignment.JumpTo];
                         if (jumpTo != labelInfo.Value)
                             continue;

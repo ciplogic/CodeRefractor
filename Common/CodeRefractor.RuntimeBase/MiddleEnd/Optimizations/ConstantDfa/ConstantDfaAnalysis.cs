@@ -44,10 +44,10 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantDfa
                         HandleAssignment(i, assignment);
                         break;
                     case OperationKind.BinaryOperator:
-                        HandleOperator(i, (OperatorBase) operation.Value);
+                        HandleOperator(i, (OperatorBase) operation);
                         break;
                     case OperationKind.BranchOperator:
-                        var branchOperator = (BranchOperator) operation.Value;
+                        var branchOperator = (BranchOperator) operation;
                         HandleBranchOperator(i, branchOperator);
                         break;
                 }
@@ -156,14 +156,14 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantDfa
                         break;
 
                     case OperationKind.BinaryOperator:
-                        assignment = (Assignment) operation.Value;
+                        assignment = (Assignment) operation;
                         analysis.States[assignment.AssignedTo] = new VariableState
                         {
                             State = VariableState.ConstantState.NotConstant
                         };
                         break;
                     case OperationKind.BranchOperator:
-                        var branchOperator = (BranchOperator) operation.Value;
+                        var branchOperator = (BranchOperator) operation;
                         Interpret(JumpTo(branchOperator.JumpTo), analysis);
                         break;
                     case OperationKind.Label:
@@ -173,7 +173,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantDfa
                     case OperationKind.Return:
                         return;
                     case OperationKind.AlwaysBranch:
-                        var jumpTo = ((AlwaysBranch)operation.Value).JumpTo;
+                        var jumpTo = ((AlwaysBranch)operation).JumpTo;
                         Interpret(JumpTo(jumpTo), analysis);
                         return;
                     default:

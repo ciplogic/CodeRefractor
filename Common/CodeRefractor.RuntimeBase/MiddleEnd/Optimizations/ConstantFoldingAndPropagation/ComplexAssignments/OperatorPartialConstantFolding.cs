@@ -27,7 +27,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndProp
                 if (destOperation.Kind != OperationKind.BinaryOperator)
                     continue;
 
-                var destAssignment = (OperatorBase) destOperation.Value;
+                var destAssignment = (OperatorBase) destOperation;
                 var baseOperator = destAssignment;
                 ConstValue constLeft = null;
                 ConstValue constRight = null;
@@ -54,16 +54,13 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndProp
 
         private void FoldAssign(IdentifierValue constResult, LocalOperation[] localOperations, int pos)
         {
-            localOperations[pos] = new LocalOperation()
-            {
-                Value = new Assignment() { Right = constResult } 
-            };
+            localOperations[pos] = new Assignment() {Right = constResult};
         }
 
         private void HandleMul(ConstValue constLeft, ConstValue constRight,
             LocalOperation destOperation, LocalOperation[] localOperations, int pos)
         {
-            var binaryOperator = (BinaryOperator) destOperation.Value;
+            var binaryOperator = (BinaryOperator) destOperation;
 
             if (constRight != null && (int) constRight.Value == 1)
             {
@@ -94,7 +91,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndProp
         private void HandleDiv(ConstValue constLeft, ConstValue constRight,
             LocalOperation destOperation, LocalOperation[] localOperations, int pos)
         {
-            var binaryOperator = (BinaryOperator) destOperation.Value;
+            var binaryOperator = (BinaryOperator) destOperation;
 
             if (constRight != null && constRight.Value is int && (int) constRight.Value == 1)
             {

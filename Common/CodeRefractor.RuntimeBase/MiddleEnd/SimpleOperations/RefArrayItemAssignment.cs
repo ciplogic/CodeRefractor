@@ -7,7 +7,7 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
 namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 {
-    public class RefArrayItemAssignment : BaseOperation
+    public class RefArrayItemAssignment : LocalOperation
     {
         public RefArrayItemAssignment()
             : base(OperationKind.AddressOfArrayItem)

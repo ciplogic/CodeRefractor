@@ -22,10 +22,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.RedundantExpressions
                 AssignedTo = assignedTo,
                 Right = cacheVariable
             };
-            var localOperation = new LocalOperation()
-            {
-                Value = assignment
-            };
+            var localOperation = assignment;
             return localOperation;
         }
 
@@ -38,7 +35,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.RedundantExpressions
 
         public static MethodData GetMethodData(List<LocalOperation> localOperations, int index)
         {
-            return (MethodData) localOperations[index].Value;
+            return (MethodData) localOperations[index];
         }
 
         public static LocalVariable CreateCacheVariable(this MethodInterpreter interpreter,
@@ -72,7 +69,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.RedundantExpressions
 
         public static BinaryOperator GetBinaryOperator(this LocalOperation localOperation)
         {
-            return (BinaryOperator) localOperation.Value;
+            return (BinaryOperator) localOperation;
         }
 
         public static FieldGetter GetFieldOperation(this LocalOperation[] localOperations, int[] calls, int i)
@@ -83,7 +80,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.RedundantExpressions
 
         public static FieldGetter GetFieldOperation(this LocalOperation[] localOperations, int index)
         {
-            return (FieldGetter) localOperations[index].Value;
+            return (FieldGetter) localOperations[index];
         }
 
         public static BranchOperator GetBranchOperator(this List<LocalOperation> localOperations, List<int> calls, int i)
@@ -94,7 +91,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.RedundantExpressions
 
         public static BranchOperator GetBranchOperator(this List<LocalOperation> localOperations, int index)
         {
-            return (BranchOperator) localOperations[index].Value;
+            return (BranchOperator) localOperations[index];
         }
 
         public static UnaryOperator GetUnaryOperator(this List<LocalOperation> localOperations, List<int> calls, int i)
@@ -105,7 +102,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.RedundantExpressions
 
         public static UnaryOperator GetUnaryOperator(this List<LocalOperation> localOperations, int index)
         {
-            return (UnaryOperator) localOperations[index].Value;
+            return (UnaryOperator) localOperations[index];
         }
     }
 }

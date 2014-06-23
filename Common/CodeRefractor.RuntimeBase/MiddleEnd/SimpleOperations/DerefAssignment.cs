@@ -7,7 +7,7 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
 namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 {
-    public class DerefAssignment : BaseOperation
+    public class DerefAssignment : LocalOperation
     {
         public LocalVariable Left;
         public LocalVariable Right;

@@ -1,6 +1,6 @@
 namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 {
-    public class Label : BaseOperation
+    public class Label : LocalOperation
     {
         public Label()
             : base(OperationKind.Label)

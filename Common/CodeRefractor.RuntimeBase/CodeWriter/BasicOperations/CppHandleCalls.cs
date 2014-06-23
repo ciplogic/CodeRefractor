@@ -21,7 +21,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
     {
         public static void HandleReturn(LocalOperation operation, StringBuilder bodySb)
         {
-            var returnValue = (Return)operation.Value;
+            var returnValue = (Return)operation;
 
             if (returnValue.Returning == null)
                 bodySb.Append("return;");
@@ -33,7 +33,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         public static void HandleCall(LocalOperation operation, StringBuilder sbCode, MidRepresentationVariables vars,
             MethodInterpreter interpreter, CrRuntimeLibrary crRuntime)
         {
-            var operationData = (MethodData) operation.Value;
+            var operationData = (MethodData) operation;
             var sb = new StringBuilder();
             var methodInfo = operationData.Info.GetReversedMethod();
             var isVoidMethod = methodInfo.GetReturnType().IsVoid();
@@ -52,7 +52,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         public static void HandleCallInterface(LocalOperation operation, StringBuilder sbCode,
             MidRepresentationVariables vars, MethodInterpreter interpreter, CrRuntimeLibrary crRuntime)
         {
-            var operationData = (MethodData) operation.Value;
+            var operationData = (MethodData) operation;
             var sb = new StringBuilder();
             var methodInfo = operationData.Info.GetReversedMethod();
             var isVoidMethod = methodInfo.GetReturnType().IsVoid();
@@ -71,7 +71,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         public static void HandleCallVirtual(LocalOperation operation, StringBuilder sbCode,
             MidRepresentationVariables vars, MethodInterpreter interpreter, CrRuntimeLibrary crRuntime)
         {
-            var operationData = (MethodData) operation.Value;
+            var operationData = (MethodData) operation;
             var sb = new StringBuilder();
             var methodInfo = operationData.Info.GetReversedMethod();
             var isVoidMethod = methodInfo.GetReturnType().IsVoid();
@@ -196,7 +196,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 
         public static void HandleCallRuntime(LocalOperation operation, StringBuilder sb)
         {
-            var operationData = (MethodData) operation.Value;
+            var operationData = (MethodData) operation;
 
             var methodInfo = operationData.Info;
             if (methodInfo.IsConstructor)
