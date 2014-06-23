@@ -44,12 +44,21 @@ namespace CodeRefractor.RuntimeBase.Analyze
 
         public TypeDescription(Type clrType)
         {
-            Layout = new List<FieldDescription>();
-            ClrType = clrType;
+            try
+            {
+                Layout = new List<FieldDescription>();
+                ClrType = clrType;
 
-            Name = clrType.Name;
-            Namespace = clrType.Namespace;
-            ContainsGenericParameters = clrType.ContainsGenericParameters;
+                Name = clrType.Name;
+                Namespace = clrType.Namespace;
+                ContainsGenericParameters = clrType.ContainsGenericParameters;
+            }
+            catch (Exception)
+            {
+                
+               
+            }
+         
         }
 
         public void ExtractInformation(CrRuntimeLibrary crRuntime)

@@ -6,8 +6,8 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
-using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -28,6 +28,7 @@ using MahApps.Metro.Controls;
 using VisualCompiler.Views.Dialogs;
 using Color = System.Drawing.Color;
 using Path = System.IO.Path;
+using Timer = System.Timers.Timer;
 
 namespace VisualCompiler
 {
@@ -196,7 +197,10 @@ namespace VisualCompiler
         {
            
                 this.ViewModel.CompilerErrors = String.Empty;
-            CompileCSharp(true);
+            ThreadPool.QueueUserWorkItem((h) =>
+            {
+                CompileCSharp(true);
+            });
         }
 
         private void CompileCSharp(bool clearoutput)
@@ -215,7 +219,7 @@ namespace VisualCompiler
 
                 var start = Environment.TickCount;
 
-                this.Execute(ViewModel.LastCompiledExecutable);
+                this.Execute(LastCompiledExecutable);
                 var end = Environment.TickCount - start;
 
                  this.ViewModel.CompilerErrors +=  String.Format("CS time: {0} ms\n", end);
@@ -255,28 +259,39 @@ namespace VisualCompiler
 
         public MainWindowViewModel ViewModel
         {
-            get { return (MainWindowViewModel)DataContext; }
+            get
+            {
+                MainWindowViewModel f = null;
+
+                Dispatcher.Invoke(() =>
+                {
+                    f= (MainWindowViewModel) DataContext;
+                });
+                return f;
+            }
         }
 
         private void RunCPPButton_Click(object sender, RoutedEventArgs e)
         {
 
-            Dispatcher.InvokeAsync(() =>
-            {
+           
 
                 ViewModel.CompilerErrors = String.Empty;
+            ThreadPool.QueueUserWorkItem((h) =>
+            {
                 CompileCpp();
             });
-         
-         
+
+
+
         }
 
+        public string LastCompiledExecutable;
         private void CompileCpp()
         {
-            Dispatcher.InvokeAsync(() =>
-            {
+           
                 CppOutput = String.Empty;
-                var outputcpp = "OpenRuntime/" + ViewModel.LastCompiledExecutable.Replace(".exe", ".cpp");
+                var outputcpp = "OpenRuntime/" + LastCompiledExecutable.Replace(".exe", ".cpp");
 
                 var fileInfo = new FileInfo(outputcpp);
                 outputcpp = fileInfo.FullName;
@@ -315,19 +330,28 @@ namespace VisualCompiler
                     var end = Environment.TickCount - start;
 
                     CppOutput = output;
-                    ViewModel.CompilerErrors += String.Format("CPP time: {0} ms\n", end) + output +
-                                                p.StandardError.ReadToEnd();
+                    Dispatcher.Invoke(() =>
+                    {
+                        ViewModel.CompilerErrors += String.Format("CPP time: {0} ms\n", end) + output +
+                                                    p.StandardError.ReadToEnd();
+                    });
                 }
                 catch (Exception ex)
                 {
-                    ViewModel.CompilerErrors += ex.Message + "\nStackTrace: \n" + ex.StackTrace;
+
+                    Dispatcher.Invoke(() =>
+                    {
+                        ViewModel.CompilerErrors += ex.Message + "\nStackTrace: \n" +
+                                                    ex.StackTrace;
+                    });
+
                 }
                 finally
                 {
                     File.Delete(outputcpp);
                     File.Delete(outputexe);
                 }
-            });
+           
         }
 
         private void TestButton_Click(object sender, RoutedEventArgs e)
@@ -335,30 +359,37 @@ namespace VisualCompiler
 
             if (ResetStatus != null)
                 ResetStatus.Stop();
-            Dispatcher.InvokeAsync(() =>
-            {
-                CompileCSharp(false);
-                CompileCpp();
+          ThreadPool.QueueUserWorkItem((h) =>
+          {
+              CompileCSharp(false);
+              CompileCpp();
+         
                 if (CSharpOutput == CppOutput)
                 {
-                    TestStatus.Content = "PASSED";
-                    TestStatus.Background =
-                        new SolidColorBrush(System.Windows.Media.Color.FromRgb(Color.GreenYellow.R,
-                            Color.GreenYellow.G, Color.GreenYellow.B));
+                    Dispatcher.Invoke(() =>
+                    {
+                        TestStatus.Content = "PASSED";
+                        TestStatus.Background =
+                            new SolidColorBrush(System.Windows.Media.Color.FromRgb(Color.GreenYellow.R,
+                                Color.GreenYellow.G, Color.GreenYellow.B));
 
-                    ViewModel.CompilerErrors = String.Format("Test Passed:\n\nCSharpOutput:\n{0}CPPOutPut:\n{1}",
-                        CSharpOutput, CppOutput);
+                        ViewModel.CompilerErrors = String.Format("Test Passed:\n\nCSharpOutput:\n{0}CPPOutPut:\n{1}",
+                            CSharpOutput, CppOutput);
+                    });
                 }
                 else
                 {
-                    TestStatus.Content = "FAILED";
-                    TestStatus.Background =
-                        new SolidColorBrush(System.Windows.Media.Color.FromRgb(Color.Red.R, Color.Red.G, Color.Red.B));
-                    ViewModel.CompilerErrors = "Test Failed\n" + ViewModel.CompilerErrors;
+                    Dispatcher.Invoke(() =>
+                    {
+                        TestStatus.Content = "FAILED";
+                        TestStatus.Background =
+                            new SolidColorBrush(System.Windows.Media.Color.FromRgb(Color.Red.R, Color.Red.G, Color.Red.B));
+                        ViewModel.CompilerErrors = "Test Failed\n" + ViewModel.CompilerErrors;
+                    });
                 }
                 if (ResetStatus == null)
                 {
-                    ResetStatus = new Timer(4000);
+                    ResetStatus = new Timer(2000);
                     ResetStatus.AutoReset = false;
                     ResetStatus.Elapsed += (o, args) => Dispatcher.Invoke(() =>
                     {
@@ -369,7 +400,7 @@ namespace VisualCompiler
                     });
                 }
                 ResetStatus.Start();
-            });
+          });
         }
 
         private Timer ResetStatus;

@@ -30,7 +30,7 @@ namespace VisualCompiler
 
         };
 
-        public  string LastCompiledExecutable;
+      
         public void CompileAndRunCode(string name, string code)
         {
             try
@@ -44,7 +44,7 @@ namespace VisualCompiler
             //Structure: Generate File, Compile  and Run It
 
             //Call Mcs / Csc
-            LastCompiledExecutable = outputExeName;
+            Window.LastCompiledExecutable = outputExeName;
             parameters.OutputAssembly = outputExeName;
 
             CompilerResults results = icc.CompileAssemblyFromSource(parameters, code);
@@ -181,7 +181,10 @@ namespace VisualCompiler
                 if (_ilCode != value)
                 {
                     _ilCode = value;
-                    Window.IL.Text = value;
+                    Window.Dispatcher.InvokeAsync(() =>
+                    {
+                        Window.IL.Text = value;
+                    });
                     Changed(() => ILCode);
                 }
             }
@@ -197,18 +200,14 @@ namespace VisualCompiler
                 {
                    
                         _outputCode = value;
-                        try
-                        {
+                        Window.Dispatcher.InvokeAsync(() =>
+                    {
                             if (OutputCode != Window.Output.Text) //Seems there was a loop here
                                 Window.Output.Text = value;
-                        }
-                        catch (Exception)
-                        {
-
-
-                        }
+                      });
                         Changed(() => OutputCode);
-                  
+                    
+
                 }
             }
         }
@@ -219,8 +218,11 @@ namespace VisualCompiler
             get { return _compilerErrors; }
             set
             {
-                _compilerErrors = value;
-                Changed(() => CompilerErrors);
+                Window.Dispatcher.Invoke(() =>
+                {
+                    _compilerErrors = value;
+                    Changed(() => CompilerErrors);
+                });
             }
         }
 

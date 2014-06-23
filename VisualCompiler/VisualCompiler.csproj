@@ -90,6 +90,14 @@
     <Compile Include="CustomizedBrush.cs" />
     <Compile Include="CompilerUtils.cs" />
     <Compile Include="MainWindowViewModel.cs" />
+    <Content Include="Tests\VirtualMethodsTest1.cs" />
+    <Content Include="Tests\CastClassTest1.cs" />
+    <Content Include="Tests\CastClassTest2.cs" />
+    <Content Include="Tests\ClassMethodTest1.cs" />
+    <Content Include="Tests\VirtualMethodsTest2.cs" />
+    <Content Include="Tests\VirtualMethodsTest3.cs" />
+    <Content Include="Tests\VirtualMethodsTest4.cs" />
+    <Content Include="Tests\VirtualMethodsTest5.cs" />
     <Compile Include="Views\Dialogs\CompilerOptionsViewModel.cs" />
     <Compile Include="Views\Dialogs\CompilerOptionsWindow.xaml.cs">
       <DependentUpon>CompilerOptionsWindow.xaml</DependentUpon>

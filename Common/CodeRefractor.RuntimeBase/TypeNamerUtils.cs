@@ -22,6 +22,7 @@ namespace CodeRefractor.RuntimeBase
             {
                 while ((mappedType.BaseType != typeof(Object))) // Match top level virtual dispatch
                 {
+                    if (mappedType.BaseType == null) break;
                     mappedType = mappedType.BaseType;
                     typeName = mappedType.ToCppMangling();
                 }

@@ -110,8 +110,11 @@ namespace CodeRefractor.RuntimeBase.Backend.ComputeClosure
                 var info = declaringType.TypeInitializer;
 
                 var interpreter = info.GetInterpreter(crRuntime);
-                result[interpreter.ToKey()] = interpreter;
-                UpdateMethodEntryClosure(interpreter, result, crRuntime);
+                if (interpreter != null)
+                {
+                    result[interpreter.ToKey()] = interpreter;
+                    UpdateMethodEntryClosure(interpreter, result, crRuntime);
+                }
             }
         }
 

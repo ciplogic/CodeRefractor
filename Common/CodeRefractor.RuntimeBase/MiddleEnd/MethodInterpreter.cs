@@ -170,7 +170,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 var instruction = instructions[index];
                 EvaluateInstuction(instruction, operationFactory, labelList, crRuntime);
             }
-            //Ensure.IsTrue(evaluator.Count == 0, "Stack not empty!");
+         //   Ensure.IsTrue(evaluator.Count == 0, "Stack not empty!");
             AnalyzeProperties.Setup(MidRepresentation.Vars.Arguments, MidRepresentation.Vars.VirtRegs,
                 MidRepresentation.Vars.LocalVars);
             Interpreted = true;
@@ -209,6 +209,9 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 return;
 
             if (HandleClassCast(opcodeStr, offset, operationFactory, instruction))
+                return;
+
+            if (HandleException(opcodeStr, offset, operationFactory, instruction))
                 return;
             
 
@@ -456,6 +459,14 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 operationFactory.StoreField(fieldInfo);
                 return true;
             }
+
+            if (opcodeStr.StartsWith("stobj"))
+            {
+
+                operationFactory.StoreObject((Type)instruction.Operand);
+                return true;
+            }
+
             return false;
         }
 
@@ -544,6 +555,14 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 operationFactory.LoadArgument(pushedIntValue);
                 return true;
             }
+
+            if (opcodeStr.StartsWith("ldobj"))
+            {
+             
+
+                operationFactory.LoadObject((Type)instruction.Operand);
+                return true;
+            }
             if (opcodeStr == "ldfld")
             {
                 var operand = (FieldInfo) instruction.Operand;
@@ -576,6 +595,20 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 return true;
             }
           
+            return false;
+        }
+
+        private static bool HandleException(string opcodeStr, int offset, MetaMidRepresentationOperationFactory operationFactory, Instruction instruction)
+        {
+
+
+            if (opcodeStr == "throw"
+                )
+            {
+                operationFactory.Throw();
+                return true;
+            }
+
             return false;
         }
 

@@ -100,6 +100,11 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             PushStack(locVar);
         }
 
+        public LocalVariable GetVirtReg(int value)
+        {
+            return  _representation.Vars.VirtRegs.First(v => v.Id == value);
+        }
+
 
         public void PushInt4(int value)
         {
@@ -874,7 +879,25 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             _evaluator.Clear();
         }
 
+        public void Throw()
+        {
 
+            var valueToCast = _evaluator.Pop();
+          
+        //    var result = SetNewVReg();
+//            var fieldName = fieldInfo.Name;
+//            var assignment = new Assignment
+//            {
+//                AssignedTo = new StaticFieldSetter
+//                {
+//                    DeclaringType = fieldInfo.DeclaringType,
+//                    FieldName = fieldName
+//                },
+//                Right = firstVar
+//            };
+//            assignment.AssignedTo.FixedType = firstVar.ComputedType();
+//            AddOperation(OperationKind.SetStaticField, assignment);
+        }
         
         public void CastClass(Type operand)
         {
@@ -915,6 +938,31 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 Value = valueToBox
             };
             AddOperation(OperationKind.Unbox, boxing);
+        }
+
+        public void LoadObject(Type operand) // TODO: Fix this
+        {
+            var valueAddress = (LocalVariable)_evaluator.Pop();
+
+            //Look up instance
+           var localvar=  GetVirtReg(valueAddress.Id);
+           AssignValueToStack(localvar);
+        }
+
+        public void StoreObject(Type operand)// TODO: Fix this
+        {  
+            var value = _evaluator.Pop();
+            var valueAddress = (LocalVariable)_evaluator.Pop();
+          
+            //Look up instance
+            var assign = new Assignment
+            {
+                AssignedTo = valueAddress,
+                Right = value
+            };
+          
+            AddOperation(OperationKind.Assignment, assign);
+            
         }
     }
 }
