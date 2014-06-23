@@ -75,3 +75,6 @@ bin/CodeRefactorRuntime/Debug/CodeRefa*
 bin/CodeRefactorRuntime/CodeRefactorRuntime.sdf
 *.sdsettings
 *.OpenCover.Settings
+bin/OpenRuntime/*
+System.Windows.Interactivity.resources.*
+bin/*.xml
