@@ -46,7 +46,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.Optimizations.ConstantFoldingAndPr
                 operationList[i] = new LocalOperation
                 {
                     Kind = OperationKind.AlwaysBranch,
-                    Value = destAssignment.JumpTo
+                    Value = new AlwaysBranch { JumpTo = destAssignment.JumpTo } 
                 };
             }
             else

@@ -57,7 +57,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndProp
             localOperations[pos] = new LocalOperation()
             {
                 Kind = OperationKind.Assignment,
-                Value = constResult
+                Value = new Assignment() { Right = constResult } 
             };
         }
 

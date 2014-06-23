@@ -1,26 +1,22 @@
-#region Usings
-
-using System;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
-
-#endregion
 
 namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 {
-    public class SizeOfAssignment : BaseOperation
+    public class Unboxing : BaseOperation
     {
+        public IdentifierValue Value;
         public LocalVariable AssignedTo;
-        public Type Right;
 
-        public SizeOfAssignment()
-            : base(OperationKind.SizeOf)
+        public Unboxing()
+            : base(OperationKind.Unbox)
         {
         }
 
         public override string ToString()
         {
-            return String.Format("{0} = {1}", AssignedTo.Name, Right);
+            return string.Format("{0} = unbox( {1})",
+                Value.Name,
+                AssignedTo.Name);
         }
-
     }
 }

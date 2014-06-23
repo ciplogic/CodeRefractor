@@ -31,7 +31,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
             foreach (var i in labelOperations)
             {
                 var operation = operations[i];
-                var jumpTo = (int) operation.Value;
+                var jumpTo = ((Label) operation.Value).JumpTo;
                 labelTable[jumpTo] = i;
             }
             return labelTable;

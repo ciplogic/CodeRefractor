@@ -11,7 +11,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators
     public class BranchOperator : OperatorBase
     {
         public BranchOperator(string name)
-            : base(name)
+            : base(name, OperationKind.BranchOperator)
         {
         }
 

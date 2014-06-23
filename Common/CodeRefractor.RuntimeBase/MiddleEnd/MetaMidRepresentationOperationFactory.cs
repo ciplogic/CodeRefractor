@@ -57,7 +57,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         }
 
 
-        private void AddOperation(OperationKind operationKind, object value = null)
+        private void AddOperation(OperationKind operationKind, BaseOperation value = null)
         {
             var result = new LocalOperation
             {
@@ -161,7 +161,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         {
             if (ShowComments)
             {
-                AddOperation(OperationKind.Comment, comment);
+                AddOperation(OperationKind.Comment, new Comment(){Message = comment}); 
             }
         }
 
@@ -219,7 +219,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         public void Return(bool isVoid)
         {
             var returnValue = isVoid ? null : _evaluator.Pop();
-            AddOperation(OperationKind.Return, returnValue);
+            AddOperation(OperationKind.Return, new Return(){Returning = returnValue});
+            
         }
 
 
@@ -330,7 +331,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
         public void SetLabel(int offset)
         {
-            AddOperation(OperationKind.Label, offset);
+            AddOperation(OperationKind.Label, new Label {JumpTo = offset});
         }
 
         public void Cgt()
@@ -403,7 +404,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         {
             var methodInfo = (MethodBase) operand;
             var interpreter = methodInfo.Register(crRuntime);
-            var methodData = new MethodData(interpreter);
+            var methodData = new MethodData(interpreter, OperationKind.Call);
 
 
             CallMethodData(methodInfo, methodData, OperationKind.Call, crRuntime);
@@ -413,7 +414,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         {
             var methodInfo = (MethodBase) operand;
             var interpreter = methodInfo.Register(crRuntime);
-            var methodData = new MethodData(interpreter);
+            var methodData = new MethodData(interpreter, OperationKind.CallVirtual);
 
 
             CallMethodData(methodInfo, methodData, OperationKind.CallVirtual, crRuntime);
@@ -423,7 +424,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         {
             var methodInfo = (MethodBase) operand;
             var interpreter = methodInfo.Register(crRuntime);
-            var methodData = new MethodData(interpreter);
+            var methodData = new MethodData(interpreter, OperationKind.CallInterface);
 
 
             CallMethodData(methodInfo, methodData, OperationKind.CallVirtual, crRuntime);
@@ -464,7 +465,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
                 vreg.FixedType = new TypeDescription(methodInfo.GetReturnType());
                 methodData.Result = vreg;
             }
-            methodData.FixedType = new TypeDescription(methodInfo.GetReturnType());
+            if(methodData.Result!=null)
+                methodData.Result.FixedType = new TypeDescription(methodInfo.GetReturnType());
             AddOperation(operationKind, methodData);
         }
 
@@ -528,7 +530,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
         public void AlwaysBranch(int offset)
         {
-            AddOperation(OperationKind.AlwaysBranch, offset);
+            AddOperation(OperationKind.AlwaysBranch, new AlwaysBranch(){JumpTo = offset});
         }
 
         public void BranchIfEqual(int jumpTo)
@@ -685,7 +687,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             AddOperation(OperationKind.NewObject, assignment);
 
             var interpreter = constructedObject.Info.Register(crRuntime);
-            var methodData = new MethodData(interpreter);
+            var methodData = new MethodData(interpreter, OperationKind.Call);
             CallMethodData(constructedObject.Info, methodData, OperationKind.Call, crRuntime);
             var vreg = SetNewVReg();
             vreg.FixedType = new TypeDescription(methodData.Info.DeclaringType);
@@ -874,12 +876,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             _evaluator.Clear();
         }
 
-
-        
         public void CastClass(Type operand)
         {
-             
-
             var valueToCast = _evaluator.Pop(); 
             var result = SetNewVReg();
             result.FixedType = new TypeDescription(operand);

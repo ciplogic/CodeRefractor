@@ -7,8 +7,13 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
 namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 {
-    public class RefArrayItemAssignment
+    public class RefArrayItemAssignment : BaseOperation
     {
+        public RefArrayItemAssignment()
+            : base(OperationKind.AddressOfArrayItem)
+        {
+        }
+
         public LocalVariable ArrayVar { get; set; }
         public IdentifierValue Index { get; set; }
 

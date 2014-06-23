@@ -8,10 +8,15 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
 namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 {
-    public class RefAssignment
+    public class RefAssignment : BaseOperation
     {
         public LocalVariable Left;
         public LocalVariable Right;
+
+        public RefAssignment()
+            : base(OperationKind.RefAssignment)
+        {
+        }
 
         public override string ToString()
         {
@@ -19,11 +24,15 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
         }
     }
 
-    public class FieldRefAssignment
+    public class FieldRefAssignment : BaseOperation
     {
         public LocalVariable Left;
         public LocalVariable Right;
         public FieldInfo Field;
+
+        public FieldRefAssignment() : base(OperationKind.FieldRefAssignment)
+        {
+        }
 
         public override string ToString()
         {

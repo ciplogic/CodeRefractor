@@ -99,11 +99,17 @@
     <Compile Include="MiddleEnd\MethodDescription.cs" />
     <Compile Include="MiddleEnd\MethodInterpreterKey.cs" />
     <Compile Include="MiddleEnd\MethodInterpreterKeyUtils.cs" />
+    <Compile Include="MiddleEnd\Methods\Return.cs" />
     <Compile Include="MiddleEnd\RuntimeLibraryDescription.cs" />
+    <Compile Include="MiddleEnd\SimpleOperations\AlwaysBranch.cs" />
+    <Compile Include="MiddleEnd\SimpleOperations\BaseOperation.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\Boxing.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\ClassCasting.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\Identifiers\EscapingMode.cs" />
+    <Compile Include="MiddleEnd\SimpleOperations\Label.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\RefArrayItemAssignment.cs" />
+    <Compile Include="MiddleEnd\SimpleOperations\Switch.cs" />
+    <Compile Include="MiddleEnd\SimpleOperations\Unboxing.cs" />
     <Compile Include="ProgramClosure.cs" />
     <Compile Include="Runtime\RuntimeLibraryUtils.cs" />
     <Compile Include="TypeInfoWriter\TypeDescriptionTable.cs" />

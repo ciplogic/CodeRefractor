@@ -6,11 +6,16 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
 namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 {
-    public class FieldGetter : IClonableOperation
+    public class FieldGetter : BaseOperation,IClonableOperation
     {
         public LocalVariable AssignedTo;
         public LocalVariable Instance;
         public string FieldName;
+
+        public FieldGetter()
+            : base(OperationKind.GetField)
+        {
+        }
 
         public object Clone()
         {

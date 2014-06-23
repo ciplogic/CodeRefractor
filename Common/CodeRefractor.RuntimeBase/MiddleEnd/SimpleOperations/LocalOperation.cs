@@ -1,11 +1,13 @@
+using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
+
 namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 {
     public class LocalOperation
     {
         public OperationKind Kind;
-        public object Value;
+        public BaseOperation Value;
 
-        public T Get<T>()
+        public T Get<T>() where T:BaseOperation
         {
             if (Value == null)
                 return default(T);
@@ -14,7 +16,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 
         public override string ToString()
         {
-            return string.Format("{0}: {1}", Kind, Value ?? "");
+            return string.Format("{0}: {1}", Kind, Value.ToString() ?? "");
         }
 
         public LocalOperation Clone()
@@ -23,7 +25,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
             return new LocalOperation
             {
                 Kind = Kind,
-                Value = value.Clone()
+                Value = Value.Clone()
             };
         }
     }

@@ -27,7 +27,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ReachabilityDfa
                 switch (operation.Kind)
                 {
                     case OperationKind.AlwaysBranch:
-                        var jumpLabel = labelTable[(int) operation.Value];
+                        var jumpLabel = labelTable[operation.Get<AlwaysBranch>().JumpTo];
 
                         if (jumpLabel != labelInfo.Value)
                             continue;

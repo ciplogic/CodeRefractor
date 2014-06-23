@@ -173,7 +173,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.ConstantDfa
                     case OperationKind.Return:
                         return;
                     case OperationKind.AlwaysBranch:
-                        var jumpTo = (int) operation.Value;
+                        var jumpTo = ((AlwaysBranch)operation.Value).JumpTo;
                         Interpret(JumpTo(jumpTo), analysis);
                         return;
                     default:

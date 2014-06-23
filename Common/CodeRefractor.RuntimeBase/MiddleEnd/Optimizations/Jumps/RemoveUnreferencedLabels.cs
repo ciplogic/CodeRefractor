@@ -38,7 +38,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.Jumps
                 }
                 if (operation.Kind == OperationKind.AlwaysBranch)
                 {
-                    candidateLabelTable.Remove((int) operation.Value);
+                    candidateLabelTable.Remove(operation.Get<AlwaysBranch>().JumpTo);
                 }
             }
             if (candidateLabelTable.Count == 0)

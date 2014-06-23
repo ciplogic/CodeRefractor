@@ -9,7 +9,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators
 {
     public class BinaryOperator : OperatorBase
     {
-        public BinaryOperator(string name) : base(name)
+        public BinaryOperator(string name) 
+            : base(name, OperationKind.BinaryOperator)
         {
         }
 

@@ -1,15 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
+﻿using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
 namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 {
-    public class ClassCasting
+    public class ClassCasting : BaseOperation
     {
         public IdentifierValue Value;
         public LocalVariable AssignedTo;
+
+        public ClassCasting()
+            : base(OperationKind.CastClass)
+        {
+        }
 
         public override string ToString()
         {

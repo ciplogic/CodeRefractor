@@ -52,7 +52,7 @@ namespace CodeRefractor.RuntimeBase.CodeWriter.BasicOperations
                 switch (operation.Kind)
                 {
                     case OperationKind.Label:
-                        WriteLabel(bodySb, (int) operation.Value);
+                        WriteLabel(bodySb, ((Label) operation.Value).JumpTo);
                         break;
                     case OperationKind.AlwaysBranch:
                         HandleAlwaysBranchOperator(operation, bodySb);
@@ -239,7 +239,7 @@ namespace CodeRefractor.RuntimeBase.CodeWriter.BasicOperations
 
         private static void HandleAlwaysBranchOperator(LocalOperation operation, StringBuilder sb)
         {
-            sb.AppendFormat("goto label_{0};", ((int) operation.Value).ToHex());
+            sb.AppendFormat("goto label_{0};", ((AlwaysBranch)operation.Value).JumpTo.ToHex());
         }
 
 

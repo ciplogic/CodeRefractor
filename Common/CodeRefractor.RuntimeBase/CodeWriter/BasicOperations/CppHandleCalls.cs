@@ -21,12 +21,12 @@ namespace CodeRefractor.CodeWriter.BasicOperations
     {
         public static void HandleReturn(LocalOperation operation, StringBuilder bodySb)
         {
-            var returnValue = operation.Value as IdentifierValue;
+            var returnValue = (Return)operation.Value;
 
-            if (returnValue == null)
+            if (returnValue.Returning == null)
                 bodySb.Append("return;");
             else
-                bodySb.AppendFormat("return {0};", returnValue.Name);
+                bodySb.AppendFormat("return {0};", returnValue.Returning.Name);
         }
 
 
