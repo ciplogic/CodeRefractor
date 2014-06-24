@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using CodeRefractor.MiddleEnd.UseDefs;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.Backend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.MiddleEnd;

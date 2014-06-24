@@ -4,7 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 using CodeRefractor.Runtime.Annotations;
+using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
@@ -12,7 +14,7 @@ using CodeRefractor.RuntimeBase.Shared;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.Runtime
+namespace CodeRefractor.Runtime
 {
     public class CrRuntimeLibrary
     {

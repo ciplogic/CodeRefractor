@@ -59,8 +59,8 @@
     <Compile Include="Analyze\LinkerInterpretersTable.cs" />
     <Compile Include="Analyze\NamerUtils.cs" />
     <Compile Include="Analyze\TypeDescription.cs" />
-    <Compile Include="Analyze\UseDefDescription.cs" />
-    <Compile Include="Analyze\UseDefHelper.cs" />
+    <Compile Include="MiddleEnd\UseDefs\UseDefDescription.cs" />
+    <Compile Include="MiddleEnd\UseDefs\UseDefHelper.cs" />
     <Compile Include="Analyze\UsedTypeList.cs" />
     <Compile Include="Analyze\UsedTypeListUtils.cs" />
     <Compile Include="Backend\ComputeClosure\ClosureResult.cs" />
@@ -99,7 +99,7 @@
     <Compile Include="MiddleEnd\MethodDescription.cs" />
     <Compile Include="MiddleEnd\MethodInterpreterKey.cs" />
     <Compile Include="MiddleEnd\MethodInterpreterKeyUtils.cs" />
-    <Compile Include="MiddleEnd\Methods\Return.cs" />
+    <Compile Include="MiddleEnd\SimpleOperations\Methods\Return.cs" />
     <Compile Include="MiddleEnd\RuntimeLibraryDescription.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\AlwaysBranch.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\BaseOperation.cs" />
@@ -145,8 +145,7 @@
     <Compile Include="DataBase\SerializeXml\SerializeLogic.cs" />
     <Compile Include="DataBase\SerializeXml\XNodeAttribute.cs" />
     <Compile Include="MiddleEnd\MethodInterpreterUtils.cs" />
-    <Compile Include="MiddleEnd\Methods\MethodKind.cs" />
-    <Compile Include="MiddleEnd\Methods\PureMethodTable.cs" />
+    <Compile Include="MiddleEnd\SimpleOperations\Methods\MethodKind.cs" />
     <Compile Include="MiddleEnd\MidRepresentationVariables.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\ConstTable\ConstByteArrayData.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\ConstTable\ConstByteArrayValue.cs" />
@@ -163,7 +162,7 @@
     <Compile Include="MiddleEnd\SimpleOperations\FieldGetter.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\FieldSetter.cs" />
     <Compile Include="MiddleEnd\MetaMidRepresentation.cs" />
-    <Compile Include="MiddleEnd\Methods\MethodData.cs" />
+    <Compile Include="MiddleEnd\SimpleOperations\Methods\MethodData.cs" />
     <Compile Include="MiddleEnd\MethodInterpreter.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\Operators\OperatorBase.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\Identifiers\ArgumentVariable.cs" />
@@ -191,9 +190,9 @@
     <Compile Include="MiddleEnd\Optimizations\Common\ResultingGlobalOptimizationPass.cs" />
     <Compile Include="MiddleEnd\Optimizations\Common\ResultingInFunctionOptimizationPass.cs" />
     <Compile Include="MiddleEnd\Optimizations\Common\ResultingOptimizationPass.cs" />
-    <Compile Include="MiddleEnd\Optimizations\ConstantDfa\ConstantDfaAnalysis.cs" />
-    <Compile Include="MiddleEnd\Optimizations\ConstantDfa\DfaPointOfAnalysis.cs" />
-    <Compile Include="MiddleEnd\Optimizations\ConstantDfa\VariableState.cs" />
+    <Compile Include="MiddleEnd\Optimizations\Dfa\ConstantDfa\ConstantDfaAnalysis.cs" />
+    <Compile Include="MiddleEnd\Optimizations\Dfa\ConstantDfa\DfaPointOfAnalysis.cs" />
+    <Compile Include="MiddleEnd\Optimizations\Dfa\ConstantDfa\VariableState.cs" />
     <Compile Include="MiddleEnd\Optimizations\ConstantFoldingAndPropagation\ComplexAssignments\ComputeConstantOperator.cs" />
     <Compile Include="MiddleEnd\Optimizations\ConstantFoldingAndPropagation\ComplexAssignments\FoldVariablesDefinitionsOptimizationPass.cs" />
     <Compile Include="MiddleEnd\Optimizations\ConstantFoldingAndPropagation\ComplexAssignments\OperatorConstantFolding.cs" />
@@ -229,8 +228,8 @@
     <Compile Include="MiddleEnd\Optimizations\Purity\EvaluatePureFunctionWithConstantCall.cs" />
     <Compile Include="MiddleEnd\Optimizations\Purity\RemoveDeadPureFunctionCalls.cs" />
     <Compile Include="MiddleEnd\Optimizations\Purity\RemoveDeadStoresToFunctionCalls.cs" />
-    <Compile Include="MiddleEnd\Optimizations\ReachabilityDfa\DeleteJumpNextLine.cs" />
-    <Compile Include="MiddleEnd\Optimizations\ReachabilityDfa\ReachabilityDfa.cs" />
+    <Compile Include="MiddleEnd\Optimizations\SimpleDce\DeleteJumpNextLine.cs" />
+    <Compile Include="MiddleEnd\Optimizations\Dfa\ReachabilityDfa\ReachabilityDfa.cs" />
     <Compile Include="MiddleEnd\Optimizations\RedundantExpressions\PrecomputeRepeatedBinaryOperators.cs" />
     <Compile Include="MiddleEnd\Optimizations\RedundantExpressions\PrecomputeRepeatedFieldGets.cs" />
     <Compile Include="MiddleEnd\Optimizations\RedundantExpressions\PrecomputeRepeatedPureFunctionCall.cs" />

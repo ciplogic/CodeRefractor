@@ -3,8 +3,8 @@
 using System.Reflection;
 using CodeRefractor.CodeWriter.Linker;
 using CodeRefractor.CompilerBackend.Optimizations.Purity;
+using CodeRefractor.Runtime;
 using CodeRefractor.RuntimeBase.Backend.Optimizations.Purity;
-using CodeRefractor.RuntimeBase.Runtime;
 
 #endregion
 

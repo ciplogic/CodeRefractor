@@ -9,13 +9,13 @@ using CodeRefractor.CompilerBackend.Optimizations.Common;
 using CodeRefractor.CompilerBackend.OuputCodeWriter;
 using CodeRefractor.CompilerBackend.ProgramWideOptimizations.ConstParameters;
 using CodeRefractor.CompilerBackend.ProgramWideOptimizations.Virtual;
+using CodeRefractor.Runtime;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.Backend;
 using CodeRefractor.RuntimeBase.Backend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.Backend.Optimizations.EscapeAndLowering;
 using CodeRefractor.RuntimeBase.Backend.ProgramWideOptimizations;
 using CodeRefractor.RuntimeBase.MiddleEnd;
-using CodeRefractor.RuntimeBase.Runtime;
 using CodeRefractor.RuntimeBase.TypeInfoWriter;
 
 #endregion

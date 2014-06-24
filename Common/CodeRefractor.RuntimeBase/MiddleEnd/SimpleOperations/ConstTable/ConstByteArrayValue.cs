@@ -5,7 +5,7 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.ConstTable
+namespace CodeRefractor.MiddleEnd.SimpleOperations.ConstTable
 {
     public class ConstByteArrayValue : ConstValue
     {

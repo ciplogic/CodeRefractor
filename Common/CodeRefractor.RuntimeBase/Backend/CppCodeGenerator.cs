@@ -9,12 +9,13 @@ using System.Text;
 using CodeRefractor.CodeWriter.BasicOperations;
 using CodeRefractor.CodeWriter.Linker;
 using CodeRefractor.CodeWriter.Platform;
+using CodeRefractor.MiddleEnd.SimpleOperations.ConstTable;
+using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
+using CodeRefractor.Runtime;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.Backend.ComputeClosure;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.ConstTable;
-using CodeRefractor.RuntimeBase.Runtime;
 using CodeRefractor.RuntimeBase.Shared;
 using CodeRefractor.RuntimeBase.TypeInfoWriter;
 

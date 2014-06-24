@@ -5,10 +5,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure;
+using CodeRefractor.Runtime;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.Backend.ComputeClosure;
 using CodeRefractor.RuntimeBase.MiddleEnd;
-using CodeRefractor.RuntimeBase.Runtime;
 
 #endregion
 

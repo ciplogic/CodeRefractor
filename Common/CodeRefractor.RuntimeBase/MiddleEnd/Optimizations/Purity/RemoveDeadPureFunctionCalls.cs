@@ -2,6 +2,8 @@
 
 using System.Collections.Generic;
 using CodeRefractor.CodeWriter.Linker;
+using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
+using CodeRefractor.MiddleEnd.UseDefs;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.Backend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.MiddleEnd;

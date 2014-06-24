@@ -5,13 +5,12 @@ using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.Backend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
 using CodeRefractor.RuntimeBase.Optimizations;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ReachabilityDfa
+namespace CodeRefractor.MiddleEnd.Optimizations.Dfa.ReachabilityDfa
 {
     [Optimization(Category = OptimizationCategories.DeadCodeElimination)]
     public class ReachabilityLines : ResultingInFunctionOptimizationPass

@@ -1,6 +1,8 @@
 ﻿#region Usings
 
 using System.Linq;
+using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
+using CodeRefractor.MiddleEnd.UseDefs;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;

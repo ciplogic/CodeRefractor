@@ -2,12 +2,13 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.Analyze
+namespace CodeRefractor.MiddleEnd.UseDefs
 {
     public class UseDefDescription
     {

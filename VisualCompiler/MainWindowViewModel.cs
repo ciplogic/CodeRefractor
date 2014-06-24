@@ -9,11 +9,12 @@ using CodeRefactor.OpenRuntime;
 using CodeRefractor.CompilerBackend.Optimizations.Util;
 using CodeRefractor.CompilerBackend.ProgramWideOptimizations.ConstParameters;
 using CodeRefractor.CompilerBackend.ProgramWideOptimizations.Virtual;
+using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
+using CodeRefractor.Runtime;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Backend.ProgramWideOptimizations;
 using CodeRefractor.RuntimeBase.Config;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
-using CodeRefractor.RuntimeBase.Runtime;
 using Microsoft.CSharp;
 
 namespace VisualCompiler

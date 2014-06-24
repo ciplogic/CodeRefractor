@@ -2,16 +2,19 @@
 
 using System;
 using System.Collections.Generic;
+using CodeRefractor.MiddleEnd.UseDefs;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.Backend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
+using CodeRefractor.RuntimeBase.Optimizations;
 
 #endregion
 
 namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndPropagation.SimpleAssignment
 {
+    [Optimization(Category = OptimizationCategories.Propagation)]
     public class AssignmentVregWithConstNextLineFolding : ResultingInFunctionOptimizationPass
     {
         private class ToFixAssignment

@@ -4,12 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using CodeRefractor.CodeWriter.Linker;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
+using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
+using CodeRefractor.Runtime;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.RuntimeBase.Optimizations;
-using CodeRefractor.RuntimeBase.Runtime;
 
 #endregion
 

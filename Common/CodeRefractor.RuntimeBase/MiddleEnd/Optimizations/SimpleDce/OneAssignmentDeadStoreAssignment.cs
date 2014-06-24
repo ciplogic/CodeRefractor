@@ -1,16 +1,19 @@
 #region Usings
 
 using System.Collections.Generic;
+using CodeRefractor.MiddleEnd.UseDefs;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.Backend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
+using CodeRefractor.RuntimeBase.Optimizations;
 
 #endregion
 
 namespace CodeRefractor.RuntimeBase.Backend.Optimizations.SimpleDce
 {
+    [Optimization(Category = OptimizationCategories.DeadCodeElimination)]
     internal class OneAssignmentDeadStoreAssignment : ResultingInFunctionOptimizationPass
     {
         public override void OptimizeOperations(MethodInterpreter interpreter)

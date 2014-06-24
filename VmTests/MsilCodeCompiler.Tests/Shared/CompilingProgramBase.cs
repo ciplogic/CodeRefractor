@@ -8,10 +8,10 @@ using System.Reflection;
 using CodeRefractor.Compiler;
 using CodeRefractor.CompilerBackend;
 using CodeRefractor.CompilerBackend.OuputCodeWriter;
+using CodeRefractor.Runtime;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Backend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.Optimizations;
-using CodeRefractor.RuntimeBase.Runtime;
 using CodeRefractor.RuntimeBase.Util;
 using NUnit.Framework;
 

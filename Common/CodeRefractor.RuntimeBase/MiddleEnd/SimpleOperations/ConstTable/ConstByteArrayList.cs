@@ -5,7 +5,7 @@ using System.Text;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.ConstTable
+namespace CodeRefractor.MiddleEnd.SimpleOperations.ConstTable
 {
     public class ConstByteArrayList
     {

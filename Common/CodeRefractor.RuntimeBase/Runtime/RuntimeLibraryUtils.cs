@@ -5,7 +5,7 @@ using CodeRefractor.RuntimeBase.Analyze;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.Runtime
+namespace CodeRefractor.Runtime
 {
     public static class RuntimeLibraryUtils
     {
