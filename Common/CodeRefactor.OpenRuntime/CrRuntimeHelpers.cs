@@ -1,10 +1,11 @@
 using System;
 using System.Runtime.CompilerServices;
+using CodeRefractor.Runtime.Annotations;
 using CodeRefractor.RuntimeBase;
 
 namespace CodeRefactor.OpenRuntime
 {
-    [MapType(typeof(RuntimeHelpers))]
+    [MapType(typeof (RuntimeHelpers))]
     public class CrRuntimeHelpers
     {
         [CppMethodBody(
@@ -14,7 +15,6 @@ namespace CodeRefactor.OpenRuntime
             )]
         public static unsafe void InitializeArray(Array array, byte* data, int bytesCount)
         {
-            
         }
     }
 }

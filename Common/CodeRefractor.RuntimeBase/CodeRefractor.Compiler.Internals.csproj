@@ -6,8 +6,8 @@
     <ProjectGuid>{10CEF783-53C3-42A7-940A-73773A2AF24F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CodeRefractor.RuntimeBase</RootNamespace>
-    <AssemblyName>CodeRefractor.RuntimeBase</AssemblyName>
+    <RootNamespace>CodeRefractor</RootNamespace>
+    <AssemblyName>CodeRefractor.Compiler.Internals</AssemblyName>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -158,7 +158,7 @@
     <Compile Include="Shared\ReflectionUtils.cs" />
     <Compile Include="CommonExtensions.cs" />
     <Compile Include="EvaluatorStack.cs" />
-    <Compile Include="MapTypeAttribute.cs" />
+    <Compile Include="Runtime\Annotations\MapTypeAttribute.cs" />
     <Compile Include="CppMethodBodyAttribute.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\FieldGetter.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\FieldSetter.cs" />

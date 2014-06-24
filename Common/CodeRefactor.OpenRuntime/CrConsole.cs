@@ -1,6 +1,7 @@
 #region Usings
 
 using System;
+using CodeRefractor.Runtime.Annotations;
 using CodeRefractor.RuntimeBase;
 
 #endregion
@@ -10,7 +11,6 @@ namespace CodeRefactor.OpenRuntime
     [MapType(typeof (Console))]
     public class CrConsole
     {
-
         [CppMethodBody(Header = "stdio.h", Code = "printf(\"%d\\n\", value);")]
         public static void WriteLine(int value)
         {
@@ -31,6 +31,7 @@ namespace CodeRefactor.OpenRuntime
         public static void Write(string value)
         {
         }
+
         [CppMethodBody(Header = "stdio.h", Code = "printf(\"%ls\\n\", value.get()->Text->Items);")]
         public static void WriteLine(string value)
         {

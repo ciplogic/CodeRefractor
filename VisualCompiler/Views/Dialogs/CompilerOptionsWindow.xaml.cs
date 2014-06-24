@@ -33,12 +33,6 @@ namespace VisualCompiler.Views.Dialogs
             Close();
         }
 
-        private void OnCancel(object sender, RoutedEventArgs e)
-        {
-            ViewModel.Accepted = false;
-            Close();
-        }
-
         private void OnSelectAll(object sender, RoutedEventArgs e)
         {
             foreach (var optimization in ViewModel.OptimizationList)

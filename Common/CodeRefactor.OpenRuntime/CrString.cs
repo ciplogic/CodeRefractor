@@ -1,5 +1,6 @@
 #region Usings
 
+using CodeRefractor.Runtime.Annotations;
 using CodeRefractor.RuntimeBase;
 
 #endregion
@@ -9,19 +10,14 @@ namespace CodeRefactor.OpenRuntime
     [MapType(typeof (string))]
     public class CrString
     {
-        public int Lengh
-        {
-            [CilMethod]
-            get { return Text.Length; }
-        }
         public char[] Text;
 
         [CilMethod]
         public unsafe CrString(byte* data)
         {
-            var len = StrLen(data);
+            int len = StrLen(data);
             Text = new char[len + 1];
-            for (var i = 0; i < len; i++)
+            for (int i = 0; i < len; i++)
                 Text[i] = (char) data[i];
             Text[len] = '\0';
         }
@@ -29,9 +25,9 @@ namespace CodeRefactor.OpenRuntime
         [CilMethod]
         public CrString(char[] value)
         {
-            var length = value.Length;
+            int length = value.Length;
             Text = new char[length];
-            for (var i = 0; i <= length; i++)
+            for (int i = 0; i <= length; i++)
                 Text[i] = value[i];
         }
 
@@ -39,13 +35,18 @@ namespace CodeRefactor.OpenRuntime
         public CrString(char[] value, int startPos, int length)
         {
             Text = new char[length];
-            for (var i = 0; i <= length; i++)
+            for (int i = 0; i <= length; i++)
                 Text[i] = value[i];
+        }
+
+        public int Lengh
+        {
+            [CilMethod] get { return Text.Length; }
         }
 
         private static unsafe int StrLen(byte* data)
         {
-            var result = 0;
+            int result = 0;
             while (*data != 0)
             {
                 result++;

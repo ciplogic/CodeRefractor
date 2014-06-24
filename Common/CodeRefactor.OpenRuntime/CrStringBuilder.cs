@@ -1,14 +1,16 @@
 using System;
 using System.Text;
+using CodeRefractor.Runtime.Annotations;
 using CodeRefractor.RuntimeBase;
 
 namespace CodeRefactor.OpenRuntime
 {
-    [MapType(typeof(StringBuilder))]
+    [MapType(typeof (StringBuilder))]
     public class CrStringBuilder
     {
-        char[] _data = new char[10];
+        private char[] _data = new char[10];
         private int _writtenLength;
+
         [CilMethod]
         public CrStringBuilder Append(string value)
         {
@@ -19,8 +21,8 @@ namespace CodeRefactor.OpenRuntime
 
         private void CopyStrToEnd(string str)
         {
-            var startLength = _writtenLength;
-            for(var i=0;i<str.Length;i++)
+            int startLength = _writtenLength;
+            for (int i = 0; i < str.Length; i++)
             {
                 _data[startLength + i] = str[i];
             }
@@ -29,7 +31,7 @@ namespace CodeRefactor.OpenRuntime
 
         private void ExpectAddLength(int length)
         {
-            var newLength = _writtenLength + length;
+            int newLength = _writtenLength + length;
             if (newLength > _data.Length)
                 Array.Resize(ref _data, newLength*3/2);
         }
