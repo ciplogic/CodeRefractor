@@ -1,4 +1,4 @@
-namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
+namespace CodeRefractor.MiddleEnd.SimpleOperations
 {
     public class AlwaysBranch : LocalOperation
     {
@@ -6,6 +6,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
             : base(OperationKind.AlwaysBranch)
         {
         }
+
         public int JumpTo { get; set; }
     }
 }

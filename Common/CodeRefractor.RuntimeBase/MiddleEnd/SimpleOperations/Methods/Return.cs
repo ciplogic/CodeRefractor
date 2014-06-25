@@ -1,7 +1,10 @@
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
+#region Uses
 
-namespace CodeRefractor.RuntimeBase.MiddleEnd.Methods
+using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
+
+#endregion
+
+namespace CodeRefractor.MiddleEnd.SimpleOperations.Methods
 {
     public class Return : LocalOperation
     {

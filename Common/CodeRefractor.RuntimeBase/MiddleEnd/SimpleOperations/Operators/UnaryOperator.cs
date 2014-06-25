@@ -1,14 +1,19 @@
-#region Usings
+#region Uses
 
 using System;
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
+using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators
+namespace CodeRefractor.MiddleEnd.SimpleOperations.Operators
 {
     public class UnaryOperator : OperatorBase
     {
+        public UnaryOperator()
+            : base("", OperationKind.UnaryOperator)
+        {
+        }
+
         public UnaryOperator(string name)
             : base(name, OperationKind.UnaryOperator)
         {

@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.UseDefs;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;

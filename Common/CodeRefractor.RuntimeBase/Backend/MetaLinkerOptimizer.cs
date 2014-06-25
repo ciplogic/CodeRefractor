@@ -10,7 +10,6 @@ using CodeRefractor.RuntimeBase.Backend.ComputeClosure;
 using CodeRefractor.RuntimeBase.Backend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.Config;
 using CodeRefractor.RuntimeBase.MiddleEnd;
-using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.Optimizations;
 
 #endregion

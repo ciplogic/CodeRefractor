@@ -2,6 +2,8 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using CodeRefractor.MiddleEnd.SimpleOperations;
+using CodeRefractor.MiddleEnd.SimpleOperations.Operators;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;

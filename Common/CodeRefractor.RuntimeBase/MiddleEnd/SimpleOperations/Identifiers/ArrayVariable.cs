@@ -1,16 +1,20 @@
-#region Usings
+#region Uses
 
 using System;
 using CodeRefractor.RuntimeBase.Analyze;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers
+namespace CodeRefractor.MiddleEnd.SimpleOperations.Identifiers
 {
     public class ArrayVariable : LocalVariable
     {
         public IdentifierValue Index { get; set; }
-        public LocalVariable Parent;
+        public LocalVariable Parent { get; set; }
+
+        public ArrayVariable()
+        {
+        }
 
         public ArrayVariable(LocalVariable parent, IdentifierValue id)
         {

@@ -1,7 +1,8 @@
-#region Usings
+#region Uses
 
 using System;
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
+using CodeRefractor.MiddleEnd.SimpleOperations;
+using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 
 #endregion
 
@@ -21,6 +22,5 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
         {
             return String.Format("{0} = {1}", AssignedTo.Name, Right);
         }
-
     }
 }

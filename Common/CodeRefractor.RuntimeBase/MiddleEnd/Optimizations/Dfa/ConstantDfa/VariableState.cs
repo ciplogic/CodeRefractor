@@ -1,6 +1,6 @@
 #region Usings
 
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
+using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 
 #endregion
 

@@ -3,9 +3,11 @@
 using System;
 using System.Text;
 using CodeRefractor.CodeWriter.BasicOperations;
+using CodeRefractor.MiddleEnd.SimpleOperations;
+using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
+using CodeRefractor.MiddleEnd.SimpleOperations.Operators;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
 using CodeRefractor.RuntimeBase.Shared;
 

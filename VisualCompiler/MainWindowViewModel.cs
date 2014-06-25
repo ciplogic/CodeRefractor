@@ -6,15 +6,14 @@ using System.Reflection;
 using System.Windows.Documents;
 using System.Windows.Threading;
 using CodeRefactor.OpenRuntime;
-using CodeRefractor.CompilerBackend.Optimizations.Util;
 using CodeRefractor.CompilerBackend.ProgramWideOptimizations.ConstParameters;
 using CodeRefractor.CompilerBackend.ProgramWideOptimizations.Virtual;
+using CodeRefractor.MiddleEnd.Optimizations.Util;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 using CodeRefractor.Runtime;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Backend.ProgramWideOptimizations;
 using CodeRefractor.RuntimeBase.Config;
-using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using Microsoft.CSharp;
 
 namespace VisualCompiler

@@ -5,11 +5,10 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd;
-using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase
+namespace CodeRefractor.Runtime.Annotations
 {
     public abstract class CrTypeResolver
     {

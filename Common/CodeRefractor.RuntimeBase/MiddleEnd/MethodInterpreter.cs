@@ -7,7 +7,6 @@ using System.Runtime.InteropServices;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 using CodeRefractor.Runtime;
 using CodeRefractor.RuntimeBase.Analyze;
-using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.Shared;
 using MsilReader;
 

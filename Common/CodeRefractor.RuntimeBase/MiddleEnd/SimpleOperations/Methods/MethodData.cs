@@ -1,13 +1,12 @@
-#region Usings
+#region Uses
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.MiddleEnd;
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
 #endregion
 
@@ -62,7 +61,8 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations.Methods
                 Parameters.Select(
                     par =>
                         string.Format("{0}:{1}", par.Name, par.ComputedType().Name)));
-            return String.Format("Call {0} = {1}({2});", Result != null ? Result.Name : "System_Void", Info.Name, paramData);
+            return String.Format("Call {0} = {1}({2});", Result != null ? Result.Name : "System_Void", Info.Name,
+                paramData);
         }
     }
 }

@@ -59,6 +59,7 @@
     <Compile Include="Analyze\LinkerInterpretersTable.cs" />
     <Compile Include="Analyze\NamerUtils.cs" />
     <Compile Include="Analyze\TypeDescription.cs" />
+    <Compile Include="MiddleEnd\SimpleOperations\OperationUtils.cs" />
     <Compile Include="MiddleEnd\UseDefs\UseDefDescription.cs" />
     <Compile Include="MiddleEnd\UseDefs\UseDefHelper.cs" />
     <Compile Include="Analyze\UsedTypeList.cs" />
@@ -102,7 +103,7 @@
     <Compile Include="MiddleEnd\SimpleOperations\Methods\Return.cs" />
     <Compile Include="MiddleEnd\RuntimeLibraryDescription.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\AlwaysBranch.cs" />
-    <Compile Include="MiddleEnd\SimpleOperations\BaseOperation.cs" />
+    <Compile Include="MiddleEnd\SimpleOperations\LocalOperation.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\Boxing.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\ClassCasting.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\Comment.cs" />
@@ -113,12 +114,14 @@
     <Compile Include="MiddleEnd\SimpleOperations\Switch.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\Unboxing.cs" />
     <Compile Include="ProgramClosure.cs" />
+    <Compile Include="Runtime\Annotations\CppLibMethodAttribute.cs" />
+    <Compile Include="Runtime\Annotations\CrTypeResolver.cs" />
+    <Compile Include="Runtime\Annotations\MapMethodAttribute.cs" />
     <Compile Include="Runtime\RuntimeLibraryUtils.cs" />
     <Compile Include="TypeInfoWriter\TypeDescriptionTable.cs" />
     <Compile Include="TypeInfoWriter\VirtualMethodDescription.cs" />
     <Compile Include="TypeInfoWriter\VirtualMethodTable.cs" />
     <Compile Include="TypeNamerUtils.cs" />
-    <Compile Include="CrTypeResolver.cs" />
     <Compile Include="Config\CodeRefractorVersions.cs" />
     <Compile Include="Config\CommandLineParse.cs" />
     <Compile Include="Config\OptimizationLevelBase.cs" />
@@ -158,7 +161,7 @@
     <Compile Include="CommonExtensions.cs" />
     <Compile Include="EvaluatorStack.cs" />
     <Compile Include="Runtime\Annotations\MapTypeAttribute.cs" />
-    <Compile Include="CppMethodBodyAttribute.cs" />
+    <Compile Include="Runtime\Annotations\CppMethodBodyAttribute.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\FieldGetter.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\FieldSetter.cs" />
     <Compile Include="MiddleEnd\MetaMidRepresentation.cs" />

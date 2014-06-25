@@ -1,3 +1,9 @@
+#region Uses
+
+using CodeRefractor.MiddleEnd.SimpleOperations;
+
+#endregion
+
 namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 {
     public class Switch : LocalOperation
@@ -6,6 +12,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
             : base(OperationKind.Switch)
         {
         }
+
         public int[] Jumps { get; set; }
     }
 }

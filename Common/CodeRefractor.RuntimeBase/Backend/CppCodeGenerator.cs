@@ -12,10 +12,10 @@ using CodeRefractor.CodeWriter.Platform;
 using CodeRefractor.MiddleEnd.SimpleOperations.ConstTable;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 using CodeRefractor.Runtime;
+using CodeRefractor.Runtime.Annotations;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.Backend.ComputeClosure;
 using CodeRefractor.RuntimeBase.MiddleEnd;
-using CodeRefractor.RuntimeBase.MiddleEnd.Methods;
 using CodeRefractor.RuntimeBase.Shared;
 using CodeRefractor.RuntimeBase.TypeInfoWriter;
 

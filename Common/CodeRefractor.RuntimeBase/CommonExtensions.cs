@@ -11,6 +11,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
+using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.Runtime;
 using CodeRefractor.Runtime.Annotations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;

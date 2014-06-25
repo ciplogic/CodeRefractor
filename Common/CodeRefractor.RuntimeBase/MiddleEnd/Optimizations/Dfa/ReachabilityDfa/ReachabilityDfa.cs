@@ -1,6 +1,8 @@
 ﻿#region Usings
 
 using System.Collections.Generic;
+using CodeRefractor.MiddleEnd.SimpleOperations;
+using CodeRefractor.MiddleEnd.SimpleOperations.Operators;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.Backend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.MiddleEnd;

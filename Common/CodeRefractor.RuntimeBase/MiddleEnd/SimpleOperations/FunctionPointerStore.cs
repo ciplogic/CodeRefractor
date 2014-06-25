@@ -1,7 +1,8 @@
-#region Usings
+#region Uses
 
 using System.Reflection;
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
+using CodeRefractor.MiddleEnd.SimpleOperations;
+using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 
 #endregion
 
@@ -20,7 +21,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 
         public override string ToString()
         {
-            return string.Format("{0} = {1}", AssignedTo.ToString(), FunctionPointer.ToString());
+            return string.Format("{0} = {1}", AssignedTo, FunctionPointer);
         }
     }
 }

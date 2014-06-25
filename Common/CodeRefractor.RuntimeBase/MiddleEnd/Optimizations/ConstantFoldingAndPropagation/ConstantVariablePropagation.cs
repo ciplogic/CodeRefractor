@@ -1,20 +1,22 @@
 #region Usings
 
+using CodeRefractor.MiddleEnd.SimpleOperations;
+using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
+using CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndPropagation;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.RuntimeBase.Optimizations;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndPropagation
+namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation
 {
     [Optimization(Category = OptimizationCategories.Constants)]
     public class ConstantVariablePropagation : ConstantVariablePropagationBase
     {
         public override void OptimizeOperations(MethodInterpreter interpreter)
         {
-            var operations = interpreter.MidRepresentation.LocalOperations.ToArray();
+            var operations = interpreter.MidRepresentation.UseDef.GetLocalOperations();
             for (var i = 0; i < operations.Length - 1; i++)
             {
                 Assignment srcVariableDefinition;

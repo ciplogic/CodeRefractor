@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using CodeRefractor.Runtime;
+using CodeRefractor.Runtime.Annotations;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 
 #endregion

@@ -1,16 +1,16 @@
-#region Usings
+#region Uses
 
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
+using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
+namespace CodeRefractor.MiddleEnd.SimpleOperations
 {
     public class FieldGetter : LocalOperation
     {
-        public LocalVariable AssignedTo;
-        public LocalVariable Instance;
-        public string FieldName;
+        public LocalVariable AssignedTo { get; set; }
+        public LocalVariable Instance { get; set; }
+        public string FieldName { get; set; }
 
         public FieldGetter()
             : base(OperationKind.GetField)
@@ -21,8 +21,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
         {
             return new FieldGetter
             {
-                AssignedTo = (LocalVariable)AssignedTo.Clone(),
-                Instance = (LocalVariable)Instance.Clone(),
+                AssignedTo = (LocalVariable) AssignedTo.Clone(),
+                Instance = (LocalVariable) Instance.Clone(),
                 FieldName = FieldName
             };
         }

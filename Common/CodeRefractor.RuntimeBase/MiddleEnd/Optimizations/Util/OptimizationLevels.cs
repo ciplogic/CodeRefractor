@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using CodeRefractor.CompilerBackend.Optimizations.Purity;
+using CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation;
 using CodeRefractor.MiddleEnd.Optimizations.Dfa.ReachabilityDfa;
 using CodeRefractor.RuntimeBase.Backend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndPropagation;
@@ -14,19 +15,17 @@ using CodeRefractor.RuntimeBase.Backend.Optimizations.Jumps;
 using CodeRefractor.RuntimeBase.Backend.Optimizations.Licm;
 using CodeRefractor.RuntimeBase.Backend.Optimizations.Purity;
 using CodeRefractor.RuntimeBase.Backend.Optimizations.ReachabilityDfa;
-using CodeRefractor.RuntimeBase.Backend.Optimizations.RedundantExpressions;
 using CodeRefractor.RuntimeBase.Backend.Optimizations.SimpleDce;
 using CodeRefractor.RuntimeBase.Config;
 using CodeRefractor.RuntimeBase.MiddleEnd.Optimizations.ConstantFoldingAndPropagation;
 using CodeRefractor.RuntimeBase.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.SimpleAssignment;
 using CodeRefractor.RuntimeBase.MiddleEnd.Optimizations.Purity;
-using CodeRefractor.RuntimeBase.MiddleEnd.Optimizations.RedundantExpressions;
 using CodeRefractor.RuntimeBase.MiddleEnd.Optimizations.SimpleDce;
 using CodeRefractor.RuntimeBase.Optimizations;
 
 #endregion
 
-namespace CodeRefractor.CompilerBackend.Optimizations.Util
+namespace CodeRefractor.MiddleEnd.Optimizations.Util
 {
     public class OptimizationLevels : OptimizationLevelBase
     {

@@ -1,11 +1,11 @@
-#region Usings
+#region Uses
 
 using System;
 using CodeRefractor.RuntimeBase.Analyze;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers
+namespace CodeRefractor.MiddleEnd.SimpleOperations.Identifiers
 {
     public class ConstValue : IdentifierValue
     {
@@ -23,6 +23,10 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers
                 }
                 _value = value;
             }
+        }
+
+        public ConstValue()
+        {
         }
 
         public ConstValue(object value)

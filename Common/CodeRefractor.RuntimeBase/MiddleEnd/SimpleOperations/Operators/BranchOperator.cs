@@ -1,15 +1,19 @@
-#region Usings
+#region Uses
 
 using System;
+using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.RuntimeBase.Analyze;
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators
+namespace CodeRefractor.MiddleEnd.SimpleOperations.Operators
 {
     public class BranchOperator : OperatorBase
     {
+        public BranchOperator() : base("", OperationKind.BranchOperator)
+        {
+        }
+
         public BranchOperator(string name)
             : base(name, OperationKind.BranchOperator)
         {

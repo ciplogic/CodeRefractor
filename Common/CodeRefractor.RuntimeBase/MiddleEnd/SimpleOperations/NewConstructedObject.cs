@@ -1,7 +1,7 @@
-#region Usings
+#region Uses
 
 using System.Reflection;
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
+using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 
 #endregion
 

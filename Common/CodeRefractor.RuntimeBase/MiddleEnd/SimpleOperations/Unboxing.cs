@@ -1,4 +1,9 @@
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
+#region Uses
+
+using CodeRefractor.MiddleEnd.SimpleOperations;
+using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
+
+#endregion
 
 namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 {

@@ -1,6 +1,7 @@
 #region Usings
 
 using CodeRefractor.CompilerBackend.Optimizations.Common;
+using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.Optimizations;

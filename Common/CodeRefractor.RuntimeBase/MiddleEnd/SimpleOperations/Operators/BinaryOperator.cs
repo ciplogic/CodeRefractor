@@ -1,7 +1,9 @@
-#region Usings
+#region Uses
 
+using CodeRefractor.MiddleEnd.SimpleOperations;
+using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
+using CodeRefractor.MiddleEnd.SimpleOperations.Operators;
 using CodeRefractor.RuntimeBase.Analyze;
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
 
 #endregion
 
@@ -9,7 +11,11 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators
 {
     public class BinaryOperator : OperatorBase
     {
-        public BinaryOperator(string name) 
+        public BinaryOperator() : base("", OperationKind.BinaryOperator)
+        {
+        }
+
+        public BinaryOperator(string name)
             : base(name, OperationKind.BinaryOperator)
         {
         }

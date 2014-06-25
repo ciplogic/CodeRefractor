@@ -1,9 +1,9 @@
-namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers
+namespace CodeRefractor.MiddleEnd.SimpleOperations.Identifiers
 {
     public class LocalVariable : IdentifierValue
     {
-        public VariableKind Kind;
-        public int Id;
+        public VariableKind Kind { get; set; }
+        public int Id { get; set; }
         public object CustomData;
 
         public override string ToString()

@@ -1,10 +1,10 @@
-#region Usings
+#region Uses
 
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
+using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators
+namespace CodeRefractor.MiddleEnd.SimpleOperations.Operators
 {
     public class OperatorBase : LocalOperation
     {

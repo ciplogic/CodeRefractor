@@ -1,25 +1,19 @@
-#region Usings
+#region Uses
 
-using System;
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Identifiers;
+using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
+namespace CodeRefractor.MiddleEnd.SimpleOperations
 {
     public class DerefAssignment : LocalOperation
     {
-        public LocalVariable Left;
-        public LocalVariable Right;
+        public LocalVariable Left { get; set; }
+        public LocalVariable Right { get; set; }
 
         public DerefAssignment()
             : base(OperationKind.DerefAssignment)
         {
-        }
-
-        public override string ToString()
-        {
-            return String.Format("{0} = {1}", Left.Name, Right);
         }
     }
 }

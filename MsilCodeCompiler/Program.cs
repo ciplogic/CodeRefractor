@@ -4,7 +4,7 @@ using System;
 using System.IO;
 using System.Reflection;
 using CodeRefactor.OpenRuntime;
-using CodeRefractor.CompilerBackend.Optimizations.Util;
+using CodeRefractor.MiddleEnd.Optimizations.Util;
 using CodeRefractor.Runtime;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Config;

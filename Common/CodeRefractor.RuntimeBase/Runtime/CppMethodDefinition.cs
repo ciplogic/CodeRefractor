@@ -2,6 +2,7 @@
 
 using System;
 using System.Reflection;
+using CodeRefractor.Runtime.Annotations;
 using CodeRefractor.RuntimeBase;
 
 #endregion

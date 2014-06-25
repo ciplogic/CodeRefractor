@@ -1,6 +1,7 @@
 ﻿#region Usings
 
 using CodeRefractor.RuntimeBase.DataBase.SerializeXml;
+using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using NUnit.Framework;
 
 #endregion
@@ -25,5 +26,6 @@ namespace MsilCodeCompiler.Tests.Serializing
             data.Deserialize(result);
             Assert.AreEqual(2, data.X);
         }
+
     }
 }
