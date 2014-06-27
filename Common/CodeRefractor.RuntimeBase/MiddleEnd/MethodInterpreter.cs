@@ -348,7 +348,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             if (opcodeStr == "stelem")
             {
                 var elemInfo = (Type) instruction.Operand;
-                operationFactory.StoreElement(elemInfo);
+                operationFactory.StoreElement();
                 return true;
             }
             return false;
@@ -501,7 +501,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
             if (opcodeStr == "ldelem")
             {
-                operationFactory.LoadReferenceInArrayTyped((Type) instruction.Operand);
+                operationFactory.LoadReferenceInArrayTyped();
                 return true;
             }
 

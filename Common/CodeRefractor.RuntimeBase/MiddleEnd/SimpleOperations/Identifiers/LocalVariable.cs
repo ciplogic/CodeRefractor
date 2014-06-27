@@ -4,7 +4,7 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations.Identifiers
     {
         public VariableKind Kind { get; set; }
         public int Id { get; set; }
-        public object CustomData;
+        public string VarName { get; set; }
 
         public override string ToString()
         {
@@ -18,7 +18,7 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations.Identifiers
                 FixedType = FixedType,
                 Id = Id,
                 Kind = Kind,
-                CustomData = CustomData
+                VarName = VarName
             };
             return result;
         }
@@ -32,6 +32,12 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations.Identifiers
         }
 
         public override string FormatVar()
+        {
+            if (!string.IsNullOrEmpty(VarName)) return VarName;
+            return GetAutoName();
+        }
+
+        private string GetAutoName()
         {
             var varKind = Kind == VariableKind.Vreg ? "vreg" : "local";
             var formatVar = string.Format("{0}_{1}", varKind, Id);
@@ -48,6 +54,12 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations.Identifiers
         public override int GetHashCode()
         {
             return (int) Kind + 8*Id;
+        }
+
+        public void AutoName()
+        {
+            VarName = GetAutoName();
+            
         }
     }
 }

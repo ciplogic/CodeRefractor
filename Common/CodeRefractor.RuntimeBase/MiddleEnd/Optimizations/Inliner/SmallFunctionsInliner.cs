@@ -96,12 +96,14 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.Inliner
         private static LocalVariable GetVRegMapped(List<LocalVariable> virtRegs, KeyValuePair<int, int> id)
         {
             var localVariable = virtRegs.First(item => id.Key == item.Id);
-            return new LocalVariable
+            var vRegMapped = new LocalVariable
             {
                 Kind = VariableKind.Vreg,
                 Id = id.Value,
                 FixedType = localVariable.FixedType
             };
+            vRegMapped.AutoName();
+            return vRegMapped;
         }
 
         private static void MergeLocalVariables(MetaMidRepresentation intermediateCode,
@@ -114,6 +116,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.Inliner
             {
                 Kind = VariableKind.Local,
                 Id = id.Value.Id,
+                VarName = id.Value.VarName,
                 FixedType =
                     localVars.First(
                         item =>

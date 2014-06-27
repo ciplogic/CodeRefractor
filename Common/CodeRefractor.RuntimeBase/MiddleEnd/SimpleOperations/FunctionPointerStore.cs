@@ -18,6 +18,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
         public IdentifierValue AssignedTo { get; set; }
 
         public MethodBase FunctionPointer { get; set; }
+        public MethodInfo CustomData { get; set; }
 
         public override string ToString()
         {

@@ -26,7 +26,12 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             var analyze = interpreter.AnalyzeProperties;
             if (!method.IsStatic)
             {
-                var parameterData = analyze.GetVariableData(new ArgumentVariable("_this"));
+                var parameterData = analyze.GetVariableData(new LocalVariable()
+                {
+                    VarName = "_this",
+                    Kind = VariableKind.Argument,
+                    Id = 0
+                });
                 if (parameterData != EscapingMode.Unused)
                 {
                     var argumentTypeDescription = UsedTypeList.Set(method.DeclaringType.GetMappedType(), crRuntime);
@@ -45,7 +50,11 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             for (index = 0; index < parameterInfos.Length; index++)
             {
                 var parameterInfo = parameterInfos[index];
-                var parameterData = analyze.GetVariableData(new ArgumentVariable(parameterInfo.Name));
+                var parameterData = analyze.GetVariableData(new LocalVariable()
+                {
+                    Kind = VariableKind.Argument,
+                    VarName = parameterInfo.Name
+                });
                 if (parameterData == EscapingMode.Unused)
                     continue;
 

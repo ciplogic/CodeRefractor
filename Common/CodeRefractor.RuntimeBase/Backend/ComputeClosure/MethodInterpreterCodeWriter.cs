@@ -71,7 +71,7 @@ namespace CodeRefractor.RuntimeBase.Backend.ComputeClosure
                     if (!didOptimize) continue;
                     var useDef = interpreter.MidRepresentation.UseDef;
                     interpreter.MidRepresentation.UpdateUseDef();
-                    Console.WriteLine(String.Format("Applied optimization: {0}", optimizationName));
+                    Console.WriteLine("Applied optimization: {0}", optimizationName);
                     result = true;
                     break;
                 }

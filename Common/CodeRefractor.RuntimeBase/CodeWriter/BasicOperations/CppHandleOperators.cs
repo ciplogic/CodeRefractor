@@ -4,6 +4,7 @@ using System;
 using System.IO;
 using System.Text;
 using CodeRefractor.CodeWriter.Linker;
+using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.SimpleOperations.Operators;
@@ -91,11 +92,6 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         {
             var assignment = (Assignment) operation;
 
-            if (assignment.Right is NewConstructedObject)
-            {
-                HandleNewObject(operation, sb, vars, typeTable, interpreter);
-                return;
-            }
             var assignedTo = assignment.AssignedTo;
             var localVariable = assignment.Right as LocalVariable;
             if (localVariable != null)
@@ -507,22 +503,21 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         private static void HandleSetArrayValue(LocalOperation operation, StringBuilder sb,
             MethodInterpreter interpreter)
         {
-            var assignment = (Assignment) operation;
-            var arrayItem = (ArrayVariable) assignment.AssignedTo;
-            var variableData = interpreter.AnalyzeProperties.GetVariableData(arrayItem.Parent);
+            var arrayItem = (SetArrayElement)operation;
+            var variableData = interpreter.AnalyzeProperties.GetVariableData(arrayItem.Instance);
             switch (variableData)
             {
                 case EscapingMode.Stack:
                     sb.AppendFormat("{0}[{1}] = {2}; ",
-                        arrayItem.Parent.Name,
+                        arrayItem.Instance.Name,
                         arrayItem.Index.Name,
-                        assignment.Right.ComputedValue());
+                        arrayItem.Right.ComputedValue());
                     return;
                 default:
                     sb.AppendFormat("(*{0})[{1}] = {2}; ",
-                        arrayItem.Parent.Name,
+                        arrayItem.Instance.Name,
                         arrayItem.Index.Name,
-                        assignment.Right.ComputedValue());
+                        arrayItem.Right.ComputedValue());
                     return;
             }
         }
@@ -530,23 +525,22 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         private static void HandleReadArrayItem(LocalOperation operation, StringBuilder bodySb,
             MethodInterpreter interpreter)
         {
-            var value = (Assignment) operation;
-            var valueSrc = (ArrayVariable) value.Right;
-            var parentType = valueSrc.Parent.ComputedType();
-            var variableData = interpreter.AnalyzeProperties.GetVariableData(value.AssignedTo);
+            var valueSrc = (GetArrayElement)operation;
+            var parentType = valueSrc.Instance.ComputedType();
+            var variableData = interpreter.AnalyzeProperties.GetVariableData(valueSrc.AssignedTo);
             switch (variableData)
             {
                 case EscapingMode.Smart:
                     bodySb.AppendFormat(parentType.ClrType.IsClass
                         ? "{0} = (*{1})[{2}];"
                         : "{0} = {1}[{2}];",
-                        value.AssignedTo.Name, valueSrc.Parent.Name, valueSrc.Index.Name);
+                        valueSrc.AssignedTo.Name, valueSrc.Instance.Name, valueSrc.Index.Name);
                     return;
                 case EscapingMode.Pointer:
                     bodySb.AppendFormat(parentType.ClrType.IsClass
                         ? "{0} = ((*{1})[{2}]).get();"
                         : "{0} = ({1}[{2}]).get();",
-                        value.AssignedTo.Name, valueSrc.Parent.Name, valueSrc.Index.Name);
+                        valueSrc.AssignedTo.Name, valueSrc.Instance.Name, valueSrc.Index.Name);
 
                     return;
             }
@@ -612,8 +606,8 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             MidRepresentationVariables vars,
             TypeDescriptionTable typeTable, MethodInterpreter interpreter)
         {
-            var value = (Assignment) operation;
-            var rightValue = (NewConstructedObject) value.Right;
+            var value = (NewConstructedObject)operation;
+            var rightValue = value;
             var localValue = rightValue.Info;
 
             var declaringType = localValue.DeclaringType;

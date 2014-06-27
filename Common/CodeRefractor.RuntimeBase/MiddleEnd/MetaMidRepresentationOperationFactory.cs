@@ -189,31 +189,32 @@ namespace CodeRefractor.MiddleEnd
             var firstVar = (LocalVariable)_evaluator.Pop();
 
             var result = SetNewVReg();
-            var arrayVariable = new ArrayVariable(firstVar, secondVar);
-            var assignment = new Assignment
+            var arrayVariable = new GetArrayElement()
             {
                 AssignedTo = result,
-                Right = arrayVariable
+                Instance = firstVar,
+                Index = secondVar,   
             };
             result.FixedType = new TypeDescription(arrayVariable.GetElementType());
-            AddOperation(assignment);
+            AddOperation(arrayVariable);
         }
 
-        public void LoadReferenceInArrayTyped(Type elementType)
+        public void LoadReferenceInArrayTyped()
         {
-            var secondVar = _evaluator.Pop();
-            var firstVar = (LocalVariable)_evaluator.Pop();
+            var index = _evaluator.Pop();
+            var instance = (LocalVariable)_evaluator.Pop();
 
             var result = SetNewVReg();
-            result.FixedType = new TypeDescription(firstVar.FixedType.ClrType.GetElementType());
-            var arrayVariable = new ArrayVariable(firstVar, secondVar);
-            var assignment = new Assignment
+            var arrayVariable = new GetArrayElement()
             {
                 AssignedTo = result,
-                Right = arrayVariable
+                Instance = instance,
+                Index = index
+
             };
-            result.FixedType = new TypeDescription(elementType);
-            AddOperation(assignment);
+            
+            
+            AddOperation(arrayVariable);
         }
 
         public void Return(bool isVoid)
@@ -674,13 +675,12 @@ namespace CodeRefractor.MiddleEnd
             constructorInfo.Register();
             var result = SetNewVReg();
             result.FixedType = new TypeDescription(constructorInfo.DeclaringType);
-            var constructedObject = new NewConstructedObject(constructorInfo);
-            var assignment = new Assignment
+            var constructedObject = new NewConstructedObject()
             {
                 AssignedTo = result,
-                Right = constructedObject
+                Info = constructorInfo
             };
-            AddOperation(assignment);
+            AddOperation(constructedObject);
 
             var interpreter = constructedObject.Info.Register(crRuntime);
             var methodData = new MethodData(interpreter, OperationKind.Call);
@@ -713,17 +713,16 @@ namespace CodeRefractor.MiddleEnd
 
         public void SetArrayElementValue()
         {
-            var value = _evaluator.Pop();
+            var right = _evaluator.Pop();
             var index = _evaluator.Pop();
-            var array = (LocalVariable)_evaluator.Pop();
-            var arrayVariable = new ArrayVariable(array, index);
-            var assignment = new Assignment
+            var instance = (LocalVariable)_evaluator.Pop();
+            var setArrayElement = new SetArrayElement()
             {
-                AssignedTo = arrayVariable,
-                Right = value
+                Instance = instance,
+                Index = index,
+                Right = right
             };
-            arrayVariable.FixedType = value.ComputedType();
-            AddOperation(assignment);
+            AddOperation(setArrayElement);
         }
 
         public void SetToken(FieldInfo operand)
@@ -763,12 +762,12 @@ namespace CodeRefractor.MiddleEnd
         {
             var result = SetNewVReg();
             result.FixedType = new TypeDescription(operand.GetType());
-            result.CustomData = operand;
             var ptr = operand.MethodHandle.GetFunctionPointer();
             var store = new FunctionPointerStore()
             {
                 AssignedTo = result,
-                FunctionPointer = operand
+                FunctionPointer = operand,
+                CustomData = operand
             };
 
             AddOperation(store);
@@ -849,19 +848,18 @@ namespace CodeRefractor.MiddleEnd
             AddOperation(assignment);
         }
 
-        public void StoreElement(Type elemInfo)
+        public void StoreElement()
         {
             var value = _evaluator.Pop();
             var index = _evaluator.Pop();
             var array = (LocalVariable)_evaluator.Pop();
-            var arrayVariable = new ArrayVariable(array, index);
-            var assignment = new Assignment
+            var setArrayElement = new SetArrayElement()
             {
-                AssignedTo = arrayVariable,
+                Instance = array,
+                Index = index,
                 Right = value
             };
-            arrayVariable.FixedType = new TypeDescription(elemInfo);
-            AddOperation(assignment);
+            AddOperation(setArrayElement);
         }
 
         public void ClearStack()

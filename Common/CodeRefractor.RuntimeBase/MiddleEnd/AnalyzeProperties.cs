@@ -19,7 +19,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         public readonly Dictionary<LocalVariable, EscapingMode> LocalVarEscaping =
             new Dictionary<LocalVariable, EscapingMode>();
 
-        public void Setup(List<ArgumentVariable> arguments, List<LocalVariable> virtRegs, List<LocalVariable> localVars)
+        public void Setup(List<LocalVariable> arguments, List<LocalVariable> virtRegs, List<LocalVariable> localVars)
         {
             LocalVarEscaping.Clear();
             foreach (var variable in arguments)
@@ -55,7 +55,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             LocalVarEscaping[variable] = escaping;
         }
 
-        public bool[] GetUsedArguments(List<ArgumentVariable> arguments)
+        public bool[] GetUsedArguments(List<LocalVariable> arguments)
         {
             var result = new bool[arguments.Count];
             for (var index = 0; index < arguments.Count; index++)

@@ -8,12 +8,11 @@ using CodeRefractor.RuntimeBase.Analyze;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.MiddleEnd
+namespace CodeRefractor.MiddleEnd
 {
     public class MidRepresentationVariables
     {
-        public readonly List<LocalVariableInfo> VariableInfos = new List<LocalVariableInfo>();
-        public readonly List<ArgumentVariable> Arguments = new List<ArgumentVariable>();
+        public readonly List<LocalVariable> Arguments = new List<LocalVariable>();
         public List<LocalVariable> VirtRegs = new List<LocalVariable>();
         public readonly List<LocalVariable> LocalVars = new List<LocalVariable>();
 
@@ -24,14 +23,18 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             if (isConstructor || !_method.IsStatic)
             {
                 Arguments.Add(
-                    new ArgumentVariable("_this")
+                    new LocalVariable()
                     {
+                        VarName = "_this",
+                        Kind = VariableKind.Argument,
                         FixedType = new TypeDescription(_method.DeclaringType)
                     });
             }
             var argumentVariables = _method.GetParameters()
-                .Select(param => new ArgumentVariable(param.Name)
+                .Select(param => new LocalVariable()
                 {
+                    VarName = param.Name,
+                    Kind = VariableKind.Argument,
                     FixedType = new TypeDescription(param.ParameterType),
                     Id = pos++
                 })
@@ -42,15 +45,19 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
 
         public void SetupLocalVariables(MethodBase value)
         {
-            VariableInfos.Clear();
-            VariableInfos.AddRange(value.GetMethodBody().LocalVariables);
+            var methodBody = value.GetMethodBody();
+            var localVariableInfos = methodBody.LocalVariables;
 
-            var varsToAdd = VariableInfos.Select((v, index) => new LocalVariable
+            var varsToAdd = localVariableInfos.Select((v, index) => new LocalVariable
             {
                 FixedType = new TypeDescription(v.LocalType),
                 Id = index,
                 Kind = VariableKind.Local
             }).ToList();
+            foreach (var localVariable in varsToAdd)
+            {
+                localVariable.AutoName();
+            }
             LocalVars.Clear();
             LocalVars.AddRange(varsToAdd);
         }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using CodeRefractor.CodeWriter.Linker;
+using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
@@ -12,7 +13,6 @@ using CodeRefractor.Runtime;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 
 #endregion
 

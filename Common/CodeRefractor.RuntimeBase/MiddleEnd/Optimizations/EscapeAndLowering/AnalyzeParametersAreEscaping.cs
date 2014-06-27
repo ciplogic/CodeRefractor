@@ -4,18 +4,17 @@ using System.Collections.Generic;
 using System.Linq;
 using CodeRefractor.CodeWriter.Linker;
 using CodeRefractor.CompilerBackend.Optimizations.Common;
-using CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 using CodeRefractor.Runtime;
+using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.MiddleEnd;
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.Optimizations;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.Backend.Optimizations.EscapeAndLowering
+namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
 {
     [Optimization(Category = OptimizationCategories.Analysis)]
     internal class AnalyzeParametersAreEscaping : ResultingGlobalOptimizationPass
@@ -109,8 +108,8 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.EscapeAndLowering
                             break;
                         foreach (var parameter in methodData.Parameters)
                         {
-                            var argCall = parameter as ArgumentVariable;
-                            if (argCall == null)
+                            var argCall = parameter as LocalVariable;
+                            if (argCall == null || argCall.Kind!=VariableKind.Argument)
                                 continue;
                             if (!argCall.ComputedType().ClrType.IsClass)
                                 continue;

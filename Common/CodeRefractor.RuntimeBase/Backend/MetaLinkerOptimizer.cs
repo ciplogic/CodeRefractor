@@ -56,11 +56,8 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
             do
             {
                 doOptimize = false;
-                var toRemove = methodsToOptimize.Where(mth => mth == null).ToArray();
-                foreach (var item in toRemove)
-                {
-                    methodsToOptimize.Remove(item);
-                }
+
+                methodsToOptimize.RemoveAll(mth => mth == null);
                 var inFunctionOptimizations = GetOptimizationByOptimizationKind(OptimizationKind.InFunction);
                 var methodsArray = methodsToOptimize.ToArray();
                 //Parallel.ForEach(methodsToOptimize, methodBase=> 

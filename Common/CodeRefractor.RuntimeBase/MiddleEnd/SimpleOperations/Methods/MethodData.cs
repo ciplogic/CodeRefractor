@@ -61,8 +61,12 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations.Methods
                 Parameters.Select(
                     par =>
                         string.Format("{0}:{1}", par.Name, par.ComputedType().Name)));
-            return String.Format("Call {0} = {1}({2});", Result != null ? Result.Name : "System_Void", Info.Name,
+            if (Result == null)
+            {
+                return String.Format("{0}({1})", Info.Name,
                 paramData);
+            }
+            return String.Format("{0} = {1}({2})", Result.Name, Info.Name, paramData);
         }
     }
 }

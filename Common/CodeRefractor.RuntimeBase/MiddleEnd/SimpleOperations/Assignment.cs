@@ -1,5 +1,6 @@
 #region Uses
 
+using CodeRefractor.CodeWriter.Linker;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 
 #endregion
@@ -14,6 +15,11 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations
         public Assignment()
             : base(OperationKind.Assignment)
         {
+        }
+
+        public override string ToString()
+        {
+            return string.Format("{0} = {1}", AssignedTo.Name, Right.Name);
         }
     }
 }

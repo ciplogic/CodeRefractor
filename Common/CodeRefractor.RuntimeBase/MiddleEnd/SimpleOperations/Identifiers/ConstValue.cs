@@ -60,6 +60,11 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations.Identifiers
         {
             if (Value == null)
                 return "nullptr";
+            var typeCode = Type.GetTypeCode(Value.GetType());
+            if (typeCode == TypeCode.String)
+            {
+                return "'" + Value + "'";
+            }else
             return Value.ToString();
         }
     }

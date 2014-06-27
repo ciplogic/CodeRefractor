@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using CodeRefractor.CodeWriter.BasicOperations;
+using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.ConstTable;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
@@ -199,13 +200,15 @@ namespace CodeRefractor.RuntimeBase.CodeWriter.BasicOperations
         }
 
         private static string ComputeCommaSeparatedParameterTypes(LocalVariable localVariable)
-        {
+        {/*
             var methodInfo = (MethodInfo) localVariable.CustomData;
 
             var parameters = methodInfo.GetMethodArgumentTypes().ToArray();
 
             var parametersFormat = TypeNamerUtils.GetCommaSeparatedParameters(parameters);
-            return parametersFormat;
+            return parametersFormat;*/
+            //TODO: handle funciton pointers in a more clean way
+            return localVariable.VarName;
         }
 
         private static void AddVariableContent(StringBuilder variablesSb, string format, LocalVariable localVariable,

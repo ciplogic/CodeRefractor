@@ -30,11 +30,16 @@ namespace CodeRefractor.RuntimeBase
         public LocalVariable SetNewVReg()
         {
             _vRegId++;
+            if (_vRegId == 27)
+            {
+                
+            }
             var newLocal = new LocalVariable
             {
                 Kind = VariableKind.Vreg,
                 Id = _vRegId
             };
+            newLocal.AutoName();
             Push(newLocal);
             return newLocal;
         }

@@ -15,5 +15,10 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations
 
         public IdentifierValue Right { get; set; }
         public TypeDescription FixedType { get; set; }
+
+        public override string ToString()
+        {
+            return string.Format("{0}.{1}= {2}", Instance.Name, FieldName, Right.Name);
+        }
     }
 }

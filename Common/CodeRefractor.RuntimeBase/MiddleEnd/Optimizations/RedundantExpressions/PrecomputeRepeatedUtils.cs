@@ -51,7 +51,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.RedundantExpressions
                 Id = max,
                 Kind = VariableKind.Vreg
             };
-
+            cacheVariable.AutoName();
             midRepresentation.Vars.VirtRegs.Add(cacheVariable);
             interpreter.AnalyzeProperties.RegisterVariable(cacheVariable);
             return cacheVariable;

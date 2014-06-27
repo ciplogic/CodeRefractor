@@ -205,7 +205,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
 
         private static void HandleSetArrayItem(ICollection<LocalVariable> candidateVariables, LocalOperation op)
         {
-            var assignSetArray = (Assignment) op;
+            var assignSetArray = (SetArrayElement) op;
             var right = assignSetArray.Right as LocalVariable;
             if (right != null)
             {

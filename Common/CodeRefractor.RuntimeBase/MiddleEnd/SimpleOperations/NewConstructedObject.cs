@@ -5,20 +5,20 @@ using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
+namespace CodeRefractor.MiddleEnd.SimpleOperations
 {
-    public class NewConstructedObject : IdentifierValue
+    public class NewConstructedObject : LocalOperation
     {
-        private readonly ConstructorInfo _constructorInfo;
+        public ConstructorInfo Info { get; set; }
+        public LocalVariable AssignedTo { get; set; }
 
-        public ConstructorInfo Info
+        public NewConstructedObject():base(OperationKind.NewObject)
         {
-            get { return _constructorInfo; }
         }
 
-        public NewConstructedObject(ConstructorInfo constructorInfo)
+        public override string ToString()
         {
-            _constructorInfo = constructorInfo;
+            return string.Format("{0} = new {1}(...)",AssignedTo.VarName, Info.DeclaringType.Name);
         }
     }
 }
