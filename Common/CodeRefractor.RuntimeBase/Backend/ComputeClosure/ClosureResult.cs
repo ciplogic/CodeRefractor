@@ -2,17 +2,19 @@
 
 using System;
 using System.Collections.Generic;
+using CodeRefractor.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 
 #endregion
 
-namespace CodeRefractor.CompilerBackend.OuputCodeWriter.ComputeClosure
+namespace CodeRefractor.Backend.ComputeClosure
 {
     public class ClosureResult
     {
         public ClosureResult()
         {
             MethodInterpreters = new Dictionary<MethodInterpreterKey, MethodInterpreter>();
+            UsedTypes = new HashSet<Type>();
         }
 
         public Dictionary<MethodInterpreterKey, MethodInterpreter> MethodInterpreters { get; set; }

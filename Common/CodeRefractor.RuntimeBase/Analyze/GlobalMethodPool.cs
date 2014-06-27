@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using CodeRefractor.MiddleEnd;
 using CodeRefractor.Runtime;
 using CodeRefractor.Runtime.Annotations;
 using CodeRefractor.RuntimeBase.MiddleEnd;

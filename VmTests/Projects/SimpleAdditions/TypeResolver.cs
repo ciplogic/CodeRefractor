@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using CodeRefractor.MiddleEnd;
 using CodeRefractor.Runtime.Annotations;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.MiddleEnd;

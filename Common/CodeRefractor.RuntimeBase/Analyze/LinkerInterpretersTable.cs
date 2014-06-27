@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using CodeRefractor.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 
 #endregion

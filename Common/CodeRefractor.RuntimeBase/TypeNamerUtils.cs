@@ -120,7 +120,7 @@ namespace CodeRefractor.RuntimeBase
                     case EscapingMode.Smart:
                         return String.Format(StdSharedPtr + "< Array < {0} > >", fullTypeName);
                     case EscapingMode.Pointer:
-                        return String.Format("Array < {0} > *", fullTypeName);
+                        return String.Format("Array < {0} > *  __restrict__ ", fullTypeName);
                     case EscapingMode.Stack:
                         return String.Format("Array < {0} > ", fullTypeName);
                 }

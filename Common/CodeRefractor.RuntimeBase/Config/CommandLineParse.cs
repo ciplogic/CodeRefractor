@@ -3,7 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using CodeRefractor.RuntimeBase.Backend.Optimizations.Common;
+using CodeRefractor.MiddleEnd.Optimizations.Common;
 using CodeRefractor.RuntimeBase.Optimizations;
 using CodeRefractor.RuntimeBase.Util;
 using CodeRefractor.Util;

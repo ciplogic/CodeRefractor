@@ -2,17 +2,15 @@
 
 using System.Collections.Generic;
 using CodeRefractor.MiddleEnd.SimpleOperations;
-using CodeRefractor.RuntimeBase.Backend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.MiddleEnd;
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 
 #endregion
 
-namespace CodeRefractor.CompilerBackend.Optimizations.Common
+namespace CodeRefractor.MiddleEnd.Optimizations.Common
 {
     internal abstract class BlockOptimizationPass : ResultingInFunctionOptimizationPass
     {
-        public LocalOperation[] GetInstructionRange(
+        public static LocalOperation[] GetInstructionRange(
             LocalOperation[] operations, int startInstruction, int endInstruction, bool cleanInstructions = true)
         {
             var result = new List<LocalOperation>();

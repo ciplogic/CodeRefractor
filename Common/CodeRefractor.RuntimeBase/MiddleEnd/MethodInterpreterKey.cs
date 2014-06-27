@@ -3,10 +3,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using CodeRefractor.RuntimeBase;
+using CodeRefractor.RuntimeBase.MiddleEnd;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.MiddleEnd
+namespace CodeRefractor.MiddleEnd
 {
     public class MethodInterpreterKey : IComparable
     {

@@ -1,6 +1,6 @@
 #region Usings
 
-using CodeRefractor.RuntimeBase.Backend.Optimizations.Common;
+using CodeRefractor.MiddleEnd.Optimizations.Common;
 using CodeRefractor.RuntimeBase.Shared;
 using System;
 using System.Collections.Generic;

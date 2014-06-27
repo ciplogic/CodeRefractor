@@ -3,6 +3,7 @@
 using System;
 using System.Text;
 using CodeRefractor.CodeWriter.Linker;
+using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.Runtime;
 using CodeRefractor.RuntimeBase;

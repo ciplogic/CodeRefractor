@@ -1,16 +1,15 @@
 #region Usings
 
+using CodeRefractor.MiddleEnd.Optimizations.Common;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.UseDefs;
-using CodeRefractor.RuntimeBase.Analyze;
-using CodeRefractor.RuntimeBase.Backend.Optimizations.Common;
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
+using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.Optimizations;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.SimpleAssignment
+namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.SimpleAssignment
 {
     [Optimization(Category = OptimizationCategories.Propagation)]
     public class AssignmentWithVregPrevLineFolding : ResultingInFunctionOptimizationPass

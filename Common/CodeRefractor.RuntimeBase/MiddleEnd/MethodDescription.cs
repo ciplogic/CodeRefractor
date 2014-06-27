@@ -6,7 +6,7 @@ using CodeRefractor.RuntimeBase.Analyze;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.MiddleEnd
+namespace CodeRefractor.MiddleEnd
 {
     public class MethodDescription
     {

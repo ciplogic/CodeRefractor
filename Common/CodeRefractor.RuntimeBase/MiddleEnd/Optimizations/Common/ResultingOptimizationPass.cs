@@ -1,11 +1,10 @@
 #region Usings
 
-using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.Optimizations;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.Backend.Optimizations.Common
+namespace CodeRefractor.MiddleEnd.Optimizations.Common
 {
     public abstract class ResultingOptimizationPass
     {

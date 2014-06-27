@@ -3,10 +3,11 @@
 using System;
 using System.IO;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
+using CodeRefractor.RuntimeBase;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndPropagation.ComplexAssignments
+namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.ComplexAssignments
 {
     internal static class ComputeConstantOperator
     {
@@ -20,6 +21,8 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndProp
             var typeCode = constLeft.Value.ComputeTypeCode();
             switch (typeCode)
             {
+                case TypeCode.Int16:
+                    return -(Int16)constLeft.Value;
                 case TypeCode.Int64:
                     return -(long) constLeft.Value;
                 case TypeCode.Int32:
@@ -37,6 +40,8 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndProp
             var typeCode = constLeft.Value.ComputeTypeCode();
             switch (typeCode)
             {
+                case TypeCode.Int16:
+                    return (Int16)constLeft.Value + (Int16)constRight.Value;
                 case TypeCode.Int64:
                     return (long) constLeft.Value + (long) constRight.Value;
                 case TypeCode.Int32:

@@ -4,16 +4,17 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 using CodeRefractor.Runtime;
+using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
+using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.Shared;
 using MsilReader;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.MiddleEnd
+namespace CodeRefractor.MiddleEnd
 {
     public class MethodInterpreter
     {

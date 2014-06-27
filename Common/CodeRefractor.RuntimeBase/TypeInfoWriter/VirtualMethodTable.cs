@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using System.Reflection;
+using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 

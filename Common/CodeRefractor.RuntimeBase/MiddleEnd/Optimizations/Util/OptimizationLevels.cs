@@ -3,9 +3,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using CodeRefractor.CompilerBackend.Optimizations.Purity;
+using CodeRefractor.MiddleEnd.Optimizations.Common;
 using CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation;
+using CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.SimpleAssignment;
 using CodeRefractor.MiddleEnd.Optimizations.Dfa.ReachabilityDfa;
-using CodeRefractor.RuntimeBase.Backend.Optimizations.Common;
+using CodeRefractor.MiddleEnd.Optimizations.Purity;
 using CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndPropagation;
 using CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndPropagation.ComplexAssignments;
 using CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndPropagation.SimpleAssignment;
@@ -98,6 +100,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Util
             
             EnabledCategories.Add(OptimizationCategories.Propagation);
             EnabledCategories.Add(OptimizationCategories.DeadCodeElimination);
+            EnabledCategories.Add(OptimizationCategories.Analysis);
 
             return new ResultingOptimizationPass[]
             {
