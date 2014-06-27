@@ -2,19 +2,16 @@
 
 using System.Collections.Generic;
 using CodeRefractor.CompilerBackend.Optimizations.Purity;
-using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.UseDefs;
-using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.Optimizations;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.Backend.Optimizations.Licm
+namespace CodeRefractor.MiddleEnd.Optimizations.Licm
 {
     [Optimization(Category = OptimizationCategories.CommonSubexpressionsElimination)]
     internal class LoopInvariantCodeMotion : ResultingGlobalOptimizationPass
@@ -76,14 +73,14 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.Licm
                 var op = localOps[index];
                 switch (op.Kind)
                 {
-                    default:
-                        continue;
                     case OperationKind.UnaryOperator:
                     case OperationKind.Call:
                     case OperationKind.BinaryOperator:
                     case OperationKind.GetField:
                     case OperationKind.Assignment:
                         break;
+                    default:
+                        continue;
                 }
                 if (op.Kind == OperationKind.Call)
                 {

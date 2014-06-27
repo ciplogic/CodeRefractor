@@ -19,6 +19,7 @@ using CodeRefractor.RuntimeBase.Backend.ComputeClosure;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.Shared;
 using CodeRefractor.RuntimeBase.TypeInfoWriter;
+using CodeRefractor.Util;
 
 #endregion
 

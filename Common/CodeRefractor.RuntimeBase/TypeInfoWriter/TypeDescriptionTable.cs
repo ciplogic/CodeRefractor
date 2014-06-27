@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.RuntimeBase.Analyze;
+using CodeRefractor.Util;
 
 #endregion
 

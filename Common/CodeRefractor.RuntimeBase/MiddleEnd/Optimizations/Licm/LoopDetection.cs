@@ -1,16 +1,13 @@
 #region Usings
 
 using System.Collections.Generic;
-using System.Linq;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Operators;
 using CodeRefractor.RuntimeBase.MiddleEnd;
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.Backend.Optimizations.Licm
+namespace CodeRefractor.MiddleEnd.Optimizations.Licm
 {
     internal static class LoopDetection
     {
@@ -19,7 +16,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.Licm
             var useDef = midRepresentation.UseDef;
             var localOps = useDef.GetLocalOperations();
 
-            var findStartLoopCandidates = FindStartLoopCandidates(localOps.ToArray());
+            var findStartLoopCandidates = FindStartLoopCandidates(localOps);
             var result = new List<int>();
             if (findStartLoopCandidates.Count == 0)
                 return result;

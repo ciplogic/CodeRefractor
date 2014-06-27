@@ -2,19 +2,16 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.UseDefs;
-using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.Backend.Optimizations.RedundantExpressions;
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.Optimizations;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.MiddleEnd.Optimizations.RedundantExpressions
+namespace CodeRefractor.MiddleEnd.Optimizations.RedundantExpressions
 {
 	[Optimization(Category = OptimizationCategories.CommonSubexpressionsElimination)]
 	internal class PrecomputeRepeatedFieldGets : BlockOptimizationPass

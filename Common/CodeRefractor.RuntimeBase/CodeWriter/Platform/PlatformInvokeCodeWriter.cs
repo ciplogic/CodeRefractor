@@ -9,6 +9,7 @@ using CodeRefractor.MiddleEnd;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
+using CodeRefractor.Util;
 
 #endregion
 

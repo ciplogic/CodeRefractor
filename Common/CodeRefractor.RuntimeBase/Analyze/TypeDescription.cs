@@ -8,6 +8,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using CodeRefractor.Runtime;
 using CodeRefractor.RuntimeBase.Shared;
+using CodeRefractor.Util;
 
 #endregion
 

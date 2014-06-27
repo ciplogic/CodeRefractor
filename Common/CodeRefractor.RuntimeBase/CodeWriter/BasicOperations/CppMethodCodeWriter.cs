@@ -15,6 +15,7 @@ using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.TypeInfoWriter;
+using CodeRefractor.Util;
 
 #endregion
 

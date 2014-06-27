@@ -122,7 +122,7 @@
     <Compile Include="TypeInfoWriter\TypeDescriptionTable.cs" />
     <Compile Include="TypeInfoWriter\VirtualMethodDescription.cs" />
     <Compile Include="TypeInfoWriter\VirtualMethodTable.cs" />
-    <Compile Include="TypeNamerUtils.cs" />
+    <Compile Include="Util\TypeNamerUtils.cs" />
     <Compile Include="Config\CodeRefractorVersions.cs" />
     <Compile Include="Config\CommandLineParse.cs" />
     <Compile Include="Config\OptimizationLevelBase.cs" />

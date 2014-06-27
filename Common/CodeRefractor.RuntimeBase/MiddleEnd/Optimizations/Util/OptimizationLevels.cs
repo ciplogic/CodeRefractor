@@ -7,6 +7,7 @@ using CodeRefractor.MiddleEnd.Optimizations.Common;
 using CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation;
 using CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.SimpleAssignment;
 using CodeRefractor.MiddleEnd.Optimizations.Dfa.ReachabilityDfa;
+using CodeRefractor.MiddleEnd.Optimizations.Licm;
 using CodeRefractor.MiddleEnd.Optimizations.Purity;
 using CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndPropagation;
 using CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndPropagation.ComplexAssignments;
@@ -14,7 +15,6 @@ using CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndPropagat
 using CodeRefractor.RuntimeBase.Backend.Optimizations.EscapeAndLowering;
 using CodeRefractor.RuntimeBase.Backend.Optimizations.Inliner;
 using CodeRefractor.RuntimeBase.Backend.Optimizations.Jumps;
-using CodeRefractor.RuntimeBase.Backend.Optimizations.Licm;
 using CodeRefractor.RuntimeBase.Backend.Optimizations.Purity;
 using CodeRefractor.RuntimeBase.Backend.Optimizations.ReachabilityDfa;
 using CodeRefractor.RuntimeBase.Backend.Optimizations.SimpleDce;
@@ -101,6 +101,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Util
             EnabledCategories.Add(OptimizationCategories.Propagation);
             EnabledCategories.Add(OptimizationCategories.DeadCodeElimination);
             EnabledCategories.Add(OptimizationCategories.Analysis);
+            EnabledCategories.Add(OptimizationCategories.CommonSubexpressionsElimination);
 
             return new ResultingOptimizationPass[]
             {

@@ -10,6 +10,7 @@ using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.Shared;
+using CodeRefractor.Util;
 using MsilReader;
 
 #endregion

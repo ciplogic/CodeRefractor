@@ -8,7 +8,7 @@ using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase
+namespace CodeRefractor.Util
 {
     public static class TypeNamerUtils
     {
@@ -120,7 +120,10 @@ namespace CodeRefractor.RuntimeBase
                     case EscapingMode.Smart:
                         return String.Format(StdSharedPtr + "< Array < {0} > >", fullTypeName);
                     case EscapingMode.Pointer:
-                        return String.Format("Array < {0} > *  __restrict__ __attribute__ ((aligned (16)))", fullTypeName);
+                        //TODO: add the text to pointers to make possible 
+                        // auto-vectorisation in gcc
+                        // ' __restrict__ __attribute__ ((aligned (16))) '
+                        return String.Format("Array < {0} >  *", fullTypeName);
                     case EscapingMode.Stack:
                         return String.Format("Array < {0} > ", fullTypeName);
                 }
