@@ -10,6 +10,7 @@ using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Config;
 using CodeRefractor.RuntimeBase.Optimizations;
 using CodeRefractor.RuntimeBase.Util;
+using CodeRefractor.Util;
 
 #endregion
 

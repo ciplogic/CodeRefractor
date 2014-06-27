@@ -9,15 +9,16 @@ using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 using CodeRefractor.MiddleEnd.UseDefs;
 using CodeRefractor.Runtime;
-using CodeRefractor.RuntimeBase.Analyze;
+using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Backend.Optimizations.Common;
+using CodeRefractor.RuntimeBase.Backend.Optimizations.EscapeAndLowering;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.Optimizations;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.Backend.Optimizations.EscapeAndLowering
+namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
 {
     [Optimization(Category = OptimizationCategories.Analysis)]
     internal class InFunctionLoweringVars : ResultingInFunctionOptimizationPass
@@ -112,7 +113,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.EscapeAndLowering
                     break;
                 case OperationKind.CallVirtual:
                 case OperationKind.CallInterface:
-                    HandleCallVirtual( candidateVariables, op);
+                    HandleCallVirtual(candidateVariables, op);
                     break;
                 case OperationKind.BinaryOperator:
                 case OperationKind.UnaryOperator:
@@ -124,7 +125,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.EscapeAndLowering
                     HandleSetArrayItem(candidateVariables, op);
                     break;
                 case OperationKind.SetField:
-                    HandleSetArrayItem(candidateVariables, op);
+                    HandleSetField(candidateVariables, op);
                     break;
 
                 case OperationKind.RefAssignment:
@@ -205,6 +206,16 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.EscapeAndLowering
         private static void HandleSetArrayItem(ICollection<LocalVariable> candidateVariables, LocalOperation op)
         {
             var assignSetArray = (Assignment) op;
+            var right = assignSetArray.Right as LocalVariable;
+            if (right != null)
+            {
+                candidateVariables.Remove(right);
+            }
+        }
+
+        private static void HandleSetField(HashSet<LocalVariable> candidateVariables, LocalOperation op)
+        {
+            var assignSetArray = (SetField) op;
             var right = assignSetArray.Right as LocalVariable;
             if (right != null)
             {

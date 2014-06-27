@@ -60,6 +60,7 @@
     <Compile Include="Analyze\NamerUtils.cs" />
     <Compile Include="Analyze\TypeDescription.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\OperationUtils.cs" />
+    <Compile Include="MiddleEnd\SimpleOperations\SetField.cs" />
     <Compile Include="MiddleEnd\UseDefs\UseDefDescription.cs" />
     <Compile Include="MiddleEnd\UseDefs\UseDefHelper.cs" />
     <Compile Include="Analyze\UsedTypeList.cs" />
@@ -162,7 +163,7 @@
     <Compile Include="EvaluatorStack.cs" />
     <Compile Include="Runtime\Annotations\MapTypeAttribute.cs" />
     <Compile Include="Runtime\Annotations\CppMethodBodyAttribute.cs" />
-    <Compile Include="MiddleEnd\SimpleOperations\FieldGetter.cs" />
+    <Compile Include="MiddleEnd\SimpleOperations\GetField.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\FieldSetter.cs" />
     <Compile Include="MiddleEnd\MetaMidRepresentation.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\Methods\MethodData.cs" />

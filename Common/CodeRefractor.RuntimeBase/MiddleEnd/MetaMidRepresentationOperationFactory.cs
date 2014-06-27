@@ -10,7 +10,9 @@ using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 using CodeRefractor.MiddleEnd.SimpleOperations.Operators;
 using CodeRefractor.Runtime;
+using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
+using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
 using CodeRefractor.RuntimeBase.Shared;
@@ -18,7 +20,7 @@ using MsilReader;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.MiddleEnd
+namespace CodeRefractor.MiddleEnd
 {
     public class MetaMidRepresentationOperationFactory
     {
@@ -171,16 +173,13 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             var secondVar = _evaluator.Pop();
             var firstVar = _evaluator.Pop();
             var fieldName = fieldInfo.Name;
-            var assignment = new Assignment
+            var assignment = new SetField
             {
-                AssignedTo = new FieldSetter
-                {
-                    Instance = firstVar,
-                    FieldName = fieldName
-                },
+                Instance = firstVar,
+                FieldName = fieldName,
                 Right = secondVar
             };
-            assignment.AssignedTo.FixedType = secondVar.ComputedType();
+            assignment.FixedType = secondVar.ComputedType();
             AddOperation(assignment);
         }
 
@@ -619,7 +618,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             vreg.FixedType =
                 new TypeDescription(
                     computedType.ClrType.LocateField(fieldName).FieldType);
-            var assignment = new FieldGetter
+            var assignment = new GetField
             {
                 AssignedTo = vreg,
                 FieldName = fieldName,
@@ -701,14 +700,12 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         {
             var arrayLength = _evaluator.Pop();
             var result = SetNewVReg();
-            var assignment = new Assignment
+            var assignment = new NewArrayObject
             {
                 AssignedTo = result,
-                Right = new NewArrayObject
-                {
-                    TypeArray = typeArray,
-                    ArrayLength = arrayLength
-                }
+                TypeArray = typeArray,
+                ArrayLength = arrayLength
+
             };
             result.FixedType = new TypeDescription(typeArray.MakeArrayType());
             AddOperation(assignment);

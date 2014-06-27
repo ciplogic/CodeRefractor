@@ -74,15 +74,15 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.RedundantExpressions
             return (BinaryOperator) localOperation;
         }
 
-        public static FieldGetter GetFieldOperation(this LocalOperation[] localOperations, int[] calls, int i)
+        public static GetField GetFieldOperation(this LocalOperation[] localOperations, int[] calls, int i)
         {
             var index = calls[i];
             return GetFieldOperation(localOperations, index);
         }
 
-        public static FieldGetter GetFieldOperation(this LocalOperation[] localOperations, int index)
+        public static GetField GetFieldOperation(this LocalOperation[] localOperations, int index)
         {
-            return (FieldGetter) localOperations[index];
+            return (GetField) localOperations[index];
         }
 
         public static BranchOperator GetBranchOperator(this List<LocalOperation> localOperations, List<int> calls, int i)

@@ -13,6 +13,7 @@ using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Backend.Optimizations.Common;
 using CodeRefractor.RuntimeBase.Optimizations;
 using CodeRefractor.RuntimeBase.Util;
+using CodeRefractor.Util;
 using NUnit.Framework;
 
 #endregion

@@ -15,7 +15,7 @@ using CodeRefractor.RuntimeBase.Optimizations;
 
 namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndPropagation.SimpleAssignment
 {
-    [Optimization(Category = OptimizationCategories.Propagation)]
+    //[Optimization(Category = OptimizationCategories.Propagation)]
     public class AssignmentVregWithConstNextLineFolding : ResultingInFunctionOptimizationPass
     {
         private class ToFixAssignment

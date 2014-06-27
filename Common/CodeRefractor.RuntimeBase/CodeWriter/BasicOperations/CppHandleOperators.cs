@@ -39,7 +39,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                     HandleSetField(operation, bodySb);
                     break;
                 case OperationKind.GetField:
-                    HandleLoadField(operation, bodySb, interpreter);
+                    HandleGetField(operation, bodySb, interpreter);
                     break;
                 case OperationKind.SetStaticField:
                     HandleSetStaticField(operation, bodySb);
@@ -552,10 +552,10 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             }
         }
 
-        private static void HandleLoadField(LocalOperation operation, StringBuilder bodySb,
+        private static void HandleGetField(LocalOperation operation, StringBuilder bodySb,
             MethodInterpreter interpreter)
         {
-            var fieldGetterInfo = (FieldGetter) operation;
+            var fieldGetterInfo = (GetField) operation;
             var assignedFrom = fieldGetterInfo.Instance;
             var assignedFromData = interpreter.AnalyzeProperties.GetVariableData(assignedFrom);
             var isOnStack = assignedFromData == EscapingMode.Stack;
@@ -578,17 +578,16 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 
         private static void HandleSetField(LocalOperation operation, StringBuilder bodySb)
         {
-            var assign = (Assignment) operation;
-            var fieldSetter = (FieldSetter) assign.AssignedTo;
+            var assign = (SetField) operation;
 
-            bodySb.AppendFormat("{0}->{1} = {2};", fieldSetter.Instance.Name,
-                fieldSetter.FieldName.ValidName(), assign.Right.Name);
+            bodySb.AppendFormat("{0}->{1} = {2};", assign.Instance.Name,
+                assign.FieldName.ValidName(), assign.Right.Name);
         }
 
         private static void HandleNewArray(LocalOperation operation, StringBuilder bodySb, MethodInterpreter interpreter)
         {
-            var assignment = (Assignment) operation;
-            var arrayData = (NewArrayObject) assignment.Right;
+            var assignment = (NewArrayObject)operation;
+            var arrayData = assignment;
 
             var assignedData = interpreter.AnalyzeProperties.GetVariableData(assignment.AssignedTo);
             switch (assignedData)

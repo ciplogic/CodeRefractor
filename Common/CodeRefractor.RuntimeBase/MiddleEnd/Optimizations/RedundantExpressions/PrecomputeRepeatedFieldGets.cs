@@ -68,7 +68,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.Optimizations.RedundantExpressions
         }
 
 
-        private static bool AreDifferentOperators(FieldGetter firstOperator, FieldGetter secondOperator, int[] calls,
+        private static bool AreDifferentOperators(GetField firstOperator, GetField secondOperator, int[] calls,
             int i,
             int j, LocalOperation[] localOperations)
         {

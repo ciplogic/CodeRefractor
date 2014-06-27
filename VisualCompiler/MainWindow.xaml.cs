@@ -21,6 +21,7 @@ using System.Windows.Threading;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Config;
 using CodeRefractor.RuntimeBase.Util;
+using CodeRefractor.Util;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Folding;
 using ICSharpCode.AvalonEdit.Highlighting;

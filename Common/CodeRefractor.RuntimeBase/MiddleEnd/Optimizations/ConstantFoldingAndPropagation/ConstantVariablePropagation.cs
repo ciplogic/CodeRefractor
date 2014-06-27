@@ -45,10 +45,9 @@ namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation
                             break;
                         case OperationKind.NewArray:
                         {
-                            var destAssignment = (Assignment) destOperation;
-                            var arrayCreationInfo = (NewArrayObject) destAssignment.Right;
-                            if (
-                                !SameVariable(arrayCreationInfo.ArrayLength as LocalVariable,
+                            var destAssignment = (NewArrayObject) destOperation;
+                            var arrayCreationInfo = destAssignment;
+                            if (!SameVariable(arrayCreationInfo.ArrayLength as LocalVariable,
                                     srcVariableDefinition.AssignedTo))
                                 continue;
                             arrayCreationInfo.ArrayLength = constValue;

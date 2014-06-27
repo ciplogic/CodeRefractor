@@ -2,11 +2,12 @@
 
 using System;
 using System.IO;
+using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.DataBase.SerializeXml;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.Util
+namespace CodeRefractor.Util
 {
     public static class NativeCompilationUtils
     {

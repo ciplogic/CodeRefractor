@@ -6,20 +6,20 @@ using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 
 namespace CodeRefractor.MiddleEnd.SimpleOperations
 {
-    public class FieldGetter : LocalOperation
+    public class GetField : LocalOperation
     {
         public LocalVariable AssignedTo { get; set; }
         public LocalVariable Instance { get; set; }
         public string FieldName { get; set; }
 
-        public FieldGetter()
+        public GetField()
             : base(OperationKind.GetField)
         {
         }
 
         public override LocalOperation Clone()
         {
-            return new FieldGetter
+            return new GetField
             {
                 AssignedTo = (LocalVariable) AssignedTo.Clone(),
                 Instance = (LocalVariable) Instance.Clone(),

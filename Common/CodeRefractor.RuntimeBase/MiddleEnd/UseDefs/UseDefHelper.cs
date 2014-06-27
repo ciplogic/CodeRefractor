@@ -164,23 +164,21 @@ namespace CodeRefractor.MiddleEnd.UseDefs
 
         private static void AddUsagesOfGetField(LocalOperation operation, List<LocalVariable> result)
         {
-            var arrayVar = (FieldGetter) operation;
+            var arrayVar = (GetField) operation;
             result.AddUsage(arrayVar.Instance);
         }
 
         private static void AddUsagesOfSetField(LocalOperation operation, List<LocalVariable> result)
         {
-            var assignment = (Assignment) operation;
-            var arrayVar = (FieldSetter) assignment.AssignedTo;
-            result.AddUsage(arrayVar.Instance);
+            var assignment = (SetField) operation;
+            result.AddUsage(assignment.Instance);
             result.AddUsage(assignment.Right);
         }
 
         private static void AddUsagesOfNewArray(LocalOperation operation, List<LocalVariable> result)
         {
-            var assignment = (Assignment) operation;
-            var arrayVar = (NewArrayObject) assignment.Right;
-            result.AddUsage(arrayVar.ArrayLength);
+            var assignment = (NewArrayObject)operation;
+            result.AddUsage(assignment.ArrayLength);
         }
 
         private static void AddUsagesOfGetArrayItem(LocalOperation operation, List<LocalVariable> result)
@@ -239,14 +237,15 @@ namespace CodeRefractor.MiddleEnd.UseDefs
                     return null;
                 case OperationKind.Assignment:
                 case OperationKind.NewObject:
-                case OperationKind.NewArray:
                 case OperationKind.CopyArrayInitializer:
                 case OperationKind.GetStaticField:
                 case OperationKind.GetArrayItem:
                     var assign = operation.GetAssignment();
                     return assign.AssignedTo;
+                case OperationKind.NewArray:
+                    return operation.Get<NewArrayObject>().AssignedTo;
                 case OperationKind.GetField:
-                    var fieldGetter = (FieldGetter) operation;
+                    var fieldGetter = (GetField) operation;
                     return fieldGetter.AssignedTo;
                 case OperationKind.Box:
                     var boxing = (Boxing)operation;
@@ -469,12 +468,11 @@ namespace CodeRefractor.MiddleEnd.UseDefs
         private static void SwitchUsageInNewArray(LocalOperation op, LocalVariable usageVariable,
             IdentifierValue definitionIdentifier)
         {
-            var assign = op.GetAssignment();
-            var arrayVar = (NewArrayObject) assign.Right;
+            var assign = (NewArrayObject)op;
             if (usageVariable.Equals(assign.AssignedTo))
                 assign.AssignedTo = (LocalVariable) definitionIdentifier;
-            if (usageVariable.Equals(arrayVar.ArrayLength))
-                arrayVar.ArrayLength = definitionIdentifier;
+            if (usageVariable.Equals(assign.ArrayLength))
+                assign.ArrayLength = definitionIdentifier;
         }
 
         private static void SwitchUsageInCall(LocalOperation op, LocalVariable usageVariable,
@@ -566,7 +564,7 @@ namespace CodeRefractor.MiddleEnd.UseDefs
         private static void SwichUsageInGetField(LocalOperation op, LocalVariable usageVariable,
             IdentifierValue definitionIdentifier)
         {
-            var getFieldData = (FieldGetter) op;
+            var getFieldData = (GetField) op;
             if (!(definitionIdentifier is LocalVariable))
                 return;
             if (usageVariable.Equals(getFieldData.Instance))
