@@ -84,7 +84,7 @@ vreg_1 = std::make_shared<_NBodySystem >();
 vreg_1->_typeId = 0;
 _NBodySystem_ctor(vreg_1);
 local_1 = vreg_1;
-vreg_3 = _NBodySystem_Energy(local_1);
+vreg_3 = _NBodySystem_Energy(vreg_1);
 System_Console_WriteLine(vreg_3);
 local_2 = 0;
 goto label_3C;

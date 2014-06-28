@@ -40,7 +40,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.SimpleDce
             foreach (var patchLine in toPatch)
             {
                 var prevOp = localOperations[patchLine - 1];
-                var assign = localOperations[patchLine].GetAssignment();
+                var assign = localOperations[patchLine].Get<Assignment>();
                 prevOp.SwitchUsageWithDefinition(assign.Right as LocalVariable, assign.AssignedTo);
             }
             methodInterpreter.DeleteInstructions(toPatch);

@@ -1,19 +1,17 @@
 #region Usings
 
 using System.Collections.Generic;
-using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.UseDefs;
-using CodeRefractor.RuntimeBase.Analyze;
-using CodeRefractor.RuntimeBase.MiddleEnd;
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
+using CodeRefractor.RuntimeBase.Optimizations;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndPropagation.ComplexAssignments
+namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.ComplexAssignments
 {
+    [Optimization(Category = OptimizationCategories.Propagation)]
     internal class PropagationVariablesOptimizationPass : BlockOptimizationPass
     {
         public override bool OptimizeBlock(MethodInterpreter midRepresentation, int startRange, int endRange,
@@ -42,7 +40,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndProp
         {
             if (op.Kind != OperationKind.Assignment)
                 return;
-            var assignment = op.GetAssignment();
+            var assignment = op.Get<Assignment>();
 
             var right = assignment.Right;
             var value = right as ConstValue;

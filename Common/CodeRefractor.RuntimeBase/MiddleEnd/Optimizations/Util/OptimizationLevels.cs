@@ -5,6 +5,7 @@ using System.Linq;
 using CodeRefractor.CompilerBackend.Optimizations.Purity;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
 using CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation;
+using CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.ComplexAssignments;
 using CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.SimpleAssignment;
 using CodeRefractor.MiddleEnd.Optimizations.Dfa.ReachabilityDfa;
 using CodeRefractor.MiddleEnd.Optimizations.Licm;

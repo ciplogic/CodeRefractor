@@ -35,7 +35,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndProp
             var toPatch = new List<int>();
             foreach (var targetOp in localOperations.Where(op => op.Kind == OperationKind.Assignment))
             {
-                var assignment = targetOp.GetAssignment();
+                var assignment = targetOp.Get<Assignment>();
                 var rightVar = assignment.Right as LocalVariable;
                 if (rightVar == null)
                     continue;
@@ -62,7 +62,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndProp
             var toRemove = new List<int>();
             foreach (var line in toPatch)
             {
-                var assignment = localOperations[line].GetAssignment();
+                var assignment = localOperations[line].Get<Assignment>();
                 var destOperation = localOperations[line - 1];
                 switch (destOperation.Kind)
                 {
