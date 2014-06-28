@@ -59,6 +59,7 @@
     <Compile Include="Analyze\LinkerInterpretersTable.cs" />
     <Compile Include="Analyze\NamerUtils.cs" />
     <Compile Include="Analyze\TypeDescription.cs" />
+    <Compile Include="MiddleEnd\SimpleOperations\Identifiers\GetArrayElement.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\OperationUtils.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\SetField.cs" />
     <Compile Include="MiddleEnd\UseDefs\UseDefDescription.cs" />

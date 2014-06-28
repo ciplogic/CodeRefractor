@@ -1,19 +1,15 @@
-#region Uses
-
 using System;
-using CodeRefractor.RuntimeBase.Analyze;
-
-#endregion
 
 namespace CodeRefractor.MiddleEnd.SimpleOperations.Identifiers
 {
-    public class SetArrayElement : LocalOperation
+    public class GetArrayElement : LocalOperation
     {
         public IdentifierValue Index { get; set; }
         public LocalVariable Instance { get; set; }
-        public IdentifierValue Right { get; set; }
+        public LocalVariable AssignedTo { get; set; }
 
-        public SetArrayElement() : base(OperationKind.SetArrayItem)
+        public GetArrayElement()
+            : base(OperationKind.GetArrayItem)
         {
         }
         public Type GetElementType()
@@ -25,7 +21,7 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations.Identifiers
 
         public override string ToString()
         {
-            return string.Format("{0}[{1}]={2}", Instance.Name, Index.Name, Right.Name);
+            return string.Format("{0}={1}[{2}]", AssignedTo.Name, Instance.Name, Index.Name);
         }
     }
 }

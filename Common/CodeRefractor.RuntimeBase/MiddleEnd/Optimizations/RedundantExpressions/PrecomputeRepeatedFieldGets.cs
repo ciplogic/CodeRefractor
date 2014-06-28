@@ -42,9 +42,8 @@ namespace CodeRefractor.MiddleEnd.Optimizations.RedundantExpressions
         private static void ApplyOptimization(MethodInterpreter midRepresentation, int i, int j)
         {
             var localOps = midRepresentation.MidRepresentation.LocalOperations;
-            var opArr = midRepresentation.MidRepresentation.UseDef.GetLocalOperations();
-            var firstOperator = opArr.GetFieldOperation(i);
-            var secondOperator = opArr.GetFieldOperation(j);
+            var firstOperator = localOps[i].Get<GetField>();
+            var secondOperator = localOps[j].Get<GetField>();
             var newVreg =
                 midRepresentation.CreateCacheVariable(firstOperator.AssignedTo.ComputedType());
             var assignLocalOperation = PrecomputeRepeatedUtils.CreateAssignLocalOperation(firstOperator.AssignedTo,
@@ -54,8 +53,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.RedundantExpressions
             firstOperator.AssignedTo = newVreg;
 
             var destAssignment = PrecomputeRepeatedUtils.CreateAssignLocalOperation(secondOperator.AssignedTo, newVreg);
-            localOps.RemoveAt(j + 1);
-            localOps.Insert(j + 1, destAssignment);
+            localOps[j + 1]  = destAssignment;
         }
 
         private static int[] FindGetFieldOperations(UseDefDescription useDef, int startRange, int endRange)
