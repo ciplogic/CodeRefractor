@@ -3,20 +3,16 @@
 using System;
 using System.IO;
 using System.Linq;
-using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.SimpleOperations.Operators;
-using CodeRefractor.RuntimeBase.MiddleEnd;
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
 using CodeRefractor.RuntimeBase.Optimizations;
 using CodeRefractor.RuntimeBase.Shared;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndPropagation
+namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation
 {
     [Optimization(Category = OptimizationCategories.Constants)]
     public class ConstantVariableEvaluation : ResultingInFunctionOptimizationPass

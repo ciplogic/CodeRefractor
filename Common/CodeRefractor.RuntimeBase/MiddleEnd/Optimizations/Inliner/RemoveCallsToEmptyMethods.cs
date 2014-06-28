@@ -2,9 +2,9 @@
 
 using System.Collections.Generic;
 using CodeRefractor.CodeWriter.Linker;
-using CodeRefractor.CompilerBackend.Optimizations.Purity;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
+using CodeRefractor.MiddleEnd.Optimizations.Purity;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 using CodeRefractor.RuntimeBase.Analyze;
@@ -22,8 +22,10 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.Inliner
         public override void OptimizeOperations(MethodInterpreter methodInterpreter)
         {
             var toRemove = new List<int>();
-            var localOperations = methodInterpreter.MidRepresentation.UseDef.GetLocalOperations();
-            for (var index = 0; index < localOperations.Length; index++)
+            var useDef = methodInterpreter.MidRepresentation.UseDef;
+            var localOperations = useDef.GetLocalOperations();
+            var calls = useDef.GetOperationsOfKind(OperationKind.Call);
+            foreach (var index in calls)
             {
                 var localOperation = localOperations[index];
 
@@ -33,7 +35,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.Inliner
                 var interpreter = methodData.Info.GetInterpreter(Runtime);
                 if (interpreter == null)
                     continue;
-                var isEmpty = interpreter.MidRepresentation.GetProperties().IsEmpty;
+                var isEmpty = interpreter.AnalyzeProperties.IsEmpty;
                 if (!isEmpty)
                     continue;
                 toRemove.Add(index);

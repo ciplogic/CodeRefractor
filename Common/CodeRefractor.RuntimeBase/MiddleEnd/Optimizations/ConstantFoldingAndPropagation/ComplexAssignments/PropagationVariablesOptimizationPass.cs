@@ -12,15 +12,20 @@ using CodeRefractor.RuntimeBase.Optimizations;
 namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.ComplexAssignments
 {
     [Optimization(Category = OptimizationCategories.Propagation)]
-    internal class PropagationVariablesOptimizationPass : BlockOptimizationPass
+    internal class PropagationVariables : BlockOptimizationPass
     {
         public override bool OptimizeBlock(MethodInterpreter midRepresentation, int startRange, int endRange,
             LocalOperation[] operations)
         {
-            var result = false;
-
             var instructionRange = GetInstructionRange(operations, startRange, endRange);
             var useDef = midRepresentation.MidRepresentation.UseDef;
+            return ProcessOptimizations(startRange, instructionRange, useDef);
+        }
+
+        private static bool ProcessOptimizations(int startRange, LocalOperation[] instructionRange, 
+            UseDefDescription useDef)
+        {
+            var result = false;
             var constValues = new Dictionary<LocalVariable, ConstValue>();
             var mappedValues = new Dictionary<LocalVariable, LocalVariable>();
             for (var index = 0; index < instructionRange.Length; index++)

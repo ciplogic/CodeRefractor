@@ -1,18 +1,14 @@
 ﻿#region Usings
 
-using CodeRefractor.CompilerBackend.Optimizations.Purity;
-using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 using CodeRefractor.RuntimeBase.Backend.Linker;
-using CodeRefractor.RuntimeBase.MiddleEnd;
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.Optimizations;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.Backend.Optimizations.Purity
+namespace CodeRefractor.MiddleEnd.Optimizations.Purity
 {
 	[Optimization(Category = OptimizationCategories.Analysis)]
     public class AnalyzeFunctionPurity : ResultingGlobalOptimizationPass
@@ -21,7 +17,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.Purity
         {
             if (intermediateCode == null)
                 return false;
-            return intermediateCode.MidRepresentation.GetProperties().IsPure;
+            return intermediateCode.AnalyzeProperties.IsPure;
         }
 
         public override void OptimizeOperations(MethodInterpreter interpreter)

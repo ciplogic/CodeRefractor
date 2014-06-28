@@ -227,7 +227,6 @@
     <Compile Include="MiddleEnd\Optimizations\Purity\AnalyzeFunctionIsSetter.cs" />
     <Compile Include="MiddleEnd\Optimizations\Purity\AnalyzeFunctionNoStaticSideEffects.cs" />
     <Compile Include="MiddleEnd\Optimizations\Purity\AnalyzeFunctionPurity.cs" />
-    <Compile Include="MiddleEnd\Optimizations\Purity\AnalyzeUtils.cs" />
     <Compile Include="MiddleEnd\Optimizations\Purity\EvaluatePureFunctionWithConstantCall.cs" />
     <Compile Include="MiddleEnd\Optimizations\Purity\RemoveDeadPureFunctionCalls.cs" />
     <Compile Include="MiddleEnd\Optimizations\Purity\RemoveDeadStoresToFunctionCalls.cs" />

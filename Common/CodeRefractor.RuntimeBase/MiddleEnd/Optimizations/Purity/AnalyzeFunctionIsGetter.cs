@@ -1,23 +1,19 @@
 #region Usings
 
-using CodeRefractor.CompilerBackend.Optimizations.Purity;
-using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
 using CodeRefractor.MiddleEnd.SimpleOperations;
-using CodeRefractor.RuntimeBase.MiddleEnd;
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.Optimizations;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.Backend.Optimizations.Purity
+namespace CodeRefractor.MiddleEnd.Optimizations.Purity
 {
 	[Optimization(Category = OptimizationCategories.Analysis)]
     public class AnalyzeFunctionIsGetter : ResultingGlobalOptimizationPass
     {
         public static bool ReadProperty(MethodInterpreter intermediateCode)
         {
-            return intermediateCode.MidRepresentation.GetProperties().IsGetter;
+            return intermediateCode.AnalyzeProperties.IsGetter;
         }
 
         public override void OptimizeOperations(MethodInterpreter interpreter)
@@ -27,7 +23,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.Purity
             var functionIsPure = ComputeFunctionIsGetter(interpreter);
 
             if (!functionIsPure) return;
-            interpreter.MidRepresentation.GetProperties().IsGetter = true;
+            interpreter.AnalyzeProperties.IsGetter = true;
         }
 
         public static bool ComputeFunctionIsGetter(MethodInterpreter intermediateCode)

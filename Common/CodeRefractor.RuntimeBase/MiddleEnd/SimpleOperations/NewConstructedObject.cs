@@ -18,7 +18,7 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations
 
         public override string ToString()
         {
-            return string.Format("{0} = new {1}(...)",AssignedTo.VarName, Info.DeclaringType.Name);
+            return string.Format("{0} = new {1}()",AssignedTo.VarName, Info.DeclaringType.Name);
         }
     }
 }

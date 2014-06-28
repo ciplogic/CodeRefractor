@@ -1,5 +1,6 @@
 #region Usings
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -53,19 +54,20 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
         public static void ApplyOptimizations(List<MethodInterpreter> methodsToOptimize)
         {
             methodsToOptimize = methodsToOptimize.Where(m => m.Kind == MethodKind.Default).ToList();
+
+            methodsToOptimize.RemoveAll(mth => mth == null);
             bool doOptimize;
             do
             {
                 doOptimize = false;
 
-                methodsToOptimize.RemoveAll(mth => mth == null);
                 var inFunctionOptimizations = GetOptimizationByOptimizationKind(OptimizationKind.InFunction);
                 var methodsArray = methodsToOptimize.ToArray();
                 //Parallel.ForEach(methodsToOptimize, methodBase=> 
                 foreach (var methodBase in methodsArray)
                 {
                     var interpreter = methodBase;
-                    //Console.WriteLine("Optimize locally: {0}", methodBase);
+                    Console.WriteLine("+ Optimize locally: '{0}'", methodBase.Method.Name);
                     MethodInterpreterCodeWriter.ApplyLocalOptimizations(
                         inFunctionOptimizations, interpreter);
                 }
@@ -73,7 +75,7 @@ namespace CodeRefractor.CompilerBackend.OuputCodeWriter
                 foreach (var methodBase in methodsArray)
                 {
                     var interpreter = methodBase;
-                    //Console.WriteLine("Optimize globally: {0}", methodBase);
+                    Console.WriteLine("+ Optimize globally: '{0}'", methodBase.Method.Name);
                     doOptimize |= MethodInterpreterCodeWriter.ApplyLocalOptimizations(
                         GetOptimizationByOptimizationKind(OptimizationKind.Global), interpreter);
                 }

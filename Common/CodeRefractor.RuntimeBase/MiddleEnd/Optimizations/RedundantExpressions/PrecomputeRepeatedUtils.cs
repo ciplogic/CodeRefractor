@@ -2,19 +2,16 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 using CodeRefractor.MiddleEnd.SimpleOperations.Operators;
 using CodeRefractor.RuntimeBase.Analyze;
-using CodeRefractor.RuntimeBase.MiddleEnd;
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.Backend.Optimizations.RedundantExpressions
+namespace CodeRefractor.MiddleEnd.Optimizations.RedundantExpressions
 {
     internal static class PrecomputeRepeatedUtils
     {
@@ -75,13 +72,13 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.RedundantExpressions
             return (BinaryOperator) localOperation;
         }
 
-        public static GetField GetFieldOperation(this LocalOperation[] localOperations, int[] calls, int i)
+        public static GetField GetFieldOperation(this IList<LocalOperation> localOperations, int[] calls, int i)
         {
             var index = calls[i];
             return GetFieldOperation(localOperations, index);
         }
 
-        public static GetField GetFieldOperation(this LocalOperation[] localOperations, int index)
+        public static GetField GetFieldOperation(this IList<LocalOperation> localOperations, int index)
         {
             return (GetField) localOperations[index];
         }

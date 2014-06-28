@@ -2,9 +2,8 @@
 
 using System.Reflection;
 using CodeRefractor.CodeWriter.Linker;
-using CodeRefractor.CompilerBackend.Optimizations.Purity;
+using CodeRefractor.MiddleEnd.Optimizations.Purity;
 using CodeRefractor.Runtime;
-using CodeRefractor.RuntimeBase.Backend.Optimizations.Purity;
 
 #endregion
 
@@ -20,10 +19,10 @@ namespace CodeRefractor.RuntimeBase.Backend.Linker
 
         public static bool ReadNoStaticSideEffects(MethodBase methodBase, CrRuntimeLibrary crRuntime)
         {
-            var method = methodBase.GetInterpreter(crRuntime).MidRepresentation;
-            if (method != null)
+            var method = methodBase.GetInterpreter(crRuntime);
+            if (method.MidRepresentation != null)
             {
-                return method.GetProperties().IsReadOnly;
+                return method.AnalyzeProperties.IsReadOnly;
             }
             return false;
         }

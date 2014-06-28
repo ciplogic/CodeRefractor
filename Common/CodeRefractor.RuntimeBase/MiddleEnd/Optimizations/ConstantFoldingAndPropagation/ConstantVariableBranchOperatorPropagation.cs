@@ -1,19 +1,16 @@
 #region Usings
 
 using System;
-using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.SimpleOperations.Operators;
 using CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndPropagation;
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
 using CodeRefractor.RuntimeBase.Optimizations;
 using CodeRefractor.RuntimeBase.Shared;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.MiddleEnd.Optimizations.ConstantFoldingAndPropagation
+namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation
 {
     [Optimization(Category = OptimizationCategories.Constants)]
     public class ConstantVariableBranchOperatorPropagation : ConstantVariablePropagationBase

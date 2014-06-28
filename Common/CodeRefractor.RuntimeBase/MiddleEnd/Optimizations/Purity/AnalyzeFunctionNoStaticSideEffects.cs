@@ -1,24 +1,21 @@
 ﻿#region Usings
 
-using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 using CodeRefractor.RuntimeBase.Backend.Linker;
-using CodeRefractor.RuntimeBase.MiddleEnd;
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.Optimizations;
 
 #endregion
 
-namespace CodeRefractor.CompilerBackend.Optimizations.Purity
+namespace CodeRefractor.MiddleEnd.Optimizations.Purity
 {
 	[Optimization(Category = OptimizationCategories.Analysis)]
     public class AnalyzeFunctionNoStaticSideEffects : ResultingGlobalOptimizationPass
     {
         public static bool ReadPurity(MethodInterpreter intermediateCode)
         {
-            return intermediateCode.MidRepresentation.GetProperties().IsReadOnly;
+            return intermediateCode.AnalyzeProperties.IsReadOnly;
         }
 
         public override void OptimizeOperations(MethodInterpreter interpreter)
@@ -27,7 +24,7 @@ namespace CodeRefractor.CompilerBackend.Optimizations.Purity
                 return;
             var functionIsPure = ComputeFunctionProperty(interpreter);
             if (!functionIsPure) return;
-            var additionalData = interpreter.MidRepresentation.GetProperties();
+            var additionalData = interpreter.AnalyzeProperties;
             additionalData.IsReadOnly = true;
             Result = true;
         }

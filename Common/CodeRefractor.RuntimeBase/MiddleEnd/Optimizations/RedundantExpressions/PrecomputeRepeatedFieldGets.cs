@@ -6,7 +6,6 @@ using CodeRefractor.MiddleEnd.Optimizations.Common;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.UseDefs;
-using CodeRefractor.RuntimeBase.Backend.Optimizations.RedundantExpressions;
 using CodeRefractor.RuntimeBase.Optimizations;
 
 #endregion
@@ -23,23 +22,31 @@ namespace CodeRefractor.MiddleEnd.Optimizations.RedundantExpressions
             var getFieldOperations = FindGetFieldOperations(midRepresentation.MidRepresentation.UseDef, startRange, endRange);
             if (getFieldOperations.Length < 2)
                 return false;
-            for (var i = 0; i < getFieldOperations.Length - 1; i++)
-            {
-                var firstOperator = localOperations.GetFieldOperation(getFieldOperations, i);
-                for (var j = i + 1; j < getFieldOperations.Length; j++)
-                {
-                    var secondOperator = localOperations.GetFieldOperation(getFieldOperations, j);
-                    if (AreDifferentOperators(firstOperator, secondOperator, getFieldOperations, i, j, localOperations))
-                        continue;
-                    ApplyOptimization(midRepresentation, getFieldOperations[i], getFieldOperations[j]);
-                    return true;
-                }
-            }
-
-            return false;
+            return ProcessOptimizeBlock(midRepresentation, getFieldOperations, localOperations);
         }
 
-        private static void ApplyOptimization(MethodInterpreter midRepresentation, int i, int j)
+	    private static bool ProcessOptimizeBlock(MethodInterpreter midRepresentation, int[] getFieldOperations, LocalOperation[] localOperations)
+	    {
+            var instructionRange = midRepresentation.MidRepresentation.LocalOperations;
+	        for (var i = 0; i < getFieldOperations.Length - 1; i++)
+	        {
+	            var firstOperator = localOperations.GetFieldOperation(getFieldOperations, i);
+	            for (var j = i + 1; j < getFieldOperations.Length; j++)
+	            {
+	                var secondOperator = localOperations.GetFieldOperation(getFieldOperations, j);
+	                if (AreDifferentOperators(firstOperator, secondOperator, getFieldOperations, i, j, localOperations))
+	                    continue;
+	                var firstGet = getFieldOperations[i];
+	                var secondGet = getFieldOperations[j];
+	                ApplyOptimization(midRepresentation, firstGet, secondGet);
+	                return true;
+	            }
+	        }
+
+	        return false;
+	    }
+
+	    private static void ApplyOptimization(MethodInterpreter midRepresentation, int i, int j)
         {
             var localOps = midRepresentation.MidRepresentation.LocalOperations;
             var firstOperator = localOps[i].Get<GetField>();

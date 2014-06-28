@@ -2,27 +2,24 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using CodeRefractor.CompilerBackend.Optimizations.Purity;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
 using CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation;
 using CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.ComplexAssignments;
 using CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.SimpleAssignment;
 using CodeRefractor.MiddleEnd.Optimizations.Dfa.ReachabilityDfa;
+using CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering;
+using CodeRefractor.MiddleEnd.Optimizations.Inliner;
+using CodeRefractor.MiddleEnd.Optimizations.Jumps;
 using CodeRefractor.MiddleEnd.Optimizations.Licm;
 using CodeRefractor.MiddleEnd.Optimizations.Purity;
+using CodeRefractor.MiddleEnd.Optimizations.SimpleDce;
 using CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndPropagation;
 using CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndPropagation.ComplexAssignments;
 using CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndPropagation.SimpleAssignment;
 using CodeRefractor.RuntimeBase.Backend.Optimizations.EscapeAndLowering;
 using CodeRefractor.RuntimeBase.Backend.Optimizations.Inliner;
-using CodeRefractor.RuntimeBase.Backend.Optimizations.Jumps;
-using CodeRefractor.RuntimeBase.Backend.Optimizations.Purity;
-using CodeRefractor.RuntimeBase.Backend.Optimizations.ReachabilityDfa;
 using CodeRefractor.RuntimeBase.Backend.Optimizations.SimpleDce;
 using CodeRefractor.RuntimeBase.Config;
-using CodeRefractor.RuntimeBase.MiddleEnd.Optimizations.ConstantFoldingAndPropagation;
-using CodeRefractor.RuntimeBase.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.SimpleAssignment;
-using CodeRefractor.RuntimeBase.MiddleEnd.Optimizations.Purity;
 using CodeRefractor.RuntimeBase.MiddleEnd.Optimizations.SimpleDce;
 using CodeRefractor.RuntimeBase.Optimizations;
 
@@ -85,7 +82,8 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Util
 
         public override List<ResultingOptimizationPass> BuildOptimizationPasses2()
         {
-            this.EnabledCategories.Add(OptimizationCategories.CommonSubexpressionsElimination);
+            this.EnabledCategories.Add(OptimizationCategories.Inliner);
+            this.EnabledCategories.Add(OptimizationCategories.Global);
             return new ResultingOptimizationPass[]
             {
                 //new OneAssignmentDeadStoreAssignment(), //??
@@ -106,44 +104,8 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Util
 
             return new ResultingOptimizationPass[]
             {
-                new AssignmentWithVregPrevLineFolding(),
-                new DeleteAssignmentWithSelf(),
-                new RemoveDeadStoresInBlockOptimizationPass(),
-                new OperatorPartialConstantFolding(),
-                new OperatorConstantFolding(),
                 //new FoldVariablesDefinitionsOptimizationPass(),
-                new PropagationVariablesOptimizationPass(),
-                new DceNewObjectOrArray(),
-                new ConstantVariableBranchOperatorPropagation(),
-                new ConstantVariableEvaluation(),
-                new EvaluatePureFunctionWithConstantCall(),
-                new RemoveDeadStoresToFunctionCalls(),
-                new RemoveDeadPureFunctionCalls(),
-                new AssignmentVregWithConstNextLineFolding(),
-                new DoubleAssignPropagation(),
-                new AssignToReturnPropagation(),
-                new DceLocalAssigned(),
-                new DeleteCallToConstructorOfObject(),
-                new ConstantVariablePropagation(),
-                new ConstantVariableOperatorPropagation(),
-                new ConstantVariablePropagationInCall(),
-                new AnalyzeFunctionPurity(),
-                new AnalyzeFunctionNoStaticSideEffects(),
-                new AnalyzeFunctionIsGetter(),
-                new AnalyzeFunctionIsSetter(),
-                new AnalyzeFunctionIsEmpty(),
-                new DeleteJumpNextLine(),
-                new RemoveUnreferencedLabels(),
-                new MergeConsecutiveLabels(),
-                new DeadStoreAssignment(),
-                new OneAssignmentDeadStoreAssignment(),
-                new RemoveCallsToEmptyMethods(),
-                new InlineGetterAndSetterMethods(),
-                new ReachabilityLines(),
-                new DceVRegUnused(),
-                new LoopInvariantCodeMotion(),
-                new ClearInFunctionUnusedArguments(),
-                new ReplaceCallsToFunctionsWithUnusedArguments(),
+
             }.ToList();
         }
     }
