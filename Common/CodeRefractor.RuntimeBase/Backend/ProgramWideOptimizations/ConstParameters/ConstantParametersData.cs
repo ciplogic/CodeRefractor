@@ -4,11 +4,10 @@ using System.Collections.Generic;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
-using CodeRefractor.RuntimeBase.MiddleEnd;
 
 #endregion
 
-namespace CodeRefractor.CompilerBackend.ProgramWideOptimizations.ConstParameters
+namespace CodeRefractor.Backend.ProgramWideOptimizations.ConstParameters
 {
     internal class ConstantParametersData
     {

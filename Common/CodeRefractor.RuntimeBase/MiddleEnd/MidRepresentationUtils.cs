@@ -1,4 +1,4 @@
-namespace CodeRefractor.RuntimeBase.MiddleEnd
+namespace CodeRefractor.MiddleEnd
 {
     public static class MidRepresentationUtils
     {

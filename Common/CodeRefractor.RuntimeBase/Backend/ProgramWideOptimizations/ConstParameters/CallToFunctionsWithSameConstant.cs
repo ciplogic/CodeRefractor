@@ -1,6 +1,7 @@
 ﻿#region Usings
 
 using System.Linq;
+using CodeRefractor.Backend.ProgramWideOptimizations.ConstParameters;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
