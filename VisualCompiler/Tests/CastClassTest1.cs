@@ -14,7 +14,7 @@ namespace Obj
     {
         public new int F() { return 3; }
         public override int G() { return 4; }
-        // public new int H () {return 11;}
+        public new int H () {return 11;}
     }
     class Test
     {

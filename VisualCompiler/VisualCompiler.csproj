@@ -58,6 +58,9 @@
     <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Gat.Controls.OpenDialog">
+      <HintPath>..\packages\OpenDialog.1.1.1\lib\net45\Gat.Controls.OpenDialog.dll</HintPath>
+    </Reference>
     <Reference Include="ICSharpCode.AvalonEdit">
       <HintPath>..\packages\AvalonEdit.4.4.2.9744\lib\Net40\ICSharpCode.AvalonEdit.dll</HintPath>
     </Reference>
@@ -90,14 +93,30 @@
     <Compile Include="CustomizedBrush.cs" />
     <Compile Include="CompilerUtils.cs" />
     <Compile Include="MainWindowViewModel.cs" />
-    <Content Include="Tests\VirtualMethodsTest1.cs" />
-    <Content Include="Tests\CastClassTest1.cs" />
-    <Content Include="Tests\CastClassTest2.cs" />
-    <Content Include="Tests\ClassMethodTest1.cs" />
-    <Content Include="Tests\VirtualMethodsTest2.cs" />
-    <Content Include="Tests\VirtualMethodsTest3.cs" />
-    <Content Include="Tests\VirtualMethodsTest4.cs" />
-    <Content Include="Tests\VirtualMethodsTest5.cs" />
+    <Content Include="Tests\VirtualMethodsTest1.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Tests\CastClassTest1.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Tests\CastClassTest2.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Tests\ClassMethodTest1.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Tests\VirtualMethodsTest2.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Tests\VirtualMethodsTest3.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Tests\VirtualMethodsTest4.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Tests\VirtualMethodsTest5.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Compile Include="Views\Dialogs\CompilerOptionsViewModel.cs" />
     <Compile Include="Views\Dialogs\CompilerOptionsWindow.xaml.cs">
       <DependentUpon>CompilerOptionsWindow.xaml</DependentUpon>

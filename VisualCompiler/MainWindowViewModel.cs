@@ -200,7 +200,7 @@ namespace VisualCompiler
                 {
                    
                         _outputCode = value;
-                        Window.Dispatcher.InvokeAsync(() =>
+                        Window.Dispatcher.Invoke(() =>
                     {
                             if (OutputCode != Window.Output.Text) //Seems there was a loop here
                                 Window.Output.Text = value;

@@ -170,7 +170,7 @@ namespace VisualCompiler
         private readonly string[] ILKeywords =
         {
             "LoadFunction","Call","Return","Assignment","BranchOperator","NewObject",
-            "SetField","AlwaysBranch", "Label", "BinaryOperator","GetField"
+            "SetField","AlwaysBranch", "Label", "BinaryOperator","GetField", "CallVirtual"
 
         };
 
@@ -407,8 +407,6 @@ namespace VisualCompiler
         private Timer ResetStatus;
 
 
-
-
         private void OnShowCompilerOptions(object sender, RoutedEventArgs e)
         {
             var optionsWindow = new CompilerOptionsWindow();
@@ -423,7 +421,24 @@ namespace VisualCompiler
 
         private void OnFileOpen(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
+            dialog.DefaultExt = ".cs";
+            dialog.Filter = "CSharp Source Code (.cs)|*.cs";
+            var folder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Tests\\");
+            dialog.InitialDirectory = folder;
+          
+           
+            bool? result = dialog.ShowDialog();
+            if (result == true)
+            {
+                TextEditor.Text = File.ReadAllText(dialog.FileName);
+            }
+            else
+            {
+                
+            }
+
+           
         }
     }
 }
