@@ -84,7 +84,8 @@ namespace CodeRefractor.RuntimeBase
             _virtualMethodTable = new VirtualMethodTable(typeTable);
             foreach (var type in _typeDictionary.Keys)
             {
-                var methods = type.GetMethods();
+                var methods = type.GetMethods(BindingFlags.Public|BindingFlags.NonPublic|BindingFlags.Instance);//.Union(type.GetInterfaces().SelectMany(j=>j.GetMethods()));
+                
                 foreach (var method in methods)
                 {
                     _virtualMethodTable.RegisterMethod(method, methodClosure);

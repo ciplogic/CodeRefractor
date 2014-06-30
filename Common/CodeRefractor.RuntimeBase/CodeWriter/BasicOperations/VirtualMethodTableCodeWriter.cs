@@ -87,33 +87,36 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 sb.Append(methodName);
                 sb.Append("_vcall(")
                     .AppendFormat(parametersString)
-                    .AppendLine("){")
-                    .AppendLine("switch(_this->_typeId)")
+                    .AppendLine("){").AppendLine(virtualMethod.BaseType.IsInterface?"std::shared_ptr<System_Object> nthis = std::static_pointer_cast<System_Object>(_this);":"")
+                    .AppendLine(!virtualMethod.BaseType.IsInterface ? "switch(_this->_typeId)" : "switch (nthis->_typeId)")
                     .AppendLine("{");
                 foreach (var implementation in virtualMethod.UsingImplementations)
                 {
-                    var typeId = _typeTable.TypeTable.GetTypeId(implementation);
-
-                    sb.AppendFormat("case {0}:", typeId).AppendLine();
-
-                    var isVoid = virtualMethod.BaseMethod.ReturnType == typeof (void);
-                    if (!isVoid)
+                    //Interfaces dont have concrete implementations
+                    if (!implementation.IsInterface)
                     {
-                        sb.Append("return ");
+                        var typeId = _typeTable.TypeTable.GetTypeId(implementation);
+
+                        sb.AppendFormat("case {0}:", typeId).AppendLine();
+
+                        var isVoid = virtualMethod.BaseMethod.ReturnType == typeof(void);
+                        if (!isVoid)
+                        {
+                            sb.Append("return ");
+                        }
+                        var method = implementation.GetMethod(virtualMethod.Name, virtualMethod.Parameters);
+                        var methodImpl = method.ClangMethodSignature();
+                        var parametersCallString = GetCall(virtualMethod, method);
+
+                        sb
+                          .AppendFormat("{0}(", methodImpl)
+                          .AppendFormat("{0});", parametersCallString)
+                          .AppendLine();
+                        if (isVoid)
+                        {
+                            sb.Append("return;").AppendLine();
+                        }
                     }
-                    var method = implementation.GetMethod(virtualMethod.Name,virtualMethod.Parameters);
-                    var methodImpl = method.ClangMethodSignature();
-                    var parametersCallString = GetCall(virtualMethod,method);
-                   
-                    sb
-                      .AppendFormat("{0}(", methodImpl)
-                      .AppendFormat("{0});",  parametersCallString)
-                      .AppendLine();
-                    if (isVoid)
-                    {
-                        sb.Append("return;").AppendLine();
-                    }
-                    
                 }
 
                 // Deal with subclasses that don't override this method
@@ -195,7 +198,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         {
             var methodNames = new HashSet<string>
                 (
-                closure.Select(m => m.Method.Name)
+                closure.Select(m => m.Method.GetMethodName())
                 );
             return methodNames;
         }

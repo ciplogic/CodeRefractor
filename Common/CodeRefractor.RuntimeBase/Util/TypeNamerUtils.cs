@@ -14,6 +14,14 @@ namespace CodeRefractor.Util
     {
         public const string StdSharedPtr = "std::shared_ptr";
 
+        public static string GetMethodName(this MethodBase methodInfo)
+        {
+            if (methodInfo.DeclaringType != null && methodInfo.DeclaringType.IsInterface)
+            {
+                return methodInfo.DeclaringType.Name+"."+methodInfo.Name;
+            }
+            return methodInfo.Name;
+        }
         public static string ClangMethodSignature(this MethodBase method,bool isvirtualmethod = false)
         {
             var mappedType = method.DeclaringType;
@@ -58,6 +66,7 @@ namespace CodeRefractor.Util
         public static string ToCppMangling(this Type type, bool handleGenerics = false)
         {
              var name = type.Name.Replace("<>","__");
+             name = name.Replace("`", "_");
              if (IsVoid(type)) return "System_Void";
             var typesCount = 0;
             if (handleGenerics && type.IsGenericType)
@@ -128,7 +137,7 @@ namespace CodeRefractor.Util
                         return String.Format("Array < {0} > ", fullTypeName);
                 }
             }
-            if (type.IsClass || isSmartPtr != EscapingMode.Smart)
+            if ((type.IsClass||type.IsInterface) || isSmartPtr != EscapingMode.Smart)
             {
                 if (type.IsPrimitive || type.IsValueType)
                     isSmartPtr = EscapingMode.Stack;
@@ -167,7 +176,7 @@ namespace CodeRefractor.Util
                         return String.Format("{0} ", type.ToCppMangling());
                 }
             }
-            if (!type.IsClass || isSmartPtr != EscapingMode.Smart)
+            if (!(type.IsClass || type.IsInterface) || isSmartPtr != EscapingMode.Smart)
             {
                 return type.IsSubclassOf(typeof (Enum))
                     ? "int"
@@ -201,7 +210,7 @@ namespace CodeRefractor.Util
                         return String.Format("Array < {0} > ", fullTypeName);
                 }
             }
-            if (type.IsClass || isSmartPtr != EscapingMode.Smart)
+            if ((type.IsClass || type.IsInterface) || isSmartPtr != EscapingMode.Smart)
             {
                 if (type.IsPrimitive || type.IsValueType)
                     isSmartPtr = EscapingMode.Stack;
@@ -223,7 +232,7 @@ namespace CodeRefractor.Util
                         return String.Format("{0} ", type.ToCppMangling());
                 }
             }
-            if (!type.IsClass || isSmartPtr != EscapingMode.Smart)
+            if (!(type.IsClass || type.IsInterface) || isSmartPtr != EscapingMode.Smart)
             {
                 return type.IsSubclassOf(typeof (Enum))
                     ? "int"

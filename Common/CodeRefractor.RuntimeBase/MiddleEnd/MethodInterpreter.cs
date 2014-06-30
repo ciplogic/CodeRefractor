@@ -171,7 +171,7 @@ namespace CodeRefractor.MiddleEnd
             for (var index = 0; index < instructions.Length; index++)
             {
                 var instruction = instructions[index];
-                EvaluateInstuction(instruction, operationFactory, labelList, crRuntime);
+                EvaluateInstruction(instruction, operationFactory, labelList, crRuntime);
             }
          //   Ensure.IsTrue(evaluator.Count == 0, "Stack not empty!");
             AnalyzeProperties.Setup(MidRepresentation.Vars.Arguments, MidRepresentation.Vars.VirtRegs,
@@ -179,7 +179,7 @@ namespace CodeRefractor.MiddleEnd
             Interpreted = true;
         }
 
-        private void EvaluateInstuction(Instruction instruction, MetaMidRepresentationOperationFactory operationFactory,
+        private void EvaluateInstruction(Instruction instruction, MetaMidRepresentationOperationFactory operationFactory,
             HashSet<int> labelList, CrRuntimeLibrary crRuntime)
         {
             var opcodeStr = instruction.OpCode.ToString();

@@ -129,7 +129,7 @@ namespace CodeRefractor.RuntimeBase.Backend
                     if(sortedTypeData.Contains(typeData)) // Prevent repeats
                         continue;
 
-                    if (sortedTypeData.Contains(typeData.BaseType))
+                    if (sortedTypeData.Contains(typeData.BaseType)||typeData.IsInterface)
                     {
                         sortedTypeData.Add(typeData);
                         typeDataList.Remove(typeData);
@@ -140,7 +140,12 @@ namespace CodeRefractor.RuntimeBase.Backend
             }
 
            
-           
+           //Add these empty interfaces for strings TODO: Fix this use actual implementations
+            sb.Append(
+                new string[]
+                {
+                    "System_IComparable" , "System_ICloneable" , "System_IConvertible" , "System_IComparable_1" , "System_Collections_Generic_IEnumerable_1" , "System_Collections_IEnumerable" , "System_IEquatable_1"
+                }.Select(r=>"struct " + r +"{};\n").Aggregate((a,b)=>a + "\n" + b));
 
             foreach (var typeData in sortedTypeData)
             {
@@ -161,7 +166,7 @@ namespace CodeRefractor.RuntimeBase.Backend
                 }
                 if (!type.IsValueType && type.BaseType != null)
                 {
-                    sb.AppendFormat("struct {0} : public {1} {{", type.ToCppMangling(), type.BaseType.ToCppMangling());
+                    sb.AppendFormat("struct {0} : public {1} {2} {{", type.ToCppMangling(), type.BaseType.ToCppMangling(),type.GetInterfaces().Any()? " ,"+type.GetInterfaces().Select(j=>j.ToCppMangling()).Aggregate((a,b)=>a + " , " + b):"");
                 }
                 else
                 {

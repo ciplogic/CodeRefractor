@@ -30,6 +30,7 @@ namespace CodeRefractor.RuntimeBase.Backend
             var dependencies = entryInterpreter.GetMethodClosure(programClosure.Runtime);
             while (canContinue)
             {
+                
                 foreach (var interpreter in dependencies)
                 {
                     MetaLinker.Interpret(interpreter, programClosure.Runtime);
@@ -45,6 +46,8 @@ namespace CodeRefractor.RuntimeBase.Backend
                 result.UsedTypes =
                     new HashSet<Type>(GetTypesClosure(dependencies, out foundNewMethods, programClosure,
                         programClosure.Runtime));
+
+                
                 foreach (var dependency in dependencies)
                 {
                     methodInterpreters[dependency.ToKey()] = dependency;
@@ -77,9 +80,32 @@ namespace CodeRefractor.RuntimeBase.Backend
                 var methodArgs = virt.Method.GetParameters().Select(par => par.ParameterType).ToArray();
                 foreach (var type in resultTypes)
                 {
-                    if (!type.IsSubclassOf(baseClass))
+                    var hasinterface = false;//TODO: for some reason I cannot use .Contains / Linq here ?
+                    foreach (var @interface in type.GetInterfaces())
+                    {
+                        if (@interface == baseClass)
+                        {
+                             hasinterface = true;
+                         //   methodName = baseClass.Name +"."+methodName;
+                            break;
+                        }
+                           
+                    }
+                    if ((!(type.IsSubclassOf(baseClass) || hasinterface)))
                         continue;
-                    var implMethod = type.GetMethod(methodName, methodArgs);
+                    MethodInfo implMethod;
+                    if (!hasinterface)
+                    {
+                         implMethod = type.GetMethod(methodName, methodArgs);
+                    }
+                    else
+                    {
+                        implMethod =
+                            type.GetInterfaceMap(baseClass)
+                                .InterfaceMethods.Where(m => m.Name == methodName && (!m.GetParameters().Select(j=>j.ParameterType).Except(methodArgs).Any())).FirstOrDefault();
+                        
+
+                    }
                     if (methodDict.ContainsKey(implMethod.Register(crRuntime).ToKey()))
                         continue;
                     var implInterpreter = implMethod.Register();
@@ -144,7 +170,7 @@ namespace CodeRefractor.RuntimeBase.Backend
             typesSet.Remove(typeof (IntPtr));
             typesSet.Remove(typeof (Array));
 
-            typesSet.RemoveWhere(t => t.IsInterface);
+           // typesSet.RemoveWhere(t => t.IsInterface); Interfaces should be treated as classes
             typesSet.RemoveWhere(t => t.IsPrimitive);
             typesSet.RemoveWhere(t => t.IsSubclassOf(typeof (Array)));
             typesSet.RemoveWhere(t => t.GetMappedType() == t && string.IsNullOrEmpty(t.FullName));

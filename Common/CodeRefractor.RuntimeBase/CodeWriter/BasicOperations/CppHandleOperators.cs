@@ -532,13 +532,13 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             switch (variableData)
             {
                 case EscapingMode.Smart:
-                    bodySb.AppendFormat(parentType.ClrType.IsClass
+                    bodySb.AppendFormat((parentType.ClrType.IsClass || parentType.ClrType.IsInterface)
                         ? "{0} = (*{1})[{2}];"
                         : "{0} = {1}[{2}];",
                         valueSrc.AssignedTo.Name, valueSrc.Instance.Name, valueSrc.Index.Name);
                     return;
                 case EscapingMode.Pointer:
-                    bodySb.AppendFormat(parentType.ClrType.IsClass
+                    bodySb.AppendFormat((parentType.ClrType.IsClass || parentType.ClrType.IsInterface)
                         ? "{0} = ((*{1})[{2}]).get();"
                         : "{0} = ({1}[{2}]).get();",
                         valueSrc.AssignedTo.Name, valueSrc.Instance.Name, valueSrc.Index.Name);

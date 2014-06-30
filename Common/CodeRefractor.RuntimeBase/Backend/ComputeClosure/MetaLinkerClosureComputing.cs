@@ -3,14 +3,17 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using CodeRefractor.CodeWriter.Linker;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.SimpleOperations;
+using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 using CodeRefractor.Runtime;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
+using CodeRefractor.Util;
 
 #endregion
 
@@ -29,6 +32,8 @@ namespace CodeRefractor.RuntimeBase.Backend.ComputeClosure
         {
             var result = new Dictionary<MethodInterpreterKey, MethodInterpreter> {{entryPoints.ToKey(), entryPoints}};
             UpdateMethodEntryClosure(entryPoints, result, crRuntime);
+
+
             return result;
         }
 
@@ -168,6 +173,38 @@ namespace CodeRefractor.RuntimeBase.Backend.ComputeClosure
                     result[descInfo] = interpreter;
                     UpdateMethodEntryClosure(interpreter, result, crRuntime);
                 }
+
+                //Seems we might need to manually inject method interpreters for explicit interface methods ... I give up ...
+//                if (methodData.Info.DeclaringType != null && methodData.Info.DeclaringType.IsInterface)
+//                {
+//                   var objects = methodData.Info.DeclaringType.Assembly.GetObjectsByInterface(methodData.Info.DeclaringType).ToArray();
+//                    var @params =methodData.Info.GetParameters().Select(u => u.ParameterType).ToArray();
+//                    var methods = objects.Select(j => j.GetMethod(methodData.Info.GetMethodName(),BindingFlags.NonPublic|BindingFlags.Public|BindingFlags.Instance,null, @params,null)).ToArray();
+//
+//                    foreach (var methodInfo in methods)
+//                    {
+//                        if(methodInfo==null)
+//                        continue;
+//                        var interpreter2 = new MethodInterpreter(methodInfo);
+//                        var descInfo2 = interpreter2.ToKey();
+//                        if (result.ContainsKey(descInfo2))
+//                            continue;
+//                         interpreter2 = methodInfo.Register(crRuntime);
+//                         if (interpreter2 == null)
+//                            continue;
+//                        var isGenericDeclaringType2 = interpreter.IsGenericDeclaringType();
+//                        if (isGenericDeclaringType2)
+//                        {
+//                            interpreter.Specialize();
+//                        }
+//                        var interpreterExists2 = result.ContainsKey(descInfo);
+//                        if (!interpreterExists2)
+//                        {
+//                            result[descInfo] = interpreter2;
+//                            UpdateMethodEntryClosure(interpreter2, result, crRuntime);
+//                        }
+//                    }
+//                }
 
                 toAdd.Add(interpreter);
             }

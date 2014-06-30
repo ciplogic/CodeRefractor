@@ -24,6 +24,19 @@ namespace CodeRefractor.RuntimeBase
 {
     public static class CommonExtensions
     {
+
+      
+        public static IEnumerable<Type> GetObjectsByInterface(this Assembly assembly, Type T)
+        {
+            if (!T.IsInterface)
+                throw new ArgumentException("T must be an interface");
+
+            return assembly.GetTypes()
+                .Where(x => x.GetInterface(T.Name) != null)
+                .Select(x => x)
+                .ToArray();
+        }
+
         public static TypeCode ExtractTypeCode(this Type fieldInfo)
         {
             return Type.GetTypeCode(fieldInfo);

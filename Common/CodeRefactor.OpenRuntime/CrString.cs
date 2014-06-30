@@ -39,7 +39,7 @@ namespace CodeRefactor.OpenRuntime
                 Text[i] = value[i];
         }
 
-        public int Lengh
+        public int Length
         {
             [CilMethod] get { return Text.Length; }
         }

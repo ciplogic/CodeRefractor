@@ -111,7 +111,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
                             var argCall = parameter as LocalVariable;
                             if (argCall == null || argCall.Kind!=VariableKind.Argument)
                                 continue;
-                            if (!argCall.ComputedType().ClrType.IsClass)
+                            if (!(argCall.ComputedType().ClrType.IsClass||argCall.ComputedType().ClrType.IsInterface))
                                 continue;
 
                             if (otherMethodData.ContainsKey(argCall.Id)

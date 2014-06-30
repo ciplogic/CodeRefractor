@@ -27,8 +27,9 @@ namespace CodeRefractor.RuntimeBase.TypeInfoWriter
 
         public void RegisterMethod(MethodInfo method, Dictionary<MethodInterpreterKey, MethodInterpreter> methodClosure)
         {
-            if (!method.IsVirtual || method.IsAbstract)
+            if (!method.IsVirtual)
                 return;
+            
             foreach (var virtualMethod in VirtualMethods)
             {
                 var matchFound = virtualMethod.MethodMatches(method);

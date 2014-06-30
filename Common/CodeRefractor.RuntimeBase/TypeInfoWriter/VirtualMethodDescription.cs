@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using CodeRefractor.Util;
 
 #endregion
 
@@ -23,12 +24,12 @@ namespace CodeRefractor.RuntimeBase.TypeInfoWriter
         public VirtualMethodDescription(MethodInfo method, Type baseType)
         {
             UsingImplementations = new HashSet<Type>();
-            Name = method.Name;
+            Name = method.GetMethodName();
             ReturnType = method.ReturnType;
             Parameters = method.GetParameters().Select(par => par.ParameterType).ToArray();
 
             BaseType = baseType;
-            BaseMethod = BaseType.GetMethod(Name, Parameters);
+            BaseMethod = BaseType.GetMethod(method.Name, Parameters);
         }
 
         public override string ToString()
@@ -39,7 +40,7 @@ namespace CodeRefractor.RuntimeBase.TypeInfoWriter
 
         public bool MethodMatches(MethodInfo method, bool addToImplementations = true)
         {
-            if (method.Name != Name)
+            if (method.GetMethodName() != Name)
                 return false;
             var declaringType = method.DeclaringType;
             if (BaseType.IsSubclassOf(declaringType))
