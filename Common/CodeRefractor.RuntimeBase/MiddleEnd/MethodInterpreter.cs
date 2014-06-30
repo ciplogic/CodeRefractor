@@ -273,6 +273,7 @@ namespace CodeRefractor.MiddleEnd
                 operationFactory.LoadStaticField((FieldInfo) instruction.Operand);
                 return true;
             }
+           
             if (opcodeStr == "stsfld")
             {
                 operationFactory.StoreStaticField((FieldInfo) instruction.Operand);
@@ -318,6 +319,11 @@ namespace CodeRefractor.MiddleEnd
             {
                 //TODO: load the address into evaluation stack
                 operationFactory.InitObject();
+                return true;
+            }
+            if (opcodeStr == "volatile.") //TODO: handle this
+            {
+                operationFactory.PushDouble(0);
                 return true;
             }
             return false;

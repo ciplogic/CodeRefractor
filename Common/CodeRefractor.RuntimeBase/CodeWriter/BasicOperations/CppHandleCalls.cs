@@ -85,13 +85,22 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             //Virtual Method Dispatch Table is on base class only
             //Also we need to take care of the call if this is not a virtual call 
             // C# compiler seems to use virtual calls when derived class uses new operator on non-virtual base class method
+            //Added special case for interface calls
+            
 
             if (methodInfo.IsVirtual)
             {
-                if (methodInfo.DeclaringType.GetMethod(methodInfo.Name).DeclaringType == methodInfo.DeclaringType)
+                if (methodInfo.IsFinal)//(!operationData.Parameters[0].FixedType.ClrType.GetMethod(methodInfo.Name).IsVirtual)) || !operationData.Parameters[0].FixedType.ClrType.GetMethod(methodInfo.Name).))
+                {
+                    //Direct call
+                    sb.AppendFormat("{0}", methodInfo.ClangMethodSignature(false));
+                }
+                
+                else if ((methodInfo.DeclaringType.GetMethod(methodInfo.Name).DeclaringType == methodInfo.DeclaringType))
                 {
                     
-                    sb.AppendFormat("{0}_vcall", methodInfo.ClangMethodSignature(true));
+                        sb.AppendFormat("{0}_vcall", methodInfo.ClangMethodSignature(true));
+                   
                 }
                 else
                 {

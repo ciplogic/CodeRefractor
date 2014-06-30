@@ -78,3 +78,13 @@ bin/CodeRefactorRuntime/CodeRefactorRuntime.sdf
 bin/OpenRuntime/*
 System.Windows.Interactivity.resources.*
 bin/*.xml
+bin/Tests/CastClassTest1.cs
+bin/Tests/CastClassTest2.cs
+bin/Tests/ClassMethodTest1.cs
+bin/Tests/VirtualMethodsTest1.cs
+bin/Tests/VirtualMethodsTest2.cs
+bin/Tests/VirtualMethodsTest3.cs
+bin/Tests/VirtualMethodsTest4.cs
+bin/Tests/VirtualMethodsTest5.cs
+bin/Tests/CastClassTest3.cs
+bin/Tests/ExplicitInterfacesTest1.cs
