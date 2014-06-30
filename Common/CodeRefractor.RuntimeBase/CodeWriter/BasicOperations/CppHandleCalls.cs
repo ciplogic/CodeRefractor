@@ -89,14 +89,17 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             
 
             if (methodInfo.IsVirtual)
-            {
+            { 
+                var @params = operationData.Parameters.Select(h => h.FixedType.ClrType).Skip(1).ToArray(); // Skip first method for virtual dispatch
+
                 if (methodInfo.IsFinal)//(!operationData.Parameters[0].FixedType.ClrType.GetMethod(methodInfo.Name).IsVirtual)) || !operationData.Parameters[0].FixedType.ClrType.GetMethod(methodInfo.Name).))
                 {
                     //Direct call
                     sb.AppendFormat("{0}", methodInfo.ClangMethodSignature(false));
                 }
-                
-                else if ((methodInfo.DeclaringType.GetMethod(methodInfo.Name).DeclaringType == methodInfo.DeclaringType))
+               
+
+                else if ((methodInfo.DeclaringType.GetMethod(methodInfo.Name, @params)!=null &&methodInfo.DeclaringType.GetMethod(methodInfo.Name, @params).DeclaringType == methodInfo.DeclaringType))
                 {
                     
                         sb.AppendFormat("{0}_vcall", methodInfo.ClangMethodSignature(true));
@@ -104,7 +107,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 }
                 else
                 {
-                    sb.AppendFormat("{0}", methodInfo.DeclaringType.BaseType.GetMethod(methodInfo.Name).ClangMethodSignature(false));
+                    sb.AppendFormat("{0}", methodInfo.DeclaringType.BaseType.GetMethod(methodInfo.Name,operationData.Parameters.Select(h=>h.FixedType.ClrType).ToArray()).ClangMethodSignature(false));
                 }
             }
             else

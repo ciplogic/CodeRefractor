@@ -32,6 +32,7 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations.Identifiers
         public ConstValue(object value)
         {
             Value = value;
+            FixedType = new TypeDescription(Value.GetType());
         }
 
         public override IdentifierValue Clone()
@@ -67,5 +68,7 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations.Identifiers
             }else
             return Value.ToString();
         }
+
+       
     }
 }

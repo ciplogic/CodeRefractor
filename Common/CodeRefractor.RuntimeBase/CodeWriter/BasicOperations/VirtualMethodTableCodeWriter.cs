@@ -59,14 +59,14 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 var methodName = virtualMethod.BaseMethod.ClangMethodSignature();
                 var parametersString = GetParametersString(virtualMethod);
 
-                sb.Append("typedef ");
-                sb.Append(virtualMethod.ReturnType.ToCppName(true,EscapingMode.Smart));
-
-                sb.Append(" (*");
-                sb.Append(methodName);
-                sb.Append("VirtPtr)(");
-                sb.AppendFormat(parametersString);
-                sb.AppendLine(");");
+//                sb.Append("typedef ");
+//                sb.Append(virtualMethod.ReturnType.ToCppName(true,EscapingMode.Smart));
+//
+//                sb.Append(" (*");
+//                sb.Append(methodName);
+//                sb.Append("VirtPtr)(");
+//                sb.AppendFormat(parametersString);
+//                sb.AppendLine(");");
 
                 sb.Append(virtualMethod.ReturnType.ToCppName(true, EscapingMode.Smart));
                 sb.Append(" ");
@@ -101,7 +101,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                     {
                         sb.Append("return ");
                     }
-                    var method = implementation.GetMethod(virtualMethod.Name);
+                    var method = implementation.GetMethod(virtualMethod.Name,virtualMethod.Parameters);
                     var methodImpl = method.ClangMethodSignature();
                     var parametersCallString = GetCall(virtualMethod,method);
                    
@@ -132,7 +132,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                         sb.Append("return ");
                     }
 
-                    var method = implementation.GetMethod(virtualMethod.Name);
+                    var method = implementation.GetMethod(virtualMethod.Name, virtualMethod.Parameters);
                     var methodImpl = method.ClangMethodSignature();
                     var parametersCallString = GetCall(virtualMethod, method);
                     sb
