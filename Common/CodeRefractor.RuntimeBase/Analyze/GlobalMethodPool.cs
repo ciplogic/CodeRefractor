@@ -70,7 +70,17 @@ namespace CodeRefractor.RuntimeBase.Analyze
 
         private static void SetupTypeResolverIfNecesary(MethodBase method)
         {
+            try
+            {
+
+            
             if (method.DeclaringType == null) return;
+            }
+            catch (Exception ex)
+            {
+
+                
+            }
             var assembly = method.DeclaringType.Assembly;
 
             var hasValue = TypeResolvers.ContainsKey(assembly);

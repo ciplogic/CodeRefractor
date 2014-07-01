@@ -12,7 +12,7 @@ namespace VisualCompiler
         /// <summary>
         /// Gets/Sets the opening brace. The default value is '{'.
         /// </summary>
-        public char OpeningBrace { get; set; }
+        public char OpeningBrace { get; set; }  
 
         /// <summary>
         /// Gets/Sets the closing brace. The default value is '}'.

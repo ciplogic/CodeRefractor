@@ -191,7 +191,8 @@ namespace CodeRefractor.RuntimeBase.Backend.ComputeClosure
 
                         foreach (var methodInfo in methods)
                         {
-                           
+                           if(methodInfo==null)
+                           { break;}
                             var interpreter2 = methodInfo.Register(crRuntime);
 
                             var descInfo2 = interpreter2.ToKey(methodInfo.DeclaringType);
