@@ -29,7 +29,15 @@ namespace CodeRefractor.RuntimeBase.TypeInfoWriter
             Parameters = method.GetParameters().Select(par => par.ParameterType).ToArray();
 
             BaseType = baseType;
-            BaseMethod = BaseType.GetMethod(method.Name, Parameters);
+            //Handle Interfaces
+            var interfacewithmethod = baseType.GetInterfaces().FirstOrDefault(g =>baseType.GetInterfaceMap(g).TargetMethods.Contains(method));
+            if (interfacewithmethod!=null)
+            {
+                BaseMethod = interfacewithmethod.GetMethod(method.Name.Replace(interfacewithmethod.Name+".",""),Parameters); //Remove explicit name
+            }
+            else
+          
+            BaseMethod = BaseType.GetMethod(method.Name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, Parameters, null);
         }
 
         public override string ToString()

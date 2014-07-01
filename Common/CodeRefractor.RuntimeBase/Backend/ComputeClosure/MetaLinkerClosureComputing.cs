@@ -172,41 +172,52 @@ namespace CodeRefractor.RuntimeBase.Backend.ComputeClosure
                 {
                     result[descInfo] = interpreter;
                     UpdateMethodEntryClosure(interpreter, result, crRuntime);
-                }
+               
 
                 //Seems we might need to manually inject method interpreters for explicit interface methods ... I give up ...
-//                if (methodData.Info.DeclaringType != null && methodData.Info.DeclaringType.IsInterface)
-//                {
-//                   var objects = methodData.Info.DeclaringType.Assembly.GetObjectsByInterface(methodData.Info.DeclaringType).ToArray();
-//                    var @params =methodData.Info.GetParameters().Select(u => u.ParameterType).ToArray();
-//                    var methods = objects.Select(j => j.GetMethod(methodData.Info.GetMethodName(),BindingFlags.NonPublic|BindingFlags.Public|BindingFlags.Instance,null, @params,null)).ToArray();
-//
-//                    foreach (var methodInfo in methods)
-//                    {
-//                        if(methodInfo==null)
-//                        continue;
-//                        var interpreter2 = new MethodInterpreter(methodInfo);
-//                        var descInfo2 = interpreter2.ToKey();
-//                        if (result.ContainsKey(descInfo2))
-//                            continue;
-//                         interpreter2 = methodInfo.Register(crRuntime);
-//                         if (interpreter2 == null)
-//                            continue;
-//                        var isGenericDeclaringType2 = interpreter.IsGenericDeclaringType();
-//                        if (isGenericDeclaringType2)
-//                        {
-//                            interpreter.Specialize();
-//                        }
-//                        var interpreterExists2 = result.ContainsKey(descInfo);
-//                        if (!interpreterExists2)
-//                        {
-//                            result[descInfo] = interpreter2;
-//                            UpdateMethodEntryClosure(interpreter2, result, crRuntime);
-//                        }
-//                    }
-//                }
+                    if (methodData.Info.DeclaringType != null &&
+                        methodData.Info.DeclaringType.IsInterface)
+                    {
+                        var objects =
+                            methodData.Info.DeclaringType.Assembly.GetObjectsByInterface(methodData.Info.DeclaringType)
+                                .ToArray();
+                        var @params = methodData.Info.GetParameters().Select(u => u.ParameterType).ToArray();
+                        var methods =
+                            objects.Select(
+                                j =>
+                                    j.GetMethod(methodData.Info.GetMethodName(),
+                                        BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance, null,
+                                        @params, null)).ToArray();
 
+                        foreach (var methodInfo in methods)
+                        {
+                           
+                            var interpreter2 = methodInfo.Register(crRuntime);
+
+                            var descInfo2 = interpreter2.ToKey(methodInfo.DeclaringType);
+                            if (result.ContainsKey(descInfo2))
+                                continue;
+
+                            if (interpreter2 == null)
+                                continue;
+                            var isGenericDeclaringType2 = interpreter2.IsGenericDeclaringType();
+                            if (isGenericDeclaringType2)
+                            {
+                                interpreter2.Specialize();
+                            }
+                            var interpreterExists2 = result.ContainsKey(descInfo2);
+                            if (!interpreterExists2)
+                            {
+                                result[descInfo2] = interpreter2;
+                                UpdateMethodEntryClosure(interpreter2, result, crRuntime);
+                            }
+
+                            toAdd.Add(interpreter2);
+                        }
+                    }
+                }
                 toAdd.Add(interpreter);
+               
             }
             return toAdd;
         }

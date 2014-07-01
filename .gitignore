@@ -88,3 +88,5 @@ bin/Tests/VirtualMethodsTest4.cs
 bin/Tests/VirtualMethodsTest5.cs
 bin/Tests/CastClassTest3.cs
 bin/Tests/ExplicitInterfacesTest1.cs
+bin/output.cpp
+bin/output.cpp

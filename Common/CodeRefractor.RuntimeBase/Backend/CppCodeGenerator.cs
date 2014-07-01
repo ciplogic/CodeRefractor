@@ -166,7 +166,13 @@ namespace CodeRefractor.RuntimeBase.Backend
                 }
                 if (!type.IsValueType && type.BaseType != null)
                 {
-                    sb.AppendFormat("struct {0} : public {1} {2} {{", type.ToCppMangling(), type.BaseType.ToCppMangling(),type.GetInterfaces().Any()? " ,"+type.GetInterfaces().Select(j=>j.ToCppMangling()).Aggregate((a,b)=>a + " , " + b):"");
+                    //Not Necessary
+                   // sb.AppendFormat("struct {0} : public {1} {2} {{", type.ToCppMangling(), type.BaseType.ToCppMangling(),type.GetInterfaces().Any()? " ,"+type.GetInterfaces().Select(j=>j.ToCppMangling()).Aggregate((a,b)=>a + " , " + b):"");
+                    sb.AppendFormat("struct {0} : public {1} {{", type.ToCppMangling(), type.BaseType.ToCppMangling());
+                }
+                else if (!type.IsValueType && type.IsInterface)
+                {
+                    sb.AppendFormat("struct {0} : public {1} {{", type.ToCppMangling(), typeof(object).ToCppMangling());
                 }
                 else
                 {

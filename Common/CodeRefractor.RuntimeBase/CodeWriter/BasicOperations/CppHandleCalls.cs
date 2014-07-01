@@ -188,6 +188,13 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 //                        }
 //                        else
                         {
+                            //TODO: this won't work we'll just declare interface instances as system_object
+//                            if (index==0 && operationData.Info.DeclaringType.IsInterface)
+//                            {
+//                                sb.AppendFormat("std::static_pointer_cast<{0}>({1})", typeof(object).ToCppMangling(), localValue.Name);
+//                            }
+//                            else
+                           
                             sb.AppendFormat("{0}", localValue.Name);
                         }
                         continue;

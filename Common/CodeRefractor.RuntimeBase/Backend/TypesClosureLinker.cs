@@ -57,7 +57,9 @@ namespace CodeRefractor.RuntimeBase.Backend
                     interpreter.Process(programClosure.Runtime);
                 }
 
-                dependencies = methodInterpreters.Values.ToList().GetMultiMethodsClosure(programClosure.Runtime);
+                dependencies = methodInterpreters.Values.ToList().GetMultiMethodsClosure(programClosure.Runtime); 
+               
+               
                 canContinue = foundMethodCount != dependencies.Count;
             }
             return result;

@@ -56,8 +56,11 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 
             foreach (var virtualMethod in _validVirtualMethods)
             {
-                var methodName = virtualMethod.BaseMethod.ClangMethodSignature();
-                var parametersString = GetParametersString(virtualMethod);
+                var isinterfaceMethod = virtualMethod.BaseMethod.DeclaringType.IsInterface;
+                string methodName;
+            
+                 methodName = virtualMethod.BaseMethod.ClangMethodSignature();
+                var parametersString = GetParametersString(virtualMethod,isinterfaceMethod);
 
 //                sb.Append("typedef ");
 //                sb.Append(virtualMethod.ReturnType.ToCppName(true,EscapingMode.Smart));
@@ -78,17 +81,19 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 
             foreach (var virtualMethod in _validVirtualMethods)
             {
+                var isinterfaceMethod = virtualMethod.BaseMethod.DeclaringType.IsInterface;
+               
                 var methodName = virtualMethod.BaseMethod.ClangMethodSignature();
 
-                var parametersString = GetParametersString(virtualMethod);
+                var parametersString = GetParametersString(virtualMethod, isinterfaceMethod);
              
                 sb.Append(virtualMethod.ReturnType.ToCppName(true,EscapingMode.Smart));
                 sb.Append(" ");
                 sb.Append(methodName);
                 sb.Append("_vcall(")
                     .AppendFormat(parametersString)
-                    .AppendLine("){").AppendLine(virtualMethod.BaseType.IsInterface?"std::shared_ptr<System_Object> nthis = std::static_pointer_cast<System_Object>(_this);":"")
-                    .AppendLine(!virtualMethod.BaseType.IsInterface ? "switch(_this->_typeId)" : "switch (nthis->_typeId)")
+                    .AppendLine("){")
+                    .AppendLine("switch (_this->_typeId)")
                     .AppendLine("{");
                 foreach (var implementation in virtualMethod.UsingImplementations)
                 {
@@ -103,8 +108,13 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                         if (!isVoid)
                         {
                             sb.Append("return ");
+                        
                         }
-                        var method = implementation.GetMethod(virtualMethod.Name, virtualMethod.Parameters);
+
+                        //Handle Interfaces
+
+                        var method = implementation.GetMethod(virtualMethod.Name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, virtualMethod.Parameters, null); 
+                        //implementation.GetMethod(virtualMethod.Name, virtualMethod.Parameters);
                         var methodImpl = method.ClangMethodSignature();
                         var parametersCallString = GetCall(virtualMethod, method);
 
@@ -157,9 +167,15 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             return sb.ToString();
         }
 
-        private static string GetParametersString(VirtualMethodDescription virtualMethod)
+        private static string GetParametersString(VirtualMethodDescription virtualMethod, bool isinterfacemethod)
         {
-            var parametersString = string.Format("const {0} _this", virtualMethod.BaseType.ToDeclaredVariableType(true,EscapingMode.Smart));
+            string parametersString;
+            if (isinterfacemethod)
+            {
+                parametersString = string.Format("const {0} _this", typeof(object).ToDeclaredVariableType(true, EscapingMode.Smart));
+            }
+            else
+            parametersString = string.Format("const {0} _this", virtualMethod.BaseType.ToDeclaredVariableType(true,EscapingMode.Smart));
             //Add Rest of parameters
             if (virtualMethod.Parameters.Length > 0)
             {

@@ -45,6 +45,8 @@ namespace CodeRefractor.RuntimeBase.Analyze
 
         public TypeDescription(Type clrType)
         {
+            if (clrType.IsInterface)
+                clrType = typeof(object);
             try
             {
                 Layout = new List<FieldDescription>();

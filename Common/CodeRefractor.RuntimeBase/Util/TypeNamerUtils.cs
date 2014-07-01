@@ -40,7 +40,7 @@ namespace CodeRefractor.Util
             var methodName = method.Name;
             if (method is ConstructorInfo)
                 methodName = "ctor";
-            methodName = methodName.Replace("<", "_").Replace(">", "_"); //TODO: C++ does not expect names with angle brackets
+            methodName = methodName.Replace("<", "_").Replace(">", "_").Replace(".","_"); //TODO: C++ does not expect names with angle brackets
             return String.Format("{0}_{1}", typeName, methodName);
         }
 
