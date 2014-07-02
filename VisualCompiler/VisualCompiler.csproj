@@ -126,6 +126,8 @@
     <Content Include="Tests\InterfacesTest1.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Compile Include="Tests\AbstractTest01.cs" />
+    <Compile Include="Tests\NewPropertyTest.cs" />
     <Compile Include="Views\Dialogs\CompilerOptionsViewModel.cs" />
     <Compile Include="Views\Dialogs\CompilerOptionsWindow.xaml.cs">
       <DependentUpon>CompilerOptionsWindow.xaml</DependentUpon>

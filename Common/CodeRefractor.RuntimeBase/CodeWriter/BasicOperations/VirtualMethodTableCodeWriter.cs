@@ -101,8 +101,11 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                     .AppendLine("{");
                 foreach (var implementation in virtualMethod.UsingImplementations)
                 {
+                    var method = implementation.GetMethod(virtualMethod.Name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, virtualMethod.Parameters, null); 
+                    if(implementation.IsAbstract &&  method.IsAbstract)
+                        continue;
                     //Interfaces dont have concrete implementations
-                    if (!implementation.IsInterface)
+                    if (!implementation.IsInterface )
                     {
                         var typeId = _typeTable.TypeTable.GetTypeId(implementation);
 
@@ -117,7 +120,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 
                         //Handle Interfaces
 
-                        var method = implementation.GetMethod(virtualMethod.Name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, virtualMethod.Parameters, null); 
+//                        var method = implementation.GetMethod(virtualMethod.Name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, virtualMethod.Parameters, null); 
                         //implementation.GetMethod(virtualMethod.Name, virtualMethod.Parameters);
                         var methodImpl = method.ClangMethodSignature();
                         var parametersCallString = GetCall(virtualMethod, method);

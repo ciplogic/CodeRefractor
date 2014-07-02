@@ -38,7 +38,7 @@ class Article : IValue // Implements interface
     public string Name // Property implementation
     {
         get { return this._name; }
-        set { this._name = value.ToUpper(); }
+        set { this._name = value; } // .ToUpper(); } TODO: ToUpper brings in a lot of other dependencies
     }
 }
 
