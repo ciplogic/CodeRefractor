@@ -4,6 +4,8 @@ using System;
 using System.IO;
 using System.Reflection;
 using CodeRefactor.OpenRuntime;
+using CodeRefractor.ClosureCompute;
+using CodeRefractor.ClosureCompute.Resolvers;
 using CodeRefractor.MiddleEnd.Optimizations.Util;
 using CodeRefractor.Runtime;
 using CodeRefractor.RuntimeBase;
@@ -37,10 +39,16 @@ namespace CodeRefractor.Compiler
             var start = Environment.TickCount;
 
 
+            var resolveRuntimeMethod = new ResolveRuntimeMethod(typeof(CrString).Assembly);
+            var closureEntities = new ClosureEntities { EntryPoint = definition };
+            closureEntities.AddMethodResolver(resolveRuntimeMethod);
+            closureEntities.ComputeFullClosure();
+
             var crRuntime = new CrRuntimeLibrary();
             crRuntime.ScanAssembly(typeof(CrString).Assembly);
             
             var programClosure = new ProgramClosure(definition, crRuntime);
+
 
             var sb = programClosure.BuildFullSourceCode(programClosure.Runtime);
             var end = Environment.TickCount - start;

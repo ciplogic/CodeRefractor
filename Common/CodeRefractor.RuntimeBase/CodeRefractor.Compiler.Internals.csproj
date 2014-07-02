@@ -59,6 +59,12 @@
     <Compile Include="Analyze\LinkerInterpretersTable.cs" />
     <Compile Include="Analyze\NamerUtils.cs" />
     <Compile Include="Analyze\TypeDescription.cs" />
+    <Compile Include="ClosureCompute\ClosureComputeBase.cs" />
+    <Compile Include="ClosureCompute\ClosureEntities.cs" />
+    <Compile Include="ClosureCompute\Steps\AddEntryPointInterpretedMethod.cs" />
+    <Compile Include="ClosureCompute\Steps\AddNotYetInterpretedMethods.cs" />
+    <Compile Include="ClosureCompute\MethodResolverBase.cs" />
+    <Compile Include="ClosureCompute\Resolvers\ResolveRuntimeMethod.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\Identifiers\GetArrayElement.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\OperationUtils.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\SetField.cs" />
@@ -136,7 +142,6 @@
     <Compile Include="MiddleEnd\SimpleOperations\SizeOfAssignment.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\StaticFieldSetter.cs" />
     <Compile Include="Optimizations\OptimizationKind.cs" />
-    <Compile Include="Runtime\CppMethodDefinition.cs" />
     <Compile Include="Runtime\CrRuntimeLibrary.cs" />
     <Compile Include="DataBase\Cursor.cs" />
     <Compile Include="DataBase\Dict.cs" />
