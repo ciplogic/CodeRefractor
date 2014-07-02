@@ -91,3 +91,4 @@ bin/Tests/ExplicitInterfacesTest1.cs
 bin/output.cpp
 bin/output.cpp
 VisualCompiler/Tests/InterfacesTest1.cs
+packages/*
