@@ -182,17 +182,20 @@ namespace CodeRefractor.RuntimeBase.Backend.ComputeClosure
                             methodData.Info.DeclaringType.Assembly.GetObjectsByInterface(methodData.Info.DeclaringType)
                                 .ToArray();
                         var @params = methodData.Info.GetParameters().Select(u => u.ParameterType).ToArray();
+
+                       
                         var methods =
                             objects.Select(
                                 j =>
                                     j.GetMethod(methodData.Info.GetMethodName(),
                                         BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance, null,
-                                        @params, null)).ToArray();
+                                        @params, null))
+                                      .Union(objects.SelectMany(y=>y.GetProperties().SelectMany(p => p.GetAccessors()).Where(p => p.Name == methodData.Info.Name || p.Name == methodData.Info.Name)
+                                       )).Where(k=>k!=null).ToArray();
 
+                      
                         foreach (var methodInfo in methods)
                         {
-                           if(methodInfo==null)
-                           { break;}
                             var interpreter2 = methodInfo.Register(crRuntime);
 
                             var descInfo2 = interpreter2.ToKey(methodInfo.DeclaringType);

@@ -81,6 +81,10 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 
             foreach (var virtualMethod in _validVirtualMethods)
             {
+                //Ignore instance only dispatch
+                if(virtualMethod.UsingImplementations.All(k=>k.IsInterface))
+                    continue;
+
                 var isinterfaceMethod = virtualMethod.BaseMethod.DeclaringType.IsInterface;
                
                 var methodName = virtualMethod.BaseMethod.ClangMethodSignature();

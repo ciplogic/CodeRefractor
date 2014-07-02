@@ -902,6 +902,25 @@ namespace CodeRefractor.MiddleEnd
             AddOperation(casting);
         }
 
+        public void IsInst(Type operand)
+        {
+            //TODO: Fix this
+
+            var valueToCast = _evaluator.Pop();
+            var result = SetNewVReg();
+            result.FixedType = new TypeDescription(operand);
+
+            _evaluator.Push(new IdentifierValue()
+            {
+                FixedType = new TypeDescription(operand),
+                
+            });
+            //AddOperation(casting);
+        }
+
+
+        
+
         public void Box()
         {
             var valueToBox = _evaluator.Pop();

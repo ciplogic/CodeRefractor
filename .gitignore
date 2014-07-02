@@ -90,3 +90,4 @@ bin/Tests/CastClassTest3.cs
 bin/Tests/ExplicitInterfacesTest1.cs
 bin/output.cpp
 bin/output.cpp
+VisualCompiler/Tests/InterfacesTest1.cs

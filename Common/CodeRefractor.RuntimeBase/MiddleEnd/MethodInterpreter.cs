@@ -213,6 +213,9 @@ namespace CodeRefractor.MiddleEnd
 
             if (HandleClassCast(opcodeStr, offset, operationFactory, instruction))
                 return;
+            if (HandleIsInst(opcodeStr, offset, operationFactory, instruction))
+                return;
+            
 
             if (HandleException(opcodeStr, offset, operationFactory, instruction))
                 return;
@@ -604,6 +607,20 @@ namespace CodeRefractor.MiddleEnd
                 return true;
             }
           
+            return false;
+        }
+
+        private static bool HandleIsInst(string opcodeStr, int offset, MetaMidRepresentationOperationFactory operationFactory, Instruction instruction)
+        {
+
+
+            if (opcodeStr == "isinst"
+                )
+            {
+                operationFactory.IsInst((Type)instruction.Operand);
+                return true;
+            }
+
             return false;
         }
 

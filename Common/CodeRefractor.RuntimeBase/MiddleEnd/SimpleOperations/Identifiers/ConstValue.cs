@@ -32,7 +32,12 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations.Identifiers
         public ConstValue(object value)
         {
             Value = value;
+            if(Value!=null)
             FixedType = new TypeDescription(Value.GetType());
+            else
+            {
+                FixedType = new TypeDescription(null);
+            }
         }
 
         public override IdentifierValue Clone()

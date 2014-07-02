@@ -103,7 +103,9 @@ namespace CodeRefractor.RuntimeBase.Backend
 
         private static void WriteClosureStructBodies(Type[] typeDatas, StringBuilder sb, CrRuntimeLibrary crRuntime)
         {
-           
+
+
+          typeDatas= typeDatas.ToList().Except(typeDatas.Where(y => y.Name == "String")).ToArray(); // This appears sometimes, why ?
 
             foreach (var typeData in typeDatas)
             {
@@ -119,14 +121,14 @@ namespace CodeRefractor.RuntimeBase.Backend
             var sortedTypeData = new List<Type>();
             sortedTypeData.Add(typeof(System.Object));
             typeDataList.Remove(typeof(Object));
-
+            
            
                 
             while (typeDataList.Count > 0)
             {
                 foreach (var typeData in typeDatas)
                 {
-                    if(sortedTypeData.Contains(typeData)) // Prevent repeats
+                    if(sortedTypeData.Contains(typeData) ) // Prevent repeats
                         continue;
 
                     if (sortedTypeData.Contains(typeData.BaseType)||typeData.IsInterface)
