@@ -125,7 +125,7 @@ namespace CodeRefractor.Runtime
             return mappedDeclaredType.GetMethod(methodName, arguments);
         }
 
-        public ConstructorInfo GetMappedConstructor(ConstructorInfo constructorInfo)
+        public ConstructorInfo GetMappedConstructor(MethodBase constructorInfo)
         {
             var mappedDeclaredType = GetMappedType(constructorInfo.DeclaringType);
             var arguments = constructorInfo.GetParameters().Select(par => par.ParameterType).ToArray();

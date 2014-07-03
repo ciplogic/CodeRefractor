@@ -9,7 +9,7 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations
 {
     public class NewConstructedObject : LocalOperation
     {
-        public ConstructorInfo Info { get; set; }
+        public MethodBase Info { get; set; }
         public LocalVariable AssignedTo { get; set; }
 
         public NewConstructedObject():base(OperationKind.NewObject)

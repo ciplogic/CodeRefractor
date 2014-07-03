@@ -7,6 +7,12 @@ using CodeRefractor.RuntimeBase;
 
 namespace CodeRefactor.OpenRuntime
 {
+
+    [MapType(typeof (string))]
+    public class CrInt32
+    {
+    }
+
     [MapType(typeof (string))]
     public class CrString
     {

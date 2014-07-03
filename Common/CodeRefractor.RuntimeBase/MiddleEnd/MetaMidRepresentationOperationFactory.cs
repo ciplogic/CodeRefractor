@@ -16,7 +16,8 @@ using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
 using CodeRefractor.RuntimeBase.Shared;
-using MsilReader;
+using Mono.Cecil;
+using Mono.Cecil.Cil;
 
 #endregion
 
@@ -168,7 +169,7 @@ namespace CodeRefractor.MiddleEnd
             }
         }
 
-        public void StoreField(FieldInfo fieldInfo)
+        public void StoreField(FieldReference fieldInfo)
         {
             var secondVar = _evaluator.Pop();
             var firstVar = _evaluator.Pop();
@@ -405,17 +406,25 @@ namespace CodeRefractor.MiddleEnd
 
         public void Call(object operand, CrRuntimeLibrary crRuntime)
         {
-            var methodInfo = (MethodBase)operand;
-            var interpreter = methodInfo.Register(crRuntime);
-            var methodData = new MethodData(interpreter,OperationKind.Call);
+            var methodInfo = ((MethodReference)operand).GetMethod(); //TODO System.Void System.Array::Resize<System.Char>(!!0[]&,System.Int32) Weird Signature
+
+            if (methodInfo != null)
+            {
+                var interpreter = methodInfo.Register(crRuntime);
+                var methodData = new MethodData(interpreter, OperationKind.Call);
 
 
-            CallMethodData(methodInfo, methodData, OperationKind.Call, crRuntime);
+                CallMethodData(methodInfo, methodData, OperationKind.Call, crRuntime);
+            }
+            else
+            {
+                
+            }
         }
 
         public void CallVirtual(object operand, CrRuntimeLibrary crRuntime)
         {
-            var methodInfo = (MethodBase)operand;
+            var methodInfo = ((MethodReference)operand).GetMethod();
             var interpreter = methodInfo.Register(crRuntime);
             var methodData = new MethodData(interpreter, OperationKind.CallVirtual);
 
@@ -423,16 +432,7 @@ namespace CodeRefractor.MiddleEnd
             CallMethodData(methodInfo, methodData, OperationKind.CallVirtual, crRuntime);
         }
 
-        public void CallInterface(object operand, CrRuntimeLibrary crRuntime)
-        {
-            var methodInfo = (MethodBase)operand;
-            var interpreter = methodInfo.Register(crRuntime);
-            var methodData = new MethodData(interpreter, OperationKind.CallInterface);
-
-
-            CallMethodData(methodInfo, methodData, OperationKind.CallInterface, crRuntime);
-        }
-
+      
         private void CallMethodData(MethodBase methodInfo, MethodData methodData, OperationKind operationKind,
             CrRuntimeLibrary crRuntime)
         {
@@ -474,7 +474,7 @@ namespace CodeRefractor.MiddleEnd
         }
 
 
-        public void StoreStaticField(FieldInfo fieldInfo)
+        public void StoreStaticField(FieldReference fieldInfo)
         {
             var firstVar = _evaluator.Pop();
             var fieldName = fieldInfo.Name;
@@ -482,7 +482,7 @@ namespace CodeRefractor.MiddleEnd
             {
                 AssignedTo = new StaticFieldSetter
                 {
-                    DeclaringType = fieldInfo.DeclaringType,
+                    DeclaringType = fieldInfo.DeclaringType.GetClrType(),
                     FieldName = fieldName
                 },
                 Right = firstVar
@@ -594,11 +594,11 @@ namespace CodeRefractor.MiddleEnd
             AddOperation(assignment);
         }
 
-        public void LoadFieldAddressIntoEvaluationStack(FieldInfo fieldInfo)
+        public void LoadFieldAddressIntoEvaluationStack(FieldReference fieldInfo)
         {
             var firstVar = (LocalVariable)_evaluator.Pop();
             var vreg = SetNewVReg();
-            vreg.FixedType = new TypeDescription(fieldInfo.FieldType.MakeByRefType());
+            vreg.FixedType = new TypeDescription(fieldInfo.FieldType.GetClrType().MakeByRefType());
 
             var assignment = new FieldRefAssignment
             {
@@ -631,12 +631,12 @@ namespace CodeRefractor.MiddleEnd
             AddOperation(assignment);
         }
 
-        public void LoadStaticField(FieldInfo operand)
+        public void LoadStaticField(FieldReference operand)
         {
             var vreg = SetNewVReg();
             var fieldName = operand.Name;
             var declaringType = operand.DeclaringType;
-            if (declaringType == typeof(IntPtr) && fieldName == "Zero")
+            if (declaringType.GetClrType() == typeof(IntPtr) && fieldName == "Zero")
             {
                 var voidPtr = new TypeDescription(typeof(IntPtr));
                 vreg.FixedType = voidPtr;
@@ -652,8 +652,8 @@ namespace CodeRefractor.MiddleEnd
                 return;
             }
             vreg.FixedType =
-                new TypeDescription(declaringType.LocateField(fieldName, true).FieldType);
-            var typeData = new TypeDescription(declaringType);
+                new TypeDescription(declaringType.GetClrType().LocateField(fieldName, true).FieldType);
+            var typeData = new TypeDescription(declaringType.GetClrType());
             var assignment = new Assignment
             {
                 AssignedTo = vreg,
@@ -666,7 +666,7 @@ namespace CodeRefractor.MiddleEnd
             AddOperation(assignment);
         }
 
-        public void NewObject(ConstructorInfo constructorInfo, CrRuntimeLibrary crRuntime)
+        public void NewObject(MethodBase constructorInfo, CrRuntimeLibrary crRuntime)
         {
             if (constructorInfo.DeclaringType == typeof(object))
                 return;
@@ -728,12 +728,12 @@ namespace CodeRefractor.MiddleEnd
             AddOperation(setArrayElement);
         }
 
-        public void SetToken(FieldInfo operand)
+        public void SetToken(FieldReference operand)
         {
             var fieldOperand = operand;
             var fieldType = fieldOperand.FieldType;
             var nesterType = fieldType.DeclaringType;
-            var fields = nesterType.GetFields(BindingFlags.Static | BindingFlags.NonPublic);
+            var fields = nesterType.GetClrType().GetFields(BindingFlags.Static | BindingFlags.NonPublic);
             var value = fields[0].GetValue(null);
             var srcBytes = value.ToByteArray();
             var vreg = SetNewVReg();
@@ -973,6 +973,11 @@ namespace CodeRefractor.MiddleEnd
 
             AddOperation(assign);
 
+        }
+
+        public void CallInterface(object operand, CrRuntimeLibrary crRuntime)
+        {
+            throw new NotImplementedException();
         }
     }
 }
