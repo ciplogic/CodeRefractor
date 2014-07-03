@@ -3,13 +3,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using CodeRefractor.ClosureCompute;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
-using CodeRefractor.RuntimeBase;
-using CodeRefractor.RuntimeBase.Backend.ComputeClosure;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
+using CodeRefractor.Util;
 
 #endregion
 
@@ -17,14 +17,14 @@ namespace CodeRefractor.CompilerBackend.ProgramWideOptimizations.Virtual
 {
     public class DevirtualizerIfOneImplemetor : ResultingProgramOptimizationBase
     {
-        protected override void DoOptimize(ProgramClosure closure)
+        protected override void DoOptimize(ClosureEntities closure)
         {
-            var methodInterpreters = closure.MethodClosure.Values
+            var methodInterpreters = closure.MethodImplementations.Values
                 .Where(m => m.Kind == MethodKind.Default)
                 .ToList();
             foreach (var interpreter in methodInterpreters)
             {
-                HandleInterpreterInstructions(interpreter, closure.UsedTypes);
+                HandleInterpreterInstructions(interpreter, closure.MappedTypes.Values.ToList());
             }
         }
 

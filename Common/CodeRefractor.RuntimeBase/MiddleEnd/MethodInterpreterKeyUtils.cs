@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using CodeRefractor.ClosureCompute;
 using CodeRefractor.MiddleEnd;
 
 #endregion
@@ -17,14 +18,10 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             return result;
         }
 
-        public static MethodInterpreterKey ToKey(this MethodBase methodbase, ProgramClosure closure)
+        public static MethodInterpreterKey ToKey(this MethodBase methodbase, ClosureEntities closure)
         {
-            foreach (var m in closure.MethodClosure)
-            {
-                if (m.Value.Method == methodbase)
-                    return m.Key;
-            }
-            return null;
+            return closure.ResolveMethod(methodbase).ToKey();
+
         }
 
 

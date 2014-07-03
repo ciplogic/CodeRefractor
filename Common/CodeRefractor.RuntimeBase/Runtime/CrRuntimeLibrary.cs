@@ -23,8 +23,6 @@ namespace CodeRefractor.Runtime
         public readonly Dictionary<MethodInterpreterKey, MethodInterpreter> SupportedMethods =
             new Dictionary<MethodInterpreterKey, MethodInterpreter>();
 
-        public ProgramClosure Closure { get; set; }
-
         public void ScanAssembly(Assembly assembly)
         {
             foreach (var item in assembly.GetTypes())

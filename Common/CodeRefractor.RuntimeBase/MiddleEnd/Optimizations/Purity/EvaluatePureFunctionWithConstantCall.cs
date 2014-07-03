@@ -52,7 +52,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Purity
         public static MethodData ComputeAndEvaluatePurityOfCall(LocalOperation operation)
         {
             var operationData = (MethodData) operation;
-            var methodInterpreter = operationData.Info.GetInterpreter(Runtime);
+            var methodInterpreter = operationData.Info.GetInterpreter(Closure);
             if (AnalyzeFunctionPurity.ReadPurity(methodInterpreter))
             {
                 operationData.Interpreter.AnalyzeProperties.IsPure = true;

@@ -2,11 +2,11 @@
 
 using System;
 using System.Collections.Generic;
+using CodeRefractor.ClosureCompute;
 using CodeRefractor.CodeWriter.BasicOperations;
 using CodeRefractor.CodeWriter.Platform;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
-using CodeRefractor.Runtime;
 using CodeRefractor.RuntimeBase.CodeWriter.BasicOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.Optimizations;
@@ -18,20 +18,19 @@ namespace CodeRefractor.RuntimeBase.Backend.ComputeClosure
 {
     public static class MethodInterpreterCodeWriter
     {
-        public static string WriteMethodCode(MethodInterpreter interpreter, TypeDescriptionTable typeTable,
-            CrRuntimeLibrary crRuntime)
+        public static string WriteMethodCode(MethodInterpreter interpreter, TypeDescriptionTable typeTable, ClosureEntities closureEntities)
         {
-            return CppMethodCodeWriter.WriteCode(interpreter, typeTable, crRuntime);
+            return CppMethodCodeWriter.WriteCode(interpreter, typeTable, closureEntities);
         }
 
-        public static string WriteMethodSignature(MethodInterpreter interpreter, CrRuntimeLibrary crRuntime)
+        public static string WriteMethodSignature(MethodInterpreter interpreter, ClosureEntities closureEntities)
         {
             if (interpreter.Method == null)
             {
                 Console.WriteLine("Should not be null");
                 return "";
             }
-            var sb = CppWriteSignature.WriteSignature(interpreter, crRuntime, true);
+            var sb = CppWriteSignature.WriteSignature(interpreter,closureEntities, true);
             return sb.ToString();
         }
 

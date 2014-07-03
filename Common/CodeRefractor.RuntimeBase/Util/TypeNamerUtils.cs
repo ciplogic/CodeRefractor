@@ -22,6 +22,15 @@ namespace CodeRefractor.Util
             }
             return methodInfo.Name;
         }
+
+
+
+        public static List<Type> ImplementorsOfT(this Type t, IEnumerable<Type> usedTypes)
+        {
+            var result = usedTypes.Where(usedType => usedType.IsSubclassOf(t)).ToList();
+            return result;
+        }
+
         public static string ClangMethodSignature(this MethodBase method,bool isvirtualmethod = false)
         {
             var mappedType = method.DeclaringType;

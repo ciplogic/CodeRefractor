@@ -27,7 +27,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Purity
             {
                 var operation = localOperations[index];
                 var methodData = operation.Get<MethodData>();
-                var interpreter = methodData.GetInterpreter(Runtime);
+                var interpreter = methodData.GetInterpreter(Closure);
                 if (interpreter == null)
                     continue;
                 if (methodData.Result != null)

@@ -1,13 +1,15 @@
 ﻿#region Usings
 
-using CodeRefractor.RuntimeBase;
+using CodeRefractor.ClosureCompute;
 
 #endregion
+
+
 
 namespace CodeRefractor.CompilerBackend.ProgramWideOptimizations
 {
     public abstract class ProgramOptimizationBase
     {
-        public abstract bool Optimize(ProgramClosure closure);
+        public abstract bool Optimize(ClosureEntities closure);
     }
 }

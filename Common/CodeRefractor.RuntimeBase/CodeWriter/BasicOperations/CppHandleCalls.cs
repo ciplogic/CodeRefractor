@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using CodeRefractor.ClosureCompute;
 using CodeRefractor.CodeWriter.Linker;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.SimpleOperations;
@@ -61,7 +62,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 
 
         public static void HandleCall(LocalOperation operation, StringBuilder sbCode, MidRepresentationVariables vars,
-            MethodInterpreter interpreter, CrRuntimeLibrary crRuntime)
+            MethodInterpreter interpreter, ClosureEntities crRuntime)
         {
             var operationData = (MethodData) operation;
             var sb = new StringBuilder();
@@ -80,7 +81,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         }
 
         public static void HandleCallInterface(LocalOperation operation, StringBuilder sbCode,
-            MidRepresentationVariables vars, MethodInterpreter interpreter, CrRuntimeLibrary crRuntime)
+            MidRepresentationVariables vars, MethodInterpreter interpreter, ClosureEntities crRuntime)
         {
             var operationData = (MethodData) operation;
             var sb = new StringBuilder();
@@ -99,7 +100,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         }
 
         public static void HandleCallVirtual(LocalOperation operation, StringBuilder sbCode,
-            MidRepresentationVariables vars, MethodInterpreter interpreter, CrRuntimeLibrary crRuntime)
+            MidRepresentationVariables vars, MethodInterpreter interpreter, ClosureEntities crRuntime)
         {
             var operationData = (MethodData) operation;
             var sb = new StringBuilder();
@@ -149,7 +150,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         }
 
         private static bool WriteParametersToSb(MethodData operationData, MethodBase methodInfo, StringBuilder sb,
-            MethodInterpreter interpreter, CrRuntimeLibrary crRuntime)
+            MethodInterpreter interpreter, ClosureEntities crRuntime)
         {
             var identifierValues = operationData.Parameters;
 

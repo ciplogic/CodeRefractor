@@ -2,6 +2,7 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using CodeRefractor.ClosureCompute;
 using CodeRefractor.CompilerBackend.ProgramWideOptimizations;
 
 #endregion
@@ -17,7 +18,7 @@ namespace CodeRefractor.RuntimeBase.Backend.ProgramWideOptimizations
             Optimizations.Add(optimization);
         }
 
-        public bool Optimize(ProgramClosure program)
+        public bool Optimize(ClosureEntities program)
         {
             var result = false;
             foreach (var optimization in Optimizations)

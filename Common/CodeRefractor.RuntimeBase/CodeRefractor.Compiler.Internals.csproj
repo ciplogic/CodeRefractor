@@ -74,18 +74,15 @@
     <Compile Include="Analyze\UsedTypeListUtils.cs" />
     <Compile Include="Backend\ComputeClosure\ClosureResult.cs" />
     <Compile Include="Backend\ComputeClosure\ClosureTypeComparer.cs" />
-    <Compile Include="Backend\ComputeClosure\MetaLinkerClosureComputing.cs" />
     <Compile Include="Backend\ComputeClosure\MethodInterpreterCodeWriter.cs" />
     <Compile Include="Backend\CppCodeGenerator.cs" />
     <Compile Include="Backend\Linker\LinkerInterpretersTableUtils.cs" />
-    <Compile Include="Backend\MetaLinkerOptimizer.cs" />
     <Compile Include="Backend\ProgramWideOptimizations\ConstParameters\CallToFunctionsWithSameConstant.cs" />
     <Compile Include="Backend\ProgramWideOptimizations\ConstParameters\ConstantParametersData.cs" />
     <Compile Include="Backend\ProgramWideOptimizations\ProgramOptimizationBase.cs" />
     <Compile Include="Backend\ProgramWideOptimizations\ProgramOptimizationsTable.cs" />
     <Compile Include="Backend\ProgramWideOptimizations\ResultingProgramOptimizationBase.cs" />
     <Compile Include="Backend\ProgramWideOptimizations\Virtual\DevirtualizerIfOneImplemetor.cs" />
-    <Compile Include="Backend\TypesClosureLinker.cs" />
     <Compile Include="CilMethodAttribute.cs" />
     <Compile Include="CodeWriter\BasicOperations\CppHandleBranches.cs" />
     <Compile Include="CodeWriter\BasicOperations\CppHandleCalls.cs" />
@@ -121,7 +118,6 @@
     <Compile Include="MiddleEnd\SimpleOperations\RefArrayItemAssignment.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\Switch.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\Unboxing.cs" />
-    <Compile Include="ProgramClosure.cs" />
     <Compile Include="Runtime\Annotations\CppLibMethodAttribute.cs" />
     <Compile Include="Runtime\Annotations\CrTypeResolver.cs" />
     <Compile Include="Runtime\Annotations\MapMethodAttribute.cs" />

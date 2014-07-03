@@ -2,10 +2,10 @@
 
 using System;
 using System.Text;
+using CodeRefractor.ClosureCompute;
 using CodeRefractor.CodeWriter.Linker;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
-using CodeRefractor.Runtime;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
@@ -17,12 +17,11 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 {
     public static class CppWriteSignature
     {
-        public static string GetArgumentsAsTextWithEscaping(this MethodInterpreter interpreter,
-            CrRuntimeLibrary crRuntime)
+        public static string GetArgumentsAsTextWithEscaping(this MethodInterpreter interpreter, ClosureEntities closureEntities)
         {
             var method = interpreter.Method;
             var parameterInfos = method.GetParameters();
-            var escapingBools = method.BuildEscapingBools(crRuntime);
+            var escapingBools = method.BuildEscapingBools(closureEntities);
             var sb = new StringBuilder();
             var index = 0;
             var analyze = interpreter.AnalyzeProperties;
@@ -36,7 +35,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 });
                 if (parameterData != EscapingMode.Unused)
                 {
-                    var argumentTypeDescription = UsedTypeList.Set(method.DeclaringType.GetMappedType(), crRuntime);
+                    var argumentTypeDescription = UsedTypeList.Set(method.DeclaringType.GetMappedType(), closureEntities);
                     var thisText = String.Format("const {0}& _this", argumentTypeDescription.ClrType.ToCppName(true)); // all "_this" should be smart pointers
                     //For some reason at three Virtual Test 4 fails this, is something wrong with the escaping ?
 //                    if ((!escapingBools[0]))
@@ -68,7 +67,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 }
                 var isSmartPtr = escapingBools[index];
                 var nonEscapingMode = isSmartPtr ? EscapingMode.Smart : EscapingMode.Pointer;
-                var argumentTypeDescription = UsedTypeList.Set(parameterInfo.ParameterType.GetMappedType(), crRuntime);
+                var argumentTypeDescription = UsedTypeList.Set(parameterInfo.ParameterType.GetMappedType(), closureEntities);
                 sb.AppendFormat("{0} {1}",
                     argumentTypeDescription.ClrType.ToCppName(true, nonEscapingMode),
                     parameterInfo.Name);
@@ -77,8 +76,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         }
 
 
-        public static string WriteHeaderMethodWithEscaping(this MethodInterpreter interpreter,
-            CrRuntimeLibrary crRuntime, bool writeEndColon = true)
+        public static string WriteHeaderMethodWithEscaping(this MethodInterpreter interpreter, ClosureEntities closureEntities, bool writeEndColon = true)
         {
             var methodBase = interpreter.Method;
             var retType = methodBase.GetReturnType().ToCppName(true);
@@ -93,8 +91,8 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                     sb.AppendLine(genericTypeCount.GetTypeTemplatePrefix());
             }
 
-            
-            var arguments = interpreter.GetArgumentsAsTextWithEscaping(crRuntime);
+
+            var arguments = interpreter.GetArgumentsAsTextWithEscaping(closureEntities);
 
             sb.AppendFormat("{0} {1}({2})",
                 retType, methodBase.ClangMethodSignature(), arguments);
@@ -105,13 +103,12 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             return sb.ToString();
         }
 
-        public static StringBuilder WriteSignature(MethodInterpreter interpreter, CrRuntimeLibrary crRuntime,
-            bool writeEndColon = false)
+        public static StringBuilder WriteSignature(MethodInterpreter interpreter, ClosureEntities closureEntities, bool writeEndColon = false)
         {
             var sb = new StringBuilder();
             if (interpreter == null)
                 return sb;
-            var text = interpreter.WriteHeaderMethodWithEscaping(crRuntime, writeEndColon: writeEndColon);
+            var text = interpreter.WriteHeaderMethodWithEscaping(closureEntities, writeEndColon);
             sb.Append(text);
             return sb;
         }

@@ -6,13 +6,13 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using CodeRefractor.ClosureCompute;
 using CodeRefractor.CodeWriter.BasicOperations;
 using CodeRefractor.CodeWriter.Linker;
 using CodeRefractor.CodeWriter.Platform;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.SimpleOperations.ConstTable;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
-using CodeRefractor.Runtime;
 using CodeRefractor.Runtime.Annotations;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.Backend.ComputeClosure;
@@ -27,9 +27,7 @@ namespace CodeRefractor.RuntimeBase.Backend
 {
     public static class CppCodeGenerator
     {
-        public static StringBuilder GenerateSourceStringBuilder(MethodInterpreter interpreter, List<Type> typeClosure,
-            List<MethodInterpreter> closure,
-            VirtualMethodTable typeTable, CrRuntimeLibrary crRuntime)
+        public static StringBuilder GenerateSourceStringBuilder(MethodInterpreter interpreter, List<Type> typeClosure, List<MethodInterpreter> closure, VirtualMethodTable typeTable, ClosureEntities closureEntities)
         {
             var sb = new StringBuilder();
 
@@ -38,15 +36,15 @@ namespace CodeRefractor.RuntimeBase.Backend
 
             var virtualMethodTableCodeWriter = new VirtualMethodTableCodeWriter(typeTable, closure);
 
-            WriteClosureStructBodies(typeClosure.ToArray(), sb, crRuntime);
+            WriteClosureStructBodies(typeClosure.ToArray(), sb, closureEntities);
             WriteClosureDelegateBodies(closure, sb);
-            WriteClosureHeaders(closure, sb, crRuntime);
+            WriteClosureHeaders(closure, sb, closureEntities);
 
             sb.AppendLine("#include \"runtime_base.hpp\"");
 
             sb.AppendLine(virtualMethodTableCodeWriter.GenerateTypeTableCode(typeClosure.ToArray())); // We need to use this type table to generate missing jumps for subclasses  that dont override a base method
             WriteCppMethods(closure, sb);
-            WriteClosureMethods(closure, sb, typeTable.TypeTable, crRuntime);
+            WriteClosureMethods(closure, sb, typeTable.TypeTable, closureEntities);
 
             WriteMainBody(interpreter, sb);
             sb.AppendLine(PlatformInvokeCodeWriter.LoadDllMethods());
@@ -73,14 +71,12 @@ namespace CodeRefractor.RuntimeBase.Backend
             }
         }
 
-        private static void WriteClosureMethods(List<MethodInterpreter> closure, StringBuilder sb,
-            TypeDescriptionTable typeTable, CrRuntimeLibrary crRuntime)
+        private static void WriteClosureMethods(List<MethodInterpreter> closure, StringBuilder sb, TypeDescriptionTable typeTable, ClosureEntities closureEntities)
         {
-            WriteClosureBodies(closure, sb, typeTable, crRuntime);
+            WriteClosureBodies(closure, sb, typeTable, closureEntities);
         }
 
-        private static void WriteClosureHeaders(List<MethodInterpreter> closure, StringBuilder sb,
-            CrRuntimeLibrary crRuntime)
+        private static void WriteClosureHeaders(List<MethodInterpreter> closure, StringBuilder sb, ClosureEntities closureEntities)
         {
             foreach (var interpreter in closure)
             {
@@ -88,7 +84,7 @@ namespace CodeRefractor.RuntimeBase.Backend
                     continue;
                 if (interpreter.Method.IsAbstract)
                     continue;
-                sb.AppendLine(MethodInterpreterCodeWriter.WriteMethodSignature(interpreter, crRuntime));
+                sb.AppendLine(MethodInterpreterCodeWriter.WriteMethodSignature(interpreter, closureEntities));
             }
         }
 
@@ -101,11 +97,11 @@ namespace CodeRefractor.RuntimeBase.Backend
             return null;
         }
 
-        private static void WriteClosureStructBodies(Type[] typeDatas, StringBuilder sb, CrRuntimeLibrary crRuntime)
+        private static void WriteClosureStructBodies(Type[] typeDatas, StringBuilder sb, ClosureEntities crRuntime)
         {
 
 
-          typeDatas= typeDatas.ToList().Except(typeDatas.Where(y => y.Name == "String")).ToArray(); // This appears sometimes, why ?
+            typeDatas = typeDatas.ToList().Except(typeDatas.Where(y => y.Name == "String")).ToArray(); // This appears sometimes, why ?
 
             foreach (var typeData in typeDatas)
             {
@@ -121,33 +117,33 @@ namespace CodeRefractor.RuntimeBase.Backend
             var sortedTypeData = new List<Type>();
             sortedTypeData.Add(typeof(System.Object));
             typeDataList.Remove(typeof(Object));
-            
-           
-                
+
+
+
             while (typeDataList.Count > 0)
             {
                 foreach (var typeData in typeDatas)
                 {
-                    if(sortedTypeData.Contains(typeData) ) // Prevent repeats
+                    if (sortedTypeData.Contains(typeData)) // Prevent repeats
                         continue;
 
-                    if (sortedTypeData.Contains(typeData.BaseType)||typeData.IsInterface)
+                    if (sortedTypeData.Contains(typeData.BaseType) || typeData.IsInterface)
                     {
                         sortedTypeData.Add(typeData);
                         typeDataList.Remove(typeData);
                     }
-                    if(typeDataList.Count == 0)
+                    if (typeDataList.Count == 0)
                         break;
                 }
             }
 
-           
-           //Add these empty interfaces for strings TODO: Fix this use actual implementations
+
+            //Add these empty interfaces for strings TODO: Fix this use actual implementations
             sb.Append(
                 new string[]
                 {
                     "System_IComparable" , "System_ICloneable" , "System_IConvertible" , "System_IComparable_1" , "System_Collections_Generic_IEnumerable_1" , "System_Collections_IEnumerable" , "System_IEquatable_1"
-                }.Select(r=>"struct " + r +"{};\n").Aggregate((a,b)=>a + "\n" + b));
+                }.Select(r => "struct " + r + "{};\n").Aggregate((a, b) => a + "\n" + b));
 
             foreach (var typeData in sortedTypeData)
             {
@@ -169,7 +165,7 @@ namespace CodeRefractor.RuntimeBase.Backend
                 if (!type.IsValueType && type.BaseType != null)
                 {
                     //Not Necessary
-                   // sb.AppendFormat("struct {0} : public {1} {2} {{", type.ToCppMangling(), type.BaseType.ToCppMangling(),type.GetInterfaces().Any()? " ,"+type.GetInterfaces().Select(j=>j.ToCppMangling()).Aggregate((a,b)=>a + " , " + b):"");
+                    // sb.AppendFormat("struct {0} : public {1} {2} {{", type.ToCppMangling(), type.BaseType.ToCppMangling(),type.GetInterfaces().Any()? " ,"+type.GetInterfaces().Select(j=>j.ToCppMangling()).Aggregate((a,b)=>a + " , " + b):"");
                     sb.AppendFormat("struct {0} : public {1} {{", type.ToCppMangling(), type.BaseType.ToCppMangling());
                 }
                 else if (!type.IsValueType && type.IsInterface)
@@ -181,7 +177,7 @@ namespace CodeRefractor.RuntimeBase.Backend
                     sb.AppendFormat("struct {0} {{", type.ToCppMangling());
                 }
                 sb.AppendLine();
-                if (type == typeof (object))
+                if (type == typeof(object))
                 {
                     sb.AppendLine("int _typeId;");
                 }
@@ -193,7 +189,7 @@ namespace CodeRefractor.RuntimeBase.Backend
             }
         }
 
-        private static void WriteClassFieldsBody(StringBuilder sb, Type mappedType, CrRuntimeLibrary crRuntime)
+        private static void WriteClassFieldsBody(StringBuilder sb, Type mappedType, ClosureEntities crRuntime)
         {
             var typeDesc = UsedTypeList.Set(mappedType, crRuntime);
             typeDesc.WriteLayout(sb);
@@ -211,8 +207,7 @@ namespace CodeRefractor.RuntimeBase.Backend
             sb.AppendLine(DelegateManager.Instance.BuildDelegateContent());
         }
 
-        private static void WriteClosureBodies(List<MethodInterpreter> closure, StringBuilder sb,
-            TypeDescriptionTable typeTable, CrRuntimeLibrary crRuntime)
+        private static void WriteClosureBodies(List<MethodInterpreter> closure, StringBuilder sb, TypeDescriptionTable typeTable, ClosureEntities closureEntities)
         {
             sb.AppendLine("///--- PInvoke code --- ");
             foreach (var interpreter in closure)
@@ -230,7 +225,7 @@ namespace CodeRefractor.RuntimeBase.Backend
 
                 if (interpreter.Method.IsAbstract)
                     continue;
-                sb.AppendLine(MethodInterpreterCodeWriter.WriteMethodCode(interpreter, typeTable, crRuntime));
+                sb.AppendLine(MethodInterpreterCodeWriter.WriteMethodCode(interpreter, typeTable, closureEntities));
             }
             sb.AppendLine("///---End closure code --- ");
         }
@@ -260,7 +255,7 @@ namespace CodeRefractor.RuntimeBase.Backend
             sb.AppendFormat("auto argsAsList = System_getArgumentsAsList(argc, argv);").AppendLine();
             sb.AppendLine("initializeRuntime();");
             var entryPoint = interpreter.Method as MethodInfo;
-            if (entryPoint.ReturnType != typeof (void))
+            if (entryPoint.ReturnType != typeof(void))
                 sb.Append("return ");
             var parameterInfos = entryPoint.GetParameters();
             var args = String.Empty;

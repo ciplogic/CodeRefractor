@@ -26,7 +26,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Inliner
                 if (localOperation.Kind != OperationKind.Call) continue;
 
                 var methodData = (MethodData) localOperation;
-                var interpreter = methodData.GetInterpreter(Runtime);
+                var interpreter = methodData.GetInterpreter(Closure);
                 if (interpreter == null)
                     continue;
 

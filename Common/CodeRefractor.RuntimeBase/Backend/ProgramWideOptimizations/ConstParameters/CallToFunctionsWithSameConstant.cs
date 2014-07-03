@@ -2,12 +2,12 @@
 
 using System.Linq;
 using CodeRefractor.Backend.ProgramWideOptimizations.ConstParameters;
+using CodeRefractor.ClosureCompute;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 using CodeRefractor.MiddleEnd.UseDefs;
-using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
@@ -18,9 +18,9 @@ namespace CodeRefractor.CompilerBackend.ProgramWideOptimizations.ConstParameters
 {
     public class CallToFunctionsWithSameConstant : ResultingProgramOptimizationBase
     {
-        protected override void DoOptimize(ProgramClosure closure)
+        protected override void DoOptimize(ClosureEntities closure)
         {
-            var methodInterpreters = closure.MethodClosure.Values
+            var methodInterpreters = closure.MethodImplementations.Values
                 .Where(m => m.Kind == MethodKind.Default)
                 .ToList();
             var updateHappen = false;

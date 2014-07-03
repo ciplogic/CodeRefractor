@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using CodeRefractor.ClosureCompute;
 using CodeRefractor.Runtime;
 
 #endregion
@@ -14,7 +15,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
     {
         public readonly Dictionary<Type, TypeDescription> UserTypeDesc = new Dictionary<Type, TypeDescription>();
 
-        public static TypeDescription Set(Type type, CrRuntimeLibrary crRuntime)
+        public static TypeDescription Set(Type type, ClosureEntities crRuntime)
         {
             if (type == null)
                 return null;

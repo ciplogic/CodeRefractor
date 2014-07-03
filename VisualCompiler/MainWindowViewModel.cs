@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Windows.Documents;
 using System.Windows.Threading;
 using CodeRefactor.OpenRuntime;
+using CodeRefractor.ClosureCompute;
 using CodeRefractor.CompilerBackend.ProgramWideOptimizations.ConstParameters;
 using CodeRefractor.CompilerBackend.ProgramWideOptimizations.Virtual;
 using CodeRefractor.MiddleEnd.Optimizations.Util;
@@ -105,13 +106,15 @@ namespace VisualCompiler
             OptimizationLevelBase.Instance.EnabledCategories.AddRange(OptimizationList);
             OptimizationLevelBase.UpdateOptimizationsFromCategories(OptimizationLevelBase.OptimizationPasses);
             OptimizationLevelBase.SortOptimizations();
-            var programClosure = new ProgramClosure(definition, crRuntime);
-            programClosure.AddAlwaysUsedType(typeof(CrString));
-            var sb = programClosure.BuildFullSourceCode(programClosure.Runtime);
+            var programClosure = new ClosureEntities()
+            {
+                EntryPoint = definition
+            };
+            var sb = programClosure.BuildFullSourceCode();
             var end = Environment.TickCount - start;
              CompilerErrors +=String.Format("Compilation time: {0} ms", end);
 
-            var opcodes = programClosure.MethodClosure;
+            var opcodes = programClosure.MethodImplementations;
 
             var intermediateOutput = "";
 

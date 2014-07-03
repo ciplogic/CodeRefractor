@@ -2,10 +2,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using System.Text;
 using CodeRefractor.ClosureCompute.Steps;
 using CodeRefractor.MiddleEnd;
+using CodeRefractor.RuntimeBase.Backend;
 using CodeRefractor.RuntimeBase.MiddleEnd;
+using CodeRefractor.RuntimeBase.TypeInfoWriter;
 
 #endregion
 
@@ -86,6 +90,16 @@ namespace CodeRefractor.ClosureCompute
         public void AddMethodResolver(MethodResolverBase resolveRuntimeMethod)
         {
             MethodResolverList.Add(resolveRuntimeMethod);
+        }
+
+        public StringBuilder BuildFullSourceCode()
+        {
+            var entryInterpreter = ResolveMethod(EntryPoint);
+            var usedTypes = MappedTypes.Values.ToList();
+            var typeTable=new TypeDescriptionTable(usedTypes);
+            var virtualMethodTable = new VirtualMethodTable(typeTable);
+            return CppCodeGenerator.GenerateSourceStringBuilder(entryInterpreter, usedTypes,
+                MethodImplementations.Values.ToList(), virtualMethodTable,  this);
         }
     }
 }

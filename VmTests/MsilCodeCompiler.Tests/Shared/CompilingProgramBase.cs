@@ -7,7 +7,6 @@ using System.Linq;
 using System.Reflection;
 using CodeRefractor.Compiler;
 using CodeRefractor.CompilerBackend;
-using CodeRefractor.CompilerBackend.OuputCodeWriter;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
 using CodeRefractor.Runtime;
 using CodeRefractor.RuntimeBase;
