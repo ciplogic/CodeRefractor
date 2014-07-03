@@ -26,6 +26,11 @@ namespace CodeRefractor.RuntimeBase.TypeInfoWriter
             _typeClosure = typeClosure.Where(
                 FilterType)
                 .ToList();
+            for (int index = 0; index < _typeClosure.Count; index++)
+            {
+                var type = _typeClosure[index];
+                _result[type] = index;
+            }
         }
 
         private static bool FilterType(Type type)

@@ -118,7 +118,7 @@ namespace CodeRefractor.RuntimeBase.Backend
             sortedTypeData.Add(typeof(System.Object));
             typeDataList.Remove(typeof(Object));
 
-
+            /*
 
             while (typeDataList.Count > 0)
             {
@@ -135,7 +135,7 @@ namespace CodeRefractor.RuntimeBase.Backend
                     if (typeDataList.Count == 0)
                         break;
                 }
-            }
+            }*/
 
 
             //Add these empty interfaces for strings TODO: Fix this use actual implementations

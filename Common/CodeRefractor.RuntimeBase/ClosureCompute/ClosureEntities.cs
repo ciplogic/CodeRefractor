@@ -29,6 +29,7 @@ namespace CodeRefractor.ClosureCompute
         public List<ClosureComputeBase> ClosureSteps { get; set; }
 
         public List<MethodResolverBase> MethodResolverList { get; set; }
+        public List<TypeResolverBase> TypeResolverList { get; set; }
 
         public ClosureEntities()
         {
@@ -38,9 +39,12 @@ namespace CodeRefractor.ClosureCompute
             LookupMethods = new Dictionary<MethodInterpreterKey, MethodInterpreter>();
             MethodResolverList = new List<MethodResolverBase>();
 
+            TypeResolverList = new List<TypeResolverBase>();
+
             ClosureSteps = new List<ClosureComputeBase>();
             AddClosureStep<AddEntryPointInterpretedMethod>();
             AddClosureStep<AddNotYetInterpretedMethods>();
+            AddClosureStep<AddParameterTypesToClosure>();
         }
 
         public MethodInterpreter GetMethodImplementation(MethodBase method)
@@ -100,6 +104,27 @@ namespace CodeRefractor.ClosureCompute
             var virtualMethodTable = new VirtualMethodTable(typeTable);
             return CppCodeGenerator.GenerateSourceStringBuilder(entryInterpreter, usedTypes,
                 MethodImplementations.Values.ToList(), virtualMethodTable,  this);
+        }
+
+        public Type ResolveType(Type type)
+        {
+            foreach (var resolverBase in TypeResolverList)
+            {
+                var resolved = resolverBase.Resolve(type);
+                if (resolved != null)
+                    return resolved;
+            }
+            return null;
+        }
+
+        public bool AddType(Type type)
+        {
+            if (type == null)
+                return false;
+            if (MappedTypes.ContainsKey(type))
+                return false;
+            MappedTypes[type] = ResolveType(type) ?? type;
+            return true;
         }
     }
 }

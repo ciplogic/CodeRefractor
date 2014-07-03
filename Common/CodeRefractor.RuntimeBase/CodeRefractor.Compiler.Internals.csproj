@@ -65,6 +65,8 @@
     <Compile Include="ClosureCompute\Steps\AddNotYetInterpretedMethods.cs" />
     <Compile Include="ClosureCompute\MethodResolverBase.cs" />
     <Compile Include="ClosureCompute\Resolvers\ResolveRuntimeMethod.cs" />
+    <Compile Include="ClosureCompute\Steps\AddParameterTypesToClosure.cs" />
+    <Compile Include="ClosureCompute\TypeResolverBase.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\Identifiers\GetArrayElement.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\OperationUtils.cs" />
     <Compile Include="MiddleEnd\SimpleOperations\SetField.cs" />
