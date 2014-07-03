@@ -174,7 +174,7 @@ namespace CodeRefractor.RuntimeBase.Backend.ComputeClosure
                     UpdateMethodEntryClosure(interpreter, result, crRuntime);
                
 
-                //Seems we might need to manually inject method interpreters for explicit interface methods ... I give up ...
+                //Seems we might need to manually inject method interpreters for explicit interface methods ...
                     if (methodData.Info.DeclaringType != null &&
                         methodData.Info.DeclaringType.IsInterface)
                     {
@@ -187,10 +187,15 @@ namespace CodeRefractor.RuntimeBase.Backend.ComputeClosure
                         var methods =
                             objects.Select(
                                 j =>
-                                    j.GetMethod(methodData.Info.GetMethodName(),
+                                    j.GetMethod(methodData.Info.GetMethodName(), //Explicit 
                                         BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance, null,
-                                        @params, null))
-                                      .Union(objects.SelectMany(y=>y.GetProperties().SelectMany(p => p.GetAccessors()).Where(p => p.Name == methodData.Info.Name || p.Name == methodData.Info.Name)
+                                        @params, null)).Union(objects.Select(
+                                j =>
+                                    j.GetMethod(methodData.Info.Name, //Implicit
+                                        BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance, null,
+                                        @params, null)))
+                                      .Union(objects.SelectMany(y=> //Properties
+                                          y.GetProperties().SelectMany(p => p.GetAccessors()).Where(p => p.Name == methodData.Info.Name || p.Name == methodData.Info.Name)
                                        )).Where(k=>k!=null).ToArray();
 
                       

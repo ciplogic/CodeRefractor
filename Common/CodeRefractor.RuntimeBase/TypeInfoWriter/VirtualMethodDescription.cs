@@ -69,7 +69,22 @@ namespace CodeRefractor.RuntimeBase.TypeInfoWriter
                     return false;
             }
             if (addToImplementations)
+            {   
+//                //Also add all subclasses that use this method
+//                foreach (var argument in declaringType)
+//                {
+//                    
+//                }
+                var allInterfaceImplementors = declaringType.Assembly.GetTypes()
+    .Where(p => declaringType.IsAssignableFrom(p));
+
+                foreach (var allInterfaceImplementor in allInterfaceImplementors)
+                {
+                    UsingImplementations.Add(allInterfaceImplementor);
+                    
+                }
                 UsingImplementations.Add(declaringType);
+            }
             return true;
         }
     }

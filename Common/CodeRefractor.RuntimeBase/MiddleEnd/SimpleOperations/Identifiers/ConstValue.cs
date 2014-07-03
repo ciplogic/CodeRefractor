@@ -69,7 +69,7 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations.Identifiers
             var typeCode = Type.GetTypeCode(Value.GetType());
             if (typeCode == TypeCode.String)
             {
-                return "'" + Value + "'";
+                return "\"" + Value + "\""; //Why single qoutes ?
             }else
             return Value.ToString();
         }

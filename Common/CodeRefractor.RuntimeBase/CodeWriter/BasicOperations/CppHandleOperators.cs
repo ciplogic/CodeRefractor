@@ -575,8 +575,25 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         {
             var assign = (SetField) operation;
 
-            bodySb.AppendFormat("{0}->{1} = {2};", assign.Instance.Name,
-                assign.FieldName.ValidName(), assign.Right.Name);
+            if (assign.Right is ConstValue)
+            {
+                if (assign.FixedType.ClrType == typeof (string))
+                {
+                    bodySb.AppendFormat("{0}->{1} = {2};", assign.Instance.Name,
+                        assign.FieldName.ValidName(), assign.Right.ComputedValue());
+                }
+                else
+                {
+                      bodySb.AppendFormat("{0}->{1} = {2};", assign.Instance.Name,
+                    assign.FieldName.ValidName(), assign.Right.Name);
+                }
+            }
+
+            else
+            {
+                bodySb.AppendFormat("{0}->{1} = {2};", assign.Instance.Name,
+                    assign.FieldName.ValidName(), assign.Right.Name);
+            }
         }
 
         private static void HandleNewArray(LocalOperation operation, StringBuilder bodySb, MethodInterpreter interpreter)

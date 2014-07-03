@@ -220,7 +220,10 @@ namespace CodeRefractor.MiddleEnd
         public void Return(bool isVoid)
         {
             var returnValue = isVoid ? null : _evaluator.Pop();
-            AddOperation(new Return(){Returning = returnValue}); 
+            AddOperation(new Return()
+            {
+                Returning = returnValue
+            }); 
         }
 
 

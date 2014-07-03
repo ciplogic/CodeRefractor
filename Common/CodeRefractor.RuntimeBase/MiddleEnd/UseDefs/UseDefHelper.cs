@@ -106,12 +106,26 @@ namespace CodeRefractor.MiddleEnd.UseDefs
 
                 case OperationKind.Comment:
                     break;
+
+                case OperationKind.AddressOfArrayItem:
+                    
+                    AddUsagesOfRefArrayItemAssignment(operation, result);
+                    break;
                 default:
                     throw new NotImplementedException();
             }
             return result;
         }
 
+
+
+
+        private static void AddUsagesOfRefArrayItemAssignment(LocalOperation operation, List<LocalVariable> result)
+        {
+            var refData = (RefArrayItemAssignment)operation;
+            result.Add(refData.Left);
+            result.Add(refData.ArrayVar);
+        }
         private static void AddUsagesOfRefAssignment(LocalOperation operation, List<LocalVariable> result)
         {
             var refData = (RefAssignment)operation;
@@ -284,6 +298,10 @@ namespace CodeRefractor.MiddleEnd.UseDefs
                     var val = (FunctionPointerStore)operation;
                     //  return null;
                     return (LocalVariable)val.AssignedTo;
+
+                case OperationKind.AddressOfArrayItem:
+                    var refValue3 = (RefArrayItemAssignment)operation;
+                    return refValue3.Left;
 
                 default:
                     throw new InvalidDataException("Case not handled");

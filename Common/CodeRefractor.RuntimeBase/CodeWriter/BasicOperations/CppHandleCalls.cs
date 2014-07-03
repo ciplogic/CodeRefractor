@@ -21,14 +21,42 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 {
     internal static class CppHandleCalls
     {
-        public static void HandleReturn(LocalOperation operation, StringBuilder bodySb)
+        public static void HandleReturn(LocalOperation operation, StringBuilder bodySb, MethodInterpreter interpreter)
         {
             var returnValue = (Return)operation;
+
 
             if (returnValue.Returning == null)
                 bodySb.Append("return;");
             else
-                bodySb.AppendFormat("return {0};", returnValue.Returning.Name);
+            {
+                
+                //Need to expand this for more cases
+               
+                    if (returnValue.Returning is ConstValue)
+                    {
+                       
+                        var retType = interpreter.Method.GetReturnType();
+
+                        if (retType == typeof (string))
+                        {
+                            bodySb.AppendFormat("return {0};", returnValue.Returning.ComputedValue());
+                        }
+
+                       
+                    
+                        else
+                        {
+                            bodySb.AppendFormat("return {0};", returnValue.Returning.Name);
+                        }
+                    }
+                    else
+                    {
+                        bodySb.AppendFormat("return {0};", returnValue.Returning.Name);
+                    }
+                
+             
+            }
         }
 
 
@@ -90,7 +118,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 
             if (methodInfo.IsVirtual)
             { 
-                var @params = operationData.Parameters.Select(h => h.FixedType.ClrType).Skip(1).ToArray(); // Skip first method for virtual dispatch
+                var @params = operationData.Parameters.Select(h => h.FixedType.ClrType).Skip(1).ToArray(); // Skip first parameter for virtual dispatch
 
                 if (methodInfo.IsFinal)//(!operationData.Parameters[0].FixedType.ClrType.GetMethod(methodInfo.Name).IsVirtual)) || !operationData.Parameters[0].FixedType.ClrType.GetMethod(methodInfo.Name).))
                 {
@@ -164,7 +192,23 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 pos++;
                 if (localValue == null)
                 {
-                    sb.Append(value.ComputedValue());
+                    //We need to take care of strings here
+                    if (value is ConstValue)
+                    {
+                        if (value.FixedType.ClrType == typeof(string) && !isEscaping)
+                        {
+                            sb.Append("(System_String*)" + value.ComputedValue() + "->Text.get()");
+                        }
+                        else
+                        {
+                            sb.Append(value.ComputedValue());
+                        }
+                    }
+                    else
+                    {
+                        sb.Append(value.ComputedValue());
+                    }
+                    
                     continue;
                 }
                 if (localValue.Kind == VariableKind.Argument)

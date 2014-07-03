@@ -808,7 +808,7 @@ namespace CodeRefractor.MiddleEnd
 
             #region Compare operators
 
-            if (opcodeStr == "cgt")
+            if (opcodeStr == "cgt" || opcodeStr =="cgt.un") 
             {
                 operationFactory.Cgt();
                 return true;

@@ -76,7 +76,7 @@ namespace CodeRefractor.RuntimeBase.CodeWriter.BasicOperations
                         CppHandleCalls.HandleCallRuntime(operation, bodySb);
                         break;
                     case OperationKind.Return:
-                        CppHandleCalls.HandleReturn(operation, bodySb);
+                        CppHandleCalls.HandleReturn(operation,bodySb,interpreter);
                         break;
 
                     case OperationKind.CopyArrayInitializer:
