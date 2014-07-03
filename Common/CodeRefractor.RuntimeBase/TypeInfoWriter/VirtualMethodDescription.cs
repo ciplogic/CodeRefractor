@@ -48,7 +48,7 @@ namespace CodeRefractor.RuntimeBase.TypeInfoWriter
 
         public bool MethodMatches(MethodInfo method, bool addToImplementations = true)
         {
-            if (method.GetMethodName() != Name)
+            if ((method.GetMethodName() != Name)||(method.Name!=Name))
                 return false;
             var declaringType = method.DeclaringType;
             if (BaseType.IsSubclassOf(declaringType))

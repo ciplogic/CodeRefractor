@@ -4,6 +4,7 @@ using System;
 using System.Reflection;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
+using Mono.Cecil;
 
 #endregion
 
@@ -13,7 +14,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
     {
         public LocalVariable Left;
         public LocalVariable Right;
-        public FieldInfo Field;
+        public FieldReference Field;
 
         public FieldRefAssignment() : base(OperationKind.FieldRefAssignment)
         {
