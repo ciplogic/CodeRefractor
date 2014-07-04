@@ -5,12 +5,12 @@ namespace CodeRefactor.OpenRuntime
     [ExtensionsImplementation]
     public static class CrBasicTypesImplementations
     {
-        [MapMethod(typeof(int), IsStatic = true)]
+        [MapMethod(typeof(int))]
         public static int Parse(string text)
         {
             return 0;
         }
-        [MapMethod(typeof(double), Name="Parse",IsStatic = true)]
+        [MapMethod(typeof(double), Name="Parse")]
         [CppMethodBody(Code = "return 0.0;")]
         public static double ParseDouble(string text)
         {

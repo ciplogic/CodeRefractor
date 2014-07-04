@@ -73,6 +73,12 @@ namespace CodeRefractor.ClosureCompute.Resolvers
             }
             foreach (var methodInfo in allMethods)
             {
+                var attributeMethod = methodInfo.GetCustomAttributeT<MapMethod>();
+                attributeMethod.Name = string.IsNullOrEmpty(attributeMethod.Name)
+                    ? methodInfo.Name
+                    : attributeMethod.Name;
+                if(attributeMethod.Name!=method.Name)
+                    continue;
                 var targetParams = methodInfo.GetParameters().ToList();
                 if (srcParams.Count != targetParams.Count)
                     continue;
