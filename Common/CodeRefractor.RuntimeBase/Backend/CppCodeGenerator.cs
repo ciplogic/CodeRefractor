@@ -108,15 +108,14 @@ namespace CodeRefractor.RuntimeBase.Backend
 
         private static void WriteClosureStructBodies(Type[] typeDatas, StringBuilder sb, ClosureEntities crRuntime)
         {
-
-            
-
             //Remove Mapped Types in favour of their resolved types
             typeDatas = typeDatas.Where(type => !typeDatas.Any(t => t.GetMappedType() == type && t != type)).Except(new []{(typeof(Int32))}).ToArray();// typeDatas.ToList().Except(typeDatas.Where(y => y.Name == "String")).ToArray(); // This appears sometimes, why ?
 
             foreach (var typeData in typeDatas)
             {
                 var mappedType = typeData.GetMappedType();
+                if (ShouldSkipType(typeData)) 
+                    continue;
                 if (!mappedType.IsGenericType)
                     sb.AppendFormat("struct {0}; ", mappedType.ToCppMangling()).AppendLine();
 
@@ -162,13 +161,15 @@ namespace CodeRefractor.RuntimeBase.Backend
             }
 
 
-            //Add these empty interfaces for strings TODO: Fix this use actual implementations
+            //Add these empty interfaces for strings  
+            //TODO:Fix this use actual implementations
+            /*
             sb.Append(
                 new string[]
                 {
                     "System_IComparable" , "System_ICloneable" , "System_IConvertible" , "System_IComparable_1" , "System_Collections_Generic_IEnumerable_1" , "System_Collections_IEnumerable" , "System_IEquatable_1"
                 }.Select(r => "struct " + r + "{};\n").Aggregate((a, b) => a + "\n" + b));
-
+            */
             foreach (var typeData in sortedTypeData)
             {
                 var typeCode = Type.GetTypeCode(typeData);
@@ -179,6 +180,7 @@ namespace CodeRefractor.RuntimeBase.Backend
                 var resType = crRuntime.ResolveType(typeData);
                 var type = typeData.GetMappedType();
                 var mappedType = typeData;
+                if (ShouldSkipType(typeData)) continue;
 
                 if (mappedType.IsGenericType)
                 {
@@ -215,6 +217,18 @@ namespace CodeRefractor.RuntimeBase.Backend
                 var typedesc = UsedTypeList.Set(type, crRuntime);
                 typedesc.WriteStaticFieldInitialization(sb);
             }
+        }
+
+        public static bool ShouldSkipType(Type mappedType)
+        {
+            var typeCode = mappedType.ExtractTypeCode();
+            switch (typeCode)
+            {
+                case TypeCode.Object:
+                case TypeCode.String:
+                    return false;
+            }
+            return true;
         }
 
         private static void WriteClassFieldsBody(StringBuilder sb, Type mappedType, ClosureEntities crRuntime)
