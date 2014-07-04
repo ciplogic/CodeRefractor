@@ -44,9 +44,9 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Purity
                         return false;
 
                     case OperationKind.Call:
-                        var operationData = (MethodData) localOperation;
+                        var operationData = (CallMethodStatic) localOperation;
                         var readPurity = LinkerInterpretersTableUtils.ReadNoStaticSideEffects(operationData.Info,
-                            Runtime);
+                            Closure);
                         if (!readPurity)
                             return false;
                         break;

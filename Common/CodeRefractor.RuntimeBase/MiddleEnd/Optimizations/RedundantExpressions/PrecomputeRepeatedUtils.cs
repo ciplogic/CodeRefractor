@@ -27,15 +27,15 @@ namespace CodeRefractor.MiddleEnd.Optimizations.RedundantExpressions
         }
 
 
-        public static MethodData GetMethodData(List<LocalOperation> localOperations, List<int> calls, int i)
+        public static CallMethodStatic GetMethodData(List<LocalOperation> localOperations, List<int> calls, int i)
         {
             var index = calls[i];
             return GetMethodData(localOperations, index);
         }
 
-        public static MethodData GetMethodData(List<LocalOperation> localOperations, int index)
+        public static CallMethodStatic GetMethodData(List<LocalOperation> localOperations, int index)
         {
-            return (MethodData) localOperations[index];
+            return (CallMethodStatic) localOperations[index];
         }
 
         public static LocalVariable CreateCacheVariable(this MethodInterpreter interpreter,

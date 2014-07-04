@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using CodeRefractor.ClosureCompute;
 using CodeRefractor.CodeWriter.BasicOperations;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.SimpleOperations;
@@ -24,7 +25,7 @@ namespace CodeRefractor.RuntimeBase.CodeWriter.BasicOperations
     public static class CppMethodCodeWriter
     {
         public static string WriteCode(MethodInterpreter interpreter, TypeDescriptionTable typeTable,
-            CrRuntimeLibrary crRuntime)
+            ClosureEntities crRuntime)
         {
             var operations = interpreter.MidRepresentation.LocalOperations;
             var headerSb = new StringBuilder();
@@ -41,7 +42,7 @@ namespace CodeRefractor.RuntimeBase.CodeWriter.BasicOperations
         }
 
         private static StringBuilder ComputeBodySb(List<LocalOperation> operations, MidRepresentationVariables vars,
-            TypeDescriptionTable typeTable, MethodInterpreter interpreter, CrRuntimeLibrary crRuntime)
+            TypeDescriptionTable typeTable, MethodInterpreter interpreter, ClosureEntities crRuntime)
         {
             var bodySb = new StringBuilder();
             foreach (var operation in operations)

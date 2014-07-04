@@ -39,13 +39,13 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.ConstParameters
             ConstValues.Clear();
         }
 
-        public bool UpdateTable(MethodData methodData)
+        public bool UpdateTable(CallMethodStatic callMethodStatic)
         {
-            var interpreter = methodData.Interpreter;
+            var interpreter = callMethodStatic.Interpreter;
             var arguments = interpreter.MidRepresentation.Vars.Arguments
                 .ToArray();
             var result = false;
-            var parameters = methodData.Parameters;
+            var parameters = callMethodStatic.Parameters;
             for (var index = 0; index < parameters.Count; index++)
             {
                 var argumentVar = arguments[index];

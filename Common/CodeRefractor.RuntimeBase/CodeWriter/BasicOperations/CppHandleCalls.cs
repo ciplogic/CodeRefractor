@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using CodeRefractor.ClosureCompute;
 using CodeRefractor.CodeWriter.Linker;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.SimpleOperations;
@@ -61,9 +62,9 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 
 
         public static void HandleCall(LocalOperation operation, StringBuilder sbCode, MidRepresentationVariables vars,
-            MethodInterpreter interpreter, CrRuntimeLibrary crRuntime)
+            MethodInterpreter interpreter, ClosureEntities crRuntime)
         {
-            var operationData = (MethodData) operation;
+            var operationData = (CallMethodStatic) operation;
             var sb = new StringBuilder();
             var methodInfo = operationData.Info.GetReversedMethod();
             var isVoidMethod = methodInfo.GetReturnType().IsVoid();
@@ -80,9 +81,9 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         }
 
         public static void HandleCallInterface(LocalOperation operation, StringBuilder sbCode,
-            MidRepresentationVariables vars, MethodInterpreter interpreter, CrRuntimeLibrary crRuntime)
+            MidRepresentationVariables vars, MethodInterpreter interpreter, ClosureEntities crRuntime)
         {
-            var operationData = (MethodData) operation;
+            var operationData = (CallMethodStatic) operation;
             var sb = new StringBuilder();
             var methodInfo = operationData.Info.GetReversedMethod();
             var isVoidMethod = methodInfo.GetReturnType().IsVoid();
@@ -99,9 +100,9 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         }
 
         public static void HandleCallVirtual(LocalOperation operation, StringBuilder sbCode,
-            MidRepresentationVariables vars, MethodInterpreter interpreter, CrRuntimeLibrary crRuntime)
+            MidRepresentationVariables vars, MethodInterpreter interpreter, ClosureEntities crRuntime)
         {
-            var operationData = (MethodData) operation;
+            var operationData = (CallMethodStatic) operation;
             var sb = new StringBuilder();
             var methodInfo = operationData.Info.GetReversedMethod();
             var isVoidMethod = methodInfo.GetReturnType().IsVoid();
@@ -120,7 +121,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             { 
                 var @params = operationData.Parameters.Select(h => h.FixedType.ClrType).Skip(1).ToArray(); // Skip first parameter for virtual dispatch
 
-                if (methodInfo.IsFinal)//(!operationData.Parameters[0].FixedType.ClrType.GetMethod(methodInfo.Name).IsVirtual)) || !operationData.Parameters[0].FixedType.ClrType.GetMethod(methodInfo.Name).))
+                if (methodInfo.IsFinal)//(!operationStatic.Parameters[0].FixedType.ClrType.GetMethod(methodInfo.Name).IsVirtual)) || !operationStatic.Parameters[0].FixedType.ClrType.GetMethod(methodInfo.Name).))
                 {
                     //Direct call
                     sb.AppendFormat("{0}", methodInfo.ClangMethodSignature(false));
@@ -148,10 +149,10 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             sbCode.Append(sb);
         }
 
-        private static bool WriteParametersToSb(MethodData operationData, MethodBase methodInfo, StringBuilder sb,
-            MethodInterpreter interpreter, CrRuntimeLibrary crRuntime)
+        private static bool WriteParametersToSb(CallMethodStatic operationStatic, MethodBase methodInfo, StringBuilder sb,
+            MethodInterpreter interpreter, ClosureEntities crRuntime)
         {
-            var identifierValues = operationData.Parameters;
+            var identifierValues = operationStatic.Parameters;
 
             var escapingData = methodInfo.BuildEscapingBools(crRuntime);
             if (escapingData == null)
@@ -173,10 +174,10 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             var pos = 0;
             var isFirst = true;
             var argumentUsages =
-                operationData.Interpreter.AnalyzeProperties.GetUsedArguments(
-                    operationData.Interpreter.MidRepresentation.Vars.Arguments);
+                operationStatic.Interpreter.AnalyzeProperties.GetUsedArguments(
+                    operationStatic.Interpreter.MidRepresentation.Vars.Arguments);
 
-            var argumentTypes = operationData.Info.GetMethodArgumentTypes();
+            var argumentTypes = operationStatic.Info.GetMethodArgumentTypes();
             for (var index = 0; index < identifierValues.Count; index++)
             {
                 var value = identifierValues[index];
@@ -227,14 +228,14 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 switch (localValueData)
                 {
                     case EscapingMode.Smart: // Want to use dynamic_casts instead
-//                        if ((!isEscaping && localValue.ComputedType().ClrType.IsClass )|| (operationData.Info.IsVirtual && index==0))
+//                        if ((!isEscaping && localValue.ComputedType().ClrType.IsClass )|| (operationStatic.Info.IsVirtual && index==0))
 //                        {
 //                            sb.AppendFormat("{0}.get()", localValue.Name);
 //                        }
 //                        else
                         {
                             //TODO: this won't work we'll just declare interface instances as system_object
-//                            if (index==0 && operationData.Info.DeclaringType.IsInterface)
+//                            if (index==0 && operationStatic.Info.DeclaringType.IsInterface)
 //                            {
 //                                sb.AppendFormat("std::static_pointer_cast<{0}>({1})", typeof(object).ToCppMangling(), localValue.Name);
 //                            }
@@ -267,7 +268,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 
         public static void HandleCallRuntime(LocalOperation operation, StringBuilder sb)
         {
-            var operationData = (MethodData) operation;
+            var operationData = (CallMethodStatic) operation;
 
             var methodInfo = operationData.Info;
             if (methodInfo.IsConstructor)

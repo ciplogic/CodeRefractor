@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using CodeRefractor.ClosureCompute;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
@@ -35,42 +36,19 @@ namespace CodeRefractor.CodeWriter.Linker
             return constValue.Name;
         }
 
-        public static MethodInterpreter GetInterpreter(this MethodData methodData, CrRuntimeLibrary crRuntime)
+        public static MethodInterpreter GetInterpreter(this CallMethodStatic callMethodStatic, ClosureEntities crRuntime)
         {
-            var methodBase = methodData.Info;
-            return GetInterpreter(methodBase, crRuntime);
+            return crRuntime.ResolveMethod(callMethodStatic.Info);
         }
 
-        public static MethodInterpreter GetInterpreter(this MethodBase methodBase, CrRuntimeLibrary crRuntime)
+        public static MethodInterpreter GetInterpreter(this MethodBase methodBase, ClosureEntities crRuntime)
         {
-            var closure = crRuntime.Closure;
-            if (closure != null)
-            {
-                var key = methodBase.ToKey(closure);
-                if (key != null)
-                {
-                    return key.Interpreter;
-                }
-            }
-            var declaringType = methodBase.DeclaringType;
-            var typeToSearch = declaringType.ReversedType(crRuntime);
-            var isGacType = typeToSearch.Assembly.GlobalAssemblyCache;
-            if (isGacType)
-            {
-                var interpreter = new MethodInterpreter(methodBase);
-                if (crRuntime.ResolveInterpreter(interpreter.ToKey(), ref interpreter))
-                {
-                    return interpreter;
-                }
-
-                return null;
-            }
-            return methodBase.Register();
+            return crRuntime.ResolveMethod(methodBase);
         }
 
         public const string EscapeName = "NonEscapingArgs";
 
-        public static Dictionary<int, bool> EscapingParameterData(this MethodBase info, CrRuntimeLibrary crRuntime)
+        public static Dictionary<int, bool> EscapingParameterData(this MethodBase info, ClosureEntities crRuntime)
         {
             var interpreter = info.GetInterpreter(crRuntime);
             if (interpreter == null)
@@ -84,7 +62,7 @@ namespace CodeRefractor.CodeWriter.Linker
             return otherMethodData;
         }
 
-        public static bool[] BuildEscapingBools(this MethodBase method, CrRuntimeLibrary crRuntime)
+        public static bool[] BuildEscapingBools(this MethodBase method, ClosureEntities crRuntime)
         {
             var parameters = method.GetParameters();
             var escapingBools = new bool[parameters.Length + 1];

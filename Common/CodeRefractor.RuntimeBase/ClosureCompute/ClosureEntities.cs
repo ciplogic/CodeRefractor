@@ -2,10 +2,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using System.Text;
 using CodeRefractor.ClosureCompute.Steps;
 using CodeRefractor.MiddleEnd;
+using CodeRefractor.RuntimeBase.Backend;
 using CodeRefractor.RuntimeBase.MiddleEnd;
+using CodeRefractor.RuntimeBase.TypeInfoWriter;
 
 #endregion
 
@@ -25,6 +29,7 @@ namespace CodeRefractor.ClosureCompute
         public List<ClosureComputeBase> ClosureSteps { get; set; }
 
         public List<MethodResolverBase> MethodResolverList { get; set; }
+        public List<TypeResolverBase> TypeResolverList { get; set; }
 
         public ClosureEntities()
         {
@@ -34,9 +39,12 @@ namespace CodeRefractor.ClosureCompute
             LookupMethods = new Dictionary<MethodInterpreterKey, MethodInterpreter>();
             MethodResolverList = new List<MethodResolverBase>();
 
+            TypeResolverList = new List<TypeResolverBase>();
+
             ClosureSteps = new List<ClosureComputeBase>();
             AddClosureStep<AddEntryPointInterpretedMethod>();
             AddClosureStep<AddNotYetInterpretedMethods>();
+            AddClosureStep<AddParameterTypesToClosure>();
         }
 
         public MethodInterpreter GetMethodImplementation(MethodBase method)
@@ -86,6 +94,37 @@ namespace CodeRefractor.ClosureCompute
         public void AddMethodResolver(MethodResolverBase resolveRuntimeMethod)
         {
             MethodResolverList.Add(resolveRuntimeMethod);
+        }
+
+        public StringBuilder BuildFullSourceCode()
+        {
+            var entryInterpreter = ResolveMethod(EntryPoint);
+            var usedTypes = MappedTypes.Values.ToList();
+            var typeTable=new TypeDescriptionTable(usedTypes);
+            var virtualMethodTable = new VirtualMethodTable(typeTable);
+            return CppCodeGenerator.GenerateSourceStringBuilder(entryInterpreter, usedTypes,
+                MethodImplementations.Values.ToList(), virtualMethodTable,  this);
+        }
+
+        public Type ResolveType(Type type)
+        {
+            foreach (var resolverBase in TypeResolverList)
+            {
+                var resolved = resolverBase.Resolve(type);
+                if (resolved != null)
+                    return resolved;
+            }
+            return null;
+        }
+
+        public bool AddType(Type type)
+        {
+            if (type == null)
+                return false;
+            if (MappedTypes.ContainsKey(type))
+                return false;
+            MappedTypes[type] = ResolveType(type) ?? type;
+            return true;
         }
     }
 }

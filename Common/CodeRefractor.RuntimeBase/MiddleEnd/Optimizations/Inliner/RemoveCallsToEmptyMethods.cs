@@ -31,8 +31,8 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.Inliner
 
                 if (localOperation.Kind != OperationKind.Call) continue;
 
-                var methodData = (MethodData) localOperation;
-                var interpreter = methodData.Info.GetInterpreter(Runtime);
+                var methodData = (CallMethodStatic) localOperation;
+                var interpreter = methodData.Info.GetInterpreter(Closure);
                 if (interpreter == null)
                     continue;
                 var isEmpty = interpreter.AnalyzeProperties.IsEmpty;

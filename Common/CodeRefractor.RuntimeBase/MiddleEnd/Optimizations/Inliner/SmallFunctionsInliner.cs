@@ -32,15 +32,15 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.Inliner
         {
             if (methodInterpreter.MidRepresentation.LocalOperations.Count > MaxLengthInliner) return;
             MethodInterpreter interpreter = null;
-            MethodData methodData = null;
+            CallMethodStatic callMethodStatic = null;
             var pos = 0;
             foreach (var localOperation in methodInterpreter.MidRepresentation.LocalOperations)
             {
                 pos++;
                 if (localOperation.Kind != OperationKind.Call) continue;
 
-                methodData = (MethodData) localOperation;
-                var methodBase = methodData.Info;
+                callMethodStatic = (CallMethodStatic) localOperation;
+                var methodBase = callMethodStatic.Info;
                 interpreter = methodBase.Register();
                 if (interpreter == null)
                     continue;
@@ -52,18 +52,18 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.Inliner
             }
             if (interpreter == null)
                 return;
-            InlineMethod(methodInterpreter.MidRepresentation, methodData, pos);
+            InlineMethod(methodInterpreter.MidRepresentation, callMethodStatic, pos);
             Result = true;
         }
 
         public static void InlineMethod(
             MetaMidRepresentation intermediateCode,
-            MethodData methodData,
+            CallMethodStatic callMethodStatic,
             int pos)
         {
-            var methodToInlineInterpreter = methodData.Interpreter;
+            var methodToInlineInterpreter = callMethodStatic.Interpreter;
             var mappedParameters = BuildMappedParameters(methodToInlineInterpreter,
-                methodData);
+                callMethodStatic);
 
             var mappedLocals = BuildMappedLocals(methodToInlineInterpreter,
                 intermediateCode.Vars.LocalVars.Count);
@@ -71,7 +71,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.Inliner
             var mappedVregs = BuildMappedVregs(intermediateCode, methodToInlineInterpreter);
 
             var indexCall = pos;
-            var assignment = (MethodData) intermediateCode.LocalOperations[indexCall];
+            var assignment = (CallMethodStatic) intermediateCode.LocalOperations[indexCall];
 
             var localOperationsToInline = BuildLocalOperationsToInline(methodToInlineInterpreter,
                 mappedParameters,
@@ -215,12 +215,12 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.Inliner
         }
 
         private static Dictionary<LocalVariable, IdentifierValue> BuildMappedParameters(MethodInterpreter interpreter,
-            MethodData methodData)
+            CallMethodStatic callMethodStatic)
         {
             var mappedNames = new Dictionary<LocalVariable, IdentifierValue>();
-            for (var i = 0; i < methodData.Parameters.Count; i++)
+            for (var i = 0; i < callMethodStatic.Parameters.Count; i++)
             {
-                var identifierValue = methodData.Parameters[i];
+                var identifierValue = callMethodStatic.Parameters[i];
                 var argumentVariable = interpreter.MidRepresentation.Vars.Arguments[i];
                 argumentVariable.Id = i;
                 mappedNames[argumentVariable] = identifierValue;

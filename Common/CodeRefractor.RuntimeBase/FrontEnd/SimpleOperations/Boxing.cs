@@ -19,7 +19,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 
         public override string ToString()
         {
-            return string.Format("{0} = box( {1})",
+            return string.Format("{0} = box({1})",
                 Right.Name,
                 AssignedTo.Name);
         }

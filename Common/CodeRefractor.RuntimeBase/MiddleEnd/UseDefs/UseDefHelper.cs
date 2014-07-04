@@ -156,7 +156,7 @@ namespace CodeRefractor.MiddleEnd.UseDefs
 
         private static void AddUsagesOfCall(LocalOperation operation, List<LocalVariable> result)
         {
-            var assignment = (MethodData)operation;
+            var assignment = (CallMethodStatic)operation;
             var parameters = assignment.Parameters;
             foreach (var parameter in parameters)
             {
@@ -280,7 +280,7 @@ namespace CodeRefractor.MiddleEnd.UseDefs
                 case OperationKind.Call:
                 case OperationKind.CallVirtual:
                 case OperationKind.CallInterface:
-                    var value = (MethodData)operation;
+                    var value = (CallMethodStatic)operation;
                     return value.Result;
                 case OperationKind.FieldRefAssignment:
                     var refFieldValue = (FieldRefAssignment)operation;
@@ -497,7 +497,7 @@ namespace CodeRefractor.MiddleEnd.UseDefs
         private static void SwitchUsageInCall(LocalOperation op, LocalVariable usageVariable,
             IdentifierValue definitionIdentifier)
         {
-            var methodData = op.Get<MethodData>();
+            var methodData = op.Get<CallMethodStatic>();
             for (var index = 0; index < methodData.Parameters.Count; index++)
             {
                 var identifierValue = methodData.Parameters[index];

@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using CodeRefractor.ClosureCompute;
 using CodeRefractor.Runtime;
 using CodeRefractor.RuntimeBase.Analyze;
 
@@ -15,7 +16,7 @@ namespace CodeRefractor.RuntimeBase.Backend.ComputeClosure
         private readonly List<Type> _typesToSort;
         private readonly Dictionary<Type, HashSet<Type>> _dictionary = new Dictionary<Type, HashSet<Type>>();
 
-        public ClosureTypeComparer(List<Type> typesToSort, CrRuntimeLibrary crRuntime)
+        public ClosureTypeComparer(List<Type> typesToSort, ClosureEntities crRuntime)
         {
             _typesToSort = typesToSort;
             foreach (var type in typesToSort)

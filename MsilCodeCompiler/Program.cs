@@ -44,13 +44,8 @@ namespace CodeRefractor.Compiler
             closureEntities.AddMethodResolver(resolveRuntimeMethod);
             closureEntities.ComputeFullClosure();
 
-            var crRuntime = new CrRuntimeLibrary();
-            crRuntime.ScanAssembly(typeof(CrString).Assembly);
-            
-            var programClosure = new ProgramClosure(definition, crRuntime);
 
-
-            var sb = programClosure.BuildFullSourceCode(programClosure.Runtime);
+            var sb = closureEntities.BuildFullSourceCode();
             var end = Environment.TickCount - start;
             Console.WriteLine("Compilation time: {0} ms", end);
 
@@ -66,7 +61,7 @@ namespace CodeRefractor.Compiler
 
 
             OptimizationLevelBase.Instance = new OptimizationLevels();
-            OptimizationLevelBase.OptimizerLevel =2;
+            OptimizationLevelBase.OptimizerLevel = 2;
             OptimizationLevelBase.Instance.EnabledCategories.Add(OptimizationCategories.All);
             CallCompiler("", "");
         }

@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.ConstTable;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
@@ -12,7 +13,6 @@ using CodeRefractor.MiddleEnd.SimpleOperations.Operators;
 using CodeRefractor.Runtime;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
-using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
 using CodeRefractor.RuntimeBase.Shared;
@@ -21,7 +21,7 @@ using Mono.Cecil.Cil;
 
 #endregion
 
-namespace CodeRefractor.MiddleEnd
+namespace CodeRefractor.FrontEnd
 {
     public class MetaMidRepresentationOperationFactory
     {
@@ -408,17 +408,17 @@ namespace CodeRefractor.MiddleEnd
         }
 
 
-        public void Call(object operand, CrRuntimeLibrary crRuntime)
+        public void Call(object operand)
         {
             var methodInfo = ((MethodReference)operand).GetMethod(); //TODO System.Void System.Array::Resize<System.Char>(!!0[]&,System.Int32) Weird Signature
 
             if (methodInfo != null)
             {
-                var interpreter = methodInfo.Register(crRuntime);
-                var methodData = new MethodData(interpreter, OperationKind.Call);
+                var interpreter = new MethodInterpreter(methodInfo); 
+                var methodData = new CallMethodStatic(interpreter);
 
 
-                CallMethodData(methodInfo, methodData, OperationKind.Call, crRuntime);
+                CallMethodData(methodInfo, methodData);
             }
             else
             {
@@ -426,55 +426,93 @@ namespace CodeRefractor.MiddleEnd
             }
         }
 
-        public void CallVirtual(object operand, CrRuntimeLibrary crRuntime)
+        public void CallVirtual(object operand)
         {
             var methodInfo = ((MethodReference)operand).GetMethod();
-            var interpreter = methodInfo.Register(crRuntime);
-            var methodData = new MethodData(interpreter, OperationKind.CallVirtual);
+            var interpreter = new MethodInterpreter(methodInfo);
+
+            var methodData = new CallMethodVirtual(interpreter, OperationKind.CallVirtual);
 
 
-            CallMethodData(methodInfo, methodData, OperationKind.CallVirtual, crRuntime);
+            CallMethodDataVirtual(methodInfo, methodData);
         }
 
-      
-        private void CallMethodData(MethodBase methodInfo, MethodData methodData, OperationKind operationKind,
-            CrRuntimeLibrary crRuntime)
+        private void CallMethodDataVirtual(MethodBase methodInfo, CallMethodVirtual callMethodStatic)
         {
             if (HandleRuntimeHelpersMethod(methodInfo))
             {
-                methodData.ExtractNeededValuesFromStack(_evaluator);
-                AddOperation(methodData);
+                callMethodStatic.ExtractNeededValuesFromStack(_evaluator);
+                AddOperation(callMethodStatic);
                 return;
             }
             if (methodInfo.IsConstructor && methodInfo.DeclaringType == typeof(object))
                 return;
-            methodData.ExtractNeededValuesFromStack(_evaluator);
+            callMethodStatic.ExtractNeededValuesFromStack(_evaluator);
 
 
-            if (!methodData.Info.IsStatic && methodData.Parameters.Count > 0)
+            if (!callMethodStatic.Info.IsStatic && callMethodStatic.Parameters.Count > 0)
             {
                 //GetBestVirtualMatch not required as the appropriate method is called in CppHandleCalls and VirtualMethod
                 //TODO: GetBestVirtualMatch does not work  with base class constructors
-                // if(!methodInfo.IsConstructor && methodData.Parameters[0].ComputedType().ClrType.DeclaringType!=methodInfo.DeclaringType)
-                //  methodData.Info = ClassHierarchyAnalysis.GetBestVirtualMatch(methodData.Info,
-                //      methodData.Parameters[0].ComputedType().ClrType);
+                // if(!methodInfo.IsConstructor && CallMethodStatic.Parameters[0].ComputedType().ClrType.DeclaringType!=methodInfo.DeclaringType)
+                //  CallMethodStatic.Info = ClassHierarchyAnalysis.GetBestVirtualMatch(CallMethodStatic.Info,
+                //      CallMethodStatic.Parameters[0].ComputedType().ClrType);
             }
-            var declaringType = methodData.Info.DeclaringType;
+            var declaringType = callMethodStatic.Info.DeclaringType;
             if (declaringType.IsSubclassOf(typeof(Delegate)))
             {
                 var signature = declaringType.GetMethod("Invoke");
                 DelegateManager.RegisterType(declaringType, signature);
             }
 
-            if (!methodData.IsVoid)
+            if (!callMethodStatic.IsVoid)
             {
                 var vreg = SetNewVReg();
                 vreg.FixedType = new TypeDescription(methodInfo.GetReturnType());
-                methodData.Result = vreg;
+                callMethodStatic.Result = vreg;
             }
-            if(methodData.Result!=null)
-                methodData.Result.FixedType = new TypeDescription(methodInfo.GetReturnType());
-            AddOperation(methodData);
+            if (callMethodStatic.Result != null)
+                callMethodStatic.Result.FixedType = new TypeDescription(methodInfo.GetReturnType());
+            AddOperation(callMethodStatic);
+        }
+      
+        private void CallMethodData(MethodBase methodInfo, CallMethodStatic callMethodStatic)
+        {
+            if (HandleRuntimeHelpersMethod(methodInfo))
+            {
+                callMethodStatic.ExtractNeededValuesFromStack(_evaluator);
+                AddOperation(callMethodStatic);
+                return;
+            }
+            if (methodInfo.IsConstructor && methodInfo.DeclaringType == typeof(object))
+                return;
+            callMethodStatic.ExtractNeededValuesFromStack(_evaluator);
+
+
+            if (!callMethodStatic.Info.IsStatic && callMethodStatic.Parameters.Count > 0)
+            {
+                //GetBestVirtualMatch not required as the appropriate method is called in CppHandleCalls and VirtualMethod
+                //TODO: GetBestVirtualMatch does not work  with base class constructors
+                // if(!methodInfo.IsConstructor && CallMethodStatic.Parameters[0].ComputedType().ClrType.DeclaringType!=methodInfo.DeclaringType)
+                //  CallMethodStatic.Info = ClassHierarchyAnalysis.GetBestVirtualMatch(CallMethodStatic.Info,
+                //      CallMethodStatic.Parameters[0].ComputedType().ClrType);
+            }
+            var declaringType = callMethodStatic.Info.DeclaringType;
+            if (declaringType.IsSubclassOf(typeof(Delegate)))
+            {
+                var signature = declaringType.GetMethod("Invoke");
+                DelegateManager.RegisterType(declaringType, signature);
+            }
+
+            if (!callMethodStatic.IsVoid)
+            {
+                var vreg = SetNewVReg();
+                vreg.FixedType = new TypeDescription(methodInfo.GetReturnType());
+                callMethodStatic.Result = vreg;
+            }
+            if(callMethodStatic.Result!=null)
+                callMethodStatic.Result.FixedType = new TypeDescription(methodInfo.GetReturnType());
+            AddOperation(callMethodStatic);
         }
 
 
@@ -688,14 +726,14 @@ namespace CodeRefractor.MiddleEnd
             AddOperation(assignment);
         }
 
-        public void NewObject(MethodBase constructorInfo, CrRuntimeLibrary crRuntime)
+        public void NewObject(MethodBase constructorInfo)
         {
             if (constructorInfo.DeclaringType == typeof(object))
                 return;
-            var mappedType = crRuntime.GetMappedType(constructorInfo.DeclaringType);
+            var mappedType = constructorInfo.DeclaringType;
             if (mappedType != null && mappedType != constructorInfo.DeclaringType)
             {
-                constructorInfo = crRuntime.GetMappedConstructor(constructorInfo);
+                constructorInfo = constructorInfo;
             }
             constructorInfo.Register();
             var result = SetNewVReg();
@@ -707,9 +745,9 @@ namespace CodeRefractor.MiddleEnd
             };
             AddOperation(constructedObject);
 
-            var interpreter = constructedObject.Info.Register(crRuntime);
-            var methodData = new MethodData(interpreter, OperationKind.Call);
-            CallMethodData(constructedObject.Info, methodData, OperationKind.Call, crRuntime);
+            var interpreter = new MethodInterpreter(constructedObject.Info);
+            var methodData = new CallMethodStatic(interpreter);
+            CallMethodData(constructedObject.Info, methodData);
             var vreg = SetNewVReg();
             vreg.FixedType = new TypeDescription(methodData.Info.DeclaringType);
             var assign = new Assignment

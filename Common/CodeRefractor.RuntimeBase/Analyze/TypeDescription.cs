@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
+using CodeRefractor.ClosureCompute;
 using CodeRefractor.Runtime;
 using CodeRefractor.RuntimeBase.Shared;
 using CodeRefractor.Util;
@@ -68,7 +69,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
          
         }
 
-        public void ExtractInformation(CrRuntimeLibrary crRuntime)
+        public void ExtractInformation(ClosureEntities closureEntities)
         {
             if (IgnoredSet.Contains(ClrType))
                 return;
@@ -87,11 +88,11 @@ namespace CodeRefractor.RuntimeBase.Analyze
 
             if (ClrTypeCode == TypeCode.Object)
             {
-                ExtractFieldsTypes(crRuntime);
+                ExtractFieldsTypes(closureEntities);
             }
         }
 
-        private void ExtractFieldsTypes(CrRuntimeLibrary crRuntime)
+        private void ExtractFieldsTypes(ClosureEntities crRuntime)
         {
             var clrType = ClrType.GetReversedType(crRuntime);
             if (clrType.Assembly.GlobalAssemblyCache)

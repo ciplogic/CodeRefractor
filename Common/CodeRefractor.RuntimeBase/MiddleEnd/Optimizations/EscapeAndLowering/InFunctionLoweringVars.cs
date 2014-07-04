@@ -9,7 +9,6 @@ using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 using CodeRefractor.MiddleEnd.UseDefs;
-using CodeRefractor.Runtime;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Backend.Optimizations.EscapeAndLowering;
 using CodeRefractor.RuntimeBase.MiddleEnd;
@@ -54,7 +53,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
                     var usages = useDef.GetUsages(index);
                     foreach (var localVariable in usages.Where(candidateVariables.Contains))
                     {
-                        RemoveCandidatesIfEscapes(localVariable, candidateVariables, op, Runtime);
+                        RemoveCandidatesIfEscapes(localVariable, candidateVariables, op);
                     }
                 }
                 if (candidateVariables.Count == 0)
@@ -97,7 +96,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
         }
 
         public static void RemoveCandidatesIfEscapes(LocalVariable localVariable,
-            HashSet<LocalVariable> candidateVariables, LocalOperation op, CrRuntimeLibrary crRuntime)
+            HashSet<LocalVariable> candidateVariables, LocalOperation op)
         {
             switch (op.Kind)
             {
@@ -109,7 +108,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
                     break;
 
                 case OperationKind.Call:
-                    HandleCall(localVariable, candidateVariables, op, crRuntime);
+                    HandleCall(localVariable, candidateVariables, op);
                     break;
                 case OperationKind.CallVirtual:
                 case OperationKind.CallInterface:
@@ -140,7 +139,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
 
         private static void HandleCallVirtual( HashSet<LocalVariable> candidateVariables, LocalOperation op)
         {
-            var methodData = (MethodData)op;
+            var methodData = (CallMethodStatic)op;
             foreach (var identifierValue in methodData.Parameters)
             {
                 var localVariable = identifierValue as LocalVariable;
@@ -181,9 +180,9 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
         }
 
         private static void HandleCall(LocalVariable localVariable, HashSet<LocalVariable> candidateVariables,
-            LocalOperation op, CrRuntimeLibrary crRuntime)
+            LocalOperation op)
         {
-            var methodData = (MethodData) op;
+            var methodData = (CallMethodStatic) op;
             var escapeData = AnalyzeParametersAreEscaping.GetEscapingParameterData(methodData);
             if (escapeData == null)
             {
@@ -191,7 +190,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
                 return;
             }
 
-            var escapingBools = LinkerUtils.BuildEscapingBools(methodData.Info, crRuntime);
+            var escapingBools = LinkerUtils.BuildEscapingBools(methodData.Info, Closure);
             for (var index = 0; index < methodData.Parameters.Count; index++)
             {
                 var parameter = methodData.Parameters[index];

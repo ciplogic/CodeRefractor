@@ -24,12 +24,12 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
             if (interpreter.Kind != MethodKind.Default)
                 return;
 
-            var originalSnapshot = interpreter.Method.BuildEscapingBools(Runtime);
+            var originalSnapshot = interpreter.Method.BuildEscapingBools(Closure);
 
             var localOperations = interpreter.MidRepresentation.UseDef.GetLocalOperations();
             if (ComputeEscapeTable(interpreter, localOperations, interpreter)) return;
 
-            var finalSnapshot = interpreter.Method.BuildEscapingBools(Runtime);
+            var finalSnapshot = interpreter.Method.BuildEscapingBools(Closure);
             CheckForChanges(finalSnapshot, originalSnapshot);
         }
 
@@ -40,7 +40,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
             var escaping = ComputeArgsEscaping(operations, argEscaping);
             if (argEscaping.Count == 0) return true;
             intermediateCode.MidRepresentation.SetAdditionalValue(LinkerUtils.EscapeName, escaping);
-            var escapingBools = intermediateCode.Method.BuildEscapingBools(Runtime);
+            var escapingBools = intermediateCode.Method.BuildEscapingBools(Closure);
             var variables = intermediateCode.MidRepresentation.Vars;
             foreach (var variable in variables.Arguments)
             {
@@ -86,7 +86,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
                 var usages = useDef.GetUsages(index);
                 foreach (var localVariable in usages.Where(argumentList.Contains))
                 {
-                    InFunctionLoweringVars.RemoveCandidatesIfEscapes(localVariable, argumentList, op, crRuntime);
+                    InFunctionLoweringVars.RemoveCandidatesIfEscapes(localVariable, argumentList, op);
                 }
             }
             return argumentList;
@@ -102,7 +102,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
                 switch (op.Kind)
                 {
                     case OperationKind.Call:
-                        var methodData = (MethodData) op;
+                        var methodData = (CallMethodStatic) op;
                         var otherMethodData = GetEscapingParameterData(methodData);
                         if (otherMethodData == null)
                             break;
@@ -126,10 +126,10 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
             return escaping;
         }
 
-        public static Dictionary<int, bool> GetEscapingParameterData(MethodData methodData)
+        public static Dictionary<int, bool> GetEscapingParameterData(CallMethodStatic callMethodStatic)
         {
-            var info = methodData.Info;
-            return info.EscapingParameterData(Runtime);
+            var info = callMethodStatic.Info;
+            return info.EscapingParameterData(Closure);
         }
     }
 }

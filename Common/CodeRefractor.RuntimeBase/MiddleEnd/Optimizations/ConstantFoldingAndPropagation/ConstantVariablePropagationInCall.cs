@@ -32,7 +32,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation
                     if (destOperation.Kind == OperationKind.BranchOperator)
                         break;
                     if (destOperation.Kind != OperationKind.Call) continue;
-                    var callData = (MethodData) destOperation;
+                    var callData = (CallMethodStatic) destOperation;
                     if (SameVariable(callData.Result, srcVariableDefinition.AssignedTo))
                         break;
                     var pos = -1;
