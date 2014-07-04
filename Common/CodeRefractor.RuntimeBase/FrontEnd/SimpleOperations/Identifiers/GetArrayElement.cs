@@ -1,4 +1,8 @@
+#region Uses
+
 using System;
+
+#endregion
 
 namespace CodeRefractor.MiddleEnd.SimpleOperations.Identifiers
 {
@@ -12,6 +16,7 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations.Identifiers
             : base(OperationKind.GetArrayItem)
         {
         }
+
         public Type GetElementType()
         {
             var computedType = Instance.ComputedType();

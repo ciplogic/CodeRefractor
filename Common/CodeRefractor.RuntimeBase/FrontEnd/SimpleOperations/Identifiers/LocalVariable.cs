@@ -59,7 +59,6 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations.Identifiers
         public void AutoName()
         {
             VarName = GetAutoName();
-            
         }
     }
 }

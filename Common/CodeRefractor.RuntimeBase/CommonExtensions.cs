@@ -187,7 +187,8 @@ namespace CodeRefractor.RuntimeBase
         public static int ToInt(this string value)
         {
             int result;
-            Int32.TryParse(value, out result);
+            if(!Int32.TryParse(value, out result))
+                throw new InvalidDataException("Integer not well formatted: "+value);
             return result;
         }
 

@@ -1,7 +1,6 @@
 #region Uses
 
 using System;
-using System.Reflection;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using Mono.Cecil;

@@ -1,4 +1,4 @@
-#region Usings
+#region Uses
 
 using System;
 using System.Linq;
@@ -90,10 +90,9 @@ namespace CodeRefractor.FrontEnd
         private void AssignValueToStack(object value)
         {
             if (value is LocalVariable)
-            {
                 _evaluator.Push((IdentifierValue) value);
-            }
-            PushStack(new ConstValue(value));
+            else
+                PushStack(new ConstValue(value));
         }
 
         public void CopyLocalVariableIntoStack(int value)
@@ -169,7 +168,7 @@ namespace CodeRefractor.FrontEnd
         {
             if (ShowComments)
             {
-                AddOperation(new Comment() { Message = comment });
+                AddOperation(new Comment {Message = comment});
             }
         }
 
@@ -191,14 +190,14 @@ namespace CodeRefractor.FrontEnd
         public void LoadReferenceInArray()
         {
             var secondVar = _evaluator.Pop();
-            var firstVar = (LocalVariable)_evaluator.Pop();
+            var firstVar = (LocalVariable) _evaluator.Pop();
 
             var result = SetNewVReg();
-            var arrayVariable = new GetArrayElement()
+            var arrayVariable = new GetArrayElement
             {
                 AssignedTo = result,
                 Instance = firstVar,
-                Index = secondVar,   
+                Index = secondVar,
             };
             result.FixedType = new TypeDescription(arrayVariable.GetElementType());
             AddOperation(arrayVariable);
@@ -207,28 +206,27 @@ namespace CodeRefractor.FrontEnd
         public void LoadReferenceInArrayTyped()
         {
             var index = _evaluator.Pop();
-            var instance = (LocalVariable)_evaluator.Pop();
+            var instance = (LocalVariable) _evaluator.Pop();
 
             var result = SetNewVReg();
-            var arrayVariable = new GetArrayElement()
+            var arrayVariable = new GetArrayElement
             {
                 AssignedTo = result,
                 Instance = instance,
                 Index = index
-
             };
-            
-            
+
+
             AddOperation(arrayVariable);
         }
 
         public void Return(bool isVoid)
         {
             var returnValue = isVoid ? null : _evaluator.Pop();
-            AddOperation(new Return()
+            AddOperation(new Return
             {
                 Returning = returnValue
-            }); 
+            });
         }
 
 
@@ -250,19 +248,19 @@ namespace CodeRefractor.FrontEnd
         public void ConvI()
         {
             SetUnaryOperator(OpcodeOperatorNames.ConvI);
-            _evaluator.Top.FixedType = new TypeDescription(typeof(IntPtr));
+            _evaluator.Top.FixedType = new TypeDescription(typeof (IntPtr));
         }
 
         public void ConvI4()
         {
             SetUnaryOperator(OpcodeOperatorNames.ConvI4);
-            _evaluator.Top.FixedType = new TypeDescription(typeof(int));
+            _evaluator.Top.FixedType = new TypeDescription(typeof (int));
         }
 
         public void ConvU1()
         {
             SetUnaryOperator(OpcodeOperatorNames.ConvU1);
-            _evaluator.Top.FixedType = new TypeDescription(typeof(byte));
+            _evaluator.Top.FixedType = new TypeDescription(typeof (byte));
         }
 
         public void Not()
@@ -280,25 +278,25 @@ namespace CodeRefractor.FrontEnd
         {
             SetUnaryOperator(OpcodeOperatorNames.LoadLen);
 
-            _evaluator.Top.FixedType = new TypeDescription(typeof(int));
+            _evaluator.Top.FixedType = new TypeDescription(typeof (int));
         }
 
         public void ConvI8()
         {
             SetUnaryOperator(OpcodeOperatorNames.ConvI8);
-            _evaluator.Top.FixedType = new TypeDescription(typeof(Int64));
+            _evaluator.Top.FixedType = new TypeDescription(typeof (Int64));
         }
 
         public void ConvR4()
         {
             SetUnaryOperator(OpcodeOperatorNames.ConvR4);
-            _evaluator.Top.FixedType = new TypeDescription(typeof(float));
+            _evaluator.Top.FixedType = new TypeDescription(typeof (float));
         }
 
         public void ConvR8()
         {
             SetUnaryOperator(OpcodeOperatorNames.ConvR8);
-            _evaluator.Top.FixedType = new TypeDescription(typeof(double));
+            _evaluator.Top.FixedType = new TypeDescription(typeof (double));
         }
 
 
@@ -339,7 +337,7 @@ namespace CodeRefractor.FrontEnd
 
         public void SetLabel(int offset)
         {
-            AddOperation(new Label() { JumpTo = offset });
+            AddOperation(new Label {JumpTo = offset});
         }
 
         public void Cgt()
@@ -404,31 +402,28 @@ namespace CodeRefractor.FrontEnd
         public static bool HandleRuntimeHelpersMethod(MethodBase method)
         {
             var declType = method.DeclaringType;
-            return declType == typeof(RuntimeHelpers);
+            return declType == typeof (RuntimeHelpers);
         }
 
 
         public void Call(object operand)
         {
-            var methodInfo = ((MethodReference)operand).GetMethod(); //TODO System.Void System.Array::Resize<System.Char>(!!0[]&,System.Int32) Weird Signature
+            var methodInfo = ((MethodReference) operand).GetMethod();
+                //TODO System.Void System.Array::Resize<System.Char>(!!0[]&,System.Int32) Weird Signature
 
             if (methodInfo != null)
             {
-                var interpreter = new MethodInterpreter(methodInfo); 
+                var interpreter = new MethodInterpreter(methodInfo);
                 var methodData = new CallMethodStatic(interpreter);
 
 
                 CallMethodData(methodInfo, methodData);
             }
-            else
-            {
-                
-            }
         }
 
         public void CallVirtual(object operand)
         {
-            var methodInfo = ((MethodReference)operand).GetMethod();
+            var methodInfo = ((MethodReference) operand).GetMethod();
             var interpreter = new MethodInterpreter(methodInfo);
 
             var methodData = new CallMethodVirtual(interpreter);
@@ -445,7 +440,7 @@ namespace CodeRefractor.FrontEnd
                 AddOperation(callMethodStatic);
                 return;
             }
-            if (methodInfo.IsConstructor && methodInfo.DeclaringType == typeof(object))
+            if (methodInfo.IsConstructor && methodInfo.DeclaringType == typeof (object))
                 return;
             callMethodStatic.ExtractNeededValuesFromStack(_evaluator);
 
@@ -459,7 +454,7 @@ namespace CodeRefractor.FrontEnd
                 //      CallMethodStatic.Parameters[0].ComputedType().ClrType);
             }
             var declaringType = callMethodStatic.Info.DeclaringType;
-            if (declaringType.IsSubclassOf(typeof(Delegate)))
+            if (declaringType.IsSubclassOf(typeof (Delegate)))
             {
                 var signature = declaringType.GetMethod("Invoke");
                 DelegateManager.RegisterType(declaringType, signature);
@@ -475,7 +470,7 @@ namespace CodeRefractor.FrontEnd
                 callMethodStatic.Result.FixedType = new TypeDescription(methodInfo.GetReturnType());
             AddOperation(callMethodStatic);
         }
-      
+
         private void CallMethodData(MethodBase methodInfo, CallMethodStatic callMethodStatic)
         {
             if (HandleRuntimeHelpersMethod(methodInfo))
@@ -484,7 +479,7 @@ namespace CodeRefractor.FrontEnd
                 AddOperation(callMethodStatic);
                 return;
             }
-            if (methodInfo.IsConstructor && methodInfo.DeclaringType == typeof(object))
+            if (methodInfo.IsConstructor && methodInfo.DeclaringType == typeof (object))
                 return;
             callMethodStatic.ExtractNeededValuesFromStack(_evaluator);
 
@@ -498,7 +493,7 @@ namespace CodeRefractor.FrontEnd
                 //      CallMethodStatic.Parameters[0].ComputedType().ClrType);
             }
             var declaringType = callMethodStatic.Info.DeclaringType;
-            if (declaringType.IsSubclassOf(typeof(Delegate)))
+            if (declaringType.IsSubclassOf(typeof (Delegate)))
             {
                 var signature = declaringType.GetMethod("Invoke");
                 DelegateManager.RegisterType(declaringType, signature);
@@ -510,7 +505,7 @@ namespace CodeRefractor.FrontEnd
                 vreg.FixedType = new TypeDescription(methodInfo.GetReturnType());
                 callMethodStatic.Result = vreg;
             }
-            if(callMethodStatic.Result!=null)
+            if (callMethodStatic.Result != null)
                 callMethodStatic.Result.FixedType = new TypeDescription(methodInfo.GetReturnType());
             AddOperation(callMethodStatic);
         }
@@ -538,28 +533,27 @@ namespace CodeRefractor.FrontEnd
         {
             var varValue = _evaluator.Pop();
             var varAddress = _evaluator.Pop();
-            
+
             //Deal with constants
             if (varValue is ConstValue)
             {
-                var assignment = new Assignment()
+                var assignment = new Assignment
                 {
-                    AssignedTo = (LocalVariable)varAddress,
+                    AssignedTo = (LocalVariable) varAddress,
                     Right = varValue
                 };
                 AddOperation(assignment);
             }
             else
             {
-                
 //                var assignment = new DerefAssignment()
 //                {
 //                    Left = (LocalVariable) varAddress,
 //                    Right = (LocalVariable) varValue
 //                };
-                var assignment = new Assignment()
+                var assignment = new Assignment
                 {
-                    AssignedTo = (LocalVariable)varAddress,
+                    AssignedTo = (LocalVariable) varAddress,
                     Right = varValue
                 };
                 AddOperation(assignment);
@@ -572,26 +566,26 @@ namespace CodeRefractor.FrontEnd
         {
             var firstVar = _evaluator.Pop();
             AddOperation(new BranchOperator(OpcodeBranchNames.BrTrue)
-                {
-                    JumpTo = pushedIntValue,
-                    CompareValue = firstVar
-                });
+            {
+                JumpTo = pushedIntValue,
+                CompareValue = firstVar
+            });
         }
 
         public void BranchIfFalse(int pushedIntValue)
         {
             var firstVar = _evaluator.Pop();
             AddOperation(new BranchOperator(OpcodeBranchNames.BrFalse)
-                {
-                    JumpTo = pushedIntValue,
-                    CompareValue = firstVar
-                });
+            {
+                JumpTo = pushedIntValue,
+                CompareValue = firstVar
+            });
         }
 
 
         public void AlwaysBranch(int offset)
         {
-            AddOperation(new AlwaysBranch(){JumpTo = offset}); 
+            AddOperation(new AlwaysBranch {JumpTo = offset});
         }
 
         public void BranchIfEqual(int jumpTo)
@@ -605,11 +599,11 @@ namespace CodeRefractor.FrontEnd
             var firstVar = _evaluator.Pop();
 
             AddOperation(new BranchOperator(opcode)
-                {
-                    JumpTo = jumpTo,
-                    CompareValue = firstVar,
-                    SecondValue = secondVar
-                });
+            {
+                JumpTo = jumpTo,
+                CompareValue = firstVar,
+                SecondValue = secondVar
+            });
         }
 
         public void BranchIfGreaterOrEqual(int jumpTo)
@@ -656,7 +650,7 @@ namespace CodeRefractor.FrontEnd
 
         public void LoadFieldAddressIntoEvaluationStack(FieldReference fieldInfo)
         {
-            var firstVar = (LocalVariable)_evaluator.Pop();
+            var firstVar = (LocalVariable) _evaluator.Pop();
             var vreg = SetNewVReg();
             vreg.FixedType = new TypeDescription(fieldInfo.FieldType.GetClrType().MakeByRefType());
 
@@ -686,7 +680,7 @@ namespace CodeRefractor.FrontEnd
             {
                 AssignedTo = vreg,
                 FieldName = fieldName,
-                Instance = (LocalVariable)firstVar
+                Instance = (LocalVariable) firstVar
             };
             AddOperation(assignment);
         }
@@ -696,9 +690,9 @@ namespace CodeRefractor.FrontEnd
             var vreg = SetNewVReg();
             var fieldName = operand.Name;
             var declaringType = operand.DeclaringType;
-            if (declaringType.GetClrType() == typeof(IntPtr) && fieldName == "Zero")
+            if (declaringType.GetClrType() == typeof (IntPtr) && fieldName == "Zero")
             {
-                var voidPtr = new TypeDescription(typeof(IntPtr));
+                var voidPtr = new TypeDescription(typeof (IntPtr));
                 vreg.FixedType = voidPtr;
                 var nullPtrAssign = new Assignment
                 {
@@ -728,7 +722,7 @@ namespace CodeRefractor.FrontEnd
 
         public void NewObject(MethodBase constructorInfo)
         {
-            if (constructorInfo.DeclaringType == typeof(object))
+            if (constructorInfo.DeclaringType == typeof (object))
                 return;
             var mappedType = constructorInfo.DeclaringType;
             if (mappedType != null && mappedType != constructorInfo.DeclaringType)
@@ -738,7 +732,7 @@ namespace CodeRefractor.FrontEnd
             constructorInfo.Register();
             var result = SetNewVReg();
             result.FixedType = new TypeDescription(constructorInfo.DeclaringType);
-            var constructedObject = new NewConstructedObject()
+            var constructedObject = new NewConstructedObject
             {
                 AssignedTo = result,
                 Info = constructorInfo
@@ -768,7 +762,6 @@ namespace CodeRefractor.FrontEnd
                 AssignedTo = result,
                 TypeArray = typeArray,
                 ArrayLength = arrayLength
-
             };
             result.FixedType = new TypeDescription(typeArray.MakeArrayType());
             AddOperation(assignment);
@@ -778,8 +771,8 @@ namespace CodeRefractor.FrontEnd
         {
             var right = _evaluator.Pop();
             var index = _evaluator.Pop();
-            var instance = (LocalVariable)_evaluator.Pop();
-            var setArrayElement = new SetArrayElement()
+            var instance = (LocalVariable) _evaluator.Pop();
+            var setArrayElement = new SetArrayElement
             {
                 Instance = instance,
                 Index = index,
@@ -803,7 +796,7 @@ namespace CodeRefractor.FrontEnd
                 AssignedTo = vreg,
                 Right = new ConstByteArrayValue(rightConstant)
             };
-            vreg.FixedType = new TypeDescription(typeof(byte[]));
+            vreg.FixedType = new TypeDescription(typeof (byte[]));
             AddOperation(assign);
         }
 
@@ -816,7 +809,7 @@ namespace CodeRefractor.FrontEnd
         {
             var nullConst = new ConstValue(null)
             {
-                FixedType = new TypeDescription(typeof(object))
+                FixedType = new TypeDescription(typeof (object))
             };
             PushStack(nullConst);
         }
@@ -826,7 +819,7 @@ namespace CodeRefractor.FrontEnd
             var result = SetNewVReg();
             result.FixedType = new TypeDescription(operand.GetType());
             var ptr = operand.GetMethod().MethodHandle.GetFunctionPointer();
-            var store = new FunctionPointerStore()
+            var store = new FunctionPointerStore
             {
                 AssignedTo = result,
                 FunctionPointer = operand.GetMethod(),
@@ -838,18 +831,18 @@ namespace CodeRefractor.FrontEnd
 
         public void Switch(Instruction[] instructions)
         {
-            var firstVar = (LocalVariable)_evaluator.Pop();
+            var firstVar = (LocalVariable) _evaluator.Pop();
             var offsets = instructions.Select(inst => inst.Offset).ToArray();
 
             var pos = 0;
             foreach (var offset in offsets)
             {
                 AddOperation(new BranchOperator(OpcodeBranchNames.Beq)
-                    {
-                        JumpTo = offset,
-                        CompareValue = firstVar,
-                        SecondValue = new ConstValue(pos)
-                    });
+                {
+                    JumpTo = offset,
+                    CompareValue = firstVar,
+                    SecondValue = new ConstValue(pos)
+                });
                 pos++;
             }
         }
@@ -862,13 +855,13 @@ namespace CodeRefractor.FrontEnd
                 AssignedTo = result,
                 Right = operand
             };
-            result.FixedType = new TypeDescription(typeof(int));
+            result.FixedType = new TypeDescription(typeof (int));
             AddOperation(assign);
         }
 
         public void LoadValueFromAddress()
         {
-            var firstVar = (LocalVariable)_evaluator.Pop();
+            var firstVar = (LocalVariable) _evaluator.Pop();
 
 
             var result = SetNewVReg();
@@ -884,7 +877,6 @@ namespace CodeRefractor.FrontEnd
 
             else
             {
-
                 result.FixedType = new TypeDescription(ptrType.ClrType);
             }
             AddOperation(assignment);
@@ -898,7 +890,7 @@ namespace CodeRefractor.FrontEnd
         public void LoadAddressOfArrayItemIntoStack(Type operand)
         {
             var indexVar = _evaluator.Pop();
-            var arrayVar = (LocalVariable)_evaluator.Pop();
+            var arrayVar = (LocalVariable) _evaluator.Pop();
 
             var result = SetNewVReg();
             var assignment = new RefArrayItemAssignment
@@ -915,8 +907,8 @@ namespace CodeRefractor.FrontEnd
         {
             var value = _evaluator.Pop();
             var index = _evaluator.Pop();
-            var array = (LocalVariable)_evaluator.Pop();
-            var setArrayElement = new SetArrayElement()
+            var array = (LocalVariable) _evaluator.Pop();
+            var setArrayElement = new SetArrayElement
             {
                 Instance = array,
                 Index = index,
@@ -932,7 +924,6 @@ namespace CodeRefractor.FrontEnd
 
         public void Throw()
         {
-
             var valueToCast = _evaluator.Pop();
 
             //    var result = SetNewVReg();
@@ -952,12 +943,10 @@ namespace CodeRefractor.FrontEnd
 
         public void CastClass(Type operand)
         {
-
-
             var valueToCast = _evaluator.Pop();
             var result = SetNewVReg();
             result.FixedType = new TypeDescription(operand);
-            var casting = new ClassCasting()
+            var casting = new ClassCasting
             {
                 AssignedTo = result,
                 Value = valueToCast
@@ -973,23 +962,20 @@ namespace CodeRefractor.FrontEnd
             var result = SetNewVReg();
             result.FixedType = new TypeDescription(operand);
 
-            _evaluator.Push(new IdentifierValue()
+            _evaluator.Push(new IdentifierValue
             {
                 FixedType = new TypeDescription(operand),
-                
             });
             //AddOperation(casting);
         }
 
 
-        
-
         public void Box()
         {
             var valueToBox = _evaluator.Pop();
             var result = SetNewVReg();
-            result.FixedType = new TypeDescription(typeof(object));
-            var boxing = new Boxing()
+            result.FixedType = new TypeDescription(typeof (object));
+            var boxing = new Boxing
             {
                 AssignedTo = result,
                 Right = valueToBox
@@ -1002,7 +988,7 @@ namespace CodeRefractor.FrontEnd
             var valueToBox = _evaluator.Pop();
             var result = SetNewVReg();
             result.FixedType = new TypeDescription(operand);
-            var boxing = new Unboxing()
+            var boxing = new Unboxing
             {
                 AssignedTo = result,
                 Right = valueToBox
@@ -1012,15 +998,15 @@ namespace CodeRefractor.FrontEnd
 
         public void LoadObject(Type operand) // TODO: Fix this
         {
-            var valueAddress = (LocalVariable)_evaluator.Pop();
+            var valueAddress = (LocalVariable) _evaluator.Pop();
 
             AssignValueToStack(valueAddress);
         }
 
-        public void StoreObject(Type operand)// TODO: Fix this
+        public void StoreObject(Type operand) // TODO: Fix this
         {
             var value = _evaluator.Pop();
-            var valueAddress = (LocalVariable)_evaluator.Pop();
+            var valueAddress = (LocalVariable) _evaluator.Pop();
 
             //Look up instance
             var assign = new Assignment
@@ -1030,7 +1016,6 @@ namespace CodeRefractor.FrontEnd
             };
 
             AddOperation(assign);
-
         }
 
         public void CallInterface(object operand, CrRuntimeLibrary crRuntime)

@@ -1,4 +1,4 @@
-#region Usings
+#region Uses
 
 using System;
 using System.Collections.Generic;
@@ -7,15 +7,13 @@ using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase
+namespace CodeRefractor.FrontEnd
 {
-    public class EvaluatorStack
+    public class EvaluatorStack : List<IdentifierValue>
     {
-        private readonly Stack<IdentifierValue> _stack = new Stack<IdentifierValue>();
-
         public override string ToString()
         {
-            var items = _stack.ToArray()
+            var items = ToArray()
                 .Select(id =>
                     string.Format(
                         id is ConstValue ? "'{0}'" : "{0}",
@@ -30,10 +28,6 @@ namespace CodeRefractor.RuntimeBase
         public LocalVariable SetNewVReg()
         {
             _vRegId++;
-            if (_vRegId == 27)
-            {
-                
-            }
             var newLocal = new LocalVariable
             {
                 Kind = VariableKind.Vreg,
@@ -46,27 +40,19 @@ namespace CodeRefractor.RuntimeBase
 
         public void Push(IdentifierValue newLocal)
         {
-            _stack.Push(newLocal);
-        }
-
-        public int Count
-        {
-            get { return _stack.Count; }
+            Add(newLocal);
         }
 
         public IdentifierValue Top
         {
-            get { return _stack.Peek(); }
+            get { return this[Count - 1]; }
         }
 
         public IdentifierValue Pop()
         {
-            return _stack.Pop();
-        }
-
-        public void Clear()
-        {
-            _stack.Clear();
+            var result = Top;
+            RemoveAt(Count - 1);
+            return result;
         }
     }
 }

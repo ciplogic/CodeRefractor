@@ -14,7 +14,6 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations.Methods
         }
 
 
-
         public IdentifierValue Returning { get; set; }
     }
 }

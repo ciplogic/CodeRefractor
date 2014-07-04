@@ -1,5 +1,9 @@
+#region Uses
+
 using System.Collections.Generic;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
+
+#endregion
 
 namespace CodeRefractor.MiddleEnd.SimpleOperations.Methods
 {

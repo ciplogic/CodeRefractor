@@ -1,6 +1,5 @@
 #region Uses
 
-using CodeRefractor.CodeWriter.Linker;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 
 #endregion

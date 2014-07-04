@@ -12,13 +12,13 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations
         public MethodBase Info { get; set; }
         public LocalVariable AssignedTo { get; set; }
 
-        public NewConstructedObject():base(OperationKind.NewObject)
+        public NewConstructedObject() : base(OperationKind.NewObject)
         {
         }
 
         public override string ToString()
         {
-            return string.Format("{0} = new {1}()",AssignedTo.VarName, Info.DeclaringType.Name);
+            return string.Format("{0} = new {1}()", AssignedTo.VarName, Info.DeclaringType.Name);
         }
     }
 }

@@ -180,7 +180,7 @@
     <Compile Include="Shared\OpcodeIntValues.cs" />
     <Compile Include="Shared\ReflectionUtils.cs" />
     <Compile Include="CommonExtensions.cs" />
-    <Compile Include="EvaluatorStack.cs" />
+    <Compile Include="FrontEnd\EvaluatorStack.cs" />
     <Compile Include="Runtime\Annotations\MapTypeAttribute.cs" />
     <Compile Include="Runtime\Annotations\CppMethodBodyAttribute.cs" />
     <Compile Include="FrontEnd\SimpleOperations\GetField.cs" />

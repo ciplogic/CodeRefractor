@@ -4,9 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using CodeRefractor.FrontEnd;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.RuntimeBase;
-using CodeRefractor.RuntimeBase.MiddleEnd;
 
 #endregion
 
@@ -65,7 +65,7 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations.Methods
             if (Result == null)
             {
                 return String.Format("{0}({1})", Info.Name,
-                paramData);
+                    paramData);
             }
             return String.Format("{0} = {1}({2})", Result.Name, Info.Name, paramData);
         }

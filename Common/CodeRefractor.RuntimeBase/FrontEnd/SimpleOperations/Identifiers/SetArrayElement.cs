@@ -1,7 +1,6 @@
 #region Uses
 
 using System;
-using CodeRefractor.RuntimeBase.Analyze;
 
 #endregion
 
@@ -16,6 +15,7 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations.Identifiers
         public SetArrayElement() : base(OperationKind.SetArrayItem)
         {
         }
+
         public Type GetElementType()
         {
             var computedType = Instance.ComputedType();

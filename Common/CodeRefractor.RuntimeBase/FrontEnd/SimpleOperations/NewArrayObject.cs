@@ -22,8 +22,8 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations
 
         public override string ToString()
         {
-            return string.Format("{2} = new {0}[{1}]", 
-                TypeArray.FullName, 
+            return string.Format("{2} = new {0}[{1}]",
+                TypeArray.FullName,
                 ArrayLength,
                 AssignedTo.Name);
         }
