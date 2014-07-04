@@ -14,9 +14,9 @@ struct System_ValueType : public System_Object {
 };
 struct _NBody : public System_Object {
 };
-struct CodeRefactor_OpenRuntime_CrConsole : public System_Object {
+struct System_Console : public System_Object {
 };
-struct CodeRefactor_OpenRuntime_CrString : public System_Object {
+struct System_String : public System_Object {
  std::shared_ptr< Array < System_Char > > Text;
 };
 struct _NBodySystem : public System_Object {
@@ -36,7 +36,7 @@ struct _Pair : public System_Object {
  std::shared_ptr<_Body> bi;
  std::shared_ptr<_Body> bj;
 };
-struct CodeRefactor_OpenRuntime_CrMath : public System_Object {
+struct System_Math : public System_Object {
 };
 
 System_Void _NBody_Main();

@@ -147,6 +147,17 @@ namespace CodeRefractor.RuntimeBase
             return mappedType ?? type;
         }
 
+        public static Type GetReversedMappedType(this Type type, ClosureEntities crRuntime)
+        {
+            foreach (var mappedType in crRuntime.MappedTypes)
+            {
+                if (mappedType.Value == type)
+                    return mappedType.Key;
+
+            }
+            return type;
+        }
+
         public static IEnumerable<string> GetParamAsPrettyList(ParameterInfo[] parameterInfos)
         {
             return parameterInfos.Select(

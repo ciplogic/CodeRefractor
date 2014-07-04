@@ -176,9 +176,8 @@ namespace CodeRefractor.RuntimeBase.Backend
               
                 if (DelegateManager.IsTypeDelegate(typeData))
                     continue;
-                var resType = crRuntime.ResolveType(typeData);
-                var type = typeData.GetMappedType(crRuntime);
-                var mappedType = typeData;
+                var type = typeData.GetReversedMappedType(crRuntime);
+                var mappedType = typeData.GetMappedType(crRuntime);
                 if (ShouldSkipType(typeData)) continue;
 
                 if (mappedType.IsGenericType)
