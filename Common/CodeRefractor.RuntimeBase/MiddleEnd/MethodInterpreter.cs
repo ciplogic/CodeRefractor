@@ -54,6 +54,8 @@ namespace CodeRefractor.MiddleEnd
             if (pureAttribute != null)
                 AnalyzeProperties.IsPure = true;
             MidRepresentation.Vars.SetupArguments(Method);
+            MidRepresentation.Vars.SetupLocalVariables(Method);
+            
         }
 
         public void Specialize()

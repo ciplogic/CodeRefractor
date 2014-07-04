@@ -13,7 +13,7 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations
             Kind = kind;
         }
 
-        public OperationKind Kind { get; private set; }
+        public OperationKind Kind { get; internal set; }
 
         public virtual LocalOperation Clone()
         {

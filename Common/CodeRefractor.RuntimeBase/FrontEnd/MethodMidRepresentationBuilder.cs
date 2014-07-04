@@ -61,8 +61,8 @@ namespace CodeRefractor.FrontEnd
                 {
                     case OpcodeIntValues.Beq:
                     case OpcodeIntValues.BeqS:
-                    case OpcodeIntValues.Bne:
-                    case OpcodeIntValues.BneS:
+                    case OpcodeIntValues.BneUn:
+                    case OpcodeIntValues.BneUnS:
                     case OpcodeIntValues.Bge:
                     case OpcodeIntValues.BgeS:
                     case OpcodeIntValues.Bgt:
@@ -181,7 +181,7 @@ namespace CodeRefractor.FrontEnd
             }
             if (opcodeStr == "ldftn")
             {
-                operationFactory.LoadFunction((MethodInfo)instruction.Operand);
+                operationFactory.LoadFunction((MethodDefinition)instruction.Operand);
                 return true;
             }
             if (opcodeStr == "switch")
@@ -208,7 +208,7 @@ namespace CodeRefractor.FrontEnd
             if (opcodeStr == "ldloca.s" || opcodeStr == "ldloca")
             {
                 //TODO: load the address into evaluation stack
-                var index = (LocalVariableInfo)instruction.Operand;
+                var index = (VariableDefinition)instruction.Operand;
 
                 operationFactory.LoadAddressIntoEvaluationStack(index);
                 return true;
@@ -260,7 +260,7 @@ namespace CodeRefractor.FrontEnd
         {
             if (opcodeStr == "newarr")
             {
-                operationFactory.NewArray((Type)((MemberReference)instruction.Operand).GetClrType());
+                operationFactory.NewArray((Type)((TypeReference)instruction.Operand).GetClrType());
                 return true;
             }
             if (opcodeStr == "stelem.i1"

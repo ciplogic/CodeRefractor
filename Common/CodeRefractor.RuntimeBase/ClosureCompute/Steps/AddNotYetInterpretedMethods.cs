@@ -20,7 +20,7 @@ namespace CodeRefractor.ClosureCompute.Steps
             foreach (var method in methods.Where(m => m.Kind == MethodKind.Default))
             {
                 var useDef = method.MidRepresentation.UseDef;
-                var callOperations = useDef.GetOperationsOfKind(OperationKind.Call);
+                var callOperations = useDef.GetOperationsOfKind(OperationKind.Call).Union(useDef.GetOperationsOfKind(OperationKind.CallVirtual));
                 var ops = useDef.GetLocalOperations();
                 foreach (var callOperation in callOperations)
                 {

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using CodeRefractor.ClosureCompute;
+using CodeRefractor.ClosureCompute.Resolvers;
 using CodeRefractor.CodeWriter.BasicOperations;
 using CodeRefractor.CodeWriter.Linker;
 using CodeRefractor.CodeWriter.Platform;
@@ -56,18 +57,26 @@ namespace CodeRefractor.RuntimeBase.Backend
 
         private static void WriteCppMethods(List<MethodInterpreter> closure, StringBuilder sb)
         {
+           
             var cppMethods = closure
                 .Where(m => m.Kind == MethodKind.RuntimeCppMethod)
                 .ToArray();
-            foreach (var interpreter in cppMethods)
-            {
-                var runtimeLibrary = interpreter.CppRepresentation;
-                var methodDeclaration = interpreter.Method.GenerateKey();
-                if (LinkingData.SetInclude(runtimeLibrary.Header))
-                    sb.AppendFormat("#include \"{0}\"", runtimeLibrary.Header).AppendLine();
 
-                sb.Append(methodDeclaration);
-                sb.AppendFormat("{{ {0} }}", runtimeLibrary.Source).AppendLine();
+            var methodInterpreter = cppMethods.FirstOrDefault();
+            if (methodInterpreter != null)
+            {
+                ResolveRuntimeMethod resolver = new ResolveRuntimeMethod(methodInterpreter.DeclaringType.ClrType.Assembly);
+
+                foreach (var interpreter in cppMethods)
+                {
+                    var runtimeLibrary = interpreter.CppRepresentation;
+                    var methodDeclaration = interpreter.Method.GenerateKey();
+                    if (LinkingData.SetInclude(runtimeLibrary.Header))
+                        sb.AppendFormat("#include \"{0}\"", runtimeLibrary.Header).AppendLine();
+
+                    sb.Append(methodDeclaration);
+                    sb.AppendFormat("{{ {0} }}", runtimeLibrary.Source).AppendLine();
+                }
             }
         }
 
@@ -100,14 +109,18 @@ namespace CodeRefractor.RuntimeBase.Backend
         private static void WriteClosureStructBodies(Type[] typeDatas, StringBuilder sb, ClosureEntities crRuntime)
         {
 
+            
 
-            typeDatas = typeDatas.ToList().Except(typeDatas.Where(y => y.Name == "String")).ToArray(); // This appears sometimes, why ?
+            //Remove Mapped Types in favour of their resolved types
+            typeDatas = typeDatas.Where(type => !typeDatas.Any(t => t.GetMappedType() == type && t != type)).Except(new []{(typeof(Int32))}).ToArray();// typeDatas.ToList().Except(typeDatas.Where(y => y.Name == "String")).ToArray(); // This appears sometimes, why ?
 
             foreach (var typeData in typeDatas)
             {
                 var mappedType = typeData.GetMappedType();
                 if (!mappedType.IsGenericType)
                     sb.AppendFormat("struct {0}; ", mappedType.ToCppMangling()).AppendLine();
+
+                //Lets not redeclare 
             }
 
             //Better Algorithm for sorting typedefs so that parents are declared before children, seems sometimes compiler complains of invalid use and forward declarations
@@ -116,9 +129,19 @@ namespace CodeRefractor.RuntimeBase.Backend
             //start with base classes
             var sortedTypeData = new List<Type>();
             sortedTypeData.Add(typeof(System.Object));
-            typeDataList.Remove(typeof(Object));
 
-            /*
+           
+            typeDataList.Remove(typeof(Object));
+           
+            sortedTypeData.Add(typeof(System.ValueType));
+          
+
+            if (typeDataList.Contains(typeof(System.ValueType)))
+                typeDataList.Remove(typeof(System.ValueType));
+         
+           
+           
+         
 
             while (typeDataList.Count > 0)
             {
@@ -135,7 +158,8 @@ namespace CodeRefractor.RuntimeBase.Backend
                     if (typeDataList.Count == 0)
                         break;
                 }
-            }*/
+               
+            }
 
 
             //Add these empty interfaces for strings TODO: Fix this use actual implementations
@@ -149,6 +173,7 @@ namespace CodeRefractor.RuntimeBase.Backend
             {
                 if (DelegateManager.IsTypeDelegate(typeData))
                     continue;
+                var resType = crRuntime.ResolveType(typeData);
                 var type = typeData.GetMappedType();
                 var mappedType = typeData;
 

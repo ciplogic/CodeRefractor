@@ -11,7 +11,7 @@ class NBody
 
  public static void Main()
     {
-        Console.WriteLine(""Prime numbers: "");
+        Console.WriteLine(""Prime numbers: "".Length); //Waiting for new changes to reimplement this :))
         var len = 1000000;
         var primes = AddPrimes(len);
         Console.Write(primes);

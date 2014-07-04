@@ -5,6 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
+using CodeRefractor.Runtime.Annotations;
+using CodeRefractor.RuntimeBase;
+using CodeRefractor.RuntimeBase.Shared;
 
 #endregion
 
@@ -33,7 +36,10 @@ namespace CodeRefractor.Util
 
         public static string ClangMethodSignature(this MethodBase method,bool isvirtualmethod = false)
         {
-            var mappedType = method.DeclaringType;
+            var mappedType = method.DeclaringType.GetMappedType();
+            if(mappedType==null)
+             mappedType = method.DeclaringType;
+
             var typeName = mappedType.ToCppMangling();
             if (isvirtualmethod)
             {

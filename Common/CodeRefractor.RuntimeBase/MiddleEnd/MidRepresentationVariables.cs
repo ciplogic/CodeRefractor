@@ -14,7 +14,7 @@ namespace CodeRefractor.MiddleEnd
     {
         public readonly List<LocalVariable> Arguments = new List<LocalVariable>();
         public List<LocalVariable> VirtRegs = new List<LocalVariable>();
-        public readonly List<LocalVariable> LocalVars = new List<LocalVariable>();
+        public readonly List<LocalVariable> LocalVars = new List<LocalVariable>(); //Seems we are not using this anymore
 
         public void SetupArguments(MethodBase _method)
         {
@@ -40,26 +40,30 @@ namespace CodeRefractor.MiddleEnd
                 })
                 .ToArray();
             Arguments.AddRange(argumentVariables);
+
         }
 
 
         public void SetupLocalVariables(MethodBase value)
         {
             var methodBody = value.GetMethodBody();
-            var localVariableInfos = methodBody.LocalVariables;
+            if (methodBody != null)
+            {
+                var localVariableInfos = methodBody.LocalVariables;
 
-            var varsToAdd = localVariableInfos.Select((v, index) => new LocalVariable
-            {
-                FixedType = new TypeDescription(v.LocalType),
-                Id = index,
-                Kind = VariableKind.Local
-            }).ToList();
-            foreach (var localVariable in varsToAdd)
-            {
-                localVariable.AutoName();
+                var varsToAdd = localVariableInfos.Select((v, index) => new LocalVariable
+                {
+                    FixedType = new TypeDescription(v.LocalType),
+                    Id = index,
+                    Kind = VariableKind.Local
+                }).ToList();
+                foreach (var localVariable in varsToAdd)
+                {
+                    localVariable.AutoName();
+                }
+                LocalVars.Clear();
+                LocalVars.AddRange(varsToAdd);
             }
-            LocalVars.Clear();
-            LocalVars.AddRange(varsToAdd);
         }
     }
 }
