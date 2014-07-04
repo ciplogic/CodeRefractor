@@ -6,10 +6,12 @@ using System.Linq;
 using System.Reflection;
 using CodeRefractor.Backend.ComputeClosure;
 using CodeRefractor.MiddleEnd;
+using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.Runtime;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.Backend.ComputeClosure;
 using CodeRefractor.RuntimeBase.MiddleEnd;
+using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 
 #endregion
 
@@ -43,7 +45,7 @@ namespace CodeRefractor.RuntimeBase.Backend
                 var foundMethodCount = methodInterpreters.Count;
                 dependencies = methodInterpreters.Values.ToList();
                 bool foundNewMethods;
-                result.UsedTypes =
+                 result.UsedTypes =
                     new HashSet<Type>(GetTypesClosure(dependencies, out foundNewMethods, programClosure,
                         programClosure.Runtime));
 
@@ -69,6 +71,26 @@ namespace CodeRefractor.RuntimeBase.Backend
             ProgramClosure programClosure, CrRuntimeLibrary crRuntime)
         {
             var typesSet = ScanMethodParameters(methodList, crRuntime);
+
+            //For struct types we need to add them separately
+            foreach (var methodInterpreter in methodList)
+            {
+                foreach (var operation in methodInterpreter.MidRepresentation.LocalOperations)
+                {
+                    if (operation is Assignment)
+                    {
+                        var type = (operation as Assignment).AssignedTo.FixedType.ClrType;
+                        if (!typesSet.Contains(type) && !type.IsByRef)
+                            typesSet.Add(type);
+                    }
+                    if (operation is RefAssignment)
+                    {
+                        var type = (operation as RefAssignment).Left.FixedType.ClrType;
+                        if (!typesSet.Contains(type) && !type.IsByRef)
+                            typesSet.Add(type);
+                    }
+                }
+            }
 
             foundNewMethods = false;
 

@@ -74,7 +74,7 @@ namespace CodeRefractor.RuntimeBase.Backend.ComputeClosure
             var callList = useDef.GetOperationsOfKind(OperationKind.Call).ToList();
             callList.AddRange(useDef.GetOperationsOfKind(OperationKind.CallVirtual));
             callList.AddRange(useDef.GetOperationsOfKind(OperationKind.CallInterface));
-            var localOperations = callList.Select(i => ops[i]).ToArray();
+          var localOperations = callList.Select(i => ops[i]).ToArray();
             var toAdd = HandleCallInstructions(result, localOperations, crRuntime);
             var funcList = useDef.GetOperationsOfKind(OperationKind.LoadFunction).ToList();
             localOperations = funcList.Select(i => ops[i]).ToArray();
@@ -142,6 +142,11 @@ namespace CodeRefractor.RuntimeBase.Backend.ComputeClosure
             }
         }
 
+        class MethodClass
+        {
+            public Type Class;
+            public MethodBase Method;
+        }
         private static List<MethodInterpreter> HandleCallInstructions(
             Dictionary<MethodInterpreterKey, MethodInterpreter> result, LocalOperation[] localOperations,
             CrRuntimeLibrary crRuntime)
@@ -186,24 +191,38 @@ namespace CodeRefractor.RuntimeBase.Backend.ComputeClosure
                        
                         var methods =
                             objects.Select(
-                                j =>
+                                j => new MethodClass
+                                {
+                                    Method = 
                                     j.GetMethod(methodData.Info.GetMethodName(), //Explicit 
                                         BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance, null,
-                                        @params, null)).Union(objects.Select(
-                                j =>
+                                        @params, null),
+                                Class= j}).Union(objects.Select(
+                                j => new MethodClass
+                                {
+                                    Method =
                                     j.GetMethod(methodData.Info.Name, //Implicit
                                         BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance, null,
-                                        @params, null)))
-                                      .Union(objects.SelectMany(y=> //Properties
-                                          y.GetProperties().SelectMany(p => p.GetAccessors()).Where(p => p.Name == methodData.Info.Name || p.Name == methodData.Info.Name)
-                                       )).Where(k=>k!=null).ToArray();
+                                        @params, null),
+                                    Class = j
+                                })
+                                        )
+                                      .Union(objects.SelectMany(y => 
+                                          y.GetProperties().SelectMany(p => p.GetAccessors()).Where(p => p.Name == methodData.Info.Name || p.Name == methodData.Info.Name).Select(k=>new MethodClass//Properties
+                                      {
+                                          Method =k,
+                                          Class = y}
+                                       ))).Where(k => k.Method != null).ToArray();
 
                       
                         foreach (var methodInfo in methods)
                         {
-                            var interpreter2 = methodInfo.Register(crRuntime);
+                            var interpreter2 = methodInfo.Method.Register(crRuntime);
 
-                            var descInfo2 = interpreter2.ToKey(methodInfo.DeclaringType);
+                            var descInfo2 = interpreter2.ToKey(methodInfo.Method.DeclaringType);
+                            if(methodInfo.Method.IsFinal)
+                                descInfo2 = interpreter2.ToKey(methodInfo.Class);
+
                             if (result.ContainsKey(descInfo2))
                                 continue;
 

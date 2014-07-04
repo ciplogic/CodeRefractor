@@ -107,20 +107,29 @@ namespace CodeRefractor.MiddleEnd
                 {
                     case OpcodeIntValues.Beq:
                     case OpcodeIntValues.BeqS:
-                    case OpcodeIntValues.Bne:
-                    case OpcodeIntValues.BneS:
+                 
+                    case OpcodeIntValues.BneUn:
+                    case OpcodeIntValues.BneUnS:
                     case OpcodeIntValues.Bge:
                     case OpcodeIntValues.BgeS:
+                    case OpcodeIntValues.BgeUn:
+                    case OpcodeIntValues.BgeUnS:
                     case OpcodeIntValues.Bgt:
                     case OpcodeIntValues.BgtS:
+                    case OpcodeIntValues.BgtUn:
+                    case OpcodeIntValues.BgtUnS:
                     case OpcodeIntValues.BrTrueS:
                     case OpcodeIntValues.BrTrue:
                     case OpcodeIntValues.BrZero:
                     case OpcodeIntValues.BrZeroS:
                     case OpcodeIntValues.Ble: // Were missing leading to no labels being generated
                     case OpcodeIntValues.BleS:
+                    case OpcodeIntValues.BleUn: // Were missing leading to no labels being generated
+                    case OpcodeIntValues.BleUnS:
                     case OpcodeIntValues.Blt:
                     case OpcodeIntValues.BltS:
+                    case OpcodeIntValues.BltUn:
+                    case OpcodeIntValues.BltUnS:
                     case OpcodeIntValues.BrS:
                     case OpcodeIntValues.Br:
                     case OpcodeIntValues.Leave:
@@ -259,7 +268,7 @@ namespace CodeRefractor.MiddleEnd
             }
             if (opcodeStr == "ldftn")
             {
-                operationFactory.LoadFunction((MethodInfo) instruction.Operand);
+                operationFactory.LoadFunction((MethodDefinition) instruction.Operand);
                 return true;
             }
             if (opcodeStr == "switch")
@@ -269,7 +278,7 @@ namespace CodeRefractor.MiddleEnd
             }
             if (opcodeStr == "sizeof")
             {
-                operationFactory.SizeOf((Type) instruction.Operand);
+                operationFactory.SizeOf(((TypeReference) instruction.Operand).GetClrType());
                 return true;
             }
             if (opcodeStr == "ldsfld")
@@ -286,7 +295,7 @@ namespace CodeRefractor.MiddleEnd
             if (opcodeStr == "ldloca.s" || opcodeStr == "ldloca")
             {
                 //TODO: load the address into evaluation stack
-                var index = (LocalVariableInfo) instruction.Operand;
+                var index = (VariableDefinition)instruction.Operand;
 
                 operationFactory.LoadAddressIntoEvaluationStack(index);
                 return true;
@@ -301,7 +310,7 @@ namespace CodeRefractor.MiddleEnd
 
             if (opcodeStr == "ldelema")
             {
-                operationFactory.LoadAddressOfArrayItemIntoStack((Type) instruction.Operand);
+                operationFactory.LoadAddressOfArrayItemIntoStack(((TypeReference) instruction.Operand).GetClrType());
                 return true;
             }
 
@@ -338,7 +347,7 @@ namespace CodeRefractor.MiddleEnd
         {
             if (opcodeStr == "newarr")
             {
-                operationFactory.NewArray((Type) ((MemberReference)instruction.Operand).GetClrType());
+                operationFactory.NewArray(((TypeReference)instruction.Operand).GetClrType());
                 return true;
             }
             if (opcodeStr == "stelem.i1"
@@ -359,7 +368,7 @@ namespace CodeRefractor.MiddleEnd
             }
             if (opcodeStr == "stelem")
             {
-                var elemInfo = (Type) instruction.Operand;
+                var elemInfo = ((TypeReference) instruction.Operand).GetClrType();
                 operationFactory.StoreElement();
                 return true;
             }
@@ -476,7 +485,7 @@ namespace CodeRefractor.MiddleEnd
             if (opcodeStr.StartsWith("stobj"))
             {
 
-                operationFactory.StoreObject((Type)instruction.Operand);
+                operationFactory.StoreObject(((TypeReference)instruction.Operand).GetClrType());
                 return true;
             }
 
@@ -573,7 +582,7 @@ namespace CodeRefractor.MiddleEnd
             {
              
 
-                operationFactory.LoadObject((Type)instruction.Operand);
+                operationFactory.LoadObject(((TypeReference)instruction.Operand).GetClrType());
                 return true;
             }
             if (opcodeStr == "ldfld")
@@ -653,7 +662,7 @@ namespace CodeRefractor.MiddleEnd
             if (opcodeStr == "unbox.any"
               )
             {
-                operationFactory.Unbox((Type)instruction.Operand);
+                operationFactory.Unbox(((TypeReference)instruction.Operand).GetClrType());
                 return true;
             }
 
@@ -708,7 +717,17 @@ namespace CodeRefractor.MiddleEnd
                 operationFactory.BranchIfGreaterOrEqual(offset);
                 return true;
             }
+            if (opcodeStr == OpcodeBranchNames.BgeUn || opcodeStr == OpcodeBranchNames.BgeUnS)
+            {
+                operationFactory.BranchIfGreaterOrEqual(offset);
+                return true;
+            }
             if (opcodeStr == OpcodeBranchNames.Bgt || opcodeStr == OpcodeBranchNames.BgtS)
+            {
+                operationFactory.BranchIfGreater(offset);
+                return true;
+            }
+            if (opcodeStr == OpcodeBranchNames.BgtUn || opcodeStr == OpcodeBranchNames.BgtUnS)
             {
                 operationFactory.BranchIfGreater(offset);
                 return true;
@@ -718,7 +737,17 @@ namespace CodeRefractor.MiddleEnd
                 operationFactory.BranchIfLessOrEqual(offset);
                 return true;
             }
+            if (opcodeStr == OpcodeBranchNames.BleUn || opcodeStr == OpcodeBranchNames.BleUnS)//Should we treat unsigned differently ?
+            {
+                operationFactory.BranchIfLessOrEqual(offset);
+                return true;
+            }
             if (opcodeStr == OpcodeBranchNames.Blt || opcodeStr == OpcodeBranchNames.BltS)
+            {
+                operationFactory.BranchIfLess(offset);
+                return true;
+            }
+            if (opcodeStr == OpcodeBranchNames.BltUn || opcodeStr == OpcodeBranchNames.BltUnS)
             {
                 operationFactory.BranchIfLess(offset);
                 return true;

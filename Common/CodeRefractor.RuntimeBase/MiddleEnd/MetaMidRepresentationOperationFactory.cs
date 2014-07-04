@@ -89,6 +89,10 @@ namespace CodeRefractor.MiddleEnd
 
         private void AssignValueToStack(object value)
         {
+            if (value is LocalVariable)
+            {
+                _evaluator.Push((IdentifierValue) value);
+            }
             PushStack(new ConstValue(value));
         }
 
@@ -494,16 +498,34 @@ namespace CodeRefractor.MiddleEnd
 
         public void StoresValueFromAddress()
         {
-            var varAddress = _evaluator.Pop();
             var varValue = _evaluator.Pop();
-
-            var assignment = new DerefAssignment()
+            var varAddress = _evaluator.Pop();
+            
+            //Deal with constants
+            if (varValue is ConstValue)
             {
-                Left = (LocalVariable)varAddress,
-                Right = (LocalVariable)varValue
-            };
-
-            AddOperation(assignment);
+                var assignment = new Assignment()
+                {
+                    AssignedTo = (LocalVariable)varAddress,
+                    Right = varValue
+                };
+                AddOperation(assignment);
+            }
+            else
+            {
+                
+//                var assignment = new DerefAssignment()
+//                {
+//                    Left = (LocalVariable) varAddress,
+//                    Right = (LocalVariable) varValue
+//                };
+                var assignment = new Assignment()
+                {
+                    AssignedTo = (LocalVariable)varAddress,
+                    Right = varValue
+                };
+                AddOperation(assignment);
+            }
         }
 
         #region Branching operators
@@ -579,13 +601,13 @@ namespace CodeRefractor.MiddleEnd
 
         #endregion
 
-        public void LoadAddressIntoEvaluationStack(LocalVariableInfo index)
+        public void LoadAddressIntoEvaluationStack(VariableDefinition index)
         {
             var vreg = SetNewVReg();
             vreg.FixedType = new TypeDescription(
-                index.LocalType.MakeByRefType());
+                index.VariableType.GetClrType().MakeByRefType());
 
-            var argument = _representation.Vars.LocalVars.First(v => v.Id == index.LocalIndex);
+            var argument = _representation.Vars.LocalVars.First(v => v.Id == index.Index);
             var assignment = new RefAssignment
             {
                 Left = vreg,
@@ -761,16 +783,16 @@ namespace CodeRefractor.MiddleEnd
             PushStack(nullConst);
         }
 
-        public void LoadFunction(MethodInfo operand)
+        public void LoadFunction(MethodDefinition operand)
         {
             var result = SetNewVReg();
             result.FixedType = new TypeDescription(operand.GetType());
-            var ptr = operand.MethodHandle.GetFunctionPointer();
+            var ptr = operand.GetMethod().MethodHandle.GetFunctionPointer();
             var store = new FunctionPointerStore()
             {
                 AssignedTo = result,
-                FunctionPointer = operand,
-                CustomData = operand
+                FunctionPointer = operand.GetMethod(),
+                CustomData = (MethodInfo) operand.GetMethod()
             };
 
             AddOperation(store);
@@ -954,9 +976,7 @@ namespace CodeRefractor.MiddleEnd
         {
             var valueAddress = (LocalVariable)_evaluator.Pop();
 
-            //Look up instance
-            var localvar = GetVirtReg(valueAddress.Id);
-            AssignValueToStack(localvar);
+            AssignValueToStack(valueAddress);
         }
 
         public void StoreObject(Type operand)// TODO: Fix this

@@ -18,7 +18,7 @@ namespace CodeRefractor.Util
         {
             if (methodInfo.DeclaringType != null && methodInfo.DeclaringType.IsInterface)
             {
-                return methodInfo.DeclaringType.Name+"."+methodInfo.Name;
+                return methodInfo.DeclaringType.FullName.Replace("+",".")+"."+methodInfo.Name;
             }
             return methodInfo.Name;
         }
@@ -196,6 +196,7 @@ namespace CodeRefractor.Util
 
             if (type == null)
                 return "System_Void*";
+
             if (type.IsArray)
             {
                 var elementType = type.GetElementType();

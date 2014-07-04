@@ -44,9 +44,13 @@ namespace CodeRefractor.RuntimeBase.CodeWriter.BasicOperations
                     CppHandleCompareBranches.HandleBgt(localVar, secondVar, sb, jumpAddress);
                     break;
                 case OpcodeBranchNames.Ble:
+                case OpcodeBranchNames.BleUn: //Should we treat unsigned differently ?
+                case OpcodeBranchNames.BleUnS:
                     CppHandleCompareBranches.HandleBle(localVar, secondVar, sb, jumpAddress);
                     break;
                 case OpcodeBranchNames.Blt:
+                case OpcodeBranchNames.BltUn:
+                case OpcodeBranchNames.BltUnS:
                     CppHandleCompareBranches.HandleBlt(localVar, secondVar, sb, jumpAddress);
                     break;
                 case OpcodeBranchNames.Bne:

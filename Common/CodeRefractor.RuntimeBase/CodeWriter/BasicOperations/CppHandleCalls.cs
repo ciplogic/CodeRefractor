@@ -195,7 +195,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                     //We need to take care of strings here
                     if (value is ConstValue)
                     {
-                        if (value.FixedType.ClrType == typeof(string) && !isEscaping)
+                        if (value.FixedType.ClrType == typeof(string) && !isEscaping && !methodInfo.IsSpecialName) //Why isnt escape analysis done for properties ?
                         {
                             sb.Append("(System_String*)" + value.ComputedValue() + "->Text.get()");
                         }
@@ -223,6 +223,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 }
 
                 var localValueData = interpreter.AnalyzeProperties.GetVariableData(localValue);
+               
                 switch (localValueData)
                 {
                     case EscapingMode.Smart: // Want to use dynamic_casts instead
@@ -238,8 +239,13 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 //                                sb.AppendFormat("std::static_pointer_cast<{0}>({1})", typeof(object).ToCppMangling(), localValue.Name);
 //                            }
 //                            else
+
+                            //Handle ByRef
+                          
+                                sb.AppendFormat("{0}", localValue.Name);
+                            
                            
-                            sb.AppendFormat("{0}", localValue.Name);
+                           
                         }
                         continue;
                     case EscapingMode.Stack:

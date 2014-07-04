@@ -59,7 +59,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             foreach (var virtualMethodDescription in _validVirtualMethods)
             {
                 //Have to make sure parameters match too
-                if (cleanedupVersion.Any(h => (h.MethodMatches(virtualMethodDescription.BaseMethod))))
+                if (cleanedupVersion.Any(h => (h.MethodMatches(virtualMethodDescription.BaseMethod,false))))
                     continue;
                 cleanedupVersion.Add(virtualMethodDescription);
             }
@@ -115,7 +115,14 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 var implementedcases = 0;
                 foreach (var implementation in virtualMethod.UsingImplementations)
                 {
-                    var method = implementation.GetMethod(virtualMethod.BaseMethod.Name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance , null, virtualMethod.Parameters, null); 
+                    var mname = isinterfaceMethod ? virtualMethod.BaseMethod.DeclaringType.FullName.Replace("+",".") + "." + virtualMethod.BaseMethod.Name : virtualMethod.BaseMethod.Name;
+                    //Start with explicit name and final
+
+                    var method = implementation.GetMethod(mname, BindingFlags.NonPublic | BindingFlags.Instance, null, virtualMethod.Parameters, null); 
+
+                    if(method==null)
+
+                     method = implementation.GetMethod(virtualMethod.BaseMethod.Name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance , null, virtualMethod.Parameters, null); 
                     //try again with explicit name
                     if(method==null)
                      method = implementation.GetMethod(virtualMethod.Name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance , null, virtualMethod.Parameters, null); 

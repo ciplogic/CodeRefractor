@@ -116,17 +116,17 @@ namespace CodeRefractor.RuntimeBase
 
             return type;
         }
-        public static Type GetClrType(this MemberReference definition)
+        public static Type GetClrType(this TypeReference definition)
         {
 
-            var assembly = Assembly.Load(definition.Module.Assembly.FullName);
+            var assembly = Assembly.Load(definition.Module.Assembly.FullName.GetClrName());
 
 
-            var type = assembly.GetType(definition.FullName);
+            var type = assembly.GetType(definition.FullName.GetClrName());
 
             if (type == null) //Now would be a good time to use our own custom CLR
             {
-                type = Assembly.GetAssembly(typeof(Object)).GetType(definition.FullName);
+                type = Assembly.GetAssembly(typeof(Object)).GetType(definition.FullName.GetClrName());
                 if (type == null)
                     return null;
             }
@@ -137,7 +137,7 @@ namespace CodeRefractor.RuntimeBase
 
         public static string GetClrName(this string name)
         {
-            return name.Replace("/", "+");
+            return name.Replace("/", "+").Replace("/", ".");
         }
         public static string GetCecilName(this string name)
         {

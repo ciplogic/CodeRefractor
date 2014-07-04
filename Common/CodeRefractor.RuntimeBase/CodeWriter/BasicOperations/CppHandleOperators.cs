@@ -94,18 +94,42 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             var assignment = (Assignment) operation;
 
             var assignedTo = assignment.AssignedTo;
-            var localVariable = assignment.Right as LocalVariable;
+
+
+            LocalVariable localVariable = assignment.Right as LocalVariable;
+
+            var leftVarType = assignment.AssignedTo.ComputedType().ClrType;
+            var rightVarType = assignment.Right.ComputedType().ClrType;
+
+            bool isderef = false;
+            if (localVariable == null && (assignment.Right as ConstValue) != null &&
+                ((ConstValue) assignment.Right).Value is LocalVariable)
+            {
+                isderef = true;
+                localVariable = (LocalVariable)((ConstValue)assignment.Right).Value;
+            }
+            
             if (localVariable != null)
             {
-                var leftVarType = assignment.AssignedTo.ComputedType();
-                var rightVarType = assignment.Right.ComputedType();
+            
                 if (leftVarType != rightVarType)
                 {
-                    if (rightVarType.ClrType.IsPointer)
+                    if (rightVarType.IsPointer || isderef)
                     {
-                        sb.AppendFormat("{0} = *{1};", assignedTo, localVariable.Name);
+                        sb.AppendFormat("{0} = *{1};", assignedTo.VarName, localVariable.Name);
                         return;
                     }
+                    //Handke byrefs
+                    if (leftVarType.IsByRef && !rightVarType.IsByRef)
+                    {
+                        sb.AppendFormat("*{0} = {1};", assignedTo.Name, assignment.Right.ComputedValue());
+                        return;
+                    }
+//                    if (leftVarType.IsByRef)
+//                    {
+//                        sb.AppendFormat("{0} = &{1};", assignedTo.VarName, localVariable.Name);
+//                        return;
+//                    }
                 }
                 var assignedToData = interpreter.AnalyzeProperties.GetVariableData(assignedTo);
                 var localVariableData = interpreter.AnalyzeProperties.GetVariableData(localVariable);
@@ -138,7 +162,19 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             }
             else
             {
-                sb.AppendFormat("{0} = {1};", assignedTo.Name, assignment.Right.ComputedValue());
+
+                //Handke byrefs
+                if (leftVarType.IsByRef && !rightVarType.IsByRef)
+                {
+                    sb.AppendFormat("*{0} = {1};", assignedTo.Name, assignment.Right.ComputedValue());
+                    return;
+                }
+                else
+                {
+                    sb.AppendFormat("{0} = {1};", assignedTo.Name, assignment.Right.ComputedValue());
+                }
+                  
+                
             }
         }
 

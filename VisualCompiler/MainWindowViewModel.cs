@@ -33,7 +33,7 @@ namespace VisualCompiler
       
         public void CompileAndRunCode(string name, string code)
         {
-            try
+          //  try
             {
 
            
@@ -66,10 +66,10 @@ namespace VisualCompiler
             CallCompiler(outputExeName, outputNativeName);
 
             }
-            catch (Exception ex)
+          //  catch (Exception ex)
             {
 
-                CompilerErrors += "\n" + ex.Message + ex.StackTrace;
+         //       CompilerErrors += "\n" + ex.Message + ex.StackTrace;
             }
         }
 

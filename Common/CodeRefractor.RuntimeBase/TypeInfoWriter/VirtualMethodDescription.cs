@@ -33,7 +33,7 @@ namespace CodeRefractor.RuntimeBase.TypeInfoWriter
             var interfacewithmethod = baseType.GetInterfaces().FirstOrDefault(g =>baseType.GetInterfaceMap(g).TargetMethods.Contains(method));
             if (interfacewithmethod!=null)
             {
-                BaseMethod = interfacewithmethod.GetMethod(method.Name.Replace(interfacewithmethod.Name+".",""),Parameters); //Remove explicit name
+                BaseMethod = interfacewithmethod.GetMethod(method.Name.Replace(interfacewithmethod.FullName.Replace("+",".")+".",""),Parameters); //Remove explicit name
             }
             else
           
@@ -48,7 +48,7 @@ namespace CodeRefractor.RuntimeBase.TypeInfoWriter
 
         public bool MethodMatches(MethodInfo method, bool addToImplementations = true)
         {
-            if ((method.GetMethodName() != Name)||(method.Name!=Name))
+            if ((method.GetMethodName() != Name)&&(method.Name!=Name))
                 return false;
             var declaringType = method.DeclaringType;
             if (BaseType.IsSubclassOf(declaringType))
