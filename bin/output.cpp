@@ -21,37 +21,9 @@ struct System_Collections_Generic_IEnumerable_1{};
 struct System_Collections_IEnumerable{};
 
 struct System_IEquatable_1{};
-struct System_Object {
-int _typeId;
-};
-struct System_ValueType : public System_Object {
-};
-struct _NBody : public System_Object {
-};
-struct System_Console : public System_Object {
-};
 struct System_String : public System_Object {
 };
-struct _NBodySystem : public System_Object {
- std::shared_ptr< Array < std::shared_ptr<_Body> > > bodies;
- std::shared_ptr< Array < std::shared_ptr<_Pair> > > pairs;
-};
 struct System_Double {
-};
-struct _Body : public System_Object {
- System_Double x;
- System_Double y;
- System_Double z;
- System_Double vx;
- System_Double vy;
- System_Double vz;
- System_Double mass;
-};
-struct _Pair : public System_Object {
- std::shared_ptr<_Body> bi;
- std::shared_ptr<_Body> bj;
-};
-struct System_Math : public System_Object {
 };
 
 System_Void _NBody_Main();

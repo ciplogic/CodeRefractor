@@ -171,6 +171,9 @@ namespace CodeRefractor.RuntimeBase.Backend
 
             foreach (var typeData in sortedTypeData)
             {
+                var typeCode = Type.GetTypeCode(typeData);
+                if(typeCode == TypeCode.Object)
+                    continue;
                 if (DelegateManager.IsTypeDelegate(typeData))
                     continue;
                 var resType = crRuntime.ResolveType(typeData);
