@@ -50,9 +50,6 @@ namespace CodeRefractor.Runtime
             methodsToScan.AddRange(item.GetConstructors());
             foreach (var methodInfo in methodsToScan)
             {
-                var methodNativeDescription = methodInfo.GetCustomAttribute<CilMethodAttribute>();
-                if (methodNativeDescription == null)
-                    continue;
                 var interpreter = methodInfo.Register();
                 var iKey = interpreter.ToKey(item);
                 iKey.MapTypes(MappedTypes);

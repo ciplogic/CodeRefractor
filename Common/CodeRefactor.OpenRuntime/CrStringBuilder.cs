@@ -1,7 +1,6 @@
 using System;
 using System.Text;
 using CodeRefractor.Runtime.Annotations;
-using CodeRefractor.RuntimeBase;
 
 namespace CodeRefactor.OpenRuntime
 {
@@ -11,7 +10,6 @@ namespace CodeRefactor.OpenRuntime
         private char[] _data = new char[10];
         private int _writtenLength;
 
-        [CilMethod]
         public CrStringBuilder Append(string value)
         {
             ExpectAddLength(value.Length);
@@ -36,7 +34,6 @@ namespace CodeRefactor.OpenRuntime
                 Array.Resize(ref _data, newLength*3/2);
         }
 
-        [CilMethod]
         public override string ToString()
         {
             return new string(_data, 0, _writtenLength);

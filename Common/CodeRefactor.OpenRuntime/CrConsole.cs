@@ -2,7 +2,6 @@
 
 using System;
 using CodeRefractor.Runtime.Annotations;
-using CodeRefractor.RuntimeBase;
 
 #endregion
 
@@ -21,7 +20,6 @@ namespace CodeRefactor.OpenRuntime
         {
         }
 
-        [CilMethod]
         public static void WriteLine(float value)
         {
             WriteLine((double) value);

@@ -72,19 +72,22 @@ namespace CodeRefractor.Util
             }
         }
 
-        public static void CompileAppToNativeExe(string outputCpp, string applicationNativeExe)
+        public static void CompileAppToNativeExe(string fileName, string applicationNativeExe)
         {
-            var fileInfo = new FileInfo(outputCpp);
+            var fileInfo = new FileInfo(fileName);
             if (!fileInfo.Exists)
             {
-                throw new InvalidDataException(string.Format("Filename: {0} does not exist!", outputCpp));
+                throw new InvalidDataException(string.Format("Filename: {0} does not exist!", fileName));
             }
-            outputCpp = fileInfo.FullName;
+            fileName = fileInfo.FullName;
             var pathToGpp = CompilerOptions.PathOfCompilerTools + CompilerOptions.CompilerExe;
 
             var commandLineFormat = "{0} " + CompilerOptions.OptimizationFlags + " {2} -o {1}";
 
-            var arguments = String.Format(commandLineFormat, outputCpp, applicationNativeExe,
+            fileName = GetSafeFileOrPath(fileName);
+            applicationNativeExe = GetSafeFileOrPath(applicationNativeExe);
+
+            var arguments = String.Format(commandLineFormat, fileName, applicationNativeExe,
                 CompilerOptions.LinkerOptions);
             var standardOutput = pathToGpp.ExecuteCommand(arguments, CompilerOptions.PathOfCompilerTools);
             if (!String.IsNullOrWhiteSpace(standardOutput) && standardOutput.Contains("error"))
@@ -97,6 +100,13 @@ namespace CodeRefractor.Util
 
             }
             (CompilerOptions.PathOfCompilerTools + "strip").ExecuteCommand(applicationNativeExe,Path.GetDirectoryName(applicationNativeExe));
+        }
+
+        private static string GetSafeFileOrPath(string fileName)
+        {
+            if (fileName.Contains(" "))
+                fileName = string.Format("\"{0}\"", fileName);
+            return fileName;
         }
     }
 }

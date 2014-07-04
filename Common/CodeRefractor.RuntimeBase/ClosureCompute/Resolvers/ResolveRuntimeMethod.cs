@@ -39,45 +39,46 @@ namespace CodeRefractor.ClosureCompute.Resolvers
             var allMethods = resolvingType.GetMethods().Where(m => m.Name == method.Name).ToArray();
             var resultMethod = CalculateResultMethod(method, allMethods);
 
-            if (resultMethod != null)
-                return ResolveMethodWithResult(resultMethod);
-
-            return null;
+            if (resultMethod == null) return null;
+            return ResolveMethodWithResult(resultMethod);
         }
 
         private static MethodInfo CalculateResultMethod(MethodBase method, MethodInfo[] allMethods)
         {
             MethodInfo resultMethod = null;
+            var srcParams = method.GetParameters();
             foreach (var methodInfo in allMethods)
             {
-                var srcParams = method.GetParameters();
                 var targetParams = methodInfo.GetParameters();
-                if (srcParams.Length != targetParams.Length)
-                    continue;
+                var found = DoParametersMatch(srcParams, targetParams);
+                if (!found) continue;
                 resultMethod = methodInfo;
-                var found = true;
-                for (var index = 0; index < srcParams.Length; index++)
-                {
-                    var param = srcParams[index];
-                    var targetParam = targetParams[index];
-                    if (param.ParameterType == targetParam.ParameterType) continue;
-                    found = false;
-                    break;
-                }
-                if (!found)
-                    resultMethod = null;
+                break;
             }
             return resultMethod;
+        }
+
+        private static bool DoParametersMatch(ParameterInfo[] srcParams, ParameterInfo[] targetParams)
+        {
+            if (srcParams.Length != targetParams.Length)
+                return false;
+            for (var index = 0; index < srcParams.Length; index++)
+            {
+                var param = srcParams[index];
+                var targetParam = targetParams[index];
+                if (param.ParameterType == targetParam.ParameterType) continue;
+                return false;
+            }
+            return true;
         }
 
         private static MethodInterpreter ResolveMethodWithResult(MethodBase resultMethod)
         {
             var result = new MethodInterpreter(resultMethod);
-            var cilAttribute = resultMethod.GetCustomAttribute<CilMethodAttribute>();
 
-            if (cilAttribute == null)
+            var cppAttribute = resultMethod.GetCustomAttribute<CppMethodBodyAttribute>();
+            if (cppAttribute != null)
             {
-                var cppAttribute = resultMethod.GetCustomAttribute<CppMethodBodyAttribute>();
                 result.Kind = MethodKind.RuntimeCppMethod;
                 var cppRepresentation = result.CppRepresentation;
                 cppRepresentation.Kind = CppKinds.RuntimeLibrary;

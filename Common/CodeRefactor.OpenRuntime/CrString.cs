@@ -1,7 +1,6 @@
 #region Usings
 
 using CodeRefractor.Runtime.Annotations;
-using CodeRefractor.RuntimeBase;
 
 #endregion
 
@@ -12,7 +11,6 @@ namespace CodeRefactor.OpenRuntime
     {
         public char[] Text;
 
-        [CilMethod]
         public unsafe CrString(byte* data)
         {
             int len = StrLen(data);
@@ -22,7 +20,6 @@ namespace CodeRefactor.OpenRuntime
             Text[len] = '\0';
         }
 
-        [CilMethod]
         public CrString(char[] value)
         {
             int length = value.Length;
@@ -31,7 +28,6 @@ namespace CodeRefactor.OpenRuntime
                 Text[i] = value[i];
         }
 
-        [CilMethod]
         public CrString(char[] value, int startPos, int length)
         {
             Text = new char[length];
@@ -41,7 +37,7 @@ namespace CodeRefactor.OpenRuntime
 
         public int Length
         {
-            [CilMethod] get { return Text.Length; }
+            get { return Text.Length; }
         }
 
         private static unsafe int StrLen(byte* data)
