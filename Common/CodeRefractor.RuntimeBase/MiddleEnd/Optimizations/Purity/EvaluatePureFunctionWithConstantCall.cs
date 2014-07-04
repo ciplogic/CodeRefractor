@@ -49,9 +49,9 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Purity
             }
         }
 
-        public static MethodData ComputeAndEvaluatePurityOfCall(LocalOperation operation)
+        public static CallMethodStatic ComputeAndEvaluatePurityOfCall(LocalOperation operation)
         {
-            var operationData = (MethodData) operation;
+            var operationData = (CallMethodStatic) operation;
             var methodInterpreter = operationData.Info.GetInterpreter(Closure);
             if (AnalyzeFunctionPurity.ReadPurity(methodInterpreter))
             {
@@ -75,10 +75,10 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Purity
             return operationData;
         }
 
-        private static bool CheckIfParamAreConst(MethodData operationData, List<object> constParams)
+        private static bool CheckIfParamAreConst(CallMethodStatic operationStatic, List<object> constParams)
         {
             var paramsAreConst = true;
-            foreach (var parameter in operationData.Parameters)
+            foreach (var parameter in operationStatic.Parameters)
             {
                 var constParam = parameter as ConstValue;
                 if (constParam != null)

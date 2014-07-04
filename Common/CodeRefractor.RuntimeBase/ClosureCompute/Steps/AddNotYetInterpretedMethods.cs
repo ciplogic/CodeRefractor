@@ -24,7 +24,7 @@ namespace CodeRefractor.ClosureCompute.Steps
                 var ops = useDef.GetLocalOperations();
                 foreach (var callOperation in callOperations)
                 {
-                    var methodDataInfo = ops[callOperation].Get<MethodData>();
+                    var methodDataInfo = ops[callOperation].Get<CallMethodStatic>();
                     if (closureEntities.GetMethodImplementation(methodDataInfo.Info) == null)
                     {
                         methdosToAdd.Add(methodDataInfo.Info);

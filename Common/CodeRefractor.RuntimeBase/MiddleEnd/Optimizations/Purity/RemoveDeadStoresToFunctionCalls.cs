@@ -24,7 +24,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Purity
             var candidates = new Dictionary<LocalVariable, int>();
             foreach (var call in calls)
             {
-                var methodData = (MethodData) localOperations[call];
+                var methodData = (CallMethodStatic) localOperations[call];
                 if (methodData.Result == null)
                     continue;
                 candidates[methodData.Result] = call;
@@ -49,7 +49,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Purity
             var toRemoveReturn = candidates.Values.ToArray();
             foreach (var index in toRemoveReturn)
             {
-                var methodData = (MethodData) localOperations[index];
+                var methodData = (CallMethodStatic) localOperations[index];
                 methodData.Result = null;
             }
         }

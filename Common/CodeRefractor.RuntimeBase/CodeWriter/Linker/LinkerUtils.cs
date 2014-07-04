@@ -36,9 +36,9 @@ namespace CodeRefractor.CodeWriter.Linker
             return constValue.Name;
         }
 
-        public static MethodInterpreter GetInterpreter(this MethodData methodData, ClosureEntities crRuntime)
+        public static MethodInterpreter GetInterpreter(this CallMethodStatic callMethodStatic, ClosureEntities crRuntime)
         {
-            return crRuntime.ResolveMethod(methodData.Info);
+            return crRuntime.ResolveMethod(callMethodStatic.Info);
         }
 
         public static MethodInterpreter GetInterpreter(this MethodBase methodBase, ClosureEntities crRuntime)

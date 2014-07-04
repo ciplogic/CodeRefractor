@@ -102,7 +102,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
                 switch (op.Kind)
                 {
                     case OperationKind.Call:
-                        var methodData = (MethodData) op;
+                        var methodData = (CallMethodStatic) op;
                         var otherMethodData = GetEscapingParameterData(methodData);
                         if (otherMethodData == null)
                             break;
@@ -126,9 +126,9 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
             return escaping;
         }
 
-        public static Dictionary<int, bool> GetEscapingParameterData(MethodData methodData)
+        public static Dictionary<int, bool> GetEscapingParameterData(CallMethodStatic callMethodStatic)
         {
-            var info = methodData.Info;
+            var info = callMethodStatic.Info;
             return info.EscapingParameterData(Closure);
         }
     }

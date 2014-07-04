@@ -2,7 +2,6 @@
 
 using System.Reflection;
 using CodeRefractor.MiddleEnd;
-using CodeRefractor.Runtime;
 
 #endregion
 
@@ -17,7 +16,7 @@ namespace CodeRefractor.ClosureCompute
         {
             var interpreter = closureEntities.ResolveMethod(method) ?? new MethodInterpreter(method);
 
-            interpreter.Process(new CrRuntimeLibrary());
+            interpreter.Process();
             closureEntities.UseMethod(method, interpreter);
         }
     }

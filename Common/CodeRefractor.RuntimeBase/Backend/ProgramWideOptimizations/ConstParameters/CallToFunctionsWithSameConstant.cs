@@ -60,7 +60,7 @@ namespace CodeRefractor.CompilerBackend.ProgramWideOptimizations.ConstParameters
             foreach (var callOp in calls)
             {
                 var op = allOps[callOp];
-                var methodData = (MethodData) op;
+                var methodData = (CallMethodStatic) op;
                 var callingInterpreter = methodData.Interpreter;
                 if (callingInterpreter.Kind != MethodKind.Default)
                     continue;

@@ -21,7 +21,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.SimpleDce
             foreach (var index in callIndices)
             {
                 var op = operations[index];
-                var methodData = (MethodData) op;
+                var methodData = (CallMethodStatic) op;
                 var info = methodData.Info;
                 if (!info.IsConstructor) continue;
                 if (info.DeclaringType != typeof (object) &&

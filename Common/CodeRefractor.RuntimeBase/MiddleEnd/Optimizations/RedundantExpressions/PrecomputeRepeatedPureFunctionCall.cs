@@ -79,20 +79,20 @@ namespace CodeRefractor.MiddleEnd.Optimizations.RedundantExpressions
             return calls;
         }
 
-        private static bool TryMergeCalls(int i, int i1, MethodData firstMethodData, MethodData secondMethodData,
+        private static bool TryMergeCalls(int i, int i1, CallMethodStatic firstCallMethodStatic, CallMethodStatic secondCallMethodStatic,
             List<LocalOperation> localOperations)
         {
-            var validateParametersAreTheSame = ValidateParametersAreTheSame(firstMethodData, secondMethodData);
+            var validateParametersAreTheSame = ValidateParametersAreTheSame(firstCallMethodStatic, secondCallMethodStatic);
             if (!validateParametersAreTheSame)
                 return false;
-            return CheckReassignmentsOfParameters(i, i1, firstMethodData, localOperations);
+            return CheckReassignmentsOfParameters(i, i1, firstCallMethodStatic, localOperations);
         }
 
-        private static bool CheckReassignmentsOfParameters(int i, int i1, MethodData firstMethodData,
+        private static bool CheckReassignmentsOfParameters(int i, int i1, CallMethodStatic firstCallMethodStatic,
             List<LocalOperation> localOperations)
         {
             var parametersFirst = new HashSet<LocalVariable>();
-            foreach (var identifierValue in firstMethodData.Parameters)
+            foreach (var identifierValue in firstCallMethodStatic.Parameters)
             {
                 var localVar = identifierValue as LocalVariable;
                 if (localVar != null)
@@ -111,15 +111,15 @@ namespace CodeRefractor.MiddleEnd.Optimizations.RedundantExpressions
             return true;
         }
 
-        private static bool ValidateParametersAreTheSame(MethodData firstMethodData, MethodData secondMethodData)
+        private static bool ValidateParametersAreTheSame(CallMethodStatic firstCallMethodStatic, CallMethodStatic secondCallMethodStatic)
         {
             var parametersFirst = new List<IdentifierValue>();
-            foreach (var identifierValue in firstMethodData.Parameters)
+            foreach (var identifierValue in firstCallMethodStatic.Parameters)
             {
                 parametersFirst.Add(identifierValue);
             }
             var parametersSecond = new List<IdentifierValue>();
-            foreach (var identifierValue in secondMethodData.Parameters)
+            foreach (var identifierValue in secondCallMethodStatic.Parameters)
             {
                 parametersSecond.Add(identifierValue);
             }

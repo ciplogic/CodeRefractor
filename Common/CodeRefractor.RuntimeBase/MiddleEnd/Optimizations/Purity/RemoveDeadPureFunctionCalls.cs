@@ -26,7 +26,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Purity
             foreach (var index in callIndices)
             {
                 var operation = localOperations[index];
-                var methodData = operation.Get<MethodData>();
+                var methodData = operation.Get<CallMethodStatic>();
                 var interpreter = methodData.GetInterpreter(Closure);
                 if (interpreter == null)
                     continue;

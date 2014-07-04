@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using CodeRefractor.FrontEnd;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 using CodeRefractor.Runtime;
@@ -231,7 +232,7 @@ namespace CodeRefractor.RuntimeBase
                 return;
             if (methodInterpreter.Interpreted)
                 return;
-            methodInterpreter.Process(crRuntime);
+            methodInterpreter.Process();
         }
     }
 }

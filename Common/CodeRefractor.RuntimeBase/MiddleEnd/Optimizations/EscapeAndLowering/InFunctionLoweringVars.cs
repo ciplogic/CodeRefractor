@@ -139,7 +139,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
 
         private static void HandleCallVirtual( HashSet<LocalVariable> candidateVariables, LocalOperation op)
         {
-            var methodData = (MethodData)op;
+            var methodData = (CallMethodStatic)op;
             foreach (var identifierValue in methodData.Parameters)
             {
                 var localVariable = identifierValue as LocalVariable;
@@ -182,7 +182,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
         private static void HandleCall(LocalVariable localVariable, HashSet<LocalVariable> candidateVariables,
             LocalOperation op)
         {
-            var methodData = (MethodData) op;
+            var methodData = (CallMethodStatic) op;
             var escapeData = AnalyzeParametersAreEscaping.GetEscapingParameterData(methodData);
             if (escapeData == null)
             {
