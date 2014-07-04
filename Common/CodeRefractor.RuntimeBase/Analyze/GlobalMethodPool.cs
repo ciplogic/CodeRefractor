@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using CodeRefractor.ClosureCompute;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.Runtime;
 using CodeRefractor.Runtime.Annotations;
@@ -96,18 +97,18 @@ namespace CodeRefractor.RuntimeBase.Analyze
 
         private static readonly Dictionary<MethodBase, string> CachedKeys = new Dictionary<MethodBase, string>();
 
-        public static string GenerateKey(this MethodBase method)
+        public static string GenerateKey(this MethodBase method, ClosureEntities crRuntime)
         {
             string result;
             if (CachedKeys.TryGetValue(method, out result)) return result;
-            result = method.WriteHeaderMethod(false);
+            result = method.WriteHeaderMethod(crRuntime, writeEndColon: false);
             CachedKeys[method] = result;
             return result;
         }
 
-        public static MethodBase GetReversedMethod(this MethodBase methodInfo)
+        public static MethodBase GetReversedMethod(this MethodBase methodInfo, ClosureEntities crRuntime)
         {
-            var reverseType = methodInfo.DeclaringType.GetMappedType();
+            var reverseType = methodInfo.DeclaringType.GetMappedType(crRuntime);
             if (reverseType == methodInfo.DeclaringType)
                 return methodInfo;
             var originalParameters = methodInfo.GetParameters();

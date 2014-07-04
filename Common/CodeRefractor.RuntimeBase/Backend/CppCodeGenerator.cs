@@ -43,11 +43,11 @@ namespace CodeRefractor.RuntimeBase.Backend
 
             sb.AppendLine("#include \"runtime_base.hpp\"");
 
-            sb.AppendLine(virtualMethodTableCodeWriter.GenerateTypeTableCode(typeClosure.ToArray())); // We need to use this type table to generate missing jumps for subclasses  that dont override a base method
-            WriteCppMethods(closure, sb);
+            sb.AppendLine(virtualMethodTableCodeWriter.GenerateTypeTableCode(typeClosure.ToArray(), closureEntities)); // We need to use this type table to generate missing jumps for subclasses  that dont override a base method
+            WriteCppMethods(closure, sb, closureEntities);
             WriteClosureMethods(closure, sb, typeTable.TypeTable, closureEntities);
 
-            WriteMainBody(interpreter, sb);
+            WriteMainBody(interpreter, sb, closureEntities);
             sb.AppendLine(PlatformInvokeCodeWriter.LoadDllMethods());
             sb.AppendLine(ConstByteArrayList.BuildConstantTable());
             sb.AppendLine(LinkingData.Instance.Strings.BuildStringTable());
@@ -55,7 +55,7 @@ namespace CodeRefractor.RuntimeBase.Backend
             return sb;
         }
 
-        private static void WriteCppMethods(List<MethodInterpreter> closure, StringBuilder sb)
+        private static void WriteCppMethods(List<MethodInterpreter> closure, StringBuilder sb, ClosureEntities crRuntime)
         {
            
             var cppMethods = closure
@@ -70,7 +70,7 @@ namespace CodeRefractor.RuntimeBase.Backend
                 foreach (var interpreter in cppMethods)
                 {
                     var runtimeLibrary = interpreter.CppRepresentation;
-                    var methodDeclaration = interpreter.Method.GenerateKey();
+                    var methodDeclaration = interpreter.Method.GenerateKey(crRuntime);
                     if (LinkingData.SetInclude(runtimeLibrary.Header))
                         sb.AppendFormat("#include \"{0}\"", runtimeLibrary.Header).AppendLine();
 
@@ -109,11 +109,11 @@ namespace CodeRefractor.RuntimeBase.Backend
         private static void WriteClosureStructBodies(Type[] typeDatas, StringBuilder sb, ClosureEntities crRuntime)
         {
             //Remove Mapped Types in favour of their resolved types
-            typeDatas = typeDatas.Where(type => !typeDatas.Any(t => t.GetMappedType() == type && t != type)).Except(new []{(typeof(Int32))}).ToArray();// typeDatas.ToList().Except(typeDatas.Where(y => y.Name == "String")).ToArray(); // This appears sometimes, why ?
+            typeDatas = typeDatas.Where(type => !typeDatas.Any(t => t.GetMappedType(crRuntime) == type && t != type)).Except(new []{(typeof(Int32))}).ToArray();// typeDatas.ToList().Except(typeDatas.Where(y => y.Name == "String")).ToArray(); // This appears sometimes, why ?
 
             foreach (var typeData in typeDatas)
             {
-                var mappedType = typeData.GetMappedType();
+                var mappedType = typeData.GetMappedType(crRuntime);
                 if (ShouldSkipType(typeData)) 
                     continue;
                 if (!mappedType.IsGenericType)
@@ -173,12 +173,11 @@ namespace CodeRefractor.RuntimeBase.Backend
             foreach (var typeData in sortedTypeData)
             {
                 var typeCode = Type.GetTypeCode(typeData);
-                if(typeCode == TypeCode.Object)
-                    continue;
+              
                 if (DelegateManager.IsTypeDelegate(typeData))
                     continue;
                 var resType = crRuntime.ResolveType(typeData);
-                var type = typeData.GetMappedType();
+                var type = typeData.GetMappedType(crRuntime);
                 var mappedType = typeData;
                 if (ShouldSkipType(typeData)) continue;
 
@@ -219,7 +218,7 @@ namespace CodeRefractor.RuntimeBase.Backend
             }
         }
 
-        public static bool ShouldSkipType(Type mappedType)
+        private static bool ShouldSkipType(Type mappedType)
         {
             var typeCode = mappedType.ExtractTypeCode();
             switch (typeCode)
@@ -256,7 +255,7 @@ namespace CodeRefractor.RuntimeBase.Backend
             {
                 if (interpreter.Kind != MethodKind.PlatformInvoke)
                     continue;
-                sb.AppendLine(MethodInterpreterCodeWriter.WritePInvokeMethodCode(interpreter));
+                sb.AppendLine(MethodInterpreterCodeWriter.WritePInvokeMethodCode(interpreter, closureEntities));
             }
 
             sb.AppendLine("///---Begin closure code --- ");
@@ -272,8 +271,7 @@ namespace CodeRefractor.RuntimeBase.Backend
             sb.AppendLine("///---End closure code --- ");
         }
 
-        private static void WriteUsedCppRuntimeMethod(KeyValuePair<string, MethodBase> methodBodyAttribute,
-            StringBuilder sb)
+        private static void WriteUsedCppRuntimeMethod(KeyValuePair<string, MethodBase> methodBodyAttribute, StringBuilder sb, ClosureEntities crRuntime)
         {
             var method = methodBodyAttribute.Value;
             var typeData = method.DeclaringType;
@@ -285,12 +283,12 @@ namespace CodeRefractor.RuntimeBase.Backend
                     "Cpp runtime method is called but is not marked with CppMethodBody attribute");
             if (LinkingData.SetInclude(methodNativeDescription.Header))
                 sb.AppendFormat("#include \"{0}\"", methodNativeDescription.Header).AppendLine();
-            var methodHeaderText = method.WriteHeaderMethod(false);
+            var methodHeaderText = method.WriteHeaderMethod(crRuntime, writeEndColon: false);
             sb.Append(methodHeaderText);
             sb.AppendFormat("{{ {0} }}", methodNativeDescription.Code).AppendLine();
         }
 
-        private static void WriteMainBody(MethodInterpreter interpreter, StringBuilder sb)
+        private static void WriteMainBody(MethodInterpreter interpreter, StringBuilder sb, ClosureEntities crRuntime)
         {
             sb.AppendLine("System_Void initializeRuntime();");
             sb.AppendFormat("int main(int argc, char**argv) {{").AppendLine();
@@ -305,7 +303,7 @@ namespace CodeRefractor.RuntimeBase.Backend
             {
                 args = "argsAsList";
             }
-            sb.AppendFormat("{0}({1});", entryPoint.ClangMethodSignature(), args).AppendLine();
+            sb.AppendFormat("{0}({1});", entryPoint.ClangMethodSignature(crRuntime), args).AppendLine();
             sb.AppendLine("return 0;");
             sb.AppendFormat("}}").AppendLine();
         }

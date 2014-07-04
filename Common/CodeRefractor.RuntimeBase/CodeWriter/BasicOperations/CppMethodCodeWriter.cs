@@ -48,7 +48,7 @@ namespace CodeRefractor.RuntimeBase.CodeWriter.BasicOperations
             foreach (var operation in operations)
             {
                 if (CppHandleOperators.HandleAssignmentOperations(vars, bodySb, operation, operation.Kind, typeTable,
-                    interpreter))
+                    interpreter, crRuntime))
                 {
                     bodySb.AppendLine();
                     continue;
@@ -74,7 +74,7 @@ namespace CodeRefractor.RuntimeBase.CodeWriter.BasicOperations
                         CppHandleCalls.HandleCallVirtual(operation, bodySb, vars, interpreter, crRuntime);
                         break;
                     case OperationKind.CallRuntime:
-                        CppHandleCalls.HandleCallRuntime(operation, bodySb);
+                        CppHandleCalls.HandleCallRuntime(operation, bodySb, crRuntime);
                         break;
                     case OperationKind.Return:
                         CppHandleCalls.HandleReturn(operation,bodySb,interpreter);

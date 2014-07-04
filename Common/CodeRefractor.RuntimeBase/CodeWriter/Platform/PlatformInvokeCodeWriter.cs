@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using CodeRefractor.ClosureCompute;
 using CodeRefractor.CodeWriter.Linker;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.RuntimeBase;
@@ -97,7 +98,7 @@ namespace CodeRefractor.CodeWriter.Platform
             return sb.ToString();
         }
 
-        public static string WritePlatformInvokeMethod(this MethodInterpreter platformInvoke)
+        public static string WritePlatformInvokeMethod(this MethodInterpreter platformInvoke, ClosureEntities crRuntime)
         {
             var methodId = Import(platformInvoke.Description.LibraryName,
                 platformInvoke.Description.MethodName,
@@ -108,7 +109,7 @@ namespace CodeRefractor.CodeWriter.Platform
 
             sb.AppendFormat(platformInvoke.WritePInvokeDefinition(methodId));
 
-            sb.Append(platformInvoke.Method.WriteHeaderMethod(false));
+            sb.Append(platformInvoke.Method.WriteHeaderMethod(crRuntime, writeEndColon: false));
             sb.AppendLine("{");
             var identifierValues = platformInvoke.Method.GetParameters();
             var argumentsCall = String.Join(", ", identifierValues.Select(p => p.Name));

@@ -66,14 +66,14 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         {
             var operationData = (CallMethodStatic) operation;
             var sb = new StringBuilder();
-            var methodInfo = operationData.Info.GetReversedMethod();
+            var methodInfo = operationData.Info.GetReversedMethod(crRuntime);
             var isVoidMethod = methodInfo.GetReturnType().IsVoid();
             if (!isVoidMethod && operationData.Result != null)
             {
                 sb.AppendFormat("{0} = ", operationData.Result.Name);
             }
 
-            sb.AppendFormat("{0}", methodInfo.ClangMethodSignature());
+            sb.AppendFormat("{0}", methodInfo.ClangMethodSignature(crRuntime));
 
             if (WriteParametersToSb(operationData, methodInfo, sb, interpreter, crRuntime)) return;
 
@@ -85,14 +85,14 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         {
             var operationData = (CallMethodStatic) operation;
             var sb = new StringBuilder();
-            var methodInfo = operationData.Info.GetReversedMethod();
+            var methodInfo = operationData.Info.GetReversedMethod(crRuntime);
             var isVoidMethod = methodInfo.GetReturnType().IsVoid();
             if (!isVoidMethod && operationData.Result != null)
             {
                 sb.AppendFormat("{0} = ", operationData.Result.Name);
             }
 
-            sb.AppendFormat("{0}_icall", methodInfo.ClangMethodSignature());
+            sb.AppendFormat("{0}_icall", methodInfo.ClangMethodSignature(crRuntime));
 
             if (WriteParametersToSb(operationData, methodInfo, sb, interpreter, crRuntime)) return;
 
@@ -104,7 +104,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         {
             var operationData = (CallMethodStatic) operation;
             var sb = new StringBuilder();
-            var methodInfo = operationData.Info.GetReversedMethod();
+            var methodInfo = operationData.Info.GetReversedMethod(crRuntime);
             var isVoidMethod = methodInfo.GetReturnType().IsVoid();
             if (!isVoidMethod && operationData.Result != null)
             {
@@ -124,24 +124,24 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 if (methodInfo.IsFinal)//(!operationStatic.Parameters[0].FixedType.ClrType.GetMethod(methodInfo.Name).IsVirtual)) || !operationStatic.Parameters[0].FixedType.ClrType.GetMethod(methodInfo.Name).))
                 {
                     //Direct call
-                    sb.AppendFormat("{0}", methodInfo.ClangMethodSignature(false));
+                    sb.AppendFormat("{0}", methodInfo.ClangMethodSignature(crRuntime, isvirtualmethod: false));
                 }
                
 
                 else if ((methodInfo.DeclaringType.GetMethod(methodInfo.Name, @params)!=null &&methodInfo.DeclaringType.GetMethod(methodInfo.Name, @params).DeclaringType == methodInfo.DeclaringType))
                 {
-                    
-                        sb.AppendFormat("{0}_vcall", methodInfo.ClangMethodSignature(true));
+
+                    sb.AppendFormat("{0}_vcall", methodInfo.ClangMethodSignature(crRuntime, isvirtualmethod: true));
                    
                 }
                 else
                 {
-                    sb.AppendFormat("{0}", methodInfo.DeclaringType.BaseType.GetMethod(methodInfo.Name,operationData.Parameters.Select(h=>h.FixedType.ClrType).ToArray()).ClangMethodSignature(false));
+                    sb.AppendFormat("{0}", methodInfo.DeclaringType.BaseType.GetMethod(methodInfo.Name, operationData.Parameters.Select(h => h.FixedType.ClrType).ToArray()).ClangMethodSignature(crRuntime, isvirtualmethod: false));
                 }
             }
             else
             {
-                sb.AppendFormat("{0}", methodInfo.ClangMethodSignature(false));
+                sb.AppendFormat("{0}", methodInfo.ClangMethodSignature(crRuntime, isvirtualmethod: false));
             }
 
             if (WriteParametersToSb(operationData, methodInfo, sb, interpreter, crRuntime)) return;
@@ -266,7 +266,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             return false;
         }
 
-        public static void HandleCallRuntime(LocalOperation operation, StringBuilder sb)
+        public static void HandleCallRuntime(LocalOperation operation, StringBuilder sb, ClosureEntities crRuntime)
         {
             var operationData = (CallMethodStatic) operation;
 
@@ -276,11 +276,11 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             var isVoidMethod = methodInfo.GetReturnType().IsVoid();
             if (isVoidMethod)
             {
-                sb.AppendFormat("{0}", methodInfo.ClangMethodSignature());
+                sb.AppendFormat("{0}", methodInfo.ClangMethodSignature(crRuntime));
             }
             else
             {
-                sb.AppendFormat("{1} = {0}", methodInfo.ClangMethodSignature(),
+                sb.AppendFormat("{1} = {0}", methodInfo.ClangMethodSignature(crRuntime),
                     operationData.Result.Name);
             }
             var identifierValues = operationData.Parameters;

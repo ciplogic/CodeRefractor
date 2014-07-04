@@ -1,26 +1,12 @@
 #include "sloth.h"
 #include <functional>
 struct _NBody; 
-struct System_Console; 
-struct System_String; 
+struct CodeRefactor_OpenRuntime_CrConsole; 
+struct CodeRefactor_OpenRuntime_CrString; 
 struct _NBodySystem; 
-struct System_Double; 
 struct _Body; 
 struct _Pair; 
-struct System_Math; 
-struct System_IComparable{};
-
-struct System_ICloneable{};
-
-struct System_IConvertible{};
-
-struct System_IComparable_1{};
-
-struct System_Collections_Generic_IEnumerable_1{};
-
-struct System_Collections_IEnumerable{};
-
-struct System_IEquatable_1{};
+struct CodeRefactor_OpenRuntime_CrMath; 
 struct System_Object {
 int _typeId;
 };
@@ -28,15 +14,14 @@ struct System_ValueType : public System_Object {
 };
 struct _NBody : public System_Object {
 };
-struct System_Console : public System_Object {
+struct CodeRefactor_OpenRuntime_CrConsole : public System_Object {
 };
-struct System_String : public System_Object {
+struct CodeRefactor_OpenRuntime_CrString : public System_Object {
+ std::shared_ptr< Array < System_Char > > Text;
 };
 struct _NBodySystem : public System_Object {
  std::shared_ptr< Array < std::shared_ptr<_Body> > > bodies;
  std::shared_ptr< Array < std::shared_ptr<_Pair> > > pairs;
-};
-struct System_Double {
 };
 struct _Body : public System_Object {
  System_Double x;
@@ -51,7 +36,7 @@ struct _Pair : public System_Object {
  std::shared_ptr<_Body> bi;
  std::shared_ptr<_Body> bj;
 };
-struct System_Math : public System_Object {
+struct CodeRefactor_OpenRuntime_CrMath : public System_Object {
 };
 
 System_Void _NBody_Main();
@@ -73,12 +58,12 @@ System_Void setupTypeTable();
 // --- End of definition of virtual method tables ---
 
 #include "stdio.h"
-System_Void System_Console_WriteLine(std::shared_ptr<System_String> value)
+System_Void CodeRefactor_OpenRuntime_CrConsole_WriteLine(std::shared_ptr<System_String> value)
 { printf("%ls\n", value.get()->Text->Items); }
-System_Void System_Console_WriteLine(System_Double value)
+System_Void CodeRefactor_OpenRuntime_CrConsole_WriteLine(System_Double value)
 { printf("%lf\n", value); }
 #include "math.h"
-System_Double System_Math_Sqrt(System_Double d)
+System_Double CodeRefactor_OpenRuntime_CrMath_Sqrt(System_Double d)
 { return sqrt(d); }
 ///--- PInvoke code --- 
 ///---Begin closure code --- 
@@ -96,15 +81,15 @@ System_Int32 vreg_4;
 System_Int32 vreg_5;
 System_Double vreg_6;
 
-System_Console_WriteLine(_str(0));
+CodeRefactor_OpenRuntime_CrConsole_WriteLine(_str(0));
 local_0 = 5000000;
 vreg_1 = std::make_shared<_NBodySystem >();
-vreg_1->_typeId = 2;
+vreg_1->_typeId = 3;
 _NBodySystem_ctor(vreg_1);
 vreg_2 = vreg_1;
 local_1 = vreg_2;
 vreg_3 = _NBodySystem_Energy(local_1);
-System_Console_WriteLine(vreg_3);
+CodeRefactor_OpenRuntime_CrConsole_WriteLine(vreg_3);
 local_2 = 0;
 goto label_3C;
 label_28:
@@ -116,7 +101,7 @@ vreg_5 = (local_2 < local_0)?1:0;
 local_3 = vreg_5;
 if(local_3) goto label_28;
 vreg_6 = _NBodySystem_Energy(local_1);
-System_Console_WriteLine(vreg_6);
+CodeRefactor_OpenRuntime_CrConsole_WriteLine(vreg_6);
 return;
 }
 
@@ -216,14 +201,14 @@ System_Double vreg_71;
 vreg_1 = std::make_shared< Array <std::shared_ptr<_Body>> >(5); 
 local_13 = vreg_1;
 vreg_2 = std::make_shared<_Body >();
-vreg_2->_typeId = 4;
+vreg_2->_typeId = 5;
 _Body_ctor(vreg_2);
 vreg_3 = vreg_2;
 local_8 = vreg_3;
 local_8->mass = 39.4784176043574;
 (*local_13)[0] = local_8; 
 vreg_4 = std::make_shared<_Body >();
-vreg_4->_typeId = 4;
+vreg_4->_typeId = 5;
 _Body_ctor(vreg_4);
 vreg_5 = vreg_4;
 local_9 = vreg_5;
@@ -236,7 +221,7 @@ local_9->vz = -0.0252183616598876;
 local_9->mass = 0.0376936748703895;
 (*local_13)[1] = local_9; 
 vreg_6 = std::make_shared<_Body >();
-vreg_6->_typeId = 4;
+vreg_6->_typeId = 5;
 _Body_ctor(vreg_6);
 vreg_7 = vreg_6;
 local_10 = vreg_7;
@@ -249,7 +234,7 @@ local_10->vz = 0.00841576137658415;
 local_10->mass = 0.0112863261319688;
 (*local_13)[2] = local_10; 
 vreg_8 = std::make_shared<_Body >();
-vreg_8->_typeId = 4;
+vreg_8->_typeId = 5;
 _Body_ctor(vreg_8);
 vreg_9 = vreg_8;
 local_11 = vreg_9;
@@ -262,7 +247,7 @@ local_11->vz = -0.0108326374013636;
 local_11->mass = 0.00172372405705971;
 (*local_13)[3] = local_11; 
 vreg_10 = std::make_shared<_Body >();
-vreg_10->_typeId = 4;
+vreg_10->_typeId = 5;
 _Body_ctor(vreg_10);
 vreg_11 = vreg_10;
 local_12 = vreg_11;
@@ -296,7 +281,7 @@ goto label_296;
 label_255:
 vreg_23 = _this->pairs;
 vreg_24 = std::make_shared<_Pair >();
-vreg_24->_typeId = 5;
+vreg_24->_typeId = 6;
 _Pair_ctor(vreg_24);
 vreg_25 = vreg_24;
 (*vreg_23)[local_0] = vreg_25; 
@@ -494,7 +479,7 @@ vreg_34 = local_6*local_6;
 vreg_35 = vreg_33+vreg_34;
 vreg_36 = local_7*local_7;
 vreg_37 = vreg_35+vreg_36;
-vreg_38 = System_Math_Sqrt(vreg_37);
+vreg_38 = CodeRefactor_OpenRuntime_CrMath_Sqrt(vreg_37);
 vreg_39 = vreg_32/vreg_38;
 vreg_40 = local_0-vreg_39;
 local_0 = vreg_40;
@@ -651,7 +636,7 @@ vreg_16 = vreg_14+vreg_15;
 vreg_17 = local_5*local_5;
 vreg_18 = vreg_16+vreg_17;
 local_6 = vreg_18;
-vreg_19 = System_Math_Sqrt(local_6);
+vreg_19 = CodeRefactor_OpenRuntime_CrMath_Sqrt(local_6);
 vreg_20 = local_6*vreg_19;
 vreg_21 = dt/vreg_20;
 local_7 = vreg_21;

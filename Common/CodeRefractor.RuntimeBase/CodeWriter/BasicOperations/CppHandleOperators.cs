@@ -3,6 +3,7 @@
 using System;
 using System.IO;
 using System.Text;
+using CodeRefractor.ClosureCompute;
 using CodeRefractor.CodeWriter.Linker;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.SimpleOperations;
@@ -23,8 +24,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 {
     internal static class CppHandleOperators
     {
-        public static bool HandleAssignmentOperations(MidRepresentationVariables vars, StringBuilder bodySb,
-            LocalOperation operation, OperationKind kind, TypeDescriptionTable typeTable, MethodInterpreter interpreter)
+        public static bool HandleAssignmentOperations(MidRepresentationVariables vars, StringBuilder bodySb, LocalOperation operation, OperationKind kind, TypeDescriptionTable typeTable, MethodInterpreter interpreter, ClosureEntities crRuntime)
         {
             switch (kind)
             {
@@ -76,7 +76,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                     HandleFieldRefAssignment(operation, bodySb);
                     break;
                 case OperationKind.LoadFunction:
-                    HandleLoadFunction(operation, bodySb);
+                    HandleLoadFunction(operation, bodySb, crRuntime);
                     break;
                 case OperationKind.SizeOf:
                     HandleSizeOf(operation, bodySb);
@@ -184,12 +184,12 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             bodySb.AppendFormat("{0} = & ({1}->Items[{2}]);", value.Left.Name, value.ArrayVar.Name, value.Index.Name);
         }
 
-        private static void HandleLoadFunction(LocalOperation operation, StringBuilder bodySb)
+        private static void HandleLoadFunction(LocalOperation operation, StringBuilder bodySb, ClosureEntities crRuntime)
         {
             var assign = (FunctionPointerStore) operation;
             var leftData = assign.AssignedTo;
             var info = assign.FunctionPointer;
-            var methodName = info.ClangMethodSignature();
+            var methodName = info.ClangMethodSignature(crRuntime);
             bodySb.AppendFormat("{0}=&({1});", leftData.Name, methodName);
         }
 

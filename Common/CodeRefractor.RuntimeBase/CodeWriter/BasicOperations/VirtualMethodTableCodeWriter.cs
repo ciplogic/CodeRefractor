@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using CodeRefractor.ClosureCompute;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.RuntimeBase;
@@ -46,7 +47,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             return validVirtMethods;
         }
 
-        public string GenerateTypeTableCode(Type[] types)
+        public string GenerateTypeTableCode(Type[] types, ClosureEntities crRuntime)
         {
             var sb = new StringBuilder();
             sb.AppendLine("// --- Begin definition of virtual method tables ---");
@@ -69,8 +70,8 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             {
                 var isinterfaceMethod = virtualMethod.BaseMethod.DeclaringType.IsInterface;
                 string methodName;
-            
-                 methodName = virtualMethod.BaseMethod.ClangMethodSignature();
+
+                methodName = virtualMethod.BaseMethod.ClangMethodSignature(crRuntime);
                 var parametersString = GetParametersString(virtualMethod,isinterfaceMethod);
 
 //                sb.Append("typedef ");
@@ -98,8 +99,8 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                     continue;
 
                 var isinterfaceMethod = virtualMethod.BaseMethod.DeclaringType.IsInterface;
-               
-                var methodName = virtualMethod.BaseMethod.ClangMethodSignature();
+
+                var methodName = virtualMethod.BaseMethod.ClangMethodSignature(crRuntime);
 
                 var parametersString = GetParametersString(virtualMethod, isinterfaceMethod);
 
@@ -146,7 +147,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 
 //                        var method = implementation.GetMethod(virtualMethod.Name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, virtualMethod.Parameters, null); 
                         //implementation.GetMethod(virtualMethod.Name, virtualMethod.Parameters);
-                        var methodImpl = method.ClangMethodSignature();
+                        var methodImpl = method.ClangMethodSignature(crRuntime);
                         var parametersCallString = GetCall(virtualMethod, method);
 
                         vmsb
@@ -180,7 +181,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                     }
 
                     var method = implementation.GetMethod(virtualMethod.Name, virtualMethod.Parameters);
-                    var methodImpl = method.ClangMethodSignature();
+                    var methodImpl = method.ClangMethodSignature(crRuntime);
                     var parametersCallString = GetCall(virtualMethod, method);
                     vmsb
                         .AppendFormat("{0}(",methodImpl)

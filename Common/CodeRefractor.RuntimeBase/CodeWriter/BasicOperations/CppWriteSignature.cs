@@ -35,7 +35,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 });
                 if (parameterData != EscapingMode.Unused)
                 {
-                    var argumentTypeDescription = UsedTypeList.Set(method.DeclaringType.GetMappedType(), closureEntities);
+                    var argumentTypeDescription = UsedTypeList.Set(method.DeclaringType.GetMappedType(closureEntities), closureEntities);
                     var thisText = String.Format("const {0}& _this", argumentTypeDescription.ClrType.ToCppName(true)); // all "_this" should be smart pointers
                     //For some reason at three Virtual Test 4 fails this, is something wrong with the escaping ?
 //                    if ((!escapingBools[0]))
@@ -67,7 +67,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 }
                 var isSmartPtr = escapingBools[index];
                 var nonEscapingMode = isSmartPtr ? EscapingMode.Smart : EscapingMode.Pointer;
-                var argumentTypeDescription = UsedTypeList.Set(parameterInfo.ParameterType.GetMappedType(), closureEntities);
+                var argumentTypeDescription = UsedTypeList.Set(parameterInfo.ParameterType.GetMappedType(closureEntities), closureEntities);
                 sb.AppendFormat("{0} {1}",
                      argumentTypeDescription.ClrType.ToCppName(true, nonEscapingMode), //Handle byref
                     parameterInfo.Name);
@@ -95,7 +95,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             var arguments = interpreter.GetArgumentsAsTextWithEscaping(closureEntities);
 
             sb.AppendFormat("{0} {1}({2})",
-                retType, methodBase.ClangMethodSignature(), arguments);
+                retType, methodBase.ClangMethodSignature(closureEntities), arguments);
             if (writeEndColon)
                 sb.Append(";");
 

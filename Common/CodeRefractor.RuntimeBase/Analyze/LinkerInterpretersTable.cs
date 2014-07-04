@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using CodeRefractor.ClosureCompute;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.Util;
@@ -14,7 +15,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
 {
     public static class LinkerInterpretersTable
     {
-        public static string WriteHeaderMethod(this MethodBase methodBase, bool writeEndColon = true)
+        public static string WriteHeaderMethod(this MethodBase methodBase, ClosureEntities crRuntime, bool writeEndColon = true)
         {
             var retType = methodBase.GetReturnType().ToCppName(true);
 
@@ -29,7 +30,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
             var arguments = methodBase.GetArgumentsAsText();
 
             sb.AppendFormat("{0} {1}({2})",
-                retType, methodBase.ClangMethodSignature(), arguments);
+                retType, methodBase.ClangMethodSignature(crRuntime), arguments);
             if (writeEndColon)
                 sb.Append(";");
 

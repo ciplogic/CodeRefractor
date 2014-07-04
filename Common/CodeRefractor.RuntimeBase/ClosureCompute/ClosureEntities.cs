@@ -109,11 +109,18 @@ namespace CodeRefractor.ClosureCompute
 
         public Type ResolveType(Type type)
         {
+            Type result;
+            if (MappedTypes.TryGetValue(type, out result))
+                return result;
             foreach (var resolverBase in TypeResolverList)
             {
                 var resolved = resolverBase.Resolve(type);
                 if (resolved != null)
+                {
+                    MappedTypes[type] = resolved;
                     return resolved;
+                }
+                MappedTypes[type] = type;
             }
             return null;
         }
@@ -141,6 +148,8 @@ namespace CodeRefractor.ClosureCompute
 
             var extensionsResolverMethod = new ResolveRuntimeMethodUsingExtensions(runtimeAssembly);
             closureEntities.AddMethodResolver(extensionsResolverMethod);
+
+            closureEntities.TypeResolverList.Add(new ResolveRuntimeType(runtimeAssembly));
 
             closureEntities.ComputeFullClosure();
             return closureEntities;

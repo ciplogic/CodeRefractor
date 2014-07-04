@@ -11,6 +11,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
+using CodeRefractor.ClosureCompute;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.Runtime;
 using CodeRefractor.Runtime.Annotations;
@@ -140,12 +141,10 @@ namespace CodeRefractor.RuntimeBase
         }
 
 
-        public static Type GetMappedType(this Type type)
+        public static Type GetMappedType(this Type type, ClosureEntities crRuntime)
         {
-            var mappedtypeAttr = type.GetCustomAttribute<MapTypeAttribute>();
-            if (mappedtypeAttr == null)
-                return type;
-            return mappedtypeAttr.MappedType;
+            var mappedType=crRuntime.ResolveType(type);
+            return mappedType ?? type;
         }
 
         public static IEnumerable<string> GetParamAsPrettyList(ParameterInfo[] parameterInfos)

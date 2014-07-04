@@ -34,9 +34,9 @@ namespace CodeRefractor.RuntimeBase.Backend.ComputeClosure
             return sb.ToString();
         }
 
-        internal static string WritePInvokeMethodCode(MethodInterpreter interpreter)
+        internal static string WritePInvokeMethodCode(MethodInterpreter interpreter, ClosureEntities crRuntime)
         {
-            return interpreter.WritePlatformInvokeMethod();
+            return interpreter.WritePlatformInvokeMethod(crRuntime);
         }
 
         public static string WriteDelegateCallCode(MethodInterpreter interpreter)

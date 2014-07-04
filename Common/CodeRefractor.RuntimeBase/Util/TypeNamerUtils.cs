@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using CodeRefractor.ClosureCompute;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.Runtime.Annotations;
 using CodeRefractor.RuntimeBase;
@@ -34,9 +35,9 @@ namespace CodeRefractor.Util
             return result;
         }
 
-        public static string ClangMethodSignature(this MethodBase method,bool isvirtualmethod = false)
+        public static string ClangMethodSignature(this MethodBase method, ClosureEntities crRuntime, bool isvirtualmethod = false)
         {
-            var mappedType = method.DeclaringType.GetMappedType();
+            var mappedType = method.DeclaringType.GetMappedType(crRuntime);
             if(mappedType==null)
              mappedType = method.DeclaringType;
 

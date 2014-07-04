@@ -96,8 +96,6 @@ namespace VisualCompiler
                 new CallToFunctionsWithSameConstant()
             };
              
-            var crRuntime = new CrRuntimeLibrary();
-            crRuntime.ScanAssembly(typeof(CrString).Assembly);
             OptimizationLevelBase.ClearOptimizations();
             OptimizationLevelBase.Instance = new OptimizationLevels();
             OptimizationLevelBase.Instance.EnabledCategories.Clear();

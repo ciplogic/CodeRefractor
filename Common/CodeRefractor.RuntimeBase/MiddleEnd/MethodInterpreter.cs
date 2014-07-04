@@ -87,7 +87,7 @@ namespace CodeRefractor.MiddleEnd
 
         public override string ToString()
         {
-            return Method.GenerateKey();
+            return Method.ToString();
         }
 
 

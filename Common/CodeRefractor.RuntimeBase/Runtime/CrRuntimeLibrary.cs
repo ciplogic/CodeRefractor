@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using CodeRefractor.ClosureCompute;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 using CodeRefractor.Runtime.Annotations;
@@ -23,7 +24,7 @@ namespace CodeRefractor.Runtime
         public readonly Dictionary<MethodInterpreterKey, MethodInterpreter> SupportedMethods =
             new Dictionary<MethodInterpreterKey, MethodInterpreter>();
 
-        public void ScanAssembly(Assembly assembly)
+        public void ScanAssembly(Assembly assembly, ClosureEntities crRuntime)
         {
             foreach (var item in assembly.GetTypes())
             {
@@ -33,13 +34,13 @@ namespace CodeRefractor.Runtime
             }
             foreach (var item in MappedTypes)
             {
-                ScanMethodFunctions(item.Value, item.Key);
+                ScanMethodFunctions(item.Value, item.Key, crRuntime);
             }
         }
 
-        private void ScanMethodFunctions(Type item, Type mappedType)
+        private void ScanMethodFunctions(Type item, Type mappedType, ClosureEntities crRuntime)
         {
-            ScanType(item, mappedType);
+            ScanType(item, mappedType, crRuntime);
             ScanTypeForCilMethods(item, mappedType);
         }
 
@@ -64,11 +65,11 @@ namespace CodeRefractor.Runtime
             }
         }
 
-        private void ScanCppMethod(MethodBase method, Type mappedType)
+        private void ScanCppMethod(MethodBase method, Type mappedType, ClosureEntities crRuntime)
         {
             var methodNativeDescription = method.GetCustomAttribute<CppMethodBodyAttribute>();
             if (methodNativeDescription == null) return;
-            var reversedMethod = method.GetReversedMethod();
+            var reversedMethod = method.GetReversedMethod(crRuntime);
             var interpreter = reversedMethod.Register();
             interpreter.Kind = MethodKind.RuntimeCppMethod;
             var cppRepresentation = interpreter.CppRepresentation;
@@ -107,11 +108,11 @@ namespace CodeRefractor.Runtime
             return result;
         }
 
-        private void ScanType(Type item, Type mappedType)
+        private void ScanType(Type item, Type mappedType, ClosureEntities crRuntime)
         {
             var methods = item.GetMethods();
             foreach (var method in methods)
-                ScanCppMethod(method, mappedType);
+                ScanCppMethod(method, mappedType, crRuntime);
         }
 
         public MethodBase GetMappedMethodInfo(MethodBase methodInfo)
