@@ -26,12 +26,13 @@ namespace CodeRefractor.ClosureCompute.Resolvers
             foreach (var implementation in extensionImplementations)
             {
                 var allMethods = implementation.GetMethods();
+                var typesData = implementation.GetCustomAttribute<ExtensionsImplementation>();
                 foreach (var methodInfo in allMethods)
                 {
                     var attributeMethod = methodInfo.GetCustomAttributeT<MapMethod>();
                     if (attributeMethod == null)
                         continue;
-                    var declaringType = attributeMethod.DeclaringType??methodInfo.GetParameters()[0].ParameterType;
+                    var declaringType = typesData.DeclaringType;
                     AddMethod(declaringType, methodInfo);
                 }
             }
