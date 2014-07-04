@@ -37,13 +37,24 @@ namespace CodeRefractor.ClosureCompute.Resolvers
                 return null;
             }
             var allMethods = resolvingType.GetMethods().Where(m => m.Name == method.Name).ToArray();
+            var resultMethod = CalculateResultMethod(method, allMethods);
+
+            if (resultMethod != null)
+                return ResolveMethodWithResult(resultMethod);
+
+            return null;
+        }
+
+        private static MethodInfo CalculateResultMethod(MethodBase method, MethodInfo[] allMethods)
+        {
+            MethodInfo resultMethod = null;
             foreach (var methodInfo in allMethods)
             {
                 var srcParams = method.GetParameters();
                 var targetParams = methodInfo.GetParameters();
                 if (srcParams.Length != targetParams.Length)
                     continue;
-                var resultMethod = methodInfo;
+                resultMethod = methodInfo;
                 var found = true;
                 for (var index = 0; index < srcParams.Length; index++)
                 {
@@ -53,13 +64,10 @@ namespace CodeRefractor.ClosureCompute.Resolvers
                     found = false;
                     break;
                 }
-                if (found)
-                {
-                    return ResolveMethodWithResult(resultMethod);
-                }
+                if (!found)
+                    resultMethod = null;
             }
-
-            return null;
+            return resultMethod;
         }
 
         private static MethodInterpreter ResolveMethodWithResult(MethodBase resultMethod)
@@ -67,20 +75,22 @@ namespace CodeRefractor.ClosureCompute.Resolvers
             var result = new MethodInterpreter(resultMethod);
             var cilAttribute = resultMethod.GetCustomAttribute<CilMethodAttribute>();
 
-            if (cilAttribute != null)
+            if (cilAttribute == null)
             {
-                result.Kind = MethodKind.Default;
+                var cppAttribute = resultMethod.GetCustomAttribute<CppMethodBodyAttribute>();
+                result.Kind = MethodKind.RuntimeCppMethod;
+                var cppRepresentation = result.CppRepresentation;
+                cppRepresentation.Kind = CppKinds.RuntimeLibrary;
+                cppRepresentation.Header = cppAttribute.Header;
+                cppRepresentation.Source = cppAttribute.Code;
+                var pureAttribute = resultMethod.GetCustomAttribute<PureMethodAttribute>();
+                if (pureAttribute != null)
+                    result.AnalyzeProperties.IsPure = true;
                 return result;
             }
-            var cppAttribute = resultMethod.GetCustomAttribute<CppMethodBodyAttribute>();
-            result.Kind = MethodKind.RuntimeCppMethod;
-            var cppRepresentation = result.CppRepresentation;
-            cppRepresentation.Kind = CppKinds.RuntimeLibrary;
-            cppRepresentation.Header = cppAttribute.Header;
-            cppRepresentation.Source = cppAttribute.Code;
-            var pureAttribute = resultMethod.GetCustomAttribute<PureMethodAttribute>();
-            if (pureAttribute != null)
-                result.AnalyzeProperties.IsPure = true;
+            result.Kind = MethodKind.Default;
+            
+                
             return result;
         }
     }

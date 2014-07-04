@@ -65,7 +65,7 @@ namespace CodeRefractor.RuntimeBase
             }
         }
 
-        public static T GetCustomAttribute<T>(this MethodInfo method, bool inherited = false)
+        public static T GetCustomAttributeT<T>(this MethodInfo method, bool inherited = false)
         {
             var attributes = method.GetCustomAttributes(inherited);
             if (attributes.Length == 0)

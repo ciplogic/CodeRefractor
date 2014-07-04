@@ -431,7 +431,7 @@ namespace CodeRefractor.FrontEnd
             var methodInfo = ((MethodReference)operand).GetMethod();
             var interpreter = new MethodInterpreter(methodInfo);
 
-            var methodData = new CallMethodVirtual(interpreter, OperationKind.CallVirtual);
+            var methodData = new CallMethodVirtual(interpreter);
 
 
             CallMethodDataVirtual(methodInfo, methodData);

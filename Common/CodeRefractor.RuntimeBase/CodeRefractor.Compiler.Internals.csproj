@@ -73,6 +73,7 @@
     <Compile Include="Analyze\TypeDescription.cs" />
     <Compile Include="ClosureCompute\ClosureComputeBase.cs" />
     <Compile Include="ClosureCompute\ClosureEntities.cs" />
+    <Compile Include="ClosureCompute\Resolvers\ResolveRuntimeMethodUsingExtensions.cs" />
     <Compile Include="ClosureCompute\Steps\AddEntryPointInterpretedMethod.cs" />
     <Compile Include="ClosureCompute\Steps\AddNotYetInterpretedMethods.cs" />
     <Compile Include="ClosureCompute\MethodResolverBase.cs" />
@@ -81,6 +82,7 @@
     <Compile Include="ClosureCompute\TypeResolverBase.cs" />
     <Compile Include="FrontEnd\MethodMidRepresentationBuilder.cs" />
     <Compile Include="FrontEnd\SimpleOperations\Identifiers\GetArrayElement.cs" />
+    <Compile Include="FrontEnd\SimpleOperations\Methods\CallMethodVirtual.cs" />
     <Compile Include="FrontEnd\SimpleOperations\OperationUtils.cs" />
     <Compile Include="FrontEnd\SimpleOperations\SetField.cs" />
     <Compile Include="MiddleEnd\UseDefs\UseDefDescription.cs" />
@@ -135,6 +137,7 @@
     <Compile Include="FrontEnd\SimpleOperations\Unboxing.cs" />
     <Compile Include="Runtime\Annotations\CppLibMethodAttribute.cs" />
     <Compile Include="Runtime\Annotations\CrTypeResolver.cs" />
+    <Compile Include="Runtime\Annotations\MapMethod.cs" />
     <Compile Include="Runtime\Annotations\MapMethodAttribute.cs" />
     <Compile Include="Runtime\RuntimeLibraryUtils.cs" />
     <Compile Include="TypeInfoWriter\TypeDescriptionTable.cs" />

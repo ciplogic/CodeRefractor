@@ -2,7 +2,7 @@
 
 namespace CodeRefractor.Runtime.Annotations
 {
-    public class MapMethodAttribute : Attribute
+    public class ExtensionsImplementation : Attribute
     {
     }
 }

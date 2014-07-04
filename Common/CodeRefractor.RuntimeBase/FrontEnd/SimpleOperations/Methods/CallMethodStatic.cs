@@ -12,29 +12,6 @@ using CodeRefractor.RuntimeBase.MiddleEnd;
 
 namespace CodeRefractor.MiddleEnd.SimpleOperations.Methods
 {
-
-  
-    public class CallMethodVirtual : CallMethodStatic
-    {
-     
-
-       
-    
-
-        public CallMethodVirtual(MethodInterpreter interpreter, OperationKind kind)
-            : base(interpreter)
-        {
-            Kind=  OperationKind.CallVirtual;
-            Parameters = new List<IdentifierValue>();
-
-            Interpreter = interpreter;
-            Info = interpreter.Method;
-        }
-
-      
-
-      
-    }
     public class CallMethodStatic : LocalOperation
     {
         public bool IsVoid

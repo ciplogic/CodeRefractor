@@ -39,9 +39,14 @@ namespace CodeRefractor.Compiler
             var start = Environment.TickCount;
 
 
-            var resolveRuntimeMethod = new ResolveRuntimeMethod(typeof(CrString).Assembly);
+            
             var closureEntities = new ClosureEntities { EntryPoint = definition };
+            var resolveRuntimeMethod = new ResolveRuntimeMethod(typeof(CrString).Assembly);
             closureEntities.AddMethodResolver(resolveRuntimeMethod);
+
+            var extensionsResolverMethod = new ResolveRuntimeMethodUsingExtensions(typeof(CrString).Assembly);
+            closureEntities.AddMethodResolver(extensionsResolverMethod);
+
             closureEntities.ComputeFullClosure();
 
 
