@@ -377,11 +377,9 @@ namespace CodeRefactor.OpenRuntime
             return 0;
         }
 
-        [PureMethod]
-        [CppMethodBody(Header = "math.h", Code = "")]
         public static Int32 Min(Int32 val1, Int32 val2)
         {
-            return 0;
+            return val1<val2?val1:val2;
         }
 
         [PureMethod]

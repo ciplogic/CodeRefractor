@@ -107,13 +107,7 @@ namespace VisualCompiler
             OptimizationLevelBase.Instance.EnabledCategories.AddRange(OptimizationList);
             OptimizationLevelBase.UpdateOptimizationsFromCategories(OptimizationLevelBase.OptimizationPasses);
             OptimizationLevelBase.SortOptimizations();
-            var resolveRuntimeMethod = new ResolveRuntimeMethod(typeof(CrString).Assembly);
-            var closureEntities = new ClosureEntities { EntryPoint = definition };
-            closureEntities.AddMethodResolver(resolveRuntimeMethod);
-            closureEntities.AddType(typeof(CrString));
-            closureEntities.ComputeFullClosure();
-
-
+            var closureEntities = ClosureEntitiesUtils.BuildClosureEntities(definition, typeof(CrString).Assembly);
             var sb = closureEntities.BuildFullSourceCode();
             var end = Environment.TickCount - start;
              CompilerErrors +=String.Format("Compilation time: {0} ms", end);

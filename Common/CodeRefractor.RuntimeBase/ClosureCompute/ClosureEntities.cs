@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using CodeRefractor.ClosureCompute.Resolvers;
 using CodeRefractor.ClosureCompute.Steps;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.RuntimeBase.Backend;
@@ -126,5 +127,24 @@ namespace CodeRefractor.ClosureCompute
             MappedTypes[type] = ResolveType(type) ?? type;
             return true;
         }
+    }
+
+    public static class ClosureEntitiesUtils
+    {
+
+
+        public static ClosureEntities BuildClosureEntities(MethodInfo definition, Assembly runtimeAssembly)
+        {
+            var closureEntities = new ClosureEntities { EntryPoint = definition };
+            var resolveRuntimeMethod = new ResolveRuntimeMethod(runtimeAssembly);
+            closureEntities.AddMethodResolver(resolveRuntimeMethod);
+
+            var extensionsResolverMethod = new ResolveRuntimeMethodUsingExtensions(runtimeAssembly);
+            closureEntities.AddMethodResolver(extensionsResolverMethod);
+
+            closureEntities.ComputeFullClosure();
+            return closureEntities;
+        }
+
     }
 }

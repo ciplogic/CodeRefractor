@@ -39,15 +39,8 @@ namespace CodeRefractor.Compiler
             var start = Environment.TickCount;
 
 
-            
-            var closureEntities = new ClosureEntities { EntryPoint = definition };
-            var resolveRuntimeMethod = new ResolveRuntimeMethod(typeof(CrString).Assembly);
-            closureEntities.AddMethodResolver(resolveRuntimeMethod);
 
-            var extensionsResolverMethod = new ResolveRuntimeMethodUsingExtensions(typeof(CrString).Assembly);
-            closureEntities.AddMethodResolver(extensionsResolverMethod);
-
-            closureEntities.ComputeFullClosure();
+            var closureEntities = ClosureEntitiesUtils.BuildClosureEntities(definition, typeof(CrString).Assembly);
 
 
             var sb = closureEntities.BuildFullSourceCode();
@@ -58,7 +51,6 @@ namespace CodeRefractor.Compiler
             NativeCompilationUtils.CompileAppToNativeExe(commandLineParse.OutputCpp,
                                                          commandLineParse.ApplicationNativeExe);
         }
-
         private static void Main(string[] args)
         {
             var commandLineParse = CommandLineParse.Instance;

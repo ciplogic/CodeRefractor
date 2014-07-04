@@ -29,12 +29,12 @@ namespace CodeRefractor.FrontEnd
 
         public void ProcessInstructions()
         {
-            var instructions = _method.GetInstructions();
+            var instructions = _method.GetInstructions().ToArray();
             var labelList = ComputeLabels(_method);
             var evaluator = new EvaluatorStack();
             var operationFactory = new MetaMidRepresentationOperationFactory(_methodInterpreter.MidRepresentation, evaluator);
 
-            for (var index = 0; index < instructions.Count; index++)
+            for (var index = 0; index < instructions.Length; index++)
             {
                 var instruction = instructions[index];
                 EvaluateInstruction(instruction, operationFactory, labelList);
