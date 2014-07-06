@@ -310,7 +310,7 @@ namespace CodeRefractor.MiddleEnd.UseDefs
 
         #endregion
 
-        public static HashSet<LocalVariable> GetAllUsedVariables(MethodInterpreter interpreter,
+        public static HashSet<LocalVariable> GetAllUsedVariables(CilMethodInterpreter interpreter,
             bool includeDefinitions = false)
         {
             var useDef = interpreter.MidRepresentation.UseDef;
@@ -365,7 +365,7 @@ namespace CodeRefractor.MiddleEnd.UseDefs
             return result;
         }
 
-        public static void SwitchAllUsagesWithDefinition(this MethodInterpreter interpreter, LocalVariable usageVariable,
+        public static void SwitchAllUsagesWithDefinition(this CilMethodInterpreter interpreter, LocalVariable usageVariable,
             IdentifierValue definitionIdentifier)
         {
             var midRep = interpreter.MidRepresentation;

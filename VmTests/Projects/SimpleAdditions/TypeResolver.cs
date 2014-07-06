@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.Runtime.Annotations;
@@ -28,25 +29,26 @@ namespace SimpleAdditions
             MapType<CrSdl>(typeof(Sdl));
         }
 
-        public override bool Resolve(MethodInterpreter methodInterpreter)
+        public override MethodInterpreter Resolve(MethodBase methodInterpreter)
         {
-            var method = methodInterpreter.Method;
+            var method = methodInterpreter;
+            var result = new PlatformInvokeMethod(method) ;
             if (method.DeclaringType == typeof(Glu))
             {
-                ResolveAsPinvoke(methodInterpreter, "glu32.dll", CallingConvention.StdCall);
-                return true;
+                ResolveAsPinvoke(result, "glu32.dll", CallingConvention.StdCall);
+                return result;
             }
-            if (method.DeclaringType == typeof (Gl))
+            if (method.DeclaringType == typeof(Gl))
             {
-                ResolveAsPinvoke(methodInterpreter, "opengl32.dll", CallingConvention.StdCall);
-                return true;
+                ResolveAsPinvoke(result, "opengl32.dll", CallingConvention.StdCall);
+                return result;
             }
             if (method.DeclaringType == typeof(Sdl))
             {
-                ResolveAsPinvoke(methodInterpreter, "sdl.dll", CallingConvention.Cdecl);
-                return true;
+                ResolveAsPinvoke(result, "sdl.dll", CallingConvention.Cdecl);
+                return result;
             }
-            return false;
+            return null;
         }
     }
 }

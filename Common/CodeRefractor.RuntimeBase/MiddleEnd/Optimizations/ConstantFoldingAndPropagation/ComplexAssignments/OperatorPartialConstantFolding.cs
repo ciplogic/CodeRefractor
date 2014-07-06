@@ -20,7 +20,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.Co
     [Optimization(Category = OptimizationCategories.Constants)]
     public class OperatorPartialConstantFolding : ResultingInFunctionOptimizationPass
     {
-        public override void OptimizeOperations(MethodInterpreter interpreter)
+        public override void OptimizeOperations(CilMethodInterpreter interpreter)
         {
             var localOperations = interpreter.MidRepresentation.LocalOperations.ToArray();
             for (var index = 0; index < localOperations.Length; index++)

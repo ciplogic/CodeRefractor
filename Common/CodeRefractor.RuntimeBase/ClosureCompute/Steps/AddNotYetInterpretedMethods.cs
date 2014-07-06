@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 using CodeRefractor.MiddleEnd.UseDefs;
@@ -17,8 +18,9 @@ namespace CodeRefractor.ClosureCompute.Steps
         {
             var methods = closureEntities.MethodImplementations.Values;
             var methdosToAdd = new HashSet<MethodBase>();
-            foreach (var method in methods.Where(m => m.Kind == MethodKind.Default))
+            foreach (var methodBase in methods.Where(m => m.Kind == MethodKind.Default))
             {
+                var method = (CilMethodInterpreter) methodBase;
                 var useDef = method.MidRepresentation.UseDef;
                 var callOperations = useDef.GetOperationsOfKind(OperationKind.Call).Union(useDef.GetOperationsOfKind(OperationKind.CallVirtual));
                 var ops = useDef.GetLocalOperations();

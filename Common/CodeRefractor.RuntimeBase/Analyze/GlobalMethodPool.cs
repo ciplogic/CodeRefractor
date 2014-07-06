@@ -9,11 +9,13 @@ using CodeRefractor.ClosureCompute;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.Runtime;
 using CodeRefractor.Runtime.Annotations;
+using CodeRefractor.RuntimeBase;
+using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.Analyze
+namespace CodeRefractor.Analyze
 {
     public static class GlobalMethodPool
     {
@@ -37,28 +39,25 @@ namespace CodeRefractor.RuntimeBase.Analyze
             var interpreter = new MethodInterpreter(method);
             Register(interpreter);
 
-            if (Resolve(interpreter))
+            var resolved = Resolve(method);
+            if (resolved!=null)
             {
-                return interpreter;
+                return resolved;
             }
-            if (crRuntime != null)
-            {
-                var methodKind = crRuntime.ResolveInterpreter(interpreter.ToKey(), ref interpreter);
-                //interpreter.Kind = methodKind;
-            }
-            return interpreter;
+            return null;
         }
 
-        public static bool Resolve(MethodInterpreter interpreter)
+        public static MethodInterpreter Resolve(MethodBase interpreter)
         {
-            SetupTypeResolverIfNecesary(interpreter.Method);
+            SetupTypeResolverIfNecesary(interpreter);
             var resolvers = GetTypeResolvers();
             foreach (var resolver in resolvers)
             {
-                if (resolver.Resolve(interpreter))
-                    return true;
+                var resolved = resolver.Resolve(interpreter);
+                if (resolved!=null)
+                    return resolved;
             }
-            return false;
+            return null;
         }
 
         public static CrTypeResolver[] GetTypeResolvers()

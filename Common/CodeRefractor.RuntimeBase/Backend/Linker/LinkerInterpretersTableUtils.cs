@@ -3,6 +3,7 @@
 using System.Reflection;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.CodeWriter.Linker;
+using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Optimizations.Purity;
 using CodeRefractor.Runtime;
 
@@ -15,13 +16,13 @@ namespace CodeRefractor.RuntimeBase.Backend.Linker
         public static bool ReadPurity(MethodBase methodBase, ClosureEntities crRuntime)
         {
             var method = methodBase.GetInterpreter(crRuntime);
-            return AnalyzeFunctionPurity.ReadPurity(method);
+            return AnalyzeFunctionPurity.ReadPurity(method as CilMethodInterpreter);
         }
 
         public static bool ReadNoStaticSideEffects(MethodBase methodBase, ClosureEntities crRuntime)
         {
-            var method = methodBase.GetInterpreter(crRuntime);
-            if (method.MidRepresentation != null)
+            var method = methodBase.GetInterpreter(crRuntime) as CilMethodInterpreter;
+            if (method!=null&& method.MidRepresentation != null)
             {
                 return method.AnalyzeProperties.IsReadOnly;
             }

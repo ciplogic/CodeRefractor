@@ -16,7 +16,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.Co
     [Optimization(Category = OptimizationCategories.Constants)]
     public class OperatorConstantFolding : ResultingInFunctionOptimizationPass
     {
-        public override void OptimizeOperations(MethodInterpreter interpreter)
+        public override void OptimizeOperations(CilMethodInterpreter interpreter)
         {
             var intermediateCode = interpreter.MidRepresentation;
 

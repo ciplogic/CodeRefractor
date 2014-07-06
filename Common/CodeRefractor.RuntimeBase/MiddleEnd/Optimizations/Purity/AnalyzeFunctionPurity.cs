@@ -20,7 +20,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Purity
             return intermediateCode.AnalyzeProperties.IsPure;
         }
 
-        public override void OptimizeOperations(MethodInterpreter interpreter)
+        public override void OptimizeOperations(CilMethodInterpreter interpreter)
         {
             if (ReadPurity(interpreter))
                 return;
@@ -33,7 +33,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Purity
             Result = true;
         }
 
-        public static bool ComputeFunctionPurity(MethodInterpreter intermediateCode)
+        public static bool ComputeFunctionPurity(CilMethodInterpreter intermediateCode)
         {
             if (intermediateCode == null)
                 return false;

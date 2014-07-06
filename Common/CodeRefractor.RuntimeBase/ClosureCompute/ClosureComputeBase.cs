@@ -14,9 +14,12 @@ namespace CodeRefractor.ClosureCompute
 
         protected static void AddMethodToClosure(ClosureEntities closureEntities, MethodBase method)
         {
-            var interpreter = closureEntities.ResolveMethod(method) ?? new MethodInterpreter(method);
-
-            interpreter.Process();
+            var interpreter = closureEntities.ResolveMethod(method) ?? new CilMethodInterpreter(method);
+            var intepreter = interpreter as CilMethodInterpreter;
+            if (intepreter != null)
+            {
+                intepreter.Process();
+            }
             closureEntities.UseMethod(method, interpreter);
         }
     }

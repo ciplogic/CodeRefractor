@@ -19,7 +19,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.Inliner
     [Optimization(Category = OptimizationCategories.DeadCodeElimination)]
     public class RemoveCallsToEmptyMethods : ResultingGlobalOptimizationPass
     {
-        public override void OptimizeOperations(MethodInterpreter methodInterpreter)
+        public override void OptimizeOperations(CilMethodInterpreter methodInterpreter)
         {
             var toRemove = new List<int>();
             var useDef = methodInterpreter.MidRepresentation.UseDef;

@@ -11,12 +11,12 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Purity
 	[Optimization(Category = OptimizationCategories.Analysis)]
     public class AnalyzeFunctionIsEmpty : ResultingGlobalOptimizationPass
     {
-        public static bool ReadProperty(MethodInterpreter intermediateCode)
+        public static bool ReadProperty(CilMethodInterpreter intermediateCode)
         {
             return intermediateCode.AnalyzeProperties.IsEmpty;
         }
 
-        public override void OptimizeOperations(MethodInterpreter interpreter)
+        public override void OptimizeOperations(CilMethodInterpreter interpreter)
         {
             if (ReadProperty(interpreter))
                 return;
@@ -27,7 +27,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Purity
                 Result = true;
         }
 
-        private static bool ComputeProperty(MethodInterpreter intermediateCode)
+        private static bool ComputeProperty(CilMethodInterpreter intermediateCode)
         {
             if (intermediateCode == null)
                 return false;

@@ -15,7 +15,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.Co
     [Optimization(Category = OptimizationCategories.DeadCodeElimination)]
     internal class RemoveDeadStoresInBlockOptimizationPass : BlockOptimizationPass
     {
-        public override bool OptimizeBlock(MethodInterpreter midRepresentation, int startRange, int endRange,
+        public override bool OptimizeBlock(CilMethodInterpreter midRepresentation, int startRange, int endRange,
             LocalOperation[] operations)
         {
             var dictionary = new Dictionary<LocalVariable, int>();

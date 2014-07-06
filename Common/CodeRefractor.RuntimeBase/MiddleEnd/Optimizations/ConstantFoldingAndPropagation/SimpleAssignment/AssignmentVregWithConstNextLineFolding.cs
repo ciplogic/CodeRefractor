@@ -32,7 +32,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndProp
             }
         }
 
-        public override void OptimizeOperations(MethodInterpreter interpreter)
+        public override void OptimizeOperations(CilMethodInterpreter interpreter)
         {
             var useDef = interpreter.MidRepresentation.UseDef;
             var operations = useDef.GetLocalOperations();

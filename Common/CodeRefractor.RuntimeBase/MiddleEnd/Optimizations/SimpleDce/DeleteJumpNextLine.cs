@@ -15,7 +15,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.SimpleDce
     [Optimization(Category = OptimizationCategories.DeadCodeElimination)]
     public class DeleteJumpNextLine : ResultingInFunctionOptimizationPass
     {
-        public override void OptimizeOperations(MethodInterpreter interpreter)
+        public override void OptimizeOperations(CilMethodInterpreter interpreter)
         {
             var operations = interpreter.MidRepresentation.UseDef.GetLocalOperations();
             var labelTable = interpreter.GetLabelTable();

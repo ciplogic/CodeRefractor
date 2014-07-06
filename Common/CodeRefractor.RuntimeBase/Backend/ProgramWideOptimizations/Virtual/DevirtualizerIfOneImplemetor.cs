@@ -4,16 +4,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using CodeRefractor.ClosureCompute;
+using CodeRefractor.CompilerBackend.ProgramWideOptimizations;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd;
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.Util;
 
 #endregion
 
-namespace CodeRefractor.CompilerBackend.ProgramWideOptimizations.Virtual
+namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
 {
     public class DevirtualizerIfOneImplemetor : ResultingProgramOptimizationBase
     {
@@ -24,11 +24,11 @@ namespace CodeRefractor.CompilerBackend.ProgramWideOptimizations.Virtual
                 .ToList();
             foreach (var interpreter in methodInterpreters)
             {
-                HandleInterpreterInstructions(interpreter, closure.MappedTypes.Values.ToList());
+                HandleInterpreterInstructions((CilMethodInterpreter)interpreter, closure.MappedTypes.Values.ToList());
             }
         }
 
-        private void HandleInterpreterInstructions(MethodInterpreter interpreter, List<Type> usedTypes)
+        private void HandleInterpreterInstructions(CilMethodInterpreter interpreter, List<Type> usedTypes)
         {
             var useDef = interpreter.MidRepresentation.UseDef;
             var calls = useDef.GetOperationsOfKind(OperationKind.CallVirtual).ToList();
@@ -38,8 +38,8 @@ namespace CodeRefractor.CompilerBackend.ProgramWideOptimizations.Virtual
                 var op = allOps[callOp];
                 var methodData = (CallMethodStatic) op;
                 var callingInterpreterKey = methodData.Interpreter.ToKey();
-                var declaringType = callingInterpreterKey.Interpreter.DeclaringType;
-                var implementors = declaringType.ClrType.ImplementorsOfT(usedTypes);
+                var declaringType = callingInterpreterKey.Interpreter.Method.DeclaringType;
+                var implementors = declaringType.ImplementorsOfT(usedTypes);
                 if (implementors.Count > 0)
                     continue;
                 Result = true;

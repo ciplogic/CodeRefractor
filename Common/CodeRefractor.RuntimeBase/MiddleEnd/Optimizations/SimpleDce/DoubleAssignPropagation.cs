@@ -25,7 +25,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.SimpleDce
     [Optimization(Category = OptimizationCategories.DeadCodeElimination)]
     internal class DoubleAssignPropagation : ResultingInFunctionOptimizationPass
     {
-        public override void OptimizeOperations(MethodInterpreter interpreter)
+        public override void OptimizeOperations(CilMethodInterpreter interpreter)
         {
             var localOperations = interpreter.MidRepresentation.UseDef.GetLocalOperations();
             var toPatch = Analyze(localOperations);
@@ -34,7 +34,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.SimpleDce
             ApplyOptimization(interpreter, toPatch, localOperations);
         }
 
-        private void ApplyOptimization(MethodInterpreter methodInterpreter, List<int> toPatch,
+        private void ApplyOptimization(CilMethodInterpreter methodInterpreter, List<int> toPatch,
             LocalOperation[] localOperations)
         {
             foreach (var patchLine in toPatch)

@@ -24,7 +24,7 @@ namespace CodeRefractor.RuntimeBase.CodeWriter.BasicOperations
 {
     public static class CppMethodCodeWriter
     {
-        public static string WriteCode(MethodInterpreter interpreter, TypeDescriptionTable typeTable,
+        public static string WriteCode(CilMethodInterpreter interpreter, TypeDescriptionTable typeTable,
             ClosureEntities crRuntime)
         {
             var operations = interpreter.MidRepresentation.LocalOperations;

@@ -18,7 +18,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.SimpleDce
     [Optimization(Category = OptimizationCategories.DeadCodeElimination)]
     internal class OneAssignmentDeadStoreAssignment : ResultingInFunctionOptimizationPass
     {
-        public override void OptimizeOperations(MethodInterpreter interpreter)
+        public override void OptimizeOperations(CilMethodInterpreter interpreter)
         {
             var useDef = interpreter.MidRepresentation.UseDef;
             var localOperations = useDef.GetLocalOperations();

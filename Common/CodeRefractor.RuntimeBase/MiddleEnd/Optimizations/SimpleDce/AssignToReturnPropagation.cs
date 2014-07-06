@@ -1,18 +1,15 @@
 #region Usings
 
-using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 using CodeRefractor.MiddleEnd.UseDefs;
-using CodeRefractor.RuntimeBase.Analyze;
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.Optimizations;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.MiddleEnd.Optimizations.SimpleDce
+namespace CodeRefractor.MiddleEnd.Optimizations.SimpleDce
 {
     /// <summary>
     ///     This optimization in case of two assignments of the form:
@@ -24,13 +21,13 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.Optimizations.SimpleDce
 	[Optimization(Category = OptimizationCategories.DeadCodeElimination)]
     internal class AssignToReturnPropagation : ResultingInFunctionOptimizationPass
     {
-        public override bool CheckPreconditions(MethodInterpreter midRepresentation)
+        public override bool CheckPreconditions(CilMethodInterpreter midRepresentation)
         {
             var localOperations = midRepresentation.MidRepresentation.UseDef.GetLocalOperations();
             return localOperations.Length >= 2;
         }
 
-        public override void OptimizeOperations(MethodInterpreter interpreter)
+        public override void OptimizeOperations(CilMethodInterpreter interpreter)
         {
             var localOperations = interpreter.MidRepresentation.UseDef.GetLocalOperations();
             var count = localOperations.Length;

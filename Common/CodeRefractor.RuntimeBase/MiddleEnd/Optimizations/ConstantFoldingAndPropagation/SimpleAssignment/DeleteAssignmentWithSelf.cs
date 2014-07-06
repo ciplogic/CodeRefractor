@@ -14,7 +14,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.Si
     [Optimization(Category = OptimizationCategories.DeadCodeElimination)]
     internal class DeleteAssignmentWithSelf : ResultingInFunctionOptimizationPass
     {
-        public override void OptimizeOperations(MethodInterpreter interpreter)
+        public override void OptimizeOperations(CilMethodInterpreter interpreter)
         {
             var midRepresentation = interpreter.MidRepresentation;
             var useDef = midRepresentation.UseDef;

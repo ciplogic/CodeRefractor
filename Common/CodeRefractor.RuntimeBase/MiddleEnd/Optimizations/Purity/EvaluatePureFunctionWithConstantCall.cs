@@ -15,14 +15,14 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Purity
 	[Optimization(Category = OptimizationCategories.Purity)]
     internal class EvaluatePureFunctionWithConstantCall : ResultingGlobalOptimizationPass
     {
-        public override bool CheckPreconditions(MethodInterpreter midRepresentation)
+        public override bool CheckPreconditions(CilMethodInterpreter midRepresentation)
         {
             var operations = midRepresentation.MidRepresentation.UseDef;
 
             return operations.GetOperationsOfKind(OperationKind.Call).Length > 0;
         }
 
-        public override void OptimizeOperations(MethodInterpreter interpreter)
+        public override void OptimizeOperations(CilMethodInterpreter interpreter)
         {
             var useDef = interpreter.MidRepresentation.UseDef;
             var operations = useDef.GetLocalOperations();
@@ -53,7 +53,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Purity
         {
             var operationData = (CallMethodStatic) operation;
             var methodInterpreter = operationData.Info.GetInterpreter(Closure);
-            if (AnalyzeFunctionPurity.ReadPurity(methodInterpreter))
+            if (AnalyzeFunctionPurity.ReadPurity(methodInterpreter as CilMethodInterpreter))
             {
                 operationData.Interpreter.AnalyzeProperties.IsPure = true;
             }
@@ -68,7 +68,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Purity
                     operationData.Interpreter.AnalyzeProperties.IsPure = false;
                     return operationData;
                 }
-                var computeIsPure = AnalyzeFunctionPurity.ComputeFunctionPurity(methodInterpreter);
+                var computeIsPure = AnalyzeFunctionPurity.ComputeFunctionPurity(methodInterpreter as CilMethodInterpreter);
                 if (computeIsPure)
                     operationData.Interpreter.AnalyzeProperties.IsPure = true;
             }

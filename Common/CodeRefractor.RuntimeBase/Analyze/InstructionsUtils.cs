@@ -39,7 +39,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
             return labelTable;
         }
 
-        public static void DeleteInstructions(this MethodInterpreter intermediateCode,
+        public static void DeleteInstructions(this CilMethodInterpreter intermediateCode,
             IEnumerable<int> instructionsToBeDeleted)
         {
             intermediateCode.MidRepresentation.DeleteInstructions(instructionsToBeDeleted);

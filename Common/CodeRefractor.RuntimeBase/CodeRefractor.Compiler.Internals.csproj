@@ -73,6 +73,7 @@
     <Compile Include="Analyze\TypeDescription.cs" />
     <Compile Include="ClosureCompute\ClosureComputeBase.cs" />
     <Compile Include="ClosureCompute\ClosureEntities.cs" />
+    <Compile Include="ClosureCompute\ClosureEntitiesUtils.cs" />
     <Compile Include="ClosureCompute\Resolvers\ResolveRuntimeMethodUsingExtensions.cs" />
     <Compile Include="ClosureCompute\Resolvers\ResolveRuntimeType.cs" />
     <Compile Include="ClosureCompute\Steps\AddEntryPointInterpretedMethod.cs" />
@@ -86,6 +87,9 @@
     <Compile Include="FrontEnd\SimpleOperations\Methods\CallMethodVirtual.cs" />
     <Compile Include="FrontEnd\SimpleOperations\OperationUtils.cs" />
     <Compile Include="FrontEnd\SimpleOperations\SetField.cs" />
+    <Compile Include="MiddleEnd\CilMethodInterpreter.cs" />
+    <Compile Include="MiddleEnd\CppMethodInterpreter.cs" />
+    <Compile Include="MiddleEnd\PlatformInvokeMethod.cs" />
     <Compile Include="MiddleEnd\UseDefs\UseDefDescription.cs" />
     <Compile Include="MiddleEnd\UseDefs\UseDefHelper.cs" />
     <Compile Include="Analyze\UsedTypeList.cs" />
@@ -119,7 +123,6 @@
     <Compile Include="Analyze\GlobalMethodPool.cs" />
     <Compile Include="MiddleEnd\CppLibMethodInvokeRepresentation.cs" />
     <Compile Include="MiddleEnd\GlobalTable\GlobalTableManager.cs" />
-    <Compile Include="MiddleEnd\MethodDescription.cs" />
     <Compile Include="MiddleEnd\MethodInterpreterKey.cs" />
     <Compile Include="MiddleEnd\MethodInterpreterKeyUtils.cs" />
     <Compile Include="FrontEnd\SimpleOperations\Methods\Return.cs" />
@@ -276,5 +279,8 @@
   -->
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="MiddleEnd\Interpreters\" />
   </ItemGroup>
 </Project>

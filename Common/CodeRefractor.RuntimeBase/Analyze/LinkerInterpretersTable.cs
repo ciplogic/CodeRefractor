@@ -17,7 +17,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
     {
         public static string WriteHeaderMethod(this MethodBase methodBase, ClosureEntities crRuntime, bool writeEndColon = true)
         {
-            var retType = methodBase.GetReturnType().ToCppName(true);
+            var retType = methodBase.GetReturnType().ToCppName();
 
             var genericTypeCount = methodBase.DeclaringType.GetGenericArguments().Length;
 

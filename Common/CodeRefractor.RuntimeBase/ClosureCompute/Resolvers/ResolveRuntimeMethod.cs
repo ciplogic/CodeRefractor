@@ -5,10 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using CodeRefractor.MiddleEnd;
-using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 using CodeRefractor.Runtime.Annotations;
-using CodeRefractor.RuntimeBase;
-using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.Shared;
 
 #endregion
@@ -74,25 +71,16 @@ namespace CodeRefractor.ClosureCompute.Resolvers
 
         private static MethodInterpreter ResolveMethodWithResult(MethodBase resultMethod)
         {
-            var result = new MethodInterpreter(resultMethod);
-
-            var cppAttribute = resultMethod.GetCustomAttribute<CppMethodBodyAttribute>();
-            if (cppAttribute != null)
+            if (!CppMethodInterpreter.IsCppMethod(resultMethod))
             {
-                result.Kind = MethodKind.RuntimeCppMethod;
-                var cppRepresentation = result.CppRepresentation;
-                cppRepresentation.Kind = CppKinds.RuntimeLibrary;
-                cppRepresentation.Header = cppAttribute.Header;
-                cppRepresentation.Source = cppAttribute.Code;
-                var pureAttribute = resultMethod.GetCustomAttribute<PureMethodAttribute>();
-                if (pureAttribute != null)
-                    result.AnalyzeProperties.IsPure = true;
+                var result = new MethodInterpreter(resultMethod);
                 return result;
             }
-            result.Kind = MethodKind.Default;
-            
-                
-            return result;
+            var cppResult = new CppMethodInterpreter(resultMethod);
+
+            cppResult.SetupInternalFields(resultMethod);
+            return cppResult;
+
         }
     }
 }

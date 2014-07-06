@@ -12,7 +12,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.SimpleDce
     [Optimization(Category = OptimizationCategories.DeadCodeElimination)]
     internal class DeleteCallToConstructorOfObject : ResultingInFunctionOptimizationPass
     {
-        public override void OptimizeOperations(MethodInterpreter interpreter)
+        public override void OptimizeOperations(CilMethodInterpreter interpreter)
         {
             var midRepresentation = interpreter.MidRepresentation;
             var useDef = midRepresentation.UseDef;
@@ -26,10 +26,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.SimpleDce
                 if (!info.IsConstructor) continue;
                 if (info.DeclaringType != typeof (object) &&
                     info.DeclaringType != interpreter.Method.DeclaringType) continue;
-                if (methodData.Interpreter.MidRepresentation.LocalOperations.Count > 1)
-					continue;
-				var localOps = midRepresentation.LocalOperations;
-                localOps.RemoveAt(index);
+				midRepresentation.LocalOperations.RemoveAt(index);
                 Result = true;
                 return;
             }

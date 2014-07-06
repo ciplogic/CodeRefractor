@@ -15,7 +15,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.RedundantExpressions
 	[Optimization(Category = OptimizationCategories.CommonSubexpressionsElimination)]
 	internal class PrecomputeRepeatedFieldGets : BlockOptimizationPass
     {
-        public override bool OptimizeBlock(MethodInterpreter midRepresentation, int startRange, int endRange,
+        public override bool OptimizeBlock(CilMethodInterpreter midRepresentation, int startRange, int endRange,
             LocalOperation[] operations)
         {
             var localOperations = midRepresentation.MidRepresentation.UseDef.GetLocalOperations();
@@ -25,7 +25,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.RedundantExpressions
             return ProcessOptimizeBlock(midRepresentation, getFieldOperations, localOperations);
         }
 
-	    private static bool ProcessOptimizeBlock(MethodInterpreter midRepresentation, int[] getFieldOperations, LocalOperation[] localOperations)
+        private static bool ProcessOptimizeBlock(CilMethodInterpreter midRepresentation, int[] getFieldOperations, LocalOperation[] localOperations)
 	    {
             var instructionRange = midRepresentation.MidRepresentation.LocalOperations;
 	        for (var i = 0; i < getFieldOperations.Length - 1; i++)
@@ -46,7 +46,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.RedundantExpressions
 	        return false;
 	    }
 
-	    private static void ApplyOptimization(MethodInterpreter midRepresentation, int i, int j)
+        private static void ApplyOptimization(CilMethodInterpreter midRepresentation, int i, int j)
         {
             var localOps = midRepresentation.MidRepresentation.LocalOperations;
             var firstOperator = localOps[i].Get<GetField>();

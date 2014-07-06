@@ -27,7 +27,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Common
             return result.ToArray();
         }
 
-        public override void OptimizeOperations(MethodInterpreter interpreter)
+        public override void OptimizeOperations(CilMethodInterpreter interpreter)
         {
             var localOperations = interpreter.MidRepresentation.UseDef.GetLocalOperations();
             var sortedLabelPos = BuildBlockOperations(interpreter);
@@ -46,7 +46,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Common
             Result = TryOptimizeBlock(interpreter, startPos, localOperations.Length - 1, localOperations);
         }
 
-        private static List<int> BuildBlockOperations(MethodInterpreter methodInterpreter)
+        private static List<int> BuildBlockOperations(CilMethodInterpreter methodInterpreter)
         {
             var useDef = methodInterpreter.MidRepresentation.UseDef;
             var result = new List<int>();
@@ -57,7 +57,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Common
             return result;
         }
 
-        private bool TryOptimizeBlock(MethodInterpreter localOperations, int startRange, int endRange,
+        private bool TryOptimizeBlock(CilMethodInterpreter localOperations, int startRange, int endRange,
             LocalOperation[] operations)
         {
             if (startRange >= endRange)
@@ -65,7 +65,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Common
             return OptimizeBlock(localOperations, startRange, endRange, operations);
         }
 
-        public abstract bool OptimizeBlock(MethodInterpreter midRepresentation, int startRange, int endRange,
+        public abstract bool OptimizeBlock(CilMethodInterpreter midRepresentation, int startRange, int endRange,
             LocalOperation[] operations);
     }
 }

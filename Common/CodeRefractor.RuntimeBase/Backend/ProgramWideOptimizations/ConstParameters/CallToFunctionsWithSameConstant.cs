@@ -22,11 +22,12 @@ namespace CodeRefractor.CompilerBackend.ProgramWideOptimizations.ConstParameters
         {
             var methodInterpreters = closure.MethodImplementations.Values
                 .Where(m => m.Kind == MethodKind.Default)
+                .Cast<CilMethodInterpreter>()
                 .ToList();
             var updateHappen = false;
             foreach (var interpreter in methodInterpreters)
             {
-                updateHappen |= HandleInterpreterInstructions(interpreter);
+                updateHappen |= HandleInterpreterInstructions(interpreter as CilMethodInterpreter);
             }
             if (!updateHappen)
                 return;
@@ -44,14 +45,15 @@ namespace CodeRefractor.CompilerBackend.ProgramWideOptimizations.ConstParameters
                     if (constKind.Value != ConstantParametersData.ConstValueKind.AssignedConstant)
                         continue;
                     var assignedConstant = parametersData.ConstValues[constKind.Key];
-                    interpreter.SwitchAllUsagesWithDefinition(constKind.Key, assignedConstant);
+                    var cilInterpreter = (CilMethodInterpreter)interpreter;
+                    cilInterpreter.SwitchAllUsagesWithDefinition(constKind.Key, assignedConstant);
                     interpreter.AnalyzeProperties.SetVariableData(constKind.Key, EscapingMode.Unused);
                     Result = true;
                 }
             }
         }
 
-        private static bool HandleInterpreterInstructions(MethodInterpreter interpreter)
+        private static bool HandleInterpreterInstructions(CilMethodInterpreter interpreter)
         {
             var useDef = interpreter.MidRepresentation.UseDef;
             var calls = useDef.GetOperationsOfKind(OperationKind.Call).ToList();
@@ -61,9 +63,9 @@ namespace CodeRefractor.CompilerBackend.ProgramWideOptimizations.ConstParameters
             {
                 var op = allOps[callOp];
                 var methodData = (CallMethodStatic) op;
-                var callingInterpreter = methodData.Interpreter;
-                if (callingInterpreter.Kind != MethodKind.Default)
+                if (methodData.Interpreter.Kind != MethodKind.Default)
                     continue;
+                var callingInterpreter = (CilMethodInterpreter)methodData.Interpreter; 
                 var interpreterData = ConstantParametersData.GetInterpreterData(callingInterpreter);
                 updatedHappen |= interpreterData.UpdateTable(methodData);
             }

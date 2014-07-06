@@ -17,7 +17,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Dfa.ReachabilityDfa
     [Optimization(Category = OptimizationCategories.DeadCodeElimination)]
     public class ReachabilityLines : ResultingInFunctionOptimizationPass
     {
-        public override void OptimizeOperations(MethodInterpreter interpreter)
+        public override void OptimizeOperations(CilMethodInterpreter interpreter)
         {
             var useDef = interpreter.MidRepresentation.UseDef;
             var operations = useDef.GetLocalOperations();

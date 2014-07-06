@@ -14,7 +14,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
     [Optimization(Category = OptimizationCategories.Propagation)]
     internal class ReplaceCallsToFunctionsWithUnusedArguments : ResultingInFunctionOptimizationPass
     {
-        public override void OptimizeOperations(MethodInterpreter interpreter)
+        public override void OptimizeOperations(CilMethodInterpreter interpreter)
         {
             var midRepresentation = interpreter.MidRepresentation;
             var useDef = midRepresentation.UseDef;
@@ -27,7 +27,10 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
                 var opCall = localOperations[call];
                 var methodData = (CallMethodStatic) opCall;
                 var properties = methodData.Interpreter.AnalyzeProperties;
-                var argumentUsages = properties.GetUsedArguments(methodData.Interpreter.MidRepresentation.Vars.Arguments);
+                var callAsCilInterpreter = methodData.Interpreter as CilMethodInterpreter;
+                if(callAsCilInterpreter==null)
+                    continue;
+                var argumentUsages = properties.GetUsedArguments(callAsCilInterpreter.MidRepresentation.Vars.Arguments);
                 if (!argumentUsages.Any(it => !it))
                     continue;
                 for (var index = 0; index < argumentUsages.Length; index++)

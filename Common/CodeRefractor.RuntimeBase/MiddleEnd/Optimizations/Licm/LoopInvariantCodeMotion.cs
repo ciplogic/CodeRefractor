@@ -16,13 +16,13 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Licm
     [Optimization(Category = OptimizationCategories.CommonSubexpressionsElimination)]
     internal class LoopInvariantCodeMotion : ResultingGlobalOptimizationPass
     {
-        public override bool CheckPreconditions(MethodInterpreter midRepresentation)
+        public override bool CheckPreconditions(CilMethodInterpreter midRepresentation)
         {
             var loopStarts = LoopDetection.FindLoops(midRepresentation.MidRepresentation);
             return loopStarts.Count != 0;
         }
 
-        public override void OptimizeOperations(MethodInterpreter interpreter)
+        public override void OptimizeOperations(CilMethodInterpreter interpreter)
         {
             var midRepresentation = interpreter.MidRepresentation;
             var useDef = midRepresentation.UseDef;

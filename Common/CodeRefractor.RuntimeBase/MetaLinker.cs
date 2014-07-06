@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using CodeRefractor.Analyze;
 using CodeRefractor.FrontEnd;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
@@ -226,7 +227,7 @@ namespace CodeRefractor.RuntimeBase
         }
 
 
-        public static void Interpret(MethodInterpreter methodInterpreter, CrRuntimeLibrary crRuntime)
+        public static void Interpret(CilMethodInterpreter methodInterpreter, CrRuntimeLibrary crRuntime)
         {
             if (methodInterpreter.Kind != MethodKind.Default)
                 return;

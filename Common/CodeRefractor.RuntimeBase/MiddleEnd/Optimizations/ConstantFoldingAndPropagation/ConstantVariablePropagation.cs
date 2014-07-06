@@ -14,7 +14,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation
     [Optimization(Category = OptimizationCategories.Constants)]
     public class ConstantVariablePropagation : ConstantVariablePropagationBase
     {
-        public override void OptimizeOperations(MethodInterpreter interpreter)
+        public override void OptimizeOperations(CilMethodInterpreter interpreter)
         {
             var operations = interpreter.MidRepresentation.UseDef.GetLocalOperations();
             for (var i = 0; i < operations.Length - 1; i++)

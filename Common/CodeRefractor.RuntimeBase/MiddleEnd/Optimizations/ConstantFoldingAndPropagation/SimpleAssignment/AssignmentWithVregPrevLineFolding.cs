@@ -14,7 +14,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.Si
     [Optimization(Category = OptimizationCategories.Propagation)]
     public class AssignmentWithVregPrevLineFolding : ResultingInFunctionOptimizationPass
     {
-        public override void OptimizeOperations(MethodInterpreter interpreter)
+        public override void OptimizeOperations(CilMethodInterpreter interpreter)
         {
             var useDef = interpreter.MidRepresentation.UseDef;
             var operations = useDef.GetLocalOperations();

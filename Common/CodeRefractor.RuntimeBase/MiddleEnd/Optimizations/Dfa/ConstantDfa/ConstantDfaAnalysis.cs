@@ -21,7 +21,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Dfa.ConstantDfa
         private LocalOperation[] _operations;
         private DfaPointOfAnalysis[] _pointsOfAnalysis;
 
-        public override void OptimizeOperations(MethodInterpreter interpreter)
+        public override void OptimizeOperations(CilMethodInterpreter interpreter)
         {
             _operations = interpreter.MidRepresentation.LocalOperations.ToArray();
             _labelTable = interpreter.MidRepresentation.UseDef.GetLabelTable();

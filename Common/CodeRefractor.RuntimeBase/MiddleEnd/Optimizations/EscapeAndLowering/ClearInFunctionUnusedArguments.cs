@@ -16,7 +16,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.EscapeAndLowering
     [Optimization(Category = OptimizationCategories.DeadCodeElimination)]
     internal class ClearInFunctionUnusedArguments : ResultingGlobalOptimizationPass
     {
-        public override void OptimizeOperations(MethodInterpreter interpreter)
+        public override void OptimizeOperations(CilMethodInterpreter interpreter)
         {
             var midRepresentation = interpreter.MidRepresentation;
             var useDef = midRepresentation.UseDef;

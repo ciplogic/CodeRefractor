@@ -25,21 +25,21 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Common
             set { _result = value; }
         }
 
-        public abstract void OptimizeOperations(MethodInterpreter interpreter);
+        public abstract void OptimizeOperations(CilMethodInterpreter interpreter);
 
     
 
 
         public OptimizationKind Kind { get; set; }
 
-        public virtual bool CheckPreconditions(MethodInterpreter midRepresentation)
+        public virtual bool CheckPreconditions(CilMethodInterpreter midRepresentation)
         {
             return true;
         }
          //returns true if it succeed to apply any optimizations
         //Try to return false by default
         //If the code succeeded to optimize something that other optimizations may benefit, return true
-        public bool Optimize(MethodInterpreter intermediateCode)
+        public bool Optimize(CilMethodInterpreter intermediateCode)
         {
             _result = false;
             try

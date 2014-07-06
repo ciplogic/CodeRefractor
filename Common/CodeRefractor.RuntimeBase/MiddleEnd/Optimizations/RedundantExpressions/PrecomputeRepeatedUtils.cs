@@ -38,7 +38,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.RedundantExpressions
             return (CallMethodStatic) localOperations[index];
         }
 
-        public static LocalVariable CreateCacheVariable(this MethodInterpreter interpreter,
+        public static LocalVariable CreateCacheVariable(this CilMethodInterpreter interpreter,
             TypeDescription computedType)
         {
             var midRepresentation = interpreter.MidRepresentation;

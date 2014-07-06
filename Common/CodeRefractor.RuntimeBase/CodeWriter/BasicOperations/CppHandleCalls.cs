@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using CodeRefractor.Analyze;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.CodeWriter.Linker;
 using CodeRefractor.MiddleEnd;
@@ -173,9 +174,11 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             sb.Append("(");
             var pos = 0;
             var isFirst = true;
+            var cilInterpreter = operationStatic.Interpreter as CilMethodInterpreter;
+
             var argumentUsages =
                 operationStatic.Interpreter.AnalyzeProperties.GetUsedArguments(
-                    operationStatic.Interpreter.MidRepresentation.Vars.Arguments);
+                    cilInterpreter.MidRepresentation.Vars.Arguments);
 
             var argumentTypes = operationStatic.Info.GetMethodArgumentTypes();
             for (var index = 0; index < identifierValues.Count; index++)

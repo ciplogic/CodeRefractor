@@ -17,7 +17,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation
     [Optimization(Category = OptimizationCategories.Constants)]
     public class ConstantVariableEvaluation : ResultingInFunctionOptimizationPass
     {
-        public override void OptimizeOperations(MethodInterpreter interpreter)
+        public override void OptimizeOperations(CilMethodInterpreter interpreter)
         {
             var operations = interpreter.MidRepresentation.LocalOperations
                 .Where(op => op.Kind == OperationKind.BranchOperator)

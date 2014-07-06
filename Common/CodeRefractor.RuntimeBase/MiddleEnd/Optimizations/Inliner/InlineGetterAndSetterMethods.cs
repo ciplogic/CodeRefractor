@@ -16,7 +16,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Inliner
     [Optimization(Category = OptimizationCategories.Inliner)]
     public class InlineGetterAndSetterMethods : ResultingGlobalOptimizationPass
     {
-        public override void OptimizeOperations(MethodInterpreter methodInterpreter)
+        public override void OptimizeOperations(CilMethodInterpreter methodInterpreter)
         {
             var localOperations = methodInterpreter.MidRepresentation.UseDef.GetLocalOperations();
             for (var index = 0; index < localOperations.Length; index++)
@@ -26,7 +26,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Inliner
                 if (localOperation.Kind != OperationKind.Call) continue;
 
                 var methodData = (CallMethodStatic) localOperation;
-                var interpreter = methodData.GetInterpreter(Closure);
+                var interpreter = methodData.GetInterpreter(Closure) as CilMethodInterpreter;
                 if (interpreter == null)
                     continue;
 

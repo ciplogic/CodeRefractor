@@ -22,7 +22,7 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.ConstParameters
             NonConstant
         }
 
-        public static ConstantParametersData GetInterpreterData(MethodInterpreter interpreter)
+        public static ConstantParametersData GetInterpreterData(CilMethodInterpreter interpreter)
         {
             object resultObj;
             var auxiliaryObjects = interpreter.MidRepresentation.AuxiliaryObjects;
@@ -41,9 +41,8 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.ConstParameters
 
         public bool UpdateTable(CallMethodStatic callMethodStatic)
         {
-            var interpreter = callMethodStatic.Interpreter;
-            var arguments = interpreter.MidRepresentation.Vars.Arguments
-                .ToArray();
+            var interpreter = callMethodStatic.Interpreter as CilMethodInterpreter;
+            var arguments = interpreter.MidRepresentation.Vars.Arguments.ToArray();
             var result = false;
             var parameters = callMethodStatic.Parameters;
             for (var index = 0; index < parameters.Count; index++)

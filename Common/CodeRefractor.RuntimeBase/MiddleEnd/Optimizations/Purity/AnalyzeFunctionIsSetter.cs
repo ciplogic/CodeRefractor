@@ -11,12 +11,12 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Purity
 	[Optimization(Category = OptimizationCategories.Analysis)]
     public class AnalyzeFunctionIsSetter : ResultingGlobalOptimizationPass
     {
-        public static bool ReadProperty(MethodInterpreter intermediateCode)
+        public static bool ReadProperty(CilMethodInterpreter intermediateCode)
         {
             return intermediateCode.AnalyzeProperties.IsSetter;
         }
 
-        public override void OptimizeOperations(MethodInterpreter interpreter)
+        public override void OptimizeOperations(CilMethodInterpreter interpreter)
         {
             if (ReadProperty(interpreter))
                 return;
@@ -25,7 +25,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Purity
             interpreter.AnalyzeProperties.IsSetter = true;
         }
 
-        private static bool ComputeFunctionPurity(MethodInterpreter intermediateCode)
+        private static bool ComputeFunctionPurity(CilMethodInterpreter intermediateCode)
         {
             if (intermediateCode == null)
                 return false;

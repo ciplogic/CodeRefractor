@@ -20,7 +20,6 @@ using CodeRefractor.RuntimeBase.Backend.Optimizations.EscapeAndLowering;
 using CodeRefractor.RuntimeBase.Backend.Optimizations.Inliner;
 using CodeRefractor.RuntimeBase.Backend.Optimizations.SimpleDce;
 using CodeRefractor.RuntimeBase.Config;
-using CodeRefractor.RuntimeBase.MiddleEnd.Optimizations.SimpleDce;
 using CodeRefractor.RuntimeBase.Optimizations;
 
 #endregion

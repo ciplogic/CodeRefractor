@@ -22,7 +22,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
     [Optimization(Category = OptimizationCategories.Analysis)]
     internal class InFunctionLoweringVars : ResultingInFunctionOptimizationPass
     {
-        public override void OptimizeOperations(MethodInterpreter interpreter)
+        public override void OptimizeOperations(CilMethodInterpreter interpreter)
         {
             var candidateVariables = SetAllCandidateVariables(interpreter);
             var useDef = interpreter.MidRepresentation.UseDef;
@@ -62,7 +62,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
             return false;
         }
 
-        private static HashSet<LocalVariable> SetAllCandidateVariables(MethodInterpreter interpreter)
+        private static HashSet<LocalVariable> SetAllCandidateVariables(CilMethodInterpreter interpreter)
         {
             var candidateVariables = new HashSet<LocalVariable>();
             var midRepresentation = interpreter.MidRepresentation;

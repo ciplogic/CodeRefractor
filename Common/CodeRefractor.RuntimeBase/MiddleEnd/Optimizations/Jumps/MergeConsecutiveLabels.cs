@@ -14,7 +14,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Jumps
     [Optimization(Category = OptimizationCategories.UseDef)]
     public class MergeConsecutiveLabels : ResultingInFunctionOptimizationPass
     {
-        public override void OptimizeOperations(MethodInterpreter interpreter)
+        public override void OptimizeOperations(CilMethodInterpreter interpreter)
         {
             var useDef = interpreter.MidRepresentation.UseDef;
             var operations = useDef.GetLocalOperations();

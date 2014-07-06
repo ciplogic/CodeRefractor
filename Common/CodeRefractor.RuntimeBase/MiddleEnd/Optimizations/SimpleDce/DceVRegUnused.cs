@@ -15,7 +15,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.SimpleDce
 	[Optimization(Category = OptimizationCategories.DeadCodeElimination)]
     public class DceVRegUnused : ResultingInFunctionOptimizationPass
     {
-        public override void OptimizeOperations(MethodInterpreter interpreter)
+        public override void OptimizeOperations(CilMethodInterpreter interpreter)
         {
             var operations = interpreter.MidRepresentation.UseDef.GetLocalOperations();
             var vregConstants =

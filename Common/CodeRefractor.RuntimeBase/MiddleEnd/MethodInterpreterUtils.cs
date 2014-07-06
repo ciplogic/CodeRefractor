@@ -25,10 +25,10 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             return result;
         }
 
-        public static MethodBase GetGenericMethod(MethodBase method, TypeDescription declaringType)
+        public static MethodBase GetGenericMethod(MethodBase method, Type declaringType)
         {
             var genericParameters = new List<Type>();
-            var genericDeclaringType = GetGenericType(declaringType.ClrType);
+            var genericDeclaringType = GetGenericType(declaringType);
             genericParameters.AddRange(genericDeclaringType.GetGenericArguments());
             var parameters = method.GetParameters().Select(par => par.ParameterType).ToArray();
 

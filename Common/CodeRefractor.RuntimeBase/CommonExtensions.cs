@@ -13,7 +13,6 @@ using System.Runtime.InteropServices;
 using System.Text;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.MiddleEnd.SimpleOperations;
-using CodeRefractor.Runtime;
 using CodeRefractor.Runtime.Annotations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.Shared;
@@ -163,11 +162,6 @@ namespace CodeRefractor.RuntimeBase
             return parameterInfos.Select(
                 param =>
                     String.Format("{0} {1}", param.ParameterType.ToCppName(), param.Name));
-        }
-
-        public static Type ReversedType(this Type type, CrRuntimeLibrary crRuntime)
-        {
-            return crRuntime.GetReverseType(type) ?? type;
         }
 
         public static bool IsBranchOperation(this LocalOperation operation, bool andLabels = true)

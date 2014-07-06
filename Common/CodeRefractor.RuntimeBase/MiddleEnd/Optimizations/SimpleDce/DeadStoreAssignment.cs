@@ -27,7 +27,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.SimpleDce
             OperationKind.UnaryOperator
         };
 
-        public override void OptimizeOperations(MethodInterpreter interpreter)
+        public override void OptimizeOperations(CilMethodInterpreter interpreter)
         {
             var useDef = interpreter.MidRepresentation.UseDef;
             var localOperations = useDef.GetLocalOperations();

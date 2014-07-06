@@ -18,7 +18,7 @@ namespace CodeRefractor.RuntimeBase.Backend.ComputeClosure
 {
     public static class MethodInterpreterCodeWriter
     {
-        public static string WriteMethodCode(MethodInterpreter interpreter, TypeDescriptionTable typeTable, ClosureEntities closureEntities)
+        public static string WriteMethodCode(CilMethodInterpreter interpreter, TypeDescriptionTable typeTable, ClosureEntities closureEntities)
         {
             return CppMethodCodeWriter.WriteCode(interpreter, typeTable, closureEntities);
         }
@@ -34,7 +34,7 @@ namespace CodeRefractor.RuntimeBase.Backend.ComputeClosure
             return sb.ToString();
         }
 
-        internal static string WritePInvokeMethodCode(MethodInterpreter interpreter, ClosureEntities crRuntime)
+        internal static string WritePInvokeMethodCode(PlatformInvokeMethod interpreter, ClosureEntities crRuntime)
         {
             return interpreter.WritePlatformInvokeMethod(crRuntime);
         }
@@ -45,7 +45,7 @@ namespace CodeRefractor.RuntimeBase.Backend.ComputeClosure
         }
 
         public static bool ApplyLocalOptimizations(IEnumerable<ResultingOptimizationPass> optimizationPasses,
-            MethodInterpreter interpreter)
+            CilMethodInterpreter interpreter)
         {
             if (optimizationPasses == null)
                 return false;

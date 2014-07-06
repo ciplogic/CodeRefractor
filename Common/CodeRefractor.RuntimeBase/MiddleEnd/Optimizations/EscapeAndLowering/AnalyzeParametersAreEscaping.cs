@@ -19,7 +19,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
     [Optimization(Category = OptimizationCategories.Analysis)]
     internal class AnalyzeParametersAreEscaping : ResultingGlobalOptimizationPass
     {
-        public override void OptimizeOperations(MethodInterpreter interpreter)
+        public override void OptimizeOperations(CilMethodInterpreter interpreter)
         {
             if (interpreter.Kind != MethodKind.Default)
                 return;
@@ -33,7 +33,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
             CheckForChanges(finalSnapshot, originalSnapshot);
         }
 
-        private static bool ComputeEscapeTable(MethodInterpreter intermediateCode, LocalOperation[] operations,
+        private static bool ComputeEscapeTable(CilMethodInterpreter intermediateCode, LocalOperation[] operations,
             MethodInterpreter interpreter)
         {
             var argEscaping = ComputeEscapingArgList(intermediateCode.MidRepresentation, operations, Runtime);

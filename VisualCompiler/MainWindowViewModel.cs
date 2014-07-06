@@ -4,12 +4,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using CodeRefactor.OpenRuntime;
+using CodeRefractor.Backend.ProgramWideOptimizations.Virtual;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.CompilerBackend.ProgramWideOptimizations.ConstParameters;
-using CodeRefractor.CompilerBackend.ProgramWideOptimizations.Virtual;
+using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Optimizations.Util;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
-using CodeRefractor.Runtime;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Backend.ProgramWideOptimizations;
 using CodeRefractor.RuntimeBase.Config;
@@ -120,8 +120,8 @@ namespace VisualCompiler
                     intermediateOutput += "// Provided By Framework     \n\n";
                     continue;
                 }
-
-                foreach (var op in opcode.Value.MidRepresentation.LocalOperations)
+                var cilInterpreter = (CilMethodInterpreter)opcode.Value;
+                foreach (var op in cilInterpreter.MidRepresentation.LocalOperations)
                 {
                     var oper = string.Format("{1}\t({0})", op.Kind, op); ;
                     intermediateOutput += "     " + oper + "\n";

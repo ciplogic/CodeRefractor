@@ -14,7 +14,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.Co
     [Optimization(Category = OptimizationCategories.Propagation)]
     internal class PropagationVariables : BlockOptimizationPass
     {
-        public override bool OptimizeBlock(MethodInterpreter midRepresentation, int startRange, int endRange,
+        public override bool OptimizeBlock(CilMethodInterpreter midRepresentation, int startRange, int endRange,
             LocalOperation[] operations)
         {
             var instructionRange = GetInstructionRange(operations, startRange, endRange);

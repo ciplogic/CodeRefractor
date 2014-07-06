@@ -9,7 +9,6 @@ using CodeRefractor.CodeWriter.Linker;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
-using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.Util;
 
 #endregion
@@ -63,10 +62,11 @@ namespace CodeRefractor.CodeWriter.Platform
 
         private static string WritePInvokeDefinition(this MethodInterpreter methodBase, string methodDll)
         {
-            var retType = methodBase.Method.GetReturnType().ToCppMangling();
+            var platformInterpreter = (PlatformInvokeMethod) methodBase;
+            var retType = platformInterpreter.Method.GetReturnType().ToCppMangling();
             var sb = new StringBuilder();
             var arguments = methodBase.Method.GetArgumentsAsText();
-            var callConvention = methodBase.Description.CallingConvention;
+            var callConvention = platformInterpreter.CallingConvention;
             var callConventionStr = string.Empty;
             switch (callConvention)
             {
@@ -98,18 +98,18 @@ namespace CodeRefractor.CodeWriter.Platform
             return sb.ToString();
         }
 
-        public static string WritePlatformInvokeMethod(this MethodInterpreter platformInvoke, ClosureEntities crRuntime)
+        public static string WritePlatformInvokeMethod(this PlatformInvokeMethod platformInvoke, ClosureEntities crRuntime)
         {
-            var methodId = Import(platformInvoke.Description.LibraryName,
-                platformInvoke.Description.MethodName,
-                platformInvoke.Description.CallingConvention,
-                platformInvoke.Description.EntryPoint);
+            var methodId = Import(platformInvoke.LibraryName,
+                platformInvoke.MethodName,
+                platformInvoke.CallingConvention,
+                platformInvoke.EntryPoint);
 
             var sb = new StringBuilder();
 
             sb.AppendFormat(platformInvoke.WritePInvokeDefinition(methodId));
 
-            sb.Append(platformInvoke.Method.WriteHeaderMethod(crRuntime, writeEndColon: false));
+            sb.Append(platformInvoke.Method.WriteHeaderMethod(crRuntime, false));
             sb.AppendLine("{");
             var identifierValues = platformInvoke.Method.GetParameters();
             var argumentsCall = String.Join(", ", identifierValues.Select(p => p.Name));

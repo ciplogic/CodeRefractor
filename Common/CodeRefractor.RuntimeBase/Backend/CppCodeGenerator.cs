@@ -6,8 +6,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using CodeRefractor.Analyze;
 using CodeRefractor.ClosureCompute;
-using CodeRefractor.ClosureCompute.Resolvers;
 using CodeRefractor.CodeWriter.BasicOperations;
 using CodeRefractor.CodeWriter.Linker;
 using CodeRefractor.CodeWriter.Platform;
@@ -15,16 +15,16 @@ using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.SimpleOperations.ConstTable;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 using CodeRefractor.Runtime.Annotations;
+using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.Backend.ComputeClosure;
-using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.Shared;
 using CodeRefractor.RuntimeBase.TypeInfoWriter;
 using CodeRefractor.Util;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.Backend
+namespace CodeRefractor.Backend
 {
     public static class CppCodeGenerator
     {
@@ -57,26 +57,22 @@ namespace CodeRefractor.RuntimeBase.Backend
 
         private static void WriteCppMethods(List<MethodInterpreter> closure, StringBuilder sb, ClosureEntities crRuntime)
         {
-           
             var cppMethods = closure
                 .Where(m => m.Kind == MethodKind.RuntimeCppMethod)
                 .ToArray();
 
             var methodInterpreter = cppMethods.FirstOrDefault();
-            if (methodInterpreter != null)
+            if (methodInterpreter == null) return;
+            foreach (var interpreter in cppMethods)
             {
-                ResolveRuntimeMethod resolver = new ResolveRuntimeMethod(methodInterpreter.DeclaringType.ClrType.Assembly);
+                var cppInterpreter = (CppMethodInterpreter) interpreter;
+                var runtimeLibrary = cppInterpreter.CppRepresentation;
+                var methodDeclaration = interpreter.Method.GenerateKey(crRuntime);
+                if (LinkingData.SetInclude(runtimeLibrary.Header))
+                    sb.AppendFormat("#include \"{0}\"", runtimeLibrary.Header).AppendLine();
 
-                foreach (var interpreter in cppMethods)
-                {
-                    var runtimeLibrary = interpreter.CppRepresentation;
-                    var methodDeclaration = interpreter.Method.GenerateKey(crRuntime);
-                    if (LinkingData.SetInclude(runtimeLibrary.Header))
-                        sb.AppendFormat("#include \"{0}\"", runtimeLibrary.Header).AppendLine();
-
-                    sb.Append(methodDeclaration);
-                    sb.AppendFormat("{{ {0} }}", runtimeLibrary.Source).AppendLine();
-                }
+                sb.Append(methodDeclaration);
+                sb.AppendFormat("{{ {0} }}", runtimeLibrary.Source).AppendLine();
             }
         }
 
@@ -109,12 +105,12 @@ namespace CodeRefractor.RuntimeBase.Backend
         private static void WriteClosureStructBodies(Type[] typeDatas, StringBuilder sb, ClosureEntities crRuntime)
         {
             //Remove Mapped Types in favour of their resolved types
-            typeDatas = typeDatas.Where(type => !typeDatas.Any(t => t.GetMappedType(crRuntime) == type && t != type)).Except(new []{(typeof(Int32))}).ToArray();// typeDatas.ToList().Except(typeDatas.Where(y => y.Name == "String")).ToArray(); // This appears sometimes, why ?
+            typeDatas = typeDatas.Where(type => !typeDatas.Any(t => t.GetMappedType(crRuntime) == type && t != type)).Except(new[] { (typeof(Int32)) }).ToArray();// typeDatas.ToList().Except(typeDatas.Where(y => y.Name == "String")).ToArray(); // This appears sometimes, why ?
 
             foreach (var typeData in typeDatas)
             {
                 var mappedType = typeData.GetMappedType(crRuntime);
-                if (ShouldSkipType(typeData)) 
+                if (ShouldSkipType(typeData))
                     continue;
                 if (!mappedType.IsGenericType)
                     sb.AppendFormat("struct {0}; ", mappedType.ToCppMangling()).AppendLine();
@@ -129,18 +125,18 @@ namespace CodeRefractor.RuntimeBase.Backend
             var sortedTypeData = new List<Type>();
             sortedTypeData.Add(typeof(System.Object));
 
-           
+
             typeDataList.Remove(typeof(Object));
-           
+
             sortedTypeData.Add(typeof(System.ValueType));
-          
+
 
             if (typeDataList.Contains(typeof(System.ValueType)))
                 typeDataList.Remove(typeof(System.ValueType));
-         
-           
-           
-         
+
+
+
+
 
             while (typeDataList.Count > 0)
             {
@@ -157,7 +153,7 @@ namespace CodeRefractor.RuntimeBase.Backend
                     if (typeDataList.Count == 0)
                         break;
                 }
-               
+
             }
 
 
@@ -173,7 +169,7 @@ namespace CodeRefractor.RuntimeBase.Backend
             foreach (var typeData in sortedTypeData)
             {
                 var typeCode = Type.GetTypeCode(typeData);
-              
+
                 if (DelegateManager.IsTypeDelegate(typeData))
                     continue;
                 var type = typeData.GetReversedMappedType(crRuntime);
@@ -254,7 +250,7 @@ namespace CodeRefractor.RuntimeBase.Backend
             {
                 if (interpreter.Kind != MethodKind.PlatformInvoke)
                     continue;
-                sb.AppendLine(MethodInterpreterCodeWriter.WritePInvokeMethodCode(interpreter, closureEntities));
+                sb.AppendLine(MethodInterpreterCodeWriter.WritePInvokeMethodCode((PlatformInvokeMethod)interpreter, closureEntities));
             }
 
             sb.AppendLine("///---Begin closure code --- ");
@@ -265,7 +261,7 @@ namespace CodeRefractor.RuntimeBase.Backend
 
                 if (interpreter.Method.IsAbstract)
                     continue;
-                sb.AppendLine(MethodInterpreterCodeWriter.WriteMethodCode(interpreter, typeTable, closureEntities));
+                sb.AppendLine(MethodInterpreterCodeWriter.WriteMethodCode((CilMethodInterpreter)interpreter, typeTable, closureEntities));
             }
             sb.AppendLine("///---End closure code --- ");
         }

@@ -15,7 +15,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.RedundantExpressions
 	[Optimization(Category = OptimizationCategories.CommonSubexpressionsElimination)]
 	internal class PrecomputeRepeatedUnaryOperators : BlockOptimizationPass
     {
-        public override bool OptimizeBlock(MethodInterpreter midRepresentation, int startRange, int endRange,
+        public override bool OptimizeBlock(CilMethodInterpreter midRepresentation, int startRange, int endRange,
             LocalOperation[] operations)
         {
             var localOperations = midRepresentation.MidRepresentation.LocalOperations;
@@ -37,7 +37,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.RedundantExpressions
             return false;
         }
 
-        private static void ApplyOptimization(MethodInterpreter midRepresentation, int i, int j)
+        private static void ApplyOptimization(CilMethodInterpreter midRepresentation, int i, int j)
         {
             var localOps = midRepresentation.MidRepresentation.LocalOperations;
             var firstOperator = localOps.GetUnaryOperator(i);

@@ -50,7 +50,7 @@ namespace CodeRefractor.CodeWriter.Linker
 
         public static Dictionary<int, bool> EscapingParameterData(this MethodBase info, ClosureEntities crRuntime)
         {
-            var interpreter = info.GetInterpreter(crRuntime);
+            var interpreter = info.GetInterpreter(crRuntime) as CilMethodInterpreter;
             if (interpreter == null)
                 return null;
             var calledMethod = interpreter.MidRepresentation;

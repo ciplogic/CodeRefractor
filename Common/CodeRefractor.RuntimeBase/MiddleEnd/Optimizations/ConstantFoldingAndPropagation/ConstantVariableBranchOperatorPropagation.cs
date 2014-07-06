@@ -15,7 +15,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation
     [Optimization(Category = OptimizationCategories.Constants)]
     public class ConstantVariableBranchOperatorPropagation : ConstantVariablePropagationBase
     {
-        public override void OptimizeOperations(MethodInterpreter interpreter)
+        public override void OptimizeOperations(CilMethodInterpreter interpreter)
         {
             var useDef = interpreter.MidRepresentation.UseDef;
             var operations = useDef.GetLocalOperations();
@@ -35,7 +35,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation
             }
         }
 
-        private static void ApplyChange(MethodInterpreter interpreter, ConstValue constValue, BranchOperator destAssignment,
+        private static void ApplyChange(CilMethodInterpreter interpreter, ConstValue constValue, BranchOperator destAssignment,
             int i)
         {
             var expressionValue = Convert.ToInt32(constValue.Value) != 0;

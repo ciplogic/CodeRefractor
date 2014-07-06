@@ -16,7 +16,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Purity
 	[Optimization(Category = OptimizationCategories.Purity)]
     public class RemoveDeadPureFunctionCalls : ResultingInFunctionOptimizationPass
     {
-        public override void OptimizeOperations(MethodInterpreter methodInterpreter)
+        public override void OptimizeOperations(CilMethodInterpreter methodInterpreter)
         {
             var useDef = methodInterpreter.MidRepresentation.UseDef;
             var localOperations = useDef.GetLocalOperations();

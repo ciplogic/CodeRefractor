@@ -13,12 +13,12 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Purity
 	[Optimization(Category = OptimizationCategories.Analysis)]
     public class AnalyzeFunctionNoStaticSideEffects : ResultingGlobalOptimizationPass
     {
-        public static bool ReadPurity(MethodInterpreter intermediateCode)
+        public static bool ReadPurity(CilMethodInterpreter intermediateCode)
         {
             return intermediateCode.AnalyzeProperties.IsReadOnly;
         }
 
-        public override void OptimizeOperations(MethodInterpreter interpreter)
+        public override void OptimizeOperations(CilMethodInterpreter interpreter)
         {
             if (ReadPurity(interpreter))
                 return;
@@ -29,7 +29,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Purity
             Result = true;
         }
 
-        public static bool ComputeFunctionProperty(MethodInterpreter intermediateCode)
+        public static bool ComputeFunctionProperty(CilMethodInterpreter intermediateCode)
         {
             if (intermediateCode == null)
                 return false;

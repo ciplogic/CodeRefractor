@@ -16,10 +16,10 @@ namespace CodeRefractor.FrontEnd
 {
     internal class MethodMidRepresentationBuilder
     {
-        private readonly MethodInterpreter _methodInterpreter;
+        private readonly CilMethodInterpreter _methodInterpreter;
         private readonly MethodBase _method;
 
-        public MethodMidRepresentationBuilder(MethodInterpreter methodInterpreter, MethodBase method)
+        public MethodMidRepresentationBuilder(CilMethodInterpreter methodInterpreter, MethodBase method)
         {
             _methodInterpreter = methodInterpreter;
             _method = method;

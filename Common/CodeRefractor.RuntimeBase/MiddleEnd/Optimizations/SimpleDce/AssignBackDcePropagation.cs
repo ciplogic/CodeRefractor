@@ -22,7 +22,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.SimpleDce
 	[Optimization(Category = OptimizationCategories.DeadCodeElimination)]
     internal class DceNewObjectOrArray : ResultingInFunctionOptimizationPass
     {
-        public override void OptimizeOperations(MethodInterpreter interpreter)
+        public override void OptimizeOperations(CilMethodInterpreter interpreter)
         {
             var dictionary = new Dictionary<LocalVariable, int>();
             var useDef = interpreter.MidRepresentation.UseDef;
