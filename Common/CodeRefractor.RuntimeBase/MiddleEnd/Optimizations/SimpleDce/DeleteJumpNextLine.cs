@@ -18,7 +18,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.SimpleDce
         public override void OptimizeOperations(CilMethodInterpreter interpreter)
         {
             var operations = interpreter.MidRepresentation.UseDef.GetLocalOperations();
-            var labelTable = interpreter.GetLabelTable();
+            var labelTable = interpreter.MidRepresentation.UseDef.GetLabelTable(); 
             var toRemove = new List<int>();
             foreach (var labelInfo in labelTable)
             {

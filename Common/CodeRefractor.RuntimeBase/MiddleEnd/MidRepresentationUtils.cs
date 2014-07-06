@@ -1,3 +1,8 @@
+using System.Collections.Generic;
+using System.Reflection;
+using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
+using CodeRefractor.RuntimeBase.MiddleEnd;
+
 namespace CodeRefractor.MiddleEnd
 {
     public static class MidRepresentationUtils
@@ -23,6 +28,26 @@ namespace CodeRefractor.MiddleEnd
         {
             var additionalData = intermediateCode.AuxiliaryObjects;
             additionalData[itemName] = valueToSet;
+        }
+
+
+        public static bool[] GetUsedArguments(MethodInterpreter interpreter)
+        {
+            var argsCount = interpreter.Method.GetParameters().Length;
+            if (interpreter.Method is ConstructorInfo || !interpreter.Method.IsStatic)
+                argsCount++;
+            var result = new bool[argsCount];
+            var cilMethodInterpreter = interpreter as CilMethodInterpreter;
+            if (cilMethodInterpreter == null)
+                return result;
+            var arguments = cilMethodInterpreter.MidRepresentation.Vars.Arguments;
+            var analyzeData = cilMethodInterpreter.AnalyzeProperties;
+            for (var index = 0; index < arguments.Count; index++)
+            {
+                var argument = arguments[index];
+                result[index] = analyzeData.GetVariableData(argument) != EscapingMode.Unused;
+            }
+            return result;
         }
     }
 }

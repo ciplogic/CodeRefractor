@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using CodeRefractor.FrontEnd;
@@ -30,15 +29,12 @@ namespace CodeRefractor.MiddleEnd
                     );
             if (Method.GetMethodBody() == null)
                 return;
+
+            MidRepresentation.Vars.SetupArguments(Method);
+            MidRepresentation.Vars.SetupLocalVariables(Method);
             var midRepresentationBuilder = new MethodMidRepresentationBuilder(this, Method);
             midRepresentationBuilder.ProcessInstructions();
             Interpreted = true;
-        }
-
-
-        public Dictionary<int, int> GetLabelTable()
-        {
-            return MidRepresentation.UseDef.GetLabelTable();
         }
     }
 }

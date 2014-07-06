@@ -1,6 +1,7 @@
 ﻿#region Usings
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -174,12 +175,8 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             sb.Append("(");
             var pos = 0;
             var isFirst = true;
-            var cilInterpreter = operationStatic.Interpreter as CilMethodInterpreter;
-
-            var argumentUsages =
-                operationStatic.Interpreter.AnalyzeProperties.GetUsedArguments(
-                    cilInterpreter.MidRepresentation.Vars.Arguments);
-
+            var argumentUsages = MidRepresentationUtils.GetUsedArguments(operationStatic.Interpreter);
+            
             var argumentTypes = operationStatic.Info.GetMethodArgumentTypes();
             for (var index = 0; index < identifierValues.Count; index++)
             {

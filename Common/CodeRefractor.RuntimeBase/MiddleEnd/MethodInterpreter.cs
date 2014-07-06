@@ -20,8 +20,6 @@ namespace CodeRefractor.MiddleEnd
         public readonly AnalyzeProperties AnalyzeProperties = new AnalyzeProperties();
 
 
-        public bool Interpreted { get; set; }
-
         public MethodInterpreter(MethodBase method)
         {
             Method = method;

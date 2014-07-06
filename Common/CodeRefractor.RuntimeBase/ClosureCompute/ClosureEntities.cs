@@ -8,6 +8,10 @@ using System.Text;
 using CodeRefractor.Backend;
 using CodeRefractor.ClosureCompute.Steps;
 using CodeRefractor.MiddleEnd;
+using CodeRefractor.MiddleEnd.Optimizations.Util;
+using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
+using CodeRefractor.RuntimeBase.Backend.ComputeClosure;
+using CodeRefractor.RuntimeBase.Config;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.TypeInfoWriter;
 
@@ -100,10 +104,10 @@ namespace CodeRefractor.ClosureCompute
         {
             var entryInterpreter = ResolveMethod(EntryPoint);
             var usedTypes = MappedTypes.Values.ToList();
-            var typeTable=new TypeDescriptionTable(usedTypes);
+            var typeTable = new TypeDescriptionTable(usedTypes);
             var virtualMethodTable = new VirtualMethodTable(typeTable);
             return CppCodeGenerator.GenerateSourceStringBuilder(entryInterpreter, usedTypes,
-                MethodImplementations.Values.ToList(), virtualMethodTable,  this);
+                MethodImplementations.Values.ToList(), virtualMethodTable, this);
         }
 
         public Type ResolveType(Type type)
@@ -136,7 +140,24 @@ namespace CodeRefractor.ClosureCompute
 
         public void OptimizeClosure()
         {
-            
+            var level = new OptimizationLevels();
+
+            var optimizations = level.BuildOptimizationPasses1();
+            OptimizationLevelBase.UpdateOptimizationsFromCategories(optimizations); 
+            var cilMethods = MethodImplementations.Values
+                .Where(m => m.Kind == MethodKind.Default)
+                .Cast<CilMethodInterpreter>()
+                .ToArray();
+            var doOptimize = true;
+            while (doOptimize)
+            {
+                doOptimize = false;
+                foreach (var cilMethod in cilMethods)
+                {
+                    doOptimize |= MethodInterpreterCodeWriter.ApplyLocalOptimizations(optimizations, cilMethod);
+                }
+            }
         }
     }
+
 }
