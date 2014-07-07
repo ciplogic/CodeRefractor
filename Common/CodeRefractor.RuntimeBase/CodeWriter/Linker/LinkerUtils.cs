@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.MiddleEnd;
+using CodeRefractor.MiddleEnd.Interpreters;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 using CodeRefractor.Runtime;

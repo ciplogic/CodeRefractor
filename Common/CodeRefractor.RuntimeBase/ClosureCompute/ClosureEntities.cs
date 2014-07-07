@@ -8,6 +8,8 @@ using System.Text;
 using CodeRefractor.Backend;
 using CodeRefractor.ClosureCompute.Steps;
 using CodeRefractor.MiddleEnd;
+using CodeRefractor.MiddleEnd.Interpreters;
+using CodeRefractor.MiddleEnd.Optimizations.Common;
 using CodeRefractor.MiddleEnd.Optimizations.Util;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 using CodeRefractor.RuntimeBase.Backend.ComputeClosure;
@@ -143,11 +145,13 @@ namespace CodeRefractor.ClosureCompute
             var level = new OptimizationLevels();
 
             var optimizations = level.BuildOptimizationPasses1();
+            level.BuildOptimizationPasses2();
             OptimizationLevelBase.UpdateOptimizationsFromCategories(optimizations); 
             var cilMethods = MethodImplementations.Values
-                .Where(m => m.Kind == MethodKind.Default)
+                .Where(m => m.Kind == MethodKind.CilInstructions)
                 .Cast<CilMethodInterpreter>()
                 .ToArray();
+            ResultingOptimizationPass.Closure = this;
             var doOptimize = true;
             while (doOptimize)
             {

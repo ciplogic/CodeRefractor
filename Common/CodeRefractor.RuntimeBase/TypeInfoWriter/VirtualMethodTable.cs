@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using CodeRefractor.MiddleEnd;
+using CodeRefractor.MiddleEnd.Interpreters;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 
@@ -40,7 +41,7 @@ namespace CodeRefractor.RuntimeBase.TypeInfoWriter
             foreach (var interpreter in methodClosure)
             {
                 var key = interpreter.Key;
-                if (key.Interpreter.Kind != MethodKind.Default)
+                if (key.Interpreter.Kind != MethodKind.CilInstructions)
                     continue;
                 var methodInKey = key.Interpreter.Method;
                 if (methodInKey.Name != method.Name)

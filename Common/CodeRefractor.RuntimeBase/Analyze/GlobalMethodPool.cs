@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.MiddleEnd;
+using CodeRefractor.MiddleEnd.Interpreters;
 using CodeRefractor.Runtime;
 using CodeRefractor.Runtime.Annotations;
 using CodeRefractor.RuntimeBase;

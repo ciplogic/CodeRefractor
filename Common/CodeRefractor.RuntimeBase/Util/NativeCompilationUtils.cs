@@ -72,14 +72,23 @@ namespace CodeRefractor.Util
             }
         }
 
+        public static string GetFullFileName(this string fileName)
+        {
+            var fileInfo = new FileInfo(fileName);
+
+            return fileInfo.FullName; 
+            
+        }
+
         public static void CompileAppToNativeExe(string fileName, string applicationNativeExe)
         {
             var fileInfo = new FileInfo(fileName);
+
+            fileName = fileInfo.FullName; 
             if (!fileInfo.Exists)
             {
                 throw new InvalidDataException(string.Format("Filename: {0} does not exist!", fileName));
             }
-            fileName = fileInfo.FullName;
             var pathToGpp = CompilerOptions.PathOfCompilerTools + CompilerOptions.CompilerExe;
 
             var commandLineFormat = "{0} " + CompilerOptions.OptimizationFlags + " {2} -o {1}";

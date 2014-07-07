@@ -46,8 +46,8 @@ namespace CodeRefractor.Compiler
             var sb = closureEntities.BuildFullSourceCode();
             var end = Environment.TickCount - start;
             Console.WriteLine("Compilation time: {0} ms", end);
-
-            sb.ToFile(commandLineParse.OutputCpp);
+            var fullPath = commandLineParse.OutputCpp.GetFullFileName();
+            sb.ToFile(fullPath);
             NativeCompilationUtils.CompileAppToNativeExe(commandLineParse.OutputCpp,
                                                          commandLineParse.ApplicationNativeExe);
         }

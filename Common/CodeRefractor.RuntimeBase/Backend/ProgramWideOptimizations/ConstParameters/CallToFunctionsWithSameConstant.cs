@@ -21,7 +21,7 @@ namespace CodeRefractor.CompilerBackend.ProgramWideOptimizations.ConstParameters
         protected override void DoOptimize(ClosureEntities closure)
         {
             var methodInterpreters = closure.MethodImplementations.Values
-                .Where(m => m.Kind == MethodKind.Default)
+                .Where(m => m.Kind == MethodKind.CilInstructions)
                 .Cast<CilMethodInterpreter>()
                 .ToList();
             var updateHappen = false;
@@ -63,7 +63,7 @@ namespace CodeRefractor.CompilerBackend.ProgramWideOptimizations.ConstParameters
             {
                 var op = allOps[callOp];
                 var methodData = (CallMethodStatic) op;
-                if (methodData.Interpreter.Kind != MethodKind.Default)
+                if (methodData.Interpreter.Kind != MethodKind.CilInstructions)
                     continue;
                 var callingInterpreter = (CilMethodInterpreter)methodData.Interpreter; 
                 var interpreterData = ConstantParametersData.GetInterpreterData(callingInterpreter);

@@ -1,5 +1,6 @@
 ﻿#region Usings
 
+using CodeRefractor.MiddleEnd.Interpreters;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;

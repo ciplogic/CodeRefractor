@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Reflection;
+using CodeRefractor.MiddleEnd.Interpreters;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 
@@ -37,11 +38,8 @@ namespace CodeRefractor.MiddleEnd
             if (interpreter.Method is ConstructorInfo || !interpreter.Method.IsStatic)
                 argsCount++;
             var result = new bool[argsCount];
-            var cilMethodInterpreter = interpreter as CilMethodInterpreter;
-            if (cilMethodInterpreter == null)
-                return result;
-            var arguments = cilMethodInterpreter.MidRepresentation.Vars.Arguments;
-            var analyzeData = cilMethodInterpreter.AnalyzeProperties;
+            var analyzeData = interpreter.AnalyzeProperties;
+            var arguments = analyzeData.Arguments;
             for (var index = 0; index < arguments.Count; index++)
             {
                 var argument = arguments[index];

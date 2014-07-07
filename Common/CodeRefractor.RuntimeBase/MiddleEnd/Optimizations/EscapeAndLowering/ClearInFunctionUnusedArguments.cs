@@ -20,7 +20,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.EscapeAndLowering
         {
             var midRepresentation = interpreter.MidRepresentation;
             var useDef = midRepresentation.UseDef;
-            var arguments = midRepresentation.Vars.Arguments;
+            var arguments = interpreter.AnalyzeProperties.Arguments;
             if (arguments.Count == 0)
                 return;
             var properties = interpreter.AnalyzeProperties;

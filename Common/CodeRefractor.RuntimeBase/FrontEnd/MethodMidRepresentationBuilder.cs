@@ -40,8 +40,7 @@ namespace CodeRefractor.FrontEnd
             }
             //   Ensure.IsTrue(evaluator.Count == 0, "Stack not empty!");
             var analyzeProperties = _methodInterpreter.AnalyzeProperties;
-            analyzeProperties.Setup(_methodInterpreter.MidRepresentation.Vars.Arguments,
-                _methodInterpreter.MidRepresentation.Vars.VirtRegs,
+            analyzeProperties.Setup(_methodInterpreter.MidRepresentation.Vars.VirtRegs,
                 _methodInterpreter.MidRepresentation.Vars.LocalVars);
         }
 
@@ -349,7 +348,7 @@ namespace CodeRefractor.FrontEnd
             return false;
         }
 
-        private static bool HandleStores(string opcodeStr, Instruction instruction,
+        private bool HandleStores(string opcodeStr, Instruction instruction,
             MetaMidRepresentationOperationFactory operationFactory)
         {
             if (opcodeStr == "stloc.s" || opcodeStr == "stloc")
@@ -368,7 +367,7 @@ namespace CodeRefractor.FrontEnd
             {
                 var parameter = (ParameterReference) instruction.Operand;
                 var pushedIntValue = parameter.Index;
-                operationFactory.CopyStackIntoArgument(pushedIntValue);
+                operationFactory.CopyStackIntoArgument(pushedIntValue, _methodInterpreter.AnalyzeProperties);
                 return true;
             }
 
@@ -388,7 +387,7 @@ namespace CodeRefractor.FrontEnd
             return false;
         }
 
-        private static bool HandleLoads(string opcodeStr, Instruction instruction,
+        private bool HandleLoads(string opcodeStr, Instruction instruction,
             MetaMidRepresentationOperationFactory operationFactory)
         {
             if (opcodeStr == "ldelem.ref")
@@ -469,14 +468,14 @@ namespace CodeRefractor.FrontEnd
             }
             if (opcodeStr == "ldarg.s")
             {
-                operationFactory.LoadArgument(GetParameterIndex(instruction));
+                operationFactory.LoadArgument(GetParameterIndex(instruction), _methodInterpreter.AnalyzeProperties);
                 return true;
             }
 
             if (opcodeStr.StartsWith("ldarg."))
             {
                 var pushedIntValue = opcodeStr.Remove(0, "ldarg.".Length).ToInt();
-                operationFactory.LoadArgument(pushedIntValue);
+                operationFactory.LoadArgument(pushedIntValue, _methodInterpreter.AnalyzeProperties);
                 return true;
             }
 

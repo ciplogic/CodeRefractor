@@ -1,5 +1,6 @@
 #region Usings
 
+using CodeRefractor.ClosureCompute;
 using CodeRefractor.RuntimeBase.Optimizations;
 
 #endregion
@@ -14,6 +15,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Common
 
         private bool _result;
 
+        public static ClosureEntities Closure { get; set; }
         protected ResultingOptimizationPass(OptimizationKind kind)
         {
             Kind = kind;

@@ -2,6 +2,7 @@
 
 using System.Reflection;
 using CodeRefractor.MiddleEnd;
+using CodeRefractor.MiddleEnd.Interpreters;
 
 #endregion
 

@@ -41,8 +41,8 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.ConstParameters
 
         public bool UpdateTable(CallMethodStatic callMethodStatic)
         {
-            var interpreter = callMethodStatic.Interpreter as CilMethodInterpreter;
-            var arguments = interpreter.MidRepresentation.Vars.Arguments.ToArray();
+            var interpreter = callMethodStatic.Interpreter;
+            var arguments = interpreter.AnalyzeProperties.Arguments.ToArray();
             var result = false;
             var parameters = callMethodStatic.Parameters;
             for (var index = 0; index < parameters.Count; index++)

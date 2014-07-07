@@ -18,7 +18,7 @@ namespace CodeRefractor.ClosureCompute.Steps
         {
             var methods = closureEntities.MethodImplementations.Values;
             var methdosToAdd = new HashSet<MethodBase>();
-            foreach (var methodBase in methods.Where(m => m.Kind == MethodKind.Default))
+            foreach (var methodBase in methods.Where(m => m.Kind == MethodKind.CilInstructions))
             {
                 var method = (CilMethodInterpreter) methodBase;
                 var useDef = method.MidRepresentation.UseDef;

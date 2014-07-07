@@ -27,10 +27,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
                 var opCall = localOperations[call];
                 var methodData = (CallMethodStatic) opCall;
                 var properties = methodData.Interpreter.AnalyzeProperties;
-                var callAsCilInterpreter = methodData.Interpreter as CilMethodInterpreter;
-                if(callAsCilInterpreter==null)
-                    continue;
-                var argumentUsages = properties.GetUsedArguments(callAsCilInterpreter.MidRepresentation.Vars.Arguments);
+                var argumentUsages = properties.GetUsedArguments(methodData.Interpreter.AnalyzeProperties.Arguments);
                 if (!argumentUsages.Any(it => !it))
                     continue;
                 for (var index = 0; index < argumentUsages.Length; index++)

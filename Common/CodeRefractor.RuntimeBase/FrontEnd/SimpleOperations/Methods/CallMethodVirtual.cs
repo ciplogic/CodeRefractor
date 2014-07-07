@@ -1,6 +1,7 @@
 #region Uses
 
 using System.Collections.Generic;
+using CodeRefractor.MiddleEnd.Interpreters;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 
 #endregion

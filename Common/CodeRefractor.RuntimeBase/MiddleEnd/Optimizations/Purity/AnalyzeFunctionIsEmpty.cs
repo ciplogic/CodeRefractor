@@ -11,10 +11,6 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Purity
 	[Optimization(Category = OptimizationCategories.Analysis)]
     public class AnalyzeFunctionIsEmpty : ResultingGlobalOptimizationPass
     {
-        public static bool ReadProperty(CilMethodInterpreter intermediateCode)
-        {
-            return intermediateCode.AnalyzeProperties.IsEmpty;
-        }
 
         public override void OptimizeOperations(CilMethodInterpreter interpreter)
         {
@@ -25,6 +21,11 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Purity
             interpreter.AnalyzeProperties.IsEmpty = isEmtpy;
             if (previous != isEmtpy)
                 Result = true;
+        }
+
+        public static bool ReadProperty(CilMethodInterpreter intermediateCode)
+        {
+            return intermediateCode.AnalyzeProperties.IsEmpty;
         }
 
         private static bool ComputeProperty(CilMethodInterpreter intermediateCode)

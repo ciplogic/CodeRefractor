@@ -115,7 +115,7 @@ namespace VisualCompiler
             {
                 intermediateOutput += " " + opcode.Key + ": \n";
 
-                if (opcode.Value.Kind != MethodKind.Default)
+                if (opcode.Value.Kind != MethodKind.CilInstructions)
                 {
                     intermediateOutput += "// Provided By Framework     \n\n";
                     continue;

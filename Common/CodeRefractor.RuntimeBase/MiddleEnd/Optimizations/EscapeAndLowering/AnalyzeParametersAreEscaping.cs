@@ -3,11 +3,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using CodeRefractor.CodeWriter.Linker;
+using CodeRefractor.MiddleEnd.Interpreters;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
-using CodeRefractor.Runtime;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.Optimizations;
@@ -21,7 +21,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
     {
         public override void OptimizeOperations(CilMethodInterpreter interpreter)
         {
-            if (interpreter.Kind != MethodKind.Default)
+            if (interpreter.Kind != MethodKind.CilInstructions)
                 return;
 
             var originalSnapshot = interpreter.Method.BuildEscapingBools(Closure);
@@ -36,13 +36,12 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
         private static bool ComputeEscapeTable(CilMethodInterpreter intermediateCode, LocalOperation[] operations,
             MethodInterpreter interpreter)
         {
-            var argEscaping = ComputeEscapingArgList(intermediateCode.MidRepresentation, operations, Runtime);
+            var argEscaping = ComputeEscapingArgList(intermediateCode, operations);
             var escaping = ComputeArgsEscaping(operations, argEscaping);
             if (argEscaping.Count == 0) return true;
             intermediateCode.MidRepresentation.SetAdditionalValue(LinkerUtils.EscapeName, escaping);
             var escapingBools = intermediateCode.Method.BuildEscapingBools(Closure);
-            var variables = intermediateCode.MidRepresentation.Vars;
-            foreach (var variable in variables.Arguments)
+            foreach (var variable in intermediateCode.AnalyzeProperties.Arguments)
             {
                 if (!escapingBools[variable.Id])
                 {
@@ -68,18 +67,18 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
             }
         }
 
-        public static HashSet<LocalVariable> ComputeEscapingArgList(MetaMidRepresentation intermediateCode,
-            LocalOperation[] operations, CrRuntimeLibrary crRuntime)
+        public static HashSet<LocalVariable> ComputeEscapingArgList(CilMethodInterpreter intermediateCode,
+            LocalOperation[] operations)
         {
             var argumentList = new HashSet<LocalVariable>();
             argumentList.Clear();
             argumentList.AddRange(
-                intermediateCode.Vars.Arguments
+                intermediateCode.AnalyzeProperties.Arguments
                     .Where(varId => !varId.ComputedType().ClrType.IsPrimitive)
                 );
             if (argumentList.Count == 0)
                 return argumentList;
-            var useDef = intermediateCode.UseDef;
+            var useDef = intermediateCode.MidRepresentation.UseDef;
             for (var index = 0; index < operations.Length; index++)
             {
                 var op = operations[index];

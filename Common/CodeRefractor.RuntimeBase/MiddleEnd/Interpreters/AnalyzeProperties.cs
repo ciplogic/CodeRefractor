@@ -1,11 +1,14 @@
 ﻿#region Usings
 
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
+using CodeRefractor.RuntimeBase.Analyze;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.MiddleEnd
+namespace CodeRefractor.MiddleEnd.Interpreters
 {
     public class AnalyzeProperties
     {
@@ -16,13 +19,41 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
         public bool IsReadOnly { get; set; }
 
 
+        public readonly List<LocalVariable> Arguments = new List<LocalVariable>();
         public readonly Dictionary<LocalVariable, EscapingMode> LocalVarEscaping =
             new Dictionary<LocalVariable, EscapingMode>();
 
-        public void Setup(List<LocalVariable> arguments, List<LocalVariable> virtRegs, List<LocalVariable> localVars)
+        public void SetupArguments(MethodBase method)
+        {
+            var pos = 0;
+            var isConstructor = method is ConstructorInfo;
+            if (isConstructor || !method.IsStatic)
+            {
+                Arguments.Add(
+                    new LocalVariable
+                    {
+                        VarName = "_this",
+                        Kind = VariableKind.Argument,
+                        FixedType = new TypeDescription(method.DeclaringType)
+                    });
+            }
+            var argumentVariables = method.GetParameters()
+                .Select(param => new LocalVariable
+                {
+                    VarName = param.Name,
+                    Kind = VariableKind.Argument,
+                    FixedType = new TypeDescription(param.ParameterType),
+                    Id = pos++
+                })
+                .ToArray();
+            Arguments.AddRange(argumentVariables);
+
+        }
+
+        public void Setup(List<LocalVariable> virtRegs, List<LocalVariable> localVars)
         {
             LocalVarEscaping.Clear();
-            foreach (var variable in arguments)
+            foreach (var variable in Arguments)
             {
                 RegisterVariable(variable);
             }

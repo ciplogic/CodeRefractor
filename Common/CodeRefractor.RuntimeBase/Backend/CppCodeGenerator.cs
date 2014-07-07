@@ -12,6 +12,7 @@ using CodeRefractor.CodeWriter.BasicOperations;
 using CodeRefractor.CodeWriter.Linker;
 using CodeRefractor.CodeWriter.Platform;
 using CodeRefractor.MiddleEnd;
+using CodeRefractor.MiddleEnd.Interpreters;
 using CodeRefractor.MiddleEnd.SimpleOperations.ConstTable;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 using CodeRefractor.Runtime.Annotations;
@@ -85,7 +86,7 @@ namespace CodeRefractor.Backend
         {
             foreach (var interpreter in closure)
             {
-                if (interpreter.Kind != MethodKind.Default)
+                if (interpreter.Kind != MethodKind.CilInstructions)
                     continue;
                 if (interpreter.Method.IsAbstract)
                     continue;
@@ -256,7 +257,7 @@ namespace CodeRefractor.Backend
             sb.AppendLine("///---Begin closure code --- ");
             foreach (var interpreter in closure)
             {
-                if (interpreter.Kind != MethodKind.Default)
+                if (interpreter.Kind != MethodKind.CilInstructions)
                     continue;
 
                 if (interpreter.Method.IsAbstract)

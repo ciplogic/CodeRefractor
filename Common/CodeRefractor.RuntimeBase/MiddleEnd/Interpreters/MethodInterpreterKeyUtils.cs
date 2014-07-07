@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.MiddleEnd;
+using CodeRefractor.MiddleEnd.Interpreters;
 
 #endregion
 

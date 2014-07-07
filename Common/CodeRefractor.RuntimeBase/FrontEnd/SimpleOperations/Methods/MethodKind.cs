@@ -2,7 +2,7 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations.Methods
 {
     public enum MethodKind
     {
-        Default,
+        CilInstructions,
         RuntimeLibrary,
         PlatformInvoke,
         Delegate,

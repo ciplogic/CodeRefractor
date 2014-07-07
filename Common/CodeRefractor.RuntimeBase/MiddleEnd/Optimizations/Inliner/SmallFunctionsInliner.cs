@@ -4,14 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using CodeRefractor.Analyze;
 using CodeRefractor.MiddleEnd;
+using CodeRefractor.MiddleEnd.Interpreters;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 using CodeRefractor.MiddleEnd.UseDefs;
-using CodeRefractor.RuntimeBase.Analyze;
-using CodeRefractor.RuntimeBase.MiddleEnd;
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.Optimizations;
 
 #endregion
@@ -222,7 +220,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.Inliner
             for (var i = 0; i < callMethodStatic.Parameters.Count; i++)
             {
                 var identifierValue = callMethodStatic.Parameters[i];
-                var argumentVariable = interpreter.MidRepresentation.Vars.Arguments[i];
+                var argumentVariable = interpreter.AnalyzeProperties.Arguments[i];
                 argumentVariable.Id = i;
                 mappedNames[argumentVariable] = identifierValue;
             }

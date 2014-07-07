@@ -63,7 +63,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Purity
                 {
                     return operationData;
                 }
-                if (methodInterpreter.Kind != MethodKind.Default)
+                if (methodInterpreter.Kind != MethodKind.CilInstructions)
                 {
                     operationData.Interpreter.AnalyzeProperties.IsPure = false;
                     return operationData;

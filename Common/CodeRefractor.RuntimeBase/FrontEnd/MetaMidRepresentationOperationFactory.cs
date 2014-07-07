@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using CodeRefractor.Analyze;
 using CodeRefractor.MiddleEnd;
+using CodeRefractor.MiddleEnd.Interpreters;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.ConstTable;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
@@ -129,18 +130,18 @@ namespace CodeRefractor.FrontEnd
             AssignValueToStack(value);
         }
 
-        public void LoadArgument(int pushedIntValue)
+        public void LoadArgument(int pushedIntValue, AnalyzeProperties methodProperties)
         {
-            var argument = _representation.Vars.Arguments[pushedIntValue];
+            var argument = methodProperties.Arguments[pushedIntValue];
             PushStack(argument);
         }
 
-        public void CopyStackIntoArgument(int value)
+        public void CopyStackIntoArgument(int value, AnalyzeProperties methodProperties)
         {
             var topVariable = _evaluator.Top;
 
             _evaluator.Pop();
-            var newLocal = _representation.Vars.Arguments[value];
+            var newLocal = methodProperties.Arguments[value];
             var assingment = new Assignment
             {
                 AssignedTo = newLocal,

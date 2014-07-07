@@ -6,6 +6,7 @@ using CodeRefractor.ClosureCompute;
 using CodeRefractor.CodeWriter.BasicOperations;
 using CodeRefractor.CodeWriter.Platform;
 using CodeRefractor.MiddleEnd;
+using CodeRefractor.MiddleEnd.Interpreters;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
 using CodeRefractor.RuntimeBase.CodeWriter.BasicOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd;

@@ -87,9 +87,9 @@
     <Compile Include="FrontEnd\SimpleOperations\Methods\CallMethodVirtual.cs" />
     <Compile Include="FrontEnd\SimpleOperations\OperationUtils.cs" />
     <Compile Include="FrontEnd\SimpleOperations\SetField.cs" />
-    <Compile Include="MiddleEnd\CilMethodInterpreter.cs" />
-    <Compile Include="MiddleEnd\CppMethodInterpreter.cs" />
-    <Compile Include="MiddleEnd\PlatformInvokeMethod.cs" />
+    <Compile Include="MiddleEnd\Interpreters\Cil\CilMethodInterpreter.cs" />
+    <Compile Include="MiddleEnd\Interpreters\NonCil\CppMethodInterpreter.cs" />
+    <Compile Include="MiddleEnd\Interpreters\NonCil\PlatformInvokeMethod.cs" />
     <Compile Include="MiddleEnd\UseDefs\UseDefDescription.cs" />
     <Compile Include="MiddleEnd\UseDefs\UseDefHelper.cs" />
     <Compile Include="Analyze\UsedTypeList.cs" />
@@ -119,14 +119,13 @@
     <Compile Include="CodeWriter\Platform\PlatformInvokeDllImports.cs" />
     <Compile Include="CodeWriter\Platform\PlatformInvokeDllMethod.cs" />
     <Compile Include="Ensure.cs" />
-    <Compile Include="MiddleEnd\AnalyzeProperties.cs" />
+    <Compile Include="MiddleEnd\Interpreters\AnalyzeProperties.cs" />
     <Compile Include="Analyze\GlobalMethodPool.cs" />
     <Compile Include="MiddleEnd\CppLibMethodInvokeRepresentation.cs" />
     <Compile Include="MiddleEnd\GlobalTable\GlobalTableManager.cs" />
-    <Compile Include="MiddleEnd\MethodInterpreterKey.cs" />
-    <Compile Include="MiddleEnd\MethodInterpreterKeyUtils.cs" />
+    <Compile Include="MiddleEnd\Interpreters\MethodInterpreterKey.cs" />
+    <Compile Include="MiddleEnd\Interpreters\MethodInterpreterKeyUtils.cs" />
     <Compile Include="FrontEnd\SimpleOperations\Methods\Return.cs" />
-    <Compile Include="MiddleEnd\RuntimeLibraryDescription.cs" />
     <Compile Include="FrontEnd\SimpleOperations\AlwaysBranch.cs" />
     <Compile Include="FrontEnd\SimpleOperations\LocalOperation.cs" />
     <Compile Include="FrontEnd\SimpleOperations\Boxing.cs" />
@@ -152,7 +151,7 @@
     <Compile Include="Config\OptimizationLevelBase.cs" />
     <Compile Include="MetaLinker.cs" />
     <Compile Include="FrontEnd\MetaMidRepresentationOperationFactory.cs" />
-    <Compile Include="MiddleEnd\MidRepresentationUtils.cs" />
+    <Compile Include="MiddleEnd\Interpreters\MidRepresentationUtils.cs" />
     <Compile Include="FrontEnd\SimpleOperations\DerefAssignment.cs" />
     <Compile Include="FrontEnd\SimpleOperations\FunctionPointerStore.cs" />
     <Compile Include="FrontEnd\SimpleOperations\OperationKind.cs" />
@@ -171,9 +170,9 @@
     <Compile Include="DataBase\Compacter\MinimizeTransformer.cs" />
     <Compile Include="DataBase\SerializeXml\SerializeLogic.cs" />
     <Compile Include="DataBase\SerializeXml\XNodeAttribute.cs" />
-    <Compile Include="MiddleEnd\MethodInterpreterUtils.cs" />
+    <Compile Include="MiddleEnd\Interpreters\MethodInterpreterUtils.cs" />
     <Compile Include="FrontEnd\SimpleOperations\Methods\MethodKind.cs" />
-    <Compile Include="MiddleEnd\MidRepresentationVariables.cs" />
+    <Compile Include="MiddleEnd\Interpreters\Cil\MidRepresentationVariables.cs" />
     <Compile Include="FrontEnd\SimpleOperations\ConstTable\ConstByteArrayData.cs" />
     <Compile Include="FrontEnd\SimpleOperations\ConstTable\ConstByteArrayValue.cs" />
     <Compile Include="FrontEnd\SimpleOperations\ConstTable\ConstByteArrayList.cs" />
@@ -187,9 +186,9 @@
     <Compile Include="Runtime\Annotations\MapTypeAttribute.cs" />
     <Compile Include="Runtime\Annotations\CppMethodBodyAttribute.cs" />
     <Compile Include="FrontEnd\SimpleOperations\GetField.cs" />
-    <Compile Include="MiddleEnd\MetaMidRepresentation.cs" />
+    <Compile Include="MiddleEnd\Interpreters\Cil\MetaMidRepresentation.cs" />
     <Compile Include="FrontEnd\SimpleOperations\Methods\CallMethodStatic.cs" />
-    <Compile Include="MiddleEnd\MethodInterpreter.cs" />
+    <Compile Include="MiddleEnd\Interpreters\MethodInterpreter.cs" />
     <Compile Include="FrontEnd\SimpleOperations\Operators\OperatorBase.cs" />
     <Compile Include="FrontEnd\SimpleOperations\Identifiers\SetArrayElement.cs" />
     <Compile Include="FrontEnd\SimpleOperations\Assignment.cs" />
@@ -280,7 +279,5 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="MiddleEnd\Interpreters\" />
-  </ItemGroup>
+  <ItemGroup />
 </Project>

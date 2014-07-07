@@ -7,6 +7,7 @@ using System.Reflection;
 using CodeRefractor.Analyze;
 using CodeRefractor.FrontEnd;
 using CodeRefractor.MiddleEnd;
+using CodeRefractor.MiddleEnd.Interpreters;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 using CodeRefractor.Runtime;
 using CodeRefractor.RuntimeBase.Analyze;
@@ -229,7 +230,7 @@ namespace CodeRefractor.RuntimeBase
 
         public static void Interpret(CilMethodInterpreter methodInterpreter, CrRuntimeLibrary crRuntime)
         {
-            if (methodInterpreter.Kind != MethodKind.Default)
+            if (methodInterpreter.Kind != MethodKind.CilInstructions)
                 return;
             if (methodInterpreter.Interpreted)
                 return;

@@ -20,7 +20,7 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
         protected override void DoOptimize(ClosureEntities closure)
         {
             var methodInterpreters = closure.MethodImplementations.Values
-                .Where(m => m.Kind == MethodKind.Default)
+                .Where(m => m.Kind == MethodKind.CilInstructions)
                 .ToList();
             foreach (var interpreter in methodInterpreters)
             {

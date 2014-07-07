@@ -1,16 +1,14 @@
 #region Usings
 
-using System;
 using System.Reflection;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 using CodeRefractor.RuntimeBase;
-using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.Shared;
 
 #endregion
 
-namespace CodeRefractor.MiddleEnd
+namespace CodeRefractor.MiddleEnd.Interpreters
 {
     public class MethodInterpreter
     {
@@ -26,7 +24,8 @@ namespace CodeRefractor.MiddleEnd
             var pureAttribute = method.GetCustomAttribute<PureMethodAttribute>();
             if (pureAttribute != null)
                 AnalyzeProperties.IsPure = true;
-            
+
+            AnalyzeProperties.SetupArguments(Method);
         }
 
         public override string ToString()
