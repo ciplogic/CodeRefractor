@@ -1,9 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-# SharpDevelop 5.0
-VisualStudioVersion = 12.0.20827.3
-MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Deploy", "Deploy", "{A0B28E32-7BB3-4465-9B77-8BCF06C68581}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeRefractor.Compiler", "MsilCodeCompiler\CodeRefractor.Compiler.csproj", "{EE8B9057-95F4-4AB9-BC91-F0ED3D56FE38}"
@@ -20,8 +17,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Compiler", "Compiler", "{64825421-C03C-4F00-92D9-1A3822D4022F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeRefractor.Compiler.Internals", "Common\CodeRefractor.RuntimeBase\CodeRefractor.Compiler.Internals.csproj", "{10CEF783-53C3-42A7-940A-73773A2AF24F}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MsilReader", "Compiler\Frontend\MsilReader\MsilReader.csproj", "{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Views", "Views", "{BA2C624C-A9B0-4DB1-81B2-C9400171914A}"
 EndProject
@@ -326,65 +321,6 @@ Global
 		{10CEF783-53C3-42A7-940A-73773A2AF24F}.winphone_Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{10CEF783-53C3-42A7-940A-73773A2AF24F}.winphone_Release|Win32.ActiveCfg = Release|Any CPU
 		{10CEF783-53C3-42A7-940A-73773A2AF24F}.winphone_Release|x86.ActiveCfg = Release|Any CPU
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.Debug|Win32.ActiveCfg = Debug|Any CPU
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.Debug|x86.Build.0 = Debug|Any CPU
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.net_2_0_Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.net_2_0_Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.net_2_0_Debug|Win32.ActiveCfg = Debug|Any CPU
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.net_2_0_Debug|x86.ActiveCfg = Debug|Any CPU
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.net_2_0_Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.net_2_0_Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.net_2_0_Release|Win32.ActiveCfg = Release|Any CPU
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.net_2_0_Release|x86.ActiveCfg = Release|Any CPU
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.net_3_5_Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.net_3_5_Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.net_3_5_Debug|Win32.ActiveCfg = Debug|Any CPU
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.net_3_5_Debug|x86.ActiveCfg = Debug|Any CPU
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.net_3_5_Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.net_3_5_Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.net_3_5_Release|Win32.ActiveCfg = Release|Any CPU
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.net_3_5_Release|x86.ActiveCfg = Release|Any CPU
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.net_4_0_Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.net_4_0_Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.net_4_0_Debug|Win32.ActiveCfg = Debug|Any CPU
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.net_4_0_Debug|x86.ActiveCfg = Debug|Any CPU
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.net_4_0_Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.net_4_0_Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.net_4_0_Release|Win32.ActiveCfg = Release|Any CPU
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.net_4_0_Release|x86.ActiveCfg = Release|Any CPU
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.OpenRaTryCompile|Any CPU.ActiveCfg = Release|Any CPU
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.OpenRaTryCompile|Any CPU.Build.0 = Release|Any CPU
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.OpenRaTryCompile|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.OpenRaTryCompile|Mixed Platforms.Build.0 = Release|Any CPU
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.OpenRaTryCompile|Win32.ActiveCfg = Release|Any CPU
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.OpenRaTryCompile|x86.ActiveCfg = Release|Any CPU
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.Release|Win32.ActiveCfg = Release|Any CPU
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.Release|x86.ActiveCfg = Release|Any CPU
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.silverlight_Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.silverlight_Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.silverlight_Debug|Win32.ActiveCfg = Debug|Any CPU
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.silverlight_Debug|x86.ActiveCfg = Debug|Any CPU
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.silverlight_Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.silverlight_Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.silverlight_Release|Win32.ActiveCfg = Release|Any CPU
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.silverlight_Release|x86.ActiveCfg = Release|Any CPU
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.winphone_Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.winphone_Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.winphone_Debug|Win32.ActiveCfg = Debug|Any CPU
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.winphone_Debug|x86.ActiveCfg = Debug|Any CPU
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.winphone_Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.winphone_Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.winphone_Release|Win32.ActiveCfg = Release|Any CPU
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7}.winphone_Release|x86.ActiveCfg = Release|Any CPU
 		{D5B3D733-B6AB-4574-ABFF-651A5BBC3B33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D5B3D733-B6AB-4574-ABFF-651A5BBC3B33}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D5B3D733-B6AB-4574-ABFF-651A5BBC3B33}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -507,18 +443,17 @@ Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
-	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = MsilCodeCompiler\CodeRefractor.Compiler.csproj
-	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{EE8B9057-95F4-4AB9-BC91-F0ED3D56FE38} = {A0B28E32-7BB3-4465-9B77-8BCF06C68581}
 		{25423DB3-1CAF-42AF-9122-8922DA6A2E53} = {A0B28E32-7BB3-4465-9B77-8BCF06C68581}
 		{2F7063CF-FFF5-4F2E-9643-1ACB96A889E5} = {A0B28E32-7BB3-4465-9B77-8BCF06C68581}
-		{6C4BC5D1-CE1E-4152-AB7D-0EE10C64496D} = {2F7063CF-FFF5-4F2E-9643-1ACB96A889E5}
 		{64825421-C03C-4F00-92D9-1A3822D4022F} = {A0B28E32-7BB3-4465-9B77-8BCF06C68581}
+		{6C4BC5D1-CE1E-4152-AB7D-0EE10C64496D} = {2F7063CF-FFF5-4F2E-9643-1ACB96A889E5}
 		{10CEF783-53C3-42A7-940A-73773A2AF24F} = {64825421-C03C-4F00-92D9-1A3822D4022F}
-		{1B6CF014-6CBD-4A06-A4DE-50656C61B5C7} = {64825421-C03C-4F00-92D9-1A3822D4022F}
 		{D5B3D733-B6AB-4574-ABFF-651A5BBC3B33} = {BA2C624C-A9B0-4DB1-81B2-C9400171914A}
 		{A0C8027A-A2AE-43D1-BC76-52B3A235D05B} = {BA2C624C-A9B0-4DB1-81B2-C9400171914A}
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = MsilCodeCompiler\CodeRefractor.Compiler.csproj
 	EndGlobalSection
 EndGlobal
