@@ -71,6 +71,9 @@
     <Compile Include="Analyze\LinkerInterpretersTable.cs" />
     <Compile Include="Analyze\NamerUtils.cs" />
     <Compile Include="Analyze\TypeDescription.cs" />
+    <Compile Include="CecilUtils\CecilExtensions.cs" />
+    <Compile Include="CecilUtils\CecilCaches.cs" />
+    <Compile Include="CecilUtils\CecilWrapper.cs" />
     <Compile Include="ClosureCompute\ClosureComputeBase.cs" />
     <Compile Include="ClosureCompute\ClosureEntities.cs" />
     <Compile Include="ClosureCompute\ClosureEntitiesUtils.cs" />

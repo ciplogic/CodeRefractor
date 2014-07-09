@@ -5,13 +5,10 @@ using System.IO;
 using System.Reflection;
 using CodeRefactor.OpenRuntime;
 using CodeRefractor.ClosureCompute;
-using CodeRefractor.ClosureCompute.Resolvers;
 using CodeRefractor.MiddleEnd.Optimizations.Util;
-using CodeRefractor.Runtime;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Config;
 using CodeRefractor.RuntimeBase.Optimizations;
-using CodeRefractor.RuntimeBase.Util;
 using CodeRefractor.Util;
 
 #endregion

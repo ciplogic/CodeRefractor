@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using CodeRefractor.CecilUtils;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Shared;
