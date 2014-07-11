@@ -13,19 +13,13 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Common
         //Try to return false by default
         //If the code succeeded to optimize something that other optimizations may benefit, return true
 
-        private bool _result;
-
         public static ClosureEntities Closure { get; set; }
         protected ResultingOptimizationPass(OptimizationKind kind)
         {
             Kind = kind;
         }
 
-        public bool Result
-        {
-            get { return _result; }
-            set { _result = value; }
-        }
+        public bool Result { get; set; }
 
         public abstract void OptimizeOperations(CilMethodInterpreter interpreter);
 
@@ -43,7 +37,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Common
         //If the code succeeded to optimize something that other optimizations may benefit, return true
         public bool Optimize(CilMethodInterpreter intermediateCode)
         {
-            _result = false;
+            Result = false;
             try
             {
                 OptimizeOperations(intermediateCode);
@@ -51,7 +45,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Common
             catch
             {
             }
-            return _result;
+            return Result;
         }
     }
 }

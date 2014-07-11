@@ -38,18 +38,19 @@ namespace CodeRefractor.CecilUtils
                 var specializedResult = getGenericType.MakeGenericType(clrGenericParameters.ToArray());
                 return specializedResult;
             }
+            GetMappedAssembly(declaringType.Module.Assembly);
             var type = CecilCaches.LoadCachedType(declaringType.FullName);
             return type;
         }
 
         private static Assembly GetMappedAssembly(AssemblyDefinition assemblyDefinition)
         {
-            var assembly = CecilCaches.LoadCached(assemblyDefinition.FullName);
+            var assembly = CecilCaches.LoadCachedAssembly(assemblyDefinition.FullName);
             return assembly;
         }
         private static Assembly GetMappedAssembly(ModuleDefinition module)
         {
-            var assembly = CecilCaches.LoadCached(module.Assembly.FullName);
+            var assembly = CecilCaches.LoadCachedAssembly(module.Assembly.FullName);
             return assembly;
         }
 
