@@ -59,7 +59,7 @@ namespace CodeRefractor.ClosureCompute.Resolvers
             var resultMethod = CalculateResultMethod(method, list);
             if (resultMethod == null)
                 return null;
-            var result = new MethodInterpreter(resultMethod);
+            var result = new CilMethodInterpreter(resultMethod);
 
             return result;
         }

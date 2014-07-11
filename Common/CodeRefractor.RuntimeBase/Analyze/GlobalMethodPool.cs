@@ -37,7 +37,7 @@ namespace CodeRefractor.Analyze
         public static MethodInterpreter Register(this MethodBase method, CrRuntimeLibrary crRuntime = null)
         {
             SetupTypeResolverIfNecesary(method);
-            var interpreter = new MethodInterpreter(method);
+            var interpreter = new CilMethodInterpreter(method);
             Register(interpreter);
 
             var resolved = Resolve(method);

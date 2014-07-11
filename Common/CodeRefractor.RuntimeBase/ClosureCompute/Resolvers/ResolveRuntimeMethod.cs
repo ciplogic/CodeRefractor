@@ -74,7 +74,7 @@ namespace CodeRefractor.ClosureCompute.Resolvers
         {
             if (!CppMethodInterpreter.IsCppMethod(resultMethod))
             {
-                var result = new MethodInterpreter(resultMethod);
+                var result = new CilMethodInterpreter(resultMethod);
                 return result;
             }
             var cppResult = new CppMethodInterpreter(resultMethod);

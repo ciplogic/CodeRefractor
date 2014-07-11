@@ -10,7 +10,7 @@ using CodeRefractor.RuntimeBase.Shared;
 
 namespace CodeRefractor.MiddleEnd.Interpreters
 {
-    public class MethodInterpreter
+    public abstract class MethodInterpreter
     {
         public MethodBase Method { get; set; }
         public MethodKind Kind { get; set; }

@@ -416,7 +416,7 @@ namespace CodeRefractor.FrontEnd
 
             if (methodInfo != null)
             {
-                var interpreter = new MethodInterpreter(methodInfo);
+                var interpreter = new CilMethodInterpreter(methodInfo);
                 var methodData = new CallMethodStatic(interpreter);
 
 
@@ -427,7 +427,7 @@ namespace CodeRefractor.FrontEnd
         public void CallVirtual(object operand)
         {
             var methodInfo = ((MethodReference) operand).GetMethod();
-            var interpreter = new MethodInterpreter(methodInfo);
+            var interpreter = new CilMethodInterpreter(methodInfo);
 
             var methodData = new CallMethodVirtual(interpreter);
 
@@ -727,11 +727,7 @@ namespace CodeRefractor.FrontEnd
         {
             if (constructorInfo.DeclaringType == typeof (object))
                 return;
-            var mappedType = constructorInfo.DeclaringType;
-            if (mappedType != null && mappedType != constructorInfo.DeclaringType)
-            {
-                constructorInfo = constructorInfo;
-            }
+            
             constructorInfo.Register();
             var result = SetNewVReg();
             result.FixedType = new TypeDescription(constructorInfo.DeclaringType);
@@ -742,7 +738,7 @@ namespace CodeRefractor.FrontEnd
             };
             AddOperation(constructedObject);
 
-            var interpreter = new MethodInterpreter(constructedObject.Info);
+            var interpreter = new CilMethodInterpreter(constructedObject.Info);
             var methodData = new CallMethodStatic(interpreter);
             CallMethodData(constructedObject.Info, methodData);
             var vreg = SetNewVReg();
