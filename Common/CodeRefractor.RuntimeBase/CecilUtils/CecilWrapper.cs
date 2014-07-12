@@ -80,7 +80,7 @@ namespace CodeRefractor.CecilUtils
 
         private static MethodBase GetMethodBasedOnParametersAndName(Type declaringType, string methodName, Type[] parList)
         {
-            var methodResult = declaringType.GetMember(methodName);
+            var methodResult = declaringType.GetMember(methodName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
             if (methodResult.Length == 1)
                 return (MethodBase) methodResult[0];
             var targetParameters = parList;

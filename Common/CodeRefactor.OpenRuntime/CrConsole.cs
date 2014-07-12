@@ -10,6 +10,12 @@ namespace CodeRefactor.OpenRuntime
     [MapType(typeof (Console))]
     public class CrConsole
     {
+
+        [CppMethodBody(Header = "stdio.h", Code = "printf(\"\\n\");")]
+        public static void WriteLine()
+        {
+        }
+
         [CppMethodBody(Header = "stdio.h", Code = "printf(\"%d\\n\", value);")]
         public static void WriteLine(int value)
         {

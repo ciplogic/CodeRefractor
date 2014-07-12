@@ -135,7 +135,7 @@ namespace CodeRefractor.Backend
             if (typeDataList.Contains(typeof(System.ValueType)))
                 typeDataList.Remove(typeof(System.ValueType));
 
-
+           
 
 
 
@@ -143,6 +143,8 @@ namespace CodeRefractor.Backend
             {
                 foreach (var typeData in typeDatas)
                 {
+                    
+
                     if (sortedTypeData.Contains(typeData)) // Prevent repeats
                         continue;
 
@@ -153,6 +155,7 @@ namespace CodeRefractor.Backend
                     }
                     if (typeDataList.Count == 0)
                         break;
+                  
                 }
 
             }
