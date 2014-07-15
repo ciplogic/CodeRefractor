@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using CodeRefractor.CecilUtils;
 using CodeRefractor.RuntimeBase.Analyze;
 using Mono.Cecil.Cil;
 
@@ -32,8 +33,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd
             genericParameters.AddRange(genericDeclaringType.GetGenericArguments());
             var parameters = method.GetParameters().Select(par => par.ParameterType).ToArray();
 
-            const BindingFlags allMemberFlags = BindingFlags.Public | BindingFlags.NonPublic |
-                                                BindingFlags.Static | BindingFlags.Instance;
+            const BindingFlags allMemberFlags = CecilCaches.AllFlags;
             var result = method.IsConstructor
                 ? (MethodBase) genericDeclaringType.GetConstructor(parameters)
                 : genericDeclaringType.GetMethod(method.Name, parameters);

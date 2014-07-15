@@ -60,6 +60,12 @@ namespace CodeRefractor.CecilUtils
 
             var declaringType = definition.DeclaringType;
             var type = GetMappedClrType(declaringType);
+            var typeMembers = type.GetMembers(CecilCaches.AllFlags)
+                .Where(member=>member.Name==definition.Name)
+                .ToArray();
+            if (typeMembers.Length == 1)
+                return (MethodBase) typeMembers[0];
+            
             var parList = GetParameterList(definition);
 
             var result = GetMethodBasedOnParametersAndName(type, definition.Name, parList);

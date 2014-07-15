@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using CodeRefractor.CecilUtils;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.Runtime;
 
@@ -40,9 +41,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
             var fields = type.GetFields().ToList();
 
             fields.AddRange(type.GetFields(
-                BindingFlags.NonPublic
-                | BindingFlags.Instance
-                | BindingFlags.Static));
+                CecilCaches.AllFlags));
 
             var result = new HashSet<Type>();
             result.AddRange(fields

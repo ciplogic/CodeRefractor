@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
+using CodeRefractor.CecilUtils;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.Runtime;
 using CodeRefractor.RuntimeBase.Shared;
@@ -99,10 +100,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
                 return;
             if (clrType.IsInterface)
                 return;
-            var fields = clrType.GetFields(BindingFlags.NonPublic |
-                                           BindingFlags.Public | BindingFlags.Instance
-                                           | BindingFlags.DeclaredOnly | BindingFlags.Static
-                ).ToArray();
+            var fields = clrType.GetFields(CecilCaches.AllFlags).ToArray();
             if (fields.Length == 0)
                 return;
             foreach (var fieldInfo in fields)

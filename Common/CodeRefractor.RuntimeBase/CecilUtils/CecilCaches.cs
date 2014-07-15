@@ -14,6 +14,7 @@ namespace CodeRefractor.CecilUtils
     {
         private static readonly Dictionary<string, Assembly> AsmsAssemblies = new Dictionary<string, Assembly>();
         private static readonly Dictionary<string, Type> AsmTypes = new Dictionary<string, Type>();
+        public const BindingFlags AllFlags = (BindingFlags) (-1);
 
         public static Assembly LoadCachedAssembly(string fullName)
         {

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using CodeRefractor.CecilUtils;
 
 #endregion
 
@@ -19,9 +20,8 @@ namespace CodeRefractor.RuntimeBase.Analyze
             var methodsToSearch = new List<MethodBase>();
             //TODO: this lacks base class methods
 
-            methodsToSearch.AddRange(instance.GetMethods(BindingFlags.Instance | BindingFlags.Public));
-            methodsToSearch.AddRange(instance.GetMethods(BindingFlags.Static | BindingFlags.Public));
-            methodsToSearch.AddRange(instance.GetConstructors());
+            methodsToSearch.AddRange(instance.GetMethods(CecilCaches.AllFlags));
+            methodsToSearch.AddRange(instance.GetConstructors(CecilCaches.AllFlags));
             var methods = methodsToSearch
                 .Where(m => method.Name == m.Name)
                 .ToArray();
