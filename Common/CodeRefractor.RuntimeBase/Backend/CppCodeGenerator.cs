@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Text;
 using CodeRefractor.Analyze;
 using CodeRefractor.ClosureCompute;
+using CodeRefractor.ClosureCompute.TypeSorter;
 using CodeRefractor.CodeWriter.BasicOperations;
 using CodeRefractor.CodeWriter.Linker;
 using CodeRefractor.CodeWriter.Platform;
@@ -123,43 +124,10 @@ namespace CodeRefractor.Backend
 
             var typeDataList = typeDatas.ToList();
             //start with base classes
-            var sortedTypeData = new HashSet<Type>(typeDatas);
-            sortedTypeData.Add(typeof(System.Object));
-
-
-            typeDataList.Remove(typeof(Object));
-
-            sortedTypeData.Add(typeof(System.ValueType));
-
-
-            if (typeDataList.Contains(typeof(System.ValueType)))
-                typeDataList.Remove(typeof(System.ValueType));
-
-           
-
-
-            /*
-            while (typeDataList.Count > 0)
-            {
-                foreach (var typeData in typeDatas)
-                {
-                    
-
-                    if (sortedTypeData.Contains(typeData)) // Prevent repeats
-                        continue;
-
-                    if (sortedTypeData.Contains(typeData.BaseType) || typeData.IsInterface)
-                    {
-                        sortedTypeData.Add(typeData);
-                        typeDataList.Remove(typeData);
-                    }
-                    if (typeDataList.Count == 0)
-                        break;
-                  
-                }
-
-            }
-            */
+          
+          
+            var typeSorter = new ClosureTypeSorter(typeDataList);
+            var sortedTypeData = typeSorter.DoSort();
 
             //Add these empty interfaces for strings  
             //TODO:Fix this use actual implementations

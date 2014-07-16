@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Text;
 using CodeRefractor.Backend;
 using CodeRefractor.ClosureCompute.Steps;
+using CodeRefractor.ClosureCompute.Steps.AddTypes;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Interpreters;
 using CodeRefractor.MiddleEnd.Optimizations.Common;

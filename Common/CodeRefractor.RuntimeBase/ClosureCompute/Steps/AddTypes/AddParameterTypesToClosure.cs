@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using CodeRefractor.RuntimeBase;
 
-namespace CodeRefractor.ClosureCompute.Steps
+namespace CodeRefractor.ClosureCompute.Steps.AddTypes
 {
     public class AddParameterTypesToClosure : ClosureComputeBase
     {

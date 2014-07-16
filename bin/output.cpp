@@ -1,19 +1,18 @@
 #include "sloth.h"
 #include <functional>
 struct CodeRefactor_OpenRuntime_CrString; 
+struct System_Object; 
 struct _NBody; 
-struct System_String : public System_Object {
- std::shared_ptr< Array < System_Char > > Text;
-};
-struct _NBody : public System_Object {
+struct System_Object {
+int _typeId;
 };
 template <class T1> 
 struct _MyList_1System_Int32 : public System_Object {
 };
-struct System_Object {
-int _typeId;
+struct _NBody : public System_Object {
 };
-struct System_ValueType : public System_Object {
+struct System_String : public System_Object {
+ std::shared_ptr< Array < System_Char > > Text;
 };
 
 System_Void _NBody_Main();

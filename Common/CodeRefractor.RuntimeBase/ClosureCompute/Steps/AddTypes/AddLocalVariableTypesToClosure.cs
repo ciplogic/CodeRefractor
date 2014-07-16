@@ -2,16 +2,8 @@
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 
-namespace CodeRefractor.ClosureCompute.Steps
+namespace CodeRefractor.ClosureCompute.Steps.AddTypes
 {
-    public class AddStringTypeToClosure : ClosureComputeBase
-    {
-        public override bool UpdateClosure(ClosureEntities closureEntities)
-        {
-            return closureEntities.AddType(typeof(string));
-        }
-    }
-
     public class AddLocalVariableTypesToClosure : ClosureComputeBase
     {
         public override bool UpdateClosure(ClosureEntities closureEntities)
