@@ -83,15 +83,6 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             var retType = methodBase.GetReturnType().ToCppName(true);
 
             var sb = new StringBuilder();
-            var declaringType = methodBase.DeclaringType;
-            if (declaringType.IsGenericType)
-            {
-                var genericTypeCount = declaringType.GetGenericArguments().Length;
-
-                if (genericTypeCount > 0)
-                    sb.AppendLine(genericTypeCount.GetTypeTemplatePrefix());
-            }
-
 
             var arguments = interpreter.GetArgumentsAsTextWithEscaping(closureEntities);
 

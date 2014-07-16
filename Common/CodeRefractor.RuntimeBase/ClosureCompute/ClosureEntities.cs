@@ -48,9 +48,14 @@ namespace CodeRefractor.ClosureCompute
             TypeResolverList = new List<TypeResolverBase>();
 
             ClosureSteps = new List<ClosureComputeBase>();
+            //Method closure steps
             AddClosureStep<AddEntryPointInterpretedMethod>();
             AddClosureStep<AddNotYetInterpretedMethods>();
+
+            //Type closure steps
+            AddClosureStep<AddStringTypeToClosure>();
             AddClosureStep<AddParameterTypesToClosure>();
+            AddClosureStep<AddLocalVariableTypesToClosure>();
         }
 
         public MethodInterpreter GetMethodImplementation(MethodBase method)

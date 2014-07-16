@@ -1,8 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
-using CodeRefractor.MiddleEnd;
-using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
+﻿using System.Reflection;
 using CodeRefractor.RuntimeBase;
 
 namespace CodeRefractor.ClosureCompute.Steps

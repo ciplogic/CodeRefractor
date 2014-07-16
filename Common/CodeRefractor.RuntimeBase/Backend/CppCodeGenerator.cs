@@ -123,7 +123,7 @@ namespace CodeRefractor.Backend
 
             var typeDataList = typeDatas.ToList();
             //start with base classes
-            var sortedTypeData = new List<Type>();
+            var sortedTypeData = new HashSet<Type>(typeDatas);
             sortedTypeData.Add(typeof(System.Object));
 
 

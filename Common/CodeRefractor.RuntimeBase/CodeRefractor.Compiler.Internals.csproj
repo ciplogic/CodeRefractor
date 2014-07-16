@@ -81,6 +81,7 @@
     <Compile Include="ClosureCompute\Resolvers\ResolveRuntimeMethodUsingExtensions.cs" />
     <Compile Include="ClosureCompute\Resolvers\ResolveRuntimeType.cs" />
     <Compile Include="ClosureCompute\Steps\AddEntryPointInterpretedMethod.cs" />
+    <Compile Include="ClosureCompute\Steps\AddLocalVariableTypesToClosure.cs" />
     <Compile Include="ClosureCompute\Steps\AddNotYetInterpretedMethods.cs" />
     <Compile Include="ClosureCompute\MethodResolverBase.cs" />
     <Compile Include="ClosureCompute\Resolvers\ResolveRuntimeMethod.cs" />
