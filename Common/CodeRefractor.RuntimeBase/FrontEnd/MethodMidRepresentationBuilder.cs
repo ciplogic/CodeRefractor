@@ -425,12 +425,12 @@ namespace CodeRefractor.FrontEnd
 
             if (opcodeStr == "ldc.i4.s" || opcodeStr == "ldc.i4")
             {
-                operationFactory.PushInt4((int) instruction.Operand);
+                operationFactory.PushInt4(Convert.ToInt32(instruction.Operand));
                 return true;
             }
             if (opcodeStr == "ldc.i8.s" || opcodeStr == "ldc.i8")
             {
-                operationFactory.PushInt8((long) instruction.Operand);
+                operationFactory.PushInt8(Convert.ToInt64( instruction.Operand));
                 return true;
             }
             if (opcodeStr.StartsWith("ldc.i4."))

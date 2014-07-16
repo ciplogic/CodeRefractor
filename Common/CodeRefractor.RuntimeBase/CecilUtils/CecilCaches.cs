@@ -25,7 +25,7 @@ namespace CodeRefractor.CecilUtils
             {
                 return result;
             }
-            result = Assembly.Load(fullName);
+            result = Assembly.LoadFile(fullName);
             AsmsAssemblies[fullName] = result;
             return result;
         }

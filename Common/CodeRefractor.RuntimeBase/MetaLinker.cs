@@ -90,9 +90,7 @@ namespace CodeRefractor.RuntimeBase
         }
         public static Type GetClrType(this TypeReference definition)
         {
-
-            var assembly = Assembly.Load(definition.Module.Assembly.FullName.GetClrName());
-
+            var assembly = Assembly.LoadFile(definition.Module.FullyQualifiedName.GetClrName());
 
             var type = assembly.GetType(definition.FullName.GetClrName());
 
