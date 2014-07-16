@@ -42,7 +42,7 @@ namespace CodeRefractor.CecilUtils
             var type = typeof (T);
             var typeName = type.FullName;
             AsmTypes[typeName] = type;
-            LoadCachedAssembly(type.Assembly.FullName);
+            LoadCachedAssembly(type.Assembly.Location);
         }
 
         public static Type LoadCachedType(TypeReference cecilType)

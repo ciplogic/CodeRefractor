@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using CodeRefractor.RuntimeBase;
 using CodeRefractor.Util;
 using Mono.Cecil;
 
@@ -42,16 +41,11 @@ namespace CodeRefractor.CecilUtils
                 var specializedResult = getGenericType.MakeGenericType(clrGenericParameters.ToArray());
                 return specializedResult;
             }
-            GetMappedAssembly(declaringType.Module.Assembly);
+            GetMappedAssembly(declaringType.Module);
             var type = CecilCaches.LoadCachedType(declaringType.FullName);
             return type;
         }
 
-        private static Assembly GetMappedAssembly(AssemblyDefinition assemblyDefinition)
-        {
-            var assembly = CecilCaches.LoadCachedAssembly(assemblyDefinition.FullName);
-            return assembly;
-        }
         private static Assembly GetMappedAssembly(ModuleDefinition module)
         {
             var assembly = CecilCaches.LoadCachedAssembly(module.FullyQualifiedName);
