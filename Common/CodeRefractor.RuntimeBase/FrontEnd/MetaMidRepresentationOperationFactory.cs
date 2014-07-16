@@ -415,14 +415,14 @@ namespace CodeRefractor.FrontEnd
             var methodInfo = ((MethodReference) operand).GetMethod();
                 //TODO System.Void System.Array::Resize<System.Char>(!!0[]&,System.Int32) Weird Signature
 
-            if (methodInfo != null)
-            {
-                var interpreter = new CilMethodInterpreter(methodInfo);
-                var methodData = new CallMethodStatic(interpreter);
+            if (methodInfo == null) return;
+            var interpreter = PlatformInvokeMethod.IsPlatformInvoke(methodInfo)
+                ? (MethodInterpreter) new PlatformInvokeMethod(methodInfo)
+                : new CilMethodInterpreter(methodInfo);
+            var methodData = new CallMethodStatic(interpreter);
 
 
-                CallMethodData(methodInfo, methodData);
-            }
+            CallMethodData(methodInfo, methodData);
         }
 
         public void CallVirtual(object operand)

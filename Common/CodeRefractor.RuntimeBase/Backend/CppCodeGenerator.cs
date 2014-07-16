@@ -138,7 +138,7 @@ namespace CodeRefractor.Backend
            
 
 
-
+            /*
             while (typeDataList.Count > 0)
             {
                 foreach (var typeData in typeDatas)
@@ -159,7 +159,7 @@ namespace CodeRefractor.Backend
                 }
 
             }
-
+            */
 
             //Add these empty interfaces for strings  
             //TODO:Fix this use actual implementations

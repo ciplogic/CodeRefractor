@@ -11,6 +11,8 @@ namespace CodeRefractor.ClosureCompute
             var resolveRuntimeMethod = new ResolveRuntimeMethod(runtimeAssembly);
             closureEntities.AddMethodResolver(resolveRuntimeMethod);
 
+            closureEntities.AddMethodResolver(new ResolvePlatformInvokeMethod());
+
             var extensionsResolverMethod = new ResolveRuntimeMethodUsingExtensions(runtimeAssembly);
             closureEntities.AddMethodResolver(extensionsResolverMethod);
 
