@@ -34,7 +34,11 @@ namespace CodeRefractor.CecilUtils
                     var mappedClrType = GetMappedClrType(genParameter);
                     clrGenericParameters.Add(mappedClrType);
                 }
-                var getGenericType = CecilCaches.LoadCachedType(genericType.Name);
+                var getGenericType = CecilCaches.LoadCachedType(genericType);
+                if(clrGenericParameters.Contains(null))
+                {
+                	return getGenericType;
+                }
                 var specializedResult = getGenericType.MakeGenericType(clrGenericParameters.ToArray());
                 return specializedResult;
             }
@@ -50,7 +54,7 @@ namespace CodeRefractor.CecilUtils
         }
         private static Assembly GetMappedAssembly(ModuleDefinition module)
         {
-            var assembly = CecilCaches.LoadCachedAssembly(module.Assembly.FullName);
+            var assembly = CecilCaches.LoadCachedAssembly(module.FullyQualifiedName);
             return assembly;
         }
 
@@ -60,12 +64,11 @@ namespace CodeRefractor.CecilUtils
 
             var declaringType = definition.DeclaringType;
             var type = GetMappedClrType(declaringType);
-            var typeMembers = type.GetMembers(CecilCaches.AllFlags)
-                .Where(member=>member.Name==definition.Name)
-                .ToArray();
-            if (typeMembers.Length == 1)
-                return (MethodBase) typeMembers[0];
-            
+            var methodsWithName = type.GetMembers().Where(m => m.Name == definition.Name).ToArray();
+            if (methodsWithName.Length == 1 && methodsWithName[0] is MethodBase)
+            {
+                return (MethodBase) methodsWithName[0];
+            }
             var parList = GetParameterList(definition);
 
             var result = GetMethodBasedOnParametersAndName(type, definition.Name, parList);
@@ -86,7 +89,7 @@ namespace CodeRefractor.CecilUtils
 
         private static MethodBase GetMethodBasedOnParametersAndName(Type declaringType, string methodName, Type[] parList)
         {
-            var methodResult = declaringType.GetMember(methodName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+            var methodResult = declaringType.GetMember(methodName, CecilCaches.AllFlags);
             if (methodResult.Length == 1)
                 return (MethodBase) methodResult[0];
             var targetParameters = parList;

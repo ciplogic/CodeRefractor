@@ -23,10 +23,6 @@ namespace CodeRefractor.RuntimeBase.Analyze
             var genericTypeCount = methodBase.DeclaringType.GetGenericArguments().Length;
 
             var sb = new StringBuilder();
-            if (genericTypeCount > 0)
-            {
-                sb.AppendLine(genericTypeCount.GetTypeTemplatePrefix());
-            }
 
             var arguments = methodBase.GetArgumentsAsText();
 

@@ -36,7 +36,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 });
                 if (parameterData != EscapingMode.Unused)
                 {
-                    var argumentTypeDescription = UsedTypeList.Set(method.DeclaringType.GetReversedMappedType(closureEntities), closureEntities);
+                    var argumentTypeDescription = UsedTypeList.Set(method.DeclaringType.GetMappedType(closureEntities), closureEntities);
                     var thisText = String.Format("const {0}& _this", argumentTypeDescription.ClrType.ToCppName(true)); // all "_this" should be smart pointers
                     //For some reason at three Virtual Test 4 fails this, is something wrong with the escaping ?
 //                    if ((!escapingBools[0]))

@@ -92,8 +92,9 @@ namespace CodeRefractor.FrontEnd
 
         private void AssignValueToStack(object value)
         {
-            if (value is LocalVariable)
-                _evaluator.Push((IdentifierValue) value);
+            var local = value as LocalVariable;
+            if (local != null)
+                _evaluator.Push(local);
             else
                 PushStack(new ConstValue(value));
         }

@@ -83,6 +83,9 @@ namespace CodeRefractor.Util
         {
              var name = type.Name.Replace("<>","__");
              name = name.Replace("`", "_");
+             var genericArguments = type.GetGenericArguments();
+             var genericTypes = string.Join("_", genericArguments.Select(tp=> tp.ToCppMangling()));
+             name += genericTypes;
              if (IsVoid(type)) return "System_Void";
             var typesCount = 0;
             if (handleGenerics && type.IsGenericType)

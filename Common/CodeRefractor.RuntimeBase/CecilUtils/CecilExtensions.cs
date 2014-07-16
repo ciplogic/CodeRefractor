@@ -2,7 +2,6 @@
 // jbevain/cecil/master/Test/Mono.Cecil.Tests/Extensions.cs
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Mono.Cecil;
 
@@ -19,18 +18,6 @@ namespace CodeRefractor.CecilUtils
         public static FieldDefinition GetField(this TypeDefinition self, string name)
         {
             return self.Fields.First(f => f.Name == name);
-        }
-
-        public static bool MatchOnlyOneItem<T>(IEnumerable<T> items, Predicate<T> matches, out T result)
-        {
-            var matcherItems = items.Where(item => matches(item)).ToArray();
-            if (matcherItems.Length == 1)
-            {
-                result = matcherItems[0];
-                return true;
-            }
-            result = default (T);
-            return false;
         }
 
         public static TypeDefinition ToDefinition(this Type self)

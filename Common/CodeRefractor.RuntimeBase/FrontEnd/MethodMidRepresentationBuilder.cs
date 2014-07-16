@@ -29,6 +29,7 @@ namespace CodeRefractor.FrontEnd
         public void ProcessInstructions()
         {
             var instructions = _method.GetInstructions().ToArray();
+            var genericArguments = _method.DeclaringType.GetGenericArguments();
             var labelList = ComputeLabels(_method);
             var evaluator = new EvaluatorStack();
             var operationFactory = new MetaMidRepresentationOperationFactory(_methodInterpreter.MidRepresentation,

@@ -2,9 +2,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Xml;
+using Mono.Cecil;
 
 #endregion
 
@@ -43,6 +45,14 @@ namespace CodeRefractor.CecilUtils
             LoadCachedAssembly(type.Assembly.FullName);
         }
 
+        public static Type LoadCachedType(TypeReference cecilType)
+        {
+        	if(String.IsNullOrEmpty(cecilType.Namespace)) {
+        		return LoadCachedType(cecilType.Name);
+        	}
+        	return LoadCachedType(String.Format("{0}.{1}", cecilType.Namespace, cecilType.Name));
+        }
+
         public static Type LoadCachedType(string fullType)
         {
             Type result;
@@ -57,7 +67,10 @@ namespace CodeRefractor.CecilUtils
                     break;
             }
             if (result == null)
-                throw new InvalidDataException("No type is found, did you miss to register the assembly of its type");
+            {
+                Debug.WriteLine("No type is found, did you miss to register the assembly of its type");
+                return result;
+            }
             AsmTypes[fullType] = result;
             return result;
         }

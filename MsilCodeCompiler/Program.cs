@@ -35,10 +35,7 @@ namespace CodeRefractor.Compiler
             var definition = asm.EntryPoint;
             var start = Environment.TickCount;
 
-
-
             var closureEntities = ClosureEntitiesUtils.BuildClosureEntities(definition, typeof(CrString).Assembly);
-
 
             var sb = closureEntities.BuildFullSourceCode();
             var end = Environment.TickCount - start;
