@@ -23,8 +23,8 @@ namespace CodeRefractor.ClosureCompute.TypeSorter
                 var mappedType = type.GetMappedType(_crRuntime);
                 types.Add(mappedType);
             }
-            var result = new List<Type>(_types);
-            result.Sort(new TypeComparer());
+            var result = new List<Type>(types);
+            result.Sort(new TypeComparer(_crRuntime));
             return result;
         }
     }

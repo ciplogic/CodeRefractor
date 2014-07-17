@@ -10,13 +10,12 @@ using CodeRefractor.Util;
 
 namespace CodeRefractor.CodeWriter.Types
 {
-    class TypeBodiesCodeGenerator
+    static class TypeBodiesCodeGenerator
     {
-        public static void WriteClosureStructBodies(Type[] typeDatas, StringBuilder sb, ClosureEntities crRuntime)
+        public static void WriteClosureStructBodies(StringBuilder sb, ClosureEntities crRuntime)
         {
             //Remove Mapped Types in favour of their resolved types
-            typeDatas = typeDatas.Where(type => !typeDatas.Any(t => CommonExtensions.GetMappedType(t, crRuntime) == type && t != type)).Except(new[] { (typeof(Int32)) }).ToArray();// typeDatas.ToList().Except(typeDatas.Where(y => y.Name == "String")).ToArray(); // This appears sometimes, why ?
-
+        
             var typesToMap = crRuntime.MappedTypes.Keys
                 .Where(t=>!ShouldSkipType(t))
                 .ToArray();
@@ -39,51 +38,42 @@ namespace CodeRefractor.CodeWriter.Types
                     "System_IComparable" , "System_ICloneable" , "System_IConvertible" , "System_IComparable_1" , "System_Collections_Generic_IEnumerable_1" , "System_Collections_IEnumerable" , "System_IEquatable_1"
                 }.Select(r => "struct " + r + "{};\n").Aggregate((a, b) => a + "\n" + b));
             */
-            foreach (var typeData in sortedTypeData)
+            foreach (var type in sortedTypeData)
             {
-                var typeCode = Type.GetTypeCode(typeData);
-
-                if (DelegateManager.IsTypeDelegate(typeData))
-                    continue;
-                var type = typeData.GetReversedMappedType(crRuntime);
-                var mappedType = typeData.GetMappedType(crRuntime);
-                if (ShouldSkipType(typeData)) continue;
-
-                if (mappedType.IsGenericType)
-                {
-                    var genericTypeCount = mappedType.GetGenericArguments().Length;
-                    var typeNames = new List<string>();
-                    for (var i = 1; i <= genericTypeCount; i++)
-                    {
-                        typeNames.Add("class T" + i);
-                    }
-                    sb.AppendFormat("template <{0}> ", string.Join(", ", typeNames)).AppendLine();
-                }
-                if (!type.IsValueType && type.BaseType != null)
-                {
-                    //Not Necessary
-                    // sb.AppendFormat("struct {0} : public {1} {2} {{", type.ToCppMangling(), type.BaseType.ToCppMangling(),type.GetInterfaces().Any()? " ,"+type.GetInterfaces().Select(j=>j.ToCppMangling()).Aggregate((a,b)=>a + " , " + b):"");
-                    sb.AppendFormat("struct {0} : public {1} {{", type.ToCppMangling(), type.BaseType.ToCppMangling());
-                }
-                else if (!type.IsValueType && type.IsInterface)
-                {
-                    sb.AppendFormat("struct {0} : public {1} {{", type.ToCppMangling(), typeof(object).ToCppMangling());
-                }
-                else
-                {
-                    sb.AppendFormat("struct {0} {{", type.ToCppMangling());
-                }
-                sb.AppendLine();
-                if (type == typeof(object))
-                {
-                    sb.AppendLine("int _typeId;");
-                }
-                WriteClassFieldsBody(sb, mappedType, crRuntime);
-                sb.AppendFormat("}};").AppendLine();
-
-                var typedesc = UsedTypeList.Set(type, crRuntime);
-                typedesc.WriteStaticFieldInitialization(sb);
+                WriteStructWithFields(sb, crRuntime, type);
             }
+        }
+
+        private static void WriteStructWithFields(StringBuilder sb, ClosureEntities crRuntime, Type type)
+        {
+            if (DelegateManager.IsTypeDelegate(type))
+                return;
+            var mappedType = type.GetMappedType(crRuntime);
+
+            if (!type.IsValueType && type.BaseType != null)
+            {
+                //Not Necessary
+                // sb.AppendFormat("struct {0} : public {1} {2} {{", type.ToCppMangling(), type.BaseType.ToCppMangling(),type.GetInterfaces().Any()? " ,"+type.GetInterfaces().Select(j=>j.ToCppMangling()).Aggregate((a,b)=>a + " , " + b):"");
+                sb.AppendFormat("struct {0} : public {1} {{", type.ToCppMangling(), type.BaseType.ToCppMangling());
+            }
+            else if (!type.IsValueType && type.IsInterface)
+            {
+                sb.AppendFormat("struct {0} : public {1} {{", type.ToCppMangling(), typeof (object).ToCppMangling());
+            }
+            else
+            {
+                sb.AppendFormat("struct {0} {{", type.ToCppMangling());
+            }
+            sb.AppendLine();
+            if (type == typeof (object))
+            {
+                sb.AppendLine("int _typeId;");
+            }
+            WriteClassFieldsBody(sb, mappedType, crRuntime);
+            sb.AppendFormat("}};").AppendLine();
+
+            var typedesc = UsedTypeList.Set(type, crRuntime);
+            typedesc.WriteStaticFieldInitialization(sb);
         }
 
         private static void GenerateForwardTypes(Type[] typeDatas, StringBuilder sb, ClosureEntities crRuntime)
@@ -95,8 +85,6 @@ namespace CodeRefractor.CodeWriter.Types
                     continue;
                 if (!mappedType.IsGenericType)
                     sb.AppendFormat("struct {0}; ", mappedType.ToCppMangling()).AppendLine();
-
-                //Lets not redeclare 
             }
         }
 

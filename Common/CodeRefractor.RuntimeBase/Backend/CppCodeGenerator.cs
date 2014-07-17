@@ -38,7 +38,7 @@ namespace CodeRefractor.Backend
 
             var virtualMethodTableCodeWriter = new VirtualMethodTableCodeWriter(typeTable, closure);
 
-            TypeBodiesCodeGenerator.WriteClosureStructBodies(typeClosure.ToArray(), sb, closureEntities);
+            TypeBodiesCodeGenerator.WriteClosureStructBodies(sb, closureEntities);
             WriteClosureDelegateBodies(closure, sb);
             WriteClosureHeaders(closure, sb, closureEntities);
 

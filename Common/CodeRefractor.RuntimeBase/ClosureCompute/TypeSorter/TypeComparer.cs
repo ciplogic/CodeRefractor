@@ -1,22 +1,30 @@
 using System;
 using System.Collections.Generic;
 using CodeRefractor.CecilUtils;
+using CodeRefractor.RuntimeBase;
 
 namespace CodeRefractor.ClosureCompute.TypeSorter
 {
     internal class TypeComparer : IComparer<Type>
     {
-        static HashSet<Type> DependencyTypes(Type type)
+        private readonly ClosureEntities _crRuntime;
+
+        public TypeComparer(ClosureEntities crRuntime)
+        {
+            _crRuntime = crRuntime;
+        }
+
+        HashSet<Type> DependencyTypes(Type type)
         {
             var result = new HashSet<Type>();
             var members = type.GetMembers(CecilCaches.AllFlags);
             foreach (var member in members)
             {
-                result.Add(member.ReflectedType);
+                result.Add(member.ReflectedType.GetMappedType(_crRuntime));
             }
             return result;
         } 
-        static bool IsSmallerThan(Type x, Type y)
+        bool IsSmallerThan(Type x, Type y)
         {
             if (y.IsSubclassOf(x))
                 return true;
@@ -27,6 +35,9 @@ namespace CodeRefractor.ClosureCompute.TypeSorter
         {
             if (x == y)
                 return 0;
+
+            x = x.GetMappedType(_crRuntime);
+            y = y.GetMappedType(_crRuntime);
             if(IsSmallerThan(x, y))
                 return -1;
             if(IsSmallerThan(y, x))
