@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using CodeRefractor.Backend;
+using CodeRefractor.Backend.ComputeClosure;
 using CodeRefractor.ClosureCompute.Steps;
 using CodeRefractor.ClosureCompute.Steps.AddTypes;
 using CodeRefractor.MiddleEnd;
@@ -13,7 +14,6 @@ using CodeRefractor.MiddleEnd.Interpreters;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
 using CodeRefractor.MiddleEnd.Optimizations.Util;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
-using CodeRefractor.RuntimeBase.Backend.ComputeClosure;
 using CodeRefractor.RuntimeBase.Config;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.TypeInfoWriter;
@@ -120,6 +120,7 @@ namespace CodeRefractor.ClosureCompute
 
         public Type ResolveType(Type type)
         {
+            type = type.ReduceType();
             Type result;
             if (MappedTypes.TryGetValue(type, out result))
                 return result;
@@ -140,6 +141,7 @@ namespace CodeRefractor.ClosureCompute
         {
             if (type == null)
                 return false;
+            type = type.ReduceType();
             if (MappedTypes.ContainsKey(type))
                 return false;
             MappedTypes[type] = ResolveType(type) ?? type;

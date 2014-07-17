@@ -16,6 +16,7 @@ namespace CodeRefractor.Runtime
             if (crRuntime.MappedTypes.TryGetValue(type, out result))
                 return result;
             var newType = type.ResolveTypeByResolvers();
+            newType = newType.ReduceType();
             if (newType != type)
             {
                 crRuntime.MappedTypes[type] = newType;

@@ -5,11 +5,10 @@ using CodeRefractor.ClosureCompute;
 using CodeRefractor.CodeWriter.Linker;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Optimizations.Purity;
-using CodeRefractor.Runtime;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.Backend.Linker
+namespace CodeRefractor.Backend.Linker
 {
     public static class LinkerInterpretersTableUtils
     {

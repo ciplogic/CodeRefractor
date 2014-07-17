@@ -9,13 +9,11 @@ using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Interpreters;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
 using CodeRefractor.RuntimeBase.CodeWriter.BasicOperations;
-using CodeRefractor.RuntimeBase.MiddleEnd;
-using CodeRefractor.RuntimeBase.Optimizations;
 using CodeRefractor.RuntimeBase.TypeInfoWriter;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.Backend.ComputeClosure
+namespace CodeRefractor.Backend.ComputeClosure
 {
     public static class MethodInterpreterCodeWriter
     {

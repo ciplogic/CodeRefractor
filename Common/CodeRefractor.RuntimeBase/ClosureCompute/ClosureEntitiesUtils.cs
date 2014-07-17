@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using CodeRefractor.ClosureCompute.Resolvers;
 
 namespace CodeRefractor.ClosureCompute
@@ -23,5 +24,15 @@ namespace CodeRefractor.ClosureCompute
             return closureEntities;
         }
 
+
+        public static Type ReduceType(this Type type)
+        {
+            if (type.IsArray)
+            {
+                return ReduceType(type.GetElementType());
+            }
+
+            return type;
+        }
     }
 }

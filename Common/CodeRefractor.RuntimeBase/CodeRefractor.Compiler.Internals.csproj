@@ -71,6 +71,7 @@
     <Compile Include="Analyze\LinkerInterpretersTable.cs" />
     <Compile Include="Analyze\NamerUtils.cs" />
     <Compile Include="Analyze\TypeDescription.cs" />
+    <Compile Include="CodeWriter\Types\TypeBodiesCodeGenerator.cs" />
     <Compile Include="CecilUtils\CecilExtensions.cs" />
     <Compile Include="CecilUtils\CecilCaches.cs" />
     <Compile Include="CecilUtils\CecilWrapper.cs" />
@@ -102,8 +103,6 @@
     <Compile Include="MiddleEnd\UseDefs\UseDefHelper.cs" />
     <Compile Include="Analyze\UsedTypeList.cs" />
     <Compile Include="Analyze\UsedTypeListUtils.cs" />
-    <Compile Include="Backend\ComputeClosure\ClosureResult.cs" />
-    <Compile Include="Backend\ComputeClosure\ClosureTypeComparer.cs" />
     <Compile Include="Backend\ComputeClosure\MethodInterpreterCodeWriter.cs" />
     <Compile Include="Backend\CppCodeGenerator.cs" />
     <Compile Include="Backend\Linker\LinkerInterpretersTableUtils.cs" />
