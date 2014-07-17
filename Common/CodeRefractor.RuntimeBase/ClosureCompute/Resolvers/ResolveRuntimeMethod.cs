@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using CodeRefractor.CecilUtils;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Interpreters;
 using CodeRefractor.Runtime.Annotations;
@@ -34,11 +35,31 @@ namespace CodeRefractor.ClosureCompute.Resolvers
             {
                 return null;
             }
-            var allMethods = resolvingType.GetMethods().Where(m => m.Name == method.Name).ToArray();
+            if (method.IsConstructor)
+            {
+                return HandleConstructor(method, resolvingType);
+            }
+            var allMethods = resolvingType.GetMethods(CecilCaches.AllFlags).Where(m => m.Name == method.Name).ToArray();
             var resultMethod = CalculateResultMethod(method, allMethods);
 
-            if (resultMethod == null) return null;
+            if (resultMethod == null)
+            {
+                return null;
+            }
             return ResolveMethodWithResult(resultMethod);
+        }
+
+        private static MethodInterpreter HandleConstructor(MethodBase method, Type resolvingType)
+        {
+            var allConstuctors = resolvingType.GetConstructors(CecilCaches.AllFlags).ToArray();
+            var methodParameters = method.GetParameters();
+            foreach (var constuctor in allConstuctors)
+            {
+                var ctorParameters = constuctor.GetParameters();
+                if (DoParametersMatch(methodParameters, ctorParameters))
+                    return ResolveMethodWithResult(constuctor);
+            }
+            return null;
         }
 
         private static MethodInfo CalculateResultMethod(MethodBase method, MethodInfo[] allMethods)

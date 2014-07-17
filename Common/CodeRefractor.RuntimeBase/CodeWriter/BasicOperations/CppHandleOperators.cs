@@ -31,7 +31,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             switch (kind)
             {
                 case OperationKind.Assignment:
-                    HandleAssign(bodySb, operation, vars, typeTable, interpreter);
+                    HandleAssign(bodySb, operation, interpreter);
                     break;
                 case OperationKind.BinaryOperator:
                     HandleOperator(operation, bodySb);
@@ -59,7 +59,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                     HandleSetArrayValue(operation, bodySb, interpreter);
                     break;
                 case OperationKind.NewObject:
-                    HandleNewObject(operation, bodySb, vars, typeTable, interpreter);
+                    HandleNewObject(operation, bodySb, typeTable, interpreter, crRuntime);
                     break;
                 case OperationKind.NewArray:
                     HandleNewArray(operation, bodySb, interpreter);
@@ -90,8 +90,8 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         }
 
 
-        private static void HandleAssign(StringBuilder sb, LocalOperation operation, MidRepresentationVariables vars,
-            TypeDescriptionTable typeTable, MethodInterpreter interpreter)
+        private static void HandleAssign(StringBuilder sb, LocalOperation operation, 
+            MethodInterpreter interpreter)
         {
             var assignment = (Assignment) operation;
 
@@ -658,15 +658,14 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         }
 
 
-        private static void HandleNewObject(LocalOperation operation, StringBuilder bodySb,
-            MidRepresentationVariables vars,
-            TypeDescriptionTable typeTable, MethodInterpreter interpreter)
+        private static void HandleNewObject(LocalOperation operation, StringBuilder bodySb, TypeDescriptionTable typeTable, MethodInterpreter interpreter, ClosureEntities crRuntime)
         {
             var value = (NewConstructedObject)operation;
             var rightValue = value;
             var localValue = rightValue.Info;
 
             var declaringType = localValue.DeclaringType;
+            var targetType = declaringType.GetMappedType(crRuntime);
             var cppName = declaringType.ToDeclaredVariableType(true, EscapingMode.Stack);
             var assignedData = interpreter.AnalyzeProperties.GetVariableData(value.AssignedTo);
             var isStack = assignedData == EscapingMode.Stack;
@@ -680,7 +679,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 bodySb.AppendFormat("{0} = std::make_shared<{1}>();", value.AssignedTo.Name, cppName);
             }
             bodySb.AppendLine();
-            typeTable.SetIdOfInstance(bodySb, value.AssignedTo, declaringType, isStack);
+            typeTable.SetIdOfInstance(bodySb, value.AssignedTo, targetType, isStack);
         }
     }
 }

@@ -1,5 +1,6 @@
 #region Usings
 
+using System;
 using CodeRefractor.Runtime.Annotations;
 
 #endregion
@@ -38,6 +39,17 @@ namespace CodeRefactor.OpenRuntime
         public int Length
         {
             get { return Text.Length -1; }
+        }
+
+        public char[] ToCharArray()
+        {
+            var length = Length;
+            var result = new char[length];
+            for (var i = 0; i < length; i++)
+            {
+                result[i] = Text[i];
+            }
+            return result;
         }
 
         private static unsafe int StrLen(byte* data)
