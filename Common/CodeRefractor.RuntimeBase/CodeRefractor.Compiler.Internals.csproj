@@ -166,7 +166,6 @@
     <Compile Include="FrontEnd\SimpleOperations\SizeOfAssignment.cs" />
     <Compile Include="FrontEnd\SimpleOperations\StaticFieldSetter.cs" />
     <Compile Include="Optimizations\OptimizationKind.cs" />
-    <Compile Include="Runtime\CrRuntimeLibrary.cs" />
     <Compile Include="DataBase\Cursor.cs" />
     <Compile Include="DataBase\Dict.cs" />
     <Compile Include="DataBase\DynNode.cs" />

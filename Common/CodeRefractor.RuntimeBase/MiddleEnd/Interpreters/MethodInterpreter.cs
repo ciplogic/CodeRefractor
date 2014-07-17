@@ -1,5 +1,6 @@
 #region Usings
 
+using System;
 using System.Reflection;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 using CodeRefractor.RuntimeBase;
@@ -16,7 +17,7 @@ namespace CodeRefractor.MiddleEnd.Interpreters
         public MethodKind Kind { get; set; }
 
         public readonly AnalyzeProperties AnalyzeProperties = new AnalyzeProperties();
-
+        public Type OverrideDeclaringType { get; set; }
 
         public MethodInterpreter(MethodBase method)
         {

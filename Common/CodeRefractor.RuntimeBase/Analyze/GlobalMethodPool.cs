@@ -8,7 +8,6 @@ using System.Reflection;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Interpreters;
-using CodeRefractor.Runtime;
 using CodeRefractor.Runtime.Annotations;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
@@ -34,7 +33,7 @@ namespace CodeRefractor.Analyze
             Interpreters[interpreter.ToKey()] = interpreter;
         }
 
-        public static MethodInterpreter Register(this MethodBase method, CrRuntimeLibrary crRuntime = null)
+        public static MethodInterpreter Register(this MethodBase method)
         {
             SetupTypeResolverIfNecesary(method);
             var interpreter = new CilMethodInterpreter(method);

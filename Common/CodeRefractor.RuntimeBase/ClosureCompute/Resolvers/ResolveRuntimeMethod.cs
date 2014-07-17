@@ -16,10 +16,12 @@ namespace CodeRefractor.ClosureCompute.Resolvers
 {
     public class ResolveRuntimeMethod : MethodResolverBase
     {
+        private readonly ClosureEntities _closureEntities;
         private readonly Dictionary<Type, Type> _solvedTypes;
 
-        public ResolveRuntimeMethod(Assembly assembly)
+        public ResolveRuntimeMethod(Assembly assembly, ClosureEntities closureEntities)
         {
+            _closureEntities = closureEntities;
             _solvedTypes = assembly.GetTypes()
                 .Where(t => t.GetCustomAttribute<MapTypeAttribute>() != null)
                 .ToDictionary(
@@ -46,10 +48,10 @@ namespace CodeRefractor.ClosureCompute.Resolvers
             {
                 return null;
             }
-            return ResolveMethodWithResult(resultMethod);
+            return ResolveMethodWithResult(resultMethod, method.DeclaringType);
         }
 
-        private static MethodInterpreter HandleConstructor(MethodBase method, Type resolvingType)
+        private MethodInterpreter HandleConstructor(MethodBase method, Type resolvingType)
         {
             var allConstuctors = resolvingType.GetConstructors(CecilCaches.AllFlags).ToArray();
             var methodParameters = method.GetParameters();
@@ -57,7 +59,7 @@ namespace CodeRefractor.ClosureCompute.Resolvers
             {
                 var ctorParameters = constuctor.GetParameters();
                 if (DoParametersMatch(methodParameters, ctorParameters))
-                    return ResolveMethodWithResult(constuctor);
+                    return ResolveMethodWithResult(constuctor, resolvingType);
             }
             return null;
         }
@@ -91,11 +93,12 @@ namespace CodeRefractor.ClosureCompute.Resolvers
             return true;
         }
 
-        private static MethodInterpreter ResolveMethodWithResult(MethodBase resultMethod)
+        private MethodInterpreter ResolveMethodWithResult(MethodBase resultMethod, Type overrideType)
         {
             if (!CppMethodInterpreter.IsCppMethod(resultMethod))
             {
                 var result = new CilMethodInterpreter(resultMethod);
+                result.OverrideDeclaringType = overrideType;
                 return result;
             }
             var cppResult = new CppMethodInterpreter(resultMethod);

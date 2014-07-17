@@ -9,7 +9,7 @@ namespace CodeRefractor.ClosureCompute
         public static ClosureEntities BuildClosureEntities(MethodInfo definition, Assembly runtimeAssembly)
         {
             var closureEntities = new ClosureEntities { EntryPoint = definition };
-            var resolveRuntimeMethod = new ResolveRuntimeMethod(runtimeAssembly);
+            var resolveRuntimeMethod = new ResolveRuntimeMethod(runtimeAssembly, closureEntities);
             closureEntities.AddMethodResolver(resolveRuntimeMethod);
 
             closureEntities.AddMethodResolver(new ResolvePlatformInvokeMethod());

@@ -33,7 +33,6 @@ System_Void CodeRefactor_OpenRuntime_CrConsole_Write(std::shared_ptr<System_Stri
 ///--- PInvoke code --- 
 ///---Begin closure code --- 
 System_Void _TestShapes_Main()
-
 {
 std::shared_ptr<System_String> vreg_1;
 
@@ -44,7 +43,6 @@ return;
 
 
 std::shared_ptr<System_String> CodeRefactor_OpenRuntime_StringImpl_Concat(std::shared_ptr<CodeRefactor_OpenRuntime_CrString> s1, std::shared_ptr<CodeRefactor_OpenRuntime_CrString> s2)
-
 {
 Array < System_Char >  * local_0;
 Array < System_Char >  * local_1;
@@ -117,7 +115,6 @@ return local_5;
 
 
 System_Void CodeRefactor_OpenRuntime_CrString_ctor(const std::shared_ptr<CodeRefactor_OpenRuntime_CrString>& _this, System_Char value)
-
 {
 System_Int32 local_0;
 System_Int32 local_1;

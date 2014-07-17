@@ -8,7 +8,6 @@ using System.Reflection;
 using CodeRefractor.Compiler;
 using CodeRefractor.CompilerBackend;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
-using CodeRefractor.Runtime;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Optimizations;
 using CodeRefractor.RuntimeBase.Util;
@@ -104,7 +103,6 @@ class C {{
             if (optimizationPasses == null)
                 optimizationPasses = DefaultOptimizationPasses();
 
-            var crRuntimeLibrary = new CrRuntimeLibrary();
 
 
             //var generatedSource = CppCodeGenerator.BuildFullSourceCode(linker);

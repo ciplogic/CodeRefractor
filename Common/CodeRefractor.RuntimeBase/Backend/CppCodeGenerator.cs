@@ -84,12 +84,13 @@ namespace CodeRefractor.Backend
 
         private static void WriteClosureHeaders(List<MethodInterpreter> closure, StringBuilder sb, ClosureEntities closureEntities)
         {
-            foreach (var interpreter in closure)
+            var methodInterpreters = 
+                closure
+                .Where(interpreter => interpreter.Kind == MethodKind.CilInstructions)
+                .Where(interpreter => !interpreter.Method.IsAbstract)
+                .ToArray();
+            foreach (var interpreter in methodInterpreters)
             {
-                if (interpreter.Kind != MethodKind.CilInstructions)
-                    continue;
-                if (interpreter.Method.IsAbstract)
-                    continue;
                 sb.AppendLine(MethodInterpreterCodeWriter.WriteMethodSignature(interpreter, closureEntities));
             }
         }

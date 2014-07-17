@@ -13,7 +13,6 @@ using CodeRefractor.MiddleEnd.SimpleOperations.ConstTable;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 using CodeRefractor.MiddleEnd.SimpleOperations.Operators;
-using CodeRefractor.Runtime;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
@@ -1016,11 +1015,6 @@ namespace CodeRefractor.FrontEnd
             };
 
             AddOperation(assign);
-        }
-
-        public void CallInterface(object operand, CrRuntimeLibrary crRuntime)
-        {
-            throw new NotImplementedException();
         }
     }
 }

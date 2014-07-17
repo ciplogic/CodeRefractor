@@ -32,7 +32,7 @@ namespace CodeRefractor.RuntimeBase.CodeWriter.BasicOperations
             var operations = interpreter.MidRepresentation.LocalOperations;
             var headerSb = new StringBuilder();
             var sb = CppWriteSignature.WriteSignature(interpreter, crRuntime);
-            headerSb.AppendLine(sb.ToString());
+            headerSb.Append(sb);
             headerSb.Append("{");
             var bodySb = ComputeBodySb(operations, interpreter.MidRepresentation.Vars, typeTable, interpreter, crRuntime);
             var variablesSb = ComputeVariableSb(interpreter.MidRepresentation, interpreter);
