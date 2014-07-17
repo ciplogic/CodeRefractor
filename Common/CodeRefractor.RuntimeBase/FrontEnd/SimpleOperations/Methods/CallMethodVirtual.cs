@@ -13,6 +13,7 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations.Methods
         public CallMethodVirtual(MethodInterpreter interpreter)
             : base(interpreter)
         {
+            Kind = OperationKind.CallVirtual;
             Parameters = new List<IdentifierValue>();
 
             Interpreter = interpreter;

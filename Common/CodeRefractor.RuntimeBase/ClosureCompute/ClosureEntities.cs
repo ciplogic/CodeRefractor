@@ -52,6 +52,7 @@ namespace CodeRefractor.ClosureCompute
             //Method closure steps
             AddClosureStep<AddEntryPointInterpretedMethod>();
             AddClosureStep<AddNotYetInterpretedMethods>();
+            AddClosureStep<AddVirtualMethods>();
 
             //Type closure steps
             AddClosureStep<AddStringTypeToClosure>();

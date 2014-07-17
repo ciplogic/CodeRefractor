@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using CodeRefractor.ClosureCompute;
@@ -49,6 +48,7 @@ namespace CodeRefractor.CodeWriter.Types
             if (DelegateManager.IsTypeDelegate(type))
                 return;
             var mappedType = type.GetMappedType(crRuntime);
+            type = mappedType.GetReversedMappedType(crRuntime);
 
             if (!type.IsValueType && type.BaseType != null)
             {
