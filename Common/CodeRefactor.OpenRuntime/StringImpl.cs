@@ -9,7 +9,13 @@ namespace CodeRefactor.OpenRuntime
         [MapMethod]
         public static string Substring(string _this, int startIndex)
         {
-            var result = new string(new char[3]);
+            var length = _this.Length;
+            var resultLen = length - startIndex;
+            var resultChars = new char[resultLen];
+            var originalChars = _this.ToCharArray();
+            for (var i = 0; i < resultLen; i++)
+                resultChars[i] = originalChars[i + startIndex];
+            var result = new string(resultChars);
             return result;
         }
 
