@@ -12,9 +12,11 @@ namespace CodeRefractor.ClosureCompute.Resolvers
 {
     public class ResolveRuntimeMethodUsingExtensions : MethodResolverBase
     {
+        private readonly ClosureEntities _closureEntities;
         private readonly Dictionary<Type, List<MethodInfo>> _solvedTypes;
-        public ResolveRuntimeMethodUsingExtensions(Assembly assembly)
+        public ResolveRuntimeMethodUsingExtensions(Assembly assembly, ClosureEntities closureEntities)
         {
+            _closureEntities = closureEntities;
             var extensionImplementations = assembly.GetTypes()
                 .Where(t => t.GetCustomAttribute<ExtensionsImplementation>() != null)
                 .ToList();
@@ -59,15 +61,17 @@ namespace CodeRefractor.ClosureCompute.Resolvers
             var resultMethod = CalculateResultMethod(method, list);
             if (resultMethod == null)
                 return null;
-            var result = new CilMethodInterpreter(resultMethod);
+            var result = new CilMethodInterpreter(resultMethod)
+            {
+                OverrideDeclaringType = method.DeclaringType
+            };
 
             return result;
         }
 
 
-        private static MethodInfo CalculateResultMethod(MethodBase method, List<MethodInfo> allMethods)
+        private MethodInfo CalculateResultMethod(MethodBase method, List<MethodInfo> allMethods)
         {
-            MethodInfo resultMethod = null;
             var srcParams = method.GetParameters().Select(par=>par.ParameterType).ToList();
             if (!method.IsStatic)
             {
@@ -84,20 +88,21 @@ namespace CodeRefractor.ClosureCompute.Resolvers
                 var targetParams = methodInfo.GetParameters().ToList();
                 if (srcParams.Count != targetParams.Count)
                     continue;
-                resultMethod = methodInfo;
                 var found = true;
                 for (var index = 0; index < srcParams.Count; index++)
                 {
                     var param = srcParams[index];
-                    var targetParam = targetParams[index];
-                    if (param == targetParam.ParameterType) continue;
+                    var reversedMappedType = targetParams[index].ParameterType
+                        .GetReversedMappedType(_closureEntities);
+                    if (param == reversedMappedType) continue;
                     found = false;
                     break;
                 }
-                if (!found)
-                    resultMethod = null;
+                if (found)
+                    return methodInfo;
+                
             }
-            return resultMethod;
+            return null;
         }
 
         

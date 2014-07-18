@@ -31,5 +31,18 @@ namespace CodeRefactor.OpenRuntime
             }
             return new string(resultCh);
         }
+
+
+        [MapMethod]
+        public static char[] ToCharArray(CrString _this)
+        {
+            var length = _this.Length;
+            var result = new char[length];
+            for (var i = 0; i < length; i++)
+            {
+                result[i] = _this.Text[i];
+            }
+            return result;
+        }
     }
 }

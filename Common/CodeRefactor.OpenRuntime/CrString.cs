@@ -41,17 +41,6 @@ namespace CodeRefactor.OpenRuntime
             get { return Text.Length -1; }
         }
 
-        public char[] ToCharArray()
-        {
-            var length = Length;
-            var result = new char[length];
-            for (var i = 0; i < length; i++)
-            {
-                result[i] = Text[i];
-            }
-            return result;
-        }
-
         private static unsafe int StrLen(byte* data)
         {
             int result = 0;

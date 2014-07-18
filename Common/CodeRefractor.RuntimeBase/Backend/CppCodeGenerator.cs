@@ -86,7 +86,6 @@ namespace CodeRefractor.Backend
         {
             var methodInterpreters = 
                 closure
-                .Where(interpreter => interpreter.Kind == MethodKind.CilInstructions)
                 .Where(interpreter => !interpreter.Method.IsAbstract)
                 .ToArray();
             foreach (var interpreter in methodInterpreters)

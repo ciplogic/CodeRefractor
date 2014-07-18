@@ -66,7 +66,8 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 }
                 var isSmartPtr = escapingBools[index];
                 var nonEscapingMode = isSmartPtr ? EscapingMode.Smart : EscapingMode.Pointer;
-                var argumentTypeDescription = UsedTypeList.Set(parameterInfo.ParameterType.GetMappedType(closureEntities), closureEntities);
+                var parameterType = parameterInfo.ParameterType.GetReversedMappedType(closureEntities);
+                var argumentTypeDescription = UsedTypeList.Set(parameterType, closureEntities);
                 sb.AppendFormat("{0} {1}",
                      argumentTypeDescription.ClrType.ToCppName(true, nonEscapingMode), //Handle byref
                     parameterInfo.Name);
