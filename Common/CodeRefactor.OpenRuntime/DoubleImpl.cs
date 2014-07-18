@@ -9,7 +9,7 @@ namespace CodeRefactor.OpenRuntime
         [CppMethodBody(
             Header = "stdio.h",
             Code = "System_Double result; "+
-    "sscanf (text->Text->Items, L\"%lf\", &result); " +
+    "swscanf (text->Text->Items, L\"%lf\", &result); " +
 	"return result;"
 )]
         public static double Parse(string text)
