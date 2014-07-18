@@ -90,7 +90,7 @@ namespace CodeRefractor.RuntimeBase.TypeInfoWriter
             if (!_result.TryGetValue(type, out typeId))
                 throw new InvalidDataException(
                     string.Format(
-                        "Type id for type: '{0}' is not defined ", type.ToCppMangling(true)
+                        "Type id for type: '{0}' is not defined ", type.ToCppMangling()
                         ));
             if (isStack)
             {

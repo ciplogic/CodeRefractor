@@ -17,7 +17,7 @@ namespace CodeRefractor.ClosureCompute
             var extensionsResolverMethod = new ResolveRuntimeMethodUsingExtensions(runtimeAssembly);
             closureEntities.AddMethodResolver(extensionsResolverMethod);
 
-            closureEntities.TypeResolverList.Add(new ResolveRuntimeType(runtimeAssembly));
+            closureEntities.EntitiesBuilder.AddTypeResolver(new ResolveRuntimeType(runtimeAssembly));
 
             closureEntities.ComputeFullClosure();
             closureEntities.OptimizeClosure();

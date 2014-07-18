@@ -19,7 +19,7 @@ System_Void _TestShapes_Main();
 
 std::shared_ptr<System_String> CodeRefactor_OpenRuntime_StringImpl_Concat(std::shared_ptr<CodeRefactor_OpenRuntime_CrString> s1, std::shared_ptr<CodeRefactor_OpenRuntime_CrString> s2);
 
-System_Void CodeRefactor_OpenRuntime_CrString_ctor(const std::shared_ptr<CodeRefactor_OpenRuntime_CrString>& _this, System_Char value);
+System_Void System_String_ctor(const std::shared_ptr<CodeRefactor_OpenRuntime_CrString>& _this, System_Char value);
 
 #include "runtime_base.hpp"
 // --- Begin definition of virtual method tables ---
@@ -28,7 +28,7 @@ System_Void setupTypeTable();
 // --- End of definition of virtual method tables ---
 
 #include "stdio.h"
-System_Void CodeRefactor_OpenRuntime_CrConsole_Write(std::shared_ptr<System_String> value)
+System_Void System_Console_Write(std::shared_ptr<System_String> value)
 { printf("%ls", value.get()->Text->Items); }
 ///--- PInvoke code --- 
 ///---Begin closure code --- 
@@ -36,8 +36,8 @@ System_Void _TestShapes_Main()
 {
 std::shared_ptr<System_String> vreg_1;
 
-vreg_1 = CodeRefactor_OpenRuntime_CrString_Concat(_str(0), _str(1));
-CodeRefactor_OpenRuntime_CrConsole_Write(vreg_1);
+vreg_1 = System_String_Concat(_str(0), _str(1));
+System_Console_Write(vreg_1);
 return;
 }
 
@@ -69,9 +69,9 @@ std::shared_ptr<System_String> vreg_22;
 System_Int32 vreg_23;
 System_Int32 vreg_24;
 
-vreg_1 = CodeRefactor_OpenRuntime_CrString_ToCharArray(s1);
+vreg_1 = System_String_ToCharArray(s1);
 local_0 = vreg_1;
-vreg_2 = CodeRefactor_OpenRuntime_CrString_ToCharArray(s2);
+vreg_2 = System_String_ToCharArray(s2);
 local_1 = vreg_2;
 vreg_23 = vreg_1->Length;
 vreg_24 = (int)vreg_23;
@@ -107,14 +107,14 @@ local_6 = (local_3 < vreg_20)?1:0;
 if(local_6) goto label_41;
 vreg_22 = std::make_shared<System_String >();
 vreg_22->_typeId = 0;
-CodeRefactor_OpenRuntime_CrString_ctor(vreg_22, local_2);
+System_String_ctor(vreg_22, local_2);
 local_5 = vreg_22;
 label_66:
 return local_5;
 }
 
 
-System_Void CodeRefactor_OpenRuntime_CrString_ctor(const std::shared_ptr<CodeRefactor_OpenRuntime_CrString>& _this, System_Char value)
+System_Void System_String_ctor(const std::shared_ptr<CodeRefactor_OpenRuntime_CrString>& _this, System_Char value)
 {
 System_Int32 local_0;
 System_Int32 local_1;

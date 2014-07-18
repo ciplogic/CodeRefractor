@@ -4,11 +4,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using CodeRefractor.ClosureCompute;
+using CodeRefractor.MiddleEnd.Interpreters;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.Runtime.Annotations;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Shared;
+using Mono.CompilerServices.SymbolWriter;
 
 #endregion
 
@@ -35,11 +38,30 @@ namespace CodeRefractor.Util
             return result;
         }
 
+        public static string ClangMethodSignature(this MethodInterpreter method, ClosureEntities crRuntime)
+        {
+            var declaringType = method.OverrideDeclaringType ?? method.Method.DeclaringType;
+            declaringType = declaringType.GetReversedMappedType(crRuntime);
+            var sb = new StringBuilder();
+            sb.Append(declaringType.ToCppMangling());
+            sb.Append("_");
+            var info = method.Method;
+            var methodName = info.Name;
+            if (info is ConstructorInfo)
+                methodName = "ctor";
+            //TODO: C++ does not expect names with angle brackets
+            methodName = methodName
+                 .Replace("<", "_")
+                 .Replace(">", "_").
+                 Replace(".","_"); 
+            
+            sb.Append(methodName);
+            return sb.ToString();
+        }
+
         public static string ClangMethodSignature(this MethodBase method, ClosureEntities crRuntime, bool isvirtualmethod = false)
         {
-            var mappedType = method.DeclaringType.GetMappedType(crRuntime);
-            if(mappedType==null)
-             mappedType = method.DeclaringType;
+            var mappedType = method.DeclaringType.GetReversedMappedType(crRuntime);
 
             var typeName = mappedType.ToCppMangling();
             if (isvirtualmethod)
@@ -79,7 +101,7 @@ namespace CodeRefractor.Util
             return string.Join(",", parameters.Select(paramType => paramType.ToCppMangling()));
         }
 
-        public static string ToCppMangling(this Type type, bool handleGenerics = false)
+        public static string ToCppMangling(this Type type)
         {
              var name = type.Name.Replace("<>","__");
              name = name.Replace("`", "_");
@@ -87,17 +109,7 @@ namespace CodeRefractor.Util
              var genericTypes = string.Join("_", genericArguments.Select(tp=> tp.ToCppMangling()));
              name += genericTypes;
              if (IsVoid(type)) return "System_Void";
-            var typesCount = 0;
-            if (handleGenerics && type.IsGenericType)
-            {
-                typesCount = type.GetGenericArguments().Length;
-            }
-            if (type.IsGenericFieldUsage())
-            {
-                return string.Format("T{0}", type.GenericParameterPosition + 1);
-            }
-            return name.ToCppMangling(type.Namespace,
-                typesCount);
+            return name.ToCppMangling(type.Namespace);
         }
 
         public static bool IsGenericFieldUsage(this Type type)
@@ -105,7 +117,7 @@ namespace CodeRefractor.Util
             return type.ContainsGenericParameters && !type.IsGenericTypeDefinition;
         }
 
-        public static string ToCppMangling(this string s, string nameSpace = "", int genericTypeCount = 0)
+        public static string ToCppMangling(this string s, string nameSpace = "")
         {
             if (String.IsNullOrEmpty(s))
                 return String.Empty;
@@ -114,16 +126,6 @@ namespace CodeRefractor.Util
             if (s.Contains("`"))
             {
                 s = s.Remove(s.IndexOf('`'));
-            }
-            if (genericTypeCount > 0)
-            {
-                var typeNames = new List<string>();
-                for (var i = 1; i <= genericTypeCount; i++)
-                {
-                    typeNames.Add("T" + i);
-                }
-                s = string.Format("{0}<{1}>", s,
-                    String.Join(", ", typeNames));
             }
             var fullName = nameSpace + "_" + s;
             if (s.EndsWith("[]"))
@@ -188,7 +190,7 @@ namespace CodeRefractor.Util
                 switch (isSmartPtr)
                 {
                     case EscapingMode.Smart:
-                        return String.Format(StdSharedPtr + "<{0}>", type.ToCppMangling(handleGenerics));
+                        return String.Format(StdSharedPtr + "<{0}>", type.ToCppMangling());
                     case EscapingMode.Pointer:
                         return String.Format("{0} *", type.ToCppMangling());
                     case EscapingMode.Stack:
@@ -245,9 +247,9 @@ namespace CodeRefractor.Util
                 switch (isSmartPtr)
                 {
                     case EscapingMode.Smart:
-                        return String.Format(StdSharedPtr + "<{0}>", type.ToCppMangling(handleGenerics));
+                        return String.Format(StdSharedPtr + "<{0}>", type.ToCppMangling());
                     case EscapingMode.Pointer:
-                        return String.Format("{0} *", type.ToCppMangling(handleGenerics));
+                        return String.Format("{0} *", type.ToCppMangling());
                     case EscapingMode.Stack:
                         return String.Format("{0} ", type.ToCppMangling());
                 }

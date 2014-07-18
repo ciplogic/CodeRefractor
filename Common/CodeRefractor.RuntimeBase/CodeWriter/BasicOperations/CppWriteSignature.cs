@@ -26,7 +26,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             var analyze = interpreter.AnalyzeProperties;
             if (!method.IsStatic)
             {
-                var parameterData = analyze.GetVariableData(new LocalVariable()
+                var parameterData = analyze.GetVariableData(new LocalVariable
                 {
                     VarName = "_this",
                     Kind = VariableKind.Argument,
@@ -78,14 +78,15 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         public static string WriteHeaderMethodWithEscaping(this MethodInterpreter interpreter, ClosureEntities closureEntities, bool writeEndColon = true)
         {
             var methodBase = interpreter.Method;
-            var retType = methodBase.GetReturnType().ToCppName(true);
-
             var sb = new StringBuilder();
+            sb.Append(methodBase.GetReturnType().ToCppName(true));
 
+            sb.Append(" ");
+
+            sb.Append(interpreter.ClangMethodSignature(closureEntities));
             var arguments = interpreter.GetArgumentsAsTextWithEscaping(closureEntities);
 
-            sb.AppendFormat("{0} {1}({2})",
-                retType, methodBase.ClangMethodSignature(closureEntities), arguments);
+            sb.AppendFormat("({0})", arguments);
             if (writeEndColon)
                 sb.Append(";");
 

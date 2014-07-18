@@ -41,7 +41,9 @@ namespace CodeRefractor.ClosureCompute.Resolvers
             {
                 return HandleConstructor(method, resolvingType);
             }
-            var allMethods = resolvingType.GetMethods(CecilCaches.AllFlags).Where(m => m.Name == method.Name).ToArray();
+            var allMethods = resolvingType.GetMethods(CecilCaches.AllFlags)
+                .Where(m => m.Name == method.Name)
+                .ToArray();
             var resultMethod = CalculateResultMethod(method, allMethods);
 
             if (resultMethod == null)
@@ -97,11 +99,16 @@ namespace CodeRefractor.ClosureCompute.Resolvers
         {
             if (!CppMethodInterpreter.IsCppMethod(resultMethod))
             {
-                var result = new CilMethodInterpreter(resultMethod);
-                result.OverrideDeclaringType = overrideType;
+                var result = new CilMethodInterpreter(resultMethod)
+                {
+                    OverrideDeclaringType = overrideType
+                };
                 return result;
             }
-            var cppResult = new CppMethodInterpreter(resultMethod);
+            var cppResult = new CppMethodInterpreter(resultMethod)
+            {
+                OverrideDeclaringType = overrideType
+            };
 
             cppResult.SetupInternalFields(resultMethod);
             return cppResult;

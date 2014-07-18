@@ -7,8 +7,6 @@ using System.Reflection;
 using System.Text;
 using CodeRefractor.Backend;
 using CodeRefractor.Backend.ComputeClosure;
-using CodeRefractor.ClosureCompute.Steps;
-using CodeRefractor.ClosureCompute.Steps.AddTypes;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Interpreters;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
@@ -33,10 +31,8 @@ namespace CodeRefractor.ClosureCompute
         public Dictionary<MethodBase, MethodInterpreter> MethodImplementations { get; set; }
         public Dictionary<MethodInterpreterKey, MethodInterpreter> LookupMethods { get; set; }
         public HashSet<MethodInfo> AbstractMethods { get; set; }
-        public List<ClosureComputeBase> ClosureSteps { get; set; }
 
-        public List<MethodResolverBase> MethodResolverList { get; set; }
-        public List<TypeResolverBase> TypeResolverList { get; set; }
+        internal readonly ClosureEntitiesBuilder EntitiesBuilder = new ClosureEntitiesBuilder();
 
         public ClosureEntities()
         {
@@ -44,20 +40,8 @@ namespace CodeRefractor.ClosureCompute
             MethodImplementations = new Dictionary<MethodBase, MethodInterpreter>();
             AbstractMethods = new HashSet<MethodInfo>();
             LookupMethods = new Dictionary<MethodInterpreterKey, MethodInterpreter>();
-            MethodResolverList = new List<MethodResolverBase>();
 
-            TypeResolverList = new List<TypeResolverBase>();
-
-            ClosureSteps = new List<ClosureComputeBase>();
-            //Method closure steps
-            AddClosureStep<AddEntryPointInterpretedMethod>();
-            AddClosureStep<AddNotYetInterpretedMethods>();
-            AddClosureStep<AddVirtualMethods>();
-
-            //Type closure steps
-            AddClosureStep<AddStringTypeToClosure>();
-            AddClosureStep<AddParameterTypesToClosure>();
-            AddClosureStep<AddLocalVariableTypesToClosure>();
+            EntitiesBuilder.SetupSteps();
         }
 
         public MethodInterpreter GetMethodImplementation(MethodBase method)
@@ -71,7 +55,7 @@ namespace CodeRefractor.ClosureCompute
             var result = GetMethodImplementation(method);
             if (result != null)
                 return result;
-            foreach (var resolverBase in MethodResolverList)
+            foreach (var resolverBase in EntitiesBuilder.MethodResolverList)
             {
                 result = resolverBase.Resolve(method);
                 if (result != null)
@@ -80,18 +64,13 @@ namespace CodeRefractor.ClosureCompute
             return null;
         }
 
-        private void AddClosureStep<T>() where T : ClosureComputeBase, new()
-        {
-            ClosureSteps.Add(new T());
-        }
-
         public void ComputeFullClosure()
         {
             var updateClosure = true;
             while (updateClosure)
             {
                 updateClosure = false;
-                foreach (var closureStep in ClosureSteps)
+                foreach (var closureStep in EntitiesBuilder.ClosureSteps)
                 {
                     updateClosure |= closureStep.UpdateClosure(this);
                 }
@@ -106,7 +85,7 @@ namespace CodeRefractor.ClosureCompute
 
         public void AddMethodResolver(MethodResolverBase resolveRuntimeMethod)
         {
-            MethodResolverList.Add(resolveRuntimeMethod);
+            EntitiesBuilder.MethodResolverList.Add(resolveRuntimeMethod);
         }
 
         public StringBuilder BuildFullSourceCode()
@@ -125,7 +104,7 @@ namespace CodeRefractor.ClosureCompute
             Type result;
             if (MappedTypes.TryGetValue(type, out result))
                 return result;
-            foreach (var resolverBase in TypeResolverList)
+            foreach (var resolverBase in EntitiesBuilder.TypeResolverList)
             {
                 var resolved = resolverBase.Resolve(type);
                 if (resolved != null)

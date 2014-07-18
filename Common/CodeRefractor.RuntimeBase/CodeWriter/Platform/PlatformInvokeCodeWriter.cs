@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using CodeRefractor.Analyze;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.CodeWriter.Linker;
 using CodeRefractor.MiddleEnd;
