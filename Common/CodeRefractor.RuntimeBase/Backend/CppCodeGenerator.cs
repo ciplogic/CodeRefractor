@@ -68,11 +68,10 @@ namespace CodeRefractor.Backend
             {
                 var cppInterpreter = (CppMethodInterpreter) interpreter;
                 var runtimeLibrary = cppInterpreter.CppRepresentation;
-                var methodDeclaration = interpreter.Method.GenerateKey(crRuntime);
                 if (LinkingData.SetInclude(runtimeLibrary.Header))
                     sb.AppendFormat("#include \"{0}\"", runtimeLibrary.Header).AppendLine();
-
-                sb.Append(methodDeclaration);
+                var sbDeclaration = CppWriteSignature.WriteSignature(interpreter, crRuntime, false);
+                sb.Append(sbDeclaration);
                 sb.AppendFormat("{{ {0} }}", runtimeLibrary.Source).AppendLine();
             }
         }
@@ -86,7 +85,6 @@ namespace CodeRefractor.Backend
         {
             var methodInterpreters = 
                 closure
-                .Where(interpreter => interpreter.Kind == MethodKind.CilInstructions)
                 .Where(interpreter => !interpreter.Method.IsAbstract)
                 .ToArray();
             foreach (var interpreter in methodInterpreters)

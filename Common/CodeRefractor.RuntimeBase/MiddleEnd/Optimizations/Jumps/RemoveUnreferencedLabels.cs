@@ -12,7 +12,7 @@ using CodeRefractor.RuntimeBase.Optimizations;
 
 namespace CodeRefractor.MiddleEnd.Optimizations.Jumps
 {
-    [Optimization(Category = OptimizationCategories.UseDef)]
+    [Optimization(Category = OptimizationCategories.DeadCodeElimination)]
     public class RemoveUnreferencedLabels : ResultingInFunctionOptimizationPass
     {
         public override void OptimizeOperations(CilMethodInterpreter interpreter)

@@ -20,7 +20,7 @@ using CodeRefractor.RuntimeBase.Optimizations;
 
 namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
 {
-    [Optimization(Category = OptimizationCategories.Analysis)]
+    //[Optimization(Category = OptimizationCategories.Analysis)]
     internal class InFunctionLoweringVars : ResultingInFunctionOptimizationPass
     {
         public override void OptimizeOperations(CilMethodInterpreter interpreter)

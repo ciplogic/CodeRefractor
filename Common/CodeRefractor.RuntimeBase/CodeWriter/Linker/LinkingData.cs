@@ -29,6 +29,8 @@ namespace CodeRefractor.CodeWriter.Linker
 
         public static bool SetInclude(string include)
         {
+            if (string.IsNullOrWhiteSpace(include))
+                return false;
             if (Includes.Contains(include))
                 return false;
             Includes.Add(include);

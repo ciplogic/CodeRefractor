@@ -427,6 +427,13 @@ namespace CodeRefractor.FrontEnd
         public void CallVirtual(object operand)
         {
             var methodInfo = ((MethodReference) operand).GetMethod();
+            var parameterStackType = _evaluator.Top.FixedType.ClrType;
+            if (parameterStackType == methodInfo.DeclaringType)
+            {
+                //naive removal of virtual calls
+                Call(operand);
+                return;
+            }
             var interpreter = new CilMethodInterpreter(methodInfo);
 
             var methodData = new CallMethodVirtual(interpreter);

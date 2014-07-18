@@ -7,10 +7,9 @@ using CodeRefractor.Runtime.Annotations;
 
 namespace CodeRefactor.OpenRuntime
 {
-    [MapType(typeof (Console))]
+    [MapType(typeof(Console))]
     public class CrConsole
     {
-
         [CppMethodBody(Header = "stdio.h", Code = "printf(\"\\n\");")]
         public static void WriteLine()
         {
@@ -28,7 +27,7 @@ namespace CodeRefactor.OpenRuntime
 
         public static void WriteLine(float value)
         {
-            WriteLine((double) value);
+            WriteLine((double)value);
         }
 
         [CppMethodBody(Header = "stdio.h", Code = "printf(\"%ls\", value.get()->Text->Items);")]
@@ -38,6 +37,11 @@ namespace CodeRefactor.OpenRuntime
 
         [CppMethodBody(Header = "stdio.h", Code = "printf(\"%ls\\n\", value.get()->Text->Items);")]
         public static void WriteLine(string value)
+        {
+        }
+
+        [CppMethodBody(Header = "stdio.h", Code = "printf(\"%lf\", value);")]
+        public static void Write(double value)
         {
         }
 
