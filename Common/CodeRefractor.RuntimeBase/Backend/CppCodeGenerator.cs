@@ -68,11 +68,10 @@ namespace CodeRefractor.Backend
             {
                 var cppInterpreter = (CppMethodInterpreter) interpreter;
                 var runtimeLibrary = cppInterpreter.CppRepresentation;
-                var methodDeclaration = interpreter.Method.GenerateKey(crRuntime);
                 if (LinkingData.SetInclude(runtimeLibrary.Header))
                     sb.AppendFormat("#include \"{0}\"", runtimeLibrary.Header).AppendLine();
-
-                sb.Append(methodDeclaration);
+                var sbDeclaration = CppWriteSignature.WriteSignature(interpreter, crRuntime, false);
+                sb.Append(sbDeclaration);
                 sb.AppendFormat("{{ {0} }}", runtimeLibrary.Source).AppendLine();
             }
         }

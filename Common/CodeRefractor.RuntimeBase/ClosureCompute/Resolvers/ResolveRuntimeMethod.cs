@@ -8,6 +8,7 @@ using CodeRefractor.CecilUtils;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Interpreters;
 using CodeRefractor.Runtime.Annotations;
+using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Shared;
 
 #endregion
@@ -43,8 +44,8 @@ namespace CodeRefractor.ClosureCompute.Resolvers
             }
             var allMethods = resolvingType.GetMethods(CecilCaches.AllFlags)
                 .Where(m => m.Name == method.Name)
-                .ToArray();
-            var resultMethod = CalculateResultMethod(method, allMethods);
+                .ToList();
+            var resultMethod = CalculateResultMethod(method, allMethods,_closureEntities);
 
             if (resultMethod == null)
             {
@@ -53,7 +54,7 @@ namespace CodeRefractor.ClosureCompute.Resolvers
             return ResolveMethodWithResult(resultMethod, method.DeclaringType);
         }
 
-        private MethodInterpreter HandleConstructor(MethodBase method, Type resolvingType)
+        private static MethodInterpreter HandleConstructor(MethodBase method, Type resolvingType)
         {
             var allConstuctors = resolvingType.GetConstructors(CecilCaches.AllFlags).ToArray();
             var methodParameters = method.GetParameters();
@@ -64,21 +65,6 @@ namespace CodeRefractor.ClosureCompute.Resolvers
                     return ResolveMethodWithResult(constuctor, resolvingType);
             }
             return null;
-        }
-
-        private static MethodInfo CalculateResultMethod(MethodBase method, MethodInfo[] allMethods)
-        {
-            MethodInfo resultMethod = null;
-            var srcParams = method.GetParameters();
-            foreach (var methodInfo in allMethods)
-            {
-                var targetParams = methodInfo.GetParameters();
-                var found = DoParametersMatch(srcParams, targetParams);
-                if (!found) continue;
-                resultMethod = methodInfo;
-                break;
-            }
-            return resultMethod;
         }
 
         private static bool DoParametersMatch(ParameterInfo[] srcParams, ParameterInfo[] targetParams)
@@ -95,7 +81,43 @@ namespace CodeRefractor.ClosureCompute.Resolvers
             return true;
         }
 
-        private MethodInterpreter ResolveMethodWithResult(MethodBase resultMethod, Type overrideType)
+
+        public static MethodInfo CalculateResultMethod(MethodBase method, List<MethodInfo> allMethods, ClosureEntities closureEntities)
+        {
+            var srcParams = method.GetParameters().Select(par => par.ParameterType).ToList();
+            if (!method.IsStatic)
+            {
+                srcParams.Insert(0, method.DeclaringType);
+            }
+            foreach (var methodInfo in allMethods)
+            {
+                var methodName = methodInfo.Name;
+                var attributeMethod = methodInfo.GetCustomAttributeT<MapMethod>();
+                if (attributeMethod != null && !string.IsNullOrEmpty(attributeMethod.Name))
+                    methodName = attributeMethod.Name;
+                if (methodName != method.Name)
+                    continue;
+                var targetParams = methodInfo.GetParameters().ToList();
+                if (srcParams.Count != targetParams.Count)
+                    continue;
+                var found = true;
+                for (var index = 0; index < srcParams.Count; index++)
+                {
+                    var param = srcParams[index];
+                    var reversedMappedType = targetParams[index].ParameterType
+                        .GetReversedMappedType(closureEntities);
+                    if (param == reversedMappedType) continue;
+                    found = false;
+                    break;
+                }
+                if (found)
+                    return methodInfo;
+
+            }
+            return null;
+        }
+
+        public static MethodInterpreter ResolveMethodWithResult(MethodBase resultMethod, Type overrideType)
         {
             if (!CppMethodInterpreter.IsCppMethod(resultMethod))
             {

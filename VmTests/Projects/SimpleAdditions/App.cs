@@ -1,5 +1,6 @@
 //Tests abstract classes, abstract and overidden properties too
 
+using System;
 using CodeRefactor.OpenRuntime;
 
 abstract class Shape
@@ -59,10 +60,8 @@ class TestShapes
 {
     static void Main()
     {
-
-        var s1 = "Hello";
-        var s2 = " world";
-        var s3 = s1 + s2;
-        System.Console.Write(s3);
+        var s3 = double.Parse("2.5");
+     
+        Console.Write(s3);
     }
 }

@@ -6,7 +6,12 @@ namespace CodeRefactor.OpenRuntime
     public static class DoubleImpl
     {
         [MapMethod(IsStatic = true)]
-        [CppMethodBody(Code = "return 0.0;")]
+        [CppMethodBody(
+            Header = "stdio.h",
+            Code = "System_Double result; "+
+    "sscanf (text->Text->Items, L\"%lf\", &result); " +
+	"return result;"
+)]
         public static double Parse(string text)
         {
             return 0;

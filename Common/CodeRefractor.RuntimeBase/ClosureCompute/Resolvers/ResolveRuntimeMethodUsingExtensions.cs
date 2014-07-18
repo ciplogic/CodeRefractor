@@ -58,51 +58,10 @@ namespace CodeRefractor.ClosureCompute.Resolvers
             if (!_solvedTypes.TryGetValue(method.DeclaringType, out list))
                 return null;
 
-            var resultMethod = CalculateResultMethod(method, list);
+            var resultMethod = ResolveRuntimeMethod.CalculateResultMethod(method, list, _closureEntities);
             if (resultMethod == null)
                 return null;
-            var result = new CilMethodInterpreter(resultMethod)
-            {
-                OverrideDeclaringType = method.DeclaringType
-            };
-
-            return result;
-        }
-
-
-        private MethodInfo CalculateResultMethod(MethodBase method, List<MethodInfo> allMethods)
-        {
-            var srcParams = method.GetParameters().Select(par=>par.ParameterType).ToList();
-            if (!method.IsStatic)
-            {
-                srcParams.Insert(0, method.DeclaringType);
-            }
-            foreach (var methodInfo in allMethods)
-            {
-                var attributeMethod = methodInfo.GetCustomAttributeT<MapMethod>();
-                attributeMethod.Name = string.IsNullOrEmpty(attributeMethod.Name)
-                    ? methodInfo.Name
-                    : attributeMethod.Name;
-                if(attributeMethod.Name!=method.Name)
-                    continue;
-                var targetParams = methodInfo.GetParameters().ToList();
-                if (srcParams.Count != targetParams.Count)
-                    continue;
-                var found = true;
-                for (var index = 0; index < srcParams.Count; index++)
-                {
-                    var param = srcParams[index];
-                    var reversedMappedType = targetParams[index].ParameterType
-                        .GetReversedMappedType(_closureEntities);
-                    if (param == reversedMappedType) continue;
-                    found = false;
-                    break;
-                }
-                if (found)
-                    return methodInfo;
-                
-            }
-            return null;
+            return ResolveRuntimeMethod.ResolveMethodWithResult(resultMethod, method.DeclaringType);
         }
 
         
