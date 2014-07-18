@@ -104,14 +104,18 @@ namespace CodeRefractor.ClosureCompute.Resolvers
                     methodName = attributeMethod.Name;
                 if (methodName != method.Name)
                     continue;
-                var targetParams = methodInfo.GetParameters().ToList();
+                var targetParams = methodInfo.GetParameters().Select(p=>p.ParameterType).ToList();
+                if (!methodInfo.IsStatic)
+                {
+                    targetParams.Insert(0, method.DeclaringType);
+                }
                 if (srcParams.Count != targetParams.Count)
                     continue;
                 var found = true;
                 for (var index = 0; index < srcParams.Count; index++)
                 {
                     var param = srcParams[index];
-                    var reversedMappedType = targetParams[index].ParameterType
+                    var reversedMappedType = targetParams[index]
                         .GetReversedMappedType(closureEntities);
                     if (param == reversedMappedType) continue;
                     found = false;
