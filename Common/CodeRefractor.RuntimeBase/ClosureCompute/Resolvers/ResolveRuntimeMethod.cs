@@ -32,11 +32,18 @@ namespace CodeRefractor.ClosureCompute.Resolvers
         public override MethodInterpreter Resolve(MethodBase method)
         {
             var declaringType = method.DeclaringType;
-            Type resolvingType;
-            if (!_solvedTypes.TryGetValue(declaringType, out resolvingType))
+            //Check for mapped methods
+            Type resolvingType= _solvedTypes.Values.FirstOrDefault(h=>h==declaringType);
+            if (resolvingType==null)
             {
-                return null;
+                //Check for non-mapped methods
+                _solvedTypes.TryGetValue(declaringType, out resolvingType);
+                if(resolvingType==null)
+                    return null;
             }
+
+           
+
             if (method.IsConstructor)
             {
                 return HandleConstructor(method, resolvingType);
