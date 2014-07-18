@@ -23,9 +23,9 @@ System_Void System_Console_Write(std::shared_ptr<System_String> value);
 
 std::shared_ptr< Array < System_Char > > System_String_ToCharArray(std::shared_ptr<System_String> _this);
 
-System_Void System_String_ctor(const std::shared_ptr<CodeRefactor_OpenRuntime_CrString>& _this, std::shared_ptr< Array < System_Char > > value);
+System_Void System_String_ctor(const std::shared_ptr<System_String>& _this, std::shared_ptr< Array < System_Char > > value);
 
-System_Int32 System_String_get_Length(const std::shared_ptr<CodeRefactor_OpenRuntime_CrString>& _this);
+System_Int32 System_String_get_Length(const std::shared_ptr<System_String>& _this);
 
 #include "runtime_base.hpp"
 // --- Begin definition of virtual method tables ---
@@ -50,15 +50,15 @@ return;
 
 std::shared_ptr<System_String> System_String_Concat(std::shared_ptr<System_String> s1, std::shared_ptr<System_String> s2)
 {
-Array < System_Char >  * local_0;
-Array < System_Char >  * local_1;
+std::shared_ptr< Array < System_Char > > local_0;
+std::shared_ptr< Array < System_Char > > local_1;
 std::shared_ptr< Array < System_Char > > local_2;
 System_Int32 local_3;
 System_Int32 local_4;
 std::shared_ptr<System_String> local_5;
 System_Boolean local_6;
-Array < System_Char >  * vreg_1;
-Array < System_Char >  * vreg_2;
+std::shared_ptr< Array < System_Char > > vreg_1;
+std::shared_ptr< Array < System_Char > > vreg_2;
 System_Int32 vreg_5;
 System_Int32 vreg_6;
 System_Int32 vreg_7;
@@ -129,7 +129,7 @@ std::shared_ptr< Array < System_Char > > local_3;
 System_Boolean local_4;
 System_Int32 vreg_1;
 std::shared_ptr< Array < System_Char > > vreg_2;
-Array < System_Char >  * vreg_3;
+std::shared_ptr< Array < System_Char > > vreg_3;
 System_Char vreg_4;
 
 vreg_1 = System_String_get_Length(_this);
@@ -137,7 +137,7 @@ local_0 = vreg_1;
 vreg_2 = std::make_shared< Array <System_Char> >(vreg_1); 
 local_1 = vreg_2;
 local_2 = 0;
-vreg_3 = _this->Text.get();
+vreg_3 = _this->Text;
 goto label_24;
 label_13:
 vreg_4 = (*vreg_3)[local_2];
@@ -152,7 +152,7 @@ return local_3;
 }
 
 
-System_Void System_String_ctor(const std::shared_ptr<CodeRefactor_OpenRuntime_CrString>& _this, std::shared_ptr< Array < System_Char > > value)
+System_Void System_String_ctor(const std::shared_ptr<System_String>& _this, std::shared_ptr< Array < System_Char > > value)
 {
 System_Int32 local_0;
 System_Int32 local_1;
@@ -160,7 +160,7 @@ System_Boolean local_2;
 System_Int32 vreg_1;
 System_Int32 vreg_2;
 std::shared_ptr< Array < System_Char > > vreg_3;
-Array < System_Char >  * vreg_4;
+std::shared_ptr< Array < System_Char > > vreg_4;
 System_Char vreg_5;
 System_Int32 vreg_7;
 
@@ -170,7 +170,7 @@ local_0 = vreg_2;
 vreg_3 = std::make_shared< Array <System_Char> >(vreg_2); 
 _this->Text = vreg_3;
 local_1 = 0;
-vreg_4 = _this->Text.get();
+vreg_4 = _this->Text;
 goto label_2B;
 label_1C:
 vreg_5 = (*value)[local_1];
@@ -184,14 +184,14 @@ return;
 }
 
 
-System_Int32 System_String_get_Length(const std::shared_ptr<CodeRefactor_OpenRuntime_CrString>& _this)
+System_Int32 System_String_get_Length(const std::shared_ptr<System_String>& _this)
 {
 System_Int32 local_0;
-Array < System_Char >  * vreg_1;
+std::shared_ptr< Array < System_Char > > vreg_1;
 System_Int32 vreg_2;
 System_Int32 vreg_3;
 
-vreg_1 = _this->Text.get();
+vreg_1 = _this->Text;
 vreg_2 = vreg_1->Length;
 vreg_3 = (int)vreg_2;
 local_0 = vreg_3-1;
