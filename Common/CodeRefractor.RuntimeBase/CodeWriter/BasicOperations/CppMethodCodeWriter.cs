@@ -95,11 +95,11 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                         break;
 
                     case OperationKind.CastClass:
-                        HandleCastClass((ClassCasting)operation, bodySb, typeTable);
+                        HandleCastClass((ClassCasting)operation, bodySb);
                         break;
 
                     case OperationKind.Unbox:
-                        HandleUnbox((Unboxing)operation, bodySb, typeTable);
+                        HandleUnbox((Unboxing)operation, bodySb);
                         break;
 
                     default:
@@ -115,7 +115,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             return bodySb;
         }
 
-        private static void HandleUnbox(Unboxing unboxing, StringBuilder bodySb, TypeDescriptionTable typeTable)
+        private static void HandleUnbox(Unboxing unboxing, StringBuilder bodySb)
         {
             var typeDescription = unboxing.AssignedTo.ComputedType();
             bodySb
@@ -136,7 +136,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         }
 
 
-        private static void HandleCastClass(ClassCasting casting, StringBuilder bodySb, TypeDescriptionTable typeTable)
+        private static void HandleCastClass(ClassCasting casting, StringBuilder bodySb)
         {
             var typeDescription = casting.AssignedTo.ComputedType();
             bodySb
@@ -191,11 +191,11 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             var vars = midRepresentation.Vars;
             foreach (var variableInfo in vars.LocalVars)
             {
-                AddVariableContent(variablesSb, "{0} local_{1};", variableInfo, vars, interpreter);
+                AddVariableContent(variablesSb, "{0} local_{1};", variableInfo, interpreter);
             }
             foreach (var localVariable in vars.VirtRegs)
             {
-                AddVariableContent(variablesSb, "{0} vreg_{1};", localVariable, vars, interpreter);
+                AddVariableContent(variablesSb, "{0} vreg_{1};", localVariable, interpreter);
             }
             return variablesSb;
         }
@@ -212,8 +212,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             return localVariable.VarName;
         }
 
-        private static void AddVariableContent(StringBuilder variablesSb, string format, LocalVariable localVariable,
-            MidRepresentationVariables vars, MethodInterpreter interpreter)
+        private static void AddVariableContent(StringBuilder variablesSb, string format, LocalVariable localVariable, MethodInterpreter interpreter)
         {
             var localVariableData = interpreter.AnalyzeProperties.GetVariableData(localVariable);
             if (localVariableData == EscapingMode.Stack)
