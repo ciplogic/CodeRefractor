@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using CodeRefractor.CecilUtils;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Interpreters;
 using CodeRefractor.Runtime.Annotations;
@@ -49,7 +48,7 @@ namespace CodeRefractor.ClosureCompute.Resolvers
             {
                 return HandleConstructor(method, resolvingType);
             }
-            var allMethods = resolvingType.GetMethods(CecilCaches.AllFlags)
+            var allMethods = resolvingType.GetMethods(ClosureEntitiesBuilder.AllFlags)
                 .Where(m => m.Name == method.Name)
                 .ToList();
             var resultMethod = CalculateResultMethod(method, allMethods,_closureEntities);
@@ -63,7 +62,7 @@ namespace CodeRefractor.ClosureCompute.Resolvers
 
         private static MethodInterpreter HandleConstructor(MethodBase method, Type resolvingType)
         {
-            var allConstuctors = resolvingType.GetConstructors(CecilCaches.AllFlags).ToArray();
+            var allConstuctors = resolvingType.GetConstructors(ClosureEntitiesBuilder.AllFlags).ToArray();
             var methodParameters = method.GetParameters();
             foreach (var constuctor in allConstuctors)
             {

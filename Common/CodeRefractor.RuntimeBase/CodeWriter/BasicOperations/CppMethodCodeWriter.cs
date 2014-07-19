@@ -2,27 +2,24 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Text;
 using CodeRefractor.ClosureCompute;
-using CodeRefractor.CodeWriter.BasicOperations;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Interpreters;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.ConstTable;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
-using CodeRefractor.Runtime;
 using CodeRefractor.RuntimeBase.Analyze;
-using CodeRefractor.RuntimeBase.MiddleEnd;
+using CodeRefractor.RuntimeBase.CodeWriter.BasicOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.TypeInfoWriter;
 using CodeRefractor.Util;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.CodeWriter.BasicOperations
+namespace CodeRefractor.CodeWriter.BasicOperations
 {
     public static class CppMethodCodeWriter
     {

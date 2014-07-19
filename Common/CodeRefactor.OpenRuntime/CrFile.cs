@@ -1,6 +1,5 @@
 using System.IO;
 using CodeRefractor.Runtime.Annotations;
-using CodeRefractor.RuntimeBase;
 
 namespace CodeRefactor.OpenRuntime
 {
@@ -9,7 +8,7 @@ namespace CodeRefactor.OpenRuntime
     {
         [CppMethodBody(Header = "stdio.h",
             Code =
-                "    FILE *fl = fopen(path, \"r\");" +
+                "FILE *fl = fopen(path, \"r\");" +
                 @"
 fseek(fl, 0, SEEK_END);  
 long len = ftell(fl);  

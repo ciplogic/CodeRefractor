@@ -47,9 +47,9 @@ System_Void setupTypeTable();
 ///---Begin closure code --- 
 System_Void _NBody_Main()
 {
-std::shared_ptr<_MyList_1System_Int32 <System_Int32> > vreg_1;
+std::shared_ptr<_MyList_1System_Int32> vreg_1;
 
-vreg_1 = std::make_shared<_MyList_1System_Int32 <System_Int32>>();
+vreg_1 = std::make_shared<_MyList_1System_Int32 >();
 vreg_1->_typeId = 3;
 _MyList_1System_Int32_ctor(vreg_1);
 _MyList_1System_Int32_Add(vreg_1, 2);

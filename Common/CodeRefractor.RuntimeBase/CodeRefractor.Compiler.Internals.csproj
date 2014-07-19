@@ -51,7 +51,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Analyze\ClassHierarchyAnalysis.cs" />
     <Compile Include="Analyze\DelegateManager.cs" />
     <Compile Include="Analyze\FieldDescription.cs" />
     <Compile Include="Analyze\FieldNameTable.cs" />
@@ -62,7 +61,6 @@
     <Compile Include="ClosureCompute\ClosureEntitiesBuilder.cs" />
     <Compile Include="ClosureCompute\Steps\AddVirtualMethods.cs" />
     <Compile Include="CodeWriter\Types\TypeBodiesCodeGenerator.cs" />
-    <Compile Include="CecilUtils\CecilCaches.cs" />
     <Compile Include="ClosureCompute\ClosureComputeBase.cs" />
     <Compile Include="ClosureCompute\ClosureEntities.cs" />
     <Compile Include="ClosureCompute\ClosureEntitiesUtils.cs" />
@@ -163,7 +161,6 @@
     <Compile Include="DataBase\Compacter\MinimizeTransformer.cs" />
     <Compile Include="DataBase\SerializeXml\SerializeLogic.cs" />
     <Compile Include="DataBase\SerializeXml\XNodeAttribute.cs" />
-    <Compile Include="MiddleEnd\Interpreters\MethodInterpreterUtils.cs" />
     <Compile Include="FrontEnd\SimpleOperations\Methods\MethodKind.cs" />
     <Compile Include="MiddleEnd\Interpreters\Cil\MidRepresentationVariables.cs" />
     <Compile Include="FrontEnd\SimpleOperations\ConstTable\ConstByteArrayData.cs" />
