@@ -4,7 +4,7 @@ using System.Security.Cryptography;
 
 class MyList<T>
 {
-    private T[] _items = null;
+    private T[] _items;
 
     public int Count { get; set; }
     public int Capacity
@@ -70,7 +70,7 @@ class NBody
 
     public static void Main()
     {
-        var list2 = new MyList<int>();
+        var list2 = new List<int>();
         list2.Add(2);
     }
 }

@@ -60,7 +60,6 @@ return;
 System_Void _MyList_1System_Int32_ctor(const std::shared_ptr<_MyList_1System_Int32>& _this)
 {
 
-_this->_items = nullptr;
 _MyList_1System_Int32_set_Capacity(_this, 8);
 return;
 }
@@ -77,9 +76,9 @@ System_Int32 vreg_6;
 System_Int32 vreg_7;
 std::shared_ptr< Array < System_Int32 > > vreg_8;
 
-local_0 = vreg_1;
+local_0 = value;
 vreg_2 = _MyList_1System_Int32_get_Capacity(_this);
-vreg_3 = (vreg_1 == vreg_2)?1:0;
+vreg_3 = (local_0 == vreg_2)?1:0;
 local_1 = (vreg_3 == 0)?1:0;
 if(local_1) goto label_29;
 vreg_6 = _MyList_1System_Int32_get_Capacity(_this);
@@ -97,7 +96,7 @@ System_Void _MyList_1System_Int32_set_Capacity(const std::shared_ptr<_MyList_1Sy
 System_Int32 local_0;
 System_Boolean local_1;
 std::shared_ptr< Array < System_Int32 > > vreg_1;
-std::shared_ptr< Array < System_Int32 > > vreg_2;
+System_Boolean vreg_2;
 std::shared_ptr< Array < System_Int32 > > vreg_4;
 std::shared_ptr< Array < System_Int32 > >*  vreg_5;
 
@@ -152,7 +151,7 @@ System_Void _MyArray_Resize(std::shared_ptr< Array < System_Int32 > >*  array, S
 std::shared_ptr< Array < System_Int32 > > local_0;
 System_Boolean local_1;
 std::shared_ptr< Array < System_Int32 > > vreg_1;
-std::shared_ptr< Array < System_Int32 > > vreg_2;
+System_Boolean vreg_2;
 std::shared_ptr< Array < System_Int32 > > vreg_5;
 System_Int32 vreg_6;
 System_Int32 vreg_7;
@@ -167,7 +166,7 @@ vreg_1 = *array;
 vreg_2 = (vreg_1 == nullptr)?1:0;
 local_1 = (vreg_2 == 0)?1:0;
 if(local_1) goto label_18;
-array = std::make_shared< Array <System_Int32> >(newSize); 
+*array = std::make_shared< Array <System_Int32> >(newSize); 
 goto label_3F;
 label_18:
 vreg_5 = *array;
@@ -183,7 +182,7 @@ vreg_11 = *array;
 vreg_12 = *array;
 vreg_13 = vreg_12->Length;
 vreg_14 = (int)vreg_13;
-_MyArray_Copy(vreg_10, vreg_11, vreg_14);
+_MyArray_Copy(vreg_10.get(), vreg_11.get(), vreg_14);
 *array = vreg_10;
 label_3F:
 return;
