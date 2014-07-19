@@ -31,7 +31,10 @@ namespace CodeRefractor.ClosureCompute
             {
                 return ReduceType(type.GetElementType());
             }
-
+            if (type.IsByRef)
+            {
+                return ReduceType(type.GetElementType());
+            }
             return type;
         }
     }

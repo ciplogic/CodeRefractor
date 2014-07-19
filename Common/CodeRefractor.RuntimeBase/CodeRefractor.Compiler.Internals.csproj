@@ -42,21 +42,9 @@
     <Optimize>false</Optimize>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="IKVM.Reflection">
-      <HintPath>..\..\Lib\Ikvm.Reflection\IKVM.Reflection.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Mono.Cecil">
-      <HintPath>..\..\packages\Mono.Cecil.0.9.5.4\lib\net40\Mono.Cecil.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.Cecil.Mdb">
-      <HintPath>..\..\packages\Mono.Cecil.0.9.5.4\lib\net40\Mono.Cecil.Mdb.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.Cecil.Pdb">
-      <HintPath>..\..\packages\Mono.Cecil.0.9.5.4\lib\net40\Mono.Cecil.Pdb.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.Cecil.Rocks">
-      <HintPath>..\..\packages\Mono.Cecil.0.9.5.4\lib\net40\Mono.Cecil.Rocks.dll</HintPath>
+    <Reference Include="Mono.Reflection">
+      <HintPath>..\..\Lib\mono.reflection-master\bin\Debug\Mono.Reflection.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -74,9 +62,7 @@
     <Compile Include="ClosureCompute\ClosureEntitiesBuilder.cs" />
     <Compile Include="ClosureCompute\Steps\AddVirtualMethods.cs" />
     <Compile Include="CodeWriter\Types\TypeBodiesCodeGenerator.cs" />
-    <Compile Include="CecilUtils\CecilExtensions.cs" />
     <Compile Include="CecilUtils\CecilCaches.cs" />
-    <Compile Include="CecilUtils\CecilWrapper.cs" />
     <Compile Include="ClosureCompute\ClosureComputeBase.cs" />
     <Compile Include="ClosureCompute\ClosureEntities.cs" />
     <Compile Include="ClosureCompute\ClosureEntitiesUtils.cs" />
@@ -158,7 +144,6 @@
     <Compile Include="Config\CodeRefractorVersions.cs" />
     <Compile Include="Config\CommandLineParse.cs" />
     <Compile Include="Config\OptimizationLevelBase.cs" />
-    <Compile Include="MetaLinker.cs" />
     <Compile Include="FrontEnd\MetaMidRepresentationOperationFactory.cs" />
     <Compile Include="MiddleEnd\Interpreters\MidRepresentationUtils.cs" />
     <Compile Include="FrontEnd\SimpleOperations\DerefAssignment.cs" />

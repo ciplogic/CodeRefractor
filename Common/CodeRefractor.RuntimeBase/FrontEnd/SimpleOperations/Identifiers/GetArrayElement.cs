@@ -1,6 +1,7 @@
 #region Uses
 
 using System;
+using CodeRefractor.RuntimeBase.Analyze;
 
 #endregion
 
@@ -27,6 +28,20 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations.Identifiers
         public override string ToString()
         {
             return string.Format("{0}={1}[{2}]", AssignedTo.Name, Instance.Name, Index.Name);
+        }
+
+        public static GetArrayElement Create(LocalVariable assignedTo, LocalVariable instance, IdentifierValue index)
+        {
+            var result = new GetArrayElement
+            {
+                AssignedTo = assignedTo, 
+                Instance = instance, 
+                Index = index
+            };
+
+            var elementType = instance.FixedType.ClrType.GetElementType();
+            assignedTo.FixedType = new TypeDescription(elementType);
+            return result;
         }
     }
 }

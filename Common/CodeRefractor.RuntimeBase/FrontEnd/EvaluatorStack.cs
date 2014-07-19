@@ -11,6 +11,8 @@ namespace CodeRefractor.FrontEnd
 {
     public class EvaluatorStack : List<IdentifierValue>
     {
+        public Type[] GenericArguments { get; set; }
+
         public override string ToString()
         {
             var items = ToArray()
@@ -24,6 +26,11 @@ namespace CodeRefractor.FrontEnd
         }
 
         private int _vRegId;
+
+        public EvaluatorStack(Type[] genericArguments)
+        {
+            GenericArguments = genericArguments;
+        }
 
         public LocalVariable SetNewVReg()
         {

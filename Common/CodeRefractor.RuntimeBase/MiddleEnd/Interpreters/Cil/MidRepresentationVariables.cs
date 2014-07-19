@@ -19,23 +19,21 @@ namespace CodeRefractor.MiddleEnd.Interpreters.Cil
         public void SetupLocalVariables(MethodBase value)
         {
             var methodBody = value.GetMethodBody();
-            if (methodBody != null)
-            {
-                var localVariableInfos = methodBody.LocalVariables;
+            if (methodBody == null) return;
+            var localVariableInfos = methodBody.LocalVariables;
 
-                var varsToAdd = localVariableInfos.Select((v, index) => new LocalVariable
-                {
-                    FixedType = new TypeDescription(v.LocalType),
-                    Id = index,
-                    Kind = VariableKind.Local
-                }).ToList();
-                foreach (var localVariable in varsToAdd)
-                {
-                    localVariable.AutoName();
-                }
-                LocalVars.Clear();
-                LocalVars.AddRange(varsToAdd);
+            var varsToAdd = localVariableInfos.Select((v, index) => new LocalVariable
+            {
+                FixedType = new TypeDescription(v.LocalType),
+                Id = index,
+                Kind = VariableKind.Local
+            }).ToList();
+            foreach (var localVariable in varsToAdd)
+            {
+                localVariable.AutoName();
             }
+            LocalVars.Clear();
+            LocalVars.AddRange(varsToAdd);
         }
     }
 }

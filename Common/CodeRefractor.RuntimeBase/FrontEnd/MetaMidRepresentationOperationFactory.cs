@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using CodeRefractor.Analyze;
-using CodeRefractor.CecilUtils;
+using CodeRefractor.FrontEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Interpreters;
 using CodeRefractor.MiddleEnd.SimpleOperations;
@@ -18,8 +18,7 @@ using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
 using CodeRefractor.RuntimeBase.Shared;
-using Mono.Cecil;
-using Mono.Cecil.Cil;
+using Mono.Reflection;
 
 #endregion
 
@@ -175,7 +174,7 @@ namespace CodeRefractor.FrontEnd
             }
         }
 
-        public void StoreField(FieldReference fieldInfo)
+        public void StoreField(FieldInfo fieldInfo)
         {
             var secondVar = _evaluator.Pop();
             var firstVar = _evaluator.Pop();
@@ -212,13 +211,7 @@ namespace CodeRefractor.FrontEnd
             var instance = (LocalVariable) _evaluator.Pop();
 
             var result = SetNewVReg();
-            var arrayVariable = new GetArrayElement
-            {
-                AssignedTo = result,
-                Instance = instance,
-                Index = index
-            };
-
+            var arrayVariable = GetArrayElement.Create(result, instance, index);
 
             AddOperation(arrayVariable);
         }
@@ -409,24 +402,29 @@ namespace CodeRefractor.FrontEnd
         }
 
 
-        public void Call(object operand)
+        public void Call(MethodBase operand)
         {
-            var methodInfo = ((MethodReference) operand).GetMethod();
-                //TODO System.Void System.Array::Resize<System.Char>(!!0[]&,System.Int32) Weird Signature
+            var methodInfo = operand;
+            //TODO System.Void System.Array::Resize<System.Char>(!!0[]&,System.Int32) Weird Signature
 
             if (methodInfo == null) return;
-            var interpreter = PlatformInvokeMethod.IsPlatformInvoke(methodInfo)
-                ? (MethodInterpreter) new PlatformInvokeMethod(methodInfo)
-                : new CilMethodInterpreter(methodInfo);
+            MethodInterpreter interpreter;
+            if (PlatformInvokeMethod.IsPlatformInvoke(methodInfo))
+            {
+                interpreter = new PlatformInvokeMethod(methodInfo);
+                var pMethodData = new CallMethodStatic(interpreter);
+                CallMethodData(methodInfo, pMethodData);
+                return;
+
+            }
+            interpreter = new CilMethodInterpreter(methodInfo);
             var methodData = new CallMethodStatic(interpreter);
-
-
             CallMethodData(methodInfo, methodData);
         }
 
-        public void CallVirtual(object operand)
+        public void CallVirtual(MethodBase operand)
         {
-            var methodInfo = ((MethodReference) operand).GetMethod();
+            var methodInfo = operand;
             var parameterStackType = _evaluator.Top.FixedType.ClrType;
             if (parameterStackType == methodInfo.DeclaringType)
             {
@@ -521,7 +519,7 @@ namespace CodeRefractor.FrontEnd
         }
 
 
-        public void StoreStaticField(FieldReference fieldInfo)
+        public void StoreStaticField(FieldInfo fieldInfo)
         {
             var firstVar = _evaluator.Pop();
             var fieldName = fieldInfo.Name;
@@ -529,7 +527,7 @@ namespace CodeRefractor.FrontEnd
             {
                 AssignedTo = new StaticFieldSetter
                 {
-                    DeclaringType = fieldInfo.DeclaringType.GetClrType(),
+                    DeclaringType = fieldInfo.DeclaringType,
                     FieldName = fieldName
                 },
                 Right = firstVar
@@ -643,13 +641,13 @@ namespace CodeRefractor.FrontEnd
 
         #endregion
 
-        public void LoadAddressIntoEvaluationStack(VariableDefinition index)
+        public void LoadAddressIntoEvaluationStack(LocalVariableInfo index)
         {
             var vreg = SetNewVReg();
             vreg.FixedType = new TypeDescription(
-                index.VariableType.GetClrType().MakeByRefType());
+                index.LocalType.MakeByRefType());
 
-            var argument = _representation.Vars.LocalVars.First(v => v.Id == index.Index);
+            var argument = _representation.Vars.LocalVars.First(v => v.Id == index.LocalIndex);
             var assignment = new RefAssignment
             {
                 Left = vreg,
@@ -658,11 +656,18 @@ namespace CodeRefractor.FrontEnd
             AddOperation(assignment);
         }
 
-        public void LoadFieldAddressIntoEvaluationStack(FieldReference fieldInfo)
+        public void LoadFieldAddressIntoEvaluationStack(FieldInfo fieldInfo)
         {
             var firstVar = (LocalVariable) _evaluator.Pop();
             var vreg = SetNewVReg();
-            vreg.FixedType = new TypeDescription(fieldInfo.FieldType.GetClrType().MakeByRefType());
+            var clrType = fieldInfo.FieldType;
+            if (clrType == null)
+                clrType = _evaluator.GenericArguments.First();
+            else
+            {
+                clrType = clrType.MakeByRefType();
+            }
+            vreg.FixedType = new TypeDescription(clrType);
 
             var assignment = new FieldRefAssignment
             {
@@ -695,12 +700,12 @@ namespace CodeRefractor.FrontEnd
             AddOperation(assignment);
         }
 
-        public void LoadStaticField(FieldReference operand)
+        public void LoadStaticField(FieldInfo operand)
         {
             var vreg = SetNewVReg();
             var fieldName = operand.Name;
             var declaringType = operand.DeclaringType;
-            if (declaringType.GetClrType() == typeof (IntPtr) && fieldName == "Zero")
+            if (declaringType == typeof (IntPtr) && fieldName == "Zero")
             {
                 var voidPtr = new TypeDescription(typeof (IntPtr));
                 vreg.FixedType = voidPtr;
@@ -716,8 +721,8 @@ namespace CodeRefractor.FrontEnd
                 return;
             }
             vreg.FixedType =
-                new TypeDescription(declaringType.GetClrType().LocateField(fieldName, true).FieldType);
-            var typeData = new TypeDescription(declaringType.GetClrType());
+                new TypeDescription(declaringType.LocateField(fieldName, true).FieldType);
+            var typeData = new TypeDescription(declaringType);
             var assignment = new Assignment
             {
                 AssignedTo = vreg,
@@ -761,6 +766,11 @@ namespace CodeRefractor.FrontEnd
 
         public void NewArray(Type typeArray)
         {
+            if (typeArray == null)
+            {
+                //hacky way to get first parameter
+                typeArray = _evaluator.GenericArguments.First();
+            }
             var arrayLength = _evaluator.Pop();
             var result = SetNewVReg();
             var assignment = new NewArrayObject
@@ -787,12 +797,12 @@ namespace CodeRefractor.FrontEnd
             AddOperation(setArrayElement);
         }
 
-        public void SetToken(FieldReference operand)
+        public void SetToken(FieldInfo operand)
         {
             var fieldOperand = operand;
             var fieldType = fieldOperand.FieldType;
             var nesterType = fieldType.DeclaringType;
-            var fields = nesterType.GetClrType().GetFields(BindingFlags.Static | BindingFlags.NonPublic);
+            var fields = nesterType.GetFields(BindingFlags.Static | BindingFlags.NonPublic);
             var value = fields[0].GetValue(null);
             var srcBytes = value.ToByteArray();
             var vreg = SetNewVReg();
@@ -820,16 +830,16 @@ namespace CodeRefractor.FrontEnd
             PushStack(nullConst);
         }
 
-        public void LoadFunction(MethodDefinition operand)
+        public void LoadFunction(MethodBase operand)
         {
             var result = SetNewVReg();
             result.FixedType = new TypeDescription(operand.GetType());
-            var ptr = operand.GetMethod().MethodHandle.GetFunctionPointer();
+            var ptr = operand.MethodHandle.GetFunctionPointer();
             var store = new FunctionPointerStore
             {
                 AssignedTo = result,
-                FunctionPointer = operand.GetMethod(),
-                CustomData = (MethodInfo) operand.GetMethod()
+                FunctionPointer = operand,
+                CustomData = (MethodInfo) operand
             };
 
             AddOperation(store);

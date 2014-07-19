@@ -5,9 +5,9 @@ using System.IO;
 using System.Text;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.CodeWriter.Linker;
+using CodeRefractor.FrontEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Interpreters;
-using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.SimpleOperations.Operators;
@@ -26,7 +26,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 {
     internal static class CppHandleOperators
     {
-        public static bool HandleAssignmentOperations(MidRepresentationVariables vars, StringBuilder bodySb, LocalOperation operation, OperationKind kind, TypeDescriptionTable typeTable, MethodInterpreter interpreter, ClosureEntities crRuntime)
+        public static bool HandleAssignmentOperations(StringBuilder bodySb, LocalOperation operation, OperationKind kind, TypeDescriptionTable typeTable, MethodInterpreter interpreter, ClosureEntities crRuntime)
         {
             switch (kind)
             {

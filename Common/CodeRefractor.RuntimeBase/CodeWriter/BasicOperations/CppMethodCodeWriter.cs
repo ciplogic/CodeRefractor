@@ -49,7 +49,7 @@ namespace CodeRefractor.RuntimeBase.CodeWriter.BasicOperations
             var bodySb = new StringBuilder();
             foreach (var operation in operations)
             {
-                if (CppHandleOperators.HandleAssignmentOperations(vars, bodySb, operation, operation.Kind, typeTable,
+                if (CppHandleOperators.HandleAssignmentOperations(bodySb, operation, operation.Kind, typeTable,
                     interpreter, crRuntime))
                 {
                     bodySb.AppendLine();

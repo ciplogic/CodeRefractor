@@ -1,67 +1,76 @@
-//Tests abstract classes, abstract and overidden properties too
-
 using System;
-using CodeRefactor.OpenRuntime;
+using System.Collections.Generic;
+using System.Security.Cryptography;
 
-abstract class Shape
+class MyList<T>
 {
-    public abstract double Area
+    private T[] _items = null;
+
+    public int Count { get; set; }
+    public int Capacity
     {
-        get;
-        set;
+        get { return _items.Length; }
+        private set
+        {
+            var capacity = value;
+            if (_items == null)
+            {
+                _items = new T[capacity];
+            }
+            else
+            {
+                MyArray.Resize(ref _items, capacity);
+            }
+        }
+    }
+
+    public MyList()
+    {
+        Capacity = 8;
+    }
+
+    public void Add(T value)
+    {
+        var count = Count;
+        if (count == Capacity)
+        {
+            Capacity *= 2;
+        }
+        _items[count] = value;
+        Count = count+1;
     }
 }
 
-class Square : Shape
+public class MyArray
 {
-    public double side;
-
-    public Square(double s)  //constructor
+    public static void Resize<T>(ref T[] array, int newSize)
     {
-        side = s;
+        if (array == null)
+        {
+            array = new T[newSize];
+            return;
+        }
+        if (array.Length == newSize) return;
+        var array3 = new T[newSize];
+        Copy(array3, array, array.Length);
+        array = array3;
     }
 
-    public override double Area
+    public static void Copy<T>(T[] dest, T[] src, int size)
     {
-        get
+        for (var index = 0; index < size; index++)
         {
-            return side * side;
-        }
-        set
-        {
-            side = System.Math.Sqrt(value);
+            var item = src[index];
+            dest[index] = item;
         }
     }
 }
-
-class Cube : Shape
+class NBody
 {
-    public double side;
 
-    public Cube(double s)
+    public static void Main()
     {
-        side = s;
-    }
-
-    public override double Area
-    {
-        get
-        {
-            return 6 * side * side;
-        }
-        set
-        {
-            side = System.Math.Sqrt(value / 6);
-        }
-    }
-}
-
-class TestShapes
-{
-    static void Main()
-    {
-        var s3 = double.Parse("2.5");
-     
-        Console.Write(s3);
+        var list2 = new MyList<int>();
+        list2.Add(2);
     }
 }

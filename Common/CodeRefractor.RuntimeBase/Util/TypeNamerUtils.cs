@@ -8,10 +8,7 @@ using System.Text;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.MiddleEnd.Interpreters;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
-using CodeRefractor.Runtime.Annotations;
 using CodeRefractor.RuntimeBase;
-using CodeRefractor.RuntimeBase.Shared;
-using Mono.CompilerServices.SymbolWriter;
 
 #endregion
 

@@ -1,19 +1,19 @@
 #region Uses
 
 using System;
+using System.Reflection;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
-using Mono.Cecil;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
+namespace CodeRefractor.FrontEnd.SimpleOperations
 {
     public class FieldRefAssignment : LocalOperation
     {
         public LocalVariable Left;
         public LocalVariable Right;
-        public FieldReference Field;
+        public FieldInfo Field;
 
         public FieldRefAssignment() : base(OperationKind.FieldRefAssignment)
         {
