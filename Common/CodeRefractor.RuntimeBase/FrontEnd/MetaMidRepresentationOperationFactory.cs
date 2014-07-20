@@ -8,6 +8,7 @@ using CodeRefractor.Analyze;
 using CodeRefractor.FrontEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Interpreters;
+using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.ConstTable;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
@@ -426,12 +427,12 @@ namespace CodeRefractor.FrontEnd
         {
             var methodInfo = operand;
             var parameterStackType = _evaluator.Top.FixedType.ClrType;
-//            if (parameterStackType == methodInfo.DeclaringType)
-//            {
-//                //naive removal of virtual calls
-//                Call(operand);
-//                return;
-//            }
+            if (parameterStackType == methodInfo.DeclaringType)
+            {
+                //naive removal of virtual calls
+                Call(operand);
+                return;
+            }
             var interpreter = new CilMethodInterpreter(methodInfo);
 
             var methodData = new CallMethodVirtual(interpreter);

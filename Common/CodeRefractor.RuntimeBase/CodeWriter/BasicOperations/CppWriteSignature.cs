@@ -20,6 +20,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         public static string GetArgumentsAsTextWithEscaping(this MethodInterpreter interpreter, ClosureEntities closureEntities)
         {
             var method = interpreter.Method;
+
             var parameterInfos = method.GetParameters();
             var escapingBools = method.BuildEscapingBools(closureEntities);
             var sb = new StringBuilder();
@@ -32,20 +33,21 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                     VarName = "_this",
                     Kind = VariableKind.Argument,
                     Id = 0
-                });
-                if (parameterData != EscapingMode.Unused)
+                }); 
+                TypeDescription argumentTypeDescription = UsedTypeList.Set(method.DeclaringType.GetReversedMappedType(closureEntities) ?? method.DeclaringType.GetMappedType(closureEntities), closureEntities);
+                    
+                switch (parameterData )
                 {
-                    TypeDescription argumentTypeDescription = UsedTypeList.Set(method.DeclaringType.GetReversedMappedType(closureEntities) ?? method.DeclaringType.GetMappedType(closureEntities), closureEntities);
-                    var thisText = String.Format("const {0}& _this", argumentTypeDescription.ClrType.ToCppName(true)); // all "_this" should be smart pointers
-                    //For some reason at three Virtual Test 4 fails this, is something wrong with the escaping ?
-//                    if ((!escapingBools[0]))
-//                    {
-//                        thisText = String.Format("{0} _this",
-//                            argumentTypeDescription.ClrType.ToCppName(true, EscapingMode.Pointer));
-//                    }
-                    sb.Append(thisText);
-                    index++;
+                    case EscapingMode.Unused:
+                        break;
+                    case EscapingMode.Smart:
+                        sb.AppendFormat("const {0}& _this", argumentTypeDescription.ClrType.ToCppName(true));
+                        break;
+                    case EscapingMode.Pointer:
+                        sb.AppendFormat("const {0} _this", argumentTypeDescription.ClrType.ToCppName(true, isSmartPtr:EscapingMode.Pointer));
+                        break;
                 }
+                index++;
             }
             var isFirst = index == 0;
             for (index = 0; index < parameterInfos.Length; index++)

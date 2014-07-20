@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using CodeRefractor.CodeWriter.Linker;
 using CodeRefractor.MiddleEnd.Interpreters;
+using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
@@ -16,7 +17,7 @@ using CodeRefractor.RuntimeBase.Optimizations;
 
 namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
 {
-    [Optimization(Category = OptimizationCategories.Analysis)]
+    //[Optimization(Category = OptimizationCategories.Analysis)]
     internal class AnalyzeParametersAreEscaping : ResultingGlobalOptimizationPass
     {
         public override void OptimizeOperations(CilMethodInterpreter interpreter)

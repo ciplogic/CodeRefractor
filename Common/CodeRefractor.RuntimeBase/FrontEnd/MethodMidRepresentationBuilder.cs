@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using CodeRefractor.MiddleEnd;
+using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Shared;
 using CodeRefractor.Util;
