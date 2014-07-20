@@ -85,7 +85,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 methodName = virtualMethod.BaseMethod.ClangMethodSignature(crRuntime);
                 var parametersString = GetParametersString(virtualMethod,isinterfaceMethod);
 
-                sb.Append(virtualMethod.ReturnType.ToCppName(true, EscapingMode.Smart));
+                sb.Append(virtualMethod.ReturnType.ToCppName(EscapingMode.Smart));
                 sb.Append(" ");
                 sb.Append(methodName);
                 sb.Append("_vcall(");
@@ -106,7 +106,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 
                 var parametersString = GetParametersString(virtualMethod, isinterfaceMethod);
 
-                vmsb.Append(virtualMethod.ReturnType.ToCppName(true, EscapingMode.Smart));
+                vmsb.Append(virtualMethod.ReturnType.ToCppName(EscapingMode.Smart));
                 vmsb.Append(" ");
                 vmsb.Append(methodName);
                 vmsb.Append("_vcall(")
@@ -233,7 +233,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 
         private static string GetCall(VirtualMethodDescription virtualMethod, MethodInfo method)
         {
-            var parametersString = string.Format("std::static_pointer_cast<{0}>(_this)", method.DeclaringType.ToCppName(true, EscapingMode.Unused));
+            var parametersString = string.Format("std::static_pointer_cast<{0}>(_this)", method.DeclaringType.ToCppName(EscapingMode.Unused));
             //Add Rest of parameters
             if (virtualMethod.Parameters.Length > 0)
             {

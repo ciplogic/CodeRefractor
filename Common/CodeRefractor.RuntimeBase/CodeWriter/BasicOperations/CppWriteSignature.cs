@@ -22,7 +22,6 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             var method = interpreter.Method;
 
             var parameterInfos = method.GetParameters();
-            var escapingBools = method.BuildEscapingBools(closureEntities);
             var sb = new StringBuilder();
             var index = 0;
             var analyze = interpreter.AnalyzeProperties;
@@ -41,10 +40,8 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                     case EscapingMode.Unused:
                         break;
                     case EscapingMode.Smart:
-                        sb.AppendFormat("const {0}& _this", argumentTypeDescription.ClrType.ToCppName(true));
-                        break;
                     case EscapingMode.Pointer:
-                        sb.AppendFormat("const {0} _this", argumentTypeDescription.ClrType.ToCppName(true, isSmartPtr:EscapingMode.Pointer));
+                        sb.AppendFormat("{0} _this", argumentTypeDescription.ClrType.ToCppName(parameterData));
                         break;
                 }
                 index++;
@@ -67,12 +64,11 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 {
                     sb.Append(", ");
                 }
-                var isSmartPtr = escapingBools[index];
-                var nonEscapingMode = isSmartPtr ? EscapingMode.Smart : EscapingMode.Pointer;
+                var nonEscapingMode = parameterData;
                 var parameterType = parameterInfo.ParameterType.GetReversedMappedType(closureEntities);
                 var argumentTypeDescription = UsedTypeList.Set(parameterType, closureEntities);
                 sb.AppendFormat("{0} {1}",
-                     argumentTypeDescription.ClrType.ToCppName(true, nonEscapingMode), //Handle byref
+                     argumentTypeDescription.ClrType.ToCppName(nonEscapingMode), //Handle byref
                     parameterInfo.Name);
             }
             return sb.ToString();
@@ -83,7 +79,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         {
             var methodBase = interpreter.Method;
             var sb = new StringBuilder();
-            sb.Append(methodBase.GetReturnType().ToCppName(true));
+            sb.Append(methodBase.GetReturnType().ToCppName());
 
             sb.Append(" ");
 

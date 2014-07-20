@@ -23,9 +23,9 @@ System_Void System_Console_Write(std::shared_ptr<System_String> value);
 
 std::shared_ptr< Array < System_Char > > System_String_ToCharArray(std::shared_ptr<System_String> _this);
 
-System_Void System_String_ctor(const System_String * _this, std::shared_ptr< Array < System_Char > > value);
+System_Void System_String_ctor(System_String * _this, Array < System_Char > * value);
 
-System_Int32 System_String_get_Length(const System_String * _this);
+System_Int32 System_String_get_Length(System_String * _this);
 
 #include "runtime_base.hpp"
 // --- Begin definition of virtual method tables ---
@@ -146,7 +146,7 @@ return local_1;
 }
 
 
-System_Void System_String_ctor(const System_String * _this, std::shared_ptr< Array < System_Char > > value)
+System_Void System_String_ctor(System_String * _this, Array < System_Char > * value)
 {
 System_Int32 local_0;
 System_Int32 local_1;
@@ -178,7 +178,7 @@ return;
 }
 
 
-System_Int32 System_String_get_Length(const System_String * _this)
+System_Int32 System_String_get_Length(System_String * _this)
 {
 System_Int32 local_0;
 Array < System_Char >  * vreg_1;
