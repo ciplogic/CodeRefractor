@@ -1,6 +1,7 @@
 #region Usings
 
 using CodeRefractor.CodeWriter.Linker;
+using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
 using CodeRefractor.MiddleEnd.Optimizations.Purity;
 using CodeRefractor.MiddleEnd.SimpleOperations;

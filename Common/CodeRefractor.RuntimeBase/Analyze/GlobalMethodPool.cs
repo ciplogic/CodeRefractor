@@ -8,6 +8,7 @@ using System.Reflection;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Interpreters;
+using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.Runtime.Annotations;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;

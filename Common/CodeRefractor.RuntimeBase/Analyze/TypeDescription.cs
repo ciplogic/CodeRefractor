@@ -168,7 +168,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
                 }
                 var staticString = fieldData.IsStatic ? "static" : "";
                 sb.AppendFormat("{2} {0} {1};",
-                    fieldData.TypeDescription.ClrType.ToCppName(true),
+                    fieldData.TypeDescription.ClrType.ToCppName(),
                     fieldData.Name.ValidName(),
                     staticString
                     ).AppendLine();
@@ -182,7 +182,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
                 var obj = Activator.CreateInstance(type);
                 return obj.ToString();
             }
-            var result = string.Format("{0}(0)", type.ToCppName(true));
+            var result = string.Format("{0}(0)", type.ToCppName());
             return result;
         }
 
@@ -205,7 +205,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
                 if (!fieldData.IsStatic)
                     continue;
                 sb.AppendFormat(" /* static*/ {0} {3}::{1} = {2};",
-                    fieldData.TypeDescription.ClrType.ToCppName(true),
+                    fieldData.TypeDescription.ClrType.ToCppName(),
                     fieldData.Name.ValidName(),
                     GetDefault(fieldData.TypeDescription.ClrType),
                     ClrType.ToCppMangling())

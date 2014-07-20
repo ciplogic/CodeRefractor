@@ -148,7 +148,7 @@ namespace CodeRefractor.Util
             if (type.IsArray)
             {
                 var elementType = type.GetElementType();
-                var fullTypeName = elementType.ToCppName(handleGenerics);
+                var fullTypeName = elementType.ToCppName();
                 switch (isSmartPtr)
                 {
                     case EscapingMode.Smart:
@@ -169,7 +169,7 @@ namespace CodeRefractor.Util
                 if (type.Name.EndsWith("*") || type.Name.EndsWith("&"))
                 {
                     var elementType = type.GetElementType();
-                    var elementTypeCppName = elementType.ToCppName(handleGenerics);
+                    var elementTypeCppName = elementType.ToCppName();
                     return String.Format("{0}* ", elementTypeCppName);
                 }
                 /*
@@ -217,7 +217,7 @@ namespace CodeRefractor.Util
             return String.Format(StdSharedPtr + "<{0}>", type.ToCppMangling());
         }
 
-        public static string ToCppName(this Type type, bool handleGenerics = true,
+        public static string ToCppName(this Type type,
             EscapingMode isSmartPtr = EscapingMode.Smart, bool isPInvoke=false )
         {
 
@@ -232,7 +232,7 @@ namespace CodeRefractor.Util
             if (type.IsArray)
             {
                 var elementType = type.GetElementType();
-                var fullTypeName = elementType.ToCppName(handleGenerics);
+                var fullTypeName = elementType.ToCppName();
                 switch (isSmartPtr)
                 {
                     case EscapingMode.Smart:
@@ -250,7 +250,7 @@ namespace CodeRefractor.Util
                 if (type.Name.EndsWith("*") || type.Name.EndsWith("&"))
                 {
                     var elementType = type.GetElementType();
-                    var elementTypeCppName = elementType.ToCppName(handleGenerics);
+                    var elementTypeCppName = elementType.ToCppName();
                     return String.Format("{0}* ", elementTypeCppName);
                 }
                 if (type.IsGenericFieldUsage())

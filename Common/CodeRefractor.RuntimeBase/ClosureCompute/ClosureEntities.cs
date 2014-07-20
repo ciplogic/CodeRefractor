@@ -10,6 +10,7 @@ using CodeRefractor.Backend.ComputeClosure;
 using CodeRefractor.CodeWriter.Linker;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Interpreters;
+using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
 using CodeRefractor.MiddleEnd.Optimizations.Util;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;

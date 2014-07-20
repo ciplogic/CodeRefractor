@@ -87,6 +87,7 @@
     <Compile Include="CrStringBuilder.cs" />
     <Compile Include="DoubleImpl.cs" />
     <Compile Include="Generic\CrList.cs" />
+    <Compile Include="MathImpl.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StringImpl.cs" />
   </ItemGroup>

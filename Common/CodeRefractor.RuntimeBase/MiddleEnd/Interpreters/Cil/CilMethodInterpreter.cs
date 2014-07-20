@@ -1,11 +1,10 @@
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using CodeRefractor.FrontEnd;
-using CodeRefractor.MiddleEnd.Interpreters;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
+using CodeRefractor.RuntimeBase;
 
-namespace CodeRefractor.MiddleEnd
+namespace CodeRefractor.MiddleEnd.Interpreters.Cil
 {
     public class CilMethodInterpreter : MethodInterpreter
     {
@@ -25,10 +24,9 @@ namespace CodeRefractor.MiddleEnd
                 return;
             if (Interpreted)
                 return;
-            if (PlatformInvokeMethod.IsPlatformInvoke(Method))
-                throw new InvalidDataException(string.Format(
-                    "Should not run it on current method: {0}", Method)
-                    );
+            Ensure.AreEqual(false, PlatformInvokeMethod.IsPlatformInvoke(Method),
+                string.Format("Should not run it on current method: {0}", Method)
+                );
             if (Method.GetMethodBody() == null)
                 return;
 

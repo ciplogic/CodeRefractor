@@ -32,8 +32,8 @@ namespace CodeRefactor.OpenRuntime
         public CrString(char[] value, int startPos, int length)
         {
             Text = new char[length];
-            for (int i = 0; i <= length; i++)
-                Text[i] = value[i];
+            for (int i = 0; i < length; i++)
+                Text[i] = value[startPos+i];
         }
 
         public int Length

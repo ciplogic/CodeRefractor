@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using CodeRefractor.CodeWriter.Linker;
 using CodeRefractor.MiddleEnd.Interpreters;
+using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
@@ -20,11 +21,15 @@ using CodeRefractor.RuntimeBase.Optimizations;
 
 namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
 {
-    //[Optimization(Category = OptimizationCategories.Analysis)]
+    [Optimization(Category = OptimizationCategories.Analysis)]
     internal class InFunctionLoweringVars : ResultingInFunctionOptimizationPass
     {
         public override void OptimizeOperations(CilMethodInterpreter interpreter)
         {
+            if (interpreter.Method.Name.Contains("Concat"))
+            {
+
+            }
             var candidateVariables = SetAllCandidateVariables(interpreter);
             var useDef = interpreter.MidRepresentation.UseDef;
             var localOp = useDef.GetLocalOperations();
@@ -71,6 +76,8 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
             var toAdd = variables.LocalVars.Where(varId => !varId.ComputedType().ClrType.IsPrimitive);
             candidateVariables.AddRange(toAdd);
             toAdd = variables.VirtRegs.Where(varId => !varId.ComputedType().ClrType.IsPrimitive);
+            candidateVariables.AddRange(toAdd);
+            toAdd = interpreter.AnalyzeProperties.Arguments.Where(varId => !varId.ComputedType().ClrType.IsPrimitive);
             candidateVariables.AddRange(toAdd);
             return candidateVariables;
         }
@@ -184,6 +191,11 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
             LocalOperation op)
         {
             var methodData = (CallMethodStatic) op;
+            var resultVar = methodData.Result;
+            if (resultVar != null)
+            {
+                candidateVariables.Remove(resultVar);
+            }
             var escapeData = AnalyzeParametersAreEscaping.GetEscapingParameterData(methodData);
             if (escapeData == null)
             {
