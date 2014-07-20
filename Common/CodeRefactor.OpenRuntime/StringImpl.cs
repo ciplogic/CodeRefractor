@@ -50,5 +50,17 @@ namespace CodeRefactor.OpenRuntime
             }
             return result;
         }
+
+        [MapMethod]
+        public static object Substring(string _this, int startIndex, int length)
+        {
+            var resultChars = new char[length];
+
+            var originalChars = _this.ToCharArray();
+            for (var i = 0; i < length; i++)
+                resultChars[i] = originalChars[i + startIndex];
+            var result = new string(resultChars);
+            return result;
+        }
     }
 }
