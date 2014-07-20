@@ -112,11 +112,11 @@ namespace CodeRefractor.ClosureCompute
             {
 
 
-                var subClasses = method.Key.DeclaringType.ImplementorsOfT(usedTypes); 
+                var subClasses = method.Key.DeclaringType.ImplementorsOfT(usedTypes);
 
 
-               
-                    var methods = subClasses.SelectMany(s=>s.GetMethods(CecilUtils.CecilCaches.AllFlags).Where(j => j.MethodMatches(method.Key))).ToArray();
+
+                var methods = subClasses.SelectMany(s => s.GetMethods(ClosureEntitiesBuilder.AllFlags).Where(j => j.MethodMatches(method.Key))).ToArray();
 
                     foreach (var methodImp in methods)
                     {
