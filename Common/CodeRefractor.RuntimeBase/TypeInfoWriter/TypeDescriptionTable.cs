@@ -104,7 +104,10 @@ namespace CodeRefractor.RuntimeBase.TypeInfoWriter
 
         public bool HasType(Type type)
         {
+            
+            
             return _dictionary.ContainsKey(type);
+            
         }
 
         public object GetTypeId(Type implementation)

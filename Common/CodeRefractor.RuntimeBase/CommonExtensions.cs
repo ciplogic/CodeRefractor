@@ -190,6 +190,8 @@ namespace CodeRefractor.RuntimeBase
 
         public static int ToInt(this string value)
         {
+            if (value.ToLower() == "m1") //
+                return -1;
             int result;
             if(!Int32.TryParse(value, out result))
                 throw new InvalidDataException("Integer not well formatted: "+value);

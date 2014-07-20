@@ -28,11 +28,18 @@ namespace CodeRefractor.Util
         }
 
 
+        public static string GetMethodFullName(this MethodBase methodInfo)
+        {
+            if (methodInfo.DeclaringType != null) 
+                return methodInfo.DeclaringType.FullName + "." + methodInfo.Name;
+            return methodInfo.Name;
+        }
 
         public static List<Type> ImplementorsOfT(this Type t, IEnumerable<Type> usedTypes)
         {
-            var result = usedTypes.Where(usedType => usedType.IsSubclassOf(t)).ToList();
-            return result;
+             var implementors = t.Assembly.GetTypes().Where(y=>t.IsAssignableFrom(y));// && t!=y);
+
+             return implementors.ToList();
         }
 
         public static string ClangMethodSignature(this MethodInterpreter method, ClosureEntities crRuntime)

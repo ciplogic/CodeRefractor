@@ -53,7 +53,9 @@ namespace CodeRefractor.RuntimeBase.TypeInfoWriter
             var declaringType = method.DeclaringType;
             if (BaseType.IsSubclassOf(declaringType))
                 return false;
-
+            if (method.DeclaringType != BaseType)
+                return false;
+            
             if (ReturnType != method.ReturnType)
                 return false;
             var arguments = method.GetParameters().Select(par => par.ParameterType).ToArray();

@@ -623,11 +623,26 @@ namespace CodeRefractor.FrontEnd
                 return true;
             }
 
+            if (opcodeStr == OpcodeBranchNames.BgeUn || opcodeStr == OpcodeBranchNames.BgeUnS) //Todo: Fix this cannot treat unsigned as signed
+            {
+                operationFactory.BranchIfGreaterOrEqual(offset);
+                return true;
+            }
+
             if (opcodeStr == OpcodeBranchNames.Bge || opcodeStr == OpcodeBranchNames.BgeS)
             {
                 operationFactory.BranchIfGreaterOrEqual(offset);
                 return true;
             }
+
+           
+
+            if (opcodeStr == OpcodeBranchNames.BgtUn || opcodeStr == OpcodeBranchNames.BgtUnS) //Todo: Fix this cannot treat unsigned as signed
+            {
+                operationFactory.BranchIfGreater(offset);
+                return true;
+            }
+
             if (opcodeStr == OpcodeBranchNames.Bgt || opcodeStr == OpcodeBranchNames.BgtS)
             {
                 operationFactory.BranchIfGreater(offset);
@@ -638,6 +653,19 @@ namespace CodeRefractor.FrontEnd
                 operationFactory.BranchIfLessOrEqual(offset);
                 return true;
             }
+
+            if (opcodeStr == OpcodeBranchNames.BleUn || opcodeStr == OpcodeBranchNames.BleUnS)  //Todo: Fix this cannot treat unsigned as signed
+            {
+                operationFactory.BranchIfLessOrEqual(offset);
+                return true;
+            }
+
+            if (opcodeStr == OpcodeBranchNames.BltUn || opcodeStr == OpcodeBranchNames.BltUnS)  //Todo: Fix this cannot treat unsigned as signed
+            {
+                operationFactory.BranchIfLess(offset);
+                return true;
+            }
+
             if (opcodeStr == OpcodeBranchNames.Blt || opcodeStr == OpcodeBranchNames.BltS)
             {
                 operationFactory.BranchIfLess(offset);

@@ -39,10 +39,10 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             {
                 if (!methodNames.Contains(virtualMethod.Name))
                     continue;
-                var implementations = virtualMethod.UsingImplementations
-                    .Where(type => typeTable.TypeTable.HasType(type))
-                    .ToList();
-                if (implementations.Count != 0)
+//                var implementations = virtualMethod.UsingImplementations
+//                    .Where(type => typeTable.TypeTable.HasType(type))
+//                    .ToList();
+//                if (implementations.Count != 0)
                     validVirtMethods.Add(virtualMethod);
             }
             return validVirtMethods;
@@ -65,24 +65,25 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 cleanedupVersion.Add(virtualMethodDescription);
             }
 
+            var vcalls = new List<VirtualMethodDescription>();
+            foreach (var virtualMethodDescription in cleanedupVersion)
+            {
+                if (!vcalls.Any(j => j.Name == virtualMethodDescription.Name && j.BaseMethod == virtualMethodDescription.BaseMethod))
+                {
+                    vcalls.Add(virtualMethodDescription);
+                }
+            }
 
 
-            foreach (var virtualMethod in cleanedupVersion)
+
+
+            foreach (var virtualMethod in vcalls)
             {
                 var isinterfaceMethod = virtualMethod.BaseMethod.DeclaringType.IsInterface;
                 string methodName;
 
                 methodName = virtualMethod.BaseMethod.ClangMethodSignature(crRuntime);
                 var parametersString = GetParametersString(virtualMethod,isinterfaceMethod);
-
-//                sb.Append("typedef ");
-//                sb.Append(virtualMethod.ReturnType.ToCppName(true,EscapingMode.Smart));
-//
-//                sb.Append(" (*");
-//                sb.Append(methodName);
-//                sb.Append("VirtPtr)(");
-//                sb.AppendFormat(parametersString);
-//                sb.AppendLine(");");
 
                 sb.Append(virtualMethod.ReturnType.ToCppName(true, EscapingMode.Smart));
                 sb.Append(" ");
@@ -92,7 +93,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 sb.AppendLine(");");
             }
 
-            foreach (var virtualMethod in cleanedupVersion)
+            foreach (var virtualMethod in vcalls)
             {
                 var vmsb = new StringBuilder();
                 //Ignore instance only dispatch

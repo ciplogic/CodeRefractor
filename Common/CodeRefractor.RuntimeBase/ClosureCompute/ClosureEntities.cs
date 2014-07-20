@@ -7,14 +7,17 @@ using System.Reflection;
 using System.Text;
 using CodeRefractor.Backend;
 using CodeRefractor.Backend.ComputeClosure;
+using CodeRefractor.CodeWriter.Linker;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Interpreters;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
 using CodeRefractor.MiddleEnd.Optimizations.Util;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
+using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Config;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.TypeInfoWriter;
+using CodeRefractor.Util;
 
 #endregion
 
@@ -91,11 +94,40 @@ namespace CodeRefractor.ClosureCompute
         public StringBuilder BuildFullSourceCode()
         {
             var entryInterpreter = ResolveMethod(EntryPoint);
-            var usedTypes = MappedTypes.Values.ToList();
+            List<Type> usedTypes = MappedTypes.Values.ToList();
             var typeTable = new TypeDescriptionTable(usedTypes);
             var virtualMethodTable = new VirtualMethodTable(typeTable);
+            BuildVirtualMethodTable(usedTypes,virtualMethodTable);
             return CppCodeGenerator.GenerateSourceStringBuilder(entryInterpreter, usedTypes,
                 MethodImplementations.Values.ToList(), virtualMethodTable, this);
+        }
+
+       
+
+
+        private void BuildVirtualMethodTable(List<Type> usedTypes, VirtualMethodTable virtualMethodTable)
+        {
+            var methodImps = MethodImplementations.ToList();
+            foreach (var method in methodImps)
+            {
+
+
+                var subClasses = method.Key.DeclaringType.ImplementorsOfT(usedTypes); 
+
+
+               
+                    var methods = subClasses.SelectMany(s=>s.GetMethods(CecilUtils.CecilCaches.AllFlags).Where(j => j.MethodMatches(method.Key))).ToArray();
+
+                    foreach (var methodImp in methods)
+                    {
+                        var interpreter = ResolveMethod(methodImp) ?? new CilMethodInterpreter(methodImp);
+                        virtualMethodTable.RegisterMethod(methodImp, interpreter, this);
+                    }
+                   
+               
+                
+            }
+            
         }
 
         public Type ResolveType(Type type)

@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using System.Reflection;
+using CodeRefractor.ClosureCompute;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Interpreters;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
@@ -26,7 +27,7 @@ namespace CodeRefractor.RuntimeBase.TypeInfoWriter
             get { return _typeTable; }
         }
 
-        public void RegisterMethod(MethodInfo method, Dictionary<MethodInterpreterKey, MethodInterpreter> methodClosure)
+        public void RegisterMethod(MethodInfo method, MethodInterpreter interpreter, ClosureEntities closure)
         {
             if (!method.IsVirtual)
                 return;
@@ -37,40 +38,17 @@ namespace CodeRefractor.RuntimeBase.TypeInfoWriter
                 if (matchFound)
                     return;
             }
-            var isInClosure = false;
-            foreach (var interpreter in methodClosure)
-            {
-                var key = interpreter.Key;
-                if (key.Interpreter.Kind != MethodKind.CilInstructions)
-                    continue;
-                var methodInKey = key.Interpreter.Method;
-                if (methodInKey.Name != method.Name)
-                    continue;
-                var keyParameterInfos = methodInKey.GetParameters();
-                var parameterInfos = method.GetParameters();
-                if (keyParameterInfos.Length != parameterInfos.Length)
-                    continue;
-                var parameterMatch = true;
-                for (var index = 0; index < keyParameterInfos.Length; index++)
-                {
-                    var keyParameterInfo = keyParameterInfos[index];
-                    var parameterInfo = parameterInfos[index];
-                    if (keyParameterInfo.ParameterType != parameterInfo.ParameterType)
-                    {
-                        parameterMatch = false;
-                        break;
-                    }
-                }
-                if (!parameterMatch)
-                    continue;
-                isInClosure = true;
-            }
-            if (!isInClosure)
-                return;
+          
             var declaringType = method.GetBaseDefinition().DeclaringType;
             var virtMethod = new VirtualMethodDescription(method, declaringType);
             virtMethod.MethodMatches(method);
             VirtualMethods.Add(virtMethod);
+            if (interpreter != null && interpreter is CilMethodInterpreter)
+            {
+                (interpreter as CilMethodInterpreter).Process();
+         
+            }
+            closure.UseMethod(method, interpreter);   
         }
     }
 }
