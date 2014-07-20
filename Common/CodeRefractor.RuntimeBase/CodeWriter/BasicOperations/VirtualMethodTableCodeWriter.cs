@@ -167,7 +167,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 
                
                 // Deal with subclasses that don't override this method
-                var remainingSubclasses = virtualMethod.BaseMethod.DeclaringType.ImplementorsOfT(types).Except(virtualMethod.UsingImplementations); //types.Where(k => k.ImplementorsOfT() is ());
+                var remainingSubclasses = virtualMethod.BaseMethod.DeclaringType.ImplementorsOfT(types).Except(virtualMethod.UsingImplementations).Where(i=>!i.IsInterface);
                
 
                 foreach (var implementation in remainingSubclasses)
