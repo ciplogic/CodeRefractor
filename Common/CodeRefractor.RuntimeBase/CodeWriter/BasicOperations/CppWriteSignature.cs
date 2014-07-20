@@ -70,7 +70,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 var parameterType = parameterInfo.ParameterType.GetReversedMappedType(closureEntities);
                 var argumentTypeDescription = UsedTypeList.Set(parameterType, closureEntities);
                 sb.AppendFormat("{0} {1}",
-                     argumentTypeDescription.ClrType.ToCppName(true, nonEscapingMode), //Handle byref
+                     argumentTypeDescription.ClrType.ToCppName(true, nonEscapingMode,isPInvoke:method.IsPinvoke()), //Handle byref
                     parameterInfo.Name);
             }
             return sb.ToString();

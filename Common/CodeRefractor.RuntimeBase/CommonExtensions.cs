@@ -157,11 +157,11 @@ namespace CodeRefractor.RuntimeBase
             return type;
         }
 
-        public static IEnumerable<string> GetParamAsPrettyList(ParameterInfo[] parameterInfos)
+        public static IEnumerable<string> GetParamAsPrettyList(ParameterInfo[] parameterInfos, bool pinvoke =false)
         {
             return parameterInfos.Select(
                 param =>
-                    String.Format("{0} {1}", param.ParameterType.ToCppName(), param.Name));
+                    String.Format("{0} {1}", param.ParameterType.ToCppName(isPInvoke:pinvoke), param.Name));
         }
 
         public static bool IsBranchOperation(this LocalOperation operation, bool andLabels = true)

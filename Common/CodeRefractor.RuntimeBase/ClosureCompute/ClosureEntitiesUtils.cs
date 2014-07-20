@@ -9,6 +9,10 @@ namespace CodeRefractor.ClosureCompute
 {
     public static class ClosureEntitiesUtils
     {
+        public static bool IsPinvoke(this MethodBase method)
+        {
+            return method.Attributes.HasFlag(MethodAttributes.PinvokeImpl);
+        }
         public static ClosureEntities BuildClosureEntities(MethodInfo definition, Assembly runtimeAssembly)
         {
             var closureEntities = new ClosureEntities { EntryPoint = definition };

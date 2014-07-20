@@ -35,7 +35,8 @@ namespace CodeRefractor.CodeWriter.Platform
                 Id = id
             };
 
-            findItem.Methods.Add(method, dllId);
+            if(!findItem.Methods.ContainsKey(method))
+                findItem.Methods.Add(method, dllId);
             return dllId.FormattedName();
         }
 
@@ -67,7 +68,7 @@ namespace CodeRefractor.CodeWriter.Platform
             var platformInterpreter = (PlatformInvokeMethod) methodBase;
             var retType = platformInterpreter.Method.GetReturnType().ToCppMangling();
             var sb = new StringBuilder();
-            var arguments = methodBase.Method.GetArgumentsAsText();
+            var arguments = methodBase.Method.GetArgumentsAsText(true);
             var callConvention = platformInterpreter.CallingConvention;
             var callConventionStr = string.Empty;
             switch (callConvention)

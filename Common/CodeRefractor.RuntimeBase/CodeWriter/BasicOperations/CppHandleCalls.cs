@@ -193,7 +193,12 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                     //We need to take care of strings here
                     if (value is ConstValue)
                     {
-                        if (value.FixedType.ClrType == typeof(string) && !isEscaping && !methodInfo.IsSpecialName) //Why isnt escape analysis done for properties ?
+                        if ((value.FixedType.ClrType == typeof(string) && methodInfo.IsPinvoke()))
+                        {
+                            sb.Append("" + value.ComputedValue() + "->Text->Items");
+                        }
+                        else
+                        if ((value.FixedType.ClrType == typeof(string) && !isEscaping && !methodInfo.IsSpecialName) ) //Why isnt escape analysis done for properties ?
                         {
                             sb.Append("(System_String*)" + value.ComputedValue() + "->Text.get()");
                         }

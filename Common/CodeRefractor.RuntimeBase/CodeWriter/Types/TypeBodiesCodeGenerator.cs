@@ -20,24 +20,17 @@ namespace CodeRefractor.CodeWriter.Types
                 .Where(t=>!ShouldSkipType(t))
                 .ToArray();
             var sorter = new ClosureTypeSorter(typesToMap, crRuntime);
-            var forwardTypesSorted = sorter.DoSort().ToArray();
+            var sorted = sorter.DoSort();
+            if (sorted.Contains(typeof(IntPtr)))
+                sorted.Remove(typeof(IntPtr));
+            var forwardTypesSorted = sorted.ToArray();
             GenerateForwardTypes(forwardTypesSorted, sb, crRuntime);
 
-            //Better Algorithm for sorting typedefs so that parents are declared before children, seems sometimes compiler complains of invalid use and forward declarations
-
-            //start with base classes
+           
 
             var sortedTypeData = forwardTypesSorted;
 
-            //Add these empty interfaces for strings  
-            //TODO:Fix this use actual implementations
-            /*
-            sb.Append(
-                new string[]
-                {
-                    "System_IComparable" , "System_ICloneable" , "System_IConvertible" , "System_IComparable_1" , "System_Collections_Generic_IEnumerable_1" , "System_Collections_IEnumerable" , "System_IEquatable_1"
-                }.Select(r => "struct " + r + "{};\n").Aggregate((a, b) => a + "\n" + b));
-            */
+           
             foreach (var type in sortedTypeData)
             {
                 WriteStructWithFields(sb, crRuntime, type);
@@ -98,6 +91,9 @@ namespace CodeRefractor.CodeWriter.Types
                 case TypeCode.String:
                     return false;
             }
+
+          
+
             return true;
         }
 

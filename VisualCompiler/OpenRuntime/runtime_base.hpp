@@ -1,6 +1,7 @@
 #include <vector>
 #include <string>
 #include <memory>
+#include <wchar.h>
 
 static std::vector<std::shared_ptr<System_String> > _stringJumps;
 
@@ -100,3 +101,13 @@ void System_Console__WriteLine(const wchar_t* value)
 {
 	wprintf(L"%ls\n", value);	
 }
+
+char*  GetCString(std::shared_ptr<System_String> _string)
+{
+	auto length = _string->Text->Length;
+	char* tempStr = (char*)calloc(length, sizeof(wchar_t));
+	sprintf(tempStr, length, "%ls", _string->Text->Items);
+	return tempStr;
+}
+
+

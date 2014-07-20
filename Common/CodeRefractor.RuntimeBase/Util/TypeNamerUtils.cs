@@ -218,11 +218,16 @@ namespace CodeRefractor.Util
         }
 
         public static string ToCppName(this Type type, bool handleGenerics = true,
-            EscapingMode isSmartPtr = EscapingMode.Smart)
+            EscapingMode isSmartPtr = EscapingMode.Smart, bool isPInvoke=false )
         {
 
             if (type == null)
                 return "System_Void*";
+
+            if (type == typeof(string) && isPInvoke)
+            {
+                return "System_Char *";
+            }
 
             if (type.IsArray)
             {
@@ -271,6 +276,7 @@ namespace CodeRefractor.Util
                 var elementType = type.GetElementType();
                 return String.Format("{0}*", elementType.ToCppMangling());
             }
+          
             return String.Format(StdSharedPtr + "<{0}>", type.ToCppMangling());
         }
 

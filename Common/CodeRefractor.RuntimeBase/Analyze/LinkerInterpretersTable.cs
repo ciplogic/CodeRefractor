@@ -19,7 +19,7 @@ namespace CodeRefractor.Analyze
 
             var sb = new StringBuilder();
 
-            var arguments = methodBase.GetArgumentsAsText();
+            var arguments = methodBase.GetArgumentsAsText(pinvoke:methodBase.IsPinvoke());
 
             sb.AppendFormat("{0} {1}({2})",
                 retType, methodBase.ClangMethodSignature(crRuntime), arguments);
@@ -30,11 +30,11 @@ namespace CodeRefractor.Analyze
             return sb.ToString();
         }
 
-        public static string GetArgumentsAsText(this MethodBase method)
+        public static string GetArgumentsAsText(this MethodBase method, bool pinvoke=false)
         {
             var parameterInfos = method.GetParameters();
             var arguments = String.Join(", ",
-                CommonExtensions.GetParamAsPrettyList(parameterInfos));
+                CommonExtensions.GetParamAsPrettyList(parameterInfos,pinvoke));
             if (method.IsStatic) return arguments;
             var thisText = String.Format("const {0}& _this", method.DeclaringType.ToCppName());
             return parameterInfos.Length == 0
