@@ -3,7 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using CodeRefractor.CecilUtils;
+using CodeRefractor.ClosureCompute;
 
 #endregion
 
@@ -14,7 +14,7 @@ namespace CodeRefractor.RuntimeBase.Shared
         public static List<FieldInfo> GetAllFields(this Type type)
         {
             var result = new List<FieldInfo>();
-            result.AddRange(type.GetFields(CecilCaches.AllFlags));
+            result.AddRange(type.GetFields(ClosureEntitiesBuilder.AllFlags));
             return result;
         }
 

@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Text;
+using CodeRefractor.Analyze;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.ClosureCompute.TypeSorter;
 using CodeRefractor.RuntimeBase;

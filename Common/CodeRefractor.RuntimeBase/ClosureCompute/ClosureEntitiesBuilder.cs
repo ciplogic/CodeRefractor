@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Reflection;
 using CodeRefractor.ClosureCompute.Steps;
 using CodeRefractor.ClosureCompute.Steps.AddTypes;
 
@@ -6,6 +7,7 @@ namespace CodeRefractor.ClosureCompute
 {
     public class ClosureEntitiesBuilder
     {
+        public const BindingFlags AllFlags = (BindingFlags)(-1);
         public List<ClosureComputeBase> ClosureSteps { get; set; }
 
         public List<MethodResolverBase> MethodResolverList { get; set; }

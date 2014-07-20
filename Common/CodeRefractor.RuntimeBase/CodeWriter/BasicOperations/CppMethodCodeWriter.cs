@@ -2,27 +2,24 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Text;
 using CodeRefractor.ClosureCompute;
-using CodeRefractor.CodeWriter.BasicOperations;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Interpreters;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.ConstTable;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
-using CodeRefractor.Runtime;
 using CodeRefractor.RuntimeBase.Analyze;
-using CodeRefractor.RuntimeBase.MiddleEnd;
+using CodeRefractor.RuntimeBase.CodeWriter.BasicOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.TypeInfoWriter;
 using CodeRefractor.Util;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.CodeWriter.BasicOperations
+namespace CodeRefractor.CodeWriter.BasicOperations
 {
     public static class CppMethodCodeWriter
     {
@@ -98,11 +95,11 @@ namespace CodeRefractor.RuntimeBase.CodeWriter.BasicOperations
                         break;
 
                     case OperationKind.CastClass:
-                        HandleCastClass((ClassCasting)operation, bodySb, typeTable);
+                        HandleCastClass((ClassCasting)operation, bodySb);
                         break;
 
                     case OperationKind.Unbox:
-                        HandleUnbox((Unboxing)operation, bodySb, typeTable);
+                        HandleUnbox((Unboxing)operation, bodySb);
                         break;
 
                     default:
@@ -118,7 +115,7 @@ namespace CodeRefractor.RuntimeBase.CodeWriter.BasicOperations
             return bodySb;
         }
 
-        private static void HandleUnbox(Unboxing unboxing, StringBuilder bodySb, TypeDescriptionTable typeTable)
+        private static void HandleUnbox(Unboxing unboxing, StringBuilder bodySb)
         {
             var typeDescription = unboxing.AssignedTo.ComputedType();
             bodySb
@@ -139,7 +136,7 @@ namespace CodeRefractor.RuntimeBase.CodeWriter.BasicOperations
         }
 
 
-        private static void HandleCastClass(ClassCasting casting, StringBuilder bodySb, TypeDescriptionTable typeTable)
+        private static void HandleCastClass(ClassCasting casting, StringBuilder bodySb)
         {
             var typeDescription = casting.AssignedTo.ComputedType();
             bodySb
@@ -194,11 +191,11 @@ namespace CodeRefractor.RuntimeBase.CodeWriter.BasicOperations
             var vars = midRepresentation.Vars;
             foreach (var variableInfo in vars.LocalVars)
             {
-                AddVariableContent(variablesSb, "{0} local_{1};", variableInfo, vars, interpreter);
+                AddVariableContent(variablesSb, "{0} local_{1};", variableInfo, interpreter);
             }
             foreach (var localVariable in vars.VirtRegs)
             {
-                AddVariableContent(variablesSb, "{0} vreg_{1};", localVariable, vars, interpreter);
+                AddVariableContent(variablesSb, "{0} vreg_{1};", localVariable, interpreter);
             }
             return variablesSb;
         }
@@ -215,8 +212,7 @@ namespace CodeRefractor.RuntimeBase.CodeWriter.BasicOperations
             return localVariable.VarName;
         }
 
-        private static void AddVariableContent(StringBuilder variablesSb, string format, LocalVariable localVariable,
-            MidRepresentationVariables vars, MethodInterpreter interpreter)
+        private static void AddVariableContent(StringBuilder variablesSb, string format, LocalVariable localVariable, MethodInterpreter interpreter)
         {
             var localVariableData = interpreter.AnalyzeProperties.GetVariableData(localVariable);
             if (localVariableData == EscapingMode.Stack)

@@ -172,6 +172,7 @@ namespace CodeRefractor.Util
                     var elementTypeCppName = elementType.ToCppName(handleGenerics);
                     return String.Format("{0}* ", elementTypeCppName);
                 }
+                /*
                 var typeParameters = type.GetGenericArguments();
                 if (typeParameters.Length != 0)
                 {
@@ -191,6 +192,7 @@ namespace CodeRefractor.Util
                             return String.Format("{0} <{1}>", type.ToCppMangling(), genericSpecializationString);
                     }
                 }
+                 * */
                 switch (isSmartPtr)
                 {
                     case EscapingMode.Smart:

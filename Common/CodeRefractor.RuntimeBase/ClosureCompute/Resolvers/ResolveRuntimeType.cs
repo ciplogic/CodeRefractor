@@ -20,10 +20,19 @@ namespace CodeRefractor.ClosureCompute.Resolvers
                 );
         }
 
-        public override Type Resolve(Type method)
+        public override Type Resolve(Type type)
         {
             Type result;
-            if (!_solvedTypes.TryGetValue(method, out result))
+            if (type.IsGenericType)
+            {
+                var genericType = type.GetGenericTypeDefinition();
+                var genericArguments = type.GetGenericArguments();
+                if (!_solvedTypes.TryGetValue(genericType, out result))
+                    return null;
+                var specializedType = result.MakeGenericType(genericArguments);
+                return specializedType;
+            }
+            if (!_solvedTypes.TryGetValue(type, out result))
                 return null;
             return result;
         }

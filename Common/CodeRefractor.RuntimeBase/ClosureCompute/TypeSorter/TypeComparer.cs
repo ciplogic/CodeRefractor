@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using CodeRefractor.CecilUtils;
 using CodeRefractor.RuntimeBase;
 
 namespace CodeRefractor.ClosureCompute.TypeSorter
@@ -17,7 +16,7 @@ namespace CodeRefractor.ClosureCompute.TypeSorter
         HashSet<Type> DependencyTypes(Type type)
         {
             var result = new HashSet<Type>();
-            var members = type.GetMembers(CecilCaches.AllFlags);
+            var members = type.GetMembers(ClosureEntitiesBuilder.AllFlags);
             foreach (var member in members)
             {
                 result.Add(member.ReflectedType.GetMappedType(_crRuntime));

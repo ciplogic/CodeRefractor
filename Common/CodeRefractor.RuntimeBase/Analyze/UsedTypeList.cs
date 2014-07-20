@@ -3,14 +3,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using CodeRefractor.CecilUtils;
 using CodeRefractor.ClosureCompute;
-using CodeRefractor.Runtime;
+using CodeRefractor.RuntimeBase;
+using CodeRefractor.RuntimeBase.Analyze;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.Analyze
+namespace CodeRefractor.Analyze
 {
     public class UsedTypeList
     {
@@ -41,7 +40,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
             var fields = type.GetFields().ToList();
 
             fields.AddRange(type.GetFields(
-                CecilCaches.AllFlags));
+                ClosureEntitiesBuilder.AllFlags));
 
             var result = new HashSet<Type>();
             result.AddRange(fields
