@@ -100,11 +100,9 @@ namespace CodeRefractor.ClosureCompute
 
             var typeTable = new TypeDescriptionTable(usedTypes);
             return CppCodeGenerator.GenerateSourceStringBuilder(entryInterpreter, usedTypes,typeTable,
-                MethodImplementations.Values.ToList(), VirtualMethodTable, this);
+                MethodImplementations.Values.ToList(), this);
         }
 
-
-        public VirtualMethodTable VirtualMethodTable;
 
        
 

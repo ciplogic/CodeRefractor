@@ -1,17 +1,13 @@
 #region Usings
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using CodeRefractor.ClosureCompute;
-using CodeRefractor.MiddleEnd;
-using CodeRefractor.MiddleEnd.Interpreters;
+using CodeRefractor.ClosureCompute.Steps;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.RuntimeBase;
-using CodeRefractor.RuntimeBase.DataBase.SerializeXml;
-using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.TypeInfoWriter;
 using CodeRefractor.Util;
 
@@ -21,35 +17,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 {
     public class VirtualMethodTableCodeWriter
     {
-        private readonly VirtualMethodTable _typeTable;
-        private readonly List<VirtualMethodDescription> _validVirtualMethods;
-
-        public VirtualMethodTableCodeWriter(VirtualMethodTable typeTable, List<MethodInterpreter> closure)
-        {
-            _typeTable = typeTable;
-            var methodNames = GetAllMethodNames(closure);
-            _validVirtualMethods = CalculateValidVirtualMethods(typeTable, methodNames, closure);
-        }
-
-        public static List<VirtualMethodDescription> CalculateValidVirtualMethods(VirtualMethodTable typeTable, HashSet<string> methodNames, List<MethodInterpreter> closure)
-        {
-            var validVirtMethods = new List<VirtualMethodDescription>();
-            foreach (var virtualMethod in typeTable.VirtualMethods)
-            {
-                if (!methodNames.Contains(virtualMethod.Name))
-                    continue;
-//                var implementations = virtualMethod.UsingImplementations
-//                    .Where(type => typeTable.TypeTable.HasType(type))
-//                    .ToList();
-//                if (implementations.Count != 0)
-                    validVirtMethods.Add(virtualMethod);
-            }
-            return validVirtMethods;
-        }
-
-
-
-        public static string GenerateTypeTableCode(Type[] types, ClosureEntities crRuntime)
+        public static string GenerateTypeTableCode(TypeDescriptionTable table, ClosureEntities crRuntime)
         {
             var sb = new StringBuilder();
             sb.AppendLine("// --- Begin definition of virtual method tables ---");
@@ -59,13 +27,75 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 
             var vcalls = crRuntime.AbstractMethods;
 
+            WriteForwardVcalls(crRuntime, vcalls, sb);
             foreach (var virtualMethod in vcalls)
             {
-                var isinterfaceMethod = virtualMethod.DeclaringType.IsInterface;
-                string methodName;
+                var methodName = virtualMethod.ClangMethodSignature(crRuntime);
+                var parametersString = GetParametersString(virtualMethod, crRuntime);
 
-                methodName = virtualMethod.ClangMethodSignature(crRuntime);
-                var parametersString = GetParametersString(virtualMethod, isinterfaceMethod, crRuntime);
+                sb.Append(virtualMethod.ReturnType.ToCppName(EscapingMode.Smart));
+                sb.Append(" ");
+                sb.Append(methodName);
+                sb.Append("_vcall(");
+                sb.AppendFormat(parametersString);
+                sb.AppendLine(") {");
+
+                sb.AppendLine("switch (_this->_typeId)") .AppendLine("{");
+
+                var declaringType = virtualMethod.DeclaringType;
+                
+                var implementingTypes = declaringType.ImplementorsOfT(crRuntime.MappedTypes.Values);
+                foreach (var implementingType in implementingTypes)
+                {
+
+                    var implementingMethod = AddVirtualMethodImplementations.GetImplementingMethod(implementingType, virtualMethod);
+                    if (implementingMethod == null)
+                        continue;
+                    if (implementingMethod.GetMethodBody() == null)
+                        continue;
+                    var declaringTypeImplementation = implementingMethod.DeclaringType.GetReversedMappedType(crRuntime);
+
+                    var typeId = table.GetTypeId(declaringTypeImplementation);
+
+                    sb.AppendFormat("case {0}:", typeId).AppendLine();
+
+                    var isVoid = virtualMethod.ReturnType == typeof(void);
+                    if (!isVoid)
+                    {
+                        sb.Append("return ");
+
+                    }
+
+                    //Handle Interfaces
+
+                    //   var method = implementation.GetMethod(virtualMethod.Name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, virtualMethod.Parameters, null); 
+                    //implementation.GetMethod(virtualMethod.Name, virtualMethod.Parameters);
+                    var methodImpl = implementingMethod.ClangMethodSignature(crRuntime);
+                    var parametersCallString = GetCall(virtualMethod, implementingMethod);
+
+                    sb
+                      .AppendFormat("{0}(", methodImpl)
+                      .AppendFormat("{0});", parametersCallString)
+                      .AppendLine();
+                    if (isVoid)
+                    {
+                        sb.Append("return;").AppendLine();
+                    }
+                }
+                    
+                sb.AppendLine("} //switch");
+                sb.AppendLine("}");
+            }
+
+            return sb.ToString();
+        }
+
+        private static void WriteForwardVcalls(ClosureEntities crRuntime, HashSet<MethodInfo> vcalls, StringBuilder sb)
+        {
+            foreach (var virtualMethod in vcalls)
+            {
+                var methodName = virtualMethod.ClangMethodSignature(crRuntime);
+                var parametersString = GetParametersString(virtualMethod, crRuntime);
 
                 sb.Append(virtualMethod.ReturnType.ToCppName(EscapingMode.Smart));
                 sb.Append(" ");
@@ -74,11 +104,9 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 sb.AppendFormat(parametersString);
                 sb.AppendLine(");");
             }
-
-            return sb.ToString();
         }
 
-        private static string GetParametersString(MethodInfo virtualMethod, bool isinterfacemethod,
+        private static string GetParametersString(MethodInfo virtualMethod,
             ClosureEntities crRuntime)
         {
             var sb = new StringBuilder();
@@ -95,233 +123,20 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             }
             return sb.ToString();
         }
-        /*
-            string parametersString;
-            if (isinterfacemethod)
-            {
-                parametersString = string.Format("const {0} _this", typeof(object).ToDeclaredVariableType(true, EscapingMode.Smart));
-            }
-            else
-                parametersString = string.Format("const {0} _this", virtualMethod.DeclaringType.ToDeclaredVariableType(true, EscapingMode.Smart));
-            //Add Rest of parameters
-            if (virtualMethod.Parameters.Length > 0)
-            {
-                var paramTypes = virtualMethod.Parameters;
-                int c = 0;
-                parametersString += ", ";
-                parametersString = paramTypes.Aggregate(parametersString, (current, paramType) => current + (paramType.ToDeclaredVariableType(true, EscapingMode.Smart) + " param" + (c++) + ", "));
 
-                parametersString = parametersString.Substring(0, parametersString.Length - 2);
-
-
-            }
-            return parametersString;
-        }*/
-
-        /*
-            //Cleanup _validVirtualMethods
-            var cleanedupVersion = new List<VirtualMethodDescription>();
-            
-            foreach (var virtualMethodDescription in _validVirtualMethods)
-            {
-                //Have to make sure parameters match too
-                if (cleanedupVersion.Any(h => (h.MethodMatches(virtualMethodDescription.BaseMethod,false))))
-                    continue;
-                cleanedupVersion.Add(virtualMethodDescription);
-            }
-
-            var vcalls = new List<VirtualMethodDescription>();
-            foreach (var virtualMethodDescription in cleanedupVersion)
-            {
-                if (!vcalls.Any(j => j.Name == virtualMethodDescription.Name && j.BaseMethod == virtualMethodDescription.BaseMethod))
-                {
-                    vcalls.Add(virtualMethodDescription);
-                }
-            }
-
-
-
-
-            foreach (var virtualMethod in vcalls)
-            {
-                var isinterfaceMethod = virtualMethod.BaseMethod.DeclaringType.IsInterface;
-                string methodName;
-
-                methodName = virtualMethod.BaseMethod.ClangMethodSignature(crRuntime);
-                var parametersString = GetParametersString(virtualMethod,isinterfaceMethod);
-
-                sb.Append(virtualMethod.ReturnType.ToCppName(EscapingMode.Smart));
-                sb.Append(" ");
-                sb.Append(methodName);
-                sb.Append("_vcall(");
-                sb.AppendFormat(parametersString);
-                sb.AppendLine(");");
-            }
-
-            foreach (var virtualMethod in vcalls)
-            {
-                var vmsb = new StringBuilder();
-                //Ignore instance only dispatch
-                if(virtualMethod.UsingImplementations.All(k=>k.IsInterface))
-                    continue;
-
-                var isinterfaceMethod = virtualMethod.BaseMethod.DeclaringType.IsInterface;
-
-                var methodName = virtualMethod.BaseMethod.ClangMethodSignature(crRuntime);
-
-                var parametersString = GetParametersString(virtualMethod, isinterfaceMethod);
-
-                vmsb.Append(virtualMethod.ReturnType.ToCppName(EscapingMode.Smart));
-                vmsb.Append(" ");
-                vmsb.Append(methodName);
-                vmsb.Append("_vcall(")
-                    .AppendFormat(parametersString)
-                    .AppendLine("){")
-                    .AppendLine("switch (_this->_typeId)")
-                    .AppendLine("{");
-                var implementedcases = 0;
-                foreach (var implementation in virtualMethod.UsingImplementations)
-                {
-                    var mname = isinterfaceMethod ? virtualMethod.BaseMethod.DeclaringType.FullName.Replace("+",".") + "." + virtualMethod.BaseMethod.Name : virtualMethod.BaseMethod.Name;
-                    //Start with explicit name and final
-
-                    var method = implementation.GetMethod(mname, BindingFlags.NonPublic | BindingFlags.Instance, null, virtualMethod.Parameters, null); 
-
-                    if(method==null)
-
-                     method = implementation.GetMethod(virtualMethod.BaseMethod.Name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance , null, virtualMethod.Parameters, null); 
-                    //try again with explicit name
-                    if(method==null)
-                     method = implementation.GetMethod(virtualMethod.Name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance , null, virtualMethod.Parameters, null); 
-
-                    if(implementation.IsAbstract &&  (method!=null &&method.IsAbstract))
-                        continue;
-                    //Interfaces dont have concrete implementations
-                    if (!implementation.IsInterface )
-                    {
-                        var typeId = _typeTable.TypeTable.GetTypeId(implementation);
-
-                        vmsb.AppendFormat("case {0}:", typeId).AppendLine();
-
-                        var isVoid = virtualMethod.BaseMethod.ReturnType == typeof(void);
-                        if (!isVoid)
-                        {
-                            vmsb.Append("return ");
-                        
-                        }
-
-                        //Handle Interfaces
-
-//                        var method = implementation.GetMethod(virtualMethod.Name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, virtualMethod.Parameters, null); 
-                        //implementation.GetMethod(virtualMethod.Name, virtualMethod.Parameters);
-                        var methodImpl = method.ClangMethodSignature(crRuntime);
-                        var parametersCallString = GetCall(virtualMethod, method);
-
-                        vmsb
-                          .AppendFormat("{0}(", methodImpl)
-                          .AppendFormat("{0});", parametersCallString)
-                          .AppendLine();
-                        if (isVoid)
-                        {
-                            vmsb.Append("return;").AppendLine();
-                        }
-                        implementedcases++;
-                    }
-                    
-                }
-
-               
-                // Deal with subclasses that don't override this method
-                var remainingSubclasses = virtualMethod.BaseMethod.DeclaringType.ImplementorsOfT(types).Except(virtualMethod.UsingImplementations).Where(i=>!i.IsInterface);
-               
-
-                foreach (var implementation in remainingSubclasses)
-                {
-                    var typeId = _typeTable.TypeTable.GetTypeId(implementation);
-
-                    vmsb.AppendFormat("case {0}:", typeId).AppendLine();
-
-                    var isVoid = virtualMethod.BaseMethod.ReturnType == typeof(void);
-                    if (!isVoid)
-                    {
-                        vmsb.Append("return ");
-                    }
-
-                    var method = implementation.GetMethod(virtualMethod.Name, virtualMethod.Parameters);
-                    var methodImpl = method.ClangMethodSignature(crRuntime);
-                    var parametersCallString = GetCall(virtualMethod, method);
-                    vmsb
-                        .AppendFormat("{0}(",methodImpl)
-                        .AppendFormat("{0});", parametersCallString)
-                        .AppendLine();
-                    if (isVoid)
-                    {
-                        vmsb.Append("return;").AppendLine();
-                    }
-
-                }
-
-                vmsb.AppendLine("}");
-                vmsb.AppendLine("}");
-
-                if (implementedcases > 0)
-                    sb.Append(vmsb.ToString());
-            }
-
-            sb.AppendLine("// --- End of definition of virtual method tables ---");
-            return sb.ToString();
-        }
-
-        private static string GetParametersString(VirtualMethodDescription virtualMethod, bool isinterfacemethod)
-        {
-            string parametersString;
-            if (isinterfacemethod)
-            {
-                parametersString = string.Format("const {0} _this", typeof(object).ToDeclaredVariableType(true, EscapingMode.Smart));
-            }
-            else
-            parametersString = string.Format("const {0} _this", virtualMethod.BaseType.ToDeclaredVariableType(true,EscapingMode.Smart));
-            //Add Rest of parameters
-            if (virtualMethod.Parameters.Length > 0)
-            {
-                var paramTypes = virtualMethod.Parameters;
-                int c = 0;
-                parametersString += ", ";
-                parametersString = paramTypes.Aggregate(parametersString, (current, paramType) => current + (paramType.ToDeclaredVariableType(true, EscapingMode.Smart) + " param" + (c++) + ", "));
-                
-                    parametersString = parametersString.Substring(0, parametersString.Length - 2);
-                
-                                  
-            }
-            return parametersString;
-        }
-            */
-        private static string GetCall(VirtualMethodDescription virtualMethod, MethodInfo method)
+        private static string GetCall(MethodInfo virtualMethod, MethodInfo method)
         {
             var parametersString = string.Format("std::static_pointer_cast<{0}>(_this)", method.DeclaringType.ToCppName(EscapingMode.Unused));
             //Add Rest of parameters
-            if (virtualMethod.Parameters.Length > 0)
-            {
-                var paramTypes = virtualMethod.Parameters;
-                int c = 0;
-                parametersString += ", ";
-               
-                parametersString = paramTypes.Aggregate(parametersString, (current, paramType) => current + " param" + (c++) + ", ");
-
-                parametersString = parametersString.Substring(0, parametersString.Length - 2);
-
-
-            }
-            return parametersString;
-        }
-
-        public static HashSet<string> GetAllMethodNames(List<MethodInterpreter> closure)
-        {
-            var methodNames = new HashSet<string>
-                (
-                closure.Select(m => m.Method.GetMethodName())
-                );
-            return methodNames;
+            var parameters = virtualMethod.GetParameters();
+            
+            if (parameters.Length <= 0) return parametersString;
+            var sb = new StringBuilder();
+            sb.Append(parametersString);
+            sb.Append(", ");
+            var arguments = string.Join(", ", parameters.Select(par=>par.Name));
+            sb.Append(arguments);
+            return sb.ToString();
         }
     }
 }

@@ -30,7 +30,7 @@ namespace CodeRefractor.Backend
 {
     public static class CppCodeGenerator
     {
-        public static StringBuilder GenerateSourceStringBuilder(MethodInterpreter interpreter, List<Type> typeClosure, TypeDescriptionTable table, List<MethodInterpreter> closure, VirtualMethodTable typeTable, ClosureEntities closureEntities)
+        public static StringBuilder GenerateSourceStringBuilder(MethodInterpreter interpreter, List<Type> typeClosure, TypeDescriptionTable table, List<MethodInterpreter> closure, ClosureEntities closureEntities)
         {
             var sb = new StringBuilder();
 
@@ -45,7 +45,7 @@ namespace CodeRefractor.Backend
 
             sb.AppendLine("#include \"runtime_base.hpp\"");
 
-            sb.AppendLine(VirtualMethodTableCodeWriter.GenerateTypeTableCode(typeClosure.ToArray(), closureEntities)); // We need to use this type table to generate missing jumps for subclasses  that dont override a base method
+            sb.AppendLine(VirtualMethodTableCodeWriter.GenerateTypeTableCode(table, closureEntities)); // We need to use this type table to generate missing jumps for subclasses  that dont override a base method
             WriteCppMethods(closure, sb, closureEntities);
             WriteClosureMethods(closure, sb, table, closureEntities);
 

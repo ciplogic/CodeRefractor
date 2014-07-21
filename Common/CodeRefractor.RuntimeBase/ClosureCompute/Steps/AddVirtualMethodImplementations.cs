@@ -24,6 +24,8 @@ namespace CodeRefractor.ClosureCompute.Steps
                 foreach (var implementingType in implementingTypes)
                 {
                     var implementingMethod = GetImplementingMethod(implementingType, methodBase);
+                    if(implementingMethod == null)
+                        continue;
                     if (implementingMethod.GetMethodBody() == null)
                         continue;
                     if (closureEntities.GetMethodImplementation(implementingMethod) == null)
@@ -40,7 +42,7 @@ namespace CodeRefractor.ClosureCompute.Steps
             return true;
         }
 
-        static MethodInfo GetImplementingMethod(Type implementingType, MethodInfo info)
+        public static MethodInfo GetImplementingMethod(Type implementingType, MethodInfo info)
         {
             var matchingMethod = implementingType.GetMethods(ClosureEntitiesBuilder.AllFlags)
                 .Where(m => m.Name == info.Name)

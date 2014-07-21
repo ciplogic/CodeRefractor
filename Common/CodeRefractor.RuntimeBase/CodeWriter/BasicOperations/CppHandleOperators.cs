@@ -666,7 +666,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 
             var declaringType = localValue.DeclaringType;
             var targetType = declaringType.GetMappedType(crRuntime);
-            var cppName = declaringType.ToDeclaredVariableType(true, EscapingMode.Stack);
+            var cppName = declaringType.ToDeclaredVariableType(EscapingMode.Stack);
             var assignedData = interpreter.AnalyzeProperties.GetVariableData(value.AssignedTo);
             var isStack = assignedData == EscapingMode.Stack;
             if (isStack)

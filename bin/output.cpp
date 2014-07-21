@@ -60,6 +60,26 @@ System_Void setupTypeTable();
 
 System_Double _Shape_get_Area_vcall(const std::shared_ptr<_Shape> _this);
 System_Void _Shape_set_Area_vcall(const std::shared_ptr<_Shape> _this, System_Double value);
+System_Double _Shape_get_Area_vcall(const std::shared_ptr<_Shape> _this) {
+switch (_this->_typeId)
+{
+case 4:
+return _Square_get_Area(std::static_pointer_cast<_Square>(_this));
+case 6:
+return _Cube_get_Area(std::static_pointer_cast<_Cube>(_this));
+} //switch
+}
+System_Void _Shape_set_Area_vcall(const std::shared_ptr<_Shape> _this, System_Double value) {
+switch (_this->_typeId)
+{
+case 4:
+_Square_set_Area(std::static_pointer_cast<_Square>(_this), value);
+return;
+case 6:
+_Cube_set_Area(std::static_pointer_cast<_Cube>(_this), value);
+return;
+} //switch
+}
 
 #include "stdio.h"
 System_Void System_Console_Write(std::shared_ptr<System_String> value)

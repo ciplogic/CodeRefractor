@@ -122,7 +122,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 .AppendFormat("{0} = unbox_value<{2}>({1});",
                     unboxing.AssignedTo.Name,
                     unboxing.Right.Name,
-                    typeDescription.ClrType.ToDeclaredVariableType(true, EscapingMode.Stack));
+                    typeDescription.ClrType.ToDeclaredVariableType(EscapingMode.Stack));
         }
         private static void HandleBox(Boxing boxing, StringBuilder bodySb, TypeDescriptionTable typeTable)
         {
@@ -131,7 +131,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 .AppendFormat("{0} = box_value<{2}>({1}, {3});",
                     boxing.AssignedTo.Name,
                     boxing.Right.Name,
-                    typeDescription.ClrType.ToDeclaredVariableType(true, EscapingMode.Stack),
+                    typeDescription.ClrType.ToDeclaredVariableType(EscapingMode.Stack),
                     typeTable.GetTypeId(typeDescription.ClrType));
         }
 
@@ -143,7 +143,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 .AppendFormat("{0} = std::static_pointer_cast<{2}>({1});",
                     casting.AssignedTo.Name,
                     casting.Value.Name,
-                    typeDescription.ClrType.ToDeclaredVariableType(true, EscapingMode.Stack));
+                    typeDescription.ClrType.ToDeclaredVariableType(EscapingMode.Stack));
         }
         
         private static void HandleComment(string toString, StringBuilder bodySb)
@@ -229,7 +229,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             if (localVariableData == EscapingMode.Pointer)
             {
                 var cppName = localVariable.ComputedType()
-                    .ClrType.ToDeclaredVariableType(true, localVariableData);
+                    .ClrType.ToDeclaredVariableType(localVariableData);
                 variablesSb
                     .AppendFormat(format, cppName, localVariable.Id)
                     .AppendLine();
@@ -237,7 +237,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             }
             variablesSb
                 .AppendFormat(format, localVariable.ComputedType()
-                    .ClrType.ToDeclaredVariableType(true, localVariableData), localVariable.Id)
+                    .ClrType.ToDeclaredVariableType(localVariableData), localVariable.Id)
                 .AppendLine();
         }
 

@@ -140,7 +140,7 @@ namespace CodeRefractor.Util
             return fullName;
         }
 
-        public static string ToDeclaredVariableType(this Type type, bool handleGenerics = true,
+        public static string ToDeclaredVariableType(this Type type,
             EscapingMode isSmartPtr = EscapingMode.Smart)
         {
             if (type == null)
