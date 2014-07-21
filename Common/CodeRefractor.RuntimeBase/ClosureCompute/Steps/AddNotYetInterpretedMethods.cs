@@ -23,7 +23,7 @@ namespace CodeRefractor.ClosureCompute.Steps
             {
                 var method = (CilMethodInterpreter) methodBase;
                 var useDef = method.MidRepresentation.UseDef;
-                var callOperations = useDef.GetOperationsOfKind(OperationKind.Call).Union(useDef.GetOperationsOfKind(OperationKind.CallVirtual)).Union(useDef.GetOperationsOfKind(OperationKind.CallInterface)).ToArray();
+                var callOperations = useDef.GetOperationsOfKind(OperationKind.Call).ToArray();
                 var ops = useDef.GetLocalOperations();
                 foreach (var callOperation in callOperations)
                 {
