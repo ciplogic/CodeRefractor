@@ -28,11 +28,10 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         {
             _typeTable = typeTable;
             var methodNames = GetAllMethodNames(closure);
-            _validVirtualMethods = CalculateValidVirtualMethods(typeTable, methodNames);
+            _validVirtualMethods = CalculateValidVirtualMethods(typeTable, methodNames, closure);
         }
 
-        public static List<VirtualMethodDescription> CalculateValidVirtualMethods(VirtualMethodTable typeTable,
-            HashSet<string> methodNames)
+        public static List<VirtualMethodDescription> CalculateValidVirtualMethods(VirtualMethodTable typeTable, HashSet<string> methodNames, List<MethodInterpreter> closure)
         {
             var validVirtMethods = new List<VirtualMethodDescription>();
             foreach (var virtualMethod in typeTable.VirtualMethods)
@@ -48,15 +47,81 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             return validVirtMethods;
         }
 
-        public string GenerateTypeTableCode(Type[] types, ClosureEntities crRuntime)
+
+
+        public static string GenerateTypeTableCode(Type[] types, ClosureEntities crRuntime)
         {
             var sb = new StringBuilder();
             sb.AppendLine("// --- Begin definition of virtual method tables ---");
             sb.AppendLine("System_Void setupTypeTable();")
                 .AppendLine();
+
+
+            var vcalls = crRuntime.AbstractMethods;
+
+            foreach (var virtualMethod in vcalls)
+            {
+                var isinterfaceMethod = virtualMethod.DeclaringType.IsInterface;
+                string methodName;
+
+                methodName = virtualMethod.ClangMethodSignature(crRuntime);
+                var parametersString = GetParametersString(virtualMethod, isinterfaceMethod, crRuntime);
+
+                sb.Append(virtualMethod.ReturnType.ToCppName(EscapingMode.Smart));
+                sb.Append(" ");
+                sb.Append(methodName);
+                sb.Append("_vcall(");
+                sb.AppendFormat(parametersString);
+                sb.AppendLine(");");
+            }
+
+            return sb.ToString();
+        }
+
+        private static string GetParametersString(MethodInfo virtualMethod, bool isinterfacemethod,
+            ClosureEntities crRuntime)
+        {
+            var sb = new StringBuilder();
+            var parameters = virtualMethod.GetParameters();
+            var declaringType = virtualMethod.DeclaringType.GetReversedMappedType(crRuntime);
+            sb.AppendFormat("const {0} _this", declaringType.ToCppName());
+            if (parameters.Length > 0)
+            {
+                sb.Append(", ");
+                var arguments = string.Join(", ", parameters.Select(param => string.Format("{0} {1}",
+                    param.ParameterType.GetReversedMappedType(crRuntime).ToCppName(),
+                    param.Name)));
+                sb.Append(arguments);
+            }
+            return sb.ToString();
+        }
+        /*
+            string parametersString;
+            if (isinterfacemethod)
+            {
+                parametersString = string.Format("const {0} _this", typeof(object).ToDeclaredVariableType(true, EscapingMode.Smart));
+            }
+            else
+                parametersString = string.Format("const {0} _this", virtualMethod.DeclaringType.ToDeclaredVariableType(true, EscapingMode.Smart));
+            //Add Rest of parameters
+            if (virtualMethod.Parameters.Length > 0)
+            {
+                var paramTypes = virtualMethod.Parameters;
+                int c = 0;
+                parametersString += ", ";
+                parametersString = paramTypes.Aggregate(parametersString, (current, paramType) => current + (paramType.ToDeclaredVariableType(true, EscapingMode.Smart) + " param" + (c++) + ", "));
+
+                parametersString = parametersString.Substring(0, parametersString.Length - 2);
+
+
+            }
+            return parametersString;
+        }*/
+
+        /*
             //Cleanup _validVirtualMethods
             var cleanedupVersion = new List<VirtualMethodDescription>();
-
+            
             foreach (var virtualMethodDescription in _validVirtualMethods)
             {
                 //Have to make sure parameters match too
@@ -230,7 +295,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             }
             return parametersString;
         }
-
+            */
         private static string GetCall(VirtualMethodDescription virtualMethod, MethodInfo method)
         {
             var parametersString = string.Format("std::static_pointer_cast<{0}>(_this)", method.DeclaringType.ToCppName(EscapingMode.Unused));

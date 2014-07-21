@@ -40,7 +40,11 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
                 return;
             foreach (var variable in candidateVariables)
             {
-                interpreter.AnalyzeProperties.SetVariableData(variable, EscapingMode.Pointer);
+                var getVariableData = interpreter.AnalyzeProperties.GetVariableData(variable);
+                if (getVariableData != EscapingMode.Unused)
+                {
+                    interpreter.AnalyzeProperties.SetVariableData(variable, EscapingMode.Pointer);
+                }
             }
             AllocateVariablesOnStack(localOp, candidateVariables, interpreter);
         }

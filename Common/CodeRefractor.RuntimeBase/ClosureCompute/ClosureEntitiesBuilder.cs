@@ -30,6 +30,7 @@ namespace CodeRefractor.ClosureCompute
             AddClosureStep<AddParameterTypesToClosure>();
             AddClosureStep<AddLocalVariableTypesToClosure>();
             AddClosureStep<AddVirtualMethods>();
+            AddClosureStep<AddVirtualMethodImplementations>();
         }
         private void AddClosureStep<T>() where T : ClosureComputeBase, new()
         {

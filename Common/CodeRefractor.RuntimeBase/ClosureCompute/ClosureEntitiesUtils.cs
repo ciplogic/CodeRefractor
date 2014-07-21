@@ -32,6 +32,12 @@ namespace CodeRefractor.ClosureCompute
         }
 
 
+        public static MethodBaseKey ToKey(this MethodBase method)
+        {
+            var result = new MethodBaseKey(method);
+            return result;
+        }
+
         public static Type ReduceType(this Type type)
         {
             if (type.IsArray)
@@ -47,10 +53,14 @@ namespace CodeRefractor.ClosureCompute
 
         public static bool MethodMatches(this MethodBase otherDefinition, MethodBase method)
         {
+            var declaringType = method.DeclaringType;
+            var otherDeclaringType = method.DeclaringType;
+            if (declaringType != otherDeclaringType)
+                return false;
+
             if ((method.GetMethodName() != otherDefinition.Name) && (otherDefinition.Name != method.Name))
                 return false;
-            var declaringType = method.DeclaringType;
-
+            
 
             if (method.GetReturnType().FullName != otherDefinition.GetReturnType().FullName)
                 return false;

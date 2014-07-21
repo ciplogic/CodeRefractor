@@ -1,5 +1,8 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using CodeRefractor.Util;
 
 namespace CodeRefractor.ClosureCompute.Steps
 {
@@ -10,21 +13,48 @@ namespace CodeRefractor.ClosureCompute.Steps
             var abstractMethods = closureEntities.AbstractMethods;
             if (abstractMethods.Count == 0)
                 return false;
-            var methdosToAdd = new HashSet<MethodBase>();
+            var methdosToAdd = new HashSet<MethodBaseKey>();
             foreach (var methodBase in abstractMethods)
             {
-                if (closureEntities.GetMethodImplementation(methodBase) == null)
+                var declaringType = methodBase.DeclaringType;
+                if(declaringType==null)
+                    continue;
+
+                var implementingTypes = declaringType.ImplementorsOfT(closureEntities.MappedTypes.Values);
+                foreach (var implementingType in implementingTypes)
                 {
-                    methdosToAdd.Add(methodBase);
+                    var implementingMethod = GetImplementingMethod(implementingType, methodBase);
+                    if (implementingMethod.GetMethodBody() == null)
+                        continue;
+                    if (closureEntities.GetMethodImplementation(implementingMethod) == null)
+                    {
+                        methdosToAdd.Add(implementingMethod.ToKey());
+                    }
                 }
-               
             }
             if (methdosToAdd.Count == 0) return false;
             foreach (var methodBase in methdosToAdd)
             {
-                AddMethodToClosure(closureEntities, methodBase);
+                AddMethodToClosure(closureEntities, methodBase.Method);
             }
             return true;
         }
+
+        static MethodInfo GetImplementingMethod(Type implementingType, MethodInfo info)
+        {
+            var matchingMethod = implementingType.GetMethods(ClosureEntitiesBuilder.AllFlags)
+                .Where(m => m.Name == info.Name)
+                .FirstOrDefault(met => MethodMatchesParam(met, info));
+            return matchingMethod;
+        }
+
+        private static bool MethodMatchesParam(MethodInfo met, MethodInfo info)
+        {
+            var srcParameters = met.GetParameters();
+            var destParameters = info.GetParameters();
+            return MethodBaseKey.ParameterListIsMatching(srcParameters, destParameters);
+        }
     }
+
+
 }

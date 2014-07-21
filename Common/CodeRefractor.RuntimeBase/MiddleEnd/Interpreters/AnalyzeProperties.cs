@@ -81,9 +81,17 @@ namespace CodeRefractor.MiddleEnd.Interpreters
             return LocalVarEscaping[variable];
         }
 
-        public void SetVariableData(LocalVariable variable, EscapingMode escaping)
+        public bool SetVariableData(LocalVariable variable, EscapingMode escaping)
         {
+            EscapingMode result;
+            if (LocalVarEscaping.TryGetValue(variable, out result))
+            {
+                if (result == escaping)
+                    return false;
+            }
+            
             LocalVarEscaping[variable] = escaping;
+            return true;
         }
 
         public bool[] GetUsedArguments(List<LocalVariable> arguments)

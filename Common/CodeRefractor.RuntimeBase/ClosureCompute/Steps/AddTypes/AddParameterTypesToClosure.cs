@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Linq;
+using System.Reflection;
 using CodeRefractor.RuntimeBase;
 
 namespace CodeRefractor.ClosureCompute.Steps.AddTypes
@@ -9,7 +10,7 @@ namespace CodeRefractor.ClosureCompute.Steps.AddTypes
         {
             var methods = closureEntities.MethodImplementations.Keys;
             var result = false;
-            foreach (var method in methods)
+            foreach (var method in methods.Select(mk=>mk.Method))
             {
                 result |= UpdateClosureForMethod(method, closureEntities);
             }

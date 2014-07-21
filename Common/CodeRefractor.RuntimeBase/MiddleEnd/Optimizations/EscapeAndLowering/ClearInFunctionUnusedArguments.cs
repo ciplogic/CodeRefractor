@@ -32,8 +32,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.EscapeAndLowering
             argList = UseDefDescription.ComputeUnusedArguments(argList, useDef);
             foreach (var variable in argList)
             {
-                properties.SetVariableData(variable, EscapingMode.Unused);
-                Result = true;
+                Result = properties.SetVariableData(variable, EscapingMode.Unused);
             }
         }
     }
