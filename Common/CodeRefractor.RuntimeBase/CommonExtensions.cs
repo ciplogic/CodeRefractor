@@ -11,6 +11,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.Runtime.Annotations;
@@ -232,14 +233,14 @@ namespace CodeRefractor.RuntimeBase
             }
         }
 
-        public static string ExecuteCommand(this string pathToExe, string arguments="", string workingDirectory="")
+        public static string ExecuteCommand(this string pathToExe, string arguments = "", string workingDirectory = "")
         {
             if (workingDirectory == "")
             {
                 workingDirectory = Path.GetDirectoryName(pathToExe);
             }
 
-            var p = new Process
+            var process = new Process
             {
                 StartInfo =
                 {
@@ -255,19 +256,62 @@ namespace CodeRefractor.RuntimeBase
                 }
             };
 
-        
+            StringBuilder output = new StringBuilder();
+            StringBuilder error = new StringBuilder();
 
-            p.Start();
-            p.WaitForExit(10000);
+            using (AutoResetEvent outputWaitHandle = new AutoResetEvent(false))
+            using (AutoResetEvent errorWaitHandle = new AutoResetEvent(false))
+            {
+                process.OutputDataReceived += (sender, e) =>
+                {
+                    if (e.Data == null)
+                    {
+                        outputWaitHandle.Set();
+                    }
+                    else
+                    {
+                        output.AppendLine(e.Data);
+                    }
+                };
+                process.ErrorDataReceived += (sender, e) =>
+                {
+                    if (e.Data == null)
+                    {
+                        errorWaitHandle.Set();
+                    }
+                    else
+                    {
+                        error.AppendLine(e.Data);
+                    }
+                };
 
-            var standardOutput = p.StandardOutput.ReadToEnd();
-            var standardError = p.StandardError.ReadToEnd();
-            return String.IsNullOrWhiteSpace(standardOutput)
-                ? standardError
-                : String.IsNullOrWhiteSpace(standardError)
-                    ? standardOutput
-                    : standardOutput + Environment.NewLine + standardError;
+
+                process.Start();
+                process.BeginOutputReadLine();
+                process.BeginErrorReadLine();
+
+                if (process.WaitForExit(20000) &&
+                    outputWaitHandle.WaitOne(20000) &&
+                    errorWaitHandle.WaitOne(20000))
+                {
+                    // Process completed. Check process.ExitCode here.
+                    var standardOutput = output.ToString();
+                    var standardError = error.ToString();
+                    return String.IsNullOrWhiteSpace(standardOutput)
+                        ? standardError
+                        : String.IsNullOrWhiteSpace(standardError)
+                            ? standardOutput
+                            : standardOutput + Environment.NewLine + standardError;
+                }
+                else
+                {
+                    // Timed out.
+                    return "Process terminated immaturely";
+                }
+            }
         }
+
+    
 
         public static void DeleteFile(this string fileName)
         {

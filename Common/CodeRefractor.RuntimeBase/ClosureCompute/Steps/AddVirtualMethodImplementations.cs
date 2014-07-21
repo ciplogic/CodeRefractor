@@ -44,9 +44,17 @@ namespace CodeRefractor.ClosureCompute.Steps
 
         public static MethodInfo GetImplementingMethod(Type implementingType, MethodInfo info)
         {
-            var matchingMethod = implementingType.GetMethods(ClosureEntitiesBuilder.AllFlags)
-                .Where(m => m.Name == info.Name)
-                .FirstOrDefault(met => MethodMatchesParam(met, info));
+
+//            var matchingMethod = implementingType.GetMethods(ClosureEntitiesBuilder.AllFlags) //Doesnt handle all cases
+//                .Where(m => m.Name == info.Name)
+//                .FirstOrDefault(met => MethodMatchesParam(met, info));
+
+            var matchingMethod = implementingType.GetMethod(info.Name, ClosureEntitiesBuilder.AllFlags, null, info.GetParameters().Select(j=>j.ParameterType).ToArray(), null);
+            //try again with explicit name
+            if (matchingMethod == null)
+                matchingMethod = implementingType.GetMethod(info.GetMethodName(), ClosureEntitiesBuilder.AllFlags, null, info.GetParameters().Select(j => j.ParameterType).ToArray(), null); 
+
+
             return matchingMethod;
         }
 

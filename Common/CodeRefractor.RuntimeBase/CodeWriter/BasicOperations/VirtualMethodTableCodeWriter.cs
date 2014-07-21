@@ -28,6 +28,9 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             var vcalls = crRuntime.AbstractMethods;
 
             WriteForwardVcalls(crRuntime, vcalls, sb);
+
+
+
             foreach (var virtualMethod in vcalls)
             {
                 var methodName = virtualMethod.ClangMethodSignature(crRuntime);
@@ -49,37 +52,70 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 {
 
                     var implementingMethod = AddVirtualMethodImplementations.GetImplementingMethod(implementingType, virtualMethod);
-                    if (implementingMethod == null)
-                        continue;
-                    if (implementingMethod.GetMethodBody() == null)
-                        continue;
-                    var declaringTypeImplementation = implementingMethod.DeclaringType.GetReversedMappedType(crRuntime);
-
-                    var typeId = table.GetTypeId(declaringTypeImplementation);
-
-                    sb.AppendFormat("case {0}:", typeId).AppendLine();
-
-                    var isVoid = virtualMethod.ReturnType == typeof(void);
-                    if (!isVoid)
+//                    if (implementingMethod == null) //We should call the next method in line ... not ignore this object
+//                        continue;
+                    if (implementingMethod != null)
                     {
-                        sb.Append("return ");
+                        if (implementingMethod.GetMethodBody() == null)
+                            continue;
+                        var declaringTypeImplementation =
+                            implementingMethod.DeclaringType.GetReversedMappedType(crRuntime);
 
+                        var typeId = table.GetTypeId(declaringTypeImplementation);
+
+                        sb.AppendFormat("case {0}:", typeId).AppendLine();
+
+                        var isVoid = virtualMethod.ReturnType == typeof (void);
+                        if (!isVoid)
+                        {
+                            sb.Append("return ");
+
+                        }
+
+
+                     
+                       
+                            var methodImpl = implementingMethod.ClangMethodSignature(crRuntime);
+                            var parametersCallString = GetCall(virtualMethod, implementingMethod);
+
+                            sb
+                                .AppendFormat("{0}(", methodImpl)
+                                .AppendFormat("{0});", parametersCallString)
+                                .AppendLine();
+                            if (isVoid)
+                            {
+                                sb.Append("return;").AppendLine();
+                            }
+                        
                     }
-
-                    //Handle Interfaces
-
-                    //   var method = implementation.GetMethod(virtualMethod.Name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, virtualMethod.Parameters, null); 
-                    //implementation.GetMethod(virtualMethod.Name, virtualMethod.Parameters);
-                    var methodImpl = implementingMethod.ClangMethodSignature(crRuntime);
-                    var parametersCallString = GetCall(virtualMethod, implementingMethod);
-
-                    sb
-                      .AppendFormat("{0}(", methodImpl)
-                      .AppendFormat("{0});", parametersCallString)
-                      .AppendLine();
-                    if (isVoid)
+                    else
                     {
-                        sb.Append("return;").AppendLine();
+                        var typeId = table.GetTypeId(implementingType);
+
+                        sb.AppendFormat("case {0}:", typeId).AppendLine();
+
+                        var isVoid = virtualMethod.ReturnType == typeof(void);
+                        if (!isVoid)
+                        {
+                            sb.Append("return ");
+
+                        }
+
+
+
+
+                        var method = implementingType.GetMethod(virtualMethod.Name, virtualMethod.GetParameters().Select(j=>j.ParameterType).ToArray());
+                        
+                        var methodImpl = method.ClangMethodSignature(crRuntime);
+                        var parametersCallString = GetCall(virtualMethod, method);
+                        sb
+                            .AppendFormat("{0}(", methodImpl)
+                            .AppendFormat("{0});", parametersCallString)
+                            .AppendLine();
+                        if (isVoid)
+                        {
+                            sb.Append("return;").AppendLine();
+                        }
                     }
                 }
                     
@@ -112,7 +148,14 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             var sb = new StringBuilder();
             var parameters = virtualMethod.GetParameters();
             var declaringType = virtualMethod.DeclaringType.GetReversedMappedType(crRuntime);
-            sb.AppendFormat("const {0} _this", declaringType.ToCppName());
+            if (declaringType.IsInterface) //Interface definitions are "objects"
+            {
+                sb.AppendFormat("const {0} _this", typeof(object).ToCppName());
+            }
+            else
+            {
+                sb.AppendFormat("const {0} _this", declaringType.ToCppName());
+            }
             if (parameters.Length > 0)
             {
                 sb.Append(", ");
