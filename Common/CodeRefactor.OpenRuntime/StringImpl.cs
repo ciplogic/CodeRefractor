@@ -69,13 +69,47 @@ namespace CodeRefactor.OpenRuntime
         [MapMethod]
         public static object TrimStart(string _this, params char[] trimChars)
         {
+            var startIndex = findTrimStartIndex(_this, trimChars);
+
+            return Substring(_this, startIndex);
+        }
+
+        [MapMethod]
+        public static object TrimEnd(string _this, params char[] trimChars)
+        {
+            var length = findTrimEndLength(_this, trimChars);
+
+            return Substring(_this, 0, length);
+        }
+
+        [MapMethod]
+        public static object Trim(string _this, params char[] trimChars)
+        {
+            int startIndex = findTrimStartIndex(_this, trimChars),
+                length = findTrimEndLength(_this, trimChars);
+
+            if (length == 0) // in case the string gets completely trimmed, the length - startIndex will be invalid.
+            {
+                return "";
+            }
+            
+            return Substring(_this, startIndex, length - startIndex);
+        }
+
+        private static int findTrimStartIndex(string _this, char[] trimChars)
+        {
             int index = 0, i;
             char c;
             int foundTrimChar;
-            
+
             if (trimChars.Length == 0)
             {
                 trimChars = defaultTrimChars;
+            }
+
+            if (_this.Length == 0)
+            {
+                return 0;
             }
 
             do
@@ -98,11 +132,11 @@ namespace CodeRefactor.OpenRuntime
             // since it's a do/while, the index gets increased by one, even when the trim char check failed.
             // in case the string length was traversed, but we found all the chars, we need to make sure we don't keep
             // the last character.
-            return Substring(_this, index - 1 + foundTrimChar);
+            int startIndex = index - 1 + foundTrimChar;
+            return startIndex;
         }
 
-        [MapMethod]
-        public static object TrimEnd(string _this, params char[] trimChars)
+        private static int findTrimEndLength(string _this, char[] trimChars)
         {
             if (trimChars.Length == 0)
             {
@@ -111,7 +145,7 @@ namespace CodeRefactor.OpenRuntime
 
             if (_this.Length == 0)
             {
-                return "";
+                return 0;
             }
 
             int index = _this.Length - 1,
@@ -134,10 +168,11 @@ namespace CodeRefactor.OpenRuntime
 
                 index--;
             } while (foundTrimChar == 1 && index >= 0);
-            
+
             // This index is shifted by + 2, since it starts from Length - 1, and since it's
             // part of a Do/While
-            return Substring(_this, 0, index + 2 - foundTrimChar);
+            int length = index + 2 - foundTrimChar;
+            return length;
         }
     }
 }
