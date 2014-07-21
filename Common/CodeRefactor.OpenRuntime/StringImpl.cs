@@ -6,9 +6,6 @@ namespace CodeRefactor.OpenRuntime
     [ExtensionsImplementation(typeof (string))]
     public static class StringImpl
     {
-        // FIXME: default, these should be Unicode whitespace.
-        private static char[] defaultTrimChars = {' ', '\n', '\t'};
-
         [MapMethod]
         public static string Substring(string _this, int startIndex)
         {
@@ -69,7 +66,7 @@ namespace CodeRefactor.OpenRuntime
         [MapMethod]
         public static object TrimStart(string _this, params char[] trimChars)
         {
-            var startIndex = findTrimStartIndex(_this, trimChars);
+            var startIndex = FindTrimStartIndex(_this, trimChars);
 
             return Substring(_this, startIndex);
         }
@@ -77,7 +74,7 @@ namespace CodeRefactor.OpenRuntime
         [MapMethod]
         public static object TrimEnd(string _this, params char[] trimChars)
         {
-            var length = findTrimEndLength(_this, trimChars);
+            var length = FindTrimEndLength(_this, trimChars);
 
             return Substring(_this, 0, length);
         }
@@ -85,8 +82,8 @@ namespace CodeRefactor.OpenRuntime
         [MapMethod]
         public static object Trim(string _this, params char[] trimChars)
         {
-            int startIndex = findTrimStartIndex(_this, trimChars),
-                length = findTrimEndLength(_this, trimChars);
+            int startIndex = FindTrimStartIndex(_this, trimChars),
+                length = FindTrimEndLength(_this, trimChars);
 
             if (length == 0) // in case the string gets completely trimmed, the length - startIndex will be invalid.
             {
@@ -96,8 +93,12 @@ namespace CodeRefactor.OpenRuntime
             return Substring(_this, startIndex, length - startIndex);
         }
 
-        private static int findTrimStartIndex(string _this, char[] trimChars)
+        private static int FindTrimStartIndex(string _this, char[] trimChars)
         {
+            // FIXME: default, these should be Unicode whitespace.
+            // FIXME: these should be static, currently this is a WA for a compiler limitation.
+            char[] defaultTrimChars = {' ', '\n', '\t'};
+    
             int index = 0, i;
             char c;
             int foundTrimChar;
@@ -136,8 +137,12 @@ namespace CodeRefactor.OpenRuntime
             return startIndex;
         }
 
-        private static int findTrimEndLength(string _this, char[] trimChars)
+        private static int FindTrimEndLength(string _this, char[] trimChars)
         {
+            // FIXME: default, these should be Unicode whitespace.
+            // FIXME: these should be static, currently this is a WA for a compiler limitation.
+            char[] defaultTrimChars = { ' ', '\n', '\t' };
+            
             if (trimChars.Length == 0)
             {
                 trimChars = defaultTrimChars;
@@ -171,6 +176,8 @@ namespace CodeRefactor.OpenRuntime
 
             // This index is shifted by + 2, since it starts from Length - 1, and since it's
             // part of a Do/While
+            // If the string ended, and we were still finding chars (string was made out of only trim characters),
+            // adjust the length to that.
             int length = index + 2 - foundTrimChar;
             return length;
         }
