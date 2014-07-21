@@ -100,5 +100,44 @@ namespace CodeRefactor.OpenRuntime
             // the last character.
             return Substring(_this, index - 1 + foundTrimChar);
         }
+
+        [MapMethod]
+        public static object TrimEnd(string _this, params char[] trimChars)
+        {
+            if (trimChars.Length == 0)
+            {
+                trimChars = defaultTrimChars;
+            }
+
+            if (_this.Length == 0)
+            {
+                return "";
+            }
+
+            int index = _this.Length - 1,
+                foundTrimChar,
+                i;
+
+            do
+            {
+                char c = _this[index];
+                foundTrimChar = 0;
+
+                for (i = 0; i < trimChars.Length; i++)
+                {
+                    if (trimChars[i] == c)
+                    {
+                        foundTrimChar = 1;
+                        break;
+                    }
+                }
+
+                index--;
+            } while (foundTrimChar == 1 && index >= 0);
+            
+            // This index is shifted by + 2, since it starts from Length - 1, and since it's
+            // part of a Do/While
+            return Substring(_this, 0, index + 2 - foundTrimChar);
+        }
     }
 }

@@ -48,5 +48,27 @@ namespace MsilCodeCompiler.Tests.OpenRuntime
                 StringImpl.TrimStart(""),
                 "Trims on empty strings should be allowed.");
         }
+
+        [Test]
+        public void TestStringTrimEnd()
+        {
+            const string stringValue = "Abcd \n\t ";
+
+            Assert.AreEqual(stringValue.TrimEnd(),
+                StringImpl.TrimEnd(stringValue),
+                "Default trim should remove '\\n', '\\t' and ' '");
+
+            Assert.AreEqual(stringValue.TrimEnd('\n', ' '),
+                StringImpl.TrimEnd(stringValue, '\n', ' '),
+                "Custom trims should remove only some characters.");
+
+            Assert.AreEqual(stringValue.TrimEnd('\n', '\t', ' ', 'A', 'b', 'c', 'd'),
+                StringImpl.TrimEnd(stringValue, '\n', '\t', ' ', 'A', 'b', 'c', 'd'),
+                "Trims should be able to make strings empty.");
+
+            Assert.AreEqual("".TrimEnd(),
+                StringImpl.TrimEnd(""),
+                "Trims on empty strings should be allowed.");
+        }
     }
 }
