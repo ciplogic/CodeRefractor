@@ -6,6 +6,9 @@ namespace CodeRefactor.OpenRuntime
     [ExtensionsImplementation(typeof (string))]
     public static class StringImpl
     {
+        // FIXME: default, these should be Unicode whitespace.
+        private static char[] defaultTrimChars = {' ', '\n', '\t'};
+
         [MapMethod]
         public static string Substring(string _this, int startIndex)
         {
@@ -61,6 +64,41 @@ namespace CodeRefactor.OpenRuntime
                 resultChars[i] = originalChars[i + startIndex];
             var result = new string(resultChars);
             return result;
+        }
+
+        [MapMethod]
+        public static object TrimStart(string _this, params char[] trimChars)
+        {
+            int index = 0, i;
+            char c;
+            int foundTrimChar;
+            
+            if (trimChars.Length == 0)
+            {
+                trimChars = defaultTrimChars;
+            }
+
+            do
+            {
+                c = _this[index];
+                foundTrimChar = 0;
+
+                for (i = 0; i < trimChars.Length; i++)
+                {
+                    if (trimChars[i] == c)
+                    {
+                        foundTrimChar = 1;
+                        break;
+                    }
+                }
+
+                index++;
+            } while (foundTrimChar == 1 && index < _this.Length);
+
+            // since it's a do/while, the index gets increased by one, even when the trim char check failed.
+            // in case the string length was traversed, but we found all the chars, we need to make sure we don't keep
+            // the last character.
+            return Substring(_this, index - 1 + foundTrimChar);
         }
     }
 }
