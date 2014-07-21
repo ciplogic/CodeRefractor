@@ -15,10 +15,24 @@ namespace CodeRefactor.OpenRuntime
         {
         }
 
+
+
         [CppMethodBody(Header = "stdio.h", Code = "printf(\"%d\\n\", value);")]
         public static void WriteLine(int value)
         {
         }
+
+
+        [CppMethodBody(Header = "stdio.h", 
+            Code = @"
+                    if(value) 
+                        printf(""True"");
+                    else
+                        printf(""False"");")]
+        public static void WriteLine(bool value)
+        {
+        }
+
 
         [CppMethodBody(Header = "stdio.h", Code = "printf(\"%d\", value);")]
         public static void Write(int value)
