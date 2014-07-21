@@ -212,6 +212,7 @@ namespace CodeRefractor.FrontEnd
                 operationFactory.LoadStaticField((FieldInfo)instruction.Operand);
                 return true;
             }
+         
 
             if (opcodeStr == "stsfld")
             {
@@ -489,6 +490,13 @@ namespace CodeRefractor.FrontEnd
                 operationFactory.PushDouble((float)instruction.Operand);
                 return true;
             }
+
+            if (opcodeStr == "ldarga" || opcodeStr == "ldarga.s")
+            {
+                operationFactory.LoadArgument(GetParameterIndex(instruction), _methodInterpreter.AnalyzeProperties);
+                return true;
+            }
+
             if (opcodeStr == "ldarg.s")
             {
                 operationFactory.LoadArgument(GetParameterIndex(instruction), _methodInterpreter.AnalyzeProperties);

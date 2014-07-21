@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -6,6 +7,8 @@ using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 using CodeRefractor.MiddleEnd.UseDefs;
+using CodeRefractor.RuntimeBase.TypeInfoWriter;
+using CodeRefractor.Util;
 
 namespace CodeRefractor.ClosureCompute.Steps
 {
@@ -14,27 +17,31 @@ namespace CodeRefractor.ClosureCompute.Steps
         public override bool UpdateClosure(ClosureEntities closureEntities)
         {
             var result = false;
-            var methods = closureEntities.MethodImplementations.Values;
-            var cilMethods = methods.Where(m => m.Kind == MethodKind.CilInstructions)
-                .Select(m => (CilMethodInterpreter)m)
-                .ToArray();
-            foreach (var methodBase in cilMethods)
+          
+            List<Type> usedTypes = closureEntities.MappedTypes.Values.ToList();
+            var typeTable = new TypeDescriptionTable(usedTypes);
+            closureEntities.VirtualMethodTable = new VirtualMethodTable(typeTable);
+            var methodImps = closureEntities.MethodImplementations.ToList();
+            foreach (var method in methodImps)
             {
-                var method = methodBase;
-                var useDef = method.MidRepresentation.UseDef;
-                var callOperations = useDef.GetOperationsOfKind(OperationKind.CallVirtual);
-                if (callOperations.Length == 0)
-                    continue;
-                var ops = useDef.GetLocalOperations();
-                foreach (var callOperation in callOperations)
+
+
+                var subClasses = method.Key.DeclaringType.ImplementorsOfT(closureEntities.MappedTypes.Values);
+
+
+
+                var methods = subClasses.SelectMany(s => s.GetMethods(ClosureEntitiesBuilder.AllFlags).Where(j => j.MethodMatches(method.Key))).ToArray();
+
+                foreach (var methodImp in methods)
                 {
-                    var methodDataInfo = ops[callOperation].Get<CallMethodVirtual>();
-                    var methodToBeAdded = (MethodInfo)methodDataInfo.Info;
-                    if (methodToBeAdded == null)
-                        continue;
-                    result |= closureEntities.AbstractMethods.Add(methodToBeAdded);
+                    var interpreter = closureEntities.ResolveMethod(methodImp) ?? new CilMethodInterpreter(methodImp);
+                    closureEntities.VirtualMethodTable.RegisterMethod(methodImp, interpreter, closureEntities);
                 }
+
+
+
             }
+
             return result;
         }
     }

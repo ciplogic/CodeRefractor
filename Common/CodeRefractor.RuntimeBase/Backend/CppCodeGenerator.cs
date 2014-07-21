@@ -73,7 +73,7 @@ namespace CodeRefractor.Backend
                     sb.AppendFormat("#include \"{0}\"", runtimeLibrary.Header).AppendLine();
                 var sbDeclaration = CppWriteSignature.WriteSignature(interpreter, crRuntime, false);
                 sb.Append(sbDeclaration);
-                sb.AppendFormat("{{ {0} }}", runtimeLibrary.Source).AppendLine();
+                sb.AppendFormat("{{\n{0}\n}}", runtimeLibrary.Source).AppendLine();
             }
         }
 

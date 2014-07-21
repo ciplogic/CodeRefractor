@@ -23,12 +23,13 @@ namespace CodeRefractor.ClosureCompute
             //Method closure steps
             AddClosureStep<AddEntryPointInterpretedMethod>();
             AddClosureStep<AddNotYetInterpretedMethods>();
-            AddClosureStep<AddVirtualMethods>();
+           
 
             //Type closure steps
             AddClosureStep<AddStringTypeToClosure>();
             AddClosureStep<AddParameterTypesToClosure>();
             AddClosureStep<AddLocalVariableTypesToClosure>();
+            AddClosureStep<AddVirtualMethods>();
         }
         private void AddClosureStep<T>() where T : ClosureComputeBase, new()
         {

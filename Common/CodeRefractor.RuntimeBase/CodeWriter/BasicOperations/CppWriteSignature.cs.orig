@@ -2,6 +2,7 @@
 
 using System;
 using System.Text;
+using CodeRefractor.Analyze;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.CodeWriter.Linker;
 using CodeRefractor.MiddleEnd.Interpreters;
@@ -19,8 +20,8 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         public static string GetArgumentsAsTextWithEscaping(this MethodInterpreter interpreter, ClosureEntities closureEntities)
         {
             var method = interpreter.Method;
+
             var parameterInfos = method.GetParameters();
-            var escapingBools = method.BuildEscapingBools(closureEntities);
             var sb = new StringBuilder();
             var index = 0;
             var analyze = interpreter.AnalyzeProperties;
@@ -31,24 +32,19 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                     VarName = "_this",
                     Kind = VariableKind.Argument,
                     Id = 0
-                });
-                if (parameterData != EscapingMode.Unused)
+                }); 
+                TypeDescription argumentTypeDescription = UsedTypeList.Set(method.DeclaringType.GetReversedMappedType(closureEntities) ?? method.DeclaringType.GetMappedType(closureEntities), closureEntities);
+                    
+                switch (parameterData )
                 {
-<<<<<<< HEAD
-                    TypeDescription argumentTypeDescription = UsedTypeList.Set(method.DeclaringType.GetReversedMappedType(closureEntities) ?? method.DeclaringType.GetMappedType(closureEntities), closureEntities);
-=======
-                    var argumentTypeDescription = UsedTypeList.Set(method.DeclaringType.GetReversedMappedType(closureEntities), closureEntities);
->>>>>>> 3024f8c17d7f3d8bd41b78f605b7cd72fc808500
-                    var thisText = String.Format("const {0}& _this", argumentTypeDescription.ClrType.ToCppName(true)); // all "_this" should be smart pointers
-                    //For some reason at three Virtual Test 4 fails this, is something wrong with the escaping ?
-//                    if ((!escapingBools[0]))
-//                    {
-//                        thisText = String.Format("{0} _this",
-//                            argumentTypeDescription.ClrType.ToCppName(true, EscapingMode.Pointer));
-//                    }
-                    sb.Append(thisText);
-                    index++;
+                    case EscapingMode.Unused:
+                        break;
+                    case EscapingMode.Smart:
+                    case EscapingMode.Pointer:
+                        sb.AppendFormat("{0} _this", argumentTypeDescription.ClrType.ToCppName(parameterData));
+                        break;
                 }
+                index++;
             }
             var isFirst = index == 0;
             for (index = 0; index < parameterInfos.Length; index++)
@@ -68,12 +64,15 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 {
                     sb.Append(", ");
                 }
-                var isSmartPtr = escapingBools[index];
-                var nonEscapingMode = isSmartPtr ? EscapingMode.Smart : EscapingMode.Pointer;
+                var nonEscapingMode = parameterData;
                 var parameterType = parameterInfo.ParameterType.GetReversedMappedType(closureEntities);
                 var argumentTypeDescription = UsedTypeList.Set(parameterType, closureEntities);
                 sb.AppendFormat("{0} {1}",
-                     argumentTypeDescription.ClrType.ToCppName(true, nonEscapingMode), //Handle byref
+<<<<<<< HEAD
+                     argumentTypeDescription.ClrType.ToCppName(true, nonEscapingMode,isPInvoke:method.IsPinvoke()), //Handle byref
+=======
+                     argumentTypeDescription.ClrType.ToCppName(nonEscapingMode), //Handle byref
+>>>>>>> f3ebf52227929b2f79463a5c2ed451fc3231f9b0
                     parameterInfo.Name);
             }
             return sb.ToString();
@@ -84,7 +83,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         {
             var methodBase = interpreter.Method;
             var sb = new StringBuilder();
-            sb.Append(methodBase.GetReturnType().ToCppName(true));
+            sb.Append(methodBase.GetReturnType().ToCppName());
 
             sb.Append(" ");
 
