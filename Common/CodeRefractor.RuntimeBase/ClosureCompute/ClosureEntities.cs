@@ -98,7 +98,7 @@ namespace CodeRefractor.ClosureCompute
             List<Type> usedTypes = MappedTypes.Values.ToList();
             var typeTable = new TypeDescriptionTable(usedTypes);
             var virtualMethodTable = new VirtualMethodTable(typeTable);
-            BuildVirtualMethodTable(usedTypes,virtualMethodTable);
+            //BuildVirtualMethodTable(usedTypes,virtualMethodTable);
             return CppCodeGenerator.GenerateSourceStringBuilder(entryInterpreter, usedTypes,
                 MethodImplementations.Values.ToList(), virtualMethodTable, this);
         }

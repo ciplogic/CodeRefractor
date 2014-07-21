@@ -1,7 +1,5 @@
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
@@ -22,7 +20,8 @@ namespace CodeRefractor.ClosureCompute.Steps
             {
                 var method = methodBase;
                 var useDef = method.MidRepresentation.UseDef;
-                var callOperations = useDef.GetOperationsOfKind(OperationKind.CallVirtual);
+                var callOperations = useDef
+                    .GetOperationsOfKind(OperationKind.CallVirtual);
                 if (callOperations.Length == 0)
                     continue;
                 var ops = useDef.GetLocalOperations();
