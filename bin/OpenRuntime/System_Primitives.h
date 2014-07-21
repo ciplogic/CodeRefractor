@@ -2,6 +2,7 @@
 #define SystemPrimitives_H
 
 #include <memory>
+#undef __STRICT_ANSI__ 
 #include <cstdlib>
 
 typedef bool		System_Boolean;
@@ -57,6 +58,8 @@ template <class T> struct Array
 		Items = 0;
 	}
 };
+
+
 
 template <class T> void System_Runtime_CompilerServices_RuntimeHelpers__InitializeArray(
 		const std::shared_ptr< Array <T> > & array,

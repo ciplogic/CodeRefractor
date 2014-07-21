@@ -1,5 +1,6 @@
 #ifndef SLOTH_H
 #define SLOTH_H
+#undef __STRICT_ANSI__ 
 
 #include <stdio.h>
 #include <memory>
