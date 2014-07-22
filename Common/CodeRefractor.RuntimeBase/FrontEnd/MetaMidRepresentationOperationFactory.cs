@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using CodeRefractor.Analyze;
 using CodeRefractor.FrontEnd.SimpleOperations;
+using CodeRefractor.FrontEnd.SimpleOperations.Casts;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Interpreters;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
@@ -977,14 +978,15 @@ namespace CodeRefractor.FrontEnd
             //TODO: Fix this, we need to actually compare type ids here ... at runtime we cannot tell what has been passed
 
             var valueToCast = _evaluator.Pop();
-            var result = SetNewVReg();
-            result.FixedType = new TypeDescription(operand);
-
-            _evaluator.Push(new IdentifierValue
+            var assigned = SetNewVReg();
+            assigned.FixedType = new TypeDescription(typeof (bool));
+            var casting = new IsInstance
             {
-                FixedType = new TypeDescription(operand),
-            });
-            //AddOperation(casting);
+                AssignedTo = assigned,
+                Right = valueToCast,
+                CastTo = operand
+            };
+            AddOperation(casting);
         }
 
 

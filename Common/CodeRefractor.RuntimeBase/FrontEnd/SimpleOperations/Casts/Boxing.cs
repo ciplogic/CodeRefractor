@@ -5,7 +5,7 @@ using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
+namespace CodeRefractor.FrontEnd.SimpleOperations.Casts
 {
     public class Boxing : LocalOperation
     {

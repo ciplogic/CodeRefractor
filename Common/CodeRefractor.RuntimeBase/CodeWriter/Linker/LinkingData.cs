@@ -13,6 +13,7 @@ namespace CodeRefractor.CodeWriter.Linker
         public static int LibraryMethodCount;
 
         public StringTable Strings = new StringTable();
+        public GenerateTypeTableForIsInst IsInstTable = new GenerateTypeTableForIsInst();
 
         #region Singleton instance
 

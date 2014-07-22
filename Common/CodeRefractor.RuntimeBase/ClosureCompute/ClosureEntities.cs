@@ -100,7 +100,7 @@ namespace CodeRefractor.ClosureCompute
             var entryInterpreter = ResolveMethod(EntryPoint);
             List<Type> usedTypes = MappedTypes.Values.ToList();
             var typeTable = new TypeDescriptionTable(usedTypes,this);
-            return CppCodeGenerator.GenerateSourceStringBuilder(entryInterpreter, usedTypes,typeTable,
+            return CppCodeGenerator.GenerateSourceStringBuilder(entryInterpreter,typeTable,
                 MethodImplementations.Values.ToList(), this);
         }
 

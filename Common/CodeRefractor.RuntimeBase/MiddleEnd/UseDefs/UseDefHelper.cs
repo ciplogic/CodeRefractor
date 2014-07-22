@@ -4,12 +4,12 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using CodeRefractor.FrontEnd.SimpleOperations;
+using CodeRefractor.FrontEnd.SimpleOperations.Casts;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 using CodeRefractor.MiddleEnd.SimpleOperations.Operators;
-using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
 
@@ -37,9 +37,11 @@ namespace CodeRefractor.MiddleEnd.UseDefs
                     result.AddUsage(((Unboxing)operation).Right);
                     break;
                 case OperationKind.CastClass:
-                    result.AddUsage(((ClassCasting)operation).AssignedTo);
+                    result.AddUsage(((ClassCasting)operation).Value);
                     break;
-
+                case OperationKind.IsInstance:
+                    result.AddUsage(((IsInstance)operation).Right);
+                    break;
                 case OperationKind.UnaryOperator:
                     var unaryOperator = ((UnaryOperator)operation);
                     result.AddUsage(unaryOperator.Left);
@@ -274,6 +276,9 @@ namespace CodeRefractor.MiddleEnd.UseDefs
                 case OperationKind.CastClass:
                     var cast = (ClassCasting)operation;
                     return cast.AssignedTo;
+                case OperationKind.IsInstance:
+                    var isInst = (IsInstance)operation;
+                    return isInst.AssignedTo;
 
                 case OperationKind.BinaryOperator:
                 case OperationKind.UnaryOperator:
@@ -433,6 +438,9 @@ namespace CodeRefractor.MiddleEnd.UseDefs
                 case OperationKind.AlwaysBranch:
                 case OperationKind.Label:
                 case OperationKind.NewObject:
+                    break;
+                case OperationKind.IsInstance:
+                    SwitchUsageInIsInstance(op, usageVariable, definitionIdentifier);
                     break;
 
                 case OperationKind.RefAssignment:
@@ -634,6 +642,22 @@ namespace CodeRefractor.MiddleEnd.UseDefs
             if (usageVariable.Equals(opBinaryOperator.Left))
             {
                 opBinaryOperator.Left = definitionIdentifier;
+            }
+        }
+
+
+
+        private static void SwitchUsageInIsInstance(LocalOperation op, LocalVariable usageVariable,
+            IdentifierValue definitionIdentifier)
+        {
+            var opAssignment = (IsInstance)op;
+            if (usageVariable.Equals(opAssignment.AssignedTo))
+            {
+                opAssignment.AssignedTo = (LocalVariable)definitionIdentifier;
+            }
+            if (usageVariable.Equals(opAssignment.Right))
+            {
+                opAssignment.Right = definitionIdentifier;
             }
         }
 
