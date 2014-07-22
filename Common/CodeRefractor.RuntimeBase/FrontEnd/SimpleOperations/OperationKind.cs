@@ -46,6 +46,7 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations
 
         CastClass,
 
-        Comment
+        Comment,
+        IsInstance
     }
 }

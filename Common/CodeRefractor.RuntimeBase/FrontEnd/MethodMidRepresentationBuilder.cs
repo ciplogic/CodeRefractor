@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Emit;
+using CodeRefractor.ClosureCompute;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.RuntimeBase;
@@ -150,11 +152,11 @@ namespace CodeRefractor.FrontEnd
 
             if (HandleClassCast(opcodeStr, offset, operationFactory, instruction))
                 return;
-            if (HandleIsInst(opcodeStr, offset, operationFactory, instruction))
+            if (HandleIsInst(operationFactory, instruction))
                 return;
 
 
-            if (HandleException(opcodeStr, offset, operationFactory, instruction))
+            if (HandleException(operationFactory, instruction))
                 return;
 
 
@@ -556,11 +558,9 @@ namespace CodeRefractor.FrontEnd
             return false;
         }
 
-        private static bool HandleIsInst(string opcodeStr, int offset,
-            MetaMidRepresentationOperationFactory operationFactory, Instruction instruction)
+        private static bool HandleIsInst(MetaMidRepresentationOperationFactory operationFactory, Instruction instruction)
         {
-            if (opcodeStr == "isinst"
-                )
+            if (instruction.OpCode == OpCodes.Isinst)
             {
                 operationFactory.IsInst((Type)instruction.Operand);
                 return true;
@@ -569,11 +569,9 @@ namespace CodeRefractor.FrontEnd
             return false;
         }
 
-        private static bool HandleException(string opcodeStr, int offset,
-            MetaMidRepresentationOperationFactory operationFactory, Instruction instruction)
+        private static bool HandleException(MetaMidRepresentationOperationFactory operationFactory, Instruction instruction)
         {
-            if (opcodeStr == "throw"
-                )
+            if (instruction.OpCode == OpCodes.Throw)
             {
                 operationFactory.Throw();
                 return true;
