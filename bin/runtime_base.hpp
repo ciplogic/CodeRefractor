@@ -1,16 +1,20 @@
 #include <vector>
+#include <map>
 #include <string>
 #include <memory>
 
 static std::vector<std::shared_ptr<System_String> > _stringJumps;
 
+void buildTypesTable();
 void buildStringTable();
 void mapLibs();
 void RuntimeHelpersBuildConstantTable();
+bool IsInstanceOf(int typeSource, int typeImplementation);
 
 
 void initializeRuntime()
-{
+{	
+	buildTypesTable();
 	buildStringTable();
 	mapLibs();
 	RuntimeHelpersBuildConstantTable();

@@ -31,7 +31,7 @@ namespace CodeRefractor.Backend
 {
     public static class CppCodeGenerator
     {
-        public static StringBuilder GenerateSourceStringBuilder(MethodInterpreter interpreter, List<Type> typeClosure, TypeDescriptionTable table, List<MethodInterpreter> closure, ClosureEntities closureEntities)
+        public static StringBuilder GenerateSourceStringBuilder(MethodInterpreter interpreter, TypeDescriptionTable table, List<MethodInterpreter> closure, ClosureEntities closureEntities)
         {
             var sb = new StringBuilder();
 
@@ -53,6 +53,8 @@ namespace CodeRefractor.Backend
             WriteMainBody(interpreter, sb, closureEntities);
             sb.AppendLine(PlatformInvokeCodeWriter.LoadDllMethods());
             sb.AppendLine(ConstByteArrayList.BuildConstantTable());
+
+            sb.AppendLine(LinkingData.Instance.IsInstTable.BuildTypeMatchingTable(table, closureEntities));
             sb.AppendLine(LinkingData.Instance.Strings.BuildStringTable());
 
             return sb;

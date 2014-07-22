@@ -5,8 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using CodeRefractor.ClosureCompute;
-using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Shared;
@@ -150,7 +148,7 @@ namespace CodeRefractor.FrontEnd
             if (HandleBoxing(opcodeStr, offset, operationFactory, instruction))
                 return;
 
-            if (HandleClassCast(opcodeStr, offset, operationFactory, instruction))
+            if (HandleClassCast(operationFactory, instruction))
                 return;
             if (HandleIsInst(operationFactory, instruction))
                 return;
@@ -545,11 +543,9 @@ namespace CodeRefractor.FrontEnd
             return false;
         }
 
-        private static bool HandleClassCast(string opcodeStr, int offset,
-            MetaMidRepresentationOperationFactory operationFactory, Instruction instruction)
+        private static bool HandleClassCast(MetaMidRepresentationOperationFactory operationFactory, Instruction instruction)
         {
-            if (opcodeStr == "castclass"
-                )
+            if (instruction.OpCode == OpCodes.Castclass)
             {
                 operationFactory.CastClass((Type)instruction.Operand);
                 return true;

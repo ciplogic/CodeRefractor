@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using CodeRefractor.ClosureCompute;
+using CodeRefractor.CodeWriter.Linker;
 using CodeRefractor.FrontEnd.SimpleOperations.Casts;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Interpreters;
@@ -103,6 +104,10 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                         HandleUnbox((Unboxing)operation, bodySb);
                         break;
 
+                    case OperationKind.IsInstance:
+                        HandleIsInstance((IsInstance) operation, bodySb);
+                        break;
+                        
                     default:
                         throw new InvalidOperationException(
                             string.Format(
@@ -114,6 +119,11 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             }
             bodySb.AppendLine("}");
             return bodySb;
+        }
+
+        private static void HandleIsInstance(IsInstance operation, StringBuilder bodySb)
+        {
+            LinkingData.Instance.IsInstTable.GenerateInstructionCode(operation, bodySb);
         }
 
         private static void HandleUnbox(Unboxing unboxing, StringBuilder bodySb)
