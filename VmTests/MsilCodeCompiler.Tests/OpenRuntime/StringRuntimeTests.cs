@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using CodeRefactor.OpenRuntime;
@@ -93,5 +94,51 @@ namespace MsilCodeCompiler.Tests.OpenRuntime
                 "Trims on empty strings should be allowed.");
         }
 
+        [Test]
+        public void TestIndexOf()
+        {
+            const string stringValue = "Some longer string, and some other data.";
+
+            Assert.AreEqual(stringValue.IndexOf("om", 4, 3, StringComparison.Ordinal), // overload #1
+                StringImpl.IndexOf(stringValue, "om", 4, 3, StringComparison.Ordinal));
+
+            Assert.AreEqual(stringValue.IndexOf("om", 0, stringValue.Length, StringComparison.Ordinal),
+                StringImpl.IndexOf(stringValue, "om", 0, stringValue.Length, StringComparison.Ordinal));
+
+            Assert.AreEqual(stringValue.IndexOf("om", 3, stringValue.Length - 3, StringComparison.Ordinal),
+                StringImpl.IndexOf(stringValue, "om", 3, stringValue.Length - 3, StringComparison.Ordinal));
+
+            Assert.AreEqual(stringValue.IndexOf("some", 0, stringValue.Length, StringComparison.Ordinal),
+                StringImpl.IndexOf(stringValue, "some", 0, stringValue.Length, StringComparison.Ordinal));
+
+            Assert.AreEqual(stringValue.IndexOf("Some", 0, stringValue.Length, StringComparison.Ordinal),
+                StringImpl.IndexOf(stringValue, "Some", 0, stringValue.Length, StringComparison.Ordinal));
+
+            // overloaded versions
+            Assert.AreEqual(stringValue.IndexOf("a", 0, stringValue.Length), // overload #2
+                StringImpl.IndexOf(stringValue, "a", 0, stringValue.Length));
+
+            Assert.AreEqual(stringValue.IndexOf("a", 30), // overload #3
+                StringImpl.IndexOf(stringValue, "a", 30));
+
+            Assert.AreEqual(stringValue.IndexOf("a", 30, StringComparison.Ordinal), // overload #4
+                StringImpl.IndexOf(stringValue, "a", 30, StringComparison.Ordinal));
+
+            Assert.AreEqual(stringValue.IndexOf("a"), // overload #5
+                StringImpl.IndexOf(stringValue, "a"));
+
+            Assert.AreEqual(stringValue.IndexOf("a", StringComparison.Ordinal), // overload #6
+                StringImpl.IndexOf(stringValue, "a", StringComparison.Ordinal));
+
+            // character overload versions of IndexOf
+            Assert.AreEqual(stringValue.IndexOf('a', 30, stringValue.Length - 30), // overload #7
+                StringImpl.IndexOf(stringValue, 'a', 30, stringValue.Length - 30));
+
+            Assert.AreEqual(stringValue.IndexOf('a', 30), // overload #8
+                StringImpl.IndexOf(stringValue, 'a', 30));
+
+            Assert.AreEqual(stringValue.IndexOf('a'), // overload #9
+                StringImpl.IndexOf(stringValue, 'a'));
+        }
     }
 }

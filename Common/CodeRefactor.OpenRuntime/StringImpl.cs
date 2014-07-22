@@ -93,12 +93,159 @@ namespace CodeRefactor.OpenRuntime
             return Substring(_this, startIndex, length - startIndex);
         }
 
+        [MapMethod]
+        public static int IndexOf(string _this, char c)
+        {
+            return IndexOf(_this, c, 0, _this.Length);
+        }
+
+        [MapMethod]
+        public static int IndexOf(string _this, char c, int startIndex)
+        {
+            return IndexOf(_this, c, startIndex, _this.Length - startIndex);
+        }
+
+        [MapMethod]
+        public static int IndexOf(string _this, char c, int startIndex, int count)
+        {
+            if (count <= 0)
+            {
+                // FIXME: throw ArgumentOutOfRangeException
+                Console.WriteLine("Count must be positive as a parameter for IndexOf. Returning -1.");
+
+                return -1;
+            }
+
+            if (count + startIndex > _this.Length)
+            {
+                // FIXME: throw ArgumentOutOfRangeException
+                Console.WriteLine("Count must be inside the string boundary. Returning -1.");
+
+                return -1;
+            }
+
+            if (startIndex < 0 || startIndex >= _this.Length)
+            {
+                // FIXME: throw ArgumentOutOfRangeException
+                Console.WriteLine("Start index must be inside the string boundary. Returning -1.");
+
+                return -1;
+            }
+
+            for (int i = 0; i < count; i++)
+            {
+                if (_this[startIndex + i] != c) // are the characters the same?
+                {
+                    goto nextChar;
+                }
+
+                return startIndex + i;
+
+            nextChar: { }
+            }
+
+            return -1;
+        }
+
+        [MapMethod]
+        public static int IndexOf(string _this, string str, int startIndex, int count)
+        {
+            return IndexOf(_this, str, startIndex, count, StringComparison.Ordinal);
+        }
+
+        [MapMethod]
+        public static int IndexOf(string _this, string str, int startIndex, StringComparison stringComparison)
+        {
+            return IndexOf(_this, str, startIndex, _this.Length - startIndex, stringComparison);
+        }
+
+        [MapMethod]
+        public static int IndexOf(string _this, string str, int startIndex)
+        {
+            return IndexOf(_this, str, startIndex, _this.Length - startIndex, StringComparison.Ordinal);
+        }
+
+        [MapMethod]
+        public static int IndexOf(string _this, string str, StringComparison stringComparison)
+        {
+            return IndexOf(_this, str, 0, _this.Length, stringComparison);
+        }
+
+        [MapMethod]
+        public static int IndexOf(string _this, string str)
+        {
+            return IndexOf(_this, str, 0, _this.Length, StringComparison.Ordinal);
+        }
+
+        [MapMethod]
+        public static int IndexOf(string _this, string str, int startIndex, int count, StringComparison comparisonType)
+        {
+            if (comparisonType != StringComparison.Ordinal)
+            {
+                // FIXME: throw NotImplementedException
+                Console.WriteLine("Only StringComparison.Ordinal is supported for IndexOf. Returning -1.");
+
+                return -1;
+            }
+
+            if (count <= 0)
+            {
+                // FIXME: throw ArgumentOutOfRangeException
+                Console.WriteLine("Count must be positive as a parameter for IndexOf. Returning -1.");
+
+                return -1;
+            }
+
+            if (count + startIndex > _this.Length)
+            {
+                // FIXME: throw ArgumentOutOfRangeException
+                Console.WriteLine("Count must be inside the string boundary. Returning -1.");
+
+                return -1;
+            }
+
+            if (startIndex < 0 || startIndex >= _this.Length)
+            {
+                // FIXME: throw ArgumentOutOfRangeException
+                Console.WriteLine("Start index must be inside the string boundary. Returning -1.");
+
+                return -1;
+            }
+
+            for (int i = 0; i < count; i++)
+            {
+                for (int j = 0; j < str.Length; j++)
+                {
+                    if (startIndex + i + j >= _this.Length) // no reason to overflow.
+                    {
+                        return -1;
+                    }
+
+                    if (_this[startIndex + i + j] != str[j]) // are the characters the same?
+                    {
+                        goto nextChar;
+                    }
+
+                    if (i + j >= count) // we ran out of searching characters.
+                    {
+                        return -1;
+                    }
+                }
+
+                return startIndex + i;
+
+                nextChar: {} 
+            }
+
+            return -1;
+        }
+
         private static int FindTrimStartIndex(string _this, char[] trimChars)
         {
             // FIXME: default, these should be Unicode whitespace.
             // FIXME: these should be static, currently this is a WA for a compiler limitation.
-            char[] defaultTrimChars = {' ', '\n', '\t'};
-    
+            char[] defaultTrimChars = { ' ', '\n', '\t' };
+
             int index = 0, i;
             char c;
             int foundTrimChar;
@@ -142,7 +289,7 @@ namespace CodeRefactor.OpenRuntime
             // FIXME: default, these should be Unicode whitespace.
             // FIXME: these should be static, currently this is a WA for a compiler limitation.
             char[] defaultTrimChars = { ' ', '\n', '\t' };
-            
+
             if (trimChars.Length == 0)
             {
                 trimChars = defaultTrimChars;
