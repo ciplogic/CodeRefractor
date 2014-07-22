@@ -7,6 +7,7 @@ using CodeRefactor.OpenRuntime;
 using CodeRefractor.Backend.ProgramWideOptimizations.Virtual;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.CompilerBackend.ProgramWideOptimizations.ConstParameters;
+using CodeRefractor.FrontEnd.SimpleOperations.Methods;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.Optimizations.Util;

@@ -140,7 +140,6 @@
     <Compile Include="Runtime\RuntimeLibraryUtils.cs" />
     <Compile Include="TypeInfoWriter\TypeDescriptionTable.cs" />
     <Compile Include="TypeInfoWriter\VirtualMethodDescription.cs" />
-    <Compile Include="TypeInfoWriter\VirtualMethodTable.cs" />
     <Compile Include="Util\TypeNamerUtils.cs" />
     <Compile Include="Config\CodeRefractorVersions.cs" />
     <Compile Include="Config\CommandLineParse.cs" />
@@ -153,17 +152,6 @@
     <Compile Include="FrontEnd\SimpleOperations\SizeOfAssignment.cs" />
     <Compile Include="FrontEnd\SimpleOperations\StaticFieldSetter.cs" />
     <Compile Include="Optimizations\OptimizationKind.cs" />
-    <Compile Include="DataBase\Cursor.cs" />
-    <Compile Include="DataBase\Dict.cs" />
-    <Compile Include="DataBase\DynNode.cs" />
-    <Compile Include="DataBase\DynNodeUtils.cs" />
-    <Compile Include="DataBase\Compacter\ExiLikeEvent.cs" />
-    <Compile Include="DataBase\Compacter\ExpanderTransformer.cs" />
-    <Compile Include="DataBase\Compacter\GzipExtractUtils.cs" />
-    <Compile Include="DataBase\SerializeXml\ListSet.cs" />
-    <Compile Include="DataBase\Compacter\MinimizeTransformer.cs" />
-    <Compile Include="DataBase\SerializeXml\SerializeLogic.cs" />
-    <Compile Include="DataBase\SerializeXml\XNodeAttribute.cs" />
     <Compile Include="FrontEnd\SimpleOperations\Methods\MethodKind.cs" />
     <Compile Include="MiddleEnd\Interpreters\Cil\MidRepresentationVariables.cs" />
     <Compile Include="FrontEnd\SimpleOperations\ConstTable\ConstByteArrayData.cs" />

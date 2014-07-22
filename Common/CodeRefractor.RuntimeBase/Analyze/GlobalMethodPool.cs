@@ -97,15 +97,6 @@ namespace CodeRefractor.Analyze
 
         private static readonly Dictionary<MethodBase, string> CachedKeys = new Dictionary<MethodBase, string>();
 
-        public static string GenerateKey(this MethodBase method, ClosureEntities crRuntime)
-        {
-            string result;
-            if (CachedKeys.TryGetValue(method, out result)) return result;
-            result = method.WriteHeaderMethod(crRuntime, writeEndColon: false);
-            CachedKeys[method] = result;
-            return result;
-        }
-
         public static MethodBase GetReversedMethod(this MethodBase methodInfo, ClosureEntities crRuntime)
         {
             var reverseType = methodInfo.DeclaringType.GetMappedType(crRuntime);

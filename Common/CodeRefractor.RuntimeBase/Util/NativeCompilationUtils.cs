@@ -3,7 +3,6 @@
 using System;
 using System.IO;
 using CodeRefractor.RuntimeBase;
-using CodeRefractor.RuntimeBase.DataBase.SerializeXml;
 
 #endregion
 
@@ -44,7 +43,6 @@ namespace CodeRefractor.Util
             }
         }
 
-        [XNode]
         public class Options
         {
             public string CompilerKind;

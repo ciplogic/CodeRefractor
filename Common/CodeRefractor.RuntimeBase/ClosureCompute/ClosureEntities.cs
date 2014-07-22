@@ -9,6 +9,7 @@ using System.Text;
 using CodeRefractor.Backend;
 using CodeRefractor.Backend.ComputeClosure;
 using CodeRefractor.CodeWriter.Linker;
+using CodeRefractor.FrontEnd.SimpleOperations.Methods;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Interpreters;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;

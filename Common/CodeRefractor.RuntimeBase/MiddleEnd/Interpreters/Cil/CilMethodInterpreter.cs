@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Reflection;
 using CodeRefractor.FrontEnd;
+using CodeRefractor.FrontEnd.SimpleOperations.Methods;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 using CodeRefractor.RuntimeBase;
 

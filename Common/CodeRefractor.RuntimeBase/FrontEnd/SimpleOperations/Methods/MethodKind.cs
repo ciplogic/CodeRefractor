@@ -1,4 +1,4 @@
-namespace CodeRefractor.MiddleEnd.SimpleOperations.Methods
+namespace CodeRefractor.FrontEnd.SimpleOperations.Methods
 {
     public enum MethodKind
     {
