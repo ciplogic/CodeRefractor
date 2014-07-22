@@ -35,11 +35,21 @@ namespace CodeRefractor.Util
             return methodInfo.Name;
         }
 
-        public static List<Type> ImplementorsOfT(this Type t, IEnumerable<Type> usedTypes)
+        public static List<Type> ImplementorsOfT(this Type t, ClosureEntities entities)
         {
-             var implementors = t.Assembly.GetTypes().Where(y=>t.IsAssignableFrom(y));// && t!=y);
+            IEnumerable<Type> usedTypes = entities.MappedTypes.Values.Union(entities.MappedTypes.Values.Where(g=>g!=g.GetReversedMappedType(entities)).Select(g => g.GetReversedMappedType(entities))).ToList();
+            
+            var implementors = usedTypes.Where(y => t.IsAssignableFrom(y));// t.Assembly.GetTypes().Where(y=>t.IsAssignableFrom(y));// && t!=y);
 
              return implementors.ToList();
+        }
+
+        public static List<Type> ImplementorsOfT(this Type t, IEnumerable<Type> usedTypes)
+        {
+           
+            var implementors = usedTypes.Where(y => t.IsAssignableFrom(y));
+
+            return implementors.ToList();
         }
 
         public static string ClangMethodSignature(this MethodInterpreter method, ClosureEntities crRuntime)

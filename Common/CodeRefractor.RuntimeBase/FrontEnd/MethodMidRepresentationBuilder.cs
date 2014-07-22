@@ -164,6 +164,12 @@ namespace CodeRefractor.FrontEnd
 
         private bool HandleExtraInstructions(Instruction instruction, MetaMidRepresentationOperationFactory operationFactory, string opcodeStr)
         {
+            if (opcodeStr == "constrained.")
+            {
+                operationFactory.ConstrainedClass = (Type) instruction.Operand;
+                return true;
+            }
+
             if (opcodeStr == "ret")
             {
                 var isVoid = _method.GetReturnType().IsVoid();
@@ -318,6 +324,7 @@ namespace CodeRefractor.FrontEnd
                     return true;
                 case OpcodeIntValues.CallVirt:
                     operationFactory.CallVirtual((MethodBase)instruction.Operand);
+                    operationFactory.ConstrainedClass = null;
                     return true;
 
                 case OpcodeIntValues.NewObj:

@@ -31,6 +31,7 @@ namespace CodeRefractor.FrontEnd
         private readonly EvaluatorStack _evaluator;
 
         private int _leaveOffset = -1;
+        public Type ConstrainedClass { get; set; }
 
         public void LeaveTo(int offsetToLeave)
         {
@@ -973,7 +974,7 @@ namespace CodeRefractor.FrontEnd
 
         public void IsInst(Type operand)
         {
-            //TODO: Fix this
+            //TODO: Fix this, we need to actually compare type ids here ... at runtime we cannot tell what has been passed
 
             var valueToCast = _evaluator.Pop();
             var result = SetNewVReg();

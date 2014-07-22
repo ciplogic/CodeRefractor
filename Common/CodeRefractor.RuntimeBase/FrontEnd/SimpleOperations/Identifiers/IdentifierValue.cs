@@ -13,6 +13,8 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations.Identifiers
 
         public virtual TypeDescription ComputedType()
         {
+            if(FixedType==null && FormatVar()=="unknown")
+                FixedType = new TypeDescription(null);
             return FixedType;
         }
 

@@ -38,7 +38,7 @@ namespace CodeRefactor.OpenRuntime
 
         public int Length
         {
-            get { return Text.Length -1; }
+            get { return Text.Length-1; }
         }
 
         private static unsafe int StrLen(byte* data)

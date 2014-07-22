@@ -183,6 +183,9 @@
     <Content Include="Tests\BoolTest.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Tests\BoxingTest01.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Compile Include="Views\Dialogs\CompilerOptionsViewModel.cs" />
     <Compile Include="Views\Dialogs\CompilerOptionsWindow.xaml.cs">
       <DependentUpon>CompilerOptionsWindow.xaml</DependentUpon>
@@ -265,6 +268,10 @@
     <ProjectReference Include="..\Common\CodeRefractor.RuntimeBase\CodeRefractor.Compiler.Internals.csproj">
       <Project>{10cef783-53c3-42a7-940a-73773a2af24f}</Project>
       <Name>CodeRefractor.Compiler.Internals</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Lib\mono.reflection-master\Mono.Reflection.csproj">
+      <Project>{97B010AB-0756-46DC-B75A-7A6C4F6FF28D}</Project>
+      <Name>Mono.Reflection</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

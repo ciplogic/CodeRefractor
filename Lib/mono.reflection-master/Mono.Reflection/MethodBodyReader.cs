@@ -33,7 +33,7 @@ using System.Reflection.Emit;
 
 namespace Mono.Reflection {
 
-	class MethodBodyReader {
+	public class MethodBodyReader {
 
 		static readonly OpCode [] one_byte_opcodes;
 		static readonly OpCode [] two_bytes_opcodes;
@@ -68,7 +68,7 @@ namespace Mono.Reflection {
 		readonly IList<LocalVariableInfo> locals;
 		readonly List<Instruction> instructions;
 
-		MethodBodyReader (MethodBase method)
+        public MethodBodyReader(MethodBase method)
 		{
 			this.method = method;
 

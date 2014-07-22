@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using CodeRefractor.ClosureCompute;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.Util;
@@ -21,15 +22,24 @@ namespace CodeRefractor.RuntimeBase.TypeInfoWriter
 
         private readonly Dictionary<Type, int> _result = new Dictionary<Type, int>();
 
-        public TypeDescriptionTable(List<Type> typeClosure)
+        public TypeDescriptionTable(List<Type> typeClosure, ClosureEntities closureEntities)
         {
             _typeClosure = typeClosure.Where(
                 FilterType)
                 .ToList();
+           
+
             for (int index = 0; index < _typeClosure.Count; index++)
             {
                 var type = _typeClosure[index];
+                // Mapped Types should share typeId with the mapping type
+                var mapped = type.GetReversedMappedType(closureEntities);
+                if (mapped != type)
+                {
+                    _result[mapped] = index;
+                }
                 _result[type] = index;
+                
             }
         }
 

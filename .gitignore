@@ -92,3 +92,5 @@ bin/output.cpp
 bin/output.cpp
 VisualCompiler/Tests/InterfacesTest1.cs
 packages/*
+bin/OpenRuntime/runtime_base.hpp
+bin/Tests/BoxingTest01.cs

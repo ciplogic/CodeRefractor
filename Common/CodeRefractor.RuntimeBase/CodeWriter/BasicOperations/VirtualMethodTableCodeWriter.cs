@@ -51,6 +51,8 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 foreach (var implementingType in implementingTypes)
                 {
 
+                    if(implementingType.GetReversedMappedType(crRuntime)!=implementingType)
+                        continue;
                     var implementingMethod = AddVirtualMethodImplementations.GetImplementingMethod(implementingType, virtualMethod);
 //                    if (implementingMethod == null) //We should call the next method in line ... not ignore this object
 //                        continue;
@@ -76,7 +78,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                      
                        
                             var methodImpl = implementingMethod.ClangMethodSignature(crRuntime);
-                            var parametersCallString = GetCall(virtualMethod, implementingMethod);
+                            var parametersCallString = GetCall(virtualMethod, implementingMethod,crRuntime);
 
                             sb
                                 .AppendFormat("{0}(", methodImpl)
@@ -90,7 +92,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                     }
                     else
                     {
-                        var typeId = table.GetTypeId(implementingType);
+                        var typeId = table.GetTypeId(implementingType.GetReversedMappedType(crRuntime));
 
                         sb.AppendFormat("case {0}:", typeId).AppendLine();
 
@@ -107,7 +109,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                         var method = implementingType.GetMethod(virtualMethod.Name, virtualMethod.GetParameters().Select(j=>j.ParameterType).ToArray());
                         
                         var methodImpl = method.ClangMethodSignature(crRuntime);
-                        var parametersCallString = GetCall(virtualMethod, method);
+                        var parametersCallString = GetCall(virtualMethod, method,crRuntime);
                         sb
                             .AppendFormat("{0}(", methodImpl)
                             .AppendFormat("{0});", parametersCallString)
@@ -167,9 +169,9 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             return sb.ToString();
         }
 
-        private static string GetCall(MethodInfo virtualMethod, MethodInfo method)
+        private static string GetCall(MethodInfo virtualMethod, MethodInfo method, ClosureEntities crRuntime)
         {
-            var parametersString = string.Format("std::static_pointer_cast<{0}>(_this)", method.DeclaringType.ToCppName(EscapingMode.Unused));
+            var parametersString = string.Format("std::static_pointer_cast<{0}>(_this)", method.DeclaringType.GetReversedMappedType(crRuntime).ToCppName(EscapingMode.Unused));
             //Add Rest of parameters
             var parameters = virtualMethod.GetParameters();
             

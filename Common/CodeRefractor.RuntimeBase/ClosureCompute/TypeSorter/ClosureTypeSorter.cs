@@ -32,8 +32,14 @@ namespace CodeRefractor.ClosureCompute.TypeSorter
             var sortedTypeData = new List<Type>();
             sortedTypeData.Add(typeof(System.Object));
             sortedTypeData.Add(typeof(System.ValueType));
+            
+            if (result.Contains(typeof (System.Type)))
+            {
+                result.Remove(typeof (System.Type));
+                sortedTypeData.Add(typeof(System.Type));
+            }
             if (result.Contains(typeof(System.ValueType)))
-                result.Remove(typeof (System.ValueType));
+                result.Remove(typeof(System.ValueType));
             result.Remove(typeof(Object));
 
             var list = result.ToList();

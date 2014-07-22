@@ -15,6 +15,7 @@ using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Backend.ProgramWideOptimizations;
 using CodeRefractor.RuntimeBase.Config;
 using Microsoft.CSharp;
+using Mono.Reflection;
 
 namespace VisualCompiler
 {
@@ -110,7 +111,39 @@ namespace VisualCompiler
 
              var opcodes = closureEntities.MethodImplementations;
 
-            var intermediateOutput = "";
+             var intermediateOutput = "-------------IL:-------------\n";
+
+            foreach (var opcode in opcodes)
+            {
+                intermediateOutput += " " + opcode.Key + ": \n";
+
+                if (opcode.Value.Kind != MethodKind.CilInstructions)
+                {
+                    intermediateOutput += "// Provided By Framework     \n\n";
+                    continue;
+                }
+
+                try
+                {
+                    var instructions = MethodBodyReader.GetInstructions(((CilMethodInterpreter)opcode.Value).Method);
+                    foreach (var op in instructions)
+                    {
+                        var oper = string.Format("\t{0}", op); ;
+                        intermediateOutput += "     " + oper + "\n";
+                    }
+                }
+                catch (Exception)
+                {
+                    intermediateOutput += "// Method has no body     \n\n";
+                   
+                }
+               
+               
+
+                intermediateOutput += "\n";
+            }
+
+            intermediateOutput += "\n-------------IR:-------------\n";
 
             foreach (var opcode in opcodes)
             {

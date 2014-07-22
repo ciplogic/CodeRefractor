@@ -15,6 +15,7 @@ using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
 using CodeRefractor.MiddleEnd.Optimizations.Util;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
+using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Config;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.TypeInfoWriter;
@@ -97,8 +98,7 @@ namespace CodeRefractor.ClosureCompute
         {
             var entryInterpreter = ResolveMethod(EntryPoint);
             List<Type> usedTypes = MappedTypes.Values.ToList();
-
-            var typeTable = new TypeDescriptionTable(usedTypes);
+            var typeTable = new TypeDescriptionTable(usedTypes,this);
             return CppCodeGenerator.GenerateSourceStringBuilder(entryInterpreter, usedTypes,typeTable,
                 MethodImplementations.Values.ToList(), this);
         }

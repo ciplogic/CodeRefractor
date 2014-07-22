@@ -20,7 +20,7 @@ namespace CodeRefractor.ClosureCompute.Steps
                 if(declaringType==null)
                     continue;
 
-                var implementingTypes = declaringType.ImplementorsOfT(closureEntities.MappedTypes.Values);
+                var implementingTypes = declaringType.ImplementorsOfT(closureEntities);
                 foreach (var implementingType in implementingTypes)
                 {
                     var implementingMethod = GetImplementingMethod(implementingType, methodBase);
