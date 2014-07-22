@@ -12,7 +12,7 @@ class BoxingTest01
         //This doesnt (Need proper isinst instruction)
         if (data is int)
         {
-            int a = (int)data;
+            a = (int)data;
             Console.WriteLine("Integer:" + a.ToString());
         }
 
