@@ -27,6 +27,7 @@ namespace CodeRefractor.ClosureCompute.TypeSorter
             }
             var result = new List<Type>(types);
             result.Sort(new TypeComparer(_crRuntime));
+            return result;
          
             //start with base classes
             var sortedTypeData = new List<Type>();

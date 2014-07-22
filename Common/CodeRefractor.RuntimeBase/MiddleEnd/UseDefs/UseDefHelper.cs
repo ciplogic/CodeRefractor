@@ -29,7 +29,6 @@ namespace CodeRefractor.MiddleEnd.UseDefs
                 case OperationKind.Assignment:
                     result.AddUsage(((Assignment)operation).Right);
                     break;
-
                 case OperationKind.Box:
                     result.AddUsage(((Boxing)operation).Right);
                     break;
@@ -111,6 +110,9 @@ namespace CodeRefractor.MiddleEnd.UseDefs
                 case OperationKind.Comment:
                     break;
 
+                case OperationKind.SizeOf:
+                    AddUsagesOfSizeOf((SizeOfAssignment) operation, result);
+                    break;
                 case OperationKind.AddressOfArrayItem:
                     
                     AddUsagesOfRefArrayItemAssignment(operation, result);
@@ -173,6 +175,10 @@ namespace CodeRefractor.MiddleEnd.UseDefs
             return operation as T;
         }
 
+        private static void AddUsagesOfSizeOf(SizeOfAssignment sizeOf, List<LocalVariable> result)
+        {
+            result.AddUsage(sizeOf.AssignedTo);
+        }
         private static void AddUsagesOfReturn(LocalOperation operation, List<LocalVariable> result)
         {
             var returnedValue = operation.Get<Return>();
@@ -250,6 +256,7 @@ namespace CodeRefractor.MiddleEnd.UseDefs
                 case OperationKind.SetField:
                 case OperationKind.SetArrayItem:
                 case OperationKind.SetStaticField:
+                case OperationKind.SizeOf:
                     return null;
                 case OperationKind.CopyArrayInitializer:
                 case OperationKind.GetStaticField:
