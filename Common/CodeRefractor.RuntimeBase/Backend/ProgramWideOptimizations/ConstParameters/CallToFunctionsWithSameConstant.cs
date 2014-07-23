@@ -29,7 +29,7 @@ namespace CodeRefractor.CompilerBackend.ProgramWideOptimizations.ConstParameters
             var updateHappen = false;
             foreach (var interpreter in methodInterpreters)
             {
-                updateHappen |= HandleInterpreterInstructions(interpreter as CilMethodInterpreter);
+                updateHappen |= HandleInterpreterInstructions(interpreter);
             }
             if (!updateHappen)
                 return;
@@ -42,16 +42,21 @@ namespace CodeRefractor.CompilerBackend.ProgramWideOptimizations.ConstParameters
                 var parametersData = parametersDatas[index];
                 if (!parametersData.ConstKinds.ContainsValue(ConstantParametersData.ConstValueKind.AssignedConstant))
                     continue;
-                foreach (var constKind in parametersData.ConstKinds)
-                {
-                    if (constKind.Value != ConstantParametersData.ConstValueKind.AssignedConstant)
-                        continue;
-                    var assignedConstant = parametersData.ConstValues[constKind.Key];
-                    var cilInterpreter = (CilMethodInterpreter)interpreter;
-                    cilInterpreter.SwitchAllUsagesWithDefinition(constKind.Key, assignedConstant);
-                    interpreter.AnalyzeProperties.SetVariableData(constKind.Key, EscapingMode.Unused);
-                    Result = true;
-                }
+                ApplyChangesOnMethod(parametersData, interpreter);
+            }
+        }
+
+        private void ApplyChangesOnMethod(ConstantParametersData parametersData, CilMethodInterpreter interpreter)
+        {
+            foreach (var constKind in parametersData.ConstKinds)
+            {
+                if (constKind.Value != ConstantParametersData.ConstValueKind.AssignedConstant)
+                    continue;
+                var assignedConstant = parametersData.ConstValues[constKind.Key];
+                var cilInterpreter = interpreter;
+                cilInterpreter.SwitchAllUsagesWithDefinition(constKind.Key, assignedConstant);
+                interpreter.AnalyzeProperties.SetVariableData(constKind.Key, EscapingMode.Unused);
+                Result = true;
             }
         }
 

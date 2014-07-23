@@ -12,6 +12,7 @@ namespace CodeRefractor.CompilerBackend.ProgramWideOptimizations
     {
         public override bool Optimize(ClosureEntities closure)
         {
+            Result = false;
             try
             {
                 DoOptimize(closure);

@@ -8,15 +8,19 @@ using System.Security.Cryptography;
 using System.Text;
 using CodeRefractor.Backend;
 using CodeRefractor.Backend.ComputeClosure;
+using CodeRefractor.Backend.ProgramWideOptimizations.Virtual;
 using CodeRefractor.CodeWriter.Linker;
+using CodeRefractor.CompilerBackend.ProgramWideOptimizations.ConstParameters;
 using CodeRefractor.FrontEnd.SimpleOperations.Methods;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Interpreters;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
+using CodeRefractor.MiddleEnd.Optimizations.Devirtualization;
 using CodeRefractor.MiddleEnd.Optimizations.Util;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 using CodeRefractor.RuntimeBase;
+using CodeRefractor.RuntimeBase.Backend.ProgramWideOptimizations;
 using CodeRefractor.RuntimeBase.Config;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.TypeInfoWriter;
@@ -39,7 +43,8 @@ namespace CodeRefractor.ClosureCompute
         public HashSet<MethodInfo> AbstractMethods { get; set; }
 
         internal readonly ClosureEntitiesBuilder EntitiesBuilder = new ClosureEntitiesBuilder();
-
+        private ProgramOptimizationsTable _optimizationsTable;
+        public bool EnableProgramWideOptimizations { get; set; }
         public ClosureEntities()
         {
             MappedTypes = new Dictionary<Type, Type>();
@@ -48,6 +53,19 @@ namespace CodeRefractor.ClosureCompute
             LookupMethods = new Dictionary<MethodInterpreterKey, MethodInterpreter>();
 
             EntitiesBuilder.SetupSteps();
+
+            SetupProgramOptimizationTable();
+        }
+
+        private void SetupProgramOptimizationTable()
+        {
+            EnableProgramWideOptimizations = true;
+            _optimizationsTable = new ProgramOptimizationsTable
+            {
+                new DevirtualizerIfOneImplemetor(),
+                new DevirtualizeWholeClosureMethods(),
+                new CallToFunctionsWithSameConstant()
+            };
         }
 
         public MethodInterpreter GetMethodImplementation(MethodBase method)
@@ -157,7 +175,22 @@ namespace CodeRefractor.ClosureCompute
                 {
                     doOptimize |= MethodInterpreterCodeWriter.ApplyLocalOptimizations(optimizations, cilMethod);
                 }
+                var isOptimized = ApplyProgramWideOptimizations();
+                doOptimize |= isOptimized;
             }
+        }
+
+        private bool ApplyProgramWideOptimizations()
+        {
+            var isOptimized = false;
+            if (EnableProgramWideOptimizations)
+            {
+                foreach (var ipoOptimization in _optimizationsTable)
+                {
+                    isOptimized |= ipoOptimization.Optimize(this);
+                }
+            }
+            return isOptimized;
         }
     }
 

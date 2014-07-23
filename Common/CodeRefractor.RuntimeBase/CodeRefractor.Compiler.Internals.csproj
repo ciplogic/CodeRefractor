@@ -97,6 +97,7 @@
     <Compile Include="MiddleEnd\Interpreters\Cil\CilMethodInterpreter.cs" />
     <Compile Include="MiddleEnd\Interpreters\NonCil\CppMethodInterpreter.cs" />
     <Compile Include="MiddleEnd\Interpreters\NonCil\PlatformInvokeMethod.cs" />
+    <Compile Include="Backend\ProgramWideOptimizations\Virtual\DevirtualizeWholeClosureMethods.cs" />
     <Compile Include="MiddleEnd\UseDefs\UseDefDescription.cs" />
     <Compile Include="MiddleEnd\UseDefs\UseDefHelper.cs" />
     <Compile Include="Analyze\UsedTypeList.cs" />
@@ -269,5 +270,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="MiddleEnd\Optimizations\Devirtualization\" />
+  </ItemGroup>
 </Project>

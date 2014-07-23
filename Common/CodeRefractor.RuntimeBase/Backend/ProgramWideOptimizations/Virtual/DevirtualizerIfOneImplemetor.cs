@@ -6,7 +6,6 @@ using System.Linq;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.CompilerBackend.ProgramWideOptimizations;
 using CodeRefractor.FrontEnd.SimpleOperations.Methods;
-using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
@@ -23,7 +22,8 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
         {
             var methodInterpreters = closure.MethodImplementations.Values
                 .Where(m => m.Kind == MethodKind.CilInstructions)
-                .ToList();
+                .Select(mth=>(CilMethodInterpreter)mth)
+                .ToArray();
             foreach (var interpreter in methodInterpreters)
             {
                 HandleInterpreterInstructions((CilMethodInterpreter)interpreter, closure.MappedTypes.Values.ToList());
@@ -44,6 +44,12 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
                 var implementors = declaringType.ImplementorsOfT(usedTypes);
                 if (implementors.Count > 0)
                     continue;
+                //TODO: map correct method
+                interpreter.MidRepresentation.LocalOperations[callOp] = new CallMethodStatic(methodData.Interpreter)
+                {
+                    Result = methodData.Result,
+                    Parameters = methodData.Parameters
+                };
                 Result = true;
             }
             if (Result)
