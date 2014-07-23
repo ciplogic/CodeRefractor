@@ -7,7 +7,7 @@ using System.Text;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.DataBase
+namespace CodeRefractor.DataNode
 {
     public class DynNode : IEnumerable<DynNode>
     {

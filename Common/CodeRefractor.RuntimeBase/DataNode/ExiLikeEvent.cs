@@ -1,4 +1,4 @@
-namespace CodeRefractor.RuntimeBase.DataBase.Compacter
+namespace CodeRefractor.DataNode
 {
     public enum ExiLikeEvent
     {

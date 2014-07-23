@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.DataBase.Compacter
+namespace CodeRefractor.DataNode
 {
     public class ExpanderTransformer
     {

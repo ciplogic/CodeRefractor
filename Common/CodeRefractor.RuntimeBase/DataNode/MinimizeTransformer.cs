@@ -5,7 +5,7 @@ using System.Text;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.DataBase.Compacter
+namespace CodeRefractor.DataNode
 {
     public class MinimizeTransformer
     {

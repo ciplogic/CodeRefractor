@@ -1,11 +1,10 @@
 #region Usings
 
 using System.Text;
-using CodeRefractor.RuntimeBase.DataBase.Compacter;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.DataBase
+namespace CodeRefractor.DataNode
 {
     internal class Cursor
     {

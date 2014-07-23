@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.DataBase
+namespace CodeRefractor.DataNode
 {
     internal class Dict
     {

@@ -1,5 +1,5 @@
+using CodeRefractor.DataNode;
 using CodeRefractor.RuntimeBase.DataBase;
-using CodeRefractor.RuntimeBase.DataBase.Compacter;
 using NUnit.Framework;
 
 namespace MsilCodeCompiler.Tests.Serializing
