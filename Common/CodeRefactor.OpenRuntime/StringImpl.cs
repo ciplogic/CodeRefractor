@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using CodeRefractor.Runtime.Annotations;
 
 namespace CodeRefactor.OpenRuntime
@@ -240,6 +241,58 @@ namespace CodeRefactor.OpenRuntime
             return -1;
         }
 
+        [MapMethod]
+        public static object StartsWith(string _this, string searchedString, bool ignoreCase, CultureInfo cultureInfo)
+        {
+            if (cultureInfo != null)
+            {
+                // FIXME: throw NotImplementedException
+                Console.WriteLine("CultureInfo is not supported.");
+
+                return false;
+            }
+
+            StringComparison comparison = ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+
+            return StartsWith(_this, searchedString, comparison);
+        }
+
+        [MapMethod]
+        public static object StartsWith(string _this, string searchedString)
+        {
+            return StartsWith(_this, searchedString, StringComparison.Ordinal);
+        }
+
+        [MapMethod]
+        public static object StartsWith(string _this, string searchedString, StringComparison stringComparison)
+        {
+            if (searchedString.Length > _this.Length)
+            {
+                // FIXME: throw ArgumentOutOfRangeException
+                Console.WriteLine("Searched string can't be longer that the actual string.");
+
+                return false;
+            }
+
+            if (stringComparison != StringComparison.Ordinal)
+            {
+                // FIXME: throw NotImplementedException
+                Console.WriteLine("Comparisons that are not Ordinal are not supported.");
+
+                return false;
+            }
+
+            for (int i = 0; i < searchedString.Length; i++)
+            {
+                if (searchedString[i] != _this[i])
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+        
         private static int FindTrimStartIndex(string _this, char[] trimChars)
         {
             // FIXME: default, these should be Unicode whitespace.
