@@ -1,19 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.CompilerBackend.ProgramWideOptimizations;
 using CodeRefractor.FrontEnd.SimpleOperations.Methods;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
-using CodeRefractor.MiddleEnd.Optimizations.Common;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
-using CodeRefractor.RuntimeBase.MiddleEnd;
-using CodeRefractor.Util;
 
-namespace CodeRefractor.MiddleEnd.Optimizations.Devirtualization
+namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
 {
     class DevirtualizeWholeClosureMethods : ResultingProgramOptimizationBase
     {
