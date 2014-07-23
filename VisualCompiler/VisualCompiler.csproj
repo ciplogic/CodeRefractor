@@ -33,6 +33,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -186,6 +187,7 @@
     <Content Include="Tests\BoxingTest01.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Compile Include="Tests\UnsafeTest.cs" />
     <Compile Include="Views\Dialogs\CompilerOptionsViewModel.cs" />
     <Compile Include="Views\Dialogs\CompilerOptionsWindow.xaml.cs">
       <DependentUpon>CompilerOptionsWindow.xaml</DependentUpon>
