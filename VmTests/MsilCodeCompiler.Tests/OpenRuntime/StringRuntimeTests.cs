@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using CodeRefactor.OpenRuntime;
@@ -140,5 +141,40 @@ namespace MsilCodeCompiler.Tests.OpenRuntime
             Assert.AreEqual(stringValue.IndexOf('a'), // overload #9
                 StringImpl.IndexOf(stringValue, 'a'));
         }
+
+        [Test]
+        public void TestStartsWith()
+        {
+            const string stringValue = "SomeRandomStringIsHere";
+
+            Assert.AreEqual( stringValue.StartsWith("Some", StringComparison.Ordinal), // overload #1
+                StringImpl.StartsWith(stringValue, "Some", StringComparison.Ordinal));
+
+            Assert.AreEqual(stringValue.StartsWith("", StringComparison.Ordinal),
+                StringImpl.StartsWith(stringValue, "", StringComparison.Ordinal));
+
+            Assert.AreEqual(stringValue.StartsWith("some", StringComparison.Ordinal),
+                StringImpl.StartsWith(stringValue, "some", StringComparison.Ordinal));
+
+            Assert.AreEqual(stringValue.StartsWith("Some"), // overload #2
+                StringImpl.StartsWith(stringValue, "Some"));
+
+            Assert.AreEqual(stringValue.StartsWith(""),
+                StringImpl.StartsWith(stringValue, ""));
+
+            Assert.AreEqual(stringValue.StartsWith("some"),
+                StringImpl.StartsWith(stringValue, "some"));
+
+            Assert.AreEqual(stringValue.StartsWith("Some", false, null), //overload #3
+                StringImpl.StartsWith(stringValue, "Some", false, null));
+
+            Assert.AreEqual(stringValue.StartsWith("", false, null),
+                StringImpl.StartsWith(stringValue, "", false, null));
+
+            Assert.AreEqual(stringValue.StartsWith("some", false, null),
+                StringImpl.StartsWith(stringValue, "some", false, null));
+
+        }
+
     }
 }
