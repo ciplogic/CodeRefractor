@@ -81,6 +81,17 @@
     <Compile Include="ClosureCompute\Steps\AddTypes\AddParameterTypesToClosure.cs" />
     <Compile Include="ClosureCompute\TypeResolverBase.cs" />
     <Compile Include="ClosureCompute\TypeSorter\TypeComparer.cs" />
+    <Compile Include="DataNode\Cursor.cs" />
+    <Compile Include="DataNode\Dict.cs" />
+    <Compile Include="DataNode\DynNode.cs" />
+    <Compile Include="DataNode\DynNodeUtils.cs" />
+    <Compile Include="DataNode\ExiLikeEvent.cs" />
+    <Compile Include="DataNode\ExpanderTransformer.cs" />
+    <Compile Include="DataNode\GzipExtractUtils.cs" />
+    <Compile Include="DataNode\ListSet.cs" />
+    <Compile Include="DataNode\MinimizeTransformer.cs" />
+    <Compile Include="DataNode\SerializeLogic.cs" />
+    <Compile Include="DataNode\XNodeAttribute.cs" />
     <Compile Include="FrontEnd\MethodMidRepresentationBuilder.cs" />
     <Compile Include="FrontEnd\SimpleOperations\Casts\IsInstance.cs" />
     <Compile Include="FrontEnd\SimpleOperations\Identifiers\GetArrayElement.cs" />
