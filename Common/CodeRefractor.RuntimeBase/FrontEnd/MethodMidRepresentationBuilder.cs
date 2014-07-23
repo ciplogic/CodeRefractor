@@ -140,7 +140,7 @@ namespace CodeRefractor.FrontEnd
                 return;
             if (HandleLoads(opcodeStr, instruction, operationFactory))
                 return;
-            if (HandleOperators(opcodeStr, operationFactory))
+            if (HandleOperators(opcodeStr, operationFactory, instruction))
                 return;
 
             if (HandleBranching(opcodeStr, offset, operationFactory))
@@ -709,49 +709,49 @@ namespace CodeRefractor.FrontEnd
             return false;
         }
 
-        private static bool HandleOperators(string opcodeStr, MetaMidRepresentationOperationFactory operationFactory)
+        private static bool HandleOperators(string opcodeStr, MetaMidRepresentationOperationFactory operationFactory, Instruction instruction)
         {
             #region Operators
 
-            if (opcodeStr == OpcodeOperatorNames.Add)
+            if (instruction.OpCode == OpCodes.Add)
             {
                 operationFactory.Add();
                 return true;
             }
-            if (opcodeStr == OpcodeOperatorNames.Sub)
+            if (instruction.OpCode == OpCodes.Sub)
             {
                 operationFactory.Sub();
                 return true;
             }
-            if (opcodeStr == OpcodeOperatorNames.Div)
+            if (instruction.OpCode == OpCodes.Div)
             {
                 operationFactory.Div();
                 return true;
             }
-            if (opcodeStr == OpcodeOperatorNames.Mul)
+            if (instruction.OpCode == OpCodes.Mul)
             {
                 operationFactory.Mul();
                 return true;
             }
-            if (opcodeStr == OpcodeOperatorNames.Rem)
+            if (instruction.OpCode == OpCodes.Rem)
             {
                 operationFactory.Rem();
                 return true;
             }
 
 
-            if (opcodeStr == OpcodeOperatorNames.And)
+            if (instruction.OpCode == OpCodes.And)
             {
                 operationFactory.And();
                 return true;
             }
-            if (opcodeStr == OpcodeOperatorNames.Or)
+            if (instruction.OpCode == OpCodes.Or)
             {
                 operationFactory.Or();
                 return true;
             }
 
-            if (opcodeStr == OpcodeOperatorNames.Xor)
+            if (instruction.OpCode == OpCodes.Xor)
             {
                 operationFactory.Xor();
                 return true;
@@ -759,13 +759,13 @@ namespace CodeRefractor.FrontEnd
 
             #region Unary operators
 
-            if (opcodeStr == OpcodeOperatorNames.Not)
+            if (instruction.OpCode == OpCodes.Not)
             {
                 operationFactory.Not();
                 return true;
             }
 
-            if (opcodeStr == OpcodeOperatorNames.Neg)
+            if (instruction.OpCode == OpCodes.Neg)
             {
                 operationFactory.Neg();
                 return true;
