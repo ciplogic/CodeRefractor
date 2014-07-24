@@ -1,13 +1,16 @@
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using CodeRefractor.FrontEnd;
 using CodeRefractor.FrontEnd.SimpleOperations.Methods;
+using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 using CodeRefractor.RuntimeBase;
 
 namespace CodeRefractor.MiddleEnd.Interpreters.Cil
 {
-    public class CilMethodInterpreter : MethodInterpreter
+    public class CilMethodInterpreter : MethodInterpreter, IEnumerable<LocalOperation>
     {
         public CilMethodInterpreter(MethodBase method)
             : base(method)
@@ -37,6 +40,11 @@ namespace CodeRefractor.MiddleEnd.Interpreters.Cil
             Interpreted = true;
         }
 
+        public IEnumerator<LocalOperation> GetEnumerator()
+        {
+            return MidRepresentation.LocalOperations.GetEnumerator();
+        }
+
         public override string ToString()
         {
             var method = Method;
@@ -52,6 +60,11 @@ namespace CodeRefractor.MiddleEnd.Interpreters.Cil
                 ).ToArray();
 
             return string.Format("{0}({1})",startName, declaringParams);
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

@@ -41,7 +41,7 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
 
                 var overridenTypes = clrType.ImplementorsOfT(closure);
                 overridenTypes.Remove(clrType);
-                if (overridenTypes.Count > 1)
+                if (overridenTypes.Count >= 1)
                     continue;
                 
                 //TODO: map correct method

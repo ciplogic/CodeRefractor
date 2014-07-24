@@ -43,6 +43,8 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
                 var callingInterpreterKey = methodData.Interpreter.ToKey();
                 var declaringType = callingInterpreterKey.Interpreter.Method.DeclaringType;
                 var implementors = declaringType.ImplementorsOfT(usedTypes);
+
+                implementors.Remove(declaringType);
                 if (implementors.Count > 0)
                     continue;
                 //TODO: map correct method
