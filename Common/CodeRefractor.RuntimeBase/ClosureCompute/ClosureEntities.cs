@@ -63,6 +63,7 @@ namespace CodeRefractor.ClosureCompute
             {
                 new DevirtualizerIfOneImplemetor(),
                 new DevirtualizeWholeClosureMethods(),
+                new DevirtualizerIfNoOverrideImplementationExists(),
                 new CallToFunctionsWithSameConstant()
             };
         }

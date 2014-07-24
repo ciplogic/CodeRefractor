@@ -31,7 +31,7 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
                 closure.AbstractMethods = usedMethods;
             }
         }
-        private void HandleInterpreterInstructions(CilMethodInterpreter interpreter, HashSet<MethodInfo> usedMethods)
+        private static void HandleInterpreterInstructions(CilMethodInterpreter interpreter, HashSet<MethodInfo> usedMethods)
         {
             var useDef = interpreter.MidRepresentation.UseDef;
             var calls = useDef.GetOperationsOfKind(OperationKind.CallVirtual).ToList();

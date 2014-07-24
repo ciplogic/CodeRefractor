@@ -58,6 +58,7 @@
     <Compile Include="Analyze\LinkerInterpretersTable.cs" />
     <Compile Include="Analyze\NamerUtils.cs" />
     <Compile Include="Analyze\TypeDescription.cs" />
+    <Compile Include="Backend\ProgramWideOptimizations\Virtual\DevirtualizerIfNoOverrideImplementationExists.cs" />
     <Compile Include="ClosureCompute\ClosureEntitiesBuilder.cs" />
     <Compile Include="ClosureCompute\MethodBaseKey.cs" />
     <Compile Include="ClosureCompute\MethodBaseKeyComparer.cs" />

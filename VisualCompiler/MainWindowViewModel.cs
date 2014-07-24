@@ -93,11 +93,6 @@ namespace VisualCompiler
             var definition = asm.EntryPoint;
             var start = Environment.TickCount;
 
-            var optimizationsTable = new ProgramOptimizationsTable
-            {
-                new DevirtualizerIfOneImplemetor(),
-                new CallToFunctionsWithSameConstant()
-            };
              
             OptimizationLevelBase.ClearOptimizations();
             OptimizationLevelBase.Instance = new OptimizationLevels();
