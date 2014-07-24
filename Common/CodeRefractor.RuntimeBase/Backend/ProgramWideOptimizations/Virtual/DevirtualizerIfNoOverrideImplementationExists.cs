@@ -22,7 +22,7 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
                 .ToArray();
             foreach (var interpreter in methodInterpreters)
             {
-                HandleInterpreterInstructions((CilMethodInterpreter)interpreter, closure);
+                HandleInterpreterInstructions(interpreter, closure);
             }
         }
 
