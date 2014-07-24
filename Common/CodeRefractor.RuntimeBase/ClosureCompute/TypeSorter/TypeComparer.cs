@@ -21,6 +21,7 @@ namespace CodeRefractor.ClosureCompute.TypeSorter
             {
                 result.Add(member.ReflectedType.GetMappedType(_crRuntime));
             }
+            result.Remove(type);
             return result;
         } 
         bool IsSmallerThan(Type x, Type y)
