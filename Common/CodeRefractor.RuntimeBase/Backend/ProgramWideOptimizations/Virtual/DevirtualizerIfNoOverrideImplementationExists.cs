@@ -22,25 +22,25 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
                 .ToArray();
             foreach (var interpreter in methodInterpreters)
             {
-                HandleInterpreterInstructions(interpreter, closure);
+                Result |= HandleInterpreterInstructions(interpreter, closure);
             }
         }
 
-        private void HandleInterpreterInstructions(CilMethodInterpreter interpreter, ClosureEntities closure)
+        private static bool HandleInterpreterInstructions(CilMethodInterpreter interpreter, ClosureEntities closure)
         {
             var useDef = interpreter.MidRepresentation.UseDef;
-            var calls = useDef.GetOperationsOfKind(OperationKind.CallVirtual).ToList();
+            var calls = useDef.GetOperationsOfKind(OperationKind.CallVirtual).ToArray();
             var allOps = useDef.GetLocalOperations();
+            var result = false;
             foreach (var callOp in calls)
             {
                 var op = allOps[callOp];
                 var methodData = (CallMethodStatic)op;
                 var thisParameter = (LocalVariable)methodData.Parameters.First();
                 var clrType = thisParameter.FixedType.ClrType;
-                if (clrType == methodData.Info.DeclaringType)
-                    continue;
 
                 var overridenTypes = clrType.ImplementorsOfT(closure);
+                overridenTypes.Remove(clrType);
                 if (overridenTypes.Count > 1)
                     continue;
                 
@@ -52,12 +52,13 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
                     Result = methodData.Result,
                     Parameters = methodData.Parameters
                 };
-                Result = true;
+                result = true;
             }
-            if (Result)
+            if (result)
             {
                 interpreter.MidRepresentation.UpdateUseDef();
             }
+            return result;
         }
     }
 }

@@ -19,5 +19,10 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations.Methods
             Interpreter = interpreter;
             Info = interpreter.Method;
         }
+
+        public override string ToString()
+        {
+            return string.Format("{0} (vcall)", base.ToString());
+        }
     }
 }

@@ -185,9 +185,15 @@ namespace CodeRefractor.ClosureCompute
             var isOptimized = false;
             if (EnableProgramWideOptimizations)
             {
-                foreach (var ipoOptimization in _optimizationsTable)
+                var canOptimize = true;
+                while (canOptimize)
                 {
-                    isOptimized |= ipoOptimization.Optimize(this);
+                    canOptimize = false;
+                    foreach (var ipoOptimization in _optimizationsTable)
+                    {
+                        canOptimize |= ipoOptimization.Optimize(this);
+                        isOptimized |= canOptimize;
+                    }
                 }
             }
             return isOptimized;

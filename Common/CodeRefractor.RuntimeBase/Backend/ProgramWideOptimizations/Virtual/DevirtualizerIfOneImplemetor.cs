@@ -26,15 +26,16 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
                 .ToArray();
             foreach (var interpreter in methodInterpreters)
             {
-                HandleInterpreterInstructions((CilMethodInterpreter)interpreter, closure.MappedTypes.Values.ToList());
+                Result |= HandleInterpreterInstructions(interpreter, closure.MappedTypes.Values.ToList());
             }
         }
 
-        private void HandleInterpreterInstructions(CilMethodInterpreter interpreter, List<Type> usedTypes)
+        private static bool HandleInterpreterInstructions(CilMethodInterpreter interpreter, List<Type> usedTypes)
         {
             var useDef = interpreter.MidRepresentation.UseDef;
             var calls = useDef.GetOperationsOfKind(OperationKind.CallVirtual).ToList();
             var allOps = useDef.GetLocalOperations();
+            var result = false;
             foreach (var callOp in calls)
             {
                 var op = allOps[callOp];
@@ -50,12 +51,13 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
                     Result = methodData.Result,
                     Parameters = methodData.Parameters
                 };
-                Result = true;
+                result= true;
             }
-            if (Result)
+            if (result)
             {
                 interpreter.MidRepresentation.UpdateUseDef();
             }
+            return result;
         }
     }
 }
