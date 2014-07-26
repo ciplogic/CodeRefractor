@@ -58,6 +58,16 @@ namespace CodeRefractor.RuntimeBase
             }
         }
 
+        public static HashSet<T> ToHashSet<T>(this IEnumerable<T> items)
+        {
+            var result = new HashSet<T>();
+            foreach (var item in items)
+            {
+                result.Add(item);
+            }
+            return result;
+        } 
+
         public static void AddRange<T>(this SortedSet<T> collection, IEnumerable<T> toAdd)
         {
             foreach (var item in toAdd)
