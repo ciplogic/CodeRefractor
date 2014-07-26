@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.FrontEnd.SimpleOperations.Casts;
+using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.TypeInfoWriter;
 using CodeRefractor.Util;
 
@@ -18,23 +20,51 @@ namespace CodeRefractor.CodeWriter.Linker
 
         public ClosureEntities Closure { get; set; }
 
-        public void GenerateInstructionCode(IsInstance isInstance, StringBuilder sb)
+        public void GenerateInstructionCode(IsInstance isInstance, StringBuilder sb, ClosureEntities crRuntime)
         {
+            AddToRuntime(crRuntime);
+            //Needs improvement, how do i get the correct typeid at this point ? we cant just use zero :P
+            //This is a stupid hack as usedtypes can probably change as closure is computed
+            List<Type> usedTypes =crRuntime.MappedTypes.Values.ToList();
+            var typeTable = new TypeDescriptionTable(usedTypes, crRuntime);
             TypesToCast.Add(isInstance.CastTo);
             sb
-                .AppendFormat("{0} = IsInstanceOf({1}, {2})", 
+                .AppendFormat("{0} = IsInstanceOf({1}, {2});", 
                     isInstance.AssignedTo.Name,
-                    0,
-                    isInstance.Right.Name
+                    typeTable.GetTypeId(isInstance.CastTo),
+                    isInstance.Right.Name + "->_typeId"
                     )
                 .AppendLine();
         }
 
-        public string BuildTypeMatchingTable(TypeDescriptionTable table, ClosureEntities closure)
+        private static void AddToRuntime(ClosureEntities crRuntime)
+        {
+            
+       
+           var feature=crRuntime.FindFeature("IsInstance");
+
+                feature.IsUsed = true;
+                feature.Name = "IsInstance";
+                
+                feature.Headers = new List<string>() {"map", "algorithm"};
+                feature.Declarations = new List<string>()
+                {
+                    "bool IsInstanceOf(int typeSource, int typeImplementation);",
+                    "System_Void buildTypesTable();",
+                    "std::map<int, std::vector<int> > GlobalMappingType;"
+                };
+            feature.Initializer =
+                "buildTypesTable();";
+
+
+
+        }
+
+        public void BuildTypeMatchingTable(TypeDescriptionTable table, ClosureEntities closure)
         {
             var sb = new StringBuilder();
-
-            sb.AppendLine("std::map<int, std::vector<int> > GlobalMappingType;");
+         
+         
             
             sb.AppendLine("System_Void buildTypesTable() {");
             if (TypesToCast.Count > 0)
@@ -51,7 +81,8 @@ bool IsInstanceOf(int typeSource, int typeImplementation) {
 
 }
 ");
-            return sb.ToString();
+            closure.FindFeature("IsInstance").Functions += sb.ToString();
+           
         }
 
         private void AddAllTypes(StringBuilder sb, TypeDescriptionTable table, ClosureEntities closure)

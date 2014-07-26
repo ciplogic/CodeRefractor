@@ -76,7 +76,9 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BoolImpl.cs" />
     <Compile Include="CFile.cs" />
+    <Compile Include="CharImpl.cs" />
     <Compile Include="CrConsole.cs" />
     <Compile Include="CrFile.cs" />
     <Compile Include="CrMath.cs" />
@@ -91,6 +93,7 @@
     <Compile Include="MathImpl.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StringImpl.cs" />
+    <Compile Include="System\Object.cs" />
     <Compile Include="System\Reflection\MemberInfo.cs" />
     <Compile Include="System\Type.cs" />
   </ItemGroup>

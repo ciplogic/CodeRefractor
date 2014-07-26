@@ -309,7 +309,9 @@ namespace VisualCompiler
                     p.StartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
                     p.StartInfo.FileName = outputexe;
                     p.StartInfo.WorkingDirectory = Path.GetDirectoryName(outputexe);
-                    p.Start();
+                    p.Start(); 
+                    p.WaitForExit();
+                    
                     var start = Environment.TickCount;
 
                     // Do not wait for the child process to exit before
@@ -317,7 +319,7 @@ namespace VisualCompiler
                     // p.WaitForExit();
                     // Read the output stream first and then wait.
                     string output = outputexe.ExecuteCommand("");
-                    p.WaitForExit();
+                  
                     var end = Environment.TickCount - start;
 
                     CppOutput = output;

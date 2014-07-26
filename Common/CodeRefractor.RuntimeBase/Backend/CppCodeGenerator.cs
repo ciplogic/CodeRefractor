@@ -33,31 +33,52 @@ namespace CodeRefractor.Backend
     {
         public static StringBuilder GenerateSourceStringBuilder(MethodInterpreter interpreter, TypeDescriptionTable table, List<MethodInterpreter> closure, ClosureEntities closureEntities)
         {
-            var sb = new StringBuilder();
+            var headerSb = new StringBuilder();
 
-            sb.AppendLine("#include \"sloth.h\"");
-            sb.AppendLine("#include <functional>");
+            headerSb.AppendLine("#include \"sloth.h\"");
+            headerSb.AppendLine("#include <functional>");
 
-            //var virtualMethodTableCodeWriter = new VirtualMethodTableCodeWriter(typeTable, closure);
 
-            TypeBodiesCodeGenerator.WriteClosureStructBodies(sb, closureEntities);
-            WriteClosureDelegateBodies(closure, sb);
-            WriteClosureHeaders(closure, sb, closureEntities);
+            var initializersSb = new StringBuilder();
+            TypeBodiesCodeGenerator.WriteClosureStructBodies(initializersSb, closureEntities);
+            WriteClosureDelegateBodies(closure, initializersSb);
+            WriteClosureHeaders(closure, initializersSb, closureEntities);
 
-            sb.AppendLine("#include \"runtime_base.hpp\"");
+            initializersSb.AppendLine("#include \"runtime_base.hpp\"");
 
-            sb.AppendLine(VirtualMethodTableCodeWriter.GenerateTypeTableCode(table, closureEntities)); // We need to use this type table to generate missing jumps for subclasses  that dont override a base method
-            WriteCppMethods(closure, sb, closureEntities);
-            WriteClosureMethods(closure, sb, table, closureEntities);
 
-            WriteMainBody(interpreter, sb, closureEntities);
-            sb.AppendLine(PlatformInvokeCodeWriter.LoadDllMethods());
-            sb.AppendLine(ConstByteArrayList.BuildConstantTable());
+            var bodySb = new StringBuilder();
+            bodySb.AppendLine(VirtualMethodTableCodeWriter.GenerateTypeTableCode(table, closureEntities)); // We need to use this type table to generate missing jumps for subclasses  that dont override a base method
+            WriteCppMethods(closure, bodySb, closureEntities);
+            WriteClosureMethods(closure, bodySb, table, closureEntities);
 
-            sb.AppendLine(LinkingData.Instance.IsInstTable.BuildTypeMatchingTable(table, closureEntities));
-            sb.AppendLine(LinkingData.Instance.Strings.BuildStringTable());
+            WriteMainBody(interpreter, bodySb, closureEntities);
+            bodySb.AppendLine(PlatformInvokeCodeWriter.LoadDllMethods());
+            bodySb.AppendLine(ConstByteArrayList.BuildConstantTable());
 
-            return sb;
+          LinkingData.Instance.IsInstTable.BuildTypeMatchingTable(table, closureEntities);
+            bodySb.AppendLine(LinkingData.Instance.Strings.BuildStringTable());
+
+
+            //Add Logic to Automatically include std class features that are needed ...
+            if (closureEntities.Features.Count > 0)
+            {
+                foreach (var runtimeFeature in closureEntities.Features)
+                {
+                    if (runtimeFeature.IsUsed)
+                    {
+                        if(runtimeFeature.Headers.Count > 0)
+                        headerSb.AppendLine("//Headers For Feature: " + runtimeFeature.Name + "\n" +
+                            runtimeFeature.Headers.Select(g => "#include<" + g + ">").Aggregate((a, b) => a + "\n" + b) + "\n//End Of Headers For Feature: " + runtimeFeature.Name + "\n");
+                        if (runtimeFeature.Declarations.Count > 0)
+                        initializersSb.AppendLine("//Initializers For: " + runtimeFeature.Name + "\n" + runtimeFeature.Declarations.Aggregate((a, b) => a + "\n" + b) + "\n//End OF Initializers For: " + runtimeFeature.Name + "\n");
+                        if (!String.IsNullOrEmpty(runtimeFeature.Functions))
+                        bodySb.AppendLine("//Functions For Feature: " + runtimeFeature.Name + "\n" + runtimeFeature.Functions + "\n//End Of Functions For Feature: " + runtimeFeature.Name + "\n");
+                    }
+                }
+            }
+            
+            return headerSb.Append(initializersSb).Append(bodySb);
         }
 
         private static void WriteCppMethods(List<MethodInterpreter> closure, StringBuilder sb, ClosureEntities crRuntime)
@@ -164,6 +185,14 @@ namespace CodeRefractor.Backend
             sb.AppendFormat("int main(int argc, char**argv) {{").AppendLine();
             sb.AppendFormat("auto argsAsList = System_getArgumentsAsList(argc, argv);").AppendLine();
             sb.AppendLine("initializeRuntime();");
+
+            if (crRuntime.Features.Count > 0)
+            {
+                foreach (var runtimeFeature in crRuntime.Features)
+                {
+                    sb.AppendLine(runtimeFeature.Initializer+ "\n");
+                }
+            }
             var entryPoint = interpreter.Method as MethodInfo;
             if (entryPoint.ReturnType != typeof(void))
                 sb.Append("return ");

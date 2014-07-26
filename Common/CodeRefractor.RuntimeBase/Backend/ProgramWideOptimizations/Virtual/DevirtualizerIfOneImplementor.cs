@@ -16,7 +16,7 @@ using CodeRefractor.Util;
 
 namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
 {
-    public class DevirtualizerIfOneImplemetor : ResultingProgramOptimizationBase
+    public class DevirtualizerIfOneImplementor : ResultingProgramOptimizationBase
     {
         protected override void DoOptimize(ClosureEntities closure)
         {

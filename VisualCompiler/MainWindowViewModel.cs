@@ -15,6 +15,7 @@ using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Backend.ProgramWideOptimizations;
 using CodeRefractor.RuntimeBase.Config;
+using CodeRefractor.RuntimeBase.Optimizations;
 using Microsoft.CSharp;
 using Mono.Reflection;
 
@@ -100,6 +101,10 @@ namespace VisualCompiler
             OptimizationLevelBase.Instance.EnabledCategories.AddRange(OptimizationList);
             OptimizationLevelBase.UpdateOptimizationsFromCategories(OptimizationLevelBase.OptimizationPasses);
             OptimizationLevelBase.SortOptimizations();
+
+//            OptimizationLevelBase.Instance = new OptimizationLevels();
+//            OptimizationLevelBase.OptimizerLevel = 2;
+//            OptimizationLevelBase.Instance.EnabledCategories.Add(OptimizationCategories.All);
             var closureEntities = ClosureEntitiesUtils.BuildClosureEntities(definition, typeof(CrString).Assembly);
             var sb = closureEntities.BuildFullSourceCode();
             var end = Environment.TickCount - start;

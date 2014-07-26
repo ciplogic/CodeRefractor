@@ -93,6 +93,31 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                         HandleComment(operation.ToString(), bodySb);
                         break;
                     case OperationKind.Box:
+                        var boxing = crRuntime.FindFeature("Boxing");
+                        if (!boxing.IsUsed)
+                        {
+                            boxing.IsUsed = true;
+                            boxing.Declarations.Add(@"template<class T>
+struct BoxedT : public System_Object
+{
+	T Data;
+};
+
+template<class T>
+std::shared_ptr<System_Object> box_value(T value, int typeId){
+	auto result = std::make_shared<BoxedT< T > >();
+	result->_typeId = typeId;
+	result->Data = value;
+	return result;
+}
+
+template<class T>
+T unbox_value(std::shared_ptr<System_Object> value){
+	auto resultObject = value.get();
+	auto castedUnboxing = (BoxedT<T>*)resultObject;
+	return castedUnboxing->Data;
+}");
+                        }
                         HandleBox((Boxing)operation, bodySb, typeTable);
                         break;
 
@@ -105,7 +130,8 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                         break;
 
                     case OperationKind.IsInstance:
-                        HandleIsInstance((IsInstance) operation, bodySb);
+                        
+                        HandleIsInstance((IsInstance) operation, bodySb,crRuntime);
                         break;
                         
                     default:
@@ -121,9 +147,9 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             return bodySb;
         }
 
-        private static void HandleIsInstance(IsInstance operation, StringBuilder bodySb)
+        private static void HandleIsInstance(IsInstance operation, StringBuilder bodySb, ClosureEntities crRuntime)
         {
-            LinkingData.Instance.IsInstTable.GenerateInstructionCode(operation, bodySb);
+            LinkingData.Instance.IsInstTable.GenerateInstructionCode(operation, bodySb,crRuntime);
         }
 
         private static void HandleUnbox(Unboxing unboxing, StringBuilder bodySb)
@@ -137,6 +163,8 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         }
         private static void HandleBox(Boxing boxing, StringBuilder bodySb, TypeDescriptionTable typeTable)
         {
+
+
             TypeDescription typeDescription = boxing.Right.ComputedType();
             bodySb
                 .AppendFormat("{0} = box_value<{2}>({1}, {3});",

@@ -381,5 +381,11 @@ namespace CodeRefactor.OpenRuntime
             int length = index + 2 - foundTrimChar;
             return length;
         }
+
+        [MapMethod(IsStatic = false)]
+        public static string ToString(string value)
+        {
+            return value;
+        }
     }
 }

@@ -5,15 +5,24 @@ class BoxingTest01
 
     private static void Log(object data)
     {
-        //This works
-        int a = (int)data;
-        Console.WriteLine("Integer:" + a.ToString());
-
+      
         //This doesnt (Need proper isinst instruction)
         if (data is int)
         {
-            a = (int)data;
+            var a = (int)data;
             Console.WriteLine("Integer:" + a.ToString());
+        }
+
+        else
+        if (data is string)
+        {
+            var a = (string)data;
+            Console.WriteLine("String:" + a.ToString());
+        }
+        else
+        {
+            //Needs basic reflection to work
+           // Console.WriteLine("unknown:" + data.ToString());
         }
 
     }
@@ -22,5 +31,7 @@ class BoxingTest01
     {
         int n = 500000;
         Log(n);
+        Log("Hey");
+        Log(1.023f);
     }
 }

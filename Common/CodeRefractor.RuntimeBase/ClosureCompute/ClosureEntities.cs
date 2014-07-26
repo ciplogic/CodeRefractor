@@ -61,7 +61,7 @@ namespace CodeRefractor.ClosureCompute
             EnableProgramWideOptimizations = true;
             _optimizationsTable = new ProgramOptimizationsTable
             {
-                new DevirtualizerIfOneImplemetor(),
+                new DevirtualizerIfOneImplementor(),
                 new DevirtualizeWholeClosureMethods(),
                 new DevirtualizerIfNoOverrideImplementationExists(),
                 new CallToFunctionsWithSameConstant()
@@ -122,7 +122,7 @@ namespace CodeRefractor.ClosureCompute
                 MethodImplementations.Values.ToList(), this);
         }
 
-
+        public List<RuntimeFeature> Features = new List<RuntimeFeature>(); 
        
 
         public Type ResolveType(Type type)
@@ -198,6 +198,29 @@ namespace CodeRefractor.ClosureCompute
             }
             return isOptimized;
         }
+
+        public RuntimeFeature FindFeature(string featureName)
+        {
+           var feature =  Features.FirstOrDefault(f=>f.Name==featureName);
+            if (feature == null)
+            {
+                feature = new RuntimeFeature()
+                {
+                    Name = featureName,
+                };
+                Features.Add(feature);
+            }
+            return feature;
+        }
     }
 
+    public class RuntimeFeature
+    {
+        public string Name ="";
+        public List<string> Headers = new List<string>();
+        public List<string> Declarations = new List<string>();
+        public string Initializer ="";
+        public string Functions = "";
+        public bool IsUsed =false;
+    }
 }

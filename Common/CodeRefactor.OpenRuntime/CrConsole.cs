@@ -43,30 +43,44 @@ namespace CodeRefactor.OpenRuntime
 
         [CppMethodBody(Header = "stdio.h",
            Code = @"
-                    if(value) 
-                        printf(""True"");
-                    else
-                        printf(""False"");")]
+                    printf(""%s"", value != 0 ? ""True"" : ""False"");")]
         public static void Write(bool value)
         {
         }
 
-        [CppMethodBody(Header = "stdio.h", 
-            Code = @"
-                    if(value) 
-                        printf(""True\"""");
-                    else
-                        printf(""False\"""");")]
+      
         public static void WriteLine(bool value)
         {
+            Write(value);
+            WriteLine();
         }
 
+        [CppMethodBody(Header = "stdio.h", Code = @"
+    //Borrowed from SharpLang
+    char buffer[64];
+	int length = sprintf(buffer, ""%.6f"", value);  // Match default .Net precision, makes testing easier
 
-       
+	// Remove trailing 0 (after .)
+	if (strchr(buffer, '.') != NULL)
+	{
+		while (length > 0 && buffer[length - 1] == '0')
+			buffer[--length] = '\0';
+	}
+
+	if (length > 0 && buffer[length - 1] == '.')
+		buffer[--length] = '\0';
+
+	printf(""%s"", buffer);
+")]
+        public static void Write(float value)
+        {
+         
+        }
 
         public static void WriteLine(float value)
         {
-            WriteLine((double)value);
+            Write(value);
+            WriteLine();
         }
 
         [CppMethodBody(Header = "stdio.h", Code = "printf(\"%ls\", value.get()->Text->Items);")]
@@ -79,14 +93,32 @@ namespace CodeRefactor.OpenRuntime
         {
         }
 
-        [CppMethodBody(Header = "stdio.h", Code = "printf(\"%lf\", value);")]
+        [CppMethodBody(Header = "stdio.h", Code = @"
+    //Borrowed from SharpLang
+    char buffer[64];
+	int length = sprintf(buffer, ""%.14f"", value); // Match default .Net precision, makes testing easier
+
+	// Remove trailing 0 (after .)
+	if (strchr(buffer, '.') != NULL)
+	{
+		while (length > 0 && buffer[length - 1] == '0')
+			buffer[--length] = '\0';
+	}
+
+	if (length > 0 && buffer[length - 1] == '.')
+		buffer[--length] = '\0';
+
+	printf(""%s"", buffer);
+")]
         public static void Write(double value)
         {
+
         }
 
-        [CppMethodBody(Header = "stdio.h", Code = "printf(\"%lf\\n\", value);")]
         public static void WriteLine(double value)
         {
+            Write(value);
+            WriteLine();
         }
     }
 }

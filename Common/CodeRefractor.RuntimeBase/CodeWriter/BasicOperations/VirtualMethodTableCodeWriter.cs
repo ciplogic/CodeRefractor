@@ -1,11 +1,14 @@
 #region Usings
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.ClosureCompute.Steps;
+using CodeRefractor.CodeWriter.Linker;
+using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.TypeInfoWriter;
@@ -171,16 +174,36 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 
         private static string GetCall(MethodInfo virtualMethod, MethodInfo method, ClosureEntities crRuntime)
         {
-            var parametersString = string.Format("std::static_pointer_cast<{0}>(_this)", method.DeclaringType.GetReversedMappedType(crRuntime).ToCppName(EscapingMode.Unused));
-            //Add Rest of parameters
+             //Add Rest of parameters
             var parameters = virtualMethod.GetParameters();
-            
-            if (parameters.Length <= 0) return parametersString;
+            var usedArgs = method.GetInterpreter(crRuntime)!=null ? MidRepresentationUtils.GetUsedArguments(method.GetInterpreter(crRuntime)) : Enumerable.Repeat(true, parameters.Count() + 1).ToArray();  // Sometime we dont have a method interpreter ... why ?
+            int pCount = 0;
+            var parametersString = usedArgs[0] == true ?string.Format("std::static_pointer_cast<{0}>(_this)", method.DeclaringType.GetReversedMappedType(crRuntime).ToCppName(EscapingMode.Unused)):"";
+           
+            pCount++;
+            if (parameters.Length <= 0) 
+                return parametersString;
+
             var sb = new StringBuilder();
-            sb.Append(parametersString);
-            sb.Append(", ");
-            var arguments = string.Join(", ", parameters.Select(par=>par.Name));
-            sb.Append(arguments);
+            if (!String.IsNullOrEmpty(parametersString))
+            {
+                sb.Append(parametersString);
+
+            }
+
+            foreach (var info in parameters)
+            {
+                if (!String.IsNullOrEmpty(parametersString) && usedArgs[pCount] )
+                {
+                    sb.Append(", " + info.Name);
+                }
+                pCount++;
+            }
+         
+           
+//            sb.Append(", ");
+//            var arguments = string.Join(", ", parameters.Select(par=>par.Name));
+//            sb.Append(arguments);
             return sb.ToString();
         }
     }

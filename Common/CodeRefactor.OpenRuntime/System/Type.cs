@@ -8,9 +8,9 @@ using CodeRefractor.Runtime.Annotations;
 
 namespace CodeRefactor.OpenRuntime.System
 {
- 
-    [ExtensionsImplementation(typeof(Type))]
-    public abstract class Type : MemberInfo
+    [MapType(typeof(global::System.Type))]
+  
+    public abstract class Type
     {
 
         public static readonly Type[] EmptyTypes = new Type[0];
@@ -63,7 +63,7 @@ namespace CodeRefactor.OpenRuntime.System
         [MapMethod(IsStatic = false)]
         public override string ToString()
         {
-            return this.FullName;
+            return "";
         }
     }
 }

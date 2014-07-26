@@ -245,9 +245,21 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 
                             //Handle ByRef
 
-                            sb.AppendFormat("{0}", localValue.Name);
+                           
 
-
+                            if (localValue.ComputedType().ClrType.IsByRef)
+                            {
+                                if ((index > 0 && methodInfo.GetParameters()[index].ParameterType.IsValueType) || index == 0)
+                                    sb.AppendFormat("*{0}", localValue.Name);
+                                else
+                                {
+                                    sb.AppendFormat("{0}", localValue.Name);
+                                }
+                            }
+                            else
+                            {
+                                sb.AppendFormat("{0}", localValue.Name);
+                            }
 
                         }
                         continue;
