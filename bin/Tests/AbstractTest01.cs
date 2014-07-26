@@ -81,8 +81,8 @@ class TestShapes
 
         // Display the results:
         System.Console.Write("Side of the square = ");
-        System.Console.WriteLine(s.side);
+        System.Console.WriteLine((float)s.side);
         System.Console.Write("Side of the cube = ");
-        System.Console.WriteLine(c.side);
+        System.Console.WriteLine((float)c.side);
     }
 }

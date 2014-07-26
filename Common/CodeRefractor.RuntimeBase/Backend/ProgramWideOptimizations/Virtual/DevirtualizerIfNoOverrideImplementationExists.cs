@@ -16,6 +16,7 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
     {
         protected override void DoOptimize(ClosureEntities closure)
         {
+            //Interfaces cannot be devirtualized this way
             var methodInterpreters = closure.MethodImplementations.Values
                 .Where(m => m.Kind == MethodKind.CilInstructions)
                 .Select(mth => (CilMethodInterpreter)mth)
@@ -41,6 +42,14 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
 
                 var overridenTypes = clrType.ImplementorsOfT(closure);
                 overridenTypes.Remove(clrType);
+
+                //Check for NewSlot
+
+                if (clrType.BaseType != null && !methodData.Info.IsVirtual)
+                {
+                  if(clrType.BaseType.GetMethods(ClosureEntitiesBuilder.AllFlags).Select(m=>m.MethodMatches(methodData.Info)).Any())
+                        continue;
+                }
                
                 if (overridenTypes.Count >= 1)
                     continue;
