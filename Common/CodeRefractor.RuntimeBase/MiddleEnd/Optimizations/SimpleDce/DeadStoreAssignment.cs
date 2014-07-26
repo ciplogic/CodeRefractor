@@ -13,7 +13,7 @@ using CodeRefractor.RuntimeBase.Optimizations;
 
 namespace CodeRefractor.MiddleEnd.Optimizations.SimpleDce
 {
-	[Optimization(Category = OptimizationCategories.DeadCodeElimination)]
+    [Optimization(Category = OptimizationCategories.DeadCodeElimination)]
 	internal class DeadStoreAssignment : ResultingInFunctionOptimizationPass
     {
         private static readonly List<OperationKind> NoSideEffectsOperationKinds = new List<OperationKind>
@@ -51,6 +51,8 @@ namespace CodeRefractor.MiddleEnd.Optimizations.SimpleDce
             for (var index = 0; index < localOperations.Length; index++)
             {
                 var usages = useDef.GetUsages(index);
+                if (definitions.Count == 0)
+                    return;
                 foreach (var localVariable in usages)
                 {
                     definitions.Remove(localVariable);

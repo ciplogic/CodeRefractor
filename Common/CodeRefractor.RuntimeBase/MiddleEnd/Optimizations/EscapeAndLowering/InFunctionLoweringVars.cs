@@ -12,8 +12,6 @@ using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 using CodeRefractor.MiddleEnd.UseDefs;
 using CodeRefractor.RuntimeBase;
-using CodeRefractor.RuntimeBase.Backend.Optimizations.EscapeAndLowering;
-using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.Optimizations;
 
@@ -26,10 +24,6 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
     {
         public override void OptimizeOperations(CilMethodInterpreter interpreter)
         {
-            if (interpreter.Method.Name.Contains("Concat"))
-            {
-
-            }
             var candidateVariables = SetAllCandidateVariables(interpreter);
             var useDef = interpreter.MidRepresentation.UseDef;
             var localOp = useDef.GetLocalOperations();
