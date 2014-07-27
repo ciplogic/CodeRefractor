@@ -72,7 +72,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                         CppHandleCalls.HandleCallInterface(operation, bodySb, vars, interpreter, crRuntime);
                         break;
                     case OperationKind.CallVirtual:
-                        CppHandleCalls.HandleCallVirtual(operation, bodySb, vars, interpreter, crRuntime);
+                        CppHandleCalls.HandleCallVirtual(operation, bodySb, interpreter, crRuntime);
                         break;
                     case OperationKind.CallRuntime:
                         CppHandleCalls.HandleCallRuntime(operation, bodySb, crRuntime);

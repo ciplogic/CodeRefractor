@@ -7,18 +7,13 @@ using System.Text;
 using CodeRefractor.Analyze;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.CodeWriter.Linker;
-using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Interpreters;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
-using CodeRefractor.Runtime;
 using CodeRefractor.RuntimeBase;
-using CodeRefractor.RuntimeBase.Analyze;
-using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.Util;
-using Microsoft.Win32.SafeHandles;
 
 #endregion
 
@@ -74,7 +69,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 
             sb.AppendFormat("{0}", methodInfo.ClangMethodSignature(crRuntime));
 
-            if (WriteParametersToSb(operationData, sb, interpreter, crRuntime)) return;
+            WriteParametersToSb(operationData, sb, interpreter);
 
             sbCode.Append(sb);
         }
@@ -92,14 +87,12 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             }
 
             sb.AppendFormat("{0}_icall", methodInfo.ClangMethodSignature(crRuntime));
-
-            if (WriteParametersToSb(operationData, sb, interpreter, crRuntime)) return;
+            WriteParametersToSb(operationData, sb, interpreter);
 
             sbCode.Append(sb);
         }
 
-        public static void HandleCallVirtual(LocalOperation operation, StringBuilder sbCode,
-            MidRepresentationVariables vars, MethodInterpreter interpreter, ClosureEntities crRuntime)
+        public static void HandleCallVirtual(LocalOperation operation, StringBuilder sbCode, MethodInterpreter interpreter, ClosureEntities crRuntime)
         {
             var operationData = (CallMethodStatic)operation;
             var sb = new StringBuilder();
@@ -110,24 +103,32 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 sb.AppendFormat("{0} = ", operationData.Result.Name);
             }
 
+            var mappedType = methodInfo.DeclaringType.GetReversedMappedType(crRuntime);
+            while ((mappedType.BaseType != typeof(Object))) // Match top level virtual dispatch
+            {
+                if (mappedType.BaseType == null) break;
+                mappedType = mappedType.BaseType;
+            }
+
+            
+            sb.AppendFormat("{0}_vcall", methodInfo.ClangMethodSignature(crRuntime, mappedType));
+
+
+            //TODO: the intermediate representation should remove the testinf of final methods and such
+            //the virtual call is always a virtual call
+            //Added DevirtualizeFinalMethods
+
             //Virtual Method Dispatch Table is on base class only
             //Also we need to take care of the call if this is not a virtual call 
             // C# compiler seems to use virtual calls when derived class uses new operator on non-virtual base class method
             //Added special case for interface calls
 
-
+            /*
             if (methodInfo.IsVirtual)
             {
                 var @params = operationData.Parameters.Select(h => h.FixedType.ClrType).Skip(1).ToArray(); // Skip first parameter for virtual dispatch
 
-                if (methodInfo.IsFinal)//(!operationStatic.Parameters[0].FixedType.ClrType.GetMethod(methodInfo.Name).IsVirtual)) || !operationStatic.Parameters[0].FixedType.ClrType.GetMethod(methodInfo.Name).))
-                {
-                    //Direct call
-                    sb.AppendFormat("{0}", methodInfo.ClangMethodSignature(crRuntime, isvirtualmethod: false));
-                }
-
-
-                else if ((methodInfo.DeclaringType.GetMethod(methodInfo.Name, @params) != null && methodInfo.DeclaringType.GetMethod(methodInfo.Name, @params).DeclaringType == methodInfo.DeclaringType))
+                if ((methodInfo.DeclaringType.GetMethod(methodInfo.Name, @params) != null && methodInfo.DeclaringType.GetMethod(methodInfo.Name, @params).DeclaringType == methodInfo.DeclaringType))
                 {
 
                     sb.AppendFormat("{0}_vcall", methodInfo.ClangMethodSignature(crRuntime, isvirtualmethod: true));
@@ -142,25 +143,47 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             {
                 sb.AppendFormat("{0}", methodInfo.ClangMethodSignature(crRuntime, isvirtualmethod: false));
             }
-
-            if (WriteParametersToSb(operationData, sb, interpreter, crRuntime)) return;
+            */
+            WriteParametersToSb(operationData, sb, interpreter);
 
             sbCode.Append(sb);
         }
 
-        private static bool WriteParametersToSb(CallMethodStatic operationStatic, StringBuilder sb,
-            MethodInterpreter interpreter, ClosureEntities crRuntime)
+        public static void WriteParametersToSb(CallMethodStatic operationStatic, StringBuilder sb,
+            MethodInterpreter interpreter)
         {
             var fullEscapeData = operationStatic.Interpreter.BuildEscapeModes();
             var parameters = operationStatic.Parameters;
-            sb.Append("(");
-            var isFirstParameter = true;
+            var parametersData = new List<EscapingMode>();
+            for (int index = 0; index < parameters.Count; index++)
+            {
+                var identifierValue = parameters[index];
+                if (identifierValue is LocalVariable)
+                {
+                    var callingParameterData =
+                        interpreter.AnalyzeProperties.GetVariableData((LocalVariable) identifierValue);
+                    parametersData.Add(callingParameterData);
+                }
+                else
+                {
+                    parametersData.Add(EscapingMode.Smart);
+                }
+            }
+
+            BuildCallString(sb, parameters, fullEscapeData, parametersData.ToArray());
+        }
+
+        public static void BuildCallString(StringBuilder sb, List<IdentifierValue> parameters, EscapingMode[] fullEscapeData,
+            EscapingMode[] parametersData)
+        {
             var parameterStrings = new List<string>();
             for (int index = 0; index < parameters.Count; index++)
             {
                 var identifierValue = parameters[index];
                 var escapeParameterData = fullEscapeData[index];
-                if(escapeParameterData==EscapingMode.Unused)
+                var callingParameterData = parametersData[index];
+
+                if (escapeParameterData == EscapingMode.Unused)
                     continue;
                 var computedValue = identifierValue.ComputedValue();
                 if (identifierValue is ConstValue)
@@ -175,7 +198,6 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                         break;
                     case EscapingMode.Pointer:
                     {
-                        var callingParameterData = interpreter.AnalyzeProperties.GetVariableData((LocalVariable) identifierValue);
                         switch (callingParameterData)
                         {
                             case EscapingMode.Pointer:
@@ -189,12 +211,11 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                                 continue;
                         }
                     }
-                    break;
+                        break;
                 }
             }
             var argumentsJoin = String.Join(", ", parameterStrings);
             sb.AppendFormat("({0})", argumentsJoin);
-            return true;
         }
 
         public static void HandleCallRuntime(LocalOperation operation, StringBuilder sb, ClosureEntities crRuntime)

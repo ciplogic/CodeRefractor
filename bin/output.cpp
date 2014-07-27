@@ -41,6 +41,18 @@ System_Void System_Console_WriteLine(std::shared_ptr<System_String> value);
 // --- Begin definition of virtual method tables ---
 System_Void setupTypeTable();
 
+System_Void _A_F_vcall(const std::shared_ptr<_A> _this);
+System_Void _A_F_vcall(const std::shared_ptr<_A> _this) {
+switch (_this->_typeId)
+{
+case 3:
+_B_F();
+return;
+case 4:
+_A_F();
+return;
+} //switch
+}
 
 System_Void System_Console_WriteLine(std::shared_ptr<System_String> value)
 {
@@ -54,10 +66,10 @@ std::shared_ptr<_B> vreg_1;
 
 vreg_1 = std::make_shared<_B >();
 vreg_1->_typeId = 3;
-_B_F();
-_B_F();
-_B_G();
-_B_G();
+
+
+
+
 return;
 }
 
@@ -72,7 +84,7 @@ return;
 System_Void _B_F()
 {
 
-System_Console_WriteLine(_str(1));
+
 return;
 }
 
@@ -80,7 +92,7 @@ return;
 System_Void _A_F()
 {
 
-System_Console_WriteLine(_str(2));
+
 return;
 }
 
@@ -88,7 +100,7 @@ return;
 System_Void _B_G()
 {
 
-System_Console_WriteLine(_str(3));
+
 return;
 }
 
@@ -96,7 +108,7 @@ return;
 System_Void _A_G()
 {
 
-System_Console_WriteLine(_str(4));
+
 return;
 }
 
@@ -121,19 +133,6 @@ System_Void mapLibs() {
 
 System_Void RuntimeHelpersBuildConstantTable() {
 }
-
-std::map<int, std::vector<int> > GlobalMappingType;
-System_Void buildTypesTable() {
-}
-
-bool IsInstanceOf(int typeSource, int typeImplementation) {
-    auto typeVector = GlobalMappingType[typeSource];
-	auto begin = typeVector.begin();
-	auto end = typeVector.end();
-	return std::find(begin, end, typeImplementation)!= end;
-
-}
-
 
 System_Void buildStringTable() {
 _AddJumpAndLength(0, 15);

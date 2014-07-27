@@ -75,22 +75,12 @@ namespace CodeRefractor.Util
             return sb.ToString();
         }
 
-        public static string ClangMethodSignature(this MethodBase method, ClosureEntities crRuntime, bool isvirtualmethod = false)
+        public static string ClangMethodSignature(this MethodBase method, ClosureEntities crRuntime, Type declaringType = null)
         {
-            var mappedType = method.DeclaringType.GetReversedMappedType(crRuntime);
+            var mappedType = declaringType ?? method.DeclaringType.GetReversedMappedType(crRuntime);
 
             var typeName = mappedType.ToCppMangling();
-            if (isvirtualmethod)
-            {
-                while ((mappedType.BaseType != typeof(Object))) // Match top level virtual dispatch
-                {
-                    if (mappedType.BaseType == null) break;
-                    mappedType = mappedType.BaseType;
-                    typeName = mappedType.ToCppMangling();
-                }
-                
-            }
-            
+           
             var methodName = method.Name;
             if (method is ConstructorInfo)
                 methodName = "ctor";
