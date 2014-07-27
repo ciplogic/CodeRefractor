@@ -65,6 +65,20 @@ namespace CodeRefractor.CodeWriter.Linker
             return otherMethodData;
         }
 
+        public static EscapingMode[] BuildEscapeModes(this MethodInterpreter interpreter)
+        {
+            var parameters = new List<EscapingMode>();
+            var analyzeProperties = interpreter.AnalyzeProperties;
+            var methodArguments = analyzeProperties.Arguments;
+            foreach (var argument in methodArguments)
+            {
+                var argumentData = analyzeProperties.GetVariableData(argument);
+                parameters.Add(argumentData);
+            }
+
+            return parameters.ToArray();
+        }
+
         public static bool[] BuildEscapingBools(this MethodBase method, ClosureEntities crRuntime)
         {
             var parameters = method.GetParameters();

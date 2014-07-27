@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using CodeRefractor.Analyze;
 using CodeRefractor.ClosureCompute;
@@ -19,6 +18,7 @@ using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.Util;
+using Microsoft.Win32.SafeHandles;
 
 #endregion
 
@@ -74,7 +74,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 
             sb.AppendFormat("{0}", methodInfo.ClangMethodSignature(crRuntime));
 
-            if (WriteParametersToSb(operationData, methodInfo, sb, interpreter, crRuntime)) return;
+            if (WriteParametersToSb(operationData, sb, interpreter, crRuntime)) return;
 
             sbCode.Append(sb);
         }
@@ -93,7 +93,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 
             sb.AppendFormat("{0}_icall", methodInfo.ClangMethodSignature(crRuntime));
 
-            if (WriteParametersToSb(operationData, methodInfo, sb, interpreter, crRuntime)) return;
+            if (WriteParametersToSb(operationData, sb, interpreter, crRuntime)) return;
 
             sbCode.Append(sb);
         }
@@ -143,141 +143,58 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 sb.AppendFormat("{0}", methodInfo.ClangMethodSignature(crRuntime, isvirtualmethod: false));
             }
 
-            if (WriteParametersToSb(operationData, methodInfo, sb, interpreter, crRuntime)) return;
+            if (WriteParametersToSb(operationData, sb, interpreter, crRuntime)) return;
 
             sbCode.Append(sb);
         }
 
-        private static bool WriteParametersToSb(CallMethodStatic operationStatic, MethodBase methodInfo, StringBuilder sb,
+        private static bool WriteParametersToSb(CallMethodStatic operationStatic, StringBuilder sb,
             MethodInterpreter interpreter, ClosureEntities crRuntime)
         {
-            var identifierValues = operationStatic.Parameters;
-
-            var escapingData = methodInfo.BuildEscapingBools(crRuntime);
-            if (escapingData == null)
-            {
-                var argumentsCall = String.Join(", ", identifierValues.Select(p =>
-                {
-                    var computeValue = p.ComputedValue();
-
-                    return computeValue;
-                }));
-
-                sb.AppendFormat("({0});", argumentsCall);
-                return true;
-            }
-
-            #region Parameters
-
+            var fullEscapeData = operationStatic.Interpreter.BuildEscapeModes();
+            var parameters = operationStatic.Parameters;
             sb.Append("(");
-            var pos = 0;
-            var isFirst = true;
-            var argumentUsages = MidRepresentationUtils.GetUsedArguments(operationStatic.Interpreter);
-
-            var argumentTypes = operationStatic.Info.GetMethodArgumentTypes();
-            for (var index = 0; index < identifierValues.Count; index++)
+            var isFirstParameter = true;
+            var parameterStrings = new List<string>();
+            for (int index = 0; index < parameters.Count; index++)
             {
-                var value = identifierValues[index];
-                if (!argumentUsages[index])
+                var identifierValue = parameters[index];
+                var escapeParameterData = fullEscapeData[index];
+                if(escapeParameterData==EscapingMode.Unused)
                     continue;
-                if (isFirst)
-                    isFirst = false;
-                else
-                    sb.Append(", ");
-                var localValue = value as LocalVariable;
-                var argumentData = argumentTypes[pos];
-                var isEscaping = escapingData[pos];
-                pos++;
-                if (localValue == null)
+                var computedValue = identifierValue.ComputedValue();
+                if (identifierValue is ConstValue)
                 {
-                    //We need to take care of strings here
-                    if (value is ConstValue)
-                    {
-                        if ((value.FixedType.ClrType == typeof(string) && methodInfo.IsPinvoke()))
-                        {
-                            sb.Append("" + value.ComputedValue() + "->Text->Items");
-                        }
-                        else
-                        if ((value.FixedType.ClrType == typeof(string) && !isEscaping && !methodInfo.IsSpecialName) ) //Why isnt escape analysis done for properties ?
-                        {
-                            sb.Append("(System_String*)" + value.ComputedValue() + "->Text.get()");
-                        }
-                        else
-                        {
-                            sb.Append(value.ComputedValue());
-                        }
-                    }
-                    else
-                    {
-                        sb.Append(value.ComputedValue());
-                    }
-
+                    parameterStrings.Add(computedValue);
                     continue;
                 }
-                if (localValue.Kind == VariableKind.Argument)
+                switch (escapeParameterData)
                 {
-                }
-
-                if (localValue.ComputedType().ClrType == typeof(IntPtr))
-                {
-                    var argumentTypeCast = argumentData.ToCppMangling();
-                    sb.AppendFormat("({0}){1}", argumentTypeCast, localValue.Name);
-                    continue;
-                }
-
-                var localValueData = interpreter.AnalyzeProperties.GetVariableData(localValue);
-
-                switch (localValueData)
-                {
-                    case EscapingMode.Smart: // Want to use dynamic_casts instead
-                        //                        if ((!isEscaping && localValue.ComputedType().ClrType.IsClass )|| (operationStatic.Info.IsVirtual && index==0))
-                        //                        {
-                        //                            sb.AppendFormat("{0}.get()", localValue.Name);
-                        //                        }
-                        //                        else
-                        {
-                            //TODO: this won't work we'll just declare interface instances as system_object
-                            //                            if (index==0 && operationStatic.Info.DeclaringType.IsInterface)
-                            //                            {
-                            //                                sb.AppendFormat("std::static_pointer_cast<{0}>({1})", typeof(object).ToCppMangling(), localValue.Name);
-                            //                            }
-                            //                            else
-
-                            //Handle ByRef
-
-                           
-
-                            if (localValue.ComputedType().ClrType.IsByRef)
-                            {
-                                if ((index > 0 && methodInfo.GetParameters()[index].ParameterType.IsValueType) || index == 0)
-                                    sb.AppendFormat("*{0}", localValue.Name);
-                                else
-                                {
-                                    sb.AppendFormat("{0}", localValue.Name);
-                                }
-                            }
-                            else
-                            {
-                                sb.AppendFormat("{0}", localValue.Name);
-                            }
-
-                        }
-                        continue;
-                    case EscapingMode.Stack:
-                        sb.AppendFormat("&{0}", localValue.Name);
-                        continue;
-
+                    case EscapingMode.Smart:
+                        parameterStrings.Add(computedValue);
+                        break;
                     case EscapingMode.Pointer:
-                        sb.AppendFormat(!isEscaping ? "{0}" : "{0}.get()", localValue.Name);
-                        continue;
+                    {
+                        var callingParameterData = interpreter.AnalyzeProperties.GetVariableData((LocalVariable) identifierValue);
+                        switch (callingParameterData)
+                        {
+                            case EscapingMode.Pointer:
+                                parameterStrings.Add(computedValue);
+                                continue;
+                            case EscapingMode.Smart:
+                                parameterStrings.Add(String.Format("{0}.get()", computedValue));
+                                continue;
+                            case EscapingMode.Stack:
+                                parameterStrings.Add(String.Format("&{0}", computedValue));
+                                continue;
+                        }
+                    }
+                    break;
                 }
             }
-
-            sb.Append(");");
-
-            #endregion
-
-            return false;
+            var argumentsJoin = String.Join(", ", parameterStrings);
+            sb.AppendFormat("({0})", argumentsJoin);
+            return true;
         }
 
         public static void HandleCallRuntime(LocalOperation operation, StringBuilder sb, ClosureEntities crRuntime)

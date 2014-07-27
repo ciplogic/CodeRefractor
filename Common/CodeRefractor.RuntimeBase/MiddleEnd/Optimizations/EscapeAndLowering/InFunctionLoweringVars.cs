@@ -96,8 +96,10 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
 
                 if (!candidateVariables.Contains(variable)) continue;
                 var variableData = interpreter.AnalyzeProperties.GetVariableData(variable);
-
-                interpreter.AnalyzeProperties.SetVariableData(variable, EscapingMode.Stack);
+                if (variableData != EscapingMode.Stack)
+                {
+                    interpreter.AnalyzeProperties.SetVariableData(variable, EscapingMode.Stack);
+                }
             }
         }
 
@@ -114,7 +116,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
                     break;
 
                 case OperationKind.Call:
-                    HandleCall(localVariable, candidateVariables, op);
+                    HandleCall(candidateVariables, op);
                     break;
                 case OperationKind.CallVirtual:
                 case OperationKind.CallInterface:
@@ -185,7 +187,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
             }
         }
 
-        private static void HandleCall(LocalVariable localVariable, HashSet<LocalVariable> candidateVariables,
+        private static void HandleCall(HashSet<LocalVariable> candidateVariables,
             LocalOperation op)
         {
             var methodData = (CallMethodStatic) op;
@@ -194,21 +196,14 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
             {
                 candidateVariables.Remove(resultVar);
             }
-            var escapeData = AnalyzeParametersAreEscaping.GetEscapingParameterData(methodData);
-            if (escapeData == null)
-            {
-                candidateVariables.Remove(localVariable);
-                return;
-            }
-
-            var escapingBools = LinkerUtils.BuildEscapingBools(methodData.Info, Closure);
+            var escapeFullData = methodData.Interpreter.BuildEscapeModes();
             for (var index = 0; index < methodData.Parameters.Count; index++)
             {
                 var parameter = methodData.Parameters[index];
                 var variable = parameter as LocalVariable;
                 if (variable == null)
                     continue;
-                if (escapingBools[index])
+                if (escapeFullData[index]==EscapingMode.Smart)
                     candidateVariables.Remove(variable);
             }
         }

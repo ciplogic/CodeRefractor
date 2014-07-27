@@ -225,7 +225,6 @@
     <Compile Include="MiddleEnd\Optimizations\ConstantFoldingAndPropagation\SimpleAssignment\AssignmentVregWithConstNextLineFolding.cs" />
     <Compile Include="MiddleEnd\Optimizations\ConstantFoldingAndPropagation\SimpleAssignment\AssignmentWithVregPrevLineFolding.cs" />
     <Compile Include="MiddleEnd\Optimizations\ConstantFoldingAndPropagation\SimpleAssignment\DeleteAssignmentWithSelf.cs" />
-    <Compile Include="MiddleEnd\Optimizations\EscapeAndLowering\AnalyzeParametersAreEscaping.cs" />
     <Compile Include="MiddleEnd\Optimizations\EscapeAndLowering\ClearInFunctionUnusedArguments.cs" />
     <Compile Include="MiddleEnd\Optimizations\EscapeAndLowering\InFunctionLoweringVars.cs" />
     <Compile Include="MiddleEnd\Optimizations\EscapeAndLowering\ReplaceCallsToFunctionsWithUnusedArguments.cs" />

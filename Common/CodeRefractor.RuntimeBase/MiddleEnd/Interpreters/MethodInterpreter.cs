@@ -18,7 +18,7 @@ namespace CodeRefractor.MiddleEnd.Interpreters
         public MethodBase Method { get; set; }
         public MethodKind Kind { get; set; }
 
-        public readonly AnalyzeProperties AnalyzeProperties = new AnalyzeProperties();
+        public AnalyzeProperties AnalyzeProperties { get; private set; }
         public Type OverrideDeclaringType { get; set; }
 
         public MethodInterpreter(MethodBase method)
@@ -27,7 +27,7 @@ namespace CodeRefractor.MiddleEnd.Interpreters
             var pureAttribute = method.GetCustomAttribute<PureMethodAttribute>();
             if (pureAttribute != null)
                 AnalyzeProperties.IsPure = true;
-
+            AnalyzeProperties = new AnalyzeProperties();
             AnalyzeProperties.SetupArguments(Method);
         }
 
