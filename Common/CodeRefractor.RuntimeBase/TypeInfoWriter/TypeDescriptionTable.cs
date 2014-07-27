@@ -120,7 +120,7 @@ namespace CodeRefractor.RuntimeBase.TypeInfoWriter
             
         }
 
-        public object GetTypeId(Type implementation)
+        public int GetTypeId(Type implementation)
         {
             int result;
             if (!_result.TryGetValue(implementation, out result))

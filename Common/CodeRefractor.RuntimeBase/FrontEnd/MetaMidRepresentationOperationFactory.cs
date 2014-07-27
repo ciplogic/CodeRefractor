@@ -983,10 +983,12 @@ namespace CodeRefractor.FrontEnd
         }
 
 
-        public void Box()
+        public void Box(Type operand)
         {
             var valueToBox = _evaluator.Pop();
             var result = SetNewVReg();
+            //The type of the value on the stack is not necessarily the boxing type
+            valueToBox.FixedType = new TypeDescription(operand);
             result.FixedType = new TypeDescription(typeof (object));
             var boxing = new Boxing
             {
