@@ -102,9 +102,9 @@ namespace VisualCompiler
             OptimizationLevelBase.UpdateOptimizationsFromCategories(OptimizationLevelBase.OptimizationPasses);
             OptimizationLevelBase.SortOptimizations();
 
-            OptimizationLevelBase.Instance = new OptimizationLevels();
-            OptimizationLevelBase.OptimizerLevel = 2;
-            OptimizationLevelBase.Instance.EnabledCategories.Add(OptimizationCategories.All);
+//            OptimizationLevelBase.Instance = new OptimizationLevels();
+//            OptimizationLevelBase.OptimizerLevel = 2;
+//            OptimizationLevelBase.Instance.EnabledCategories.Add(OptimizationCategories.All);
             var closureEntities = ClosureEntitiesUtils.BuildClosureEntities(definition, typeof(CrString).Assembly);
             var sb = closureEntities.BuildFullSourceCode();
             var end = Environment.TickCount - start;

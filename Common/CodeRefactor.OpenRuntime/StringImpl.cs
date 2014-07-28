@@ -382,10 +382,6 @@ namespace CodeRefactor.OpenRuntime
             return length;
         }
 
-        [MapMethod(IsStatic = false)]
-        public static string ToString(string value)
-        {
-            return value;
-        }
+      
     }
 }

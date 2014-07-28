@@ -87,6 +87,7 @@
     <Compile Include="CrString.cs" />
     <Compile Include="CrStringBuilder.cs" />
     <Compile Include="DoubleImpl.cs" />
+    <Compile Include="FloatImpl.cs" />
     <Compile Include="Generic\CrList.cs" />
     <Compile Include="IntImpl.cs" />
     <Compile Include="LongImpl.cs" />

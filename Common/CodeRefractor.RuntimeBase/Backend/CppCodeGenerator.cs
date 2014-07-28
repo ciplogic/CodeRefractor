@@ -56,9 +56,8 @@ namespace CodeRefractor.Backend
             bodySb.AppendLine(PlatformInvokeCodeWriter.LoadDllMethods());
             bodySb.AppendLine(ConstByteArrayList.BuildConstantTable());
 
-          LinkingData.Instance.IsInstTable.BuildTypeMatchingTable(table, closureEntities);
+            LinkingData.Instance.IsInstTable.BuildTypeMatchingTable(table, closureEntities);
             bodySb.AppendLine(LinkingData.Instance.Strings.BuildStringTable());
-
 
             //Add Logic to Automatically include std class features that are needed ...
             if (closureEntities.Features.Count > 0)
@@ -67,17 +66,17 @@ namespace CodeRefractor.Backend
                 {
                     if (runtimeFeature.IsUsed)
                     {
-                        if(runtimeFeature.Headers.Count > 0)
-                        headerSb.AppendLine("//Headers For Feature: " + runtimeFeature.Name + "\n" +
-                            runtimeFeature.Headers.Select(g => "#include<" + g + ">").Aggregate((a, b) => a + "\n" + b) + "\n//End Of Headers For Feature: " + runtimeFeature.Name + "\n");
+                        if (runtimeFeature.Headers.Count > 0)
+                            headerSb.AppendLine("//Headers For Feature: " + runtimeFeature.Name + "\n" +
+                                runtimeFeature.Headers.Select(g => "#include<" + g + ">").Aggregate((a, b) => a + "\n" + b) + "\n//End Of Headers For Feature: " + runtimeFeature.Name + "\n");
                         if (runtimeFeature.Declarations.Count > 0)
-                        initializersSb.AppendLine("//Initializers For: " + runtimeFeature.Name + "\n" + runtimeFeature.Declarations.Aggregate((a, b) => a + "\n" + b) + "\n//End OF Initializers For: " + runtimeFeature.Name + "\n");
+                            initializersSb.AppendLine("//Initializers For: " + runtimeFeature.Name + "\n" + runtimeFeature.Declarations.Aggregate((a, b) => a + "\n" + b) + "\n//End OF Initializers For: " + runtimeFeature.Name + "\n");
                         if (!String.IsNullOrEmpty(runtimeFeature.Functions))
-                        bodySb.AppendLine("//Functions For Feature: " + runtimeFeature.Name + "\n" + runtimeFeature.Functions + "\n//End Of Functions For Feature: " + runtimeFeature.Name + "\n");
+                            bodySb.AppendLine("//Functions For Feature: " + runtimeFeature.Name + "\n" + runtimeFeature.Functions + "\n//End Of Functions For Feature: " + runtimeFeature.Name + "\n");
                     }
                 }
             }
-            
+
             return headerSb.Append(initializersSb).Append(bodySb);
         }
 
@@ -91,7 +90,7 @@ namespace CodeRefractor.Backend
             if (methodInterpreter == null) return;
             foreach (var interpreter in cppMethods)
             {
-                var cppInterpreter = (CppMethodInterpreter) interpreter;
+                var cppInterpreter = (CppMethodInterpreter)interpreter;
                 var runtimeLibrary = cppInterpreter.CppRepresentation;
                 if (LinkingData.SetInclude(runtimeLibrary.Header))
                     sb.AppendFormat("#include \"{0}\"", runtimeLibrary.Header).AppendLine();
@@ -108,7 +107,7 @@ namespace CodeRefractor.Backend
 
         private static void WriteClosureHeaders(IEnumerable<MethodInterpreter> closure, StringBuilder sb, ClosureEntities closureEntities)
         {
-            var methodInterpreters = 
+            var methodInterpreters =
                 closure
                 .Where(interpreter => !interpreter.Method.IsAbstract)
                 .ToArray();
@@ -118,9 +117,9 @@ namespace CodeRefractor.Backend
             }
         }
 
-          
-    
-           
+
+
+
         private static void WriteClassFieldsBody(StringBuilder sb, Type mappedType, ClosureEntities crRuntime)
         {
             var typeDesc = UsedTypeList.Set(mappedType, crRuntime);
@@ -190,7 +189,7 @@ namespace CodeRefractor.Backend
             {
                 foreach (var runtimeFeature in crRuntime.Features)
                 {
-                    sb.AppendLine(runtimeFeature.Initializer+ "\n");
+                    sb.AppendLine(runtimeFeature.Initializer + "\n");
                 }
             }
             var entryPoint = interpreter.Method as MethodInfo;

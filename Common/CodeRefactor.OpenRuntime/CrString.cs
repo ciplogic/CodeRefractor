@@ -52,6 +52,10 @@ namespace CodeRefactor.OpenRuntime
             return result;
         }
 
-    
+        public static string ToString(string value)
+        {
+            return value;
+        }
+
     }
 }

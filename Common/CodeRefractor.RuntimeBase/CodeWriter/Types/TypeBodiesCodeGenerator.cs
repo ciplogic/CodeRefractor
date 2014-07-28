@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using CodeRefractor.Analyze;
@@ -6,6 +7,7 @@ using CodeRefractor.ClosureCompute;
 using CodeRefractor.ClosureCompute.TypeSorter;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
+using CodeRefractor.RuntimeBase.TypeInfoWriter;
 using CodeRefractor.Util;
 
 namespace CodeRefractor.CodeWriter.Types
@@ -62,6 +64,14 @@ namespace CodeRefractor.CodeWriter.Types
             if (type == typeof (object))
             {
                 sb.AppendLine("int _typeId;");
+            }
+            //String Support
+            if (type == typeof(string))
+            {
+                crRuntime.AddType(typeof(string));
+                List<Type> usedTypes = crRuntime.MappedTypes.Values.ToList();
+                var typeTable = new TypeDescriptionTable(usedTypes, crRuntime);
+                sb.AppendLine(String.Format("System_String() {{_typeId = {0}; }}", typeTable.GetTypeId(typeof(string))));
             }
             WriteClassFieldsBody(sb, mappedType, crRuntime);
             sb.AppendFormat("}};").AppendLine();
