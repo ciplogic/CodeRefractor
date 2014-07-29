@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using CodeRefractor.ClosureCompute;
 using CodeRefractor.FrontEnd;
 using CodeRefractor.FrontEnd.SimpleOperations.Methods;
 using CodeRefractor.MiddleEnd.SimpleOperations;
@@ -22,7 +23,7 @@ namespace CodeRefractor.MiddleEnd.Interpreters.Cil
 
         public bool Interpreted { get; set; }
 
-        public void Process()
+        public void Process(ClosureEntities closureEntities)
         {
             if (Kind != MethodKind.CilInstructions)
                 return;
@@ -36,7 +37,7 @@ namespace CodeRefractor.MiddleEnd.Interpreters.Cil
 
             MidRepresentation.Vars.SetupLocalVariables(Method);
             var midRepresentationBuilder = new MethodMidRepresentationBuilder(this, Method);
-            midRepresentationBuilder.ProcessInstructions();
+            midRepresentationBuilder.ProcessInstructions(closureEntities);
             Interpreted = true;
         }
 

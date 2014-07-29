@@ -16,6 +16,7 @@ namespace CodeRefractor.RuntimeBase.TypeInfoWriter
 {
     public class TypeDescriptionTable : IComparer<Type>
     {
+        private readonly ClosureEntities _closureEntities;
         private readonly List<Type> _typeClosure;
 
         private readonly Dictionary<Type, HashSet<Type>> _dictionary = new Dictionary<Type, HashSet<Type>>();
@@ -24,6 +25,7 @@ namespace CodeRefractor.RuntimeBase.TypeInfoWriter
 
         public TypeDescriptionTable(List<Type> typeClosure, ClosureEntities closureEntities)
         {
+            _closureEntities = closureEntities;
             _typeClosure = typeClosure.Where(
                 FilterType)
                 .ToList();
@@ -56,7 +58,7 @@ namespace CodeRefractor.RuntimeBase.TypeInfoWriter
                 var typeDesc = new TypeDescription(type);
 
                 var layout = typeDesc.Layout
-                    .Select(field => field.TypeDescription.GetClrType())
+                    .Select(field => field.TypeDescription.GetClrType(_closureEntities))
                     .ToArray();
                 var hashSet = new HashSet<Type>(layout);
                 _dictionary[type] = hashSet;

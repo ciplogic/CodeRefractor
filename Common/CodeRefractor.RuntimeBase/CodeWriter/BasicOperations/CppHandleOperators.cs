@@ -31,16 +31,16 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             switch (kind)
             {
                 case OperationKind.Assignment:
-                    HandleAssign(bodySb, operation, interpreter);
+                    HandleAssign(bodySb, operation, interpreter, crRuntime);
                     break;
                 case OperationKind.BinaryOperator:
-                    HandleOperator(operation, bodySb);
+                    HandleOperator(operation, bodySb, crRuntime);
                     break;
                 case OperationKind.UnaryOperator:
                     HandleUnaryOperator((UnaryOperator) operation, bodySb);
                     break;
                 case OperationKind.SetField:
-                    HandleSetField(operation, bodySb);
+                    HandleSetField(operation, bodySb, crRuntime);
                     break;
                 case OperationKind.GetField:
                     HandleGetField(operation, bodySb, interpreter);
@@ -49,10 +49,10 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                     HandleSetStaticField(operation, bodySb);
                     break;
                 case OperationKind.GetStaticField:
-                    HandleLoadStaticField(operation, bodySb);
+                    HandleLoadStaticField(operation, bodySb, crRuntime);
                     break;
                 case OperationKind.GetArrayItem:
-                    HandleReadArrayItem(operation, bodySb, interpreter);
+                    HandleReadArrayItem(operation, bodySb, interpreter, crRuntime);
                     break;
 
                 case OperationKind.SetArrayItem:
@@ -90,8 +90,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         }
 
 
-        private static void HandleAssign(StringBuilder sb, LocalOperation operation, 
-            MethodInterpreter interpreter)
+        private static void HandleAssign(StringBuilder sb, LocalOperation operation, MethodInterpreter interpreter, ClosureEntities closureEntities)
         {
             var assignment = (Assignment) operation;
 
@@ -100,8 +99,8 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 
             LocalVariable localVariable = assignment.Right as LocalVariable;
 
-            var leftVarType = assignment.AssignedTo.ComputedType().GetClrType();
-            var rightVarType = assignment.Right.ComputedType().GetClrType();
+            var leftVarType = assignment.AssignedTo.ComputedType().GetClrType(closureEntities);
+            var rightVarType = assignment.Right.ComputedType().GetClrType(closureEntities);
 
             bool isderef = false;
             if (localVariable == null && (assignment.Right as ConstValue) != null &&
@@ -228,12 +227,12 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             bodySb.AppendFormat("{0} = *{1};", leftData.Name, rightData.Name);
         }
 
-        private static void HandleLoadStaticField(LocalOperation operation, StringBuilder bodySb)
+        private static void HandleLoadStaticField(LocalOperation operation, StringBuilder bodySb, ClosureEntities closureEntities)
         {
             var assign = (Assignment) operation;
             var rightData = (StaticFieldGetter) assign.Right;
             bodySb.AppendFormat("{0} = {1}::{2};", assign.AssignedTo.Name,
-                rightData.DeclaringType.GetClrType().ToCppMangling(),
+                rightData.DeclaringType.GetClrType(closureEntities).ToCppMangling(),
                 rightData.FieldName.ValidName());
         }
 
@@ -246,7 +245,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 rightData.FieldName.ValidName());
         }
 
-        public static void HandleOperator(object operation, StringBuilder sb)
+        public static void HandleOperator(object operation, StringBuilder sb, ClosureEntities closureEntities)
         {
             var instructionOperator = (OperatorBase) operation;
             var localOperator = instructionOperator;
@@ -257,7 +256,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             switch (operationName)
             {
                 case OpcodeOperatorNames.Add:
-                    HandleAdd(binaryOperator, sb);
+                    HandleAdd(binaryOperator, sb, closureEntities);
                     break;
                 case OpcodeOperatorNames.Sub:
                     HandleSub(binaryOperator, sb);
@@ -524,11 +523,11 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             sb.AppendFormat("{0} = {1}-{2};", local, left, right);
         }
 
-        private static void HandleAdd(BinaryOperator localVar, StringBuilder sb)
+        private static void HandleAdd(BinaryOperator localVar, StringBuilder sb, ClosureEntities closureEntities)
         {
             string right, left, local;
             GetBinaryOperandNames(localVar, out right, out left, out local);
-            if (localVar.Right.ComputedType().GetClrType() == typeof(IntPtr))
+            if (localVar.Right.ComputedType().GetClrType(closureEntities) == typeof(IntPtr))
             {
                 sb.AppendFormat("{0} = {1}+(size_t){2};", local, left, right);
 
@@ -561,8 +560,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             }
         }
 
-        private static void HandleReadArrayItem(LocalOperation operation, StringBuilder bodySb,
-            MethodInterpreter interpreter)
+        private static void HandleReadArrayItem(LocalOperation operation, StringBuilder bodySb, MethodInterpreter interpreter, ClosureEntities closureEntities)
         {
             var valueSrc = (GetArrayElement)operation;
             var parentType = valueSrc.Instance.ComputedType();
@@ -570,13 +568,13 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             switch (variableData)
             {
                 case EscapingMode.Smart:
-                    bodySb.AppendFormat((parentType.GetClrType().IsClass || parentType.GetClrType().IsInterface)
+                    bodySb.AppendFormat((parentType.GetClrType(closureEntities).IsClass || parentType.GetClrType(closureEntities).IsInterface)
                         ? "{0} = (*{1})[{2}];"
                         : "{0} = {1}[{2}];",
                         valueSrc.AssignedTo.Name, valueSrc.Instance.Name, valueSrc.Index.Name);
                     return;
                 case EscapingMode.Pointer:
-                    bodySb.AppendFormat((parentType.GetClrType().IsClass || parentType.GetClrType().IsInterface)
+                    bodySb.AppendFormat((parentType.GetClrType(closureEntities).IsClass || parentType.GetClrType(closureEntities).IsInterface)
                         ? "{0} = ((*{1})[{2}]).get();"
                         : "{0} = ({1}[{2}]).get();",
                         valueSrc.AssignedTo.Name, valueSrc.Instance.Name, valueSrc.Index.Name);
@@ -609,13 +607,13 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             }
         }
 
-        private static void HandleSetField(LocalOperation operation, StringBuilder bodySb)
+        private static void HandleSetField(LocalOperation operation, StringBuilder bodySb, ClosureEntities closureEntities)
         {
             var assign = (SetField) operation;
 
             if (assign.Right is ConstValue)
             {
-                if (assign.FixedType.GetClrType() == typeof(string))
+                if (assign.FixedType.GetClrType(closureEntities) == typeof(string))
                 {
                     bodySb.AppendFormat("{0}->{1} = {2};", assign.Instance.Name,
                         assign.FieldName.ValidName(), assign.Right.ComputedValue());

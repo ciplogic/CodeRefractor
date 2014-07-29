@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using CodeRefractor.ClosureCompute;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Shared;
@@ -26,7 +27,7 @@ namespace CodeRefractor.FrontEnd
             _method = method;
         }
 
-        public void ProcessInstructions()
+        public void ProcessInstructions(ClosureEntities closureEntities)
         {
             var instructions = _method.GetInstructions().ToArray();
             var genericArguments = _method.DeclaringType.GetGenericArguments();
@@ -44,7 +45,7 @@ namespace CodeRefractor.FrontEnd
             for (var index = 0; index < instructions.Length; index++)
             {
                 var instruction = instructions[index];
-                EvaluateInstruction(instruction, operationFactory, labelList);
+                EvaluateInstruction(instruction, operationFactory, labelList, closureEntities);
             }
             //   Ensure.IsTrue(evaluator.Count == 0, "Stack not empty!");
             var analyzeProperties = _methodInterpreter.AnalyzeProperties;
@@ -117,7 +118,7 @@ namespace CodeRefractor.FrontEnd
             labels.Add(offset);
         }
 
-        private void EvaluateInstruction(Instruction instruction, MetaMidRepresentationOperationFactory operationFactory, HashSet<int> labelList)
+        private void EvaluateInstruction(Instruction instruction, MetaMidRepresentationOperationFactory operationFactory, HashSet<int> labelList, ClosureEntities closureEntities)
         {
             var opcodeStr = instruction.OpCode.ToString();
             var offset = 0;
@@ -138,7 +139,7 @@ namespace CodeRefractor.FrontEnd
 
             if (HandleStores(opcodeStr, instruction, operationFactory))
                 return;
-            if (HandleLoads(opcodeStr, instruction, operationFactory))
+            if (HandleLoads(opcodeStr, instruction, operationFactory, closureEntities))
                 return;
             if (HandleOperators(opcodeStr, operationFactory, instruction))
                 return;
@@ -158,11 +159,11 @@ namespace CodeRefractor.FrontEnd
                 return;
 
 
-            if (HandleExtraInstructions(instruction, operationFactory, opcodeStr)) return;
+            if (HandleExtraInstructions(instruction, operationFactory, opcodeStr, closureEntities)) return;
             throw new InvalidOperationException(String.Format("Unknown instruction: {0}", instruction));
         }
 
-        private bool HandleExtraInstructions(Instruction instruction, MetaMidRepresentationOperationFactory operationFactory, string opcodeStr)
+        private bool HandleExtraInstructions(Instruction instruction, MetaMidRepresentationOperationFactory operationFactory, string opcodeStr, ClosureEntities closureEntities)
         {
             if (opcodeStr == "constrained.")
             {
@@ -258,7 +259,7 @@ namespace CodeRefractor.FrontEnd
             if (opcodeStr.StartsWith("ldind."))
             {
                 //TODO: load the address into evaluation stack
-                operationFactory.LoadValueFromAddress();
+                operationFactory.LoadValueFromAddress(closureEntities);
                 return true;
             }
 
@@ -412,8 +413,7 @@ namespace CodeRefractor.FrontEnd
             return false;
         }
 
-        private bool HandleLoads(string opcodeStr, Instruction instruction,
-            MetaMidRepresentationOperationFactory operationFactory)
+        private bool HandleLoads(string opcodeStr, Instruction instruction, MetaMidRepresentationOperationFactory operationFactory, ClosureEntities closureEntities)
         {
             if (opcodeStr == "ldelem.ref")
             {
@@ -442,12 +442,12 @@ namespace CodeRefractor.FrontEnd
 
             if (opcodeStr == "ldelem")
             {
-                operationFactory.LoadReferenceInArrayTyped();
+                operationFactory.LoadReferenceInArrayTyped(closureEntities);
                 return true;
             }
             if (opcodeStr == "ldelem.any")
             {
-                operationFactory.LoadReferenceInArrayTyped();
+                operationFactory.LoadReferenceInArrayTyped(closureEntities);
                 return true;
             }
 
@@ -526,7 +526,7 @@ namespace CodeRefractor.FrontEnd
             {
                 var operand = (FieldInfo)instruction.Operand;
 
-                operationFactory.LoadField(operand.Name);
+                operationFactory.LoadField(operand.Name, closureEntities);
                 return true;
             }
             if (opcodeStr == "ldlen")

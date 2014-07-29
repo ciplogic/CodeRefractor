@@ -30,11 +30,11 @@ namespace CodeRefractor.ClosureCompute.Steps.AddTypes
             var result = false;
             foreach (var parameter in localVariables)
             {
-                result |= closureEntities.AddType(parameter.FixedType.GetClrType());
+                result |= closureEntities.AddType(parameter.FixedType.GetClrType(closureEntities));
             }
             foreach (var parameter in virtRegs)
             {
-                result |= closureEntities.AddType(parameter.FixedType.GetClrType());
+                result |= closureEntities.AddType(parameter.FixedType.GetClrType(closureEntities));
             }
             return result;
         }

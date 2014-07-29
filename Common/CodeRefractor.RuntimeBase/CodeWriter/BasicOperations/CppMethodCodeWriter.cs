@@ -34,7 +34,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             headerSb.Append(sb);
             headerSb.Append("{");
             var bodySb = ComputeBodySb(operations, interpreter.MidRepresentation.Vars, typeTable, interpreter, crRuntime);
-            var variablesSb = ComputeVariableSb(interpreter.MidRepresentation, interpreter);
+            var variablesSb = ComputeVariableSb(interpreter.MidRepresentation, interpreter, crRuntime);
             var finalSb = new StringBuilder();
             finalSb.AppendLine(headerSb.ToString());
             finalSb.AppendLine(variablesSb.ToString());
@@ -118,15 +118,15 @@ T unbox_value(std::shared_ptr<System_Object> value){
 	return castedUnboxing->Data;
 }");
                         }
-                        HandleBox((Boxing)operation, bodySb, typeTable);
+                        HandleBox((Boxing)operation, bodySb, typeTable, crRuntime);
                         break;
 
                     case OperationKind.CastClass:
-                        HandleCastClass((ClassCasting)operation, bodySb);
+                        HandleCastClass((ClassCasting)operation, bodySb, crRuntime);
                         break;
 
                     case OperationKind.Unbox:
-                        HandleUnbox((Unboxing)operation, bodySb);
+                        HandleUnbox((Unboxing)operation, bodySb, crRuntime);
                         break;
 
                     case OperationKind.IsInstance:
@@ -152,37 +152,35 @@ T unbox_value(std::shared_ptr<System_Object> value){
             LinkingData.Instance.IsInstTable.GenerateInstructionCode(operation, bodySb,crRuntime);
         }
 
-        private static void HandleUnbox(Unboxing unboxing, StringBuilder bodySb)
+        private static void HandleUnbox(Unboxing unboxing, StringBuilder bodySb, ClosureEntities closureEntities)
         {
             var typeDescription = unboxing.AssignedTo.ComputedType();
             bodySb
                 .AppendFormat("{0} = unbox_value<{2}>({1});",
                     unboxing.AssignedTo.Name,
                     unboxing.Right.Name,
-                    typeDescription.GetClrType().ToDeclaredVariableType(EscapingMode.Stack));
+                    typeDescription.GetClrType(closureEntities).ToDeclaredVariableType(EscapingMode.Stack));
         }
-        private static void HandleBox(Boxing boxing, StringBuilder bodySb, TypeDescriptionTable typeTable)
+        private static void HandleBox(Boxing boxing, StringBuilder bodySb, TypeDescriptionTable typeTable, ClosureEntities closureEntities)
         {
-
-
-            TypeDescription typeDescription = boxing.Right.ComputedType();
+            var typeDescription = boxing.Right.ComputedType();
             bodySb
                 .AppendFormat("{0} = box_value<{2}>({1}, {3});",
                     boxing.AssignedTo.Name,
                     boxing.Right.Name,
-                    typeDescription.GetClrType().ToDeclaredVariableType(EscapingMode.Stack),
-                    typeTable.GetTypeId(typeDescription.GetClrType()));
+                    typeDescription.GetClrType(closureEntities).ToDeclaredVariableType(EscapingMode.Stack),
+                    typeTable.GetTypeId(typeDescription.GetClrType(closureEntities)));
         }
 
 
-        private static void HandleCastClass(ClassCasting casting, StringBuilder bodySb)
+        private static void HandleCastClass(ClassCasting casting, StringBuilder bodySb, ClosureEntities closureEntities)
         {
             var typeDescription = casting.AssignedTo.ComputedType();
             bodySb
                 .AppendFormat("{0} = std::static_pointer_cast<{2}>({1});",
                     casting.AssignedTo.Name,
                     casting.Value.Name,
-                    typeDescription.GetClrType().ToDeclaredVariableType(EscapingMode.Stack));
+                    typeDescription.GetClrType(closureEntities).ToDeclaredVariableType(EscapingMode.Stack));
         }
         
         private static void HandleComment(string toString, StringBuilder bodySb)
@@ -223,18 +221,17 @@ T unbox_value(std::shared_ptr<System_Object> value){
                 right.Id);
         }
 
-        private static StringBuilder ComputeVariableSb(MetaMidRepresentation midRepresentation,
-            MethodInterpreter interpreter)
+        private static StringBuilder ComputeVariableSb(MetaMidRepresentation midRepresentation, MethodInterpreter interpreter, ClosureEntities closureEntities)
         {
             var variablesSb = new StringBuilder();
             var vars = midRepresentation.Vars;
             foreach (var variableInfo in vars.LocalVars)
             {
-                AddVariableContent(variablesSb, "{0} local_{1};", variableInfo, interpreter);
+                AddVariableContent(variablesSb, "{0} local_{1};", variableInfo, interpreter, closureEntities);
             }
             foreach (var localVariable in vars.VirtRegs)
             {
-                AddVariableContent(variablesSb, "{0} vreg_{1};", localVariable, interpreter);
+                AddVariableContent(variablesSb, "{0} vreg_{1};", localVariable, interpreter, closureEntities);
             }
             return variablesSb;
         }
@@ -251,12 +248,12 @@ T unbox_value(std::shared_ptr<System_Object> value){
             return localVariable.VarName;
         }
 
-        private static void AddVariableContent(StringBuilder variablesSb, string format, LocalVariable localVariable, MethodInterpreter interpreter)
+        private static void AddVariableContent(StringBuilder variablesSb, string format, LocalVariable localVariable, MethodInterpreter interpreter, ClosureEntities closureEntities)
         {
             var localVariableData = interpreter.AnalyzeProperties.GetVariableData(localVariable);
             if (localVariableData == EscapingMode.Stack)
                 return;
-            if (localVariable.ComputedType().GetClrType().IsSubclassOf(typeof(MethodInfo)))
+            if (localVariable.ComputedType().GetClrType(closureEntities).IsSubclassOf(typeof(MethodInfo)))
             {
                 variablesSb
                     .AppendFormat("System_Void (*{0})({1}*);", //TODO: Added * to deal with pointers, is this the right approach ?
@@ -268,7 +265,7 @@ T unbox_value(std::shared_ptr<System_Object> value){
             if (localVariableData == EscapingMode.Pointer)
             {
                 var cppName = localVariable.ComputedType()
-                    .GetClrType().ToDeclaredVariableType(localVariableData);
+                    .GetClrType(closureEntities).ToDeclaredVariableType(localVariableData);
                 variablesSb
                     .AppendFormat(format, cppName, localVariable.Id)
                     .AppendLine();
@@ -276,7 +273,7 @@ T unbox_value(std::shared_ptr<System_Object> value){
             }
             variablesSb
                 .AppendFormat(format, localVariable.ComputedType()
-                    .GetClrType().ToDeclaredVariableType(localVariableData), localVariable.Id)
+                    .GetClrType(closureEntities).ToDeclaredVariableType(localVariableData), localVariable.Id)
                 .AppendLine();
         }
 

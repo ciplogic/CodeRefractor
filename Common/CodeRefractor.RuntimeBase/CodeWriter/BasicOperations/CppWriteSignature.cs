@@ -36,7 +36,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 if (parameterData != EscapingMode.Unused)
                 {
                     TypeDescription argumentTypeDescription = UsedTypeList.Set(method.DeclaringType.GetReversedMappedType(closureEntities) ?? method.DeclaringType.GetMappedType(closureEntities), closureEntities);
-                    var thisText = String.Format("const {0}& _this", argumentTypeDescription.GetClrType().ToCppName()); // all "_this" should be smart pointers
+                    var thisText = String.Format("const {0}& _this", argumentTypeDescription.GetClrType(closureEntities).ToCppName()); // all "_this" should be smart pointers
                     //For some reason at three Virtual Test 4 fails this, is something wrong with the escaping ?
 //                    if ((!escapingBools[0]))
 //                    {
@@ -70,7 +70,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 var parameterType = parameterInfo.ParameterType.GetReversedMappedType(closureEntities);
                 var argumentTypeDescription = UsedTypeList.Set(parameterType, closureEntities);
                 sb.AppendFormat("{0} {1}",
-                     argumentTypeDescription.GetClrType().ToCppName(nonEscapingMode, isPInvoke: method.IsPinvoke()), //Handle byref
+                     argumentTypeDescription.GetClrType(closureEntities).ToCppName(nonEscapingMode, isPInvoke: method.IsPinvoke()), //Handle byref
                     parameterInfo.Name);
             }
             return sb.ToString();
