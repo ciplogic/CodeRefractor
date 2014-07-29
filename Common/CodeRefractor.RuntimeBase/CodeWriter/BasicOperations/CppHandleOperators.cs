@@ -100,8 +100,8 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 
             LocalVariable localVariable = assignment.Right as LocalVariable;
 
-            var leftVarType = assignment.AssignedTo.ComputedType().ClrType;
-            var rightVarType = assignment.Right.ComputedType().ClrType;
+            var leftVarType = assignment.AssignedTo.ComputedType().GetClrType();
+            var rightVarType = assignment.Right.ComputedType().GetClrType();
 
             bool isderef = false;
             if (localVariable == null && (assignment.Right as ConstValue) != null &&
@@ -233,7 +233,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             var assign = (Assignment) operation;
             var rightData = (StaticFieldGetter) assign.Right;
             bodySb.AppendFormat("{0} = {1}::{2};", assign.AssignedTo.Name,
-                rightData.DeclaringType.ClrType.ToCppMangling(),
+                rightData.DeclaringType.GetClrType().ToCppMangling(),
                 rightData.FieldName.ValidName());
         }
 
@@ -528,7 +528,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         {
             string right, left, local;
             GetBinaryOperandNames(localVar, out right, out left, out local);
-            if (localVar.Right.ComputedType().ClrType == typeof (IntPtr))
+            if (localVar.Right.ComputedType().GetClrType() == typeof(IntPtr))
             {
                 sb.AppendFormat("{0} = {1}+(size_t){2};", local, left, right);
 
@@ -570,13 +570,13 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             switch (variableData)
             {
                 case EscapingMode.Smart:
-                    bodySb.AppendFormat((parentType.ClrType.IsClass || parentType.ClrType.IsInterface)
+                    bodySb.AppendFormat((parentType.GetClrType().IsClass || parentType.GetClrType().IsInterface)
                         ? "{0} = (*{1})[{2}];"
                         : "{0} = {1}[{2}];",
                         valueSrc.AssignedTo.Name, valueSrc.Instance.Name, valueSrc.Index.Name);
                     return;
                 case EscapingMode.Pointer:
-                    bodySb.AppendFormat((parentType.ClrType.IsClass || parentType.ClrType.IsInterface)
+                    bodySb.AppendFormat((parentType.GetClrType().IsClass || parentType.GetClrType().IsInterface)
                         ? "{0} = ((*{1})[{2}]).get();"
                         : "{0} = ({1}[{2}]).get();",
                         valueSrc.AssignedTo.Name, valueSrc.Instance.Name, valueSrc.Index.Name);
@@ -615,7 +615,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 
             if (assign.Right is ConstValue)
             {
-                if (assign.FixedType.ClrType == typeof (string))
+                if (assign.FixedType.GetClrType() == typeof(string))
                 {
                     bodySb.AppendFormat("{0}->{1} = {2};", assign.Instance.Name,
                         assign.FieldName.ValidName(), assign.Right.ComputedValue());

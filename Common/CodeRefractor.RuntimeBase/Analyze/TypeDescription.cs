@@ -17,11 +17,19 @@ namespace CodeRefractor.RuntimeBase.Analyze
 {
     public class TypeDescription
     {
-        public Type ClrType { get; private set; }
+        public Type ClrType
+        {
+            set { _clrType = value; }
+        }
+
+        public Type GetClrType()
+        {
+            return _clrType;
+        }
 
         public TypeCode ClrTypeCode
         {
-            get { return Type.GetTypeCode(ClrType); }
+            get { return Type.GetTypeCode(_clrType); }
             
         }
         public TypeDescription BaseType { get; private set; }
@@ -40,6 +48,8 @@ namespace CodeRefractor.RuntimeBase.Analyze
                 typeof (IntPtr)
             }
             );
+
+        private Type _clrType;
 
 
         public List<FieldDescription> Layout { get; set; }
@@ -71,19 +81,19 @@ namespace CodeRefractor.RuntimeBase.Analyze
 
         public void ExtractInformation(ClosureEntities closureEntities)
         {
-            if (IgnoredSet.Contains(ClrType))
+            if (IgnoredSet.Contains(_clrType))
                 return;
-            if (ClrType.IsPointer || ClrType.IsByRef)
+            if (_clrType.IsPointer || _clrType.IsByRef)
             {
-                IsPointer = ClrType.IsPointer;
+                IsPointer = _clrType.IsPointer;
                 return;
             }
 
-            if (ClrType.BaseType != typeof (object))
+            if (_clrType.BaseType != typeof(object))
             {
-                BaseType = new TypeDescription(ClrType.BaseType);
+                BaseType = new TypeDescription(_clrType.BaseType);
             }
-            if (ClrType.IsPrimitive)
+            if (_clrType.IsPrimitive)
                 return;
 
             if (ClrTypeCode == TypeCode.Object)
@@ -94,7 +104,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
 
         private void ExtractFieldsTypes(ClosureEntities crRuntime)
         {
-            var clrType = ClrType.GetReversedType(crRuntime);
+            var clrType = _clrType.GetReversedType(crRuntime);
             if (clrType.Assembly.GlobalAssemblyCache)
                 return;
             if (clrType.IsInterface)
@@ -168,7 +178,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
                 }
                 var staticString = fieldData.IsStatic ? "static" : "";
                 sb.AppendFormat("{2} {0} {1};",
-                    fieldData.TypeDescription.ClrType.ToCppName(),
+                    fieldData.TypeDescription._clrType.ToCppName(),
                     fieldData.Name.ValidName(),
                     staticString
                     ).AppendLine();
@@ -188,7 +198,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
 
         public override string ToString()
         {
-            return ClrType.ToString();
+            return _clrType.ToString();
         }
 
         public void WriteStaticFieldInitialization(StringBuilder sb)
@@ -196,7 +206,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
             if (BaseType != null)
                 BaseType.WriteLayout(sb);
 
-            var mappedType = ClrType;
+            var mappedType = _clrType;
 
             var fieldInfos = mappedType.GetFields().ToList();
             fieldInfos.AddRange(mappedType.GetFields(BindingFlags.NonPublic | BindingFlags.Instance));
@@ -205,10 +215,10 @@ namespace CodeRefractor.RuntimeBase.Analyze
                 if (!fieldData.IsStatic)
                     continue;
                 sb.AppendFormat(" /* static*/ {0} {3}::{1} = {2};",
-                    fieldData.TypeDescription.ClrType.ToCppName(),
+                    fieldData.TypeDescription._clrType.ToCppName(),
                     fieldData.Name.ValidName(),
-                    GetDefault(fieldData.TypeDescription.ClrType),
-                    ClrType.ToCppMangling())
+                    GetDefault(fieldData.TypeDescription._clrType),
+                    _clrType.ToCppMangling())
                     .AppendLine();
             }
         }

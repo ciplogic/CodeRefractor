@@ -680,13 +680,13 @@ namespace CodeRefractor.FrontEnd
 
             var vreg = SetNewVReg();
             var computedType = firstVar.ComputedType();
-            if (computedType.ClrType.IsByRef)
+            if (computedType.GetClrType().IsByRef)
             {
-                computedType = new TypeDescription(computedType.ClrType.GetElementType());
+                computedType = new TypeDescription(computedType.GetClrType().GetElementType());
             }
             vreg.FixedType =
                 new TypeDescription(
-                    computedType.ClrType.LocateField(fieldName).FieldType);
+                    computedType.GetClrType().LocateField(fieldName).FieldType);
             var assignment = new GetField
             {
                 AssignedTo = vreg,
@@ -884,12 +884,12 @@ namespace CodeRefractor.FrontEnd
             };
             var ptrType = firstVar.ComputedType();
 
-            if (ptrType.ClrType.GetElementType() != null)
-                result.FixedType = new TypeDescription(ptrType.ClrType.GetElementType());
+            if (ptrType.GetClrType().GetElementType() != null)
+                result.FixedType = new TypeDescription(ptrType.GetClrType().GetElementType());
 
             else
             {
-                result.FixedType = new TypeDescription(ptrType.ClrType);
+                result.FixedType = new TypeDescription(ptrType.GetClrType());
             }
             AddOperation(assignment);
         }

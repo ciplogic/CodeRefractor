@@ -162,7 +162,7 @@ T unbox_value(std::shared_ptr<System_Object> value){
                 .AppendFormat("{0} = unbox_value<{2}>({1});",
                     unboxing.AssignedTo.Name,
                     unboxing.Right.Name,
-                    typeDescription.ClrType.ToDeclaredVariableType(EscapingMode.Stack));
+                    typeDescription.GetClrType().ToDeclaredVariableType(EscapingMode.Stack));
         }
         private static void HandleBox(Boxing boxing, StringBuilder bodySb, TypeDescriptionTable typeTable)
         {
@@ -172,8 +172,8 @@ T unbox_value(std::shared_ptr<System_Object> value){
                 .AppendFormat("{0} = box_value<{2}>({1}, {3});",
                     boxing.AssignedTo.Name,
                     boxing.Right.Name,
-                    typeDescription.ClrType.ToDeclaredVariableType(EscapingMode.Stack),
-                    typeTable.GetTypeId(typeDescription.ClrType));
+                    typeDescription.GetClrType().ToDeclaredVariableType(EscapingMode.Stack),
+                    typeTable.GetTypeId(typeDescription.GetClrType()));
         }
 
 
@@ -184,7 +184,7 @@ T unbox_value(std::shared_ptr<System_Object> value){
                 .AppendFormat("{0} = std::static_pointer_cast<{2}>({1});",
                     casting.AssignedTo.Name,
                     casting.Value.Name,
-                    typeDescription.ClrType.ToDeclaredVariableType(EscapingMode.Stack));
+                    typeDescription.GetClrType().ToDeclaredVariableType(EscapingMode.Stack));
         }
         
         private static void HandleComment(string toString, StringBuilder bodySb)
@@ -258,7 +258,7 @@ T unbox_value(std::shared_ptr<System_Object> value){
             var localVariableData = interpreter.AnalyzeProperties.GetVariableData(localVariable);
             if (localVariableData == EscapingMode.Stack)
                 return;
-            if (localVariable.ComputedType().ClrType.IsSubclassOf(typeof (MethodInfo)))
+            if (localVariable.ComputedType().GetClrType().IsSubclassOf(typeof(MethodInfo)))
             {
                 variablesSb
                     .AppendFormat("System_Void (*{0})({1}*);", //TODO: Added * to deal with pointers, is this the right approach ?
@@ -270,7 +270,7 @@ T unbox_value(std::shared_ptr<System_Object> value){
             if (localVariableData == EscapingMode.Pointer)
             {
                 var cppName = localVariable.ComputedType()
-                    .ClrType.ToDeclaredVariableType(localVariableData);
+                    .GetClrType().ToDeclaredVariableType(localVariableData);
                 variablesSb
                     .AppendFormat(format, cppName, localVariable.Id)
                     .AppendLine();
@@ -278,7 +278,7 @@ T unbox_value(std::shared_ptr<System_Object> value){
             }
             variablesSb
                 .AppendFormat(format, localVariable.ComputedType()
-                    .ClrType.ToDeclaredVariableType(localVariableData), localVariable.Id)
+                    .GetClrType().ToDeclaredVariableType(localVariableData), localVariable.Id)
                 .AppendLine();
         }
 

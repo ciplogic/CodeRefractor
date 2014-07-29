@@ -56,7 +56,7 @@ namespace CodeRefractor.RuntimeBase.TypeInfoWriter
                 var typeDesc = new TypeDescription(type);
 
                 var layout = typeDesc.Layout
-                    .Select(field => field.TypeDescription.ClrType)
+                    .Select(field => field.TypeDescription.GetClrType())
                     .ToArray();
                 var hashSet = new HashSet<Type>(layout);
                 _dictionary[type] = hashSet;
