@@ -129,6 +129,11 @@ namespace CodeRefractor.FrontEnd
             AssignValueToStack(value);
         }
 
+        public void PushFloat(float value)
+        {
+            AssignValueToStack(value);
+        }
+
         public void PushDouble(double value)
         {
             AssignValueToStack(value);

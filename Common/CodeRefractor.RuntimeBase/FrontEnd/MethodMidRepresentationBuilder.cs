@@ -171,7 +171,7 @@ namespace CodeRefractor.FrontEnd
                 return true;
             }
 
-            if (opcodeStr == "ret")
+            if (instruction.OpCode == OpCodes.Ret)
             {
                 var isVoid = _method.GetReturnType().IsVoid();
 
@@ -183,45 +183,43 @@ namespace CodeRefractor.FrontEnd
                 if (ConversionOperations(opcodeStr, operationFactory)) return true;
                 return true;
             }
-            if (opcodeStr == "dup")
+            if (instruction.OpCode == OpCodes.Dup)
             {
                 operationFactory.Dup();
                 return true;
             }
-            if (opcodeStr == "pop")
+            if (instruction.OpCode == OpCodes.Pop)
             {
                 operationFactory.Pop();
                 return true;
             }
             if (HandleArrayOperations(instruction, operationFactory, opcodeStr)) return true;
-            if (opcodeStr == "ldtoken")
+            if ( instruction.OpCode == OpCodes.Ldtoken)
             {
                 operationFactory.SetToken((FieldInfo)instruction.Operand);
                 return true;
             }
-            if (opcodeStr == "ldftn")
+            if (instruction.OpCode == OpCodes.Ldftn)
             {
                 operationFactory.LoadFunction((MethodBase)instruction.Operand);
                 return true;
             }
-            if (opcodeStr == "switch")
+            if ( instruction.OpCode == OpCodes.Switch)
             {
                 operationFactory.Switch((Instruction[])instruction.Operand);
                 return true;
             }
-            if (opcodeStr == "sizeof")
+            if (instruction.OpCode == OpCodes.Sizeof)
             {
                 operationFactory.SizeOf((Type)instruction.Operand);
                 return true;
             }
-            if (opcodeStr == "ldsfld")
+            if (instruction.OpCode == OpCodes.Ldsfld)
             {
                 operationFactory.LoadStaticField((FieldInfo)instruction.Operand);
                 return true;
             }
-         
-
-            if (opcodeStr == "stsfld")
+            if (instruction.OpCode == OpCodes.Stsfld)
             {
                 operationFactory.StoreStaticField((FieldInfo)instruction.Operand);
                 return true;
@@ -279,23 +277,22 @@ namespace CodeRefractor.FrontEnd
 
         private static bool HandleArrayOperations(Instruction instruction, MetaMidRepresentationOperationFactory operationFactory, string opcodeStr)
         {
-            if (opcodeStr == "newarr")
+            if (instruction.OpCode == OpCodes.Newarr)
             {
                 operationFactory.NewArray((Type)instruction.Operand);
                 return true;
             }
-            if (opcodeStr == "stelem.i1"
-                || opcodeStr == "stelem.i2"
-                || opcodeStr == "stelem.i4"
-                || opcodeStr == "stelem.i8"
-                || opcodeStr == "stelem.r4"
-                || opcodeStr == "stelem.r8"
-                || opcodeStr == "stelem.i2")
+            if (instruction.OpCode == OpCodes.Stelem_I1
+                ||instruction.OpCode == OpCodes.Stelem_I2
+                ||instruction.OpCode == OpCodes.Stelem_I4
+                ||instruction.OpCode == OpCodes.Stelem_I8
+                ||instruction.OpCode == OpCodes.Stelem_R4
+                ||instruction.OpCode == OpCodes.Stelem_R8)
             {
                 operationFactory.SetArrayElementValue();
                 return true;
             }
-            if (opcodeStr == "stelem.ref")
+            if (instruction.OpCode == OpCodes.Stelem_Ref)
             {
                 operationFactory.SetArrayElementValue();
                 return true;
@@ -305,7 +302,7 @@ namespace CodeRefractor.FrontEnd
                 operationFactory.SetArrayElementValue();
                 return true;
             }
-            if (opcodeStr == "stelem")
+            if (instruction.OpCode == OpCodes.Stelem)
             {
                 var elemInfo = (Type)instruction.Operand;
                 operationFactory.StoreElement();
@@ -468,7 +465,7 @@ namespace CodeRefractor.FrontEnd
                 operationFactory.PushInt4(pushedIntValue);
                 return true;
             }
-            if (opcodeStr == "ldloc" || opcodeStr == "ldloc.s")
+            if (instruction.OpCode == OpCodes.Ldloc || instruction.OpCode == OpCodes.Ldloc_S)
             {
                 operationFactory.CopyLocalVariableIntoStack(GetVariableIndex(instruction));
                 return true;
@@ -482,29 +479,29 @@ namespace CodeRefractor.FrontEnd
                 return true;
             }
 
-            if (opcodeStr == "ldstr")
+            if (instruction.OpCode == OpCodes.Ldstr)
             {
                 operationFactory.PushString((string)instruction.Operand);
                 return true;
             }
-            if (opcodeStr == "ldc.r8")
+            if (instruction.OpCode == OpCodes.Ldc_R8)
             {
                 operationFactory.PushDouble((double)instruction.Operand);
                 return true;
             }
-            if (opcodeStr == "ldc.r4")
+            if (instruction.OpCode == OpCodes.Ldc_R4)
             {
-                operationFactory.PushDouble((float)instruction.Operand);
+                operationFactory.PushFloat((float)instruction.Operand);
                 return true;
             }
 
-            if (opcodeStr == "ldarga" || opcodeStr == "ldarga.s")
+            if (instruction.OpCode == OpCodes.Ldarga || instruction.OpCode == OpCodes.Ldarga_S)
             {
                 operationFactory.LoadArgument(GetParameterIndex(instruction), _methodInterpreter.AnalyzeProperties);
                 return true;
             }
 
-            if (opcodeStr == "ldarg.s")
+            if (instruction.OpCode == OpCodes.Ldarg_S)
             {
                 operationFactory.LoadArgument(GetParameterIndex(instruction), _methodInterpreter.AnalyzeProperties);
                 return true;
@@ -522,20 +519,20 @@ namespace CodeRefractor.FrontEnd
                 operationFactory.LoadObject((Type)instruction.Operand);
                 return true;
             }
-            if (opcodeStr == "ldfld")
+            if (instruction.OpCode == OpCodes.Ldfld)
             {
                 var operand = (FieldInfo)instruction.Operand;
 
                 operationFactory.LoadField(operand.Name, closureEntities);
                 return true;
             }
-            if (opcodeStr == "ldlen")
+            if (instruction.OpCode == OpCodes.Ldlen)
             {
                 operationFactory.LoadLength();
                 return true;
             }
 
-            if (opcodeStr == "ldnull")
+            if (instruction.OpCode == OpCodes.Ldnull)
             {
                 operationFactory.LoadNull();
                 return true;
