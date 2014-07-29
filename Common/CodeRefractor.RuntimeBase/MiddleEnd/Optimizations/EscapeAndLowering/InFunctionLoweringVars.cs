@@ -71,11 +71,11 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
             var candidateVariables = new HashSet<LocalVariable>();
             var midRepresentation = interpreter.MidRepresentation;
             var variables = midRepresentation.Vars;
-            var toAdd = variables.LocalVars.Where(varId => !varId.ComputedType().GetClrType().IsPrimitive);
+            var toAdd = variables.LocalVars.Where(varId => !varId.ComputedType().GetClrType(Closure).IsPrimitive);
             candidateVariables.AddRange(toAdd);
-            toAdd = variables.VirtRegs.Where(varId => !varId.ComputedType().GetClrType().IsPrimitive);
+            toAdd = variables.VirtRegs.Where(varId => !varId.ComputedType().GetClrType(Closure).IsPrimitive);
             candidateVariables.AddRange(toAdd);
-            toAdd = interpreter.AnalyzeProperties.Arguments.Where(varId => !varId.ComputedType().GetClrType().IsPrimitive);
+            toAdd = interpreter.AnalyzeProperties.Arguments.Where(varId => !varId.ComputedType().GetClrType(Closure).IsPrimitive);
             candidateVariables.AddRange(toAdd);
             return candidateVariables;
         }

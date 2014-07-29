@@ -22,7 +22,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
             set { _clrType = value; }
         }
 
-        public Type GetClrType()
+        public Type GetClrType(ClosureEntities closureEntities)
         {
             return _clrType;
         }
@@ -221,6 +221,11 @@ namespace CodeRefractor.RuntimeBase.Analyze
                     _clrType.ToCppMangling())
                     .AppendLine();
             }
+        }
+
+        public Type GetElementType()
+        {
+            return _clrType.GetElementType();
         }
     }
 }

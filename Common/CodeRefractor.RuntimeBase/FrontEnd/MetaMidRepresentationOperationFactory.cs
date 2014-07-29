@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using CodeRefractor.Analyze;
+using CodeRefractor.ClosureCompute;
 using CodeRefractor.FrontEnd.SimpleOperations;
 using CodeRefractor.FrontEnd.SimpleOperations.Casts;
 using CodeRefractor.MiddleEnd;
@@ -208,13 +209,13 @@ namespace CodeRefractor.FrontEnd
             AddOperation(arrayVariable);
         }
 
-        public void LoadReferenceInArrayTyped()
+        public void LoadReferenceInArrayTyped(ClosureEntities closureEntities)
         {
             var index = _evaluator.Pop();
             var instance = (LocalVariable) _evaluator.Pop();
 
             var result = SetNewVReg();
-            var arrayVariable = GetArrayElement.Create(result, instance, index);
+            var arrayVariable = GetArrayElement.Create(result, instance, index, closureEntities);
 
             AddOperation(arrayVariable);
         }
@@ -674,19 +675,19 @@ namespace CodeRefractor.FrontEnd
             AddOperation(assignment);
         }
 
-        public void LoadField(string fieldName)
+        public void LoadField(string fieldName, ClosureEntities closureEntities)
         {
             var firstVar = _evaluator.Pop();
 
             var vreg = SetNewVReg();
             var computedType = firstVar.ComputedType();
-            if (computedType.GetClrType().IsByRef)
+            if (computedType.GetClrType(closureEntities).IsByRef)
             {
-                computedType = new TypeDescription(computedType.GetClrType().GetElementType());
+                computedType = new TypeDescription(computedType.GetClrType(closureEntities).GetElementType());
             }
             vreg.FixedType =
                 new TypeDescription(
-                    computedType.GetClrType().LocateField(fieldName).FieldType);
+                    computedType.GetClrType(closureEntities).LocateField(fieldName).FieldType);
             var assignment = new GetField
             {
                 AssignedTo = vreg,
@@ -871,7 +872,7 @@ namespace CodeRefractor.FrontEnd
             AddOperation(assign);
         }
 
-        public void LoadValueFromAddress()
+        public void LoadValueFromAddress(ClosureEntities closureEntities)
         {
             var firstVar = (LocalVariable) _evaluator.Pop();
 
@@ -884,12 +885,12 @@ namespace CodeRefractor.FrontEnd
             };
             var ptrType = firstVar.ComputedType();
 
-            if (ptrType.GetClrType().GetElementType() != null)
-                result.FixedType = new TypeDescription(ptrType.GetClrType().GetElementType());
+            if (ptrType.GetClrType(closureEntities).GetElementType() != null)
+                result.FixedType = new TypeDescription(ptrType.GetClrType(closureEntities).GetElementType());
 
             else
             {
-                result.FixedType = new TypeDescription(ptrType.GetClrType());
+                result.FixedType = new TypeDescription(ptrType.GetClrType(closureEntities));
             }
             AddOperation(assignment);
         }

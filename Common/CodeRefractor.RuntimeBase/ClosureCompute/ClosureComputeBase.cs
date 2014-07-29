@@ -19,7 +19,7 @@ namespace CodeRefractor.ClosureCompute
             var intepreter = interpreter as CilMethodInterpreter;
             if (intepreter != null)
             {
-                intepreter.Process();
+                intepreter.Process(closureEntities);
             }
             closureEntities.UseMethod(method, interpreter);
         }

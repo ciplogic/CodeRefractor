@@ -1,6 +1,7 @@
 #region Uses
 
 using System;
+using CodeRefractor.ClosureCompute;
 using CodeRefractor.RuntimeBase.Analyze;
 
 #endregion
@@ -21,7 +22,7 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations.Identifiers
         public Type GetElementType()
         {
             var computedType = Instance.ComputedType();
-            var elementType = computedType.GetClrType().GetElementType();
+            var elementType = computedType.GetElementType();
             return elementType;
         }
 
@@ -30,7 +31,7 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations.Identifiers
             return string.Format("{0}={1}[{2}]", AssignedTo.Name, Instance.Name, Index.Name);
         }
 
-        public static GetArrayElement Create(LocalVariable assignedTo, LocalVariable instance, IdentifierValue index)
+        public static GetArrayElement Create(LocalVariable assignedTo, LocalVariable instance, IdentifierValue index, ClosureEntities closureEntities)
         {
             var result = new GetArrayElement
             {
@@ -39,7 +40,7 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations.Identifiers
                 Index = index
             };
 
-            var elementType = instance.FixedType.GetClrType().GetElementType();
+            var elementType = instance.FixedType.GetClrType(closureEntities).GetElementType();
             assignedTo.FixedType = new TypeDescription(elementType);
             return result;
         }

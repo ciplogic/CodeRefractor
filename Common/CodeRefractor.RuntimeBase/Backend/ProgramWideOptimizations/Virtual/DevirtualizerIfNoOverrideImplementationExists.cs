@@ -38,7 +38,7 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
                 var op = allOps[callOp];
                 var methodData = (CallMethodStatic)op;
                 var thisParameter = (LocalVariable)methodData.Parameters.First();
-                var clrType = thisParameter.FixedType.GetClrType();
+                var clrType = thisParameter.FixedType.GetClrType(closure);
 
                 var overridenTypes = clrType.ImplementorsOfT(closure);
                 overridenTypes.Remove(clrType);
