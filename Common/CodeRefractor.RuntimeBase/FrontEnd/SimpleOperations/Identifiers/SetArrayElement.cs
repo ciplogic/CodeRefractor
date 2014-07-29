@@ -19,7 +19,7 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations.Identifiers
         public Type GetElementType()
         {
             var computedType = Instance.ComputedType();
-            var elementType = computedType.ClrType.GetElementType();
+            var elementType = computedType.GetClrType().GetElementType();
             return elementType;
         }
 

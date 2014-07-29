@@ -28,7 +28,7 @@ namespace CodeRefractor.CodeWriter.Linker
                 return identifierValue.Name;
             }
             var computeType = identifierValue.ComputedType();
-            if (Type.GetTypeCode(computeType.ClrType) == TypeCode.String)
+            if (Type.GetTypeCode(computeType.GetClrType()) == TypeCode.String)
             {
                 
                 var stringTable = LinkingData.Instance.Strings;

@@ -21,7 +21,7 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations.Identifiers
         public Type GetElementType()
         {
             var computedType = Instance.ComputedType();
-            var elementType = computedType.ClrType.GetElementType();
+            var elementType = computedType.GetClrType().GetElementType();
             return elementType;
         }
 
@@ -39,7 +39,7 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations.Identifiers
                 Index = index
             };
 
-            var elementType = instance.FixedType.ClrType.GetElementType();
+            var elementType = instance.FixedType.GetClrType().GetElementType();
             assignedTo.FixedType = new TypeDescription(elementType);
             return result;
         }
