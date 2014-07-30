@@ -119,13 +119,10 @@ T unbox_value(std::shared_ptr<System_Object> value){
 	return castedUnboxing->Data;
 }");
                         }
-<<<<<<< HEAD
-                        crRuntime.AddType(((Boxing)operation).Right.ComputedType().ClrType);
+
+                        crRuntime.AddType(((Boxing)operation).Right.ComputedType().GetClrType(crRuntime));
                         TypeDescriptionTable typeDescriptionTable = new TypeDescriptionTable(crRuntime.MappedTypes.Values.ToList(),crRuntime);
-                        HandleBox((Boxing)operation, bodySb, typeDescriptionTable);
-=======
-                        HandleBox((Boxing)operation, bodySb, typeTable, crRuntime);
->>>>>>> Make TypeDescription to expose less ClrType. In future will be possible that TypeDescription will be built from internal's data and ClosureEntities.
+                        HandleBox((Boxing)operation, bodySb, typeDescriptionTable, crRuntime);
                         break;
 
                     case OperationKind.CastClass:
@@ -170,14 +167,9 @@ T unbox_value(std::shared_ptr<System_Object> value){
         }
         private static void HandleBox(Boxing boxing, StringBuilder bodySb, TypeDescriptionTable typeTable, ClosureEntities closureEntities)
         {
-<<<<<<< HEAD
             TypeDescription typeDescription = boxing.Right.ComputedType();
 
            bodySb
-=======
-            var typeDescription = boxing.Right.ComputedType();
-            bodySb
->>>>>>> Make TypeDescription to expose less ClrType. In future will be possible that TypeDescription will be built from internal's data and ClosureEntities.
                 .AppendFormat("{0} = box_value<{2}>({1}, {3});",
                     boxing.AssignedTo.Name,
                     boxing.Right.Name,
