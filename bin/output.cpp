@@ -1,39 +1,33 @@
 #include "sloth.h"
 #include <functional>
 struct System_Object; 
+struct _A; 
+struct CodeRefactor_OpenRuntime_CrConsole; 
+struct _B; 
 struct CodeRefactor_OpenRuntime_CrString; 
 struct _Test; 
-struct _A; 
-struct _B; 
-struct CodeRefactor_OpenRuntime_CrConsole; 
 struct System_Object {
 int _typeId;
+};
+struct _A : public System_Object {
+};
+struct System_Console : public System_Object {
+};
+struct _B : public _A {
 };
 struct System_String : public System_Object {
  std::shared_ptr< Array < System_Char > > Text;
 };
 struct _Test : public System_Object {
 };
-struct _A : public System_Object {
-};
-struct _B : public _A {
-};
-struct System_Console : public System_Object {
-};
 
 System_Void _Test_Main();
-
-System_Void _B_ctor();
 
 System_Void _B_F();
 
 System_Void _A_F();
 
 System_Void _B_G();
-
-System_Void _A_G();
-
-System_Void _A_ctor();
 
 System_Void System_Console_WriteLine(std::shared_ptr<System_String> value);
 
@@ -54,6 +48,7 @@ return;
 } //switch
 }
 
+#include "stdio.h"
 System_Void System_Console_WriteLine(std::shared_ptr<System_String> value)
 {
 printf("%ls\n", value.get()->Text->Items);
@@ -66,17 +61,10 @@ std::shared_ptr<_B> vreg_1;
 
 vreg_1 = std::make_shared<_B >();
 vreg_1->_typeId = 3;
-
-
-
-
-return;
-}
-
-
-System_Void _B_ctor()
-{
-
+_A_F_vcall(vreg_1);
+_B_F(vreg_1);
+_B_G();
+_B_G();
 return;
 }
 
@@ -84,7 +72,7 @@ return;
 System_Void _B_F()
 {
 
-
+System_Console_WriteLine(_str(0));
 return;
 }
 
@@ -92,7 +80,7 @@ return;
 System_Void _A_F()
 {
 
-
+System_Console_WriteLine(_str(1));
 return;
 }
 
@@ -100,22 +88,7 @@ return;
 System_Void _B_G()
 {
 
-
-return;
-}
-
-
-System_Void _A_G()
-{
-
-
-return;
-}
-
-
-System_Void _A_ctor()
-{
-
+System_Console_WriteLine(_str(2));
 return;
 }
 
@@ -135,17 +108,13 @@ System_Void RuntimeHelpersBuildConstantTable() {
 }
 
 System_Void buildStringTable() {
-_AddJumpAndLength(0, 15);
-_AddJumpAndLength(16, 3);
-_AddJumpAndLength(20, 3);
-_AddJumpAndLength(24, 3);
-_AddJumpAndLength(28, 3);
+_AddJumpAndLength(0, 3);
+_AddJumpAndLength(4, 3);
+_AddJumpAndLength(8, 3);
 } // buildStringTable
-const wchar_t _stringTable[32] = {
-80, 114, 105, 109, 101, 32, 110, 117, 109, 98, 101, 114, 115, 58, 32, 0 /* "Prime numbers: " */, 
+const wchar_t _stringTable[12] = {
 66, 46, 70, 0 /* "B.F" */, 
 65, 46, 70, 0 /* "A.F" */, 
-66, 46, 71, 0 /* "B.G" */, 
-65, 46, 71, 0 /* "A.G" */
+66, 46, 71, 0 /* "B.G" */
 }; // _stringTable 
 

@@ -215,7 +215,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 }
             }
             var argumentsJoin = String.Join(", ", parameterStrings);
-            sb.AppendFormat("({0})", argumentsJoin);
+            sb.AppendFormat("({0});", argumentsJoin);
         }
 
         public static void HandleCallRuntime(LocalOperation operation, StringBuilder sb, ClosureEntities crRuntime)
