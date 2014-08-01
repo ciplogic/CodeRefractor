@@ -1,5 +1,3 @@
-﻿#region Usings
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,19 +8,16 @@ using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 using CodeRefractor.RuntimeBase.MiddleEnd;
-using CodeRefractor.Util;
-
-#endregion
 
 namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
 {
-    public class DevirtualizerIfOneImplementor : ResultingProgramOptimizationBase
+    public class DevirtualizerFinalMethods : ResultingProgramOptimizationBase
     {
         protected override void DoOptimize(ClosureEntities closure)
         {
             var methodInterpreters = closure.MethodImplementations.Values
                 .Where(m => m.Kind == MethodKind.CilInstructions)
-                .Select(mth=>(CilMethodInterpreter)mth)
+                .Select(mth => (CilMethodInterpreter)mth)
                 .ToArray();
             foreach (var interpreter in methodInterpreters)
             {
@@ -39,21 +34,18 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
             foreach (var callOp in calls)
             {
                 var op = allOps[callOp];
-                var methodData = (CallMethodStatic) op;
+                var methodData = (CallMethodStatic)op;
                 var callingInterpreterKey = methodData.Interpreter.ToKey();
-                var declaringType = callingInterpreterKey.Interpreter.Method.DeclaringType;
-                var implementors = declaringType.ImplementorsOfT(usedTypes);
-
-                implementors.Remove(declaringType);
-                if (implementors.Count > 0)
+                var methodBase = callingInterpreterKey.Interpreter.Method;
+                if(!methodBase.IsFinal)
                     continue;
-                //TODO: map correct method
+                
                 interpreter.MidRepresentation.LocalOperations[callOp] = new CallMethodStatic(methodData.Interpreter)
                 {
                     Result = methodData.Result,
                     Parameters = methodData.Parameters
                 };
-                result= true;
+                result = true;
             }
             if (result)
             {

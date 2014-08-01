@@ -31,18 +31,15 @@ namespace CodeRefractor.MiddleEnd.Optimizations.SimpleDce
                 {
                     case OperationKind.AlwaysBranch:
                         var jumpLabel = labelTable[operation.Get<AlwaysBranch>().JumpTo];
-
                         if (jumpLabel != labelInfo.Value)
                             continue;
                         toRemove.Add(i);
                         continue;
                     case OperationKind.BranchOperator:
-
                         var destAssignment = (BranchOperator) operation;
                         var jumpTo = labelTable[destAssignment.JumpTo];
                         if (jumpTo != labelInfo.Value)
                             continue;
-
                         toRemove.Add(i);
                         continue;
                     default:
