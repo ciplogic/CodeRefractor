@@ -25,7 +25,9 @@ namespace CodeRefractor.CodeWriter.Linker
             AddToRuntime(crRuntime);
             //Needs improvement, how do i get the correct typeid at this point ? we cant just use zero :P
             //This is a stupid hack as usedtypes can probably change as closure is computed
-            List<Type> usedTypes =crRuntime.MappedTypes.Values.ToList();
+          
+            crRuntime.AddType(isInstance.CastTo);
+            List<Type> usedTypes = crRuntime.MappedTypes.Values.ToList();
             var typeTable = new TypeDescriptionTable(usedTypes, crRuntime);
             TypesToCast.Add(isInstance.CastTo);
             sb
@@ -101,6 +103,7 @@ bool IsInstanceOf(int typeSource, int typeImplementation) {
                 {
                     sb.AppendFormat("//Implementor {0}", implementingType.FullName)
                         .AppendLine();
+                   
                     var typeIdImpl = table.GetTypeId(implementingType);
 
                     sb

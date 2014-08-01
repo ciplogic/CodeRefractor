@@ -582,7 +582,7 @@ namespace CodeRefractor.FrontEnd
             if (opcodeStr == "box"
                 )
             {
-                operationFactory.Box();
+                operationFactory.Box((Type)instruction.Operand);
                 return true;
             }
             if (opcodeStr == "unbox.any"

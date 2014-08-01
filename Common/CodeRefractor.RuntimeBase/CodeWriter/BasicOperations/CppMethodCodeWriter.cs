@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using CodeRefractor.ClosureCompute;
@@ -118,7 +119,7 @@ T unbox_value(std::shared_ptr<System_Object> value){
 	return castedUnboxing->Data;
 }");
                         }
-                        HandleBox((Boxing)operation, bodySb, typeTable, crRuntime);
+                        HandleBox((Boxing)operation, bodySb, typeTable);
                         break;
 
                     case OperationKind.CastClass:
@@ -163,7 +164,9 @@ T unbox_value(std::shared_ptr<System_Object> value){
         }
         private static void HandleBox(Boxing boxing, StringBuilder bodySb, TypeDescriptionTable typeTable, ClosureEntities closureEntities)
         {
-            var typeDescription = boxing.Right.ComputedType();
+
+
+            TypeDescription typeDescription = boxing.Right.ComputedType();
             bodySb
                 .AppendFormat("{0} = box_value<{2}>({1}, {3});",
                     boxing.AssignedTo.Name,

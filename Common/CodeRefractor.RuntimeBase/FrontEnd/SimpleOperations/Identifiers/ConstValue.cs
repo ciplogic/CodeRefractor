@@ -47,6 +47,9 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations.Identifiers
 
         public override TypeDescription ComputedType()
         {
+            if (FixedType != null)
+                return FixedType;
+
             return new TypeDescription(Value == null ? typeof (void) : Value.GetType());
         }
 

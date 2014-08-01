@@ -23,7 +23,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         public static string GenerateTypeTableCode(TypeDescriptionTable table, ClosureEntities crRuntime)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("// --- Begin definition of virtual method tables ---");
+            sb.AppendLine("// --- Begin definition of virtual implementingMethod tables ---");
             sb.AppendLine("System_Void setupTypeTable();")
                 .AppendLine();
 
@@ -49,15 +49,15 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 sb.AppendLine("switch (_this->_typeId)") .AppendLine("{");
 
                 var declaringType = virtualMethod.DeclaringType;
-                
-                var implementingTypes = declaringType.ImplementorsOfT(crRuntime.MappedTypes.Values);
+
+                var implementingTypes = declaringType.ImplementorsOfT(crRuntime);//.MappedTypes.Values);
                 foreach (var implementingType in implementingTypes)
                 {
 
                     if(implementingType.GetReversedMappedType(crRuntime)!=implementingType)
                         continue;
                     var implementingMethod = AddVirtualMethodImplementations.GetImplementingMethod(implementingType, virtualMethod);
-//                    if (implementingMethod == null) //We should call the next method in line ... not ignore this object
+//                    if (implementingMethod == null) //We should call the next implementingMethod in line ... not ignore this object
 //                        continue;
                     if (implementingMethod != null)
                     {
@@ -69,6 +69,8 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                         var typeId = table.GetTypeId(declaringTypeImplementation);
 
                         sb.AppendFormat("case {0}:", typeId).AppendLine();
+                        
+                       
 
                         var isVoid = virtualMethod.ReturnType == typeof (void);
                         if (!isVoid)
@@ -172,13 +174,13 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             return sb.ToString();
         }
 
-        private static string GetCall(MethodInfo virtualMethod, MethodInfo method, ClosureEntities crRuntime)
+        private static string GetCall(MethodInfo virtualMethod, MethodInfo implementingMethod, ClosureEntities crRuntime)
         {
              //Add Rest of parameters
             var parameters = virtualMethod.GetParameters();
-            var usedArgs = method.GetInterpreter(crRuntime)!=null ? MidRepresentationUtils.GetUsedArguments(method.GetInterpreter(crRuntime)) : Enumerable.Repeat(true, parameters.Count() + 1).ToArray();  // Sometime we dont have a method interpreter ... why ?
+            var usedArgs = implementingMethod.GetInterpreter(crRuntime)!=null ? MidRepresentationUtils.GetUsedArguments(implementingMethod.GetInterpreter(crRuntime)) : Enumerable.Repeat(true, parameters.Count() + 1).ToArray();  // Sometime we dont have a implementingMethod interpreter ... why ?
             int pCount = 0;
-            var parametersString = usedArgs[0] == true ?string.Format("std::static_pointer_cast<{0}>(_this)", method.DeclaringType.GetReversedMappedType(crRuntime).ToCppName(EscapingMode.Unused)):"";
+            var parametersString = usedArgs[0] ?GetCorrectParameter(virtualMethod,implementingMethod, crRuntime,0):"";
            
             pCount++;
             if (parameters.Length <= 0) 
@@ -205,6 +207,29 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 //            var arguments = string.Join(", ", parameters.Select(par=>par.Name));
 //            sb.Append(arguments);
             return sb.ToString();
+        }
+
+        private static string GetCorrectParameter(MethodInfo virtualMethod, MethodInfo implementingMethod, ClosureEntities crRuntime, int parameter)
+        {
+            if (parameter == 0) //TODO: Add Unboxing Feature if Value types are found
+            {
+                var imParam = implementingMethod.DeclaringType;
+                if (imParam.IsValueType)
+                {
+                    return string.Format("unbox_value<{0}>(_this)", implementingMethod.DeclaringType.GetReversedMappedType(crRuntime).ToCppName(EscapingMode.Unused));
+
+                }
+                else
+                {
+                    return string.Format("std::static_pointer_cast<{0}>(_this)", implementingMethod.DeclaringType.GetReversedMappedType(crRuntime).ToCppName(EscapingMode.Unused));
+                    
+                }
+            }
+            else
+            {
+                
+            }
+            return "";
         }
     }
 }

@@ -21,10 +21,23 @@ namespace CodeRefactor.OpenRuntime
         [CppMethodBody(
             Header = "cwchar",
             Code =
-@" 
-	wchar_t buffer [26];
+@"
+ 
+	wchar_t buffer [64];
     int cx;
-    cx = swprintf ( buffer, L""%llf\0"", value); // is passed as reference
+    cx = swprintf ( buffer, L""%.14f"", value); // is passed as reference
+
+    // Remove trailing 0 (after .)
+	if (wcschr(buffer, '.') != NULL)
+	{
+		while (cx > 0 && buffer[cx - 1] == '0')
+			buffer[--cx] = '\0';
+	}
+
+	if (cx > 0 && buffer[cx - 1] == '.')
+		buffer[--cx] = '\0';
+
+
     auto result = std::make_shared<System_String>();
 	auto text = std::make_shared<Array < System_Char >>(cx, buffer);
 	result->Text =  text;
