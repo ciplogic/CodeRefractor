@@ -119,7 +119,7 @@ T unbox_value(std::shared_ptr<System_Object> value){
 	return castedUnboxing->Data;
 }");
                         }
-                        HandleBox((Boxing)operation, bodySb, typeTable);
+                        HandleBox((Boxing)operation, bodySb, typeTable, crRuntime);
                         break;
 
                     case OperationKind.CastClass:

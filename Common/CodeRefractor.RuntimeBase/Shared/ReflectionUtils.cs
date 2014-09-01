@@ -26,7 +26,7 @@ namespace CodeRefractor.RuntimeBase.Shared
             return (T) customAttributes[0];
         }
 
-        public static T GetCustomAttribute<T>(this MemberInfo member) where T : Attribute
+        public static T GetCustomAttributeT<T>(this MemberInfo member) where T : Attribute
         {
             var customAttributes = member.GetCustomAttributes(typeof (T), false);
             if (customAttributes.Length == 0)
