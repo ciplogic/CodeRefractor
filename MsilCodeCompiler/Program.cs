@@ -20,15 +20,18 @@ namespace CodeRefractor.Compiler
         public static void CallCompiler(string inputAssemblyName, string outputExeName)
         {
             var commandLineParse = CommandLineParse.Instance;
+
             if (!String.IsNullOrEmpty(inputAssemblyName))
             {
                 commandLineParse.ApplicationInputAssembly = inputAssemblyName;
             }
+
             if (!String.IsNullOrEmpty(outputExeName))
             {
                 commandLineParse.ApplicationNativeExe = outputExeName;
                 commandLineParse.OutputCpp = Path.ChangeExtension(commandLineParse.ApplicationNativeExe, ".cpp");
             }
+
             var dir = Directory.GetCurrentDirectory();
             inputAssemblyName = Path.Combine(dir, commandLineParse.ApplicationInputAssembly);
             var asm = Assembly.LoadFile(inputAssemblyName);

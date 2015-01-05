@@ -131,8 +131,10 @@ namespace CodeRefractor.ClosureCompute
         {
             type = type.ReduceType();
             Type result;
+
             if (MappedTypes.TryGetValue(type, out result))
                 return result;
+            
             foreach (var resolverBase in EntitiesBuilder.TypeResolverList)
             {
                 var resolved = resolverBase.Resolve(type);
@@ -143,6 +145,7 @@ namespace CodeRefractor.ClosureCompute
                 }
                 MappedTypes[type] = type;
             }
+
             return null;
         }
 
@@ -164,21 +167,26 @@ namespace CodeRefractor.ClosureCompute
             var optimizations = level.BuildOptimizationPasses1();
             level.BuildOptimizationPasses2();
             OptimizationLevelBase.UpdateOptimizationsFromCategories(optimizations); 
+
             var cilMethods = MethodImplementations.Values
                 .Where(m => m.Kind == MethodKind.CilInstructions)
                 .Cast<CilMethodInterpreter>()
                 .ToArray();
+
             ResultingOptimizationPass.Closure = this;
-            var doOptimize = true;
-            while (doOptimize)
+            var isOptimizationPossible = true;
+
+            while (isOptimizationPossible)
             {
-                doOptimize = false;
+                isOptimizationPossible = false;
+            
                 foreach (var cilMethod in cilMethods)
                 {
-                    doOptimize |= MethodInterpreterCodeWriter.ApplyLocalOptimizations(optimizations, cilMethod);
+                    isOptimizationPossible |= MethodInterpreterCodeWriter.ApplyLocalOptimizations(optimizations, cilMethod);
                 }
-                var isOptimized = ApplyProgramWideOptimizations();
-                doOptimize |= isOptimized;
+                
+                var programWideOptimizationsAvailable = ApplyProgramWideOptimizations();
+                isOptimizationPossible |= programWideOptimizationsAvailable;
             }
         }
 
