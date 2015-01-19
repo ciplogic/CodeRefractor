@@ -12,6 +12,9 @@ using CodeRefractor.Util;
 
 namespace CodeRefractor.RuntimeBase.Config
 {
+    /**
+     * A command line argument parser for the CodeRefractor compiler.
+     */
     public class CommandLineParse
     {
         public static readonly CommandLineParse StaticInstance = new CommandLineParse();
@@ -93,6 +96,12 @@ namespace CodeRefractor.RuntimeBase.Config
 
         private static int HandleCompilerFlags(string[] args, int i)
         {
+            if (i + 1 >= args.Length) // the compiler type was not given as the extra argument.
+            {
+                throw new ArgumentException("Using a compiler was specified (-compiler), but the name " +
+                                            "of the compiler was not given: [-compiler gcc|clang]");
+            }
+
             var compilerType = args[i + 1];
             NativeCompilationUtils.SetCompilerOptions(compilerType);
             return i + 1;

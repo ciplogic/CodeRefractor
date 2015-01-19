@@ -11,6 +11,7 @@ namespace CodeRefractor.Util
     public static class NativeCompilationUtils
     {
         public static Options CompilerOptions = new GccOptions();
+
         private class ClangOptions : Options
         {
             public ClangOptions()

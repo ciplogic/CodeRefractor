@@ -52,22 +52,22 @@ namespace CodeRefractor.Backend.ComputeClosure
                 return false;
             var result = false;
             var optimizationsList = new List<ResultingOptimizationPass>(optimizationPasses);
-            var didOptimize = true;
+            var areOptimizationsAvailable = true;
             if (interpreter.Method.Name == "pollEvents")
             {
             }
-            while (didOptimize)
+            while (areOptimizationsAvailable)
             {
                 interpreter.MidRepresentation.UpdateUseDef();
-                didOptimize = false;
+                areOptimizationsAvailable = false;
                 foreach (var optimizationPass in optimizationsList)
                 {
                     var optimizationName = optimizationPass.GetType().Name;
                     if (!optimizationPass.CheckPreconditions(interpreter))
                         continue;
-                    didOptimize = optimizationPass.Optimize(interpreter);
+                    areOptimizationsAvailable = optimizationPass.Optimize(interpreter);
 
-                    if (!didOptimize) continue;
+                    if (!areOptimizationsAvailable) continue;
                     var useDef = interpreter.MidRepresentation.UseDef;
                     interpreter.MidRepresentation.UpdateUseDef();
                     Console.WriteLine("Applied optimization: {0}", optimizationName);

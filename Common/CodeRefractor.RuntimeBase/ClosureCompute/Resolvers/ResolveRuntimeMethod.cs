@@ -65,12 +65,14 @@ namespace CodeRefractor.ClosureCompute.Resolvers
         {
             var allConstuctors = resolvingType.GetConstructors(ClosureEntitiesBuilder.AllFlags).ToArray();
             var methodParameters = method.GetParameters();
+            
             foreach (var constuctor in allConstuctors)
             {
                 var ctorParameters = constuctor.GetParameters();
                 if (DoParametersMatch(methodParameters, ctorParameters))
                     return ResolveMethodWithResult(constuctor, resolvingType);
             }
+
             return null;
         }
 

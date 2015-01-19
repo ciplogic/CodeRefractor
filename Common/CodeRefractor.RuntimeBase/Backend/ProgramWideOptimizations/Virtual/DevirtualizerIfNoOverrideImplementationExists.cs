@@ -33,6 +33,7 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
             var calls = useDef.GetOperationsOfKind(OperationKind.CallVirtual).ToArray();
             var allOps = useDef.GetLocalOperations();
             var result = false;
+
             foreach (var callOp in calls)
             {
                 var op = allOps[callOp];
