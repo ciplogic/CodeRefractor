@@ -24,6 +24,9 @@ void initializeRuntime()
 	RuntimeHelpersBuildConstantTable();
 }
 
+/**
+ * Resize the current array.
+ */
 template<class T>
 void System_Array_Resize(std::shared_ptr< Array<T> >* arr, int newSize)
 {
@@ -43,6 +46,7 @@ struct BoxedT : public System_Object
 {
 	T Data;
 };
+
 template<class T>
 std::shared_ptr<System_Object> box_value(T value, int typeId){
 	auto result = std::make_shared<BoxedT< T > >();
@@ -86,61 +90,61 @@ void AddConstantByteArray(System_Byte* data)
 	_constTables.push_back(data);
 }
 
-#ifdef CODEREFRACTOR_NO_DYNAMIC_LINKING
+/////////////////////////////////////////////////////////////////////////////
+//// Dynamic Loading.
+/////////////////////////////////////////////////////////////////////////////
 
-void fail_application_spectaculously();
+#ifndef CODEREFRACTOR_BARE_METAL
+    #ifdef CODEREFRACTOR_NO_DYNAMIC_LINKING
+        void fail_application_spectaculously();
 
-void* LoadNativeLibrary(const char* dllFileName)
-{
-    fail_application_spectaculously();
-}
+        void* LoadNativeLibrary(const char* dllFileName)
+        {
+            fail_application_spectaculously();
+        }
 
-void* LoadNativeMethod(void* module, const char* methodName)
-{
-    fail_application_spectaculously();
-}
+        void* LoadNativeMethod(void* module, const char* methodName)
+        {
+            fail_application_spectaculously();
+        }
 
-/**
- * Just sigsegvs on purpose, since we want to stop the application but we
- * can't depend on anything external.
- */
-void fail_application_spectaculously()
-{
-    char* null_reference = NULL;
-    null_reference[0] = 0; // fail on purpose.
-}
+        /**
+         * Just sigsegvs on purpose, since we want to stop the application but we
+         * can't depend on anything external, and no dynamic linking is available.
+         */
+        void fail_application_spectaculously()
+        {
+            char* null_reference = NULL;
+            null_reference[0] = 0; // fail on purpose.
+        }
+    #else // not CODEREFRACTOR_NO_DYNAMIC_LINKING
+        #ifdef _WIN32
+            #include <windows.h>
 
-#else // CODEREFRACTOR_NO_DYNAMIC_LINKING
+            HMODULE LoadNativeLibrary(const System_Char* dllFileName)
+            {
+                return LoadLibraryW(dllFileName);
+            }
 
-#ifdef _WIN32
+            void* LoadNativeMethod(HMODULE module, const char* methodName)
+            {
+                return (void*)GetProcAddress(module, methodName);
+            }
+        #else // not _WIN32
+            #include <dlfcn.h>
 
-#include <windows.h>
+            void* LoadNativeLibrary(const char* dllFileName)
+            {
+                return dlopen(dllFileName, RTLD_LAZY);
+            }
 
-HMODULE LoadNativeLibrary(const System_Char* dllFileName)
-{
-	return LoadLibraryW(dllFileName);
-}
-
-void* LoadNativeMethod(HMODULE module, const char* methodName)
-{
-	return (void*)GetProcAddress(module, methodName);
-}
-#else // _WIN32
-
-#include <dlfcn.h>
-
-void* LoadNativeLibrary(const char* dllFileName)
-{
-	return dlopen(dllFileName, RTLD_LAZY);
-}
-
-void* LoadNativeMethod(void* module, const char* methodName)
-{
-	return (void*)dlsym(module, methodName);
-}
-#endif
-
-#endif
+            void* LoadNativeMethod(void* module, const char* methodName)
+            {
+                return (void*)dlsym(module, methodName);
+            }
+        #endif // not _WIN32
+    #endif // not CODEREFRACTOR_NO_DYNAMIC_LINKING
+#endif // not CODEREFRACTOR_BARE_METAL
 
 #include <stdio.h>
 #include <math.h>
