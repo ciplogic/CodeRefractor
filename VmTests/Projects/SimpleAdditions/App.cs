@@ -18,7 +18,6 @@ class B : A
  * TODO
 : this is a todo thing
  */
-
 class MyClass
 {
     public void Display(int value)
