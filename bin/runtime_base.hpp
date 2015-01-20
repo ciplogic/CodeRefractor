@@ -3,9 +3,13 @@
 #include <string>
 #include <memory>
 
+#ifdef CODEREFRACTOR_BARE_METAL
+#define CODEREFRACTOR_NO_DYNAMIC_LINKING
+#endif // CODEREFRACTOR_BARE_METAL
+
 static std::vector<std::shared_ptr<System_String> > _stringJumps;
 
-void buildTypesTable();
+//void buildTypesTable();
 void buildStringTable();
 void mapLibs();
 void RuntimeHelpersBuildConstantTable();
@@ -13,8 +17,8 @@ bool IsInstanceOf(int typeSource, int typeImplementation);
 
 
 void initializeRuntime()
-{	
-	buildTypesTable();
+{
+	//buildTypesTable();
 	buildStringTable();
 	mapLibs();
 	RuntimeHelpersBuildConstantTable();
@@ -64,7 +68,7 @@ std::shared_ptr<System_String> _str(int index)
 void _AddJumpAndLength(int jump, int length)
 {
 	auto resultData = &(_stringTable[jump]);
-	
+
 	auto result = std::make_shared<System_String>();
 	auto value = std::make_shared<Array < System_Char >>(length+1, resultData);
 	result->Text =  value;
@@ -81,6 +85,33 @@ void AddConstantByteArray(System_Byte* data)
 {
 	_constTables.push_back(data);
 }
+
+#ifdef CODEREFRACTOR_NO_DYNAMIC_LINKING
+
+void fail_application_spectaculously();
+
+void* LoadNativeLibrary(const char* dllFileName)
+{
+    fail_application_spectaculously();
+}
+
+void* LoadNativeMethod(void* module, const char* methodName)
+{
+    fail_application_spectaculously();
+}
+
+/**
+ * Just sigsegvs on purpose, since we want to stop the application but we
+ * can't depend on anything external.
+ */
+void fail_application_spectaculously()
+{
+    char* null_reference = NULL;
+    null_reference[0] = 0; // fail on purpose.
+}
+
+#else // CODEREFRACTOR_NO_DYNAMIC_LINKING
+
 #ifdef _WIN32
 
 #include <windows.h>
@@ -94,7 +125,8 @@ void* LoadNativeMethod(HMODULE module, const char* methodName)
 {
 	return (void*)GetProcAddress(module, methodName);
 }
-#else
+#else // _WIN32
+
 #include <dlfcn.h>
 
 void* LoadNativeLibrary(const char* dllFileName)
@@ -108,6 +140,8 @@ void* LoadNativeMethod(void* module, const char* methodName)
 }
 #endif
 
+#endif
+
 #include <stdio.h>
 #include <math.h>
 
@@ -115,7 +149,7 @@ std::shared_ptr<Array < std::shared_ptr<System_String> > > System_getArgumentsAs
 {
 	auto result = new Array <std::shared_ptr<System_String> >(argc);
 	for(auto i=0;i<argc;i++){
-		//std::shared_ptr<System::String> newString (new System::String(argv[i])); 
+		//std::shared_ptr<System::String> newString (new System::String(argv[i]));
 		//(*result)[i] = newString;
 	}
 	return std::shared_ptr< Array <std::shared_ptr<System_String> > >(result);
@@ -124,5 +158,5 @@ std::shared_ptr<Array < std::shared_ptr<System_String> > > System_getArgumentsAs
 
 void System_Console__WriteLine(const wchar_t* value)
 {
-	wprintf(L"%ls\n", value);	
+	wprintf(L"%ls\n", value);
 }
