@@ -3,57 +3,41 @@
 struct System_Object; 
 struct CodeRefactor_OpenRuntime_CrString; 
 struct _Test; 
-struct _MyClass; 
-struct CodeRefactor_OpenRuntime_CrConsole; 
 struct System_Object {
 int _typeId;
 };
 struct System_String : public System_Object {
-System_String() {_typeId = 6; }
+System_String() {_typeId = 5; }
  std::shared_ptr< Array < System_Char > > Text;
 };
 struct _Test : public System_Object {
 };
-struct _MyClass : public System_Object {
-};
-struct System_Console : public System_Object {
-};
 
 System_Void _Test_Main();
 
-System_Void _MyClass_Display(const std::shared_ptr<_MyClass>& _this, System_Int32 value);
-
-System_Void System_Console_WriteLine(System_Int32 value);
+System_Int32 _Test_MessageBox(System_Int32 handle, System_Char* message, System_Char* title, System_UInt32 type);
 
 #include "runtime_base.hpp"
 // --- Begin definition of virtual implementingMethod tables ---
 System_Void setupTypeTable();
 
 
-#include "stdio.h"
-System_Void System_Console_WriteLine(System_Int32 value)
-{
-printf("%d\n", value);
-}
 ///--- PInvoke code --- 
+typedef System_Int32 ( *dll_method_1_type)(System_Int32 handle, System_Char* message, System_Char* title, System_UInt32 type);
+dll_method_1_type dll_method_1;
+System_Int32 _Test_MessageBox(System_Int32 handle, std::shared_ptr<System_String> message, std::shared_ptr<System_String> title, System_UInt32 type)
+{
+System_Char* _message = message.get()->Text.get()->Items;
+System_Char* _title = title.get()->Text.get()->Items;
+return dll_method_1(handle, _message, _title, type);
+}
+
 ///---Begin closure code --- 
 System_Void _Test_Main()
 {
-std::shared_ptr<_MyClass> vreg_1;
-
-vreg_1 = std::make_shared<_MyClass >();
-vreg_1->_typeId = 3;
-_MyClass_Display(vreg_1, 3);
-return;
-}
-
-
-System_Void _MyClass_Display(const std::shared_ptr<_MyClass>& _this, System_Int32 value)
-{
 System_Int32 vreg_1;
 
-vreg_1 = value+3;
-System_Console_WriteLine(vreg_1);
+vreg_1 = _Test_MessageBox(0, _str(0), _str(1), 0);
 return;
 }
 
@@ -67,14 +51,19 @@ _Test_Main();
 return 0;
 }
 System_Void mapLibs() {
+auto lib_0 = LoadNativeLibrary(L"User32.dll");
+dll_method_1 = (dll_method_1_type)LoadNativeMethod(lib_0, "MessageBoxW");
 }
 
 System_Void RuntimeHelpersBuildConstantTable() {
 }
 
 System_Void buildStringTable() {
+_AddJumpAndLength(0, 7);
+_AddJumpAndLength(8, 5);
 } // buildStringTable
-const wchar_t _stringTable[1] = {
-0
+const wchar_t _stringTable[14] = {
+77, 101, 115, 115, 97, 103, 101, 0 /* "Message" */, 
+84, 105, 116, 108, 101, 0 /* "Title" */
 }; // _stringTable 
 

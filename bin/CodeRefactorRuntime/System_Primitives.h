@@ -94,8 +94,9 @@ void AddConstantByteArray(System_Byte* data);
 
 #ifndef CODEREFRACTOR_BARE_METAL
 
-MODULE_HANDLE LoadNativeLibrary(const System_Char* dllFileName);
-void* LoadNativeMethod(MODULE_HANDLE module, const char* methodName);
+// TODO: right now the methods are implemented in runtime_base.hpp, they should be moved out
+//MODULE_HANDLE LoadNativeLibrary(const System_Char* dllFileName);
+//void* LoadNativeMethod(MODULE_HANDLE module, const char* methodName);
 
 #endif // CODEREFRACTOR_BARE_METAL
 

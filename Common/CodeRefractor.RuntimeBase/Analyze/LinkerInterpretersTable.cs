@@ -19,10 +19,14 @@ namespace CodeRefractor.Analyze
 
             var sb = new StringBuilder();
 
-            var arguments = methodBase.GetArgumentsAsText(pinvoke:methodBase.IsPinvoke());
+            // Since the method signature for the call is the external interface we
+            // provide to our clients, the signature remains the same, an dinternally the
+            // PInvoke method will do parameter marshalling in case the types are different.
+            var arguments = methodBase.GetArgumentsAsText(); 
 
             sb.AppendFormat("{0} {1}({2})",
                 retType, methodBase.ClangMethodSignature(crRuntime), arguments);
+
             if (writeEndColon)
                 sb.Append(";");
 

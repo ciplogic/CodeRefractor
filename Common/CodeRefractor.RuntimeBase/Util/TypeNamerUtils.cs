@@ -228,7 +228,7 @@ namespace CodeRefractor.Util
 
             if (type == typeof(string) && isPInvoke)
             {
-                return "System_Char *";
+                return "System_Char*";
             }
 
             if (type.IsArray)
@@ -262,9 +262,9 @@ namespace CodeRefractor.Util
                     case EscapingMode.Smart:
                         return String.Format(StdSharedPtr + "<{0}>", type.ToCppMangling());
                     case EscapingMode.Pointer:
-                        return String.Format("{0} *", type.ToCppMangling());
+                        return String.Format("{0}*", type.ToCppMangling());
                     case EscapingMode.Stack:
-                        return String.Format("{0} ", type.ToCppMangling());
+                        return String.Format("{0}", type.ToCppMangling());
                 }
             }
             if (!(type.IsClass || type.IsInterface) || isSmartPtr != EscapingMode.Smart)

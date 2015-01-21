@@ -1,35 +1,18 @@
 //Taken From Microsoft Documentation on Virtual Methods
 using System;
-
-class A
-{
-    public void F() { Console.WriteLine("A.F"); }
-    public virtual void G() { Console.WriteLine("A.G"); }
-}
-
-class B : A
-{
-    new public void F() { Console.WriteLine("B.F"); }
-    public override void G() { Console.WriteLine("B.G"); }
-}
+using System.Runtime.InteropServices;
 
 /**
- * This is a comment
- * TODO
-: this is a todo thing
+ * Display a message box imported from an external source.
  */
-class MyClass
-{
-    public void Display(int value)
-    {
-        Console.WriteLine(value+3);
-    }
-}
 public class Test
 {
+    [DllImport("User32.dll")]
+    public static extern int MessageBox(int handle, String message, String title, uint type);
+
+    [STAThread]
     public static void Main()
     {
-        var cl = new MyClass();
-        cl.Display(3);
+        MessageBox(0, "Message", "Title", 0);
     }
 }

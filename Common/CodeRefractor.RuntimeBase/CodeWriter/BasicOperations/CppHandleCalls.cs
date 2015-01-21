@@ -173,8 +173,10 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             BuildCallString(sb, parameters, fullEscapeData, parametersData.ToArray());
         }
 
-        public static void BuildCallString(StringBuilder sb, List<IdentifierValue> parameters, EscapingMode[] fullEscapeData,
-            EscapingMode[] parametersData)
+        public static void BuildCallString(StringBuilder sb, 
+                    List<IdentifierValue> parameters,
+                    EscapingMode[] fullEscapeData,
+                    EscapingMode[] parametersData)
         {
             var parameterStrings = new List<string>();
             for (int index = 0; index < parameters.Count; index++)

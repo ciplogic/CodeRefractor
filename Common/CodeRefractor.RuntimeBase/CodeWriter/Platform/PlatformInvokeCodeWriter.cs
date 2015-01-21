@@ -1,6 +1,7 @@
 #region Usings
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -35,7 +36,7 @@ namespace CodeRefractor.CodeWriter.Platform
                 Id = id
             };
 
-            if(!findItem.Methods.ContainsKey(method))
+            if (!findItem.Methods.ContainsKey(method))
                 findItem.Methods.Add(method, dllId);
             return dllId.FormattedName();
         }
@@ -65,7 +66,7 @@ namespace CodeRefractor.CodeWriter.Platform
 
         private static string WritePInvokeDefinition(this MethodInterpreter methodBase, string methodDll)
         {
-            var platformInterpreter = (PlatformInvokeMethod) methodBase;
+            var platformInterpreter = (PlatformInvokeMethod)methodBase;
             var retType = platformInterpreter.Method.GetReturnType().ToCppMangling();
             var sb = new StringBuilder();
             var arguments = methodBase.Method.GetArgumentsAsText(true);
@@ -112,10 +113,21 @@ namespace CodeRefractor.CodeWriter.Platform
 
             sb.AppendFormat(platformInvoke.WritePInvokeDefinition(methodId));
 
-            sb.Append(platformInvoke.Method.WriteHeaderMethod(crRuntime, false));
+            sb.Append(platformInvoke.Method.WriteHeaderMethod(crRuntime, writeEndColon : false));
+
+            // write PInvoke implementation
             sb.AppendLine("{");
+            
             var identifierValues = platformInvoke.Method.GetParameters();
-            var argumentsCall = String.Join(", ", identifierValues.Select(p => p.Name));
+
+            var marshallers = identifierValues.Select(CallMarshallerFactory.CreateMarshaller);
+
+            foreach (var marshaller in marshallers)
+            {
+                sb.Append(marshaller.GetTransformationCode());
+            }
+
+            var argumentsCall = String.Join(", ", marshallers.Select(p => p.GetParameterString()));
             if (!platformInvoke.Method.GetReturnType().IsVoid())
             {
                 sb.Append("return ");
