@@ -72,7 +72,9 @@
     <Compile Include="ClosureCompute\Steps\AddVirtualMethodImplementations.cs" />
     <Compile Include="ClosureCompute\Steps\AddVirtualMethods.cs" />
     <Compile Include="CodeWriter\Linker\GenerateTypeTableForIsInst.cs" />
-    <Compile Include="CodeWriter\Platform\CallMarshallerFactory.cs" />
+    <Compile Include="CodeWriter\Types\CallMarshallerFactory.cs" />
+    <Compile Include="CodeWriter\Types\CallParameterMarshaller.cs" />
+    <Compile Include="CodeWriter\Types\CallParameterStringMarshaller.cs" />
     <Compile Include="CodeWriter\Types\TypeBodiesCodeGenerator.cs" />
     <Compile Include="ClosureCompute\ClosureComputeBase.cs" />
     <Compile Include="ClosureCompute\ClosureEntities.cs" />
