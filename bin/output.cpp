@@ -3,19 +3,25 @@
 struct System_Object; 
 struct CodeRefactor_OpenRuntime_CrString; 
 struct _Test; 
+struct _Something; 
+struct _Counter; 
 struct System_Object {
 int _typeId;
 };
 struct System_String : public System_Object {
-System_String() {_typeId = 5; }
+System_String() {_typeId = 6; }
  std::shared_ptr< Array < System_Char > > Text;
 };
 struct _Test : public System_Object {
 };
+struct _Counter {
+	System_Int32 i;
+};
+struct _Something {
+ _Counter c;
+};
 
 System_Void _Test_Main();
-
-System_Int32 _Test_MessageBox(System_Int32 handle, System_Char* message, System_Char* title, System_UInt32 type);
 
 #include "runtime_base.hpp"
 // --- Begin definition of virtual implementingMethod tables ---
@@ -23,21 +29,25 @@ System_Void setupTypeTable();
 
 
 ///--- PInvoke code --- 
-typedef System_Int32 ( *dll_method_1_type)(System_Int32 handle, System_Char* message, System_Char* title, System_UInt32 type);
-dll_method_1_type dll_method_1;
-System_Int32 _Test_MessageBox(System_Int32 handle, std::shared_ptr<System_String> message, std::shared_ptr<System_String> title, System_UInt32 type)
-{
-System_Char* _message = message.get()->Text.get()->Items;
-System_Char* _title = title.get()->Text.get()->Items;
-return dll_method_1(handle, _message, _title, type);
-}
-
 ///---Begin closure code --- 
 System_Void _Test_Main()
 {
-System_Int32 vreg_1;
+_Something local_0;
+_Something*  vreg_1;
+_Counter*  vreg_2;
+_Something*  vreg_3;
+_Counter*  vreg_4;
+System_Int32 vreg_6;
+System_Int32 vreg_7;
 
-vreg_1 = _Test_MessageBox(0, _str(0), _str(1), 0);
+vreg_1 = &local_0;
+vreg_2 = &(vreg_1->c);
+vreg_2->i = 0;
+vreg_3 = &local_0;
+vreg_4 = &(vreg_3->c);
+vreg_6 = vreg_4->i;
+vreg_7 = vreg_6+1;
+vreg_4->i = vreg_7;
 return;
 }
 
@@ -51,19 +61,14 @@ _Test_Main();
 return 0;
 }
 System_Void mapLibs() {
-auto lib_0 = LoadNativeLibrary(L"User32.dll");
-dll_method_1 = (dll_method_1_type)LoadNativeMethod(lib_0, "MessageBoxW");
 }
 
 System_Void RuntimeHelpersBuildConstantTable() {
 }
 
 System_Void buildStringTable() {
-_AddJumpAndLength(0, 7);
-_AddJumpAndLength(8, 5);
 } // buildStringTable
-const wchar_t _stringTable[14] = {
-77, 101, 115, 115, 97, 103, 101, 0 /* "Message" */, 
-84, 105, 116, 108, 101, 0 /* "Title" */
+const wchar_t _stringTable[1] = {
+0
 }; // _stringTable 
 

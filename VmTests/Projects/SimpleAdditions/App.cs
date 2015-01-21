@@ -1,18 +1,20 @@
 //Taken From Microsoft Documentation on Virtual Methods
 using System;
-using System.Runtime.InteropServices;
-
-/**
- * Display a message box imported from an external source.
- */
-public class Test
+struct Counter
 {
-    [DllImport("User32.dll")]
-    public static extern int MessageBox(int handle, String message, String title, uint type);
+    public int i;
+}
 
-    [STAThread]
-    public static void Main()
+struct Something
+{
+    public Counter c;
+}
+class Test
+{
+    static void Main()
     {
-        MessageBox(0, "Message", "Title", 0);
+        Something s;
+        s.c.i = 0;
+        s.c.i++;
     }
 }
