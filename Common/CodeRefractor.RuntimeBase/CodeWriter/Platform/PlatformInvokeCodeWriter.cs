@@ -8,6 +8,7 @@ using System.Text;
 using CodeRefractor.Analyze;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.CodeWriter.Linker;
+using CodeRefractor.CodeWriter.Output;
 using CodeRefractor.CodeWriter.Types;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Interpreters;
@@ -110,30 +111,30 @@ namespace CodeRefractor.CodeWriter.Platform
                 platformInvoke.CallingConvention,
                 platformInvoke.EntryPoint);
 
-            var output = new StringBuilder();
+            CodeOutput codeOutput = new CodeOutput();
 
-            output.AppendFormat(platformInvoke.WritePInvokeDefinition(methodId));
-
-            output.Append(platformInvoke.Method.WriteHeaderMethod(crRuntime, writeEndColon : false));
+            codeOutput.AppendFormat(platformInvoke.WritePInvokeDefinition(methodId));
+            codeOutput.BlankLine();
+            codeOutput.Append(platformInvoke.Method.WriteHeaderMethod(crRuntime, writeEndColon: false));
 
             // write PInvoke implementation
-            output.AppendLine("{");
+            codeOutput.BracketOpen();
 
             var argumentsCall = platformInvoke.Method.GetParameters()
                 .Select(CallMarshallerFactory.CreateMarshaller)
-                .Each(marshaller => { output.Append(marshaller.GetTransformationCode()); })
+                .Each(marshaller => { codeOutput.Append(marshaller.GetTransformationCode()); })
+                .Once(marshallers => { codeOutput.BlankLine(); })
                 .Select(p => p.GetParameterString())
                 .Join(", ");
 
             if (!platformInvoke.Method.GetReturnType().IsVoid())
             {
-                output.Append("return ");
+                codeOutput.Append("return ");
             }
-            output.AppendFormat("{0}({1});", methodId, argumentsCall);
-            output.AppendLine();
-            output.AppendLine("}");
+            codeOutput.AppendFormat("{0}({1});", methodId, argumentsCall);
+            codeOutput.BracketClose();
 
-            return output.ToString();
+            return codeOutput.ToString();
         }
     }
 }

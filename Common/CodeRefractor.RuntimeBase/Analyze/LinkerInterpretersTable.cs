@@ -30,7 +30,6 @@ namespace CodeRefractor.Analyze
             if (writeEndColon)
                 sb.Append(";");
 
-            sb.AppendLine();
             return sb.ToString();
         }
 

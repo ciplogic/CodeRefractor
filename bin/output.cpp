@@ -25,13 +25,13 @@ System_Void setupTypeTable();
 ///--- PInvoke code --- 
 typedef System_Int32 ( *dll_method_1_type)(System_Int32 handle, System_Char* message, System_Char* title, System_UInt32 type);
 dll_method_1_type dll_method_1;
-System_Int32 _Test_MessageBox(System_Int32 handle, std::shared_ptr<System_String> message, std::shared_ptr<System_String> title, System_UInt32 type)
-{
-System_Char* _message = message.get()->Text.get()->Items;
-System_Char* _title = title.get()->Text.get()->Items;
-return dll_method_1(handle, _message, _title, type);
-}
 
+System_Int32 _Test_MessageBox(System_Int32 handle, std::shared_ptr<System_String> message, std::shared_ptr<System_String> title, System_UInt32 type) {
+    System_Char* _message = message.get()->Text.get()->Items;
+    System_Char* _title = title.get()->Text.get()->Items;
+
+    return dll_method_1(handle, _message, _title, type);
+}
 ///---Begin closure code --- 
 System_Void _Test_Main()
 {

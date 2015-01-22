@@ -38,5 +38,37 @@ namespace CodeRefractor.Util
 
             return result.ToString();
         }
+
+        /**
+         * Calls the given action on all the elements but the first element.
+         * Returns the full enumerable.
+         */
+        public static IEnumerable<T> ButFirst<T>(this IEnumerable<T> enumerable, Action<T> action)
+        {
+            bool first = true;
+
+            foreach (var item in enumerable)
+            {
+                if (first)
+                {
+                    first = false;
+                    continue;
+                }
+
+                action.Invoke(item);
+            }
+
+            return enumerable;
+        }
+
+        /**
+         * Calls the given action once, and returns the enumerable.
+         */
+        public static IEnumerable<T> Once<T>(this IEnumerable<T> enumerable, Action<IEnumerable<T>> action)
+        {
+            action.Invoke(enumerable);
+
+            return enumerable;
+        }
     }
 }
