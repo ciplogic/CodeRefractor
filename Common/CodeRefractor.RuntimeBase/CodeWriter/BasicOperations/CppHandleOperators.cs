@@ -216,7 +216,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             var leftData = assign.Left;
             var rightData = assign.Right;
             var fieldName = assign.Field.Name;
-            bodySb.AppendFormat("{0} = &{1}->{2};", leftData.Name, rightData.Name, fieldName);
+            bodySb.AppendFormat("{0} = &({1}->{2});", leftData.Name, rightData.Name, fieldName);
         }
 
         private static void HandleDerefAssignment(LocalOperation operation, StringBuilder bodySb)
