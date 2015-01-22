@@ -110,33 +110,30 @@ namespace CodeRefractor.CodeWriter.Platform
                 platformInvoke.CallingConvention,
                 platformInvoke.EntryPoint);
 
-            var sb = new StringBuilder();
+            var output = new StringBuilder();
 
-            sb.AppendFormat(platformInvoke.WritePInvokeDefinition(methodId));
+            output.AppendFormat(platformInvoke.WritePInvokeDefinition(methodId));
 
-            sb.Append(platformInvoke.Method.WriteHeaderMethod(crRuntime, writeEndColon : false));
+            output.Append(platformInvoke.Method.WriteHeaderMethod(crRuntime, writeEndColon : false));
 
             // write PInvoke implementation
-            sb.AppendLine("{");
-            
-            var identifierValues = platformInvoke.Method.GetParameters();
+            output.AppendLine("{");
 
-            var marshallers = identifierValues.Select(CallMarshallerFactory.CreateMarshaller);
+            var argumentsCall = platformInvoke.Method.GetParameters()
+                .Select(CallMarshallerFactory.CreateMarshaller)
+                .Each(marshaller => { output.Append(marshaller.GetTransformationCode()); })
+                .Select(p => p.GetParameterString())
+                .Join(", ");
 
-            foreach (var marshaller in marshallers)
-            {
-                sb.Append(marshaller.GetTransformationCode());
-            }
-
-            var argumentsCall = String.Join(", ", marshallers.Select(p => p.GetParameterString()));
             if (!platformInvoke.Method.GetReturnType().IsVoid())
             {
-                sb.Append("return ");
+                output.Append("return ");
             }
-            sb.AppendFormat("{0}({1});", methodId, argumentsCall);
-            sb.AppendLine();
-            sb.AppendLine("}");
-            return sb.ToString();
+            output.AppendFormat("{0}({1});", methodId, argumentsCall);
+            output.AppendLine();
+            output.AppendLine("}");
+
+            return output.ToString();
         }
     }
 }

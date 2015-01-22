@@ -162,6 +162,8 @@
     <Compile Include="Runtime\RuntimeLibraryUtils.cs" />
     <Compile Include="TypeInfoWriter\TypeDescriptionTable.cs" />
     <Compile Include="TypeInfoWriter\VirtualMethodDescription.cs" />
+    <Compile Include="Util\EnumerationUtils.cs" />
+    <Compile Include="Util\OnceMany.cs" />
     <Compile Include="Util\TypeNamerUtils.cs" />
     <Compile Include="Config\CodeRefractorVersions.cs" />
     <Compile Include="Config\CommandLineParse.cs" />

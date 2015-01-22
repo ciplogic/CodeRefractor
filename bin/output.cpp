@@ -52,7 +52,7 @@ return 0;
 }
 System_Void mapLibs() {
 auto lib_0 = LoadNativeLibrary(L"User32.dll");
-dll_method_1 = (dll_method_1_type)LoadNativeMethod(lib_0, "MessageBoxW");
+dll_method_1 = (dll_method_1_type)LoadNativeMethod(lib_0, "MessageBox");
 }
 
 System_Void RuntimeHelpersBuildConstantTable() {
