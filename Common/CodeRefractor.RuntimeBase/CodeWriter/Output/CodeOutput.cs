@@ -97,10 +97,23 @@ namespace CodeRefractor.CodeWriter.Output
          * Closes a bracket
          * TODO: this should be moved into a bracket strategy, to allow changing the bracket style
          */
-        public CodeOutput BracketClose()
+        public CodeOutput BracketClose(bool assignedStatement = false)
         {
             _indentCode.ChangeIndent(-1);
-            _stringBuilderOutput.Append("\n}");
+
+            if (_atLineBeginning)
+            {
+                this.Append("}");
+            }
+            else
+            {
+                this.Append("\n}");
+            }
+
+            if (!assignedStatement)
+            {
+                this.Append("\n");
+            }
 
             return this;
         }

@@ -4,14 +4,20 @@ struct System_Object;
 struct CodeRefactor_OpenRuntime_CrString; 
 struct _Test; 
 struct System_Object {
-int _typeId;
+    int _typeId;
 };
+
 struct System_String : public System_Object {
-System_String() {_typeId = 5; }
- std::shared_ptr< Array < System_Char > > Text;
+    System_String() {
+        typeId = 5;
+    }
+
+    std::shared_ptr< Array < System_Char > > Text;
 };
+
 struct _Test : public System_Object {
 };
+
 
 System_Void _Test_Main();
 
@@ -32,6 +38,7 @@ System_Int32 _Test_MessageBox(System_Int32 handle, std::shared_ptr<System_String
 
     return dll_method_1(handle, _message, _title, type);
 }
+
 ///---Begin closure code --- 
 System_Void _Test_Main()
 {

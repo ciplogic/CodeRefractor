@@ -11,6 +11,7 @@ using CodeRefractor.Backend.ComputeClosure;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.CodeWriter.BasicOperations;
 using CodeRefractor.CodeWriter.Linker;
+using CodeRefractor.CodeWriter.Output;
 using CodeRefractor.CodeWriter.Platform;
 using CodeRefractor.CodeWriter.Types;
 using CodeRefractor.FrontEnd.SimpleOperations.Methods;
@@ -120,7 +121,7 @@ namespace CodeRefractor.Backend
 
 
 
-        private static void WriteClassFieldsBody(StringBuilder sb, Type mappedType, ClosureEntities crRuntime)
+        private static void WriteClassFieldsBody(CodeOutput sb, Type mappedType, ClosureEntities crRuntime)
         {
             var typeDesc = UsedTypeList.Set(mappedType, crRuntime);
             typeDesc.WriteLayout(sb);

@@ -5,6 +5,7 @@ using System.Text;
 using CodeRefractor.Analyze;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.ClosureCompute.TypeSorter;
+using CodeRefractor.CodeWriter.Output;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.TypeInfoWriter;
@@ -43,41 +44,63 @@ namespace CodeRefractor.CodeWriter.Types
         {
             if (DelegateManager.IsTypeDelegate(type))
                 return;
+
+            CodeOutput codeOutput = new CodeOutput();
+
             var mappedType = type.GetMappedType(crRuntime);
             type = mappedType.GetReversedMappedType(crRuntime);
 
             if (!type.IsValueType && type.BaseType != null)
             {
                 //Not Necessary
-                // sb.AppendFormat("struct {0} : public {1} {2} {{", type.ToCppMangling(), type.BaseType.ToCppMangling(),type.GetInterfaces().Any()? " ,"+type.GetInterfaces().Select(j=>j.ToCppMangling()).Aggregate((a,b)=>a + " , " + b):"");
-                sb.AppendFormat("struct {0} : public {1} {{", type.ToCppMangling(), type.BaseType.ToCppMangling());
+                // codeOutput.AppendFormat("struct {0} : public {1} {2} {{", type.ToCppMangling(), type.BaseType.ToCppMangling(),type.GetInterfaces().Any()? " ,"+type.GetInterfaces().Select(j=>j.ToCppMangling()).Aggregate((a,b)=>a + " , " + b):"");
+                codeOutput.AppendFormat(
+                        "struct {0} : public {1}",
+                        type.ToCppMangling(),
+                        type.BaseType.ToCppMangling())
+                    .BracketOpen();
             }
             else if (!type.IsValueType && type.IsInterface)
             {
-                sb.AppendFormat("struct {0} : public {1} {{", type.ToCppMangling(), typeof (object).ToCppMangling());
+                codeOutput.AppendFormat("struct {0} : public {1}",
+                    type.ToCppMangling(),
+                    typeof (object).ToCppMangling())
+                   .BracketOpen();
             }
             else
             {
-                sb.AppendFormat("struct {0} {{", type.ToCppMangling());
+                codeOutput.AppendFormat("struct {0}", type.ToCppMangling())
+                    .BracketOpen();
             }
-            sb.AppendLine();
+
             if (type == typeof (object))
             {
-                sb.AppendLine("int _typeId;");
+                codeOutput.Append("int _typeId;\n");
             }
+
             //String Support
             if (type == typeof(string))
             {
                 crRuntime.AddType(typeof(string));
                 List<Type> usedTypes = crRuntime.MappedTypes.Values.ToList();
                 var typeTable = new TypeDescriptionTable(usedTypes, crRuntime);
-                sb.AppendLine(String.Format("System_String() {{_typeId = {0}; }}", typeTable.GetTypeId(typeof(string))));
+
+                codeOutput.Append("System_String()")
+                    .BracketOpen()
+                    .AppendFormat("typeId = {0};\n", typeTable.GetTypeId(typeof (string)))
+                    .BracketClose()
+                    .BlankLine();
             }
-            WriteClassFieldsBody(sb, mappedType, crRuntime);
-            sb.AppendFormat("}};").AppendLine();
+
+            WriteClassFieldsBody(codeOutput, mappedType, crRuntime);
+            codeOutput.BracketClose(true)
+                .Append(";\n")
+                .BlankLine();
 
             var typedesc = UsedTypeList.Set(type, crRuntime);
-            typedesc.WriteStaticFieldInitialization(sb);
+            typedesc.WriteStaticFieldInitialization(codeOutput);
+
+            sb.Append(codeOutput.ToString());
         }
 
         private static void GenerateForwardTypes(Type[] typeDatas, StringBuilder sb, ClosureEntities crRuntime)
@@ -107,10 +130,10 @@ namespace CodeRefractor.CodeWriter.Types
             return true;
         }
 
-        private static void WriteClassFieldsBody(StringBuilder sb, Type mappedType, ClosureEntities crRuntime)
+        private static void WriteClassFieldsBody(CodeOutput codeOutput, Type mappedType, ClosureEntities crRuntime)
         {
             var typeDesc = UsedTypeList.Set(mappedType, crRuntime);
-            typeDesc.WriteLayout(sb);
+            typeDesc.WriteLayout(codeOutput);
         }
     }
 }

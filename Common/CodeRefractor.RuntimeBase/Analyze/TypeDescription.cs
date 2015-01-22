@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using CodeRefractor.ClosureCompute;
+using CodeRefractor.CodeWriter.Output;
 using CodeRefractor.Runtime;
 using CodeRefractor.RuntimeBase.Shared;
 using CodeRefractor.Util;
@@ -133,21 +134,22 @@ namespace CodeRefractor.RuntimeBase.Analyze
             }
         }
 
-        public void WriteLayout(StringBuilder sb)
+        public void WriteLayout(CodeOutput codeOutput)
         {
             if (BaseType != null)
-                BaseType.WriteLayout(sb);
+                BaseType.WriteLayout(codeOutput);
 
             var noOffsetFields = new List<FieldDescription>();
             var dictionary = new SortedDictionary<int, List<FieldDescription>>();
             BuildUnionLayouts(noOffsetFields, dictionary);
             foreach (var fieldList in dictionary.Values)
             {
-                sb.AppendLine("union {");
-                WriteFieldListToLayout(sb, fieldList);
-                sb.AppendLine("};");
+                codeOutput.Append("union")
+                    .BracketOpen();
+                WriteFieldListToLayout(codeOutput, fieldList);
+                codeOutput.BracketClose();
             }
-            WriteFieldListToLayout(sb, noOffsetFields);
+            WriteFieldListToLayout(codeOutput, noOffsetFields);
         }
 
         private void BuildUnionLayouts(List<FieldDescription> noOffsetFields,
@@ -169,19 +171,19 @@ namespace CodeRefractor.RuntimeBase.Analyze
             }
         }
 
-        private static void WriteFieldListToLayout(StringBuilder sb, List<FieldDescription> fields)
+        private static void WriteFieldListToLayout(CodeOutput codeOutput, List<FieldDescription> fields)
         {
             foreach (var fieldData in fields)
             {
                 if (fieldData.TypeDescription.ContainsGenericParameters)
                 {
                 }
-                var staticString = fieldData.IsStatic ? "static" : "";
-                sb.AppendFormat("{2} {0} {1};",
+                var staticString = fieldData.IsStatic ? "static " : "";
+                codeOutput.AppendFormat("{2}{0} {1};\n",
                     fieldData.TypeDescription._clrType.ToCppName(),
                     fieldData.Name.ValidName(),
                     staticString
-                    ).AppendLine();
+                );
             }
         }
 
@@ -201,10 +203,10 @@ namespace CodeRefractor.RuntimeBase.Analyze
             return _clrType.ToString();
         }
 
-        public void WriteStaticFieldInitialization(StringBuilder sb)
+        public void WriteStaticFieldInitialization(CodeOutput codeOutput)
         {
             if (BaseType != null)
-                BaseType.WriteLayout(sb);
+                BaseType.WriteLayout(codeOutput);
 
             var mappedType = _clrType;
 
@@ -214,12 +216,12 @@ namespace CodeRefractor.RuntimeBase.Analyze
             {
                 if (!fieldData.IsStatic)
                     continue;
-                sb.AppendFormat(" /* static*/ {0} {3}::{1} = {2};",
+
+                codeOutput.AppendFormat("/* static*/ {0} {3}::{1} = {2};\n",
                     fieldData.TypeDescription._clrType.ToCppName(),
                     fieldData.Name.ValidName(),
                     GetDefault(fieldData.TypeDescription._clrType),
-                    _clrType.ToCppMangling())
-                    .AppendLine();
+                    _clrType.ToCppMangling());
             }
         }
 
