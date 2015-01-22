@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Text;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.CodeWriter.Linker;
+using CodeRefractor.CodeWriter.Output;
 using CodeRefractor.FrontEnd.SimpleOperations.Casts;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Interpreters;
@@ -30,16 +31,19 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             ClosureEntities crRuntime)
         {
             var operations = interpreter.MidRepresentation.LocalOperations;
-            var headerSb = new StringBuilder();
-            var sb = CppWriteSignature.WriteSignature(interpreter, crRuntime);
-            headerSb.Append(sb);
-            headerSb.Append("{");
+            var headerSb = new CodeOutput();
+            CppWriteSignature.WriteSignature(headerSb, interpreter, crRuntime);
+
             var bodySb = ComputeBodySb(operations, interpreter.MidRepresentation.Vars, typeTable, interpreter, crRuntime);
             var variablesSb = ComputeVariableSb(interpreter.MidRepresentation, interpreter, crRuntime);
-            var finalSb = new StringBuilder();
-            finalSb.AppendLine(headerSb.ToString());
-            finalSb.AppendLine(variablesSb.ToString());
-            finalSb.AppendLine(bodySb.ToString());
+            var finalSb = new CodeOutput();
+
+            finalSb.BracketOpen()
+                    .Append(headerSb.ToString())
+                    .Append(variablesSb.ToString())
+                    .Append(bodySb.ToString())
+                    .BracketClose();
+
             return finalSb.ToString();
         }
 
@@ -144,7 +148,7 @@ T unbox_value(std::shared_ptr<System_Object> value){
                 }
                 bodySb.AppendLine();
             }
-            bodySb.AppendLine("}");
+
             return bodySb;
         }
 

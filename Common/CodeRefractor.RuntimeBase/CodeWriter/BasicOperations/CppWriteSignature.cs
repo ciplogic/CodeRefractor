@@ -5,6 +5,7 @@ using System.Text;
 using CodeRefractor.Analyze;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.CodeWriter.Linker;
+using CodeRefractor.CodeWriter.Output;
 using CodeRefractor.MiddleEnd.Interpreters;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.RuntimeBase;
@@ -77,33 +78,32 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         }
 
 
-        public static string WriteHeaderMethodWithEscaping(this MethodInterpreter interpreter, ClosureEntities closureEntities, bool writeEndColon = true)
+        public static void WriteHeaderMethodWithEscaping(this MethodInterpreter interpreter,
+            CodeOutput codeOutput,
+            ClosureEntities closureEntities,
+            bool writeEndColon = true)
         {
             var methodBase = interpreter.Method;
-            var sb = new StringBuilder();
-            sb.Append(methodBase.GetReturnType().ToCppName());
 
-            sb.Append(" ");
+            codeOutput.Append(methodBase.GetReturnType().ToCppName())
+                .Append(" ")
+                .Append(interpreter.ClangMethodSignature(closureEntities));
 
-            sb.Append(interpreter.ClangMethodSignature(closureEntities));
             var arguments = interpreter.GetArgumentsAsTextWithEscaping(closureEntities);
 
-            sb.AppendFormat("({0})", arguments);
+            codeOutput.AppendFormat("({0})", arguments);
             if (writeEndColon)
-                sb.Append(";");
+                codeOutput.Append(";");
 
-            sb.AppendLine();
-            return sb.ToString();
+            codeOutput.Append("\n");
         }
 
-        public static StringBuilder WriteSignature(MethodInterpreter interpreter, ClosureEntities closureEntities, bool writeEndColon = false)
+        public static void WriteSignature(CodeOutput codeOutput, MethodInterpreter interpreter, ClosureEntities closureEntities, bool writeEndColon = false)
         {
-            var sb = new StringBuilder();
             if (interpreter == null)
-                return sb;
-            var text = interpreter.WriteHeaderMethodWithEscaping(closureEntities, writeEndColon);
-            sb.Append(text);
-            return sb;
+                return;
+            
+            interpreter.WriteHeaderMethodWithEscaping(codeOutput, closureEntities, writeEndColon);
         }
     }
 }

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.CodeWriter.BasicOperations;
+using CodeRefractor.CodeWriter.Output;
 using CodeRefractor.CodeWriter.Platform;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Interpreters;
@@ -22,15 +23,15 @@ namespace CodeRefractor.Backend.ComputeClosure
             return CppMethodCodeWriter.WriteCode(interpreter, typeTable, closureEntities);
         }
 
-        public static string WriteMethodSignature(MethodInterpreter interpreter, ClosureEntities closureEntities)
+        public static void WriteMethodSignature(CodeOutput codeOutput, MethodInterpreter interpreter, ClosureEntities closureEntities)
         {
             if (interpreter.Method == null)
             {
                 Console.WriteLine("Should not be null");
-                return "";
+                return;
             }
-            var sb = CppWriteSignature.WriteSignature(interpreter,closureEntities, true);
-            return sb.ToString();
+
+            CppWriteSignature.WriteSignature(codeOutput, interpreter, closureEntities, true);
         }
 
         internal static string WritePInvokeMethodCode(PlatformInvokeMethod interpreter, ClosureEntities crRuntime)

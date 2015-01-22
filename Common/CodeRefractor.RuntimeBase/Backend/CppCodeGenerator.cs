@@ -40,25 +40,25 @@ namespace CodeRefractor.Backend
             headerSb.AppendLine("#include <functional>");
 
 
-            var initializersSb = new StringBuilder();
+            var initializersSb = new CodeOutput();
             TypeBodiesCodeGenerator.WriteClosureStructBodies(initializersSb, closureEntities);
             WriteClosureDelegateBodies(closure, initializersSb);
             WriteClosureHeaders(closure, initializersSb, closureEntities);
 
-            initializersSb.AppendLine("#include \"runtime_base.hpp\"");
+            initializersSb.Append("#include \"runtime_base.hpp\"\n");
 
 
-            var bodySb = new StringBuilder();
-            bodySb.AppendLine(VirtualMethodTableCodeWriter.GenerateTypeTableCode(table, closureEntities)); // We need to use this type table to generate missing jumps for subclasses  that dont override a base method
+            var bodySb = new CodeOutput();
+            bodySb.Append(VirtualMethodTableCodeWriter.GenerateTypeTableCode(table, closureEntities)); // We need to use this type table to generate missing jumps for subclasses  that dont override a base method
             WriteCppMethods(closure, bodySb, closureEntities);
             WriteClosureMethods(closure, bodySb, table, closureEntities);
 
             WriteMainBody(interpreter, bodySb, closureEntities);
-            bodySb.AppendLine(PlatformInvokeCodeWriter.LoadDllMethods());
-            bodySb.AppendLine(ConstByteArrayList.BuildConstantTable());
+            bodySb.Append(PlatformInvokeCodeWriter.LoadDllMethods());
+            bodySb.Append(ConstByteArrayList.BuildConstantTable());
 
             LinkingData.Instance.IsInstTable.BuildTypeMatchingTable(table, closureEntities);
-            bodySb.AppendLine(LinkingData.Instance.Strings.BuildStringTable());
+            bodySb.Append(LinkingData.Instance.Strings.BuildStringTable());
 
             //Add Logic to Automatically include std class features that are needed ...
             if (closureEntities.Features.Count > 0)
@@ -71,9 +71,9 @@ namespace CodeRefractor.Backend
                             headerSb.AppendLine("//Headers For Feature: " + runtimeFeature.Name + "\n" +
                                 runtimeFeature.Headers.Select(g => "#include<" + g + ">").Aggregate((a, b) => a + "\n" + b) + "\n//End Of Headers For Feature: " + runtimeFeature.Name + "\n");
                         if (runtimeFeature.Declarations.Count > 0)
-                            initializersSb.AppendLine("//Initializers For: " + runtimeFeature.Name + "\n" + runtimeFeature.Declarations.Aggregate((a, b) => a + "\n" + b) + "\n//End OF Initializers For: " + runtimeFeature.Name + "\n");
+                            initializersSb.Append("//Initializers For: " + runtimeFeature.Name + "\n" + runtimeFeature.Declarations.Aggregate((a, b) => a + "\n" + b) + "\n//End OF Initializers For: " + runtimeFeature.Name + "\n");
                         if (!String.IsNullOrEmpty(runtimeFeature.Functions))
-                            bodySb.AppendLine("//Functions For Feature: " + runtimeFeature.Name + "\n" + runtimeFeature.Functions + "\n//End Of Functions For Feature: " + runtimeFeature.Name + "\n");
+                            bodySb.Append("//Functions For Feature: " + runtimeFeature.Name + "\n" + runtimeFeature.Functions + "\n//End Of Functions For Feature: " + runtimeFeature.Name + "\n");
                     }
                 }
             }
@@ -81,7 +81,7 @@ namespace CodeRefractor.Backend
             return headerSb.Append(initializersSb).Append(bodySb);
         }
 
-        private static void WriteCppMethods(List<MethodInterpreter> closure, StringBuilder sb, ClosureEntities crRuntime)
+        private static void WriteCppMethods(List<MethodInterpreter> closure, CodeOutput sb, ClosureEntities crRuntime)
         {
             var cppMethods = closure
                 .Where(m => m.Kind == MethodKind.RuntimeCppMethod)
@@ -94,19 +94,20 @@ namespace CodeRefractor.Backend
                 var cppInterpreter = (CppMethodInterpreter)interpreter;
                 var runtimeLibrary = cppInterpreter.CppRepresentation;
                 if (LinkingData.SetInclude(runtimeLibrary.Header))
-                    sb.AppendFormat("#include \"{0}\"", runtimeLibrary.Header).AppendLine();
-                var sbDeclaration = CppWriteSignature.WriteSignature(interpreter, crRuntime, false);
-                sb.Append(sbDeclaration);
-                sb.AppendFormat("{{\n{0}\n}}", runtimeLibrary.Source).AppendLine();
+                    sb.AppendFormat("#include \"{0}\"\n", runtimeLibrary.Header);
+                CppWriteSignature.WriteSignature(sb, interpreter, crRuntime, false);
+                sb.BracketOpen()
+                    .Append(runtimeLibrary.Source)
+                    .BracketClose();
             }
         }
 
-        private static void WriteClosureMethods(List<MethodInterpreter> closure, StringBuilder sb, TypeDescriptionTable typeTable, ClosureEntities closureEntities)
+        private static void WriteClosureMethods(List<MethodInterpreter> closure, CodeOutput sb, TypeDescriptionTable typeTable, ClosureEntities closureEntities)
         {
             WriteClosureBodies(closure, sb, typeTable, closureEntities);
         }
 
-        private static void WriteClosureHeaders(IEnumerable<MethodInterpreter> closure, StringBuilder sb, ClosureEntities closureEntities)
+        private static void WriteClosureHeaders(IEnumerable<MethodInterpreter> closure, CodeOutput sb, ClosureEntities closureEntities)
         {
             var methodInterpreters =
                 closure
@@ -114,7 +115,7 @@ namespace CodeRefractor.Backend
                 .ToArray();
             foreach (var interpreter in methodInterpreters)
             {
-                sb.AppendLine(MethodInterpreterCodeWriter.WriteMethodSignature(interpreter, closureEntities));
+                MethodInterpreterCodeWriter.WriteMethodSignature(sb, interpreter, closureEntities);
             }
         }
 
@@ -127,29 +128,29 @@ namespace CodeRefractor.Backend
             typeDesc.WriteLayout(sb);
         }
 
-        private static void WriteClosureDelegateBodies(List<MethodInterpreter> closure, StringBuilder sb)
+        private static void WriteClosureDelegateBodies(List<MethodInterpreter> closure, CodeOutput codeOutput)
         {
             foreach (var interpreter in closure)
             {
                 if (interpreter.Kind != MethodKind.Delegate)
                     continue;
-                sb.AppendLine(MethodInterpreterCodeWriter.WriteDelegateCallCode(interpreter));
+                codeOutput.Append(MethodInterpreterCodeWriter.WriteDelegateCallCode(interpreter));
             }
 
-            sb.AppendLine(DelegateManager.Instance.BuildDelegateContent());
+            codeOutput.Append(DelegateManager.Instance.BuildDelegateContent());
         }
 
-        private static void WriteClosureBodies(List<MethodInterpreter> closure, StringBuilder sb, TypeDescriptionTable typeTable, ClosureEntities closureEntities)
+        private static void WriteClosureBodies(List<MethodInterpreter> closure, CodeOutput sb, TypeDescriptionTable typeTable, ClosureEntities closureEntities)
         {
-            sb.AppendLine("///--- PInvoke code --- ");
+            sb.Append("///--- PInvoke code ---\n");
             foreach (var interpreter in closure)
             {
                 if (interpreter.Kind != MethodKind.PlatformInvoke)
                     continue;
-                sb.AppendLine(MethodInterpreterCodeWriter.WritePInvokeMethodCode((PlatformInvokeMethod)interpreter, closureEntities));
+                sb.Append(MethodInterpreterCodeWriter.WritePInvokeMethodCode((PlatformInvokeMethod)interpreter, closureEntities));
             }
 
-            sb.AppendLine("///---Begin closure code --- ");
+            sb.Append("///---Begin closure code ---\n");
             foreach (var interpreter in closure)
             {
                 if (interpreter.Kind != MethodKind.CilInstructions)
@@ -157,9 +158,9 @@ namespace CodeRefractor.Backend
 
                 if (interpreter.Method.IsAbstract)
                     continue;
-                sb.AppendLine(MethodInterpreterCodeWriter.WriteMethodCode((CilMethodInterpreter)interpreter, typeTable, closureEntities));
+                sb.Append(MethodInterpreterCodeWriter.WriteMethodCode((CilMethodInterpreter)interpreter, typeTable, closureEntities));
             }
-            sb.AppendLine("///---End closure code --- ");
+            sb.Append("///---End closure code ---\n");
         }
 
         private static void WriteUsedCppRuntimeMethod(KeyValuePair<string, MethodBase> methodBodyAttribute, StringBuilder sb, ClosureEntities crRuntime)
@@ -179,18 +180,18 @@ namespace CodeRefractor.Backend
             sb.AppendFormat("{{ {0} }}", methodNativeDescription.Code).AppendLine();
         }
 
-        private static void WriteMainBody(MethodInterpreter interpreter, StringBuilder sb, ClosureEntities crRuntime)
+        private static void WriteMainBody(MethodInterpreter interpreter, CodeOutput sb, ClosureEntities crRuntime)
         {
-            sb.AppendLine("System_Void initializeRuntime();");
-            sb.AppendFormat("int main(int argc, char**argv) {{").AppendLine();
-            sb.AppendFormat("auto argsAsList = System_getArgumentsAsList(argc, argv);").AppendLine();
-            sb.AppendLine("initializeRuntime();");
+            sb.Append("System_Void initializeRuntime();\n");
+            sb.Append("int main(int argc, char**argv)").BracketOpen();
+            sb.Append("auto argsAsList = System_getArgumentsAsList(argc, argv);\n");
+            sb.Append("initializeRuntime();\n");
 
             if (crRuntime.Features.Count > 0)
             {
                 foreach (var runtimeFeature in crRuntime.Features)
                 {
-                    sb.AppendLine(runtimeFeature.Initializer + "\n");
+                    sb.Append(runtimeFeature.Initializer + "\n");
                 }
             }
             var entryPoint = interpreter.Method as MethodInfo;
@@ -202,9 +203,10 @@ namespace CodeRefractor.Backend
             {
                 args = "argsAsList";
             }
-            sb.AppendFormat("{0}({1});", entryPoint.ClangMethodSignature(crRuntime), args).AppendLine();
-            sb.AppendLine("return 0;");
-            sb.AppendFormat("}}").AppendLine();
+            sb.AppendFormat("{0}({1});\n", entryPoint.ClangMethodSignature(crRuntime), args);
+            sb.BlankLine();
+            sb.Append("return 0;");
+            sb.BracketClose();
         }
     }
 }

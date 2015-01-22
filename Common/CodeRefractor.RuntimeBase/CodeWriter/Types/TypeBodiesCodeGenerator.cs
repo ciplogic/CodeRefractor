@@ -15,7 +15,7 @@ namespace CodeRefractor.CodeWriter.Types
 {
     static class TypeBodiesCodeGenerator
     {
-        public static void WriteClosureStructBodies(StringBuilder sb, ClosureEntities crRuntime)
+        public static void WriteClosureStructBodies(CodeOutput codeOutput, ClosureEntities crRuntime)
         {
             //Remove Mapped Types in favour of their resolved types
         
@@ -27,7 +27,7 @@ namespace CodeRefractor.CodeWriter.Types
             if (sorted.Contains(typeof(IntPtr)))
                 sorted.Remove(typeof(IntPtr));
             var forwardTypesSorted = sorted.ToArray();
-            GenerateForwardTypes(forwardTypesSorted, sb, crRuntime);
+            GenerateForwardTypes(forwardTypesSorted, codeOutput, crRuntime);
 
            
 
@@ -36,16 +36,14 @@ namespace CodeRefractor.CodeWriter.Types
            
             foreach (var type in sortedTypeData)
             {
-                WriteStructWithFields(sb, crRuntime, type);
+                WriteStructWithFields(codeOutput, crRuntime, type);
             }
         }
 
-        private static void WriteStructWithFields(StringBuilder sb, ClosureEntities crRuntime, Type type)
+        private static void WriteStructWithFields(CodeOutput codeOutput, ClosureEntities crRuntime, Type type)
         {
             if (DelegateManager.IsTypeDelegate(type))
                 return;
-
-            CodeOutput codeOutput = new CodeOutput();
 
             var mappedType = type.GetMappedType(crRuntime);
             type = mappedType.GetReversedMappedType(crRuntime);
@@ -99,11 +97,9 @@ namespace CodeRefractor.CodeWriter.Types
 
             var typedesc = UsedTypeList.Set(type, crRuntime);
             typedesc.WriteStaticFieldInitialization(codeOutput);
-
-            sb.Append(codeOutput.ToString());
         }
 
-        private static void GenerateForwardTypes(Type[] typeDatas, StringBuilder sb, ClosureEntities crRuntime)
+        private static void GenerateForwardTypes(Type[] typeDatas, CodeOutput sb, ClosureEntities crRuntime)
         {
             foreach (var typeData in typeDatas)
             {
@@ -111,7 +107,9 @@ namespace CodeRefractor.CodeWriter.Types
                 if (ShouldSkipType(typeData))
                     continue;
                 if (!mappedType.IsGenericType)
-                    sb.AppendFormat("struct {0}; ", mappedType.ToCppMangling()).AppendLine();
+                {
+                    sb.AppendFormat("struct {0};\n", mappedType.ToCppMangling());
+                }
             }
         }
 
