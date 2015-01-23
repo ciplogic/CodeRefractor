@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using CodeRefractor.ClosureCompute;
+using CodeRefractor.CodeWriter.Output;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.Util;
@@ -96,7 +97,7 @@ namespace CodeRefractor.RuntimeBase.TypeInfoWriter
             return compare;
         }
 
-        public void SetIdOfInstance(StringBuilder sb, LocalVariable variable, Type type, bool isStack)
+        public void SetIdOfInstance(CodeOutput sb, LocalVariable variable, Type type, bool isStack)
         {
             int typeId;
             if (!_result.TryGetValue(type, out typeId))

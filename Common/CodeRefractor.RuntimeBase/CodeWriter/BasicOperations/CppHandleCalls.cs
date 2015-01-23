@@ -7,6 +7,7 @@ using System.Text;
 using CodeRefractor.Analyze;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.CodeWriter.Linker;
+using CodeRefractor.CodeWriter.Output;
 using CodeRefractor.MiddleEnd.Interpreters;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.SimpleOperations;
@@ -21,7 +22,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 {
     internal static class CppHandleCalls
     {
-        public static void HandleReturn(LocalOperation operation, StringBuilder bodySb, MethodInterpreter interpreter)
+        public static void HandleReturn(LocalOperation operation, CodeOutput bodySb, MethodInterpreter interpreter)
         {
             var returnValue = (Return)operation;
 
@@ -56,7 +57,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         }
 
 
-        public static void HandleCall(LocalOperation operation, StringBuilder sbCode, MidRepresentationVariables vars,
+        public static void HandleCall(LocalOperation operation, CodeOutput sbCode, MidRepresentationVariables vars,
             MethodInterpreter interpreter, ClosureEntities crRuntime)
         {
             var operationData = (CallMethodStatic)operation;
@@ -72,10 +73,10 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 
             WriteParametersToSb(operationData, sb, interpreter);
 
-            sbCode.Append(sb);
+            sbCode.Append(sb.ToString());
         }
 
-        public static void HandleCallInterface(LocalOperation operation, StringBuilder sbCode,
+        public static void HandleCallInterface(LocalOperation operation, CodeOutput sbCode,
             MidRepresentationVariables vars, MethodInterpreter interpreter, ClosureEntities crRuntime)
         {
             var operationData = (CallMethodStatic)operation;
@@ -90,10 +91,10 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             sb.AppendFormat("{0}_icall", methodInfo.ClangMethodSignature(crRuntime));
             WriteParametersToSb(operationData, sb, interpreter);
 
-            sbCode.Append(sb);
+            sbCode.Append(sb.ToString());
         }
 
-        public static void HandleCallVirtual(LocalOperation operation, StringBuilder sbCode, MethodInterpreter interpreter, ClosureEntities crRuntime)
+        public static void HandleCallVirtual(LocalOperation operation, CodeOutput sbCode, MethodInterpreter interpreter, ClosureEntities crRuntime)
         {
             var operationData = (CallMethodStatic)operation;
             var sb = new StringBuilder();
@@ -147,7 +148,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             */
             WriteParametersToSb(operationData, sb, interpreter);
 
-            sbCode.Append(sb);
+            sbCode.Append(sb.ToString());
         }
 
         public static void WriteParametersToSb(CallMethodStatic operationStatic, StringBuilder sb,
@@ -221,7 +222,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             sb.AppendFormat("({0});", argumentsJoin);
         }
 
-        public static void HandleCallRuntime(LocalOperation operation, StringBuilder sb, ClosureEntities crRuntime)
+        public static void HandleCallRuntime(LocalOperation operation, CodeOutput sb, ClosureEntities crRuntime)
         {
             var operationData = (CallMethodStatic)operation;
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using CodeRefractor.ClosureCompute;
+using CodeRefractor.CodeWriter.Output;
 using CodeRefractor.FrontEnd.SimpleOperations.Casts;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.TypeInfoWriter;
@@ -20,7 +21,7 @@ namespace CodeRefractor.CodeWriter.Linker
 
         public ClosureEntities Closure { get; set; }
 
-        public void GenerateInstructionCode(IsInstance isInstance, StringBuilder sb, ClosureEntities crRuntime)
+        public void GenerateInstructionCode(IsInstance isInstance, CodeOutput sb, ClosureEntities crRuntime)
         {
             AddToRuntime(crRuntime);
             //Needs improvement, how do i get the correct typeid at this point ? we cant just use zero :P
@@ -35,8 +36,7 @@ namespace CodeRefractor.CodeWriter.Linker
                     isInstance.AssignedTo.Name,
                     typeTable.GetTypeId(isInstance.CastTo),
                     isInstance.Right.Name + "->_typeId"
-                    )
-                .AppendLine();
+                    );
         }
 
         private static void AddToRuntime(ClosureEntities crRuntime)

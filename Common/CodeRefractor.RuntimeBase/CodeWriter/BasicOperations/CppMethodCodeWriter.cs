@@ -47,16 +47,16 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             return finalSb.ToString();
         }
 
-        private static StringBuilder ComputeBodySb(List<LocalOperation> operations, MidRepresentationVariables vars,
+        private static CodeOutput ComputeBodySb(List<LocalOperation> operations, MidRepresentationVariables vars,
             TypeDescriptionTable typeTable, MethodInterpreter interpreter, ClosureEntities crRuntime)
         {
-            var bodySb = new StringBuilder();
+            CodeOutput bodySb = new CodeOutput();
             foreach (var operation in operations)
             {
                 if (CppHandleOperators.HandleAssignmentOperations(bodySb, operation, operation.Kind, typeTable,
                     interpreter, crRuntime))
                 {
-                    bodySb.AppendLine();
+                    bodySb.BlankLine();
                     continue;
                 }
                 switch (operation.Kind)
@@ -146,18 +146,19 @@ T unbox_value(std::shared_ptr<System_Object> value){
                                 operation.Kind,
                                 operation));
                 }
-                bodySb.AppendLine();
+
+                bodySb.BlankLine();
             }
 
             return bodySb;
         }
 
-        private static void HandleIsInstance(IsInstance operation, StringBuilder bodySb, ClosureEntities crRuntime)
+        private static void HandleIsInstance(IsInstance operation, CodeOutput bodySb, ClosureEntities crRuntime)
         {
             LinkingData.Instance.IsInstTable.GenerateInstructionCode(operation, bodySb,crRuntime);
         }
 
-        private static void HandleUnbox(Unboxing unboxing, StringBuilder bodySb, ClosureEntities closureEntities)
+        private static void HandleUnbox(Unboxing unboxing, CodeOutput bodySb, ClosureEntities closureEntities)
         {
             var typeDescription = unboxing.AssignedTo.ComputedType();
             bodySb
@@ -166,7 +167,7 @@ T unbox_value(std::shared_ptr<System_Object> value){
                     unboxing.Right.Name,
                     typeDescription.GetClrType(closureEntities).ToDeclaredVariableType(EscapingMode.Stack));
         }
-        private static void HandleBox(Boxing boxing, StringBuilder bodySb, TypeDescriptionTable typeTable, ClosureEntities closureEntities)
+        private static void HandleBox(Boxing boxing, CodeOutput bodySb, TypeDescriptionTable typeTable, ClosureEntities closureEntities)
         {
 
 
@@ -180,7 +181,7 @@ T unbox_value(std::shared_ptr<System_Object> value){
         }
 
 
-        private static void HandleCastClass(ClassCasting casting, StringBuilder bodySb, ClosureEntities closureEntities)
+        private static void HandleCastClass(ClassCasting casting, CodeOutput bodySb, ClosureEntities closureEntities)
         {
             var typeDescription = casting.AssignedTo.ComputedType();
             bodySb
@@ -190,31 +191,30 @@ T unbox_value(std::shared_ptr<System_Object> value){
                     typeDescription.GetClrType(closureEntities).ToDeclaredVariableType(EscapingMode.Stack));
         }
         
-        private static void HandleComment(string toString, StringBuilder bodySb)
+        private static void HandleComment(string toString, CodeOutput bodySb)
         {
             bodySb
                 .AppendFormat("// {0}", toString);
         }
 
-        private static void HandleSwitch(LocalOperation operation, StringBuilder bodySb)
+        private static void HandleSwitch(LocalOperation operation, CodeOutput bodySb)
         {
             var assign = (Assignment) operation;
             var instructionTable = (int[]) ((ConstValue) assign.Right).Value;
 
             var instructionLabelIds = instructionTable;
-            bodySb.AppendFormat("switch({0}) {{", assign.AssignedTo.Name);
-            bodySb.AppendLine();
+            bodySb.AppendFormat("switch({0})", assign.AssignedTo.Name);
+            bodySb.BracketOpen();
             var pos = 0;
             foreach (var instructionLabelId in instructionLabelIds)
             {
                 bodySb.AppendFormat("case {0}:", pos++);
                 bodySb.AppendFormat("\tgoto label_{0};", instructionLabelId.ToHex());
-                bodySb.AppendLine();
             }
-            bodySb.AppendLine("}");
+            bodySb.BracketClose();
         }
 
-        private static void HandleCopyArrayInitializer(LocalOperation operation, StringBuilder sb)
+        private static void HandleCopyArrayInitializer(LocalOperation operation, CodeOutput sb)
         {
             var assignment = (Assignment) operation;
             var left = assignment.AssignedTo;
@@ -284,13 +284,13 @@ T unbox_value(std::shared_ptr<System_Object> value){
                 .AppendLine();
         }
 
-        private static void HandleAlwaysBranchOperator(LocalOperation operation, StringBuilder sb)
+        private static void HandleAlwaysBranchOperator(LocalOperation operation, CodeOutput sb)
         {
             sb.AppendFormat("goto label_{0};", ((AlwaysBranch)operation).JumpTo.ToHex());
         }
 
 
-        private static void WriteLabel(StringBuilder sb, int value)
+        private static void WriteLabel(CodeOutput sb, int value)
         {
             sb.AppendFormat("label_{0}:", value.ToHex());
         }

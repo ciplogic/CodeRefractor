@@ -41,7 +41,9 @@ System_Void _Test_Main() {
     System_Int32 vreg_1;
     vreg_1 = _Test_MessageBoxW(0, _str(0), _str(1), 0);
 
+
     return;
+
 }
 ///---End closure code ---
 System_Void initializeRuntime();

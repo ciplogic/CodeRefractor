@@ -3,6 +3,7 @@
 using System;
 using System.Text;
 using CodeRefractor.CodeWriter.BasicOperations;
+using CodeRefractor.CodeWriter.Output;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.SimpleOperations.Operators;
@@ -17,7 +18,7 @@ namespace CodeRefractor.RuntimeBase.CodeWriter.BasicOperations
 {
     internal static class CppHandleBranches
     {
-        public static void HandleBranchOperator(object operation, StringBuilder sb)
+        public static void HandleBranchOperator(object operation, CodeOutput sb)
         {
             var localBranch = (LocalOperation) operation;
             var objList = (BranchOperator) localBranch;
@@ -63,13 +64,13 @@ namespace CodeRefractor.RuntimeBase.CodeWriter.BasicOperations
             }
         }
 
-        private static void HandleBrFalse(IdentifierValue localVar, StringBuilder sb, int jumpAddress)
+        private static void HandleBrFalse(IdentifierValue localVar, CodeOutput sb, int jumpAddress)
         {
             var local = localVar.Name;
             sb.AppendFormat("if(!({0})) goto label_{1};", local, jumpAddress.ToHex());
         }
 
-        private static void HandleBrTrue(IdentifierValue localVar, StringBuilder sb, int jumpAddress)
+        private static void HandleBrTrue(IdentifierValue localVar, CodeOutput sb, int jumpAddress)
         {
             var local = localVar.Name;
             sb.AppendFormat("if({0}) goto label_{1};", local, jumpAddress.ToHex());
