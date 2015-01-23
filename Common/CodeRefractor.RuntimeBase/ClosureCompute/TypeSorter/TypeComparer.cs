@@ -16,10 +16,11 @@ namespace CodeRefractor.ClosureCompute.TypeSorter
         HashSet<Type> DependencyTypes(Type type)
         {
             var result = new HashSet<Type>();
-            var members = type.GetMembers(ClosureEntitiesBuilder.AllFlags);
+            var members = type.GetFields(ClosureEntitiesBuilder.AllFlags);
             foreach (var member in members)
             {
-                result.Add(member.ReflectedType.GetMappedType(_crRuntime));
+                Type memberType = member.FieldType;
+                result.Add(memberType.GetMappedType(_crRuntime));
             }
             result.Remove(type);
             return result;
