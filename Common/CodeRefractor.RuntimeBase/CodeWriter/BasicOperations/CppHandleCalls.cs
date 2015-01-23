@@ -29,10 +29,11 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             bodySb.Append("\n");
 
             if (returnValue.Returning == null)
-                bodySb.Append("return;");
+            {
+                //bodySb.Append("return;");
+            }
             else
             {
-
                 //Need to expand this for more cases
 
                 if (returnValue.Returning is ConstValue)

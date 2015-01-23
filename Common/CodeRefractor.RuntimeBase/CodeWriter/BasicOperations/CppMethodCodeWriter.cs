@@ -25,6 +25,102 @@ using CodeRefractor.Util;
 
 namespace CodeRefractor.CodeWriter.BasicOperations
 {
+    static class CppCastRelatedOperations
+    {
+        private const string BoxingTemplate = @"
+template<class T>
+struct BoxedT : public System_Object
+{
+	T Data;
+};
+
+template<class T>
+std::shared_ptr<System_Object> box_value(T value, int typeId){
+	auto result = std::make_shared<BoxedT< T > >();
+	result->_typeId = typeId;
+	result->Data = value;
+	return result;
+}
+
+template<class T>
+T unbox_value(std::shared_ptr<System_Object> value){
+	auto resultObject = value.get();
+	auto castedUnboxing = (BoxedT<T>*)resultObject;
+	return castedUnboxing->Data;
+}";
+
+
+        private static void HandleIsInstance(IsInstance operation, CodeOutput bodySb, ClosureEntities crRuntime)
+        {
+            LinkingData.Instance.IsInstTable.GenerateInstructionCode(operation, bodySb, crRuntime);
+        }
+
+        private static void HandleUnbox(Unboxing unboxing, CodeOutput bodySb, ClosureEntities closureEntities)
+        {
+            var typeDescription = unboxing.AssignedTo.ComputedType();
+            bodySb
+                .AppendFormat("{0} = unbox_value<{2}>({1});",
+                    unboxing.AssignedTo.Name,
+                    unboxing.Right.Name,
+                    typeDescription.GetClrType(closureEntities).ToDeclaredVariableType(EscapingMode.Stack));
+        }
+
+        private static void HandleBox(Boxing boxing, CodeOutput bodySb, TypeDescriptionTable typeTable, ClosureEntities closureEntities)
+        {
+
+
+            TypeDescription typeDescription = boxing.Right.ComputedType();
+            bodySb
+                .AppendFormat("{0} = box_value<{2}>({1}, {3});",
+                    boxing.AssignedTo.Name,
+                    boxing.Right.Name,
+                    typeDescription.GetClrType(closureEntities).ToDeclaredVariableType(EscapingMode.Stack),
+                    typeTable.GetTypeId(typeDescription.GetClrType(closureEntities)));
+        }
+
+
+        private static void HandleCastClass(ClassCasting casting, CodeOutput bodySb, ClosureEntities closureEntities)
+        {
+            var typeDescription = casting.AssignedTo.ComputedType();
+            bodySb
+                .AppendFormat("{0} = std::static_pointer_cast<{2}>({1});",
+                    casting.AssignedTo.Name,
+                    casting.Value.Name,
+                    typeDescription.GetClrType(closureEntities).ToDeclaredVariableType(EscapingMode.Stack));
+        }
+
+        public static bool HandleCastRelatedOperations(TypeDescriptionTable typeTable, ClosureEntities crRuntime,
+            LocalOperation operation, CodeOutput bodySb, OperationKind opKind)
+        {
+            switch (opKind)
+            {
+                case OperationKind.Box:
+                    var boxing = crRuntime.FindFeature("Boxing");
+                    if (!boxing.IsUsed)
+                    {
+                        boxing.IsUsed = true;
+                        boxing.Declarations.Add(BoxingTemplate);
+                    }
+                    HandleBox((Boxing)operation, bodySb, typeTable, crRuntime);
+                    break;
+
+                case OperationKind.CastClass:
+                    HandleCastClass((ClassCasting)operation, bodySb, crRuntime);
+                    break;
+
+                case OperationKind.Unbox:
+                    HandleUnbox((Unboxing)operation, bodySb, crRuntime);
+                    break;
+
+                case OperationKind.IsInstance:
+                    HandleIsInstance((IsInstance)operation, bodySb, crRuntime);
+                    break;
+                default:
+                    return false;
+            }
+            return true;
+        }
+    }
     public static class CppMethodCodeWriter
     {
         public static string WriteCode(CilMethodInterpreter interpreter, TypeDescriptionTable typeTable,
@@ -53,12 +149,15 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             CodeOutput bodySb = new CodeOutput();
             foreach (var operation in operations)
             {
+                bodySb.Append("\n");
                 if (CppHandleOperators.HandleAssignmentOperations(bodySb, operation, operation.Kind, typeTable,
                     interpreter, crRuntime))
-                {
-                    bodySb.BlankLine();
                     continue;
-                }
+                if (CppCastRelatedOperations.HandleCastRelatedOperations(typeTable, crRuntime, operation, bodySb, operation.Kind))
+                    continue;
+                if (HandleCallOperations(vars, interpreter, crRuntime, operation, bodySb))
+                    continue;
+
                 switch (operation.Kind)
                 {
                     case OperationKind.Label:
@@ -69,18 +168,6 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                         break;
                     case OperationKind.BranchOperator:
                         CppHandleBranches.HandleBranchOperator(operation, bodySb);
-                        break;
-                    case OperationKind.Call:
-                        CppHandleCalls.HandleCall(operation, bodySb, vars, interpreter, crRuntime);
-                        break;
-                    case OperationKind.CallInterface:
-                        CppHandleCalls.HandleCallInterface(operation, bodySb, vars, interpreter, crRuntime);
-                        break;
-                    case OperationKind.CallVirtual:
-                        CppHandleCalls.HandleCallVirtual(operation, bodySb, interpreter, crRuntime);
-                        break;
-                    case OperationKind.CallRuntime:
-                        CppHandleCalls.HandleCallRuntime(operation, bodySb, crRuntime);
                         break;
                     case OperationKind.Return:
                         CppHandleCalls.HandleReturn(operation,bodySb,interpreter);
@@ -97,47 +184,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                     case OperationKind.Comment:
                         HandleComment(operation.ToString(), bodySb);
                         break;
-                    case OperationKind.Box:
-                        var boxing = crRuntime.FindFeature("Boxing");
-                        if (!boxing.IsUsed)
-                        {
-                            boxing.IsUsed = true;
-                            boxing.Declarations.Add(@"template<class T>
-struct BoxedT : public System_Object
-{
-	T Data;
-};
 
-template<class T>
-std::shared_ptr<System_Object> box_value(T value, int typeId){
-	auto result = std::make_shared<BoxedT< T > >();
-	result->_typeId = typeId;
-	result->Data = value;
-	return result;
-}
-
-template<class T>
-T unbox_value(std::shared_ptr<System_Object> value){
-	auto resultObject = value.get();
-	auto castedUnboxing = (BoxedT<T>*)resultObject;
-	return castedUnboxing->Data;
-}");
-                        }
-                        HandleBox((Boxing)operation, bodySb, typeTable, crRuntime);
-                        break;
-
-                    case OperationKind.CastClass:
-                        HandleCastClass((ClassCasting)operation, bodySb, crRuntime);
-                        break;
-
-                    case OperationKind.Unbox:
-                        HandleUnbox((Unboxing)operation, bodySb, crRuntime);
-                        break;
-
-                    case OperationKind.IsInstance:
-                        
-                        HandleIsInstance((IsInstance) operation, bodySb,crRuntime);
-                        break;
                         
                     default:
                         throw new InvalidOperationException(
@@ -146,51 +193,34 @@ T unbox_value(std::shared_ptr<System_Object> value){
                                 operation.Kind,
                                 operation));
                 }
-
-                bodySb.BlankLine();
             }
 
             return bodySb;
         }
 
-        private static void HandleIsInstance(IsInstance operation, CodeOutput bodySb, ClosureEntities crRuntime)
+        private static bool HandleCallOperations(MidRepresentationVariables vars, MethodInterpreter interpreter,
+            ClosureEntities crRuntime, LocalOperation operation, CodeOutput bodySb)
         {
-            LinkingData.Instance.IsInstTable.GenerateInstructionCode(operation, bodySb,crRuntime);
+            switch (operation.Kind)
+            {
+                case OperationKind.Call:
+                    CppHandleCalls.HandleCall(operation, bodySb, vars, interpreter, crRuntime);
+                    break;
+                case OperationKind.CallInterface:
+                    CppHandleCalls.HandleCallInterface(operation, bodySb, vars, interpreter, crRuntime);
+                    break;
+                case OperationKind.CallVirtual:
+                    CppHandleCalls.HandleCallVirtual(operation, bodySb, interpreter, crRuntime);
+                    break;
+                case OperationKind.CallRuntime:
+                    CppHandleCalls.HandleCallRuntime(operation, bodySb, crRuntime);
+                    break;
+                default:
+                    return false;
+            }
+            return true;
         }
 
-        private static void HandleUnbox(Unboxing unboxing, CodeOutput bodySb, ClosureEntities closureEntities)
-        {
-            var typeDescription = unboxing.AssignedTo.ComputedType();
-            bodySb
-                .AppendFormat("{0} = unbox_value<{2}>({1});",
-                    unboxing.AssignedTo.Name,
-                    unboxing.Right.Name,
-                    typeDescription.GetClrType(closureEntities).ToDeclaredVariableType(EscapingMode.Stack));
-        }
-        private static void HandleBox(Boxing boxing, CodeOutput bodySb, TypeDescriptionTable typeTable, ClosureEntities closureEntities)
-        {
-
-
-            TypeDescription typeDescription = boxing.Right.ComputedType();
-            bodySb
-                .AppendFormat("{0} = box_value<{2}>({1}, {3});",
-                    boxing.AssignedTo.Name,
-                    boxing.Right.Name,
-                    typeDescription.GetClrType(closureEntities).ToDeclaredVariableType(EscapingMode.Stack),
-                    typeTable.GetTypeId(typeDescription.GetClrType(closureEntities)));
-        }
-
-
-        private static void HandleCastClass(ClassCasting casting, CodeOutput bodySb, ClosureEntities closureEntities)
-        {
-            var typeDescription = casting.AssignedTo.ComputedType();
-            bodySb
-                .AppendFormat("{0} = std::static_pointer_cast<{2}>({1});",
-                    casting.AssignedTo.Name,
-                    casting.Value.Name,
-                    typeDescription.GetClrType(closureEntities).ToDeclaredVariableType(EscapingMode.Stack));
-        }
-        
         private static void HandleComment(string toString, CodeOutput bodySb)
         {
             bodySb
