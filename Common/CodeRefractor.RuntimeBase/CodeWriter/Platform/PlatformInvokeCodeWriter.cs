@@ -45,25 +45,31 @@ namespace CodeRefractor.CodeWriter.Platform
 
         public static string LoadDllMethods()
         {
-            var sb = new StringBuilder();
+            var sb = new CodeOutput();
 
-            sb.AppendLine("System_Void mapLibs() {");
+            sb.BlankLine()
+                .Append("System_Void mapLibs()")
+                .BracketOpen();
+
             var pos = 0;
             foreach (var library in LinkingData.Libraries)
             {
-                sb.AppendFormat("auto lib_{0} = LoadNativeLibrary(L\"{1}\");", pos, library.DllName);
-                sb.AppendLine();
+                sb.Append("//---------------------------------------------------------\n")
+                    .AppendFormat("// {0} methods\n", library.DllName)
+                    .Append("//---------------------------------------------------------\n")
+                    .AppendFormat("auto lib_{0} = LoadNativeLibrary(L\"{1}\");\n", pos, library.DllName)
+                    .BlankLine();
                 foreach (var method in library.Methods.Values)
                 {
-                    sb.AppendFormat("{0} = ({0}_type)LoadNativeMethod(lib_{2}, \"{1}\");", method.FormattedName(),
+                    sb.AppendFormat("{0} = ({0}_type)LoadNativeMethod(lib_{2}, \"{1}\");\n", method.FormattedName(),
                         method.EntryPoint, pos);
-                    sb.AppendLine();
                 }
                 pos++;
             }
-            sb.AppendLine("}");
 
-            return sb.ToString();
+            return sb.BracketClose()
+                .BlankLine()
+                .ToString();
         }
 
         private static string WritePInvokeDefinition(this MethodInterpreter methodBase, string methodDll)

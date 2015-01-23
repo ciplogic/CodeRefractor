@@ -8,11 +8,11 @@ using System.Runtime.InteropServices;
 public class Test
 {
     [DllImport("User32.dll")]
-    public static extern int MessageBox(int handle, String message, String title, uint type);
+    public static extern int MessageBoxW(int handle, String message, String title, uint type);
 
     [STAThread]
     public static void Main()
     {
-        MessageBox(0, "Message", "Title", 0);
+        MessageBoxW(0, "Message", "Title", 0);
     }
 }

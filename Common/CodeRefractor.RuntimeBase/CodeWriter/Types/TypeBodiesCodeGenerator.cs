@@ -85,7 +85,7 @@ namespace CodeRefractor.CodeWriter.Types
 
                 codeOutput.Append("System_String()")
                     .BracketOpen()
-                    .AppendFormat("typeId = {0};\n", typeTable.GetTypeId(typeof (string)))
+                    .AppendFormat("_typeId = {0};\n", typeTable.GetTypeId(typeof (string)))
                     .BracketClose()
                     .BlankLine();
             }

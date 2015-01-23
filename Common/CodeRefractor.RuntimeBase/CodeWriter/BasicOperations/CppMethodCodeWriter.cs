@@ -38,8 +38,8 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             var variablesSb = ComputeVariableSb(interpreter.MidRepresentation, interpreter, crRuntime);
             var finalSb = new CodeOutput();
 
-            finalSb.BracketOpen()
-                    .Append(headerSb.ToString())
+            finalSb.Append(headerSb.ToString())
+                    .BracketOpen()
                     .Append(variablesSb.ToString())
                     .Append(bodySb.ToString())
                     .BracketClose();

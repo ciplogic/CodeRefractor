@@ -94,8 +94,6 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             codeOutput.AppendFormat("({0})", arguments);
             if (writeEndColon)
                 codeOutput.Append(";");
-
-            codeOutput.Append("\n");
         }
 
         public static void WriteSignature(CodeOutput codeOutput, MethodInterpreter interpreter, ClosureEntities closureEntities, bool writeEndColon = false)

@@ -25,6 +25,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         {
             var returnValue = (Return)operation;
 
+            bodySb.Append("\n");
 
             if (returnValue.Returning == null)
                 bodySb.Append("return;");

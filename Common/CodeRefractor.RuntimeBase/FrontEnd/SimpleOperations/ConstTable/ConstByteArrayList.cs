@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using System.Text;
+using CodeRefractor.CodeWriter.Output;
 
 #endregion
 
@@ -36,20 +37,25 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations.ConstTable
 
         public static string BuildConstantTable()
         {
-            var sb = new StringBuilder();
-            sb.AppendLine("System_Void RuntimeHelpersBuildConstantTable() {");
+            var sb = new CodeOutput();
+
+            sb.BlankLine()
+                .Append("System_Void RuntimeHelpersBuildConstantTable()")
+                .BracketOpen();
+
             foreach (var item in Instance.ItemList)
             {
                 var rightArray = item.Data;
                 var rightArrayItems = string.Join(", ", rightArray);
 
-                sb.AppendFormat("AddConstantByteArray(new byte[{0}] {{ {1} }} );",
-                    rightArray.Length,
-                    rightArrayItems);
+                sb.AppendFormat("AddConstantByteArray(new byte[{0}]);", rightArray.Length)
+                    .BracketOpen()
+                    .AppendFormat("{1}", rightArrayItems)
+                    .BracketClose();
             }
-            sb.AppendLine("}");
 
-            return sb.ToString();
+            return sb.BracketClose()
+                .ToString();
         }
     }
 }

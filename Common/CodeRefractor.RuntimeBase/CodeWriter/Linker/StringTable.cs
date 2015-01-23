@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using CodeRefractor.CodeWriter.Output;
 using CodeRefractor.RuntimeBase;
 
 #endregion
@@ -37,16 +38,17 @@ namespace CodeRefractor.CodeWriter.Linker
 
         public string BuildStringTable()
         {
-            var sb = new StringBuilder();
-            sb.AppendLine("System_Void buildStringTable() {");
+            var sb = new CodeOutput();
+            sb.BlankLine()
+                .Append("System_Void buildStringTable()")
+                .BracketOpen();
 
             var stringDataBuilder = new List<string>();
 
             var jump = 0;
             foreach (var strItem in _table)
             {
-                sb.AppendFormat("_AddJumpAndLength({0}, {1});", jump, strItem.Length)
-                    .AppendLine();
+                sb.AppendFormat("_AddJumpAndLength({0}, {1});\n", jump, strItem.Length);
                 var itemTextData = TextData(strItem);
                 AddTextToStringTable(stringDataBuilder, itemTextData, strItem);
 
@@ -54,13 +56,17 @@ namespace CodeRefractor.CodeWriter.Linker
             }
 
 
-            sb.AppendLine("} // buildStringTable");
+            sb.BracketClose(assignedStatement: true)
+                .Append(" // buildStringTable\n");
 
             var stringTableContent = String.Join(", " + Environment.NewLine, stringDataBuilder);
             var length = jump == 0 ? 1 : jump;
-            sb.AppendFormat("const wchar_t _stringTable[{0}] = {{", length).AppendLine();
-            sb.AppendLine(jump == 0 ? "0" : stringTableContent);
-            sb.AppendLine("}; // _stringTable ");
+            sb.BlankLine()
+                .AppendFormat("const wchar_t _stringTable[{0}] =", length)
+                .BracketOpen();
+            sb.Append(jump == 0 ? "0" : stringTableContent);
+            sb.BracketClose(assignedStatement: true)
+                .Append("; // _stringTable\n");
 
             return sb.ToString();
         }
