@@ -62,7 +62,7 @@ namespace CodeRefractor.CodeWriter.Linker
             var stringTableContent = String.Join(", " + Environment.NewLine, stringDataBuilder);
             var length = jump == 0 ? 1 : jump;
             sb.BlankLine()
-                .AppendFormat("const wchar_t _stringTable[{0}] =", length)
+                .AppendFormat("const System_Char _stringTable[{0}] =", length)
                 .BracketOpen();
             sb.Append(jump == 0 ? "0" : stringTableContent);
             sb.BracketClose(assignedStatement: true)

@@ -16,7 +16,7 @@ namespace CodeRefractor.CodeWriter.Types
          */
         public override string GetTransformationCode()
         {
-            return _targetType + " _" + _parameterInfo.Name + " = " + _parameterInfo.Name + ".get()->Text.get()->Items;\n";
+            return _targetType + " _" + _parameterInfo.Name + " = " + _parameterInfo.Name + "->Text->Items;\n";
         }
 
         /**

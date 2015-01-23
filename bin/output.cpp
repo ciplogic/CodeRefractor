@@ -31,8 +31,8 @@ typedef System_Int32 ( *dll_method_1_type)(System_Int32 handle, System_Char* mes
 dll_method_1_type dll_method_1;
 
 System_Int32 _Test_MessageBoxW(System_Int32 handle, std::shared_ptr<System_String> message, std::shared_ptr<System_String> title, System_UInt32 type) {
-    System_Char* _message = message.get()->Text.get()->Items;
-    System_Char* _title = title.get()->Text.get()->Items;
+    System_Char* _message = message->Text->Items;
+    System_Char* _title = title->Text->Items;
 
     return dll_method_1(handle, _message, _title, type);
 }
@@ -71,7 +71,7 @@ System_Void buildStringTable() {
     _AddJumpAndLength(8, 5);
 } // buildStringTable
 
-const wchar_t _stringTable[14] = {
+const System_Char _stringTable[14] = {
     77, 101, 115, 115, 97, 103, 101, 0 /* "Message" */, 
     84, 105, 116, 108, 101, 0 /* "Title" */
 }; // _stringTable
