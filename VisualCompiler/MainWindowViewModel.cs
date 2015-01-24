@@ -60,8 +60,15 @@ namespace VisualCompiler
             }
 
             //Invoke CRCC
-            CallCompiler(outputExeName, outputNativeName);
-
+                try
+                {
+                    //Don't die when CR crashes
+                    CallCompiler(outputExeName, outputNativeName);
+                }
+                catch(Exception ex)
+                {
+                    CompilerErrors += ex;
+                }
             }
           //  catch (Exception ex)
             {

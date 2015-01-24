@@ -15,7 +15,6 @@ using CodeRefractor.Util;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Folding;
 using ICSharpCode.AvalonEdit.Highlighting;
-using MahApps.Metro.Controls;
 using VisualCompiler.Views.Dialogs;
 using Color = System.Drawing.Color;
 using Path = System.IO.Path;
@@ -26,7 +25,7 @@ namespace VisualCompiler
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : MetroWindow
+    public partial class MainWindow 
     {
         public MainWindow()
         {
