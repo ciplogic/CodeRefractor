@@ -1,6 +1,7 @@
 //http://www.dotnetperls.com/interface
 
 using System;
+using IDisp;
 
 interface IValue
 {
@@ -42,21 +43,26 @@ class Article : IValue // Implements interface
     }
 }
 
-class PersistentData : IDisposable
+namespace IDisp
 {
-    private int enabled = 1;
-
-    public PersistentData()
+    internal class PersistentData : IDisposable
     {
-        Console.WriteLine("Enabled");
-    }
-    public void Dispose()
-    {
-        enabled = 0;
-        Console.WriteLine("Not enabled");
+        private int enabled = 1;
 
+        public PersistentData()
+        {
+            Console.WriteLine("Enabled");
+        }
+
+        public void Dispose()
+        {
+            enabled = 0;
+            Console.WriteLine("Not enabled");
+
+        }
     }
 }
+
 class Program
 {
     static void Main()

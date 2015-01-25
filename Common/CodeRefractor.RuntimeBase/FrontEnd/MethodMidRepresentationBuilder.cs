@@ -144,7 +144,7 @@ namespace CodeRefractor.FrontEnd
             if (HandleOperators(opcodeStr, operationFactory, instruction))
                 return;
 
-            if (HandleBranching(opcodeStr, offset, operationFactory))
+            if (HandleBranching(opcodeStr, offset, operationFactory, instruction))
                 return;
             if (HandleBoxing(opcodeStr, offset, operationFactory, instruction))
                 return;
@@ -165,11 +165,6 @@ namespace CodeRefractor.FrontEnd
 
         private bool HandleExtraInstructions(Instruction instruction, MetaMidRepresentationOperationFactory operationFactory, string opcodeStr, ClosureEntities closureEntities)
         {
-            if (opcodeStr == "constrained.")
-            {
-                operationFactory.ConstrainedClass = (Type) instruction.Operand;
-                return true;
-            }
 
             if (instruction.OpCode == OpCodes.Ret)
             {
@@ -177,12 +172,19 @@ namespace CodeRefractor.FrontEnd
 
                 operationFactory.Return(isVoid);
                 return true;
+            } 
+            if (opcodeStr == "constrained.")
+            {
+                operationFactory.ConstrainedClass = (Type)instruction.Operand;
+                return true;
             }
+
             if (opcodeStr.StartsWith("conv."))
             {
                 if (ConversionOperations(opcodeStr, operationFactory)) return true;
                 return true;
             }
+            
             if (instruction.OpCode == OpCodes.Dup)
             {
                 operationFactory.Dup();
@@ -193,35 +195,60 @@ namespace CodeRefractor.FrontEnd
                 operationFactory.Pop();
                 return true;
             }
-            if (HandleArrayOperations(instruction, operationFactory, opcodeStr)) return true;
-            if ( instruction.OpCode == OpCodes.Ldtoken)
+            if (HandleArrayOperations(instruction, operationFactory, opcodeStr))
             {
-                operationFactory.SetToken((FieldInfo)instruction.Operand);
+                return true;
+            }
+            if (HandleLoadStoreInstructions(instruction, operationFactory, opcodeStr, closureEntities))
+            {
+                return true;
+            }
+
+            if (opcodeStr.StartsWith("initobj"))
+            {
+                //TODO: load the address into evaluation stack
+                operationFactory.InitObject();
+                return true;
+            }
+            if (opcodeStr == "volatile.") //TODO: handle this
+            {
+                operationFactory.PushDouble(0);
+                return true;
+            }
+            return false;
+        }
+
+        private static bool HandleLoadStoreInstructions(Instruction instruction,
+            MetaMidRepresentationOperationFactory operationFactory, string opcodeStr, ClosureEntities closureEntities)
+        {
+            if (instruction.OpCode == OpCodes.Ldtoken)
+            {
+                operationFactory.SetToken((FieldInfo) instruction.Operand);
                 return true;
             }
             if (instruction.OpCode == OpCodes.Ldftn)
             {
-                operationFactory.LoadFunction((MethodBase)instruction.Operand);
+                operationFactory.LoadFunction((MethodBase) instruction.Operand);
                 return true;
             }
-            if ( instruction.OpCode == OpCodes.Switch)
+            if (instruction.OpCode == OpCodes.Switch)
             {
-                operationFactory.Switch((Instruction[])instruction.Operand);
+                operationFactory.Switch((Instruction[]) instruction.Operand);
                 return true;
             }
             if (instruction.OpCode == OpCodes.Sizeof)
             {
-                operationFactory.SizeOf((Type)instruction.Operand);
+                operationFactory.SizeOf((Type) instruction.Operand);
                 return true;
             }
             if (instruction.OpCode == OpCodes.Ldsfld)
             {
-                operationFactory.LoadStaticField((FieldInfo)instruction.Operand);
+                operationFactory.LoadStaticField((FieldInfo) instruction.Operand);
                 return true;
             }
             if (instruction.OpCode == OpCodes.Stsfld)
             {
-                operationFactory.StoreStaticField((FieldInfo)instruction.Operand);
+                operationFactory.StoreStaticField((FieldInfo) instruction.Operand);
                 return true;
             }
             if (opcodeStr == "ldloca.s" || opcodeStr == "ldloca")
@@ -229,12 +256,12 @@ namespace CodeRefractor.FrontEnd
                 //TODO: load the address into evaluation stack
                 var index = instruction.Operand;
 
-                operationFactory.LoadAddressIntoEvaluationStack((LocalVariableInfo)index);
+                operationFactory.LoadAddressIntoEvaluationStack((LocalVariableInfo) index);
                 return true;
             }
             if (opcodeStr == "ldflda.s" || opcodeStr == "ldflda")
             {
-                var fieldInfo = (FieldInfo)instruction.Operand;
+                var fieldInfo = (FieldInfo) instruction.Operand;
 
                 operationFactory.LoadFieldAddressIntoEvaluationStack(fieldInfo);
                 return true;
@@ -242,7 +269,7 @@ namespace CodeRefractor.FrontEnd
 
             if (opcodeStr == "ldelema")
             {
-                var ldElemTypeDefinition = (Type)instruction.Operand;
+                var ldElemTypeDefinition = (Type) instruction.Operand;
                 operationFactory.LoadAddressOfArrayItemIntoStack(ldElemTypeDefinition);
                 return true;
             }
@@ -258,18 +285,6 @@ namespace CodeRefractor.FrontEnd
             {
                 //TODO: load the address into evaluation stack
                 operationFactory.LoadValueFromAddress(closureEntities);
-                return true;
-            }
-
-            if (opcodeStr.StartsWith("initobj"))
-            {
-                //TODO: load the address into evaluation stack
-                operationFactory.InitObject();
-                return true;
-            }
-            if (opcodeStr == "volatile.") //TODO: handle this
-            {
-                operationFactory.PushDouble(0);
                 return true;
             }
             return false;
@@ -597,36 +612,35 @@ namespace CodeRefractor.FrontEnd
             return false;
         }
 
-        private static bool HandleBranching(string opcodeStr, int offset,
-            MetaMidRepresentationOperationFactory operationFactory)
+        private static bool HandleBranching(string opcodeStr, int offset, MetaMidRepresentationOperationFactory operationFactory, Instruction instruction)
         {
             #region Branching
 
-            if (opcodeStr == OpcodeBranchNames.Leave
-                || opcodeStr == OpcodeBranchNames.LeaveS
+            if (instruction.OpCode == OpCodes.Leave
+                || instruction.OpCode == OpCodes.Leave_S
                 )
             {
-                operationFactory.AlwaysBranch(offset);
-                operationFactory.LeaveTo(offset);
-                operationFactory.ClearStack();
+                //TODO: ignore flow commands for exceptions
+                //operationFactory.LeaveTo(offset);
                 return true;
             }
 
-
-            if (opcodeStr == OpcodeBranchNames.BrTrueS
-                || opcodeStr == OpcodeBranchNames.BrTrue
-                || opcodeStr == OpcodeBranchNames.BrInstS
-                || opcodeStr == OpcodeBranchNames.BrInst)
+            if (instruction.OpCode == OpCodes.Endfinally
+               )
+            {
+                //TODO: ignore flow commands for exceptions
+                return true;
+            }
+            if (instruction.OpCode == OpCodes.Brtrue_S
+                || instruction.OpCode == OpCodes.Brtrue
+                || instruction.OpCode == OpCodes.Br
+                || instruction.OpCode == OpCodes.Br_S)
             {
                 operationFactory.BranchIfTrue(offset);
                 return true;
             }
-            if (opcodeStr == OpcodeBranchNames.BrFalseS
-                || opcodeStr == OpcodeBranchNames.BrFalse
-                || opcodeStr == OpcodeBranchNames.BrNullS
-                || opcodeStr == OpcodeBranchNames.BrNull
-                || opcodeStr == OpcodeBranchNames.BrZeroS
-                || opcodeStr == OpcodeBranchNames.BrZero)
+            if (instruction.OpCode == OpCodes.Brfalse
+                || instruction.OpCode == OpCodes.Brfalse_S)
             {
                 operationFactory.BranchIfFalse(offset);
                 return true;
