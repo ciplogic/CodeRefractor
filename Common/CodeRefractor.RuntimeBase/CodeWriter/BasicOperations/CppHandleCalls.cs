@@ -26,36 +26,9 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         {
             var returnValue = (Return)operation;
 
-            bodySb.Append("\n");
-
-            if (returnValue.Returning == null)
-            {
-                //bodySb.Append("return;");
-            }
-            else
-            {
-                //Need to expand this for more cases
-
-                if (returnValue.Returning is ConstValue)
-                {
-                    var retType = interpreter.Method.GetReturnType();
-                    if (retType == typeof (string))
-                    {
-                        bodySb.AppendFormat("return {0};", returnValue.Returning.ComputedValue());
-                    }
-                    else
-                    {
-                        bodySb.AppendFormat("return {0};", returnValue.Returning.Name);
-                    }
-                }
-                else
-                {
-                    bodySb.AppendFormat("return {0};", returnValue.Returning.Name);
-                }
-
-
-            }
+            returnValue.WriteCodeToOutput(bodySb, interpreter);
         }
+
 
 
         public static void HandleCall(LocalOperation operation, CodeOutput sbCode, MidRepresentationVariables vars,
