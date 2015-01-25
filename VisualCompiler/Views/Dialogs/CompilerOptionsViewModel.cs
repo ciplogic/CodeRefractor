@@ -10,7 +10,7 @@ namespace VisualCompiler.Views.Dialogs
 
         public CompilerOptionsViewModel()
         {
-            _optimizationList = new List<string>()
+            _optimizationList = new List<string>
             {
                 OptimizationCategories.Analysis,
                 OptimizationCategories.BlockBased,
