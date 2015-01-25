@@ -1,9 +1,8 @@
-﻿using ICSharpCode.AvalonEdit.Highlighting;
-using ICSharpCode.CodeCompletion;
-using System;
+﻿using System;
 using System.Windows;
+using ICSharpCode.AvalonEdit.Highlighting;
 
-namespace CompletionSample
+namespace ICSharpCode.CodeCompletion.Sample.Dialogs
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -78,6 +77,16 @@ namespace CompletionSample
 
         private void Output_OnTextChanged(object sender, EventArgs e)
         {
+        }
+
+        private void OnBuild(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void OnOptions(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
         }
     }
 }
