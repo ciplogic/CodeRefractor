@@ -2,13 +2,15 @@
 
 using CodeRefractor.CodeWriter.Linker;
 using CodeRefractor.CodeWriter.Output;
+using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.Interpreters;
+using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.RuntimeBase;
 
 #endregion
 
-namespace CodeRefractor.MiddleEnd.SimpleOperations.Methods
+namespace CodeRefractor.FrontEnd.SimpleOperations.Methods
 {
     public class Return : LocalOperation
     {
@@ -17,8 +19,8 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations.Methods
         {
         }
 
-
         public IdentifierValue Returning { get; set; }
+        
         public void WriteCodeToOutput(CodeOutput bodySb, MethodInterpreter interpreter)
         {
             bodySb.Append("\n");

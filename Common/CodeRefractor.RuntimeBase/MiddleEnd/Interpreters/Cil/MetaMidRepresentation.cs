@@ -3,13 +3,12 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using CodeRefractor.MiddleEnd.Interpreters.Cil;
-using CodeRefractor.MiddleEnd.SimpleOperations;
+using CodeRefractor.FrontEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.UseDefs;
 
 #endregion
 
-namespace CodeRefractor.MiddleEnd
+namespace CodeRefractor.MiddleEnd.Interpreters.Cil
 {
     public class MetaMidRepresentation
     {

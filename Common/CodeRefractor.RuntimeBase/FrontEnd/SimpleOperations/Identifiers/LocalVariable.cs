@@ -1,3 +1,5 @@
+using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
+
 namespace CodeRefractor.MiddleEnd.SimpleOperations.Identifiers
 {
     public class LocalVariable : IdentifierValue

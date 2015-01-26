@@ -20,6 +20,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
     {
         public Type ClrType
         {
+            get { return _clrType; }
             set { _clrType = value; }
         }
 

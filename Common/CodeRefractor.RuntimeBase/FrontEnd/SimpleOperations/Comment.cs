@@ -1,3 +1,5 @@
+using CodeRefractor.FrontEnd.SimpleOperations;
+
 namespace CodeRefractor.MiddleEnd.SimpleOperations
 {
     public class Comment : LocalOperation

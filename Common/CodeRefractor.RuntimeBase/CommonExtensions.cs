@@ -13,6 +13,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using CodeRefractor.ClosureCompute;
+using CodeRefractor.FrontEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.Runtime.Annotations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;

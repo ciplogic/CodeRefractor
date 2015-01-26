@@ -1,10 +1,8 @@
-using System.Collections.Generic;
 using System.Reflection;
-using CodeRefractor.MiddleEnd.Interpreters;
+using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
-using CodeRefractor.RuntimeBase.MiddleEnd;
 
-namespace CodeRefractor.MiddleEnd
+namespace CodeRefractor.MiddleEnd.Interpreters
 {
     public static class MidRepresentationUtils
     {

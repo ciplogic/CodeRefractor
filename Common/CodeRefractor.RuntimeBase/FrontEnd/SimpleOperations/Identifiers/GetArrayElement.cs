@@ -2,6 +2,8 @@
 
 using System;
 using CodeRefractor.ClosureCompute;
+using CodeRefractor.FrontEnd.SimpleOperations;
+using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 using CodeRefractor.RuntimeBase.Analyze;
 
 #endregion

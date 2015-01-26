@@ -5,7 +5,7 @@ using CodeRefractor.RuntimeBase.Analyze;
 
 #endregion
 
-namespace CodeRefractor.MiddleEnd.SimpleOperations.Identifiers
+namespace CodeRefractor.FrontEnd.SimpleOperations.Identifiers
 {
     public class IdentifierValue
     {

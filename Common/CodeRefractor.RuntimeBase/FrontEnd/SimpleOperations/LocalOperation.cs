@@ -1,10 +1,11 @@
 #region Uses
 
 using System;
+using CodeRefractor.MiddleEnd.SimpleOperations;
 
 #endregion
 
-namespace CodeRefractor.MiddleEnd.SimpleOperations
+namespace CodeRefractor.FrontEnd.SimpleOperations
 {
     public class LocalOperation
     {

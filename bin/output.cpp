@@ -28,9 +28,9 @@ struct System_Console : public System_Object {
 };
 
 System_Void _Program_Main();
-System_Void IDisp_PersistentData_ctor(const std::shared_ptr<IDisp_PersistentData>& _this);
+System_Void IDisp_PersistentData_ctor(IDisp_PersistentData* _this);
 System_Void System_Console_WriteLine(std::shared_ptr<System_String> value);
-System_Void IDisp_PersistentData_Dispose(const std::shared_ptr<IDisp_PersistentData>& _this);
+System_Void IDisp_PersistentData_Dispose(IDisp_PersistentData* _this);
 
 #include "runtime_base.hpp"
 
@@ -44,32 +44,34 @@ System_Void System_Console_WriteLine(std::shared_ptr<System_String> value) {
 ///--- PInvoke code ---
 ///---Begin closure code ---
 System_Void _Program_Main() {
-    std::shared_ptr<IDisp_PersistentData> local_0;
+    IDisp_PersistentData * local_0;
     System_Boolean local_1;
     std::shared_ptr<IDisp_PersistentData> vreg_1;
     
     vreg_1 = std::make_shared<IDisp_PersistentData >();vreg_1->_typeId = 3;
     IDisp_PersistentData_ctor(vreg_1);
-    local_0 = (vreg_1);
+    local_0 = (vreg_1).get();
     System_Console_WriteLine(_str(0));
     local_1 = (vreg_1 == nullptr)?1:0;
     if(local_1) goto label_25;
     IDisp_PersistentData_Dispose(local_0);
     label_25:
-	return;
 
+    return;
 }
-System_Void IDisp_PersistentData_ctor(const std::shared_ptr<IDisp_PersistentData>& _this) {
+System_Void IDisp_PersistentData_ctor(IDisp_PersistentData* _this) {
     
     _this->enabled = 1;
     System_Console_WriteLine(_str(1));
 
+    return;
 }
-System_Void IDisp_PersistentData_Dispose(const std::shared_ptr<IDisp_PersistentData>& _this) {
+System_Void IDisp_PersistentData_Dispose(IDisp_PersistentData* _this) {
     
     _this->enabled = 0;
     System_Console_WriteLine(_str(2));
 
+    return;
 }
 ///---End closure code ---
 System_Void initializeRuntime();
