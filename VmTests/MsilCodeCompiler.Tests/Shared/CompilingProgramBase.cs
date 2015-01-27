@@ -33,22 +33,35 @@ class C {{
 
         protected bool TryCSharpMain(string bodyOfMain, List<ResultingOptimizationPass> optimizationPasses = null)
         {
+            var code = GenerateMainCode(bodyOfMain);
+            return TryCompileCSharp(code, optimizationPasses);
+        }
+
+        public static string GenerateMainCode(string bodyOfMain)
+        {
             var code = String.Format(@"
 using System;
 class C {{ 
     public static void Main() {{{0}}} 
 }}
 ", bodyOfMain);
-            return TryCompileCSharp(code, optimizationPasses);
+            return code;
         }
 
-        private Assembly CompileSource(string source)
+
+
+        public static Assembly CompileSource(string source)
         {
             const string dummyName = "dump.cs";
             File.WriteAllText(dummyName, source);
             var currentDirectory = Directory.GetCurrentDirectory();
-            DotNetUtils.CallDotNetCommand("csc.exe", "dump.cs", currentDirectory);
-            assm = Path.Combine(currentDirectory, "dump.exe");
+
+            var output = DotNetUtils.CallDotNetCommand("csc.exe", "dump.cs", currentDirectory);
+            if (output.Contains("error"))
+            {
+                return null;
+            }
+            var assm = Path.Combine(currentDirectory, "dump.exe");
             dummyName.DeleteFile();
             return Assembly.LoadFile(assm);
         }

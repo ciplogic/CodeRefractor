@@ -22,19 +22,13 @@ namespace CodeRefractor.Compiler
          *  to be built, and transforms the into source code, and writes an output C++
          *  program.
          */
-        public static void CallCompiler(string inputAssemblyName, string outputExeName)
+        public static string CallCompiler(string inputAssemblyName)
         {
             var commandLineParse = CommandLineParse.Instance;
 
             if (!String.IsNullOrEmpty(inputAssemblyName))
             {
                 commandLineParse.ApplicationInputAssembly = inputAssemblyName;
-            }
-
-            if (!String.IsNullOrEmpty(outputExeName))
-            {
-                commandLineParse.ApplicationNativeExe = outputExeName;
-                commandLineParse.OutputCpp = Path.ChangeExtension(commandLineParse.ApplicationNativeExe, ".cpp");
             }
 
             var dir = Directory.GetCurrentDirectory();
@@ -54,6 +48,7 @@ namespace CodeRefractor.Compiler
             sb.ToFile(fullPath);
 
             Console.WriteLine("Wrote output CPP file '{0}'.", fullPath);
+            return fullPath;
 
             // TODO: this should be a flag, not necessarily do it automatically.
             //NativeCompilationUtils.CompileAppToNativeExe(commandLineParse.OutputCpp,
@@ -70,7 +65,7 @@ namespace CodeRefractor.Compiler
                 OptimizationLevelBase.OptimizerLevel = 2;
                 OptimizationLevelBase.Instance.EnabledCategories.Add(OptimizationCategories.All);
 
-                CallCompiler("", "");
+                CallCompiler("");
             }
             catch (Exception e)
             {
