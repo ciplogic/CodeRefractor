@@ -289,4 +289,7 @@
       <Name>Mono.Reflection</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Diagrams\" />
+  </ItemGroup>
 </Project>
