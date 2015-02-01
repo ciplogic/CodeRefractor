@@ -27,9 +27,20 @@ namespace CodeRefractor.FrontEnd
             _method = method;
         }
 
+        void ComputeCecilInstruction(MethodBase method)
+        {
+            var asm = method.DeclaringType.Assembly;
+            Mono.Cecil.AssemblyDefinition assemblyDefinition = Mono.Cecil.AssemblyDefinition.ReadAssembly(asm.Location);
+            var typeDef = assemblyDefinition.MainModule.Types.FirstOrDefault(tDef => tDef.FullName == method.DeclaringType.FullName);
+            var methodDef = typeDef.Methods.FirstOrDefault(mth => mth.Name == method.Name);
+            var body = methodDef.Body;
+
+        }
+
         public void ProcessInstructions(ClosureEntities closureEntities)
         {
             var instructions = _method.GetInstructions().ToArray();
+            ComputeCecilInstruction(_method);
             var genericArguments = _method.DeclaringType.GetGenericArguments();
             Type[] methodGenericArguments = (_method.IsConstructor) ? new Type[0] : _method.GetGenericArguments();
             var finalGeneric = new List<Type>();

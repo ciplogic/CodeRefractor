@@ -206,12 +206,12 @@ namespace Mono.Reflection {
 			while (min <= max) {
 				int mid = min + ((max - min) / 2);
 				var instruction = instructions [mid];
-				var instruction_offset = instruction.Offset;
+				var instructionOffset = instruction.Offset;
 
-				if (offset == instruction_offset)
+				if (offset == instructionOffset)
 					return instruction;
 
-				if (offset < instruction_offset)
+				if (offset < instructionOffset)
 					max = mid - 1;
 				else
 					min = mid + 1;

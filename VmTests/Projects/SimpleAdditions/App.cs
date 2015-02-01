@@ -3,46 +3,6 @@
 using System;
 using IDisp;
 
-interface IValue
-{
-    int Count { get; set; } // Property interface
-    string Name { get; set; } // Property interface
-}
-
-class Image : IValue // Implements interface
-{
-    public int Count // Property implementation
-    {
-        get;
-        set;
-    }
-
-    string _name;
-
-    public string Name // Property implementation
-    {
-        get { return this._name; }
-        set { this._name = value; }
-    }
-}
-
-class Article : IValue // Implements interface
-{
-    public int Count // Property implementation
-    {
-        get;
-        set;
-    }
-
-    string _name;
-
-    public string Name // Property implementation
-    {
-        get { return this._name; }
-        set { this._name = value; } // .ToUpper(); } TODO: ToUpper brings in a lot of other dependencies
-    }
-}
-
 namespace IDisp
 {
     internal class PersistentData : IDisposable
@@ -67,9 +27,18 @@ class Program
 {
     static void Main()
     {
-        using (var persistent = new PersistentData())
+        try
         {
-            Console.WriteLine("using persistent");
+            Console.WriteLine("content");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Inside catch");
+        }
+        finally
+        {
+
+            Console.WriteLine("finally");
         }
         /*
         IValue value1 = new Image();
