@@ -31,19 +31,23 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
             {
                 HandleInterpreterInstructions(interpreter, candidateMethods, closure);
             }
+            
             var removeList = new List<MethodBaseKey>();
+
             foreach (var cilMethodInterpreter in methodInterpreters)
             {
                 var key = cilMethodInterpreter.ToKey();
                 if (!candidateMethods.Contains(key))
                     removeList.Add(key.Interpreter.Method.ToKey());
             }
+
             foreach (var key in removeList)
             {
                 closure.MethodImplementations.Remove(key);
             }
 
-            Result = removeList.Count>0;
+            // Result = removeList.Count>0;
+            Result = false; // TODO: this is a w/a until fixing the keys issue.
         }
 
         private static MethodInterpreterKey GetKeyFromMethod(ClosureEntities closure, MethodBase entryPoint)
