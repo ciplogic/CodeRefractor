@@ -105,6 +105,7 @@
     <Compile Include="DataNode\ExpanderTransformer.cs" />
     <Compile Include="DataNode\GzipExtractUtils.cs" />
     <Compile Include="DataNode\MinimizeTransformer.cs" />
+    <Compile Include="FrontEnd\ExceptionCatchClauseRanges.cs" />
     <Compile Include="FrontEnd\MethodMidRepresentationBuilder.cs" />
     <Compile Include="FrontEnd\SimpleOperations\Casts\IsInstance.cs" />
     <Compile Include="FrontEnd\SimpleOperations\Identifiers\GetArrayElement.cs" />
@@ -291,7 +292,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Lib\mono.reflection-master\Mono.Reflection.csproj">
-      <Project>{97b010ab-0756-46dc-b75a-7a6c4f6ff28d}</Project>
+      <Project>{97B010AB-0756-46DC-B75A-7A6C4F6FF28D}</Project>
       <Name>Mono.Reflection</Name>
     </ProjectReference>
   </ItemGroup>

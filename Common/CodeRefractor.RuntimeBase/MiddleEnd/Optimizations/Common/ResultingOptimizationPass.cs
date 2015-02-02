@@ -36,7 +36,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Common
          //returns true if it succeed to apply any optimizations
         //Try to return false by default
         //If the code succeeded to optimize something that other optimizations may benefit, return true
-        public bool Optimize(CilMethodInterpreter intermediateCode)
+        public  bool Optimize(CilMethodInterpreter intermediateCode)
         {
             Result = false;
             try

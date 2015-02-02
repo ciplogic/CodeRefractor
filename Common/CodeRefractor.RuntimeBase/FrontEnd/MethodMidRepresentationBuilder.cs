@@ -11,6 +11,7 @@ using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Shared;
 using CodeRefractor.Util;
 using Mono.Reflection;
+using ExceptionHandler = Mono.Cecil.Cil.ExceptionHandler;
 
 #endregion
 
@@ -27,20 +28,10 @@ namespace CodeRefractor.FrontEnd
             _method = method;
         }
 
-        void ComputeCecilInstruction(MethodBase method)
-        {
-            var asm = method.DeclaringType.Assembly;
-            Mono.Cecil.AssemblyDefinition assemblyDefinition = Mono.Cecil.AssemblyDefinition.ReadAssembly(asm.Location);
-            var typeDef = assemblyDefinition.MainModule.Types.FirstOrDefault(tDef => tDef.FullName == method.DeclaringType.FullName);
-            var methodDef = typeDef.Methods.FirstOrDefault(mth => mth.Name == method.Name);
-            var body = methodDef.Body;
-
-        }
-
         public void ProcessInstructions(ClosureEntities closureEntities)
         {
             var instructions = _method.GetInstructions().ToArray();
-            ComputeCecilInstruction(_method);
+            var exceptionRanges = ExceptionCatchClauseRanges.ComputeCecilInstruction(_method);
             var genericArguments = _method.DeclaringType.GetGenericArguments();
             Type[] methodGenericArguments = (_method.IsConstructor) ? new Type[0] : _method.GetGenericArguments();
             var finalGeneric = new List<Type>();
@@ -56,6 +47,8 @@ namespace CodeRefractor.FrontEnd
             for (var index = 0; index < instructions.Length; index++)
             {
                 var instruction = instructions[index];
+                if (ExceptionCatchClauseRanges.IndexInRanges(instruction, exceptionRanges))
+                    continue;
                 EvaluateInstruction(instruction, operationFactory, labelList, closureEntities);
             }
             //   Ensure.IsTrue(evaluator.Count == 0, "Stack not empty!");

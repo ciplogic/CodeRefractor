@@ -42,7 +42,7 @@ namespace CodeRefractor.FrontEnd
          */
         public void LeaveTo(int offsetToLeave)
         {
-            _leaveOffset = offsetToLeave;
+            AlwaysBranch(offsetToLeave);
         }
 
         public override string ToString()
