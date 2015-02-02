@@ -55,12 +55,14 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations.Identifiers
 
         public override int GetHashCode()
         {
-            return (int) Kind + 8*Id;
+            return (int)Kind + 8 * Id;
         }
 
-        public void AutoName()
+        public LocalVariable AutoName()
         {
             VarName = GetAutoName();
+
+            return this;
         }
     }
 }

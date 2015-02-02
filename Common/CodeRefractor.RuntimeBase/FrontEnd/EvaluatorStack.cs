@@ -36,19 +36,23 @@ namespace CodeRefractor.FrontEnd
         public LocalVariable SetNewVReg()
         {
             _vRegId++;
+            
             var newLocal = new LocalVariable
             {
                 Kind = VariableKind.Vreg,
                 Id = _vRegId
-            };
-            newLocal.AutoName();
+            }.AutoName();
+
             Push(newLocal);
+
             return newLocal;
         }
 
-        public void Push(IdentifierValue newLocal)
+        public EvaluatorStack Push(IdentifierValue newLocal)
         {
             Add(newLocal);
+
+            return this;
         }
 
         public IdentifierValue Top

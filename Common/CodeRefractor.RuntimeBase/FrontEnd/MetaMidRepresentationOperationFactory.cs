@@ -37,6 +37,9 @@ namespace CodeRefractor.FrontEnd
         private int _leaveOffset = -1;
         public Type ConstrainedClass { get; set; }
 
+        /**
+         * @NotUsed
+         */
         public void LeaveTo(int offsetToLeave)
         {
             _leaveOffset = offsetToLeave;
@@ -164,14 +167,15 @@ namespace CodeRefractor.FrontEnd
 
         public void CopyStackIntoLocalVariable(int value)
         {
-            var topVariable = _evaluator.Top;
-            _evaluator.Pop();
+            var topVariable = _evaluator.Pop();
+            
             var newLocal = _representation.Vars.LocalVars[value];
             var assingment = new Assignment
             {
                 AssignedTo = newLocal,
                 Right = topVariable
             };
+
             AddOperation(assingment);
         }
 
