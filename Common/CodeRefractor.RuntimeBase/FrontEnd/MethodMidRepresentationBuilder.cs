@@ -31,7 +31,7 @@ namespace CodeRefractor.FrontEnd
         public void ProcessInstructions(ClosureEntities closureEntities)
         {
             var instructions = _method.GetInstructions().ToArray();
-            var exceptionRanges = ExceptionCatchClauseRanges.ComputeCecilInstruction(_method);
+            var exceptionRanges = ExceptionCatchClauseRanges.ComputeExceptionInstructionRanges(_method);
             var genericArguments = _method.DeclaringType.GetGenericArguments();
             Type[] methodGenericArguments = (_method.IsConstructor) ? new Type[0] : _method.GetGenericArguments();
             var finalGeneric = new List<Type>();
