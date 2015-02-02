@@ -394,6 +394,7 @@ namespace CodeRefractor.FrontEnd
                 operationFactory.CopyStackIntoLocalVariable(GetVariableIndex(instruction));
                 return true;
             }
+
             if (opcodeStr.StartsWith("stloc."))
             {
                 var pushedIntValue = opcodeStr.Remove(0, "stloc.".Length).ToInt();
@@ -632,13 +633,19 @@ namespace CodeRefractor.FrontEnd
                 return true;
             }
             if (instruction.OpCode == OpCodes.Brtrue_S
-                || instruction.OpCode == OpCodes.Brtrue
-                || instruction.OpCode == OpCodes.Br
-                || instruction.OpCode == OpCodes.Br_S)
+                || instruction.OpCode == OpCodes.Brtrue)
             {
                 operationFactory.BranchIfTrue(offset);
                 return true;
             }
+
+            if (instruction.OpCode == OpCodes.Br_S || 
+                instruction.OpCode == OpCodes.Br)
+            {
+                operationFactory.AlwaysBranch(offset);
+                return true;
+            }
+
             if (instruction.OpCode == OpCodes.Brfalse
                 || instruction.OpCode == OpCodes.Brfalse_S)
             {
@@ -706,12 +713,6 @@ namespace CodeRefractor.FrontEnd
                 || opcodeStr == OpcodeBranchNames.BneS)
             {
                 operationFactory.BranchIfNotEqual(offset);
-                return true;
-            }
-
-            if (opcodeStr == OpcodeBranchNames.BrS || opcodeStr == OpcodeBranchNames.Br)
-            {
-                operationFactory.AlwaysBranch(offset);
                 return true;
             }
 
