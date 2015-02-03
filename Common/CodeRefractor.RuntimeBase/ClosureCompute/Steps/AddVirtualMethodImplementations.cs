@@ -30,7 +30,7 @@ namespace CodeRefractor.ClosureCompute.Steps
                         continue;
                     if (closureEntities.GetMethodImplementation(implementingMethod) == null)
                     {
-                        methdosToAdd.Add(implementingMethod.ToKey());
+                        methdosToAdd.Add(implementingMethod.ToMethodBaseKey());
                     }
                 }
             }

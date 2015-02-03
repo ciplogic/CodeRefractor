@@ -107,7 +107,7 @@ namespace CodeRefractor.ClosureCompute
 
         public void UseMethod(MethodBase method, MethodInterpreter interpreter)
         {
-            MethodImplementations[method.ToKey()] = interpreter;
+            MethodImplementations[method.ToMethodBaseKey()] = interpreter;
             LookupMethods[interpreter.ToKey()] = interpreter;
         }
 

@@ -54,6 +54,7 @@
   <ItemGroup>
     <Compile Include="OpenRuntime\MathRuntimeTests.cs" />
     <Compile Include="OpenRuntime\StringRuntimeTests.cs" />
+    <Compile Include="OptimizationsTests\TestSmokeRunDoesNotInfiniteLoop.cs" />
     <Compile Include="OptimizationsTests\TestConstantVariableOperatorPropagationTests.cs" />
     <Compile Include="Serializing\LocalOperationTests.cs" />
     <Compile Include="Serializing\TestCompactBinaryFromXml.cs" />

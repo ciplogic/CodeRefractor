@@ -48,21 +48,28 @@ class C {{
             return code;
         }
 
-
-
+        /**
+         * Compiles the given source, and returns the compiled assembly.
+         * The Assembly will be a file on the disk generated in the current working folder.
+         */
         public static Assembly CompileSource(string source)
         {
             const string dummyName = "dump.cs";
             File.WriteAllText(dummyName, source);
             var currentDirectory = Directory.GetCurrentDirectory();
 
-            var output = DotNetUtils.CallDotNetCommand("csc.exe", "dump.cs", currentDirectory);
+            var output = DotNetUtils.CallDotNetCommand("csc.exe", "/out:dump.exe dump.cs", currentDirectory);
             if (output.Contains("error"))
             {
                 return null;
             }
+
             var assm = Path.Combine(currentDirectory, "dump.exe");
             dummyName.DeleteFile();
+
+            // TODO: dump.exe leaks exe files.
+            // TODO: parallel execution, requires generated names instead of dump.exe.
+
             return Assembly.LoadFile(assm);
         }
 
@@ -109,6 +116,9 @@ class C {{
             const string outputCpp = "output.cpp";
             var assembly = CompileSource(code);
             Assert.IsNotNull(assembly);
+
+            assm = assembly.Location;
+
             var start = Environment.TickCount;
             expectedInput = assm.ExecuteCommand("", Directory.GetCurrentDirectory());
             var end = Environment.TickCount - start;

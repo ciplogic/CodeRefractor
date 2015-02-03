@@ -16,10 +16,12 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
     {
         protected override void DoOptimize(ClosureEntities closure)
         {
-            var methodInterpreters = closure.MethodImplementations.Values
-                .Where(m => m.Kind == MethodKind.CilInstructions)
-                .Select(mth => (CilMethodInterpreter)mth)
-                .ToArray();
+            // the problem is that since some methods are mapped methods, we need to
+            // keep the map of <MethodBaseKey, MethodInterpreter>, since deriving from
+            // the MethodInterpreter will lead us to the mapped method instead.
+
+            var methodInterpreters = closure.MethodImplementations
+                .Where(m => m.Value.Kind == MethodKind.CilInstructions);
 
             var entryPoint = closure.EntryPoint;
             var candidateMethods = new HashSet<MethodInterpreterKey>
@@ -29,16 +31,16 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
 
             foreach (var interpreter in methodInterpreters)
             {
-                HandleInterpreterInstructions(interpreter, candidateMethods, closure);
+                HandleInterpreterInstructions((CilMethodInterpreter) interpreter.Value, candidateMethods, closure);
             }
             
             var removeList = new List<MethodBaseKey>();
 
             foreach (var cilMethodInterpreter in methodInterpreters)
             {
-                var key = cilMethodInterpreter.ToKey();
-                if (!candidateMethods.Contains(key))
-                    removeList.Add(key.Interpreter.Method.ToKey());
+                var methodInterpreterKey = cilMethodInterpreter.Value.ToKey(); 
+                if (!candidateMethods.Contains(methodInterpreterKey))
+                    removeList.Add(cilMethodInterpreter.Key);
             }
 
             foreach (var key in removeList)
@@ -46,8 +48,7 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
                 closure.MethodImplementations.Remove(key);
             }
 
-            // Result = removeList.Count>0;
-            Result = false; // TODO: this is a w/a until fixing the keys issue.
+            Result = removeList.Count > 0;
         }
 
         private static MethodInterpreterKey GetKeyFromMethod(ClosureEntities closure, MethodBase entryPoint)

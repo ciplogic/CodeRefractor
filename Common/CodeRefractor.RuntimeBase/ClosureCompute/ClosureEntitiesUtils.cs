@@ -32,7 +32,7 @@ namespace CodeRefractor.ClosureCompute
         }
 
 
-        public static MethodBaseKey ToKey(this MethodBase method)
+        public static MethodBaseKey ToMethodBaseKey(this MethodBase method)
         {
             var result = new MethodBaseKey(method);
             return result;
