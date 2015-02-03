@@ -25,8 +25,9 @@ namespace CodeRefactor.OpenRuntime
         {
             var s1ch = s1.ToCharArray();
             var s2ch = s2.ToCharArray();
-
-            var resultCh = new Char[s1ch.Length + s2ch.Length+5]; //Need a proper fix for this Look at BoxingTest
+            
+            //Need a proper fix for this Look at BoxingTest
+            var resultCh = new Char[s1ch.Length + s2ch.Length+1]; 
             for (var i = 0; i < s1ch.Length; i++)
             {
                 resultCh[i] = s1ch[i];
