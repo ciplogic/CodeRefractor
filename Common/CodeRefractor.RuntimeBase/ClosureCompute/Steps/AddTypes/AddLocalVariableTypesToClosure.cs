@@ -1,8 +1,6 @@
 ﻿using System.Linq;
 using CodeRefractor.FrontEnd.SimpleOperations.Methods;
-using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
-using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 
 namespace CodeRefractor.ClosureCompute.Steps.AddTypes
 {

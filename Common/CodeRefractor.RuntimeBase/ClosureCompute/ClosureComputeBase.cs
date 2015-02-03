@@ -8,6 +8,10 @@ using CodeRefractor.MiddleEnd.Interpreters.Cil;
 
 namespace CodeRefractor.ClosureCompute
 {
+    /// <summary>
+    /// Are various algorithms which find if new types
+    /// or methods are added to the CR closure
+    /// </summary>
     public abstract class ClosureComputeBase
     {
         public abstract bool UpdateClosure(ClosureEntities closureEntities);

@@ -11,7 +11,6 @@ using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Shared;
 using CodeRefractor.Util;
 using Mono.Reflection;
-using ExceptionHandler = Mono.Cecil.Cil.ExceptionHandler;
 
 #endregion
 
@@ -185,7 +184,7 @@ namespace CodeRefractor.FrontEnd
 
             if (opcodeStr.StartsWith("conv."))
             {
-                if (ConversionOperations(opcodeStr, operationFactory)) return true;
+                if (ConversionOperations(instruction, operationFactory)) return true;
                 return true;
             }
             
@@ -255,7 +254,7 @@ namespace CodeRefractor.FrontEnd
                 operationFactory.StoreStaticField((FieldInfo) instruction.Operand);
                 return true;
             }
-            if (opcodeStr == "ldloca.s" || opcodeStr == "ldloca")
+            if (instruction.OpCode == OpCodes.Ldloca_S || instruction.OpCode == OpCodes.Ldloca)
             {
                 //TODO: load the address into evaluation stack
                 var index = instruction.Operand;
@@ -263,7 +262,7 @@ namespace CodeRefractor.FrontEnd
                 operationFactory.LoadAddressIntoEvaluationStack((LocalVariableInfo) index);
                 return true;
             }
-            if (opcodeStr == "ldflda.s" || opcodeStr == "ldflda")
+            if (instruction.OpCode == OpCodes.Ldflda)
             {
                 var fieldInfo = (FieldInfo) instruction.Operand;
 
@@ -271,7 +270,7 @@ namespace CodeRefractor.FrontEnd
                 return true;
             }
 
-            if (opcodeStr == "ldelema")
+            if (instruction.OpCode == OpCodes.Ldelema)
             {
                 var ldElemTypeDefinition = (Type) instruction.Operand;
                 operationFactory.LoadAddressOfArrayItemIntoStack(ldElemTypeDefinition);
@@ -354,35 +353,34 @@ namespace CodeRefractor.FrontEnd
             return false;
         }
 
-        private static bool ConversionOperations(string opcodeStr,
-            MetaMidRepresentationOperationFactory operationFactory)
+        private static bool ConversionOperations(Instruction instruction, MetaMidRepresentationOperationFactory operationFactory)
         {
-            if (opcodeStr == "conv.u1")
+            if (instruction.OpCode == OpCodes.Conv_U1)
             {
                 operationFactory.ConvU1();
                 return true;
             }
-            if (opcodeStr == "conv.i")
+            if (instruction.OpCode == OpCodes.Conv_I)
             {
                 operationFactory.ConvI();
                 return true;
             }
-            if (opcodeStr == "conv.i4")
+            if (instruction.OpCode == OpCodes.Conv_I4)
             {
                 operationFactory.ConvI4();
                 return true;
             }
-            if (opcodeStr == "conv.i8")
+            if (instruction.OpCode == OpCodes.Conv_I8)
             {
                 operationFactory.ConvI8();
                 return true;
             }
-            if (opcodeStr == "conv.r4")
+            if (instruction.OpCode == OpCodes.Conv_R4)
             {
                 operationFactory.ConvR4();
                 return true;
             }
-            if (opcodeStr == "conv.r8")
+            if (instruction.OpCode == OpCodes.Conv_R8)
             {
                 operationFactory.ConvR8();
                 return true;
@@ -393,7 +391,7 @@ namespace CodeRefractor.FrontEnd
         private bool HandleStores(string opcodeStr, Instruction instruction,
             MetaMidRepresentationOperationFactory operationFactory)
         {
-            if (opcodeStr == "stloc.s" || opcodeStr == "stloc")
+            if (instruction.OpCode == OpCodes.Stloc_S || instruction.OpCode == OpCodes.Stloc)
             {
                 operationFactory.CopyStackIntoLocalVariable(GetVariableIndex(instruction));
                 return true;
@@ -414,7 +412,7 @@ namespace CodeRefractor.FrontEnd
                 return true;
             }
 
-            if (opcodeStr == "stfld")
+            if (instruction.OpCode == OpCodes.Stfld)
             {
                 var fieldInfo = (FieldInfo)instruction.Operand;
                 operationFactory.StoreField(fieldInfo);

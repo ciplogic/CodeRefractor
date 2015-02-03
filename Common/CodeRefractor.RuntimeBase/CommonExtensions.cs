@@ -13,6 +13,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using CodeRefractor.ClosureCompute;
+using CodeRefractor.CodeWriter.Output;
 using CodeRefractor.FrontEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.Runtime.Annotations;
@@ -342,6 +343,11 @@ namespace CodeRefractor.RuntimeBase
         }
 
         public static void ToFile(this StringBuilder text, string fileName)
+        {
+            File.WriteAllText(fileName, text.ToString());
+        }
+
+        public static void ToFile(this CodeOutput text, string fileName)
         {
             File.WriteAllText(fileName, text.ToString());
         }

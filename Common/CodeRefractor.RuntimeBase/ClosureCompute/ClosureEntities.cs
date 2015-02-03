@@ -10,6 +10,7 @@ using CodeRefractor.Backend;
 using CodeRefractor.Backend.ComputeClosure;
 using CodeRefractor.Backend.ProgramWideOptimizations.Virtual;
 using CodeRefractor.CodeWriter.Linker;
+using CodeRefractor.CodeWriter.Output;
 using CodeRefractor.CompilerBackend.ProgramWideOptimizations.ConstParameters;
 using CodeRefractor.FrontEnd.SimpleOperations.Methods;
 using CodeRefractor.MiddleEnd;
@@ -115,7 +116,7 @@ namespace CodeRefractor.ClosureCompute
             EntitiesBuilder.MethodResolverList.Add(resolveRuntimeMethod);
         }
 
-        public StringBuilder BuildFullSourceCode()
+        public CodeOutput BuildFullSourceCode()
         {
             var entryInterpreter = ResolveMethod(EntryPoint);
             List<Type> usedTypes = MappedTypes.Values.ToList();

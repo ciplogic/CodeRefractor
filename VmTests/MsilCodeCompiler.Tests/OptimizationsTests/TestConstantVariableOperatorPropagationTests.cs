@@ -12,6 +12,10 @@ using NUnit.Framework;
 
 namespace MsilCodeCompiler.Tests.OptimizationsTests
 {
+    /// <summary>
+    /// Test with specified body :)
+    /// and with one optimization
+    /// </summary>
     [TestFixture]
     public class TestConstantVariableOperatorPropagationTests : CompilingProgramBase
     {

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using CodeRefractor.CodeWriter;
 using CodeRefractor.Util;
 
 #endregion
@@ -79,25 +80,27 @@ namespace CodeRefractor.RuntimeBase.Analyze
             sb.AppendLine("}; //end of class delegate");
 
           
-            sb.AppendFormat("System_Void {0}_ctor(const std::shared_ptr<{0}>& _delegate, System_Void*, std::function<System_Void({1})> fn){{",
+            sb.AppendFormat("System_Void {0}_ctor(const {2}<{0}>& _delegate, System_Void*, std::function<System_Void({1})> fn){{",
                     delegateType.Key.ToCppMangling(),
-                    parametersFormat)
+                    parametersFormat,
+                    TypeNamerUtils.StdSharedPtr)
               .AppendLine();
 
             sb.AppendLine("  _delegate->Register(fn);");
             sb.AppendLine("}");
             if (!String.IsNullOrEmpty(namedTypeArgs))
             {
-                sb.AppendFormat("System_Void {0}_Invoke(const std::shared_ptr<{0}>& _delegate, {1}){{",
+                sb.AppendFormat("System_Void {0}_Invoke(const {2}<{0}>& _delegate, {1}){{",
                     delegateType.Key.ToCppMangling(),
-                    namedTypeArgs)
+                    namedTypeArgs,
+                    TypeNamerUtils.StdSharedPtr)
                 .AppendLine();
             }
             else
             {
-                sb.AppendFormat("System_Void {0}_Invoke(const std::shared_ptr<{0}>& _delegate){{",
+                sb.AppendFormat("System_Void {0}_Invoke(const {1}<{0}>& _delegate){{",
                     delegateType.Key.ToCppMangling(),
-                    namedTypeArgs)
+                    TypeNamerUtils.StdSharedPtr)
                     .AppendLine();
                
             }

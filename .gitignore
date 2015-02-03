@@ -95,3 +95,4 @@ packages/*
 bin/OpenRuntime/runtime_base.hpp
 bin/Tests/BoxingTest01.cs
 VisualCompiler/bin/*
+Lib/mono.reflection-master/Mono.Reflection.dll

@@ -6,7 +6,6 @@
 #include <vector>
 #include <functional>
 
-#include "CodeRefactorRuntime/System_Primitives.h"
 #include "CodeRefactorRuntime/System_Console.h"
 
 #endif // SLOTH_H

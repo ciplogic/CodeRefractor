@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using CodeRefractor.ClosureCompute;
+using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.Interpreters;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.RuntimeBase;
@@ -14,10 +15,18 @@ using CodeRefractor.RuntimeBase;
 
 namespace CodeRefractor.Util
 {
+    /// <summary>
+    /// helper class for translating C# names to 
+    /// C++ names
+    /// </summary>
     public static class TypeNamerUtils
     {
-        public const string StdSharedPtr = "std::shared_ptr";
-
+        public static string StdSharedPtr = "std::shared_ptr"; 
+        public static string SmartPtrHeader = "";
+        /*
+        public static string StdSharedPtr = "boost::shared_ptr";
+        public static string SmartPtrHeader = "<boost>";
+        */
         public static string GetMethodName(this MethodBase methodInfo)
         {
             if (methodInfo.DeclaringType != null && methodInfo.DeclaringType.IsInterface)
@@ -137,7 +146,7 @@ namespace CodeRefractor.Util
             if (s.EndsWith("[]"))
             {
                 s = s.Remove(s.Length - 2, 2);
-                fullName = String.Format("std::shared_ptr <Array<{0}_{1}> > &", nameSpace, s);
+                fullName = String.Format("{2} <Array<{0}_{1}> > &", nameSpace, s, StdSharedPtr);
             }
             return fullName;
         }

@@ -30,15 +30,23 @@ using CodeRefractor.Util;
 
 namespace CodeRefractor.Backend
 {
+    /// <summary>
+    /// Writes output.cpp file
+    /// </summary>
     public static class CppCodeGenerator
     {
-        public static StringBuilder GenerateSourceStringBuilder(MethodInterpreter interpreter, TypeDescriptionTable table, List<MethodInterpreter> closure, ClosureEntities closureEntities)
+        public static CodeOutput GenerateSourceStringBuilder(MethodInterpreter interpreter, TypeDescriptionTable table, List<MethodInterpreter> closure, ClosureEntities closureEntities)
         {
-            var headerSb = new StringBuilder();
+            var headerSb = new CodeOutput();
 
-            headerSb.AppendLine("#include \"sloth.h\"");
-            headerSb.AppendLine("#include <functional>");
-
+            headerSb.Append("#include \"sloth.h\"")
+                .BlankLine();
+            if (!string.IsNullOrEmpty(TypeNamerUtils.SmartPtrHeader))
+            {
+                headerSb
+                    .AppendFormat("#include {0}", TypeNamerUtils.SmartPtrHeader)
+                    .BlankLine();
+            }
 
             var initializersCodeOutput = new CodeOutput();
             TypeBodiesCodeGenerator.WriteClosureStructBodies(initializersCodeOutput, closureEntities);
@@ -69,8 +77,12 @@ namespace CodeRefractor.Backend
                     if (runtimeFeature.IsUsed)
                     {
                         if (runtimeFeature.Headers.Count > 0)
-                            headerSb.AppendLine("//Headers For Feature: " + runtimeFeature.Name + "\n" +
-                                runtimeFeature.Headers.Select(g => "#include<" + g + ">").Aggregate((a, b) => a + "\n" + b) + "\n//End Of Headers For Feature: " + runtimeFeature.Name + "\n");
+                        {
+                            headerSb
+                                .Append("//Headers For Feature: " + runtimeFeature.Name + "\n" +
+                                    runtimeFeature.Headers.Select(g => "#include<" + g + ">").Aggregate((a, b) => a + "\n" + b) + "\n//End Of Headers For Feature: " + runtimeFeature.Name + "\n")
+                                    .BlankLine();
+                        }
                         if (runtimeFeature.Declarations.Count > 0)
                             initializersCodeOutput.Append("//Initializers For: " + runtimeFeature.Name + "\n" + runtimeFeature.Declarations.Aggregate((a, b) => a + "\n" + b) + "\n//End OF Initializers For: " + runtimeFeature.Name + "\n");
                         if (!String.IsNullOrEmpty(runtimeFeature.Functions))
@@ -79,7 +91,9 @@ namespace CodeRefractor.Backend
                 }
             }
 
-            return headerSb.Append(initializersCodeOutput).Append(bodySb);
+            return headerSb
+                .Append(initializersCodeOutput.ToString())
+                .Append(bodySb.ToString());
         }
 
         private static void WriteCppMethods(List<MethodInterpreter> closure, CodeOutput sb, ClosureEntities crRuntime)

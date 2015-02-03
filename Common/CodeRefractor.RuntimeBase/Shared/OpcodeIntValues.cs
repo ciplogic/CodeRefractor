@@ -40,16 +40,9 @@ namespace CodeRefractor.RuntimeBase.Shared
         public const int Beq = 0x3B;
         public const int BeqS = 0x2E;
 
-        public const int BrFalse = 0x39;
-        public const int BrFalseS = 0x2C;
         public const int BrTrue = 0x3A;
         public const int BrTrueS = 0x2D;
-        public const int BrInst = 0x3A;
-        public const int BrInstS = 0x2D;
-
-        public const int BrNull = 0x39;
-        public const int BrNullS = 0x2C;
-
+        
         public const int BrZero = 0x39;
         public const int BrZeroS = 0x2C;
         public const int Leave = 0xDD;

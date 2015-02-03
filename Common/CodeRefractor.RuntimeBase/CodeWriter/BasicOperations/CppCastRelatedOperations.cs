@@ -3,6 +3,7 @@ using CodeRefractor.CodeWriter.Linker;
 using CodeRefractor.CodeWriter.Output;
 using CodeRefractor.FrontEnd.SimpleOperations;
 using CodeRefractor.FrontEnd.SimpleOperations.Casts;
+using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.RuntimeBase.Analyze;
@@ -14,7 +15,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 {
     static class CppCastRelatedOperations
     {
-        private const string BoxingTemplate = @"
+        private static string BoxingTemplate = @"
 template<class T>
 struct BoxedT : public System_Object
 {
@@ -22,7 +23,7 @@ struct BoxedT : public System_Object
 };
 
 template<class T>
-std::shared_ptr<System_Object> box_value(T value, int typeId){
+" + TypeNamerUtils.StdSharedPtr + @"<System_Object> box_value(T value, int typeId){
 	auto result = std::make_shared<BoxedT< T > >();
 	result->_typeId = typeId;
 	result->Data = value;
@@ -30,7 +31,7 @@ std::shared_ptr<System_Object> box_value(T value, int typeId){
 }
 
 template<class T>
-T unbox_value(std::shared_ptr<System_Object> value){
+T unbox_value(" + TypeNamerUtils.StdSharedPtr + @"<System_Object> value){
 	auto resultObject = value.get();
 	auto castedUnboxing = (BoxedT<T>*)resultObject;
 	return castedUnboxing->Data;

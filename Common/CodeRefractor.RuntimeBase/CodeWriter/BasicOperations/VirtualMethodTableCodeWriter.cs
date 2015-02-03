@@ -8,6 +8,7 @@ using System.Text;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.ClosureCompute.Steps;
 using CodeRefractor.CodeWriter.Linker;
+using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Interpreters;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
