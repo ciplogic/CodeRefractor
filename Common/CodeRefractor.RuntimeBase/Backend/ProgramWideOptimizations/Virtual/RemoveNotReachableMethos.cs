@@ -12,10 +12,19 @@ using CodeRefractor.RuntimeBase.MiddleEnd;
 
 namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
 {
+    /// <summary>
+    /// This optimization should remove all unreferenced methods which:
+    /// - are not the entry methods
+    /// - are not called by transitive methods called by entry methods or any entry methods
+    /// - are not called by used virtual methods
+    /// </summary>
     public class RemoveNotReachableMethos : ResultingProgramOptimizationBase
     {
         protected override void DoOptimize(ClosureEntities closure)
         {
+
+            //TODO: fix the logic 
+            return;
             // the problem is that since some methods are mapped methods, we need to
             // keep the map of <MethodBaseKey, MethodInterpreter>, since deriving from
             // the MethodInterpreter will lead us to the mapped method instead.

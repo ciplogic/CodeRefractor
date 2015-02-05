@@ -29,8 +29,14 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
             var candidateVariables = SetAllCandidateVariables(interpreter);
             var useDef = interpreter.MidRepresentation.UseDef;
             var localOp = useDef.GetLocalOperations();
+
+            if (interpreter.Method.Name == "Concat")
+            {
+
+            }
             if (RemoveAllEscaping(candidateVariables, localOp, useDef))
                 return;
+
 
             if (candidateVariables.Count == 0)
                 return;
@@ -157,6 +163,10 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
                     continue;
                 candidateVariables.Remove(localVariable);
             }
+            if (methodData.Result != null)
+            {
+                candidateVariables.Remove(methodData.Result);
+            }
         }
 
         private static void HandleRefAssignment(LocalVariable localVariable, HashSet<LocalVariable> candidateVariables,
@@ -193,10 +203,9 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
             LocalOperation op)
         {
             var methodData = (CallMethodStatic) op;
-            var resultVar = methodData.Result;
-            if (resultVar != null)
+            if (methodData.Result != null)
             {
-                candidateVariables.Remove(resultVar);
+                candidateVariables.Remove(methodData.Result);
             }
             var escapeFullData = methodData.Interpreter.BuildEscapeModes();
             for (var index = 0; index < methodData.Parameters.Count; index++)
