@@ -7,15 +7,21 @@ using CodeRefractor.Util;
 
 namespace CodeRefractor.ClosureCompute
 {
-    public static class ClosureEntitiesUtils
+    public class ClosureEntitiesUtils
     {
-        public static bool IsPinvoke(this MethodBase method)
+        private Func<ClosureEntities> _getClosureEntities;
+
+        public ClosureEntitiesUtils(Func<ClosureEntities> getClosureEntities)
         {
-            return method.Attributes.HasFlag(MethodAttributes.PinvokeImpl);
+            this._getClosureEntities = getClosureEntities;
         }
-        public static ClosureEntities BuildClosureEntities(MethodInfo definition, Assembly runtimeAssembly)
+
+        public ClosureEntities BuildClosureEntities(MethodInfo definition, Assembly runtimeAssembly)
         {
-            var closureEntities = new ClosureEntities { EntryPoint = definition };
+            var closureEntities = _getClosureEntities();
+
+            closureEntities.EntryPoint = definition;
+
             var resolveRuntimeMethod = new ResolveRuntimeMethod(runtimeAssembly, closureEntities);
             closureEntities.AddMethodResolver(resolveRuntimeMethod);
 
@@ -28,56 +34,8 @@ namespace CodeRefractor.ClosureCompute
 
             closureEntities.ComputeFullClosure();
             closureEntities.OptimizeClosure();
+
             return closureEntities;
-        }
-
-
-        public static MethodBaseKey ToMethodBaseKey(this MethodBase method)
-        {
-            var result = new MethodBaseKey(method);
-            return result;
-        }
-
-        public static Type ReduceType(this Type type)
-        {
-            if (type.IsArray)
-            {
-                return ReduceType(type.GetElementType());
-            }
-            if (type.IsByRef)
-            {
-                return ReduceType(type.GetElementType());
-            }
-            return type;
-        }
-
-        public static bool MethodMatches(this MethodBase otherDefinition, MethodBase method)
-        {
-            var declaringType = method.DeclaringType;
-            var otherDeclaringType = method.DeclaringType;
-            if (declaringType != otherDeclaringType)
-                return false;
-
-            if ((method.GetMethodName() != otherDefinition.Name) && (otherDefinition.Name != method.Name))
-                return false;
-            
-
-            if (method.GetReturnType().FullName != otherDefinition.GetReturnType().FullName)
-                return false;
-            var arguments = method.GetParameters().Select(par => par.ParameterType).ToArray();
-
-            if (arguments.Length != otherDefinition.GetParameters().Length)
-                return false;
-
-            for (var index = 0; index < arguments.Length; index++)
-            {
-                Type argument = arguments[index];
-                var parameter = otherDefinition.GetParameters()[index];
-                if (argument.FullName != parameter.ParameterType.FullName)
-                    return false;
-            }
-
-            return true;
         }
     }
 }

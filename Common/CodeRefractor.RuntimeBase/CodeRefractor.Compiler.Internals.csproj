@@ -47,12 +47,21 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Castle.Core">
+      <HintPath>..\..\packages\Castle.Core.3.2.0\lib\net45\Castle.Core.dll</HintPath>
+    </Reference>
     <Reference Include="IKVM.Reflection">
       <HintPath>..\..\Lib\Disasemblers\IKVM.Reflection.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Mono.Cecil">
       <HintPath>..\..\Lib\Disasemblers\Mono.Cecil.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject">
+      <HintPath>..\..\packages\Ninject.3.2.2.0\lib\net45-full\Ninject.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject.Extensions.Factory">
+      <HintPath>..\..\packages\Ninject.Extensions.Factory.3.2.1.0\lib\net45-full\Ninject.Extensions.Factory.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -72,6 +81,7 @@
     <Compile Include="ClosureCompute\ClosureEntitiesBuilder.cs" />
     <Compile Include="ClosureCompute\MethodBaseKey.cs" />
     <Compile Include="ClosureCompute\MethodBaseKeyComparer.cs" />
+    <Compile Include="ClosureCompute\MethodBaseUtils.cs" />
     <Compile Include="ClosureCompute\Steps\AddVirtualMethodImplementations.cs" />
     <Compile Include="ClosureCompute\Steps\AddVirtualMethods.cs" />
     <Compile Include="CodeWriter\BasicOperations\CppCastRelatedOperations.cs" />
@@ -98,6 +108,7 @@
     <Compile Include="ClosureCompute\Steps\AddTypes\AddParameterTypesToClosure.cs" />
     <Compile Include="ClosureCompute\TypeResolverBase.cs" />
     <Compile Include="ClosureCompute\TypeSorter\TypeComparer.cs" />
+    <Compile Include="Config\CodeRefractorNInjectModule.cs" />
     <Compile Include="DataNode\Cursor.cs" />
     <Compile Include="DataNode\Dict.cs" />
     <Compile Include="DataNode\DynNode.cs" />

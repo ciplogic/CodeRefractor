@@ -5,11 +5,14 @@ using System.IO;
 using System.Reflection;
 using CodeRefactor.OpenRuntime;
 using CodeRefractor.ClosureCompute;
+using CodeRefractor.Config;
 using CodeRefractor.MiddleEnd.Optimizations.Util;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Config;
 using CodeRefractor.RuntimeBase.Optimizations;
 using CodeRefractor.Util;
+using Ninject;
+using Ninject.Extensions.Factory;
 
 #endregion
 
@@ -22,9 +25,9 @@ namespace CodeRefractor.Compiler
          *  to be built, and transforms the into source code, and writes an output C++
          *  program.
          */
-        public static string CallCompiler(string inputAssemblyName)
+        public static string CallCompiler(IKernel kernel, string inputAssemblyName)
         {
-            var commandLineParse = CommandLineParse.Instance;
+            var commandLineParse = kernel.Get<CommandLineParse>();
 
             if (!String.IsNullOrEmpty(inputAssemblyName))
             {
@@ -38,7 +41,8 @@ namespace CodeRefractor.Compiler
             var definition = asm.EntryPoint; // TODO: what if this is not an application, but a library without an entry point?
             var start = Environment.TickCount;
 
-            var closureEntities = ClosureEntitiesUtils.BuildClosureEntities(definition, typeof(CrString).Assembly);
+            var closureEntities = kernel.Get<ClosureEntitiesUtils>()
+                .BuildClosureEntities(definition, typeof(CrString).Assembly);
 
             var sb = closureEntities.BuildFullSourceCode();
             var compilationTime = Environment.TickCount - start;
@@ -58,14 +62,18 @@ namespace CodeRefractor.Compiler
         {
             try
             {
-                var commandLineParse = CommandLineParse.Instance;
+                IKernel kernel = new StandardKernel(
+                    new CodeRefractorNInjectModule()
+                );
+
+                var commandLineParse = kernel.Get<CommandLineParse>();
                 commandLineParse.Process(args);
 
                 OptimizationLevelBase.Instance = new OptimizationLevels();
                 OptimizationLevelBase.OptimizerLevel = 2;
                 OptimizationLevelBase.Instance.EnabledCategories.Add(OptimizationCategories.All);
 
-                CallCompiler("");
+                CallCompiler(kernel, "");
             }
             catch (Exception e)
             {

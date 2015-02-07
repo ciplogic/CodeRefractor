@@ -45,8 +45,14 @@ namespace CodeRefractor.ClosureCompute
         internal readonly ClosureEntitiesBuilder EntitiesBuilder = new ClosureEntitiesBuilder();
         private ProgramOptimizationsTable _optimizationsTable;
         public bool EnableProgramWideOptimizations { get; set; }
-        public ClosureEntities()
+
+        public List<RuntimeFeature> Features = new List<RuntimeFeature>();
+        private readonly Func<CppCodeGenerator> _getCppCodeGenerator;
+
+        public ClosureEntities(Func<CppCodeGenerator> getCppCodeGenerator)
         {
+            this._getCppCodeGenerator = getCppCodeGenerator;
+
             MappedTypes = new Dictionary<Type, Type>();
             MethodImplementations = new Dictionary<MethodBaseKey, MethodInterpreter>(new MethodBaseKeyComparer());
             AbstractMethods = new HashSet<MethodInfo>();
@@ -121,12 +127,13 @@ namespace CodeRefractor.ClosureCompute
             var entryInterpreter = ResolveMethod(EntryPoint);
             List<Type> usedTypes = MappedTypes.Values.ToList();
             var typeTable = new TypeDescriptionTable(usedTypes,this);
-            return CppCodeGenerator.GenerateSourceStringBuilder(entryInterpreter,typeTable,
-                MethodImplementations.Values.ToList(), this);
-        }
 
-        public List<RuntimeFeature> Features = new List<RuntimeFeature>(); 
-       
+            return _getCppCodeGenerator().GenerateSourceCodeOutput(
+                entryInterpreter,
+                typeTable,
+                MethodImplementations.Values.ToList(), 
+                this);
+        }
 
         public Type ResolveType(Type type)
         {
