@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using CodeRefractor;
 using CodeRefractor.Compiler;
 using CodeRefractor.CompilerBackend;
 using CodeRefractor.MiddleEnd.Optimizations.Common;

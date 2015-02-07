@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CodeRefractor;
 using CodeRefractor.Compiler;
 using CodeRefractor.MiddleEnd.Optimizations.Util;
 using CodeRefractor.RuntimeBase;
