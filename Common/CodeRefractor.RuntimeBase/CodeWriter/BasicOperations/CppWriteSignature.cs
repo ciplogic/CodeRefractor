@@ -39,7 +39,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 {
                     TypeDescription argumentTypeDescription = UsedTypeList.Set(method.DeclaringType.GetReversedMappedType(closureEntities) ?? method.DeclaringType.GetMappedType(closureEntities), closureEntities);
                     var thisText = String.Format("{0} _this",
-                            argumentTypeDescription.ClrType.ToCppName(EscapingMode.Pointer, true));
+                            argumentTypeDescription.ClrType.ToCppName(EscapingMode.Pointer));
                   
                     sb.Append(thisText);
                     index++;
