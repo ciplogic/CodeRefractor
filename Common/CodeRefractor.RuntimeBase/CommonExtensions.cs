@@ -16,19 +16,14 @@ using CodeRefractor.ClosureCompute;
 using CodeRefractor.CodeWriter.Output;
 using CodeRefractor.FrontEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations;
-using CodeRefractor.Runtime.Annotations;
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
-using CodeRefractor.RuntimeBase.Shared;
 using CodeRefractor.Util;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase
+namespace CodeRefractor
 {
     public static class CommonExtensions
     {
-
-      
         public static IEnumerable<Type> GetObjectsByInterface(this Assembly assembly, Type T)
         {
             if (!T.IsInterface)

@@ -5,6 +5,7 @@ using CodeRefractor.ClosureCompute;
 using CodeRefractor.CompilerBackend.ProgramWideOptimizations;
 using CodeRefractor.FrontEnd.SimpleOperations.Methods;
 using CodeRefractor.MiddleEnd;
+using CodeRefractor.MiddleEnd.Interpreters;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
@@ -12,26 +13,18 @@ using CodeRefractor.RuntimeBase.MiddleEnd;
 
 namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
 {
-    /// <summary>
-    /// This optimization should remove all unreferenced methods which:
-    /// - are not the entry methods
-    /// - are not called by transitive methods called by entry methods or any entry methods
-    /// - are not called by used virtual methods
-    /// </summary>
     public class RemoveNotReachableMethos : ResultingProgramOptimizationBase
     {
         protected override void DoOptimize(ClosureEntities closure)
         {
-
-            //TODO: fix the logic 
-            return;
             // the problem is that since some methods are mapped methods, we need to
             // keep the map of <MethodBaseKey, MethodInterpreter>, since deriving from
             // the MethodInterpreter will lead us to the mapped method instead.
 
-            var methodInterpreters = closure.MethodImplementations
-                .Where(m => m.Value.Kind == MethodKind.CilInstructions);
-
+            MethodInterpreterKey[] methodInterpreters = closure.MethodImplementations
+                .Where(m => m.Value.Kind == MethodKind.CilInstructions)
+                .Select(m2 => GetKeyFromMethod(closure, m2.Key.Method))
+                .ToArray();
             var entryPoint = closure.EntryPoint;
             var candidateMethods = new HashSet<MethodInterpreterKey>
             {
@@ -40,16 +33,18 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
 
             foreach (var interpreter in methodInterpreters)
             {
-                HandleInterpreterInstructions((CilMethodInterpreter) interpreter.Value, candidateMethods, closure);
+                HandleInterpreterInstructions((CilMethodInterpreter) interpreter.Interpreter, candidateMethods, closure);
             }
             
             var removeList = new List<MethodBaseKey>();
 
-            foreach (var cilMethodInterpreter in methodInterpreters)
+            foreach (MethodInterpreterKey cilMethodInterpreter in methodInterpreters)
             {
-                var methodInterpreterKey = cilMethodInterpreter.Value.ToKey(); 
-                if (!candidateMethods.Contains(methodInterpreterKey))
-                    removeList.Add(cilMethodInterpreter.Key);
+                //var methodInterpreterKey = GetKeyFromMethod(closure, cilMethodInterpreter.Key.Method);
+                if (!candidateMethods.Contains(cilMethodInterpreter))
+                {
+                    removeList.Add(cilMethodInterpreter.Interpreter.Method.ToMethodBaseKey());
+                }
             }
 
             foreach (var key in removeList)

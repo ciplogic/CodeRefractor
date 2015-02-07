@@ -4,12 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using CodeRefractor.ClosureCompute;
-using CodeRefractor.MiddleEnd;
-using CodeRefractor.MiddleEnd.Interpreters;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.MiddleEnd
+namespace CodeRefractor.MiddleEnd.Interpreters
 {
     public static class MethodInterpreterKeyUtils
     {
