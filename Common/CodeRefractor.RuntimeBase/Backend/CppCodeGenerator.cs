@@ -33,11 +33,22 @@ namespace CodeRefractor.Backend
     /// <summary>
     /// Writes output.cpp file
     /// </summary>
-    public static class CppCodeGenerator
+    public class CppCodeGenerator
     {
-        public static CodeOutput GenerateSourceStringBuilder(MethodInterpreter interpreter, TypeDescriptionTable table, List<MethodInterpreter> closure, ClosureEntities closureEntities)
+        private Func<CodeOutput> _createCodeOutput;
+
+        public CppCodeGenerator(Func<CodeOutput> createCodeOutput)
         {
-            var headerSb = new CodeOutput();
+            this._createCodeOutput = createCodeOutput;
+        }
+
+        public CodeOutput GenerateSourceCodeOutput(
+            MethodInterpreter interpreter,
+            TypeDescriptionTable table,
+            List<MethodInterpreter> closure,
+            ClosureEntities closureEntities)
+        {
+            var headerSb = this._createCodeOutput();
 
             headerSb.Append("#include \"sloth.h\"")
                 .BlankLine();
@@ -48,7 +59,7 @@ namespace CodeRefractor.Backend
                     .BlankLine();
             }
 
-            var initializersCodeOutput = new CodeOutput();
+            var initializersCodeOutput = this._createCodeOutput();
             TypeBodiesCodeGenerator.WriteClosureStructBodies(initializersCodeOutput, closureEntities);
             WriteClosureDelegateBodies(closure, initializersCodeOutput);
             WriteClosureHeaders(closure, initializersCodeOutput, closureEntities);
@@ -57,7 +68,7 @@ namespace CodeRefractor.Backend
             initializersCodeOutput.Append("#include \"runtime_base.hpp\"");
             initializersCodeOutput.BlankLine();
 
-            var bodySb = new CodeOutput();
+            var bodySb = this._createCodeOutput();
             bodySb.Append(VirtualMethodTableCodeWriter.GenerateTypeTableCode(table, closureEntities)); // We need to use this type table to generate missing jumps for subclasses  that dont override a base method
             WriteCppMethods(closure, bodySb, closureEntities);
             WriteClosureMethods(closure, bodySb, table, closureEntities);

@@ -7,12 +7,14 @@ using CodeRefactor.OpenRuntime;
 using CodeRefractor.Backend.ProgramWideOptimizations.Virtual;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.CompilerBackend.ProgramWideOptimizations;
+using CodeRefractor.Config;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
 using CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation;
 using CodeRefractor.MiddleEnd.Optimizations.Util;
 using CodeRefractor.RuntimeBase.Config;
 using CodeRefractor.RuntimeBase.Optimizations;
 using MsilCodeCompiler.Tests.Shared;
+using Ninject;
 using NUnit.Framework;
 
 namespace MsilCodeCompiler.Tests.OptimizationsTests
@@ -25,6 +27,8 @@ namespace MsilCodeCompiler.Tests.OptimizationsTests
     [TestFixture]
     public class TestSmokeRunDoesNotInfiniteLoop
     {
+        private StandardKernel kernel;
+
         [Test, Timeout(5000)]
         public void TestSimple()
         {
@@ -32,6 +36,10 @@ namespace MsilCodeCompiler.Tests.OptimizationsTests
             OptimizationLevelBase.Instance = new OptimizationLevels();
             OptimizationLevelBase.OptimizerLevel = 2;
             OptimizationLevelBase.Instance.EnabledCategories.Add(OptimizationCategories.All);
+
+            kernel = new StandardKernel(
+                new CodeRefractorNInjectModule()
+            );
 
             var cSharpCode =
                 @"
@@ -48,7 +56,8 @@ namespace MsilCodeCompiler.Tests.OptimizationsTests
                 ";
 
             var dotNetAssembly = CompilingProgramBase.CompileSource(cSharpCode);
-            var closureEntities = ClosureEntitiesUtils.BuildClosureEntities(
+            var closureEntities = kernel.Get<ClosureEntitiesUtils>()
+                        .BuildClosureEntities(
                                 dotNetAssembly.EntryPoint, 
                                 typeof (CrString).Assembly);
 

@@ -17,15 +17,9 @@ namespace CodeRefractor.RuntimeBase.Config
      */
     public class CommandLineParse
     {
-        public static readonly CommandLineParse StaticInstance = new CommandLineParse();
         public readonly List<string> Arguments = new List<string>();
 
-        public static CommandLineParse Instance
-        {
-            get { return StaticInstance; }
-        }
-
-        static CommandLineParse()
+        public CommandLineParse()
         {
             InitializeOptimizationKindList(OptimizationKind.InFunction);
             InitializeOptimizationKindList(OptimizationKind.Global);
