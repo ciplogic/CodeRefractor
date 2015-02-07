@@ -5,11 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CodeRefractor.Compiler;
+using CodeRefractor.Config;
 using CodeRefractor.MiddleEnd.Optimizations.Util;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Config;
 using CodeRefractor.RuntimeBase.Optimizations;
 using MsilCodeCompiler.Tests.Shared;
+using Ninject;
 using NUnit.Framework;
 
 namespace MsilCodeCompiler.Tests.TestInfrastructure
@@ -19,6 +21,8 @@ namespace MsilCodeCompiler.Tests.TestInfrastructure
     [TestFixture]
     class CodeTestingSampleWithGcc
     {
+        private StandardKernel kernel;
+
         [SetUp]
         public void Setup()
         {
@@ -28,6 +32,10 @@ namespace MsilCodeCompiler.Tests.TestInfrastructure
             OptimizationLevelBase.Instance = new OptimizationLevels();
             OptimizationLevelBase.OptimizerLevel = 2;
             OptimizationLevelBase.Instance.EnabledCategories.Add(OptimizationCategories.All);
+
+            kernel = new StandardKernel(
+                new CodeRefractorNInjectModule()
+            );
         }
 
         private static string BuildArgs(string outputFile)
@@ -51,7 +59,9 @@ namespace MsilCodeCompiler.Tests.TestInfrastructure
 
             var csAssembly = CompilingProgramBase.CompileSource(fullCode);
             Assert.IsNotNull(csAssembly);
-            var outputFile = Program.CallCompiler(csAssembly.Location);
+
+            var program = kernel.Get<Program>();
+            var outputFile = program.CallCompiler(csAssembly.Location);
             
             var pathToGpp = Path.Combine(PathOfCompilerTools, CompilerExe);
             //var outputFile =  @"c:\Oss\ClClean\bin\output.cpp";
