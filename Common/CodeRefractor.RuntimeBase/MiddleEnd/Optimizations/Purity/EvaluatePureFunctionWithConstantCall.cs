@@ -1,6 +1,7 @@
 ﻿#region Usings
 
 using System.Collections.Generic;
+using CodeRefractor.ClosureCompute;
 using CodeRefractor.CodeWriter.Linker;
 using CodeRefractor.FrontEnd.SimpleOperations;
 using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
@@ -19,7 +20,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Purity
 	[Optimization(Category = OptimizationCategories.Purity)]
     internal class EvaluatePureFunctionWithConstantCall : ResultingGlobalOptimizationPass
     {
-        public override bool CheckPreconditions(CilMethodInterpreter midRepresentation)
+        public override bool CheckPreconditions(CilMethodInterpreter midRepresentation, ClosureEntities entities)
         {
             var operations = midRepresentation.MidRepresentation.UseDef;
 

@@ -168,7 +168,7 @@ namespace CodeRefractor.ClosureCompute
             return true;
         }
 
-        public void OptimizeClosure()
+        public void OptimizeClosure(ClosureEntities entities)
         {
             var level = new OptimizationLevels();
 
@@ -190,7 +190,7 @@ namespace CodeRefractor.ClosureCompute
             
                 foreach (var cilMethod in cilMethods)
                 {
-                    isOptimizationPossible |= MethodInterpreterCodeWriter.ApplyLocalOptimizations(optimizations, cilMethod);
+                    isOptimizationPossible |= MethodInterpreterCodeWriter.ApplyLocalOptimizations(optimizations, cilMethod, entities);
                 }
                 
                 var programWideOptimizationsAvailable = ApplyProgramWideOptimizations();

@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using CodeRefractor.ClosureCompute;
 using CodeRefractor.CodeWriter.Linker;
 using CodeRefractor.FrontEnd.SimpleOperations;
 using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
@@ -22,24 +23,25 @@ using CodeRefractor.RuntimeBase.Optimizations;
 namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
 {
     [Optimization(Category = OptimizationCategories.Analysis)]
-    internal class InFunctionLoweringVars : ResultingInFunctionOptimizationPass
+    internal class InFunctionLoweringVars : OptimizationPassBase
     {
-        public override void OptimizeOperations(CilMethodInterpreter interpreter)
+        public InFunctionLoweringVars()
+            : base(OptimizationKind.InFunction)
         {
-            var candidateVariables = SetAllCandidateVariables(interpreter);
+        }
+
+        public override bool ApplyOptimization(CilMethodInterpreter interpreter, ClosureEntities closure)
+        {
+            var candidateVariables = SetAllCandidateVariables(interpreter, closure);
             var useDef = interpreter.MidRepresentation.UseDef;
             var localOp = useDef.GetLocalOperations();
 
-            if (interpreter.Method.Name == "Concat")
-            {
-
-            }
             if (RemoveAllEscaping(candidateVariables, localOp, useDef))
-                return;
+                return false;
 
 
             if (candidateVariables.Count == 0)
-                return;
+                return false;
             foreach (var variable in candidateVariables)
             {
                 var getVariableData = interpreter.AnalyzeProperties.GetVariableData(variable);
@@ -49,6 +51,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
                 }
             }
             AllocateVariablesOnStack(localOp, candidateVariables, interpreter);
+            return true;
         }
 
         private static bool RemoveAllEscaping(HashSet<LocalVariable> candidateVariables, LocalOperation[] localOp,
@@ -74,22 +77,21 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
             return false;
         }
 
-        private static HashSet<LocalVariable> SetAllCandidateVariables(CilMethodInterpreter interpreter)
+        private static HashSet<LocalVariable> SetAllCandidateVariables(CilMethodInterpreter interpreter, ClosureEntities closure)
         {
             var candidateVariables = new HashSet<LocalVariable>();
             var midRepresentation = interpreter.MidRepresentation;
             var variables = midRepresentation.Vars;
-            var toAdd = variables.LocalVars.Where(varId => !varId.ComputedType().GetClrType(Closure).IsPrimitive);
+            var toAdd = variables.LocalVars.Where(varId => !varId.ComputedType().GetClrType(closure).IsPrimitive);
             candidateVariables.AddRange(toAdd);
-            toAdd = variables.VirtRegs.Where(varId => !varId.ComputedType().GetClrType(Closure).IsPrimitive);
+            toAdd = variables.VirtRegs.Where(varId => !varId.ComputedType().GetClrType(closure).IsPrimitive);
             candidateVariables.AddRange(toAdd);
-            toAdd = interpreter.AnalyzeProperties.Arguments.Where(varId => !varId.ComputedType().GetClrType(Closure).IsPrimitive);
+            toAdd = interpreter.AnalyzeProperties.Arguments.Where(varId => !varId.ComputedType().GetClrType(closure).IsPrimitive);
             candidateVariables.AddRange(toAdd);
             return candidateVariables;
         }
 
-        private static void AllocateVariablesOnStack(LocalOperation[] localOp, HashSet<LocalVariable> candidateVariables,
-            MethodInterpreter interpreter)
+        private static void AllocateVariablesOnStack(LocalOperation[] localOp, HashSet<LocalVariable> candidateVariables, MethodInterpreter interpreter)
         {
             var newOps = localOp.Where(op =>
                 op.Kind == OperationKind.NewArray
@@ -106,7 +108,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
                 var variableData = interpreter.AnalyzeProperties.GetVariableData(variable);
                 if (variableData != EscapingMode.Stack)
                 {
-                    interpreter.AnalyzeProperties.SetVariableData(variable, EscapingMode.Stack);
+                    interpreter.AnalyzeProperties.SetVariableData(variable, EscapingMode.Stack);               
                 }
             }
         }
@@ -238,5 +240,6 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
                 candidateVariables.Remove(right);
             }
         }
+
     }
 }

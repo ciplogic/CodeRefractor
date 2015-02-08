@@ -127,6 +127,7 @@
     <Compile Include="MiddleEnd\Interpreters\NonCil\CppMethodInterpreter.cs" />
     <Compile Include="MiddleEnd\Interpreters\NonCil\PlatformInvokeMethod.cs" />
     <Compile Include="Backend\ProgramWideOptimizations\Virtual\DevirtualizeWholeClosureMethods.cs" />
+    <Compile Include="MiddleEnd\Optimizations\Common\OptimizationPassBase.cs" />
     <Compile Include="MiddleEnd\Optimizations\SimpleDce\DeleteUnusedNewObjectOperations.cs" />
     <Compile Include="MiddleEnd\UseDefs\UseDefDescription.cs" />
     <Compile Include="MiddleEnd\UseDefs\UseDefHelper.cs" />

@@ -44,8 +44,7 @@ namespace CodeRefractor.Backend.ComputeClosure
             return interpreter.WriteDelegateCallCode();
         }
 
-        public static bool ApplyLocalOptimizations(IEnumerable<ResultingOptimizationPass> optimizationPasses,
-            CilMethodInterpreter interpreter)
+        public static bool ApplyLocalOptimizations(IEnumerable<ResultingOptimizationPass> optimizationPasses, CilMethodInterpreter interpreter, ClosureEntities entities)
         {
             if (optimizationPasses == null)
                 return false;
@@ -54,9 +53,6 @@ namespace CodeRefractor.Backend.ComputeClosure
             var result = false;
             var optimizationsList = new List<ResultingOptimizationPass>(optimizationPasses);
             var areOptimizationsAvailable = true;
-            if (interpreter.Method.Name == "pollEvents")
-            {
-            }
             while (areOptimizationsAvailable)
             {
                 interpreter.MidRepresentation.UpdateUseDef();
@@ -64,7 +60,7 @@ namespace CodeRefractor.Backend.ComputeClosure
                 foreach (var optimizationPass in optimizationsList)
                 {
                     var optimizationName = optimizationPass.GetType().Name;
-                    if (!optimizationPass.CheckPreconditions(interpreter))
+                    if (!optimizationPass.CheckPreconditions(interpreter, entities))
                         continue;
                     areOptimizationsAvailable = optimizationPass.Optimize(interpreter);
 

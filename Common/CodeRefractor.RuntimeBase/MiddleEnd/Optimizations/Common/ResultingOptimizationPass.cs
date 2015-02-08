@@ -8,35 +8,26 @@ using CodeRefractor.RuntimeBase.Optimizations;
 
 namespace CodeRefractor.MiddleEnd.Optimizations.Common
 {
-    public abstract class ResultingOptimizationPass
+    public abstract class ResultingOptimizationPass : OptimizationPassBase
     {
         //returns true if it succeed to apply any optimizations
         //Try to return false by default
         //If the code succeeded to optimize something that other optimizations may benefit, return true
 
         public static ClosureEntities Closure { get; set; }
-        protected ResultingOptimizationPass(OptimizationKind kind)
+        protected ResultingOptimizationPass(OptimizationKind kind) 
+            : base(kind)
         {
-            Kind = kind;
         }
 
         public bool Result { get; set; }
 
         public abstract void OptimizeOperations(CilMethodInterpreter interpreter);
 
-    
-
-
-        public OptimizationKind Kind { get; set; }
-
-        public virtual bool CheckPreconditions(CilMethodInterpreter midRepresentation)
-        {
-            return true;
-        }
          //returns true if it succeed to apply any optimizations
         //Try to return false by default
         //If the code succeeded to optimize something that other optimizations may benefit, return true
-        public  bool Optimize(CilMethodInterpreter intermediateCode)
+        public bool Optimize(CilMethodInterpreter intermediateCode)
         {
             Result = false;
             try
@@ -47,6 +38,11 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Common
             {
             }
             return Result;
+        }
+
+        public override bool ApplyOptimization(CilMethodInterpreter intermediateCode, ClosureEntities closure)
+        {
+            return Optimize(intermediateCode);
         }
     }
 }

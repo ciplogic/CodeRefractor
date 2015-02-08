@@ -33,7 +33,7 @@ namespace CodeRefractor.ClosureCompute
             closureEntities.EntitiesBuilder.AddTypeResolver(new ResolveRuntimeType(runtimeAssembly));
 
             closureEntities.ComputeFullClosure();
-            closureEntities.OptimizeClosure();
+            closureEntities.OptimizeClosure(closureEntities);
 
             return closureEntities;
         }

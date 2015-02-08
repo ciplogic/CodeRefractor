@@ -1,6 +1,7 @@
 ﻿#region Usings
 
 using System.Collections.Generic;
+using CodeRefractor.ClosureCompute;
 using CodeRefractor.FrontEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
@@ -18,7 +19,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Licm
     [Optimization(Category = OptimizationCategories.CommonSubexpressionsElimination)]
     internal class LoopInvariantCodeMotion : ResultingGlobalOptimizationPass
     {
-        public override bool CheckPreconditions(CilMethodInterpreter midRepresentation)
+        public override bool CheckPreconditions(CilMethodInterpreter midRepresentation, ClosureEntities entities)
         {
             var loopStarts = LoopDetection.FindLoops(midRepresentation.MidRepresentation);
             return loopStarts.Count != 0;
