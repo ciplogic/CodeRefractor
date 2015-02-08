@@ -13,13 +13,17 @@ namespace CodeRefractor.MiddleEnd.Interpreters
     {
         public static MethodInterpreterKey ToKey(this MethodInterpreter methodInterpreter, Type implementingType = null)
         {
-            var result = new MethodInterpreterKey(methodInterpreter, implementingType);
-            return result;
+            var resultKey = new MethodInterpreterKey(methodInterpreter, implementingType);
+            resultKey.AdjustDeclaringTypeByImplementingType();
+            return resultKey;
         }
 
         public static MethodInterpreterKey ToKey(this MethodBase methodbase, ClosureEntities closure)
         {
-            return closure.ResolveMethod(methodbase).ToKey();
+            var interpreter = closure.ResolveMethod(methodbase);
+            var resultKey = new MethodInterpreterKey(interpreter, implementingType:null);
+            resultKey.AdjustDeclaringTypeByImplementingType();
+            return resultKey;
 
         }
 

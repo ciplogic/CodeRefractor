@@ -3,6 +3,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using CodeRefractor.Runtime.Annotations;
+using CodeRefractor.RuntimeBase.Shared;
 using CodeRefractor.Util;
 
 #endregion
@@ -17,7 +19,18 @@ namespace CodeRefractor.MiddleEnd.Interpreters
         private readonly Type[] _parameterList;
 
         public Type DeclaringType { get; set; }
+
         public Type ImplementingType { get; set; }
+
+        public void AdjustDeclaringTypeByImplementingType()
+        {
+            Type value = ImplementingType;
+            var customAttr = value.GetCustomAttributeT<ExtensionsImplementation>();
+            if (customAttr != null)
+            {
+                DeclaringType = customAttr.DeclaringType;
+            }
+        }
 
         public MethodInterpreterKey(MethodInterpreter interpreter, Type implementingType = null)
         {

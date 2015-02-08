@@ -1,15 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using CodeRefactor.OpenRuntime;
-using CodeRefractor.Backend.ProgramWideOptimizations.Virtual;
 using CodeRefractor.ClosureCompute;
-using CodeRefractor.CompilerBackend.ProgramWideOptimizations;
 using CodeRefractor.Config;
-using CodeRefractor.MiddleEnd.Optimizations.Common;
-using CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation;
 using CodeRefractor.MiddleEnd.Optimizations.Util;
 using CodeRefractor.RuntimeBase.Config;
 using CodeRefractor.RuntimeBase.Optimizations;

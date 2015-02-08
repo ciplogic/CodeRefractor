@@ -27,23 +27,28 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
                 .ToArray();
             foreach (var interpreter in methodInterpreters)
             {
-                Result |= HandleInterpreterInstructions(interpreter, closure.MappedTypes.Values.ToList());
+                Result |= HandleInterpreterInstructions(
+                    interpreter, 
+                    closure.MappedTypes.Values.ToList(),
+                    closure);
             }
         }
 
-        private static bool HandleInterpreterInstructions(CilMethodInterpreter interpreter, List<Type> usedTypes)
+        private static bool HandleInterpreterInstructions(CilMethodInterpreter interpreter, List<Type> usedTypes, ClosureEntities closure)
         {
             var useDef = interpreter.MidRepresentation.UseDef;
-            var calls = useDef.GetOperationsOfKind(OperationKind.CallVirtual).ToList();
+            var calls = useDef.GetOperationsOfKind(OperationKind.CallVirtual).ToArray();
+            if (calls.Length == 0)
+                return false;
             var allOps = useDef.GetLocalOperations();
             var result = false;
             foreach (var callOp in calls)
             {
                 var op = allOps[callOp];
                 var methodData = (CallMethodStatic) op;
-                var callingInterpreterKey = methodData.Interpreter.ToKey();
+                var callingInterpreterKey = methodData.Interpreter.Method.ToKey(closure);
                 var declaringType = callingInterpreterKey.Interpreter.Method.DeclaringType;
-                var implementors = declaringType.ImplementorsOfT(usedTypes);
+                var implementors = callingInterpreterKey.DeclaringType.ImplementorsOfT(usedTypes);
 
                 implementors.Remove(declaringType);
                 if (implementors.Count > 0)

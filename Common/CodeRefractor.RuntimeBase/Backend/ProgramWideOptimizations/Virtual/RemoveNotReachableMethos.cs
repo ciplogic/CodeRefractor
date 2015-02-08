@@ -4,12 +4,10 @@ using System.Reflection;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.CompilerBackend.ProgramWideOptimizations;
 using CodeRefractor.FrontEnd.SimpleOperations.Methods;
-using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Interpreters;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
-using CodeRefractor.RuntimeBase.MiddleEnd;
 
 namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
 {
@@ -36,20 +34,21 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
                 HandleInterpreterInstructions((CilMethodInterpreter) interpreter.Interpreter, candidateMethods, closure);
             }
             
-            var removeList = new List<MethodBaseKey>();
+            var removeList = new List<MethodInterpreterKey>();
 
             foreach (MethodInterpreterKey cilMethodInterpreter in methodInterpreters)
             {
                 //var methodInterpreterKey = GetKeyFromMethod(closure, cilMethodInterpreter.Key.Method);
                 if (!candidateMethods.Contains(cilMethodInterpreter))
                 {
-                    removeList.Add(cilMethodInterpreter.Interpreter.Method.ToMethodBaseKey());
+                    removeList.Add(cilMethodInterpreter.Interpreter.ToKey());
                 }
             }
 
             foreach (var key in removeList)
             {
-                closure.MethodImplementations.Remove(key);
+                var resultItem = closure.MethodImplementations.FirstOrDefault(m=>m.Value.ToKey().Equals(key));
+                closure.MethodImplementations.Remove(resultItem.Key);
             }
 
             Result = removeList.Count > 0;
@@ -57,7 +56,7 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
 
         private static MethodInterpreterKey GetKeyFromMethod(ClosureEntities closure, MethodBase entryPoint)
         {
-            return closure.ResolveMethod(entryPoint).ToKey();
+            return entryPoint.ToKey(closure);
         }
 
         private static void HandleInterpreterInstructions(CilMethodInterpreter interpreter, HashSet<MethodInterpreterKey> candidateMethods, ClosureEntities closure)

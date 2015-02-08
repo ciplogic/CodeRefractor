@@ -8,7 +8,6 @@ using CodeRefractor.MiddleEnd.Interpreters;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
-using CodeRefractor.RuntimeBase.MiddleEnd;
 
 namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
 {
