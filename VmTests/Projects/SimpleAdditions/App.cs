@@ -1,11 +1,10 @@
 //Taken From Microsoft Documentation on Virtual Methods
 using System;
 using System.Runtime.InteropServices;
+
 /**
  * Display a message box imported from an external source.
  */
-using CodeRefactor.OpenRuntime;
-
 public class Test
 {
     // this must be MessageBoxW, since in CR characters are char_w, and not char.
@@ -15,7 +14,6 @@ public class Test
     [STAThread]
     public static void Main()
     {
-        var result =  StringImpl.Concat("abc", "def");
-        Console.WriteLine(result);
+        MessageBoxW(0, "Message", "Title", 0);
     }
 }

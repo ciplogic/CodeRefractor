@@ -24,7 +24,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.SimpleDce
 	[Optimization(Category = OptimizationCategories.DeadCodeElimination)]
     internal class AssignToReturnPropagation : ResultingInFunctionOptimizationPass
     {
-        public override bool CheckPreconditions(CilMethodInterpreter midRepresentation, ClosureEntities entities)
+        public override bool CheckPreconditions(CilMethodInterpreter midRepresentation, ClosureEntities closure)
         {
             var localOperations = midRepresentation.MidRepresentation.UseDef.GetLocalOperations();
             return localOperations.Length >= 2;
