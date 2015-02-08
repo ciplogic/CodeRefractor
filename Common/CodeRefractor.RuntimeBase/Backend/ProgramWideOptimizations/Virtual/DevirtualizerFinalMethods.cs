@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using CodeRefractor.ClosureCompute;
-using CodeRefractor.CompilerBackend.ProgramWideOptimizations;
 using CodeRefractor.FrontEnd.SimpleOperations.Methods;
 using CodeRefractor.MiddleEnd.Interpreters;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
@@ -11,18 +10,21 @@ using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 
 namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
 {
-    public class DevirtualizerFinalMethods : ResultingProgramOptimizationBase
+    public class DevirtualizerFinalMethods : ProgramOptimizationBase
     {
-        protected override void DoOptimize(ClosureEntities closure)
+
+        public override bool Optimize(ClosureEntities closure)
         {
             var methodInterpreters = closure.MethodImplementations.Values
                 .Where(m => m.Kind == MethodKind.CilInstructions)
                 .Select(mth => (CilMethodInterpreter)mth)
                 .ToArray();
+            var result = false;
             foreach (var interpreter in methodInterpreters)
             {
-                Result |= HandleInterpreterInstructions(interpreter, closure.MappedTypes.Values.ToList());
+                result |= HandleInterpreterInstructions(interpreter, closure.MappedTypes.Values.ToList());
             }
+            return result;
         }
 
         private static bool HandleInterpreterInstructions(CilMethodInterpreter interpreter, List<Type> usedTypes)
@@ -53,5 +55,7 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
             }
             return result;
         }
+
+        
     }
 }

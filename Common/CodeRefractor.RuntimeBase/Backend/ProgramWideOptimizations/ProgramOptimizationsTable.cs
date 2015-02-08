@@ -3,11 +3,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using CodeRefractor.ClosureCompute;
-using CodeRefractor.CompilerBackend.ProgramWideOptimizations;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.Backend.ProgramWideOptimizations
+namespace CodeRefractor.Backend.ProgramWideOptimizations
 {
     public class ProgramOptimizationsTable : IEnumerable<ProgramOptimizationBase>
     {
@@ -35,7 +34,7 @@ namespace CodeRefractor.RuntimeBase.Backend.ProgramWideOptimizations
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return ((IEnumerable) Optimizations).GetEnumerator();
+            return Optimizations.GetEnumerator();
         }
     }
 }

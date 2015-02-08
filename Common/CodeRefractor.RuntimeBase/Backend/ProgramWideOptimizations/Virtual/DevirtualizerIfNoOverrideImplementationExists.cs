@@ -2,7 +2,6 @@
 using System.Reflection;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.ClosureCompute.Steps;
-using CodeRefractor.CompilerBackend.ProgramWideOptimizations;
 using CodeRefractor.FrontEnd.SimpleOperations.Methods;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.SimpleOperations;
@@ -12,19 +11,21 @@ using CodeRefractor.Util;
 
 namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
 {
-    public class DevirtualizerIfNoOverrideImplementationExists : ResultingProgramOptimizationBase
+    public class DevirtualizerIfNoOverrideImplementationExists : ProgramOptimizationBase
     {
-        protected override void DoOptimize(ClosureEntities closure)
+        public override bool Optimize(ClosureEntities closure)
         {
             //Interfaces cannot be devirtualized this way
             var methodInterpreters = closure.MethodImplementations.Values
                 .Where(m => m.Kind == MethodKind.CilInstructions)
                 .Select(mth => (CilMethodInterpreter)mth)
                 .ToArray();
+            var result = false;
             foreach (var interpreter in methodInterpreters)
             {
-                Result |= HandleInterpreterInstructions(interpreter, closure);
+                result |= HandleInterpreterInstructions(interpreter, closure);
             }
+            return result;
         }
 
         private static bool HandleInterpreterInstructions(CilMethodInterpreter interpreter, ClosureEntities closure)
@@ -71,5 +72,6 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
             }
             return result;
         }
+
     }
 }

@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Reflection;
 using CodeRefractor.ClosureCompute;
-using CodeRefractor.CompilerBackend.ProgramWideOptimizations;
 using CodeRefractor.FrontEnd.SimpleOperations.Methods;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.SimpleOperations;
@@ -10,10 +9,12 @@ using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 
 namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
 {
-    class DevirtualizeWholeClosureMethods : ResultingProgramOptimizationBase
+    /// <summary>
+    /// removes abstract unused vcalls
+    /// </summary>
+    class DevirtualizeWholeClosureMethods : ProgramOptimizationBase
     {
-        //removes abstract unused vcalls
-        protected override void DoOptimize(ClosureEntities closure)
+        public override bool Optimize(ClosureEntities closure)
         {
             var methodInterpreters = closure.MethodImplementations.Values
                    .Where(m => m.Kind == MethodKind.CilInstructions)
@@ -25,12 +26,14 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
                 HandleInterpreterInstructions(interpreter, usedMethods);
             }
 
-            Result = usedMethods.Count != closure.AbstractMethods.Count;
-            if (Result)
+            var result = usedMethods.Count != closure.AbstractMethods.Count;
+            if (result)
             {
                 closure.AbstractMethods = usedMethods;
             }
+            return result;
         }
+
         private static void HandleInterpreterInstructions(CilMethodInterpreter interpreter, HashSet<MethodInfo> usedMethods)
         {
             var useDef = interpreter.MidRepresentation.UseDef;
@@ -43,5 +46,6 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
                 usedMethods.Add((MethodInfo) methodData.Info);
             }
         }
+
     }
 }

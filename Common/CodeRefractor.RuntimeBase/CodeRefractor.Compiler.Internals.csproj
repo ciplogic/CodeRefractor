@@ -139,7 +139,6 @@
     <Compile Include="Backend\ProgramWideOptimizations\ConstParameters\ConstantParametersData.cs" />
     <Compile Include="Backend\ProgramWideOptimizations\ProgramOptimizationBase.cs" />
     <Compile Include="Backend\ProgramWideOptimizations\ProgramOptimizationsTable.cs" />
-    <Compile Include="Backend\ProgramWideOptimizations\ResultingProgramOptimizationBase.cs" />
     <Compile Include="Backend\ProgramWideOptimizations\Virtual\DevirtualizerIfOneImplementor.cs" />
     <Compile Include="CodeWriter\BasicOperations\CppHandleBranches.cs" />
     <Compile Include="CodeWriter\BasicOperations\CppHandleCalls.cs" />

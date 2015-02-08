@@ -1,6 +1,7 @@
 ﻿#region Usings
 
 using System.Linq;
+using CodeRefractor.Backend.ProgramWideOptimizations;
 using CodeRefractor.Backend.ProgramWideOptimizations.ConstParameters;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
@@ -19,11 +20,11 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 
 namespace CodeRefractor.CompilerBackend.ProgramWideOptimizations.ConstParameters
 {
-    public class CallToFunctionsWithSameConstant : ResultingProgramOptimizationBase
+    public class CallToFunctionsWithSameConstant : ProgramOptimizationBase
     {
-        protected override void DoOptimize(ClosureEntities closure)
+        public override bool Optimize(ClosureEntities closure)
         {
-            var methodInterpreters = closure.MethodImplementations.Values
+        var methodInterpreters = closure.MethodImplementations.Values
                 .Where(m => m.Kind == MethodKind.CilInstructions)
                 .Cast<CilMethodInterpreter>()
                 .ToList();
@@ -33,22 +34,25 @@ namespace CodeRefractor.CompilerBackend.ProgramWideOptimizations.ConstParameters
                 updateHappen |= HandleInterpreterInstructions(interpreter);
             }
             if (!updateHappen)
-                return;
+                return false;
             var parametersDatas = methodInterpreters
                 .Select(ConstantParametersData.GetInterpreterData)
                 .ToList();
+            var result = false;
             for (var index = 0; index < methodInterpreters.Count; index++)
             {
                 var interpreter = methodInterpreters[index];
                 var parametersData = parametersDatas[index];
                 if (!parametersData.ConstKinds.ContainsValue(ConstantParametersData.ConstValueKind.AssignedConstant))
                     continue;
-                ApplyChangesOnMethod(parametersData, interpreter);
+                result|= ApplyChangesOnMethod(parametersData, interpreter);
             }
+            return result;
         }
 
-        private void ApplyChangesOnMethod(ConstantParametersData parametersData, CilMethodInterpreter interpreter)
+        private bool ApplyChangesOnMethod(ConstantParametersData parametersData, CilMethodInterpreter interpreter)
         {
+            var result = false;
             foreach (var constKind in parametersData.ConstKinds)
             {
                 if (constKind.Value != ConstantParametersData.ConstValueKind.AssignedConstant)
@@ -57,8 +61,9 @@ namespace CodeRefractor.CompilerBackend.ProgramWideOptimizations.ConstParameters
                 var cilInterpreter = interpreter;
                 cilInterpreter.SwitchAllUsagesWithDefinition(constKind.Key, assignedConstant);
                 interpreter.AnalyzeProperties.SetVariableData(constKind.Key, EscapingMode.Unused);
-                Result = true;
+                result = true;
             }
+            return result;
         }
 
         private static bool HandleInterpreterInstructions(CilMethodInterpreter interpreter)
@@ -79,5 +84,6 @@ namespace CodeRefractor.CompilerBackend.ProgramWideOptimizations.ConstParameters
             }
             return updatedHappen;
         }
+
     }
 }

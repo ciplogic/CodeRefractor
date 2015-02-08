@@ -4,9 +4,7 @@ using CodeRefractor.ClosureCompute;
 
 #endregion
 
-
-
-namespace CodeRefractor.CompilerBackend.ProgramWideOptimizations
+namespace CodeRefractor.Backend.ProgramWideOptimizations
 {
     public abstract class ProgramOptimizationBase
     {

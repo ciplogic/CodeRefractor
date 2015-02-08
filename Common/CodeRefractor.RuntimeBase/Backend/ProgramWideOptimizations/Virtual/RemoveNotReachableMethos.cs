@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Reflection;
 using CodeRefractor.ClosureCompute;
-using CodeRefractor.CompilerBackend.ProgramWideOptimizations;
 using CodeRefractor.FrontEnd.SimpleOperations.Methods;
 using CodeRefractor.MiddleEnd.Interpreters;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
@@ -11,9 +10,9 @@ using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 
 namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
 {
-    public class RemoveNotReachableMethos : ResultingProgramOptimizationBase
+    public class RemoveNotReachableMethos : ProgramOptimizationBase
     {
-        protected override void DoOptimize(ClosureEntities closure)
+        public override bool Optimize(ClosureEntities closure)
         {
             // the problem is that since some methods are mapped methods, we need to
             // keep the map of <MethodBaseKey, MethodInterpreter>, since deriving from
@@ -51,7 +50,7 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
                 closure.MethodImplementations.Remove(resultItem.Key);
             }
 
-            Result = removeList.Count > 0;
+            return removeList.Count > 0;
         }
 
         private static MethodInterpreterKey GetKeyFromMethod(ClosureEntities closure, MethodBase entryPoint)
@@ -92,5 +91,6 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
             }
             return false;
         }
+
     }
 }

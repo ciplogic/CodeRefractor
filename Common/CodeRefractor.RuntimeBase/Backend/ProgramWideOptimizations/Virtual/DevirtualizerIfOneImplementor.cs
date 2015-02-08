@@ -17,21 +17,24 @@ using CodeRefractor.Util;
 
 namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
 {
-    public class DevirtualizerIfOneImplementor : ResultingProgramOptimizationBase
+    public class DevirtualizerIfOneImplementor : ProgramOptimizationBase
     {
-        protected override void DoOptimize(ClosureEntities closure)
+        public override bool Optimize(ClosureEntities closure)
         {
             var methodInterpreters = closure.MethodImplementations.Values
                 .Where(m => m.Kind == MethodKind.CilInstructions)
                 .Select(mth=>(CilMethodInterpreter)mth)
                 .ToArray();
+
+            var result = false;
             foreach (var interpreter in methodInterpreters)
             {
-                Result |= HandleInterpreterInstructions(
+                result |= HandleInterpreterInstructions(
                     interpreter, 
                     closure.MappedTypes.Values.ToList(),
                     closure);
             }
+            return result;
         }
 
         private static bool HandleInterpreterInstructions(CilMethodInterpreter interpreter, List<Type> usedTypes, ClosureEntities closure)
@@ -67,5 +70,6 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
             }
             return result;
         }
+
     }
 }
