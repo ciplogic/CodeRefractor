@@ -1,5 +1,6 @@
 #region Usings
 
+using CodeRefractor.ClosureCompute;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
 using CodeRefractor.MiddleEnd.SimpleOperations;
@@ -13,9 +14,14 @@ using CodeRefractor.RuntimeBase.Optimizations;
 namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.SimpleAssignment
 {
     [Optimization(Category = OptimizationCategories.Propagation)]
-    public class AssignmentWithVregPrevLineFolding : ResultingInFunctionOptimizationPass
+    public class AssignmentWithVregPrevLineFolding  : OptimizationPassBase
     {
-        public override void OptimizeOperations(CilMethodInterpreter interpreter)
+        public AssignmentWithVregPrevLineFolding()
+            : base(OptimizationKind.InFunction)
+        {
+        }
+
+        public override bool ApplyOptimization(CilMethodInterpreter interpreter, ClosureEntities closure)
         {
             var useDef = interpreter.MidRepresentation.UseDef;
             var operations = useDef.GetLocalOperations();
@@ -24,7 +30,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.Si
             foreach (var index in assigns)
             {
                 if(index==0)
-                    return;
+                    continue;
                 var localOperation = operations[index];
 
                 var localAssignment = localOperation.GetAssignment();
@@ -39,13 +45,14 @@ namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.Si
                 var usagesArr = operations.GetVariableUsages(localRight);
                 if (usagesArr.Count != 1)
                 {
-                    return;
+                    return false;
                 }
                 destOperation.SwitchUsageWithDefinition((LocalVariable) localAssignment.Right, localAssignment.AssignedTo);
                 interpreter.MidRepresentation.LocalOperations.RemoveAt(index);
-                Result = true;
-                return;
+                
+                return true;
             }
+            return false;
         }
     }
 }

@@ -28,6 +28,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.SimpleDce
             : base(OptimizationKind.InFunction)
         {
         }
+
         public override bool ApplyOptimization(CilMethodInterpreter interpreter, ClosureEntities closure)
         {
             var dictionary = new Dictionary<LocalVariable, int>();

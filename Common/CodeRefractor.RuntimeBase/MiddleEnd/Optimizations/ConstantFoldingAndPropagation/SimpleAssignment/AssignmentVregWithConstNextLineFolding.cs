@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using CodeRefractor.ClosureCompute;
 using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
@@ -19,22 +20,14 @@ using CodeRefractor.RuntimeBase.Optimizations;
 namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndPropagation.SimpleAssignment
 {
     //[Optimization(Category = OptimizationCategories.Propagation)]
-    public class AssignmentVregWithConstNextLineFolding : ResultingInFunctionOptimizationPass
+    public class AssignmentVregWithConstNextLineFolding : OptimizationPassBase
     {
-        private class ToFixAssignment
+        public AssignmentVregWithConstNextLineFolding()
+            : base(OptimizationKind.InFunction)
         {
-            public LocalVariable SourceAssignment;
-            public IdentifierValue RightValue;
-            public int Index;
-
-            public override string ToString()
-            {
-                return String.Format("Line {2}: {0} -> {1}",
-                    SourceAssignment.Name, RightValue.Name, Index);
-            }
         }
 
-        public override void OptimizeOperations(CilMethodInterpreter interpreter)
+        public override bool ApplyOptimization(CilMethodInterpreter interpreter, ClosureEntities closure)
         {
             var useDef = interpreter.MidRepresentation.UseDef;
             var operations = useDef.GetLocalOperations();
@@ -58,13 +51,26 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndProp
                 toFix.Add(toFixInstruction);
             }
             if (toFix.Count == 0)
-                return;
+                return false;
             foreach (var toFixAssignment in toFix)
             {
                 var destOperation = operations[toFixAssignment.Index];
                 destOperation.SwitchUsageWithDefinition(toFixAssignment.SourceAssignment, toFixAssignment.RightValue);
             }
-            Result = true;
+            return true;
         }
+        private class ToFixAssignment
+        {
+            public LocalVariable SourceAssignment;
+            public IdentifierValue RightValue;
+            public int Index;
+
+            public override string ToString()
+            {
+                return String.Format("Line {2}: {0} -> {1}",
+                    SourceAssignment.Name, RightValue.Name, Index);
+            }
+        }
+
     }
 }

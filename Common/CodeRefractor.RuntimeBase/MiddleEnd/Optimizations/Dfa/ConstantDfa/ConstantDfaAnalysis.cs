@@ -20,9 +20,6 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Dfa.ConstantDfa
 {
     internal class ConstantDfaAnalysis : ResultingInFunctionOptimizationPass
     {
-        private Dictionary<int, int> _labelTable = new Dictionary<int, int>();
-        private LocalOperation[] _operations;
-        private DfaPointOfAnalysis[] _pointsOfAnalysis;
 
         public override void OptimizeOperations(CilMethodInterpreter interpreter)
         {
@@ -35,6 +32,10 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Dfa.ConstantDfa
 
             ApplyResult();
         }
+
+        private Dictionary<int, int> _labelTable = new Dictionary<int, int>();
+        private LocalOperation[] _operations;
+        private DfaPointOfAnalysis[] _pointsOfAnalysis;
 
         private void ApplyResult()
         {

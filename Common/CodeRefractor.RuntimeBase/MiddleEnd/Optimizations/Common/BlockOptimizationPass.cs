@@ -1,17 +1,23 @@
 #region Usings
 
 using System.Collections.Generic;
+using CodeRefractor.ClosureCompute;
 using CodeRefractor.FrontEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.SimpleOperations;
-using CodeRefractor.RuntimeBase.MiddleEnd;
+using CodeRefractor.RuntimeBase.Optimizations;
 
 #endregion
 
 namespace CodeRefractor.MiddleEnd.Optimizations.Common
 {
-    internal abstract class BlockOptimizationPass : ResultingInFunctionOptimizationPass
+    internal abstract class BlockOptimizationPass : OptimizationPassBase
     {
+        protected BlockOptimizationPass()
+            : base(OptimizationKind.InFunction)
+        {
+        }
+
         public static LocalOperation[] GetInstructionRange(
             LocalOperation[] operations, int startInstruction, int endInstruction, bool cleanInstructions = true)
         {
@@ -28,9 +34,10 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Common
             }
             return result.ToArray();
         }
-
-        public override void OptimizeOperations(CilMethodInterpreter interpreter)
+        
+        public override bool ApplyOptimization(CilMethodInterpreter interpreter, ClosureEntities closure)
         {
+            
             var localOperations = interpreter.MidRepresentation.UseDef.GetLocalOperations();
             var sortedLabelPos = BuildBlockOperations(interpreter);
             var startPos = 0;
@@ -40,12 +47,11 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Common
                 result |= TryOptimizeBlock(interpreter, startPos, labelPos - 1, localOperations);
                 if (result)
                 {
-                    Result = true;
-                    return;
+                    return true;
                 }
                 startPos = labelPos + 1;
             }
-            Result = TryOptimizeBlock(interpreter, startPos, localOperations.Length - 1, localOperations);
+            return TryOptimizeBlock(interpreter, startPos, localOperations.Length - 1, localOperations);
         }
 
         private static List<int> BuildBlockOperations(CilMethodInterpreter methodInterpreter)

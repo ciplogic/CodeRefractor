@@ -1,6 +1,7 @@
 ﻿#region Usings
 
 using System.Collections.Generic;
+using CodeRefractor.ClosureCompute;
 using CodeRefractor.FrontEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
@@ -17,9 +18,14 @@ using CodeRefractor.RuntimeBase.Optimizations;
 namespace CodeRefractor.MiddleEnd.Optimizations.Dfa.ReachabilityDfa
 {
     [Optimization(Category = OptimizationCategories.DeadCodeElimination)]
-    public class ReachabilityLines : ResultingInFunctionOptimizationPass
+    public class ReachabilityLines: OptimizationPassBase
     {
-        public override void OptimizeOperations(CilMethodInterpreter interpreter)
+        public ReachabilityLines()
+            : base(OptimizationKind.InFunction)
+        {
+        }
+
+        public override bool ApplyOptimization(CilMethodInterpreter interpreter, ClosureEntities closure)
         {
             var useDef = interpreter.MidRepresentation.UseDef;
             var operations = useDef.GetLocalOperations();
@@ -27,8 +33,8 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Dfa.ReachabilityDfa
             var labelTable = useDef.GetLabelTable(true);
             var reached = new SortedSet<int>();
             Interpret(0, operations, labelTable, reached);
-            if (reached.Count == operations.Length) return;
-            Result = true;
+            if (reached.Count == operations.Length) return false;
+            
             var toDelete = new List<int>();
             for (var i = 0; i < operations.Length; i++)
             {
@@ -36,6 +42,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Dfa.ReachabilityDfa
                     toDelete.Add(i);
             }
             interpreter.DeleteInstructions(toDelete);
+            return true;
         }
 
         private void Interpret(int cursor, LocalOperation[] operations, Dictionary<int, int> labelTable,
