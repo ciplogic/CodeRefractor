@@ -29,7 +29,6 @@ namespace CodeRefractor.MiddleEnd.Optimizations.RedundantExpressions
 
         private static bool ProcessOptimizeBlock(CilMethodInterpreter midRepresentation, int[] getFieldOperations, LocalOperation[] localOperations)
 	    {
-            var instructionRange = midRepresentation.MidRepresentation.LocalOperations;
 	        for (var i = 0; i < getFieldOperations.Length - 1; i++)
 	        {
 	            var firstOperator = localOperations.GetFieldOperation(getFieldOperations, i);

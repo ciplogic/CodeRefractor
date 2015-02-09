@@ -948,7 +948,7 @@ namespace CodeRefractor.FrontEnd
 
         public void Throw()
         {
-            var valueToCast = _evaluator.Pop();
+            //var valueToCast = _evaluator.Pop();
 
             //    var result = SetNewVReg();
             //            var fieldName = fieldInfo.Name;

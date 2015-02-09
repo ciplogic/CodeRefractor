@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using CodeRefractor.ClosureCompute;
 using CodeRefractor.FrontEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
@@ -14,14 +15,21 @@ using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
+using CodeRefractor.RuntimeBase.Optimizations;
 
 #endregion
 
 namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndPropagation.ComplexAssignments
 {
-    internal class FoldVariablesDefinitionsOptimizationPass : ResultingInFunctionOptimizationPass
+    internal class FoldVariablesDefinitionsOptimizationPass : OptimizationPassBase
     {
-        public override void OptimizeOperations(CilMethodInterpreter interpreter)
+        public FoldVariablesDefinitionsOptimizationPass()
+            : base(OptimizationKind.InFunction)
+        {
+        }
+
+
+        public override bool ApplyOptimization(CilMethodInterpreter interpreter, ClosureEntities closure)
         {
             var definitionsDictionary = new Dictionary<LocalVariable, int>();
 
@@ -54,9 +62,10 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndProp
                 toPatch.Add(leftId);
             }
             if (toPatch.Count == 0)
-                return;
+                return false;
             var toRemove = PatchInstructions(localOperations, toPatch);
             interpreter.DeleteInstructions(toRemove);
+            return true;
         }
 
         private List<int> PatchInstructions(LocalOperation[] localOperations, IEnumerable<int> toPatch)
@@ -71,14 +80,11 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndProp
                     case OperationKind.Assignment:
                         var operatorAssig = (Assignment) destOperation;
                         operatorAssig.AssignedTo = assignment.AssignedTo;
-                        Result = true;
-
                         break;
                     case OperationKind.UnaryOperator:
                     case OperationKind.BinaryOperator:
                         var operatorData = (OperatorBase) destOperation;
                         operatorData.AssignedTo = assignment.AssignedTo;
-                        Result = true;
                         break;
                     default:
                         continue;

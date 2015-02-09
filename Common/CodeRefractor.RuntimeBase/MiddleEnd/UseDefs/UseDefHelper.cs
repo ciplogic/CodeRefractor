@@ -340,7 +340,6 @@ namespace CodeRefractor.MiddleEnd.UseDefs
             var operations = useDef.GetLocalOperations();
             for (var index = 0; index < operations.Length; index++)
             {
-                var op = operations[index];
                 var usages = useDef.GetUsages(index);
                 foreach (var usage in usages)
                 {
