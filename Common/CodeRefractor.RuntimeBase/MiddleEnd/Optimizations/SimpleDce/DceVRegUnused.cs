@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using CodeRefractor.ClosureCompute;
 using CodeRefractor.FrontEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
@@ -15,9 +16,13 @@ using CodeRefractor.RuntimeBase.Optimizations;
 namespace CodeRefractor.MiddleEnd.Optimizations.SimpleDce
 {	
 	[Optimization(Category = OptimizationCategories.DeadCodeElimination)]
-    public class DceVRegUnused : ResultingInFunctionOptimizationPass
+    public class DceVRegUnused  : OptimizationPassBase
     {
-        public override void OptimizeOperations(CilMethodInterpreter interpreter)
+        public DceVRegUnused()
+            : base(OptimizationKind.InFunction)
+        {
+        }
+        public override bool ApplyOptimization(CilMethodInterpreter interpreter, ClosureEntities closure)
         {
             var operations = interpreter.MidRepresentation.UseDef.GetLocalOperations();
             var vregConstants =
@@ -27,8 +32,9 @@ namespace CodeRefractor.MiddleEnd.Optimizations.SimpleDce
             RemoveCandidatesInDefinitions(operations, vregConstants, useDef);
             RemoveCandidatesInUsages(operations, vregConstants, useDef);
             if (vregConstants.Count == 0)
-                return;
+                return false;
             OptimizeUnusedVregs(vregConstants, interpreter.MidRepresentation.Vars);
+            return true;
         }
 
         #region Remove candidates

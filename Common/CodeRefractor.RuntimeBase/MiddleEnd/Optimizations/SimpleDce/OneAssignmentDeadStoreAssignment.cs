@@ -1,6 +1,7 @@
 #region Usings
 
 using System.Collections.Generic;
+using CodeRefractor.ClosureCompute;
 using CodeRefractor.FrontEnd.SimpleOperations;
 using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd;
@@ -19,18 +20,24 @@ using CodeRefractor.RuntimeBase.Optimizations;
 namespace CodeRefractor.RuntimeBase.Backend.Optimizations.SimpleDce
 {
     [Optimization(Category = OptimizationCategories.DeadCodeElimination)]
-    internal class OneAssignmentDeadStoreAssignment : ResultingInFunctionOptimizationPass
+    internal class OneAssignmentDeadStoreAssignment : OptimizationPassBase
     {
-        public override void OptimizeOperations(CilMethodInterpreter interpreter)
+        public OneAssignmentDeadStoreAssignment()
+            : base(OptimizationKind.InFunction)
+        {
+        }
+
+        public override bool ApplyOptimization(CilMethodInterpreter interpreter, ClosureEntities closure)
         {
             var useDef = interpreter.MidRepresentation.UseDef;
             var localOperations = useDef.GetLocalOperations();
             var constValues = GetAssignToConstOperations(localOperations, useDef);
 
             if (constValues.Count == 0)
-                return;
+                return false;
 
             localOperations = useDef.GetLocalOperations();
+            var result = false;
             for (var index = 0; index < localOperations.Length; index++)
             {
                 var op = localOperations[index];
@@ -43,10 +50,11 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.SimpleDce
                     if (constValues.TryGetValue(variable, out constMappedValue))
                     {
                         op.SwitchUsageWithDefinition(variable, constMappedValue);
-                        Result = true;
+                        result = true;
                     }
                 }
             }
+            return result;
         }
 
         private Dictionary<LocalVariable, ConstValue> GetAssignToConstOperations(LocalOperation[] localOperations,
@@ -91,5 +99,6 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.SimpleDce
             }
             return constValues;
         }
+
     }
 }

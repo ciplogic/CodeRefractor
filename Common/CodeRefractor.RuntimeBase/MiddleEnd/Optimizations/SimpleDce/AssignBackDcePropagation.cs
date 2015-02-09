@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using CodeRefractor.ClosureCompute;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
 using CodeRefractor.MiddleEnd.SimpleOperations;
@@ -21,9 +22,13 @@ namespace CodeRefractor.MiddleEnd.Optimizations.SimpleDce
     ///     will transform the code to be > var2 = identifier
     /// </summary>
 	[Optimization(Category = OptimizationCategories.DeadCodeElimination)]
-    internal class DceNewObjectOrArray : ResultingInFunctionOptimizationPass
+    internal class DceNewObjectOrArray: OptimizationPassBase
     {
-        public override void OptimizeOperations(CilMethodInterpreter interpreter)
+        public DceNewObjectOrArray()
+            : base(OptimizationKind.InFunction)
+        {
+        }
+        public override bool ApplyOptimization(CilMethodInterpreter interpreter, ClosureEntities closure)
         {
             var dictionary = new Dictionary<LocalVariable, int>();
             var useDef = interpreter.MidRepresentation.UseDef;
@@ -52,9 +57,9 @@ namespace CodeRefractor.MiddleEnd.Optimizations.SimpleDce
                 val => val != -1
                 ).ToArray();
             if (toDelete.Length == 0)
-                return;
+                return false;
             interpreter.MidRepresentation.DeleteInstructions(toDelete);
-            Result = true;
+            return true;
         }
     }
 }

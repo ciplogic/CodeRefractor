@@ -1,6 +1,7 @@
 #region Usings
 
 using System.Collections.Generic;
+using CodeRefractor.ClosureCompute;
 using CodeRefractor.FrontEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
@@ -25,18 +26,23 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.SimpleDce
     ///     > var2 = identifier
     /// </summary>
     [Optimization(Category = OptimizationCategories.DeadCodeElimination)]
-    internal class DoubleAssignPropagation : ResultingInFunctionOptimizationPass
+    internal class DoubleAssignPropagation : OptimizationPassBase
     {
-        public override void OptimizeOperations(CilMethodInterpreter interpreter)
+        public DoubleAssignPropagation()
+            : base(OptimizationKind.InFunction)
+        {
+        }
+
+        public override bool ApplyOptimization(CilMethodInterpreter interpreter, ClosureEntities closure)
         {
             var localOperations = interpreter.MidRepresentation.UseDef.GetLocalOperations();
             var toPatch = Analyze(localOperations);
             if (toPatch.Count == 0)
-                return;
-            ApplyOptimization(interpreter, toPatch, localOperations);
+                return false;
+           return ApplyOptimization(interpreter, toPatch, localOperations);
         }
 
-        private void ApplyOptimization(CilMethodInterpreter methodInterpreter, List<int> toPatch,
+        private bool ApplyOptimization(CilMethodInterpreter methodInterpreter, List<int> toPatch,
             LocalOperation[] localOperations)
         {
             foreach (var patchLine in toPatch)
@@ -46,7 +52,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.SimpleDce
                 prevOp.SwitchUsageWithDefinition(assign.Right as LocalVariable, assign.AssignedTo);
             }
             methodInterpreter.DeleteInstructions(toPatch);
-            Result = true;
+            return true;
         }
 
         private static List<int> Analyze(LocalOperation[] localOperations)
@@ -78,5 +84,6 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.SimpleDce
             }
             return toPatch;
         }
+
     }
 }

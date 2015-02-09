@@ -22,36 +22,36 @@ namespace CodeRefractor.MiddleEnd.Optimizations.SimpleDce
     ///     > var2 = identifier
     /// </summary>
 	[Optimization(Category = OptimizationCategories.DeadCodeElimination)]
-    internal class AssignToReturnPropagation : ResultingInFunctionOptimizationPass
+    internal class AssignToReturnPropagation : OptimizationPassBase
     {
-        public override bool CheckPreconditions(CilMethodInterpreter midRepresentation, ClosureEntities closure)
+        public AssignToReturnPropagation()
+            : base(OptimizationKind.InFunction)
         {
-            var localOperations = midRepresentation.MidRepresentation.UseDef.GetLocalOperations();
-            return localOperations.Length >= 2;
         }
-
-        public override void OptimizeOperations(CilMethodInterpreter interpreter)
+        public override bool ApplyOptimization(CilMethodInterpreter interpreter, ClosureEntities closure)
         {
             var localOperations = interpreter.MidRepresentation.UseDef.GetLocalOperations();
+            if(localOperations.Length < 2)
+                return false;
             var count = localOperations.Length;
             var assignBeforeReturn = localOperations[count - 2];
             if (assignBeforeReturn.Kind != OperationKind.Assignment)
-                return;
+                return false;
             var returnInstruction = localOperations[count - 1].Get<Return>();
             var value = returnInstruction.Returning;
             if (value == null)
-                return;
+                return false;
             var localVariableSecondAssign = value as LocalVariable;
             if (localVariableSecondAssign == null)
-                return;
+                return false;
 
             var firstAssign = assignBeforeReturn.GetAssignment();
             if (!localVariableSecondAssign.Equals(firstAssign.AssignedTo))
-                return;
+                return false;
             if (returnInstruction.Returning.Equals(firstAssign.Right))
-                return;
+                return false;
             returnInstruction.Returning= firstAssign.Right;
-            Result = true;
+            return true;
         }
     }
 }

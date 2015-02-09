@@ -1,5 +1,6 @@
 ﻿#region Usings
 
+using CodeRefractor.ClosureCompute;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
 using CodeRefractor.MiddleEnd.SimpleOperations;
@@ -11,9 +12,13 @@ using CodeRefractor.RuntimeBase.Optimizations;
 namespace CodeRefractor.MiddleEnd.Optimizations.SimpleDce
 {
     [Optimization(Category = OptimizationCategories.DeadCodeElimination)]
-    internal class DeleteCallToConstructorOfObject : ResultingInFunctionOptimizationPass
+    internal class DeleteCallToConstructorOfObject : OptimizationPassBase
     {
-        public override void OptimizeOperations(CilMethodInterpreter interpreter)
+        public DeleteCallToConstructorOfObject()
+            : base(OptimizationKind.InFunction)
+        {
+        }
+        public override bool ApplyOptimization(CilMethodInterpreter interpreter, ClosureEntities closure)
         {
             var midRepresentation = interpreter.MidRepresentation;
             var useDef = midRepresentation.UseDef;
@@ -28,9 +33,10 @@ namespace CodeRefractor.MiddleEnd.Optimizations.SimpleDce
                 if (info.DeclaringType != typeof (object) &&
                     info.DeclaringType != interpreter.Method.DeclaringType) continue;
 				midRepresentation.LocalOperations.RemoveAt(index);
-                Result = true;
-                return;
+                return true;
+                
             }
+            return false;
         }
     }
 }

@@ -6,7 +6,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Common
 {
     public abstract class OptimizationPassBase
     {
-        public abstract bool ApplyOptimization(CilMethodInterpreter intermediateCode, ClosureEntities closure);
+        public abstract bool ApplyOptimization(CilMethodInterpreter interpreter, ClosureEntities closure);
 
         public virtual bool CheckPreconditions(CilMethodInterpreter midRepresentation, ClosureEntities closure)
         {

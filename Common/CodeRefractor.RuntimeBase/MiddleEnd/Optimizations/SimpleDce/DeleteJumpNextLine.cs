@@ -1,6 +1,7 @@
 #region Usings
 
 using System.Collections.Generic;
+using CodeRefractor.ClosureCompute;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
 using CodeRefractor.MiddleEnd.SimpleOperations;
@@ -14,12 +15,16 @@ using CodeRefractor.RuntimeBase.Optimizations;
 namespace CodeRefractor.MiddleEnd.Optimizations.SimpleDce
 {
     [Optimization(Category = OptimizationCategories.DeadCodeElimination)]
-    public class DeleteJumpNextLine : ResultingInFunctionOptimizationPass
+    public class DeleteJumpNextLine : OptimizationPassBase
     {
-        public override void OptimizeOperations(CilMethodInterpreter interpreter)
+        public DeleteJumpNextLine()
+            : base(OptimizationKind.InFunction)
+        {
+        }
+        public override bool ApplyOptimization(CilMethodInterpreter interpreter, ClosureEntities closure)
         {
             var operations = interpreter.MidRepresentation.UseDef.GetLocalOperations();
-            var labelTable = interpreter.MidRepresentation.UseDef.GetLabelTable(); 
+            var labelTable = interpreter.MidRepresentation.UseDef.GetLabelTable();
             var toRemove = new List<int>();
             foreach (var labelInfo in labelTable)
             {
@@ -36,7 +41,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.SimpleDce
                         toRemove.Add(i);
                         continue;
                     case OperationKind.BranchOperator:
-                        var destAssignment = (BranchOperator) operation;
+                        var destAssignment = (BranchOperator)operation;
                         var jumpTo = labelTable[destAssignment.JumpTo];
                         if (jumpTo != labelInfo.Value)
                             continue;
@@ -47,9 +52,9 @@ namespace CodeRefractor.MiddleEnd.Optimizations.SimpleDce
                 }
             }
             if (toRemove.Count == 0)
-                return;
+                return false;
             interpreter.DeleteInstructions(toRemove);
-            Result = true;
+            return true;
         }
     }
 }
