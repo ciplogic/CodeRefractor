@@ -8,6 +8,13 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations.Identifiers
         public int Id { get; set; }
         public string VarName { get; set; }
 
+        public EscapingMode Escaping { get; set; }
+
+        public LocalVariable()
+        {
+            Escaping = EscapingMode.Smart;
+        }
+
         public override string ToString()
         {
             return string.Format("{0}:{1}", Name, FixedType != null ? FixedType.Name : "Unknown");

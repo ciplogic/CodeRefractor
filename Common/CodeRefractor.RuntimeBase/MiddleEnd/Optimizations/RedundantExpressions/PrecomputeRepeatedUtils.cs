@@ -53,7 +53,6 @@ namespace CodeRefractor.MiddleEnd.Optimizations.RedundantExpressions
             };
             cacheVariable.AutoName();
             midRepresentation.Vars.VirtRegs.Add(cacheVariable);
-            interpreter.AnalyzeProperties.RegisterVariable(cacheVariable);
             return cacheVariable;
         }
 

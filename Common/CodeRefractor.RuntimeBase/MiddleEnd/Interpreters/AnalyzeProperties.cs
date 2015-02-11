@@ -21,8 +21,6 @@ namespace CodeRefractor.MiddleEnd.Interpreters
 
 
         public readonly List<LocalVariable> Arguments = new List<LocalVariable>();
-        public readonly Dictionary<LocalVariable, EscapingMode> LocalVarEscaping =
-            new Dictionary<LocalVariable, EscapingMode>();
 
         public void SetupArguments(MethodBase method)
         {
@@ -53,45 +51,20 @@ namespace CodeRefractor.MiddleEnd.Interpreters
 
         public void Setup(List<LocalVariable> virtRegs, List<LocalVariable> localVars)
         {
-            LocalVarEscaping.Clear();
-            foreach (var variable in Arguments)
-            {
-                RegisterVariable(variable);
-            }
-
-            foreach (var variable in virtRegs)
-            {
-                RegisterVariable(variable);
-            }
-            foreach (var variable in localVars)
-            {
-                RegisterVariable(variable);
-            }
-        }
-
-        public void RegisterVariable(LocalVariable variable)
-        {
-            LocalVarEscaping[variable] = EscapingMode.Smart;
+            
         }
 
         public EscapingMode GetVariableData(LocalVariable variable)
         {
-            EscapingMode result;
-            if (!LocalVarEscaping.TryGetValue(variable, out result))
-                return EscapingMode.Smart;
-            return LocalVarEscaping[variable];
+            EscapingMode result = variable.Escaping;
+            return result;
         }
 
         public bool SetVariableData(LocalVariable variable, EscapingMode escaping)
         {
-            EscapingMode result;
-            if (LocalVarEscaping.TryGetValue(variable, out result))
-            {
-                if (result == escaping)
-                    return false;
-            }
-            
-            LocalVarEscaping[variable] = escaping;
+            if (variable.Escaping == escaping)
+                return false;
+            variable.Escaping = escaping;
             return true;
         }
 
