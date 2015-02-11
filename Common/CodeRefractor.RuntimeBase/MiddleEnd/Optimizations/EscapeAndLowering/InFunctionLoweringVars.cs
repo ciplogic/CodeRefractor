@@ -42,15 +42,17 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
 
             if (candidateVariables.Count == 0)
                 return false;
+            var result = false;
             foreach (var variable in candidateVariables)
             {
                 var getVariableData = interpreter.AnalyzeProperties.GetVariableData(variable);
                 if (getVariableData != EscapingMode.Unused)
                 {
-                    interpreter.AnalyzeProperties.SetVariableData(variable, EscapingMode.Pointer);
+                    result|=interpreter.AnalyzeProperties.SetVariableData(variable, EscapingMode.Pointer);
                 }
             }
-            return AllocateVariablesOnStack(localOp, candidateVariables, interpreter);
+            AllocateVariablesOnStack(localOp, candidateVariables, interpreter);
+            return result;
         }
 
         private static bool RemoveAllEscaping(HashSet<LocalVariable> candidateVariables, LocalOperation[] localOp,
@@ -81,11 +83,15 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
             var candidateVariables = new HashSet<LocalVariable>();
             var midRepresentation = interpreter.MidRepresentation;
             var variables = midRepresentation.Vars;
-            var toAdd = variables.LocalVars.Where(varId => !varId.ComputedType().GetClrType(closure).IsPrimitive);
+            LocalVariable[] toAdd = variables.LocalVars.Where(varId => !varId.ComputedType().GetClrType(closure).IsPrimitive).ToArray();
             candidateVariables.AddRange(toAdd);
-            toAdd = variables.VirtRegs.Where(varId => !varId.ComputedType().GetClrType(closure).IsPrimitive);
+            toAdd = variables.VirtRegs.Where(varId => !varId.ComputedType().GetClrType(closure).IsPrimitive).ToArray();
             candidateVariables.AddRange(toAdd);
-            toAdd = interpreter.AnalyzeProperties.Arguments.Where(varId => !varId.ComputedType().GetClrType(closure).IsPrimitive);
+            toAdd = interpreter.AnalyzeProperties.Arguments.Where(varId => !varId.ComputedType().GetClrType(closure).IsPrimitive).ToArray();
+            foreach (var argumentVariable in toAdd)
+            {
+                argumentVariable.Escaping = EscapingMode.Pointer;
+            }
             candidateVariables.AddRange(toAdd);
             return candidateVariables;
         }
