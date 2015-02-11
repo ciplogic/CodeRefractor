@@ -57,7 +57,7 @@ namespace CodeRefractor.RuntimeBase.Optimizations
             OptimizationTypes.Clear();
 	        foreach (var type in assembly.GetTypes())
 	        {
-	            if(!type.IsSubclassOf(typeof(ResultingOptimizationPass)))
+	            if(!type.IsSubclassOf(typeof(OptimizationPassBase)))
                     continue;
 	            var optimizationAttribute = type.GetCustomAttribute<OptimizationAttribute>();
                 if(optimizationAttribute==null)
@@ -75,10 +75,10 @@ namespace CodeRefractor.RuntimeBase.Optimizations
                 .ToList();
 	    }
 
-	    public IEnumerable<ResultingOptimizationPass> Closure(IEnumerable<string> capabilies)
+	    public IEnumerable<OptimizationPassBase> Closure(IEnumerable<string> capabilies)
 	    {
 	        var result = new HashSet<string>();
-            var resultItems = new List<ResultingOptimizationPass>();
+            var resultItems = new List<OptimizationPassBase>();
 
 
             var fullCapabilities = BuildFullCapabilities(capabilies);
@@ -90,7 +90,7 @@ namespace CodeRefractor.RuntimeBase.Optimizations
                     continue;
                 if (!result.Add(capability))
                     continue;
-	            var activated = (ResultingOptimizationPass) Activator.CreateInstance(optimizationType);
+	            var activated = (OptimizationPassBase) Activator.CreateInstance(optimizationType);
                 resultItems.Add(activated);
 	        }
 

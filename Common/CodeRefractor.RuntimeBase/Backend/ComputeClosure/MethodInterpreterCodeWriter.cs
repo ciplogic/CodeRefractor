@@ -44,14 +44,14 @@ namespace CodeRefractor.Backend.ComputeClosure
             return interpreter.WriteDelegateCallCode();
         }
 
-        public static bool ApplyLocalOptimizations(IEnumerable<ResultingOptimizationPass> optimizationPasses, CilMethodInterpreter interpreter, ClosureEntities entities)
+        public static bool ApplyLocalOptimizations(List<OptimizationPassBase> optimizationPasses, CilMethodInterpreter interpreter, ClosureEntities entities)
         {
             if (optimizationPasses == null)
                 return false;
             if (interpreter.Method.IsAbstract)
                 return false;
             var result = false;
-            var optimizationsList = new List<ResultingOptimizationPass>(optimizationPasses);
+            var optimizationsList = new List<OptimizationPassBase>(optimizationPasses);
             var areOptimizationsAvailable = true;
             while (areOptimizationsAvailable)
             {

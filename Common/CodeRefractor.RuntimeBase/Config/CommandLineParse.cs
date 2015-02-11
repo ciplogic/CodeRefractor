@@ -27,7 +27,7 @@ namespace CodeRefractor.RuntimeBase.Config
 
         private static void InitializeOptimizationKindList(OptimizationKind optimizationKind)
         {
-            OptimizationLevelBase.SortedOptimizations[optimizationKind] = new List<ResultingOptimizationPass>();
+            OptimizationLevelBase.SortedOptimizations[optimizationKind] = new List<OptimizationPassBase>();
         }
 
         public void Process(string[] args)

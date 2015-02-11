@@ -18,42 +18,42 @@ namespace CodeRefractor.RuntimeBase.Config
 			EnabledCategories = new HashSet<string>();
 		}
 
-        public virtual List<ResultingOptimizationPass> BuildOptimizationPasses0()
+        public virtual List<OptimizationPassBase> BuildOptimizationPasses0()
         {
             throw new NotImplementedException();
         }
 
-        public virtual List<ResultingOptimizationPass> BuildOptimizationPasses3()
+        public virtual List<OptimizationPassBase> BuildOptimizationPasses3()
         {
             throw new NotImplementedException();
         }
 
-        public virtual List<ResultingOptimizationPass> BuildOptimizationPasses2()
+        public virtual List<OptimizationPassBase> BuildOptimizationPasses2()
         {
             throw new NotImplementedException();
         }
 
-        public virtual List<ResultingOptimizationPass> BuildOptimizationPasses1()
+        public virtual List<OptimizationPassBase> BuildOptimizationPasses1()
         {
             throw new NotImplementedException();
         }
 
-        public static void UpdateOptimizationsFromCategories(List<ResultingOptimizationPass> optimizationPasses)
+        public static void UpdateOptimizationsFromCategories(List<OptimizationPassBase> optimizationPasses)
         {
             var categories = OptimizationCategories.Instance;
             optimizationPasses.Clear();
             categories.BuildRelationsByReflection();
-            IEnumerable<ResultingOptimizationPass> closure = categories.Closure(Instance.EnabledCategories);
+            IEnumerable<OptimizationPassBase> closure = categories.Closure(Instance.EnabledCategories);
             optimizationPasses.AddRange(closure);
         }
 
         public static OptimizationLevelBase Instance;
 
 
-        public static Dictionary<OptimizationKind, List<ResultingOptimizationPass>> SortedOptimizations
-            = new Dictionary<OptimizationKind, List<ResultingOptimizationPass>>();
+        public static Dictionary<OptimizationKind, List<OptimizationPassBase>> SortedOptimizations
+            = new Dictionary<OptimizationKind, List<OptimizationPassBase>>();
 
-        public static List<ResultingOptimizationPass> OptimizationPasses = new List<ResultingOptimizationPass>();
+        public static List<OptimizationPassBase> OptimizationPasses = new List<OptimizationPassBase>();
         private static int _optimizerLevel;
 
         public static int OptimizerLevel
@@ -88,10 +88,10 @@ namespace CodeRefractor.RuntimeBase.Config
             SortedOptimizations.Clear();
             foreach (var optimizationPass in OptimizationPasses)
             {
-                List<ResultingOptimizationPass> list;
+                List<OptimizationPassBase> list;
                 if (!SortedOptimizations.TryGetValue(optimizationPass.Kind, out list))
                 {
-                    list = new List<ResultingOptimizationPass>();
+                    list = new List<OptimizationPassBase>();
                     SortedOptimizations[optimizationPass.Kind] = list;
                 }
                 list.Add(optimizationPass);

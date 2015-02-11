@@ -61,14 +61,14 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Util
                 OptimizationCategories.Level3, OptimizationCategories.Inliner
                 );
         }
-        public override List<ResultingOptimizationPass> BuildOptimizationPasses0()
+        public override List<OptimizationPassBase> BuildOptimizationPasses0()
         {
-            return new List<ResultingOptimizationPass>();
+            return new List<OptimizationPassBase>();
         }
 
-        public override List<ResultingOptimizationPass> BuildOptimizationPasses3()
+        public override List<OptimizationPassBase> BuildOptimizationPasses3()
         {
-            return new ResultingOptimizationPass[]
+            return new OptimizationPassBase[]
             {
                 //new OneDefUsedNextLinePropagation(), //??
                 //new OneDefUsedPreviousLinePropagation(), //??
@@ -79,11 +79,11 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Util
         }
 
 
-        public override List<ResultingOptimizationPass> BuildOptimizationPasses2()
+        public override List<OptimizationPassBase> BuildOptimizationPasses2()
         {
             this.EnabledCategories.Add(OptimizationCategories.Inliner);
             this.EnabledCategories.Add(OptimizationCategories.Global);
-            return new ResultingOptimizationPass[]
+            return new OptimizationPassBase[]
             {
                 //new OneAssignmentDeadStoreAssignment(), //??
                 //  //?? 
@@ -93,7 +93,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Util
         }
 
 
-        public override List<ResultingOptimizationPass> BuildOptimizationPasses1()
+        public override List<OptimizationPassBase> BuildOptimizationPasses1()
         {
             
             EnabledCategories.Add(OptimizationCategories.Propagation);
@@ -101,7 +101,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Util
             EnabledCategories.Add(OptimizationCategories.Analysis);
             EnabledCategories.Add(OptimizationCategories.CommonSubexpressionsElimination);
 
-            return new ResultingOptimizationPass[]
+            return new OptimizationPassBase[]
             {
                 //new FoldVariablesDefinitionsOptimizationPass(),
 

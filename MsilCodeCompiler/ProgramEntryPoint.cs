@@ -36,9 +36,7 @@ namespace CodeRefractor.Compiler
                 commandLineParse.Process(args);
 
                 OptimizationLevelBase.Instance = new OptimizationLevels();
-                OptimizationLevelBase.OptimizerLevel = 2;
-                OptimizationLevelBase.Instance.EnabledCategories.Add(OptimizationCategories.All);
-
+                OptimizationLevelBase.OptimizerLevel = 3;
                 kernel.Get<Program>().CallCompiler("");
             }
             catch (Exception e)

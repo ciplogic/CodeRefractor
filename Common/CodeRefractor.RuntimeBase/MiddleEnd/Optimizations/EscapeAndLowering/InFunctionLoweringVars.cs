@@ -50,8 +50,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
                     interpreter.AnalyzeProperties.SetVariableData(variable, EscapingMode.Pointer);
                 }
             }
-            AllocateVariablesOnStack(localOp, candidateVariables, interpreter);
-            return true;
+            return AllocateVariablesOnStack(localOp, candidateVariables, interpreter);
         }
 
         private static bool RemoveAllEscaping(HashSet<LocalVariable> candidateVariables, LocalOperation[] localOp,
@@ -91,13 +90,14 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
             return candidateVariables;
         }
 
-        private static void AllocateVariablesOnStack(LocalOperation[] localOp, HashSet<LocalVariable> candidateVariables, MethodInterpreter interpreter)
+        private static bool AllocateVariablesOnStack(LocalOperation[] localOp, HashSet<LocalVariable> candidateVariables, MethodInterpreter interpreter)
         {
             var newOps = localOp.Where(op =>
                 op.Kind == OperationKind.NewArray
                 || op.Kind == OperationKind.NewObject).ToArray();
             if (newOps.Length == 0)
-                return;
+                return false;
+            var result = false;
             foreach (var op in newOps)
             {
                 var variable = op.GetDefinition();
@@ -105,12 +105,14 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
                     continue;
 
                 if (!candidateVariables.Contains(variable)) continue;
+                result = true;
                 var variableData = interpreter.AnalyzeProperties.GetVariableData(variable);
                 if (variableData != EscapingMode.Stack)
                 {
                     interpreter.AnalyzeProperties.SetVariableData(variable, EscapingMode.Stack);               
                 }
             }
+            return result;
         }
 
         public static void RemoveCandidatesIfEscapes(LocalVariable localVariable,
@@ -149,6 +151,8 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
                     HandleRefAssignment(localVariable, candidateVariables, op);
                     break;
                 case OperationKind.FieldRefAssignment:
+                    break;
+                case OperationKind.NewArray:
                     break;
                 default:
                     throw new NotImplementedException();
