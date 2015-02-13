@@ -27,7 +27,6 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.EscapeAndLowering
                 return;
             var properties = interpreter.AnalyzeProperties;
             var argList = arguments
-                .Select(a => (LocalVariable) a)
                 .Where(argVar => properties.GetVariableData(argVar) != EscapingMode.Unused)
                 .ToList();
             argList = UseDefDescription.ComputeUnusedArguments(argList, useDef);

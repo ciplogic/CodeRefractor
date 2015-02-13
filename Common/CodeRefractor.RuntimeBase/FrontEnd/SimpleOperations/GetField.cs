@@ -22,8 +22,8 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations
         {
             return new GetField
             {
-                AssignedTo = (LocalVariable) AssignedTo.Clone(),
-                Instance = (LocalVariable) Instance.Clone(),
+                AssignedTo = AssignedTo,
+                Instance = Instance,
                 FieldName = FieldName
             };
         }

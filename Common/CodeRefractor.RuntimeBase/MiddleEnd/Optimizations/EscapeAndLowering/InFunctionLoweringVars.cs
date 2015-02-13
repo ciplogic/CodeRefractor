@@ -87,10 +87,14 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
             candidateVariables.AddRange(toAdd);
             toAdd = variables.VirtRegs.Where(varId => !varId.ComputedType().GetClrType(closure).IsPrimitive).ToArray();
             candidateVariables.AddRange(toAdd);
-            toAdd = interpreter.AnalyzeProperties.Arguments.Where(varId => !varId.ComputedType().GetClrType(closure).IsPrimitive).ToArray();
+            toAdd = interpreter.AnalyzeProperties.Arguments
+                .Where(varId => !varId.ComputedType().GetClrType(closure).IsPrimitive).ToArray();
             foreach (var argumentVariable in toAdd)
             {
-                argumentVariable.Escaping = EscapingMode.Pointer;
+                if (argumentVariable.Escaping != EscapingMode.Unused)
+                {
+                    argumentVariable.Escaping = EscapingMode.Pointer;
+                }
             }
             candidateVariables.AddRange(toAdd);
             return candidateVariables;

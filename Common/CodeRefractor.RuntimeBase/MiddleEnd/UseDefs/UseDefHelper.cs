@@ -458,9 +458,23 @@ namespace CodeRefractor.MiddleEnd.UseDefs
                 case OperationKind.FieldRefAssignment:
                     SwitchUsageInFieldRefAssignment(op, usageVariable, definitionIdentifier);
                     break;
+                case OperationKind.Unbox:
+                    SwitchUsageUnbox(op, usageVariable, definitionIdentifier);
+                    break;
                 default:
                     throw new NotImplementedException(
                         string.Format("Switch usage is not implemented for this operation '{0}'", op.Kind));
+            }
+        }
+
+        private static void SwitchUsageUnbox(LocalOperation op, LocalVariable usageVariable, IdentifierValue definitionIdentifier)
+        {
+            var unbox = (Unboxing) op;
+            if (usageVariable.Equals(unbox.AssignedTo))
+                unbox.AssignedTo = (LocalVariable) definitionIdentifier;
+            if (usageVariable.Equals(unbox.Right))
+            {
+                unbox.Right = definitionIdentifier;
             }
         }
 

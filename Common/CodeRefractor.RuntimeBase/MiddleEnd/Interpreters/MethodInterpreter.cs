@@ -24,11 +24,12 @@ namespace CodeRefractor.MiddleEnd.Interpreters
         public MethodInterpreter(MethodBase method)
         {
             Method = method;
+            AnalyzeProperties = new AnalyzeProperties();
+            AnalyzeProperties.SetupArguments(Method);
+
             var pureAttribute = method.GetCustomAttribute<PureMethodAttribute>();
             if (pureAttribute != null)
                 AnalyzeProperties.IsPure = true;
-            AnalyzeProperties = new AnalyzeProperties();
-            AnalyzeProperties.SetupArguments(Method);
         }
 
         public override string ToString()
