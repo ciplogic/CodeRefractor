@@ -47,6 +47,7 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations
         CastClass,
 
         Comment,
-        IsInstance
+        IsInstance,
+        StaticFieldRefAssignment
     }
 }
