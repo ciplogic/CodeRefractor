@@ -30,7 +30,7 @@ namespace CodeRefractor.FrontEnd
         internal static bool IndexInRanges(Instruction instruction, List<KeyValuePair<int, int>> ranges)
         {
             var index = instruction.Offset;
-            return ranges.Any(range => (index >= range.Key)  && (index <= range.Value));
+            return ranges.Any(range => (index >= range.Key)  && (index < range.Value));
         }
     }
 }
