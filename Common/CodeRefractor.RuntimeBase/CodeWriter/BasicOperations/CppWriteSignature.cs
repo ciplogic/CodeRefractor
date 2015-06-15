@@ -41,8 +41,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                             method.DeclaringType.GetReversedMappedType(closureEntities) ??
                             method.DeclaringType.GetMappedType(closureEntities), closureEntities);
                     var isSmartPtr = interpreter.AnalyzeProperties.Arguments.First(it => it.Name == "_this").Escaping;
-                    var thisText = string.Format("{0} _this",
-                        argumentTypeDescription.ClrType.ToCppName(isSmartPtr));
+                    var thisText = $"{argumentTypeDescription.ClrType.ToCppName(isSmartPtr)} _this";
 
                     sb.Append(thisText);
                     index++;

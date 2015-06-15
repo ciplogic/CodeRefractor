@@ -1,6 +1,7 @@
 #region Uses
 
 using System;
+using CodeRefractor.Analyze;
 using CodeRefractor.RuntimeBase.Analyze;
 
 #endregion
@@ -42,7 +43,7 @@ namespace CodeRefractor.FrontEnd.SimpleOperations.Identifiers
 
         public string Description
         {
-            get { return string.Format("c: '{0}'", Value); }
+            get { return $"c: '{Value}'"; }
         }
 
         public override IdentifierValue Clone()

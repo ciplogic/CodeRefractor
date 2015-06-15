@@ -47,7 +47,7 @@ namespace CodeRefractor.ClosureCompute
 
         public override string ToString()
         {
-            return string.Format("{0}.{1}", Method.DeclaringType.Name, Method.Name);
+            return $"{Method.DeclaringType.Name}.{Method.Name}";
         }
     }
 }

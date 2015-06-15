@@ -43,7 +43,7 @@ namespace CodeRefractor.MiddleEnd.Interpreters.Cil
             if (Interpreted)
                 return;
             Ensure.AreEqual(false, PlatformInvokeMethod.IsPlatformInvoke(Method),
-                string.Format("Should not run it on current method: {0}", Method)
+                $"Should not run it on current method: {Method}"
                 );
             if (Method.GetMethodBody() == null)
                 return;
@@ -60,15 +60,15 @@ namespace CodeRefractor.MiddleEnd.Interpreters.Cil
             var declaringName = method.DeclaringType.Name;
             if (method.IsConstructor)
             {
-                return string.Format("{0}.ctor", declaringName);
+                return $"{declaringName}.ctor";
             }
 
-            var startName = string.Format("{0}.{1}", declaringName, method.Name);
+            var startName = $"{declaringName}.{method.Name}";
             var declaringParams = string.Join(", ",
                 method.GetParameters().Select(p => p.ParameterType.Name)
                 ).ToArray();
 
-            return string.Format("{0}({1})", startName, declaringParams);
+            return $"{startName}({declaringParams})";
         }
     }
 }

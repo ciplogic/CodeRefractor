@@ -1,6 +1,7 @@
 #region Uses
 
 using System;
+using CodeRefractor.Analyze;
 using CodeRefractor.RuntimeBase.Analyze;
 
 #endregion

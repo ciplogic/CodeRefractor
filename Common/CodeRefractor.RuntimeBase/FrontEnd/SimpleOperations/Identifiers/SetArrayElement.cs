@@ -27,7 +27,7 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations.Identifiers
 
         public override string ToString()
         {
-            return string.Format("{0}[{1}]={2}", Instance.Name, Index.Name, Right.Name);
+            return $"{Instance.Name}[{Index.Name}]={Right.Name}";
         }
     }
 }

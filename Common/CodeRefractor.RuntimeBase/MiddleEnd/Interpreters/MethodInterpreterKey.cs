@@ -87,8 +87,7 @@ namespace CodeRefractor.MiddleEnd.Interpreters
                 .Select(par => par.ToCppMangling())
                 .ToArray();
             var paramString = string.Join(", ", functionParams);
-            return string.Format(
-                "{0}.{1}({2})", declaringType, _methodName, paramString);
+            return $"{declaringType}.{_methodName}({paramString})";
         }
 
         public override bool Equals(object obj)

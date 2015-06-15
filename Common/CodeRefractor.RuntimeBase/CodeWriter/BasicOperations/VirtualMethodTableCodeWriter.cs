@@ -156,9 +156,8 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             if (parameters.Length > 0)
             {
                 sb.Append(", ");
-                var arguments = string.Join(", ", parameters.Select(param => string.Format("{0} {1}",
-                    param.ParameterType.GetReversedMappedType(crRuntime).ToCppName(),
-                    param.Name)));
+                var arguments = string.Join(", ", parameters.Select(param =>
+                    $"{param.ParameterType.GetReversedMappedType(crRuntime).ToCppName()} {param.Name}"));
                 sb.Append(arguments);
             }
             return sb.ToString();
@@ -211,11 +210,11 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 var imParam = implementingMethod.DeclaringType;
                 if (imParam.IsValueType)
                 {
-                    return string.Format("unbox_value<{0}>(_this)",
-                        implementingMethod.DeclaringType.GetReversedMappedType(crRuntime).ToCppName(EscapingMode.Unused));
+                    return
+                        $"unbox_value<{implementingMethod.DeclaringType.GetReversedMappedType(crRuntime).ToCppName(EscapingMode.Unused)}>(_this)";
                 }
-                return string.Format("std::static_pointer_cast<{0}>(_this)",
-                    implementingMethod.DeclaringType.GetReversedMappedType(crRuntime).ToCppName(EscapingMode.Unused));
+                return
+                    $"std::static_pointer_cast<{implementingMethod.DeclaringType.GetReversedMappedType(crRuntime).ToCppName(EscapingMode.Unused)}>(_this)";
             }
             return "";
         }

@@ -21,7 +21,7 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations
 
         public override string ToString()
         {
-            return string.Format("{0} = {1}", AssignedTo, FunctionPointer);
+            return $"{AssignedTo} = {FunctionPointer}";
         }
     }
 }

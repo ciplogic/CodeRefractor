@@ -38,10 +38,10 @@ namespace CodeRefractor.Analyze
             var arguments = string.Join(", ",
                 CommonExtensions.GetParamAsPrettyList(parameterInfos, pinvoke));
             if (method.IsStatic) return arguments;
-            var thisText = string.Format("const {0}& _this", method.DeclaringType.ToCppName());
+            var thisText = $"const {method.DeclaringType.ToCppName()}& _this";
             return parameterInfos.Length == 0
                 ? thisText
-                : string.Format("{0}, {1}", thisText, arguments);
+                : $"{thisText}, {arguments}";
         }
     }
 }

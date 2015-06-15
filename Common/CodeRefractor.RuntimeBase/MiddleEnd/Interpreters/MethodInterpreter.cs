@@ -34,8 +34,8 @@ namespace CodeRefractor.MiddleEnd.Interpreters
             var name = Method.Name;
             var parameters = Method.GetParameters();
             var argsText = string.Join(", ", parameters.Select(par =>
-                string.Format("{0}: {1}", par.Name, par.ParameterType.Name)));
-            return string.Format("{0}.{1}({2})", typeName, name, argsText);
+                $"{par.Name}: {par.ParameterType.Name}"));
+            return $"{typeName}.{name}({argsText})";
         }
     }
 }

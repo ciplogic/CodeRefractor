@@ -28,7 +28,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Dfa.ConstantDfa
 
         public override string ToString()
         {
-            return string.Format("Consts: {0} ({1})", States.Count, string.Join(", ", States.Keys.Select(v => v.Name)));
+            return $"Consts: {States.Count} ({string.Join(", ", States.Keys.Select(v => v.Name))})";
         }
 
         public DfaPointOfAnalysis Merge(DfaPointOfAnalysis pointsOfAnalysis)

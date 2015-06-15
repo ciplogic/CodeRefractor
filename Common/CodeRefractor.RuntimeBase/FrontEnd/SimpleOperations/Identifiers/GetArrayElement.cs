@@ -1,6 +1,7 @@
 #region Uses
 
 using System;
+using CodeRefractor.Analyze;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.FrontEnd.SimpleOperations;
 using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
@@ -30,7 +31,7 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations.Identifiers
 
         public override string ToString()
         {
-            return string.Format("{0}={1}[{2}]", AssignedTo.Name, Instance.Name, Index.Name);
+            return $"{AssignedTo.Name}={Instance.Name}[{Index.Name}]";
         }
 
         public static GetArrayElement Create(LocalVariable assignedTo, LocalVariable instance, IdentifierValue index,

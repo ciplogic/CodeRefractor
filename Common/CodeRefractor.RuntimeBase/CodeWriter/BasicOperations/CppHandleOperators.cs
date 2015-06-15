@@ -313,7 +313,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                     break;
 
                 default:
-                    throw new InvalidOperationException(string.Format("Operation '{0}' is not handled", operationName));
+                    throw new InvalidOperationException($"Operation '{operationName}' is not handled");
             }
         }
 

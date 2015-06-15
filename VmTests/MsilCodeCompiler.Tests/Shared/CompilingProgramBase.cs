@@ -19,12 +19,12 @@ namespace MsilCodeCompiler.Tests.Shared
     {
         protected bool EvalCSharpMain(string bodyOfMain, List<ResultingOptimizationPass> optimizationPasses = null)
         {
-            var code = String.Format(@"
+            var code = $@"
 using System;
 class C {{ 
-    public static void Main() {{{0}}} 
+    public static void Main() {{{bodyOfMain}}} 
 }}
-", bodyOfMain);
+";
             return EvaluateCSharpToNative(code, optimizationPasses);
         }
 
@@ -36,12 +36,12 @@ class C {{
 
         public static string GenerateMainCode(string bodyOfMain)
         {
-            var code = String.Format(@"
+            var code = $@"
 using System;
 class C {{ 
-    public static void Main() {{{0}}} 
+    public static void Main() {{{bodyOfMain}}} 
 }}
-", bodyOfMain);
+";
             return code;
         }
 

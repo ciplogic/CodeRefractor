@@ -20,9 +20,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 
         public override string ToString()
         {
-            return string.Format("{0} = unbox( {1})",
-                Right.Name,
-                AssignedTo.Name);
+            return $"{Right.Name} = unbox( {AssignedTo.Name})";
         }
     }
 }

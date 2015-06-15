@@ -30,7 +30,7 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations
 
         public override string ToString()
         {
-            return string.Format("{0} = {1}->{2}", AssignedTo.Name, Instance.Name, FieldName);
+            return $"{AssignedTo.Name} = {Instance.Name}->{FieldName}";
         }
     }
 }

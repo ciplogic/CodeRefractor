@@ -52,13 +52,12 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations.Methods
             var paramData = string.Join(", ",
                 Parameters.Select(
                     par =>
-                        string.Format("{0}:{1}", par.Name, par.ComputedType().Name)));
+                        $"{par.Name}:{par.ComputedType().Name}"));
             if (Result == null)
             {
-                return string.Format("{0}({1})", Info.Name,
-                    paramData);
+                return $"{Info.Name}({paramData})";
             }
-            return string.Format("{0} = {1}({2})", Result.Name, Info.Name, paramData);
+            return $"{Result.Name} = {Info.Name}({paramData})";
         }
     }
 }

@@ -30,7 +30,7 @@ namespace CodeRefractor.CodeWriter.Linker
                 var stringTable = LinkingData.Instance.Strings;
                 var stringId = stringTable.GetStringId((string) constValue.Value);
 
-                return string.Format("_str({0})", stringId);
+                return $"_str({stringId})";
             }
             return constValue.Name;
         }

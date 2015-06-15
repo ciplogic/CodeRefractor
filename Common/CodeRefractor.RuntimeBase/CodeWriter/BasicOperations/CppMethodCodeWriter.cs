@@ -89,10 +89,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 
                     default:
                         throw new InvalidOperationException(
-                            string.Format(
-                                "Invalid operation '{0}' is introduced in intermediary representation\nValue: {1}",
-                                operation.Kind,
-                                operation));
+                            $"Invalid operation '{operation.Kind}' is introduced in intermediary representation\nValue: {operation}");
                 }
             }
 

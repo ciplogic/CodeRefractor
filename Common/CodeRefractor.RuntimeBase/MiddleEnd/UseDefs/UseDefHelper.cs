@@ -469,7 +469,7 @@ namespace CodeRefractor.MiddleEnd.UseDefs
                     break;
                 default:
                     throw new NotImplementedException(
-                        string.Format("Switch usage is not implemented for this operation '{0}'", op.Kind));
+                        $"Switch usage is not implemented for this operation '{op.Kind}'");
             }
         }
 

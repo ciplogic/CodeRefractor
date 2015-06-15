@@ -1,5 +1,6 @@
 #region Uses
 
+using CodeRefractor.Analyze;
 using CodeRefractor.FrontEnd.SimpleOperations;
 using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 using CodeRefractor.RuntimeBase.Analyze;
@@ -22,7 +23,7 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations
 
         public override string ToString()
         {
-            return string.Format("{0}.{1}= {2}", Instance.Name, FieldName, Right.Name);
+            return $"{Instance.Name}.{FieldName}= {Right.Name}";
         }
     }
 }

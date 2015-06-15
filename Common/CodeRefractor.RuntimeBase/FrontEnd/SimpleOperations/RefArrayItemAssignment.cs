@@ -21,7 +21,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 
         public override string ToString()
         {
-            return string.Format("{0} = & ({1}[{2}])", ArrayVar.Name, ArrayVar, Index);
+            return $"{ArrayVar.Name} = & ({ArrayVar}[{Index}])";
         }
     }
 }

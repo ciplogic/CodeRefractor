@@ -22,7 +22,7 @@ namespace CodeRefractor.CodeWriter.Platform
 
         public string FormattedName()
         {
-            return string.Format("dll_method_{0}", Id);
+            return $"dll_method_{Id}";
         }
     }
 }

@@ -46,8 +46,7 @@ namespace CodeRefractor.RuntimeBase.TypeInfoWriter
 
         public override string ToString()
         {
-            return string.Format("{0} {1} (...)",
-                ReturnType.Name, Name);
+            return $"{ReturnType.Name} {Name} (...)";
         }
 
         public bool MethodMatches(MethodInfo method, bool addToImplementations = true)

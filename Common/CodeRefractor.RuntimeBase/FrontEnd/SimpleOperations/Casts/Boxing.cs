@@ -21,9 +21,7 @@ namespace CodeRefractor.FrontEnd.SimpleOperations.Casts
 
         public override string ToString()
         {
-            return string.Format("{0} = box({1})",
-                Right.Name,
-                AssignedTo.Name);
+            return $"{Right.Name} = box({AssignedTo.Name})";
         }
     }
 }

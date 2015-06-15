@@ -20,7 +20,7 @@ namespace CodeRefractor.Analyze
             string result;
             if (_invalidNames.TryGetValue(name, out result))
                 return result;
-            var formattedName = string.Format("AutoNamed_{0}", _countedField);
+            var formattedName = $"AutoNamed_{_countedField}";
             _countedField++;
             _invalidNames[name] = formattedName;
             return formattedName;

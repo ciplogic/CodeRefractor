@@ -21,7 +21,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 
         public override string ToString()
         {
-            return string.Format("{0} = {1}", AssignedTo.Name, Right);
+            return $"{AssignedTo.Name} = {Right}";
         }
     }
 }

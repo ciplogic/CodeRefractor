@@ -22,7 +22,7 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations.Methods
 
         public override string ToString()
         {
-            return string.Format("{0} (vcall)", base.ToString());
+            return $"{base.ToString()} (vcall)";
         }
     }
 }

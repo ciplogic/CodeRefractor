@@ -20,7 +20,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 
         public override string ToString()
         {
-            return string.Format("{0} = {1}", Left.Name, Right);
+            return $"{Left.Name} = {Right}";
         }
     }
 }

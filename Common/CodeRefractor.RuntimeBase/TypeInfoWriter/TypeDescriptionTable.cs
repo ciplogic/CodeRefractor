@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using CodeRefractor.Analyze;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.CodeWriter.Output;
 using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
@@ -98,9 +99,7 @@ namespace CodeRefractor.RuntimeBase.TypeInfoWriter
             int typeId;
             if (!_result.TryGetValue(type, out typeId))
                 throw new InvalidDataException(
-                    string.Format(
-                        "Type id for type: '{0}' is not defined ", type.ToCppMangling()
-                        ));
+                    $"Type id for type: '{type.ToCppMangling()}' is not defined ");
             if (isStack)
             {
                 sb.AppendFormat("{0}._typeId = {1};", variable.Name, typeId);

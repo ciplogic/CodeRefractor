@@ -163,7 +163,7 @@ namespace CodeRefractor.FrontEnd
 
 
             if (HandleExtraInstructions(instruction, operationFactory, opcodeStr, closureEntities)) return;
-            throw new InvalidOperationException(string.Format("Unknown instruction: {0}", instruction));
+            throw new InvalidOperationException($"Unknown instruction: {instruction}");
         }
 
         bool HandleExtraInstructions(Instruction instruction,

@@ -20,7 +20,7 @@ namespace CodeRefractor.FrontEnd.SimpleOperations.Identifiers
 
         public override string ToString()
         {
-            return string.Format("{0}:{1}", Name, FixedType != null ? FixedType.Name : "Unknown");
+            return $"{Name}:{(FixedType != null ? FixedType.Name : "Unknown")}";
         }
 
         public override IdentifierValue Clone()
@@ -52,7 +52,7 @@ namespace CodeRefractor.FrontEnd.SimpleOperations.Identifiers
         string GetAutoName()
         {
             var varKind = Kind == VariableKind.Vreg ? "vreg" : "local";
-            var formatVar = string.Format("{0}_{1}", varKind, Id);
+            var formatVar = $"{varKind}_{Id}";
             return formatVar;
         }
 

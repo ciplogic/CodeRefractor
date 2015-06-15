@@ -95,7 +95,7 @@ namespace CodeRefractor.Util
                 methodName = "ctor";
             methodName = methodName.Replace("<", "_").Replace(">", "_").Replace(".", "_");
                 //TODO: C++ does not expect names with angle brackets
-            return string.Format("{0}_{1}", typeName, methodName);
+            return $"{typeName}_{methodName}";
         }
 
         public static Type[] GetMethodArgumentTypes(this MethodBase method)
@@ -168,9 +168,9 @@ namespace CodeRefractor.Util
                         //TODO: add the text to pointers to make possible 
                         // auto-vectorisation in gcc
                         // ' __restrict__ __attribute__ ((aligned (16))) '
-                        return string.Format("Array < {0} >  *", fullTypeName);
+                        return $"Array < {fullTypeName} >  *";
                     case EscapingMode.Stack:
-                        return string.Format("Array < {0} > ", fullTypeName);
+                        return $"Array < {fullTypeName} > ";
                 }
             }
             if ((type.IsClass || type.IsInterface) || isSmartPtr != EscapingMode.Smart)
@@ -181,7 +181,7 @@ namespace CodeRefractor.Util
                 {
                     var elementType = type.GetElementType();
                     var elementTypeCppName = elementType.ToCppName();
-                    return string.Format("{0}* ", elementTypeCppName);
+                    return $"{elementTypeCppName}* ";
                 }
                 /*
                 var typeParameters = type.GetGenericArguments();
@@ -284,7 +284,7 @@ namespace CodeRefractor.Util
             if (type.IsByRef)
             {
                 var elementType = type.GetElementType();
-                return string.Format("{0}*", elementType.ToCppMangling());
+                return $"{elementType.ToCppMangling()}*";
             }
 
             return string.Format(StdSharedPtr + "<{0}>", type.ToCppMangling());

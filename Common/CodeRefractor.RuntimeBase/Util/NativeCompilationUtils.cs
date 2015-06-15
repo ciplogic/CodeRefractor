@@ -41,7 +41,7 @@ namespace CodeRefractor.Util
             fileName = fileInfo.FullName;
             if (!fileInfo.Exists)
             {
-                throw new InvalidDataException(string.Format("Filename: {0} does not exist!", fileName));
+                throw new InvalidDataException($"Filename: {fileName} does not exist!");
             }
             var pathToGpp = CompilerOptions.PathOfCompilerTools + CompilerOptions.CompilerExe;
 
@@ -55,7 +55,7 @@ namespace CodeRefractor.Util
             var standardOutput = pathToGpp.ExecuteCommand(arguments, CompilerOptions.PathOfCompilerTools);
             if (!string.IsNullOrWhiteSpace(standardOutput) && standardOutput.Contains("error"))
             {
-                throw new InvalidOperationException(string.Format("Errors when compiling: {0}", standardOutput));
+                throw new InvalidOperationException($"Errors when compiling: {standardOutput}");
             }
             (CompilerOptions.PathOfCompilerTools + "strip").ExecuteCommand(applicationNativeExe,
                 Path.GetDirectoryName(applicationNativeExe));
@@ -64,7 +64,7 @@ namespace CodeRefractor.Util
         static string GetSafeFileOrPath(string fileName)
         {
             if (fileName.Contains(" "))
-                fileName = string.Format("\"{0}\"", fileName);
+                fileName = $"\"{fileName}\"";
             return fileName;
         }
 

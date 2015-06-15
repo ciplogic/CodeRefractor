@@ -167,7 +167,7 @@ namespace CodeRefractor
         {
             return parameterInfos.Select(
                 param =>
-                    string.Format("{0} {1}", param.ParameterType.ToCppName(isPInvoke: pinvoke), param.Name));
+                    $"{param.ParameterType.ToCppName(isPInvoke: pinvoke)} {param.Name}");
         }
 
         public static bool IsBranchOperation(this LocalOperation operation, bool andLabels = true)

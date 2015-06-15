@@ -24,7 +24,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Dfa.ConstantDfa
 
         public override string ToString()
         {
-            return string.Format("{0}: {1}", State, Constant);
+            return $"{State}: {Constant}";
         }
 
         public bool Compare(VariableState value)

@@ -46,7 +46,7 @@ namespace CodeRefractor.MiddleEnd.Interpreters.Cil
 
         public override string ToString()
         {
-            return string.Format("Interpreter for '{0}' - instruction count: {1}", Method, LocalOperations.Count);
+            return $"Interpreter for '{Method}' - instruction count: {LocalOperations.Count}";
         }
     }
 }

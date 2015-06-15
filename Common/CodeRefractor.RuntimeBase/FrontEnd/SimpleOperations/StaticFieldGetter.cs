@@ -1,5 +1,6 @@
 #region Uses
 
+using CodeRefractor.Analyze;
 using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 using CodeRefractor.RuntimeBase.Analyze;
 

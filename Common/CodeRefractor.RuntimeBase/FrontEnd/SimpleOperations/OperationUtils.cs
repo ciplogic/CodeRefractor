@@ -65,7 +65,7 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations
             foreach (var primitiveProperty in clonablePrimitiveProperties)
             {
                 var sourceValue = primitiveProperty.GetValue(localOperation, null);
-                primitives.Add(string.Format("{0} = {1}", primitiveProperty.Name, sourceValue));
+                primitives.Add($"{primitiveProperty.Name} = {sourceValue}");
             }
             var objectBasedProperties = properties
                 .Where(prop => !IsNotObjectType(prop.PropertyType)
@@ -75,7 +75,7 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations
             foreach (var property in objectBasedProperties)
             {
                 var sourceObject = property.GetValue(localOperation, null);
-                primitives.Add(string.Format("{0} = {1}", property.Name, BuildString(sourceObject)));
+                primitives.Add($"{property.Name} = {BuildString(sourceObject)}");
             }
             var joinedPrimitives = string.Join(", ", primitives);
             sb.AppendFormat("{0} [{1}]", type.Name, joinedPrimitives);

@@ -29,7 +29,7 @@ namespace CodeRefractor.Analyze
             }
             var typeDescription = new TypeDescription(type);
             Instance.UserTypeDesc[type] = typeDescription;
-            typeDescription.ExtractInformation(crRuntime);
+            typeDescription.ExtractInformation(crRuntime, type);
             return typeDescription;
         }
 

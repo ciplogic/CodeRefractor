@@ -5,15 +5,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using CodeRefractor.Analyze;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.CodeWriter.Output;
 using CodeRefractor.Runtime;
+using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.Util;
+using static System.String;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.Analyze
+namespace CodeRefractor.Analyze
 {
     public class TypeDescription
     {
@@ -30,14 +31,21 @@ namespace CodeRefractor.RuntimeBase.Analyze
             try
             {
                 if (clrType == null)
-                    clrType = typeof (object);
+                    clrType = typeof(object);
                 if (clrType.IsInterface)
-                    clrType = typeof (object);
+                    clrType = typeof(object);
 
                 Layout = new List<FieldDescription>();
-                ClrType = clrType;
+
+                ClrTypeCode = Type.GetTypeCode(clrType);
 
                 Name = clrType.Name;
+                if (clrType.IsArray)
+                {
+                    var elementType = clrType.GetElementType();
+                    BaseType = new TypeDescription(elementType);
+                    IsArray = true;
+                }
                 Namespace = clrType.Namespace;
                 ContainsGenericParameters = clrType.ContainsGenericParameters;
             }
@@ -46,8 +54,54 @@ namespace CodeRefractor.RuntimeBase.Analyze
             }
         }
 
-        public Type ClrType { get; set; }
-        public TypeCode ClrTypeCode => Type.GetTypeCode(ClrType);
+        public bool IsArray { get; private set; }
+
+        public Type ClrType
+            => ComputeType();
+
+        Type ComputeType()
+        {
+            if (IsArray)
+            {
+                return BaseType.ClrType.MakeArrayType();
+            }
+            if (ClrTypeCode == TypeCode.Object)
+            {
+
+                if (Namespace == "System")
+                {
+                    switch (Name)
+                    {
+                        case "Object":
+                            return typeof(object);
+                    }
+                }
+            }
+            switch (ClrTypeCode)
+            {
+                case TypeCode.Boolean:
+                    return typeof(bool);
+                case TypeCode.Int32:
+                    return typeof(Int32);
+                case TypeCode.Int64:
+                    return typeof(long);
+                case TypeCode.Char:
+                    return typeof(char);
+                case TypeCode.Double:
+                    return typeof(double);
+                case TypeCode.Single:
+                    return typeof(float);
+                case TypeCode.String:
+                    return typeof(string);
+                default:
+                    {
+                        var message = $"Type not known: {Namespace ?? Empty}.{Name}";
+                        throw new InvalidOperationException(message);
+                    }
+            }
+        }
+
+        public TypeCode ClrTypeCode { get; set; }
         public TypeDescription BaseType { get; private set; }
         public bool ContainsGenericParameters { get; set; }
         public string Name { get; private set; }
@@ -57,35 +111,48 @@ namespace CodeRefractor.RuntimeBase.Analyze
 
         public Type GetClrType(ClosureEntities closureEntities)
         {
+            if (ClrTypeCode == TypeCode.Object)
+            {
+                return LocateObjectType(closureEntities, Namespace, Name);
+            }
             return ClrType;
         }
 
-        public void ExtractInformation(ClosureEntities closureEntities)
+        Type LocateObjectType(ClosureEntities closureEntities, string ns, string name)
         {
-            if (IgnoredSet.Contains(ClrType))
+            var assemblies = closureEntities.EntryPoint.DeclaringType.Assembly;
+            var types = assemblies.GetTypes().Where(type => type.Name == name).ToArray();
+            if (types.Length == 1)
+                return types.First();
+            return types.FirstOrDefault(type => type.Namespace == ns);
+        }
+
+        public void ExtractInformation(ClosureEntities closureEntities, Type type)
+        {
+            if (IgnoredSet.Contains(type))
                 return;
-            if (ClrType.IsPointer || ClrType.IsByRef)
+            if (type.IsPointer || type.IsByRef)
             {
-                IsPointer = ClrType.IsPointer;
+                IsPointer = type.IsPointer;
                 return;
             }
 
-            if (ClrType.BaseType != typeof (object))
+            if (type.BaseType != typeof(object))
             {
-                BaseType = new TypeDescription(ClrType.BaseType);
+                BaseType = new TypeDescription(type.BaseType);
             }
-            if (ClrType.IsPrimitive)
+            if (type.IsPrimitive)
                 return;
 
             if (ClrTypeCode == TypeCode.Object)
             {
-                ExtractFieldsTypes(closureEntities);
+                ExtractFieldsTypes(closureEntities, type);
             }
         }
 
-        void ExtractFieldsTypes(ClosureEntities crRuntime)
+        void ExtractFieldsTypes(ClosureEntities crRuntime, Type type)
         {
-            var clrType = ClrType.GetReversedType(crRuntime);
+            var clrType = type.GetReversedType(crRuntime);
             if (clrType.Assembly.GlobalAssemblyCache)
                 return;
             if (clrType.IsInterface)
@@ -173,7 +240,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
                 var obj = Activator.CreateInstance(type);
                 return obj.ToString();
             }
-            var result = string.Format("{0}(0)", type.ToCppName());
+            var result = $"{type.ToCppName()}(0)";
             return result;
         }
 
@@ -184,8 +251,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
 
         public void WriteStaticFieldInitialization(CodeOutput codeOutput)
         {
-            if (BaseType != null)
-                BaseType.WriteLayout(codeOutput);
+            BaseType?.WriteLayout(codeOutput);
 
             var mappedType = ClrType;
 

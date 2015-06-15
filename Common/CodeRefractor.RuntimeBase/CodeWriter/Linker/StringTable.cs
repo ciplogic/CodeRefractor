@@ -72,8 +72,8 @@ namespace CodeRefractor.CodeWriter.Linker
         static void AddTextToStringTable(List<string> stringDataBuilder, short[] itemTextData, string strItem)
         {
             var itemsText = string.Join(", ", itemTextData);
-            var commentedString = string.Format("/* {0} */", strItem.ToEscapedString());
-            var resultItem = string.Format("{0} {1}", itemsText, commentedString);
+            var commentedString = $"/* {strItem.ToEscapedString()} */";
+            var resultItem = $"{itemsText} {commentedString}";
             stringDataBuilder.Add(resultItem);
         }
     }

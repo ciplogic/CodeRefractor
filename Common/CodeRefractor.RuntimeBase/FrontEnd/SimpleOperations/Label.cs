@@ -17,7 +17,7 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations
 
         public override string ToString()
         {
-            return string.Format("label_{0}:", JumpTo);
+            return $"label_{JumpTo}:";
         }
     }
 }

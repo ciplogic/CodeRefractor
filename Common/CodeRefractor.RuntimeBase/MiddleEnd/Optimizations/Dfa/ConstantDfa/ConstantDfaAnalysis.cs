@@ -179,7 +179,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Dfa.ConstantDfa
                         Interpret(JumpTo(jumpTo), analysis);
                         return;
                     default:
-                        throw new InvalidOperationException(string.Format("Unhandled: {0}", operation));
+                        throw new InvalidOperationException($"Unhandled: {operation}");
                 }
                 cursor++;
                 canUpdate = !(startingConclusions.Equals(_pointsOfAnalysis[cursor]));

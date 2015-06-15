@@ -180,10 +180,10 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                                 parameterStrings.Add(computedValue);
                                 continue;
                             case EscapingMode.Smart:
-                                parameterStrings.Add(string.Format("{0}.get()", computedValue));
+                                parameterStrings.Add($"{computedValue}.get()");
                                 continue;
                             case EscapingMode.Stack:
-                                parameterStrings.Add(string.Format("&{0}", computedValue));
+                                parameterStrings.Add($"&{computedValue}");
                                 continue;
                         }
                     }
