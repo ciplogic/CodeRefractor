@@ -57,20 +57,7 @@ namespace CodeRefactor.OpenRuntime
 
         [CppMethodBody(Header = "stdio.h", Code = @"
     //Borrowed from SharpLang
-    char buffer[64];
-	int length = sprintf(buffer, ""%.6f"", value);  // Match default .Net precision, makes testing easier
-
-	// Remove trailing 0 (after .)
-	if (strchr(buffer, '.') != NULL)
-	{
-		while (length > 0 && buffer[length - 1] == '0')
-			buffer[--length] = '\0';
-	}
-
-	if (length > 0 && buffer[length - 1] == '.')
-		buffer[--length] = '\0';
-
-	printf(""%s"", buffer);
+    printf( ""%.6f"", value);  // Match default .Net precision, makes testing easier
 ")]
         public static void Write(float value)
         {
@@ -94,21 +81,7 @@ namespace CodeRefactor.OpenRuntime
         }
 
         [CppMethodBody(Header = "stdio.h", Code = @"
-    //Borrowed from SharpLang
-    char buffer[64];
-	int length = sprintf(buffer, ""%.14f"", value); // Match default .Net precision, makes testing easier
-
-	// Remove trailing 0 (after .)
-	if (strchr(buffer, '.') != NULL)
-	{
-		while (length > 0 && buffer[length - 1] == '0')
-			buffer[--length] = '\0';
-	}
-
-	if (length > 0 && buffer[length - 1] == '.')
-		buffer[--length] = '\0';
-
-	printf(""%s"", buffer);
+    printf(""%.14f"", value); // Match default .Net precision, makes testing easier
 ")]
         public static void Write(double value)
         {

@@ -77,7 +77,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.Inliner
 
             var localOperationsToInline = BuildLocalOperationsToInline(methodToInlineInterpreter,
                 mappedParameters,
-                assignment != null ? assignment.Result : null);
+                assignment?.Result);
 
             MergeVRegs(intermediateCode, methodToInlineInterpreter, mappedVregs);
             MergeLocalVariables(intermediateCode, methodToInlineInterpreter, mappedLocals);

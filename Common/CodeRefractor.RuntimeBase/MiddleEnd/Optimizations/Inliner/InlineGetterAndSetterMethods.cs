@@ -16,9 +16,9 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Inliner
     [Optimization(Category = OptimizationCategories.Inliner)]
     public class InlineGetterAndSetterMethods : ResultingGlobalOptimizationPass
     {
-        public override void OptimizeOperations(CilMethodInterpreter methodInterpreter)
+        public override void OptimizeOperations(CilMethodInterpreter interpreter)
         {
-            var localOperations = methodInterpreter.MidRepresentation.UseDef.GetLocalOperations();
+            var localOperations = interpreter.MidRepresentation.UseDef.GetLocalOperations();
             for (var index = 0; index < localOperations.Length; index++)
             {
                 var localOperation = localOperations[index];
@@ -26,16 +26,16 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Inliner
                 if (localOperation.Kind != OperationKind.Call) continue;
 
                 var methodData = (CallMethodStatic) localOperation;
-                var interpreter = methodData.GetInterpreter(Closure) as CilMethodInterpreter;
-                if (interpreter == null)
+                var cilMethodInterpreter = methodData.GetInterpreter(Closure) as CilMethodInterpreter;
+                if (cilMethodInterpreter == null)
                     continue;
 
-                if (AnalyzeFunctionIsGetter.ReadProperty(interpreter)
-                    || AnalyzeFunctionIsSetter.ReadProperty(interpreter)
-                    || AnalyzeFunctionIsEmpty.ReadProperty(interpreter)
+                if (AnalyzeFunctionIsGetter.ReadProperty(cilMethodInterpreter)
+                    || AnalyzeFunctionIsSetter.ReadProperty(cilMethodInterpreter)
+                    || AnalyzeFunctionIsEmpty.ReadProperty(cilMethodInterpreter)
                     )
                 {
-                    SmallFunctionsInliner.InlineMethod(methodInterpreter.MidRepresentation, methodData,
+                    SmallFunctionsInliner.InlineMethod(interpreter.MidRepresentation, methodData,
                         index);
                     Result = true;
                     return;

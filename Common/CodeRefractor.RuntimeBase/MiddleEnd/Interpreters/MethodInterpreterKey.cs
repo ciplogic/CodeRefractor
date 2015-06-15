@@ -15,7 +15,7 @@ namespace CodeRefractor.MiddleEnd.Interpreters
     {
         readonly string _methodName;
         readonly Type[] _parameterList;
-        int _hash;
+        readonly int _hash;
 
         public MethodInterpreterKey(MethodInterpreter interpreter, Type implementingType = null)
         {
@@ -34,7 +34,7 @@ namespace CodeRefractor.MiddleEnd.Interpreters
                 parameterList.Add(returnType);
             _parameterList = parameterList.ToArray();
 
-            RecomputeHash();
+            _hash = ComputeHash();
         }
 
         public Type DeclaringType { get; set; }
@@ -64,30 +64,6 @@ namespace CodeRefractor.MiddleEnd.Interpreters
             }
         }
 
-        public void MapTypes(Dictionary<Type, Type> mappedTypes)
-        {
-            var reversedMap = mappedTypes.ReversedTypeMap();
-            for (var i = 0; i < _parameterList.Length; i++)
-            {
-                var par = _parameterList[i];
-                _parameterList[i] = GetMappingType(par, reversedMap);
-            }
-            DeclaringType = GetMappingType(DeclaringType, reversedMap);
-            RecomputeHash();
-        }
-
-        void RecomputeHash()
-        {
-            _hash = ComputeHash();
-        }
-
-        static Type GetMappingType(Type type, Dictionary<Type, Type> mappedTypes)
-        {
-            Type result;
-            if (!mappedTypes.TryGetValue(type, out result))
-                return type;
-            return result;
-        }
 
         int ComputeHash()
         {

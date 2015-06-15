@@ -9,10 +9,10 @@ using CodeRefractor.RuntimeBase.Optimizations;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.Backend.Optimizations.EscapeAndLowering
+namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
 {
     [Optimization(Category = OptimizationCategories.DeadCodeElimination)]
-class ClearInFunctionUnusedArguments : ResultingGlobalOptimizationPass
+    class ClearInFunctionUnusedArguments : ResultingGlobalOptimizationPass
     {
         public override void OptimizeOperations(CilMethodInterpreter interpreter)
         {

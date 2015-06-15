@@ -1,5 +1,7 @@
 #region Uses
 
+using System;
+using System.Collections.Generic;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.CodeWriter.Linker;
 using CodeRefractor.CodeWriter.Output;
@@ -10,6 +12,7 @@ using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.TypeInfoWriter;
 using CodeRefractor.Util;
+using static System.String;
 
 #endregion
 
@@ -87,19 +90,30 @@ T unbox_value(" + TypeNamerUtils.StdSharedPtr + @"<System_Object> value){
                         Boxing.IsUsed = true;
                         bodySb.Append(BoxingTemplate);
                     }
-                    HandleBox((Boxing) operation, bodySb, typeTable, crRuntime);
+                    HandleBox((Boxing)operation, bodySb, typeTable, crRuntime);
                     break;
 
                 case OperationKind.CastClass:
-                    HandleCastClass((ClassCasting) operation, bodySb, crRuntime);
+                    HandleCastClass((ClassCasting)operation, bodySb, crRuntime);
                     break;
 
                 case OperationKind.Unbox:
-                    HandleUnbox((Unboxing) operation, bodySb, crRuntime);
+                    HandleUnbox((Unboxing)operation, bodySb, crRuntime);
                     break;
 
                 case OperationKind.IsInstance:
+                {
+                    var declarations = new List<string>
+                    {
+                        "bool IsInstanceOf(int typeSource, int typeImplementation);",
+                        "System_Void buildTypesTable();",
+                        "std::map<int, std::vector<int> > GlobalMappingType;"
+                    };
+
+                    bodySb.Append(Join(Environment.NewLine, declarations));
+
                     HandleIsInstance((IsInstance) operation, bodySb, crRuntime);
+                }
                     break;
                 default:
                     return false;

@@ -71,6 +71,10 @@ namespace CodeRefractor.CodeWriter.Linker
             }
             sb.AppendLine("}");
             sb.AppendLine(@"
+bool IsInstanceOf(int typeSource, int typeImplementation); 
+System_Void buildTypesTable();
+std::map<int, std::vector<int> > GlobalMappingType;
+
 bool IsInstanceOf(int typeSource, int typeImplementation) {
     auto typeVector = GlobalMappingType[typeSource];
 	auto begin = typeVector.begin();

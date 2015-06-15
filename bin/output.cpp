@@ -58,6 +58,10 @@ System_Double System_Math_Sqrt(System_Double d);
 System_Void buildTypesTable() {
 }
 
+bool IsInstanceOf(int typeSource, int typeImplementation); 
+System_Void buildTypesTable();
+std::map<int, std::vector<int> > GlobalMappingType;
+
 bool IsInstanceOf(int typeSource, int typeImplementation) {
     auto typeVector = GlobalMappingType[typeSource];
 	auto begin = typeVector.begin();
@@ -76,21 +80,7 @@ System_Void System_Console_Write(std::shared_ptr<System_String> value) {
 }
 System_Void System_Console_Write(System_Double value) {
     
-        //Borrowed from SharpLang
-        char buffer[64];
-    	int length = sprintf(buffer, "%.14f", value); // Match default .Net precision, makes testing easier
-    
-    	// Remove trailing 0 (after .)
-    	if (strchr(buffer, '.') != NULL)
-    	{
-    		while (length > 0 && buffer[length - 1] == '0')
-    			buffer[--length] = '\0';
-    	}
-    
-    	if (length > 0 && buffer[length - 1] == '.')
-    		buffer[--length] = '\0';
-    
-    	printf("%s", buffer);
+        printf("%.14f", value); // Match default .Net precision, makes testing easier
 }
 System_Void System_Console_WriteLine() {
     printf("\n");
@@ -98,20 +88,7 @@ System_Void System_Console_WriteLine() {
 System_Void System_Console_Write(System_Single value) {
     
         //Borrowed from SharpLang
-        char buffer[64];
-    	int length = sprintf(buffer, "%.6f", value);  // Match default .Net precision, makes testing easier
-    
-    	// Remove trailing 0 (after .)
-    	if (strchr(buffer, '.') != NULL)
-    	{
-    		while (length > 0 && buffer[length - 1] == '0')
-    			buffer[--length] = '\0';
-    	}
-    
-    	if (length > 0 && buffer[length - 1] == '.')
-    		buffer[--length] = '\0';
-    
-    	printf("%s", buffer);
+        printf( "%.6f", value);  // Match default .Net precision, makes testing easier
 }
 #include "math.h"
 System_Double System_Math_Sqrt(System_Double d) {

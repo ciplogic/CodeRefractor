@@ -16,10 +16,10 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.Inliner
     [Optimization(Category = OptimizationCategories.DeadCodeElimination)]
     public class RemoveCallsToEmptyMethods : ResultingGlobalOptimizationPass
     {
-        public override void OptimizeOperations(CilMethodInterpreter methodInterpreter)
+        public override void OptimizeOperations(CilMethodInterpreter interpreter)
         {
             var toRemove = new List<int>();
-            var useDef = methodInterpreter.MidRepresentation.UseDef;
+            var useDef = interpreter.MidRepresentation.UseDef;
             var localOperations = useDef.GetLocalOperations();
             var calls = useDef.GetOperationsOfKind(OperationKind.Call);
             foreach (var index in calls)
@@ -29,17 +29,17 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.Inliner
                 if (localOperation.Kind != OperationKind.Call) continue;
 
                 var methodData = (CallMethodStatic) localOperation;
-                var interpreter = methodData.Info.GetInterpreter(Closure);
-                if (interpreter == null)
+                var callInterpreter = methodData.Info.GetInterpreter(Closure);
+                if (callInterpreter == null)
                     continue;
-                var isEmpty = interpreter.AnalyzeProperties.IsEmpty;
+                var isEmpty = callInterpreter.AnalyzeProperties.IsEmpty;
                 if (!isEmpty)
                     continue;
                 toRemove.Add(index);
             }
             if (toRemove.Count == 0)
                 return;
-            methodInterpreter.DeleteInstructions(toRemove);
+            interpreter.DeleteInstructions(toRemove);
             Result = true;
         }
     }
