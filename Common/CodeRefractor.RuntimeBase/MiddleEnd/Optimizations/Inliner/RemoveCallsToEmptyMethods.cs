@@ -1,16 +1,12 @@
-#region Usings
+#region Uses
 
 using System.Collections.Generic;
 using CodeRefractor.CodeWriter.Linker;
-using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
-using CodeRefractor.MiddleEnd.Optimizations.Purity;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 using CodeRefractor.RuntimeBase.Analyze;
-using CodeRefractor.RuntimeBase.MiddleEnd;
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.Optimizations;
 
 #endregion

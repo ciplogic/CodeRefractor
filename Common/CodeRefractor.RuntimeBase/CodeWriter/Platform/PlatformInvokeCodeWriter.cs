@@ -1,7 +1,5 @@
-#region Usings
+#region Uses
 
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -12,8 +10,6 @@ using CodeRefractor.CodeWriter.Output;
 using CodeRefractor.CodeWriter.Types;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Interpreters;
-using CodeRefractor.RuntimeBase;
-using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.Util;
 
 #endregion
@@ -74,7 +70,7 @@ namespace CodeRefractor.CodeWriter.Platform
 
         private static string WritePInvokeDefinition(this MethodInterpreter methodBase, string methodDll)
         {
-            var platformInterpreter = (PlatformInvokeMethod)methodBase;
+            var platformInterpreter = (PlatformInvokeMethod) methodBase;
             var retType = platformInterpreter.Method.GetReturnType().ToCppMangling();
             var sb = new StringBuilder();
             var arguments = methodBase.Method.GetArgumentsAsText(true);
@@ -102,7 +98,6 @@ namespace CodeRefractor.CodeWriter.Platform
             return sb.ToString();
         }
 
-
         public static string WriteDelegateCallCode(this MethodInterpreter delegateInvoke)
         {
             var sb = new StringBuilder();
@@ -110,18 +105,19 @@ namespace CodeRefractor.CodeWriter.Platform
             return sb.ToString();
         }
 
-        public static string WritePlatformInvokeMethod(this PlatformInvokeMethod platformInvoke, ClosureEntities crRuntime)
+        public static string WritePlatformInvokeMethod(this PlatformInvokeMethod platformInvoke,
+            ClosureEntities crRuntime)
         {
             var methodId = Import(platformInvoke.LibraryName,
                 platformInvoke.MethodName,
                 platformInvoke.CallingConvention,
                 platformInvoke.EntryPoint);
 
-            CodeOutput codeOutput = new CodeOutput();
+            var codeOutput = new CodeOutput();
 
             codeOutput.AppendFormat(platformInvoke.WritePInvokeDefinition(methodId));
             codeOutput.BlankLine();
-            codeOutput.Append(platformInvoke.Method.WriteHeaderMethod(crRuntime, writeEndColon: false));
+            codeOutput.Append(platformInvoke.Method.WriteHeaderMethod(crRuntime, false));
 
             // write PInvoke implementation
             codeOutput.BracketOpen();

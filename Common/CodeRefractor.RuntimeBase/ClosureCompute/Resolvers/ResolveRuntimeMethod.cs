@@ -8,7 +8,6 @@ using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Interpreters;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.Runtime.Annotations;
-using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Shared;
 
 #endregion
@@ -34,16 +33,15 @@ namespace CodeRefractor.ClosureCompute.Resolvers
         {
             var declaringType = method.DeclaringType;
             //Check for mapped methods
-            Type resolvingType= _solvedTypes.Values.FirstOrDefault(h=>h==declaringType);
-            if (resolvingType==null)
+            var resolvingType = _solvedTypes.Values.FirstOrDefault(h => h == declaringType);
+            if (resolvingType == null)
             {
                 //Check for non-mapped methods
                 _solvedTypes.TryGetValue(declaringType, out resolvingType);
-                if(resolvingType==null)
+                if (resolvingType == null)
                     return null;
             }
 
-           
 
             if (method.IsConstructor)
             {
@@ -52,7 +50,7 @@ namespace CodeRefractor.ClosureCompute.Resolvers
             var allMethods = resolvingType.GetMethods(ClosureEntitiesBuilder.AllFlags)
                 .Where(m => m.Name == method.Name)
                 .ToList();
-            var resultMethod = CalculateResultMethod(method, allMethods,_closureEntities);
+            var resultMethod = CalculateResultMethod(method, allMethods, _closureEntities);
 
             if (resultMethod == null)
             {
@@ -65,7 +63,7 @@ namespace CodeRefractor.ClosureCompute.Resolvers
         {
             var allConstuctors = resolvingType.GetConstructors(ClosureEntitiesBuilder.AllFlags).ToArray();
             var methodParameters = method.GetParameters();
-            
+
             foreach (var constuctor in allConstuctors)
             {
                 var ctorParameters = constuctor.GetParameters();
@@ -90,8 +88,8 @@ namespace CodeRefractor.ClosureCompute.Resolvers
             return true;
         }
 
-
-        public static MethodInfo CalculateResultMethod(MethodBase method, List<MethodInfo> allMethods, ClosureEntities closureEntities)
+        public static MethodInfo CalculateResultMethod(MethodBase method, List<MethodInfo> allMethods,
+            ClosureEntities closureEntities)
         {
             var srcParams = method.GetParameters().Select(par => par.ParameterType).ToList();
             if (!method.IsStatic)
@@ -106,7 +104,7 @@ namespace CodeRefractor.ClosureCompute.Resolvers
                     methodName = attributeMethod.Name;
                 if (methodName != method.Name)
                     continue;
-                var targetParams = methodInfo.GetParameters().Select(p=>p.ParameterType).ToList();
+                var targetParams = methodInfo.GetParameters().Select(p => p.ParameterType).ToList();
                 if (!methodInfo.IsStatic)
                 {
                     targetParams.Insert(0, method.DeclaringType);
@@ -125,7 +123,6 @@ namespace CodeRefractor.ClosureCompute.Resolvers
                 }
                 if (found)
                     return methodInfo;
-
             }
             return null;
         }
@@ -147,7 +144,6 @@ namespace CodeRefractor.ClosureCompute.Resolvers
 
             cppResult.SetupInternalFields(resultMethod);
             return cppResult;
-
         }
     }
 }

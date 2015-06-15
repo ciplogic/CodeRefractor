@@ -1,7 +1,10 @@
+#region Uses
+
 using System.Reflection;
 using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
-using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
+
+#endregion
 
 namespace CodeRefractor.MiddleEnd.Interpreters
 {
@@ -29,7 +32,6 @@ namespace CodeRefractor.MiddleEnd.Interpreters
             var additionalData = intermediateCode.AuxiliaryObjects;
             additionalData[itemName] = valueToSet;
         }
-
 
         public static bool[] GetUsedArguments(MethodInterpreter interpreter)
         {

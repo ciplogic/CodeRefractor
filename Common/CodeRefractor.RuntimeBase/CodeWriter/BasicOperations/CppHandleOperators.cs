@@ -1,21 +1,17 @@
-﻿#region Usings
+﻿#region Uses
 
 using System;
 using System.IO;
-using System.Text;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.CodeWriter.Linker;
 using CodeRefractor.CodeWriter.Output;
 using CodeRefractor.FrontEnd.SimpleOperations;
 using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
-using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Interpreters;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.SimpleOperations.Operators;
-using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
-using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
 using CodeRefractor.RuntimeBase.Shared;
@@ -28,7 +24,8 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 {
     internal static class CppHandleOperators
     {
-        public static bool HandleAssignmentOperations(CodeOutput bodySb, LocalOperation operation, OperationKind kind, TypeDescriptionTable typeTable, MethodInterpreter interpreter, ClosureEntities crRuntime)
+        public static bool HandleAssignmentOperations(CodeOutput bodySb, LocalOperation operation, OperationKind kind,
+            TypeDescriptionTable typeTable, MethodInterpreter interpreter, ClosureEntities crRuntime)
         {
             switch (kind)
             {
@@ -91,30 +88,29 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             return true;
         }
 
-
-        private static void HandleAssign(CodeOutput sb, LocalOperation operation, MethodInterpreter interpreter, ClosureEntities closureEntities)
+        private static void HandleAssign(CodeOutput sb, LocalOperation operation, MethodInterpreter interpreter,
+            ClosureEntities closureEntities)
         {
             var assignment = (Assignment) operation;
 
             var assignedTo = assignment.AssignedTo;
 
 
-            LocalVariable localVariable = assignment.Right as LocalVariable;
+            var localVariable = assignment.Right as LocalVariable;
 
             var leftVarType = assignment.AssignedTo.ComputedType().GetClrType(closureEntities);
             var rightVarType = assignment.Right.ComputedType().GetClrType(closureEntities);
 
-            bool isderef = false;
+            var isderef = false;
             if (localVariable == null && (assignment.Right as ConstValue) != null &&
                 ((ConstValue) assignment.Right).Value is LocalVariable)
             {
                 isderef = true;
-                localVariable = (LocalVariable)((ConstValue)assignment.Right).Value;
+                localVariable = (LocalVariable) ((ConstValue) assignment.Right).Value;
             }
-            
+
             if (localVariable != null)
             {
-            
                 if (leftVarType != rightVarType)
                 {
                     if (rightVarType.IsPointer || isderef)
@@ -138,7 +134,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 var localVariableData = interpreter.AnalyzeProperties.GetVariableData(localVariable);
                 var rightVar = localVariable;
                 var description = assignedTo.ComputedType();
-                if (description.ClrTypeCode != TypeCode.Object || 
+                if (description.ClrTypeCode != TypeCode.Object ||
                     assignedToData == localVariableData)
                 {
                     sb.AppendFormat("{0} = {1};", assignedTo.Name, rightVar.Name);
@@ -163,21 +159,14 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 }
                 throw new InvalidDataException("Case not handled");
             }
+            //Handke byrefs
+            if (leftVarType.IsByRef && !rightVarType.IsByRef)
+            {
+                sb.AppendFormat("*{0} = {1};", assignedTo.Name, assignment.Right.ComputedValue());
+            }
             else
             {
-
-                //Handke byrefs
-                if (leftVarType.IsByRef && !rightVarType.IsByRef)
-                {
-                    sb.AppendFormat("*{0} = {1};", assignedTo.Name, assignment.Right.ComputedValue());
-                    return;
-                }
-                else
-                {
-                    sb.AppendFormat("{0} = {1};", assignedTo.Name, assignment.Right.ComputedValue());
-                }
-                  
-                
+                sb.AppendFormat("{0} = {1};", assignedTo.Name, assignment.Right.ComputedValue());
             }
         }
 
@@ -229,7 +218,8 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             bodySb.AppendFormat("{0} = *{1};", leftData.Name, rightData.Name);
         }
 
-        private static void HandleLoadStaticField(LocalOperation operation, CodeOutput bodySb, ClosureEntities closureEntities)
+        private static void HandleLoadStaticField(LocalOperation operation, CodeOutput bodySb,
+            ClosureEntities closureEntities)
         {
             var assign = (Assignment) operation;
             var rightData = (StaticFieldGetter) assign.Right;
@@ -323,7 +313,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                     break;
 
                 default:
-                    throw new InvalidOperationException(String.Format("Operation '{0}' is not handled", operationName));
+                    throw new InvalidOperationException(string.Format("Operation '{0}' is not handled", operationName));
             }
         }
 
@@ -369,7 +359,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                     break;
 
                 default:
-                    throw new InvalidOperationException(String.Format("Operation '{0}' is not handled", operationName));
+                    throw new InvalidOperationException(string.Format("Operation '{0}' is not handled", operationName));
             }
         }
 
@@ -529,7 +519,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         {
             string right, left, local;
             GetBinaryOperandNames(localVar, out right, out left, out local);
-            if (localVar.Right.ComputedType().GetClrType(closureEntities) == typeof(IntPtr))
+            if (localVar.Right.ComputedType().GetClrType(closureEntities) == typeof (IntPtr))
             {
                 sb.AppendFormat("{0} = {1}+(size_t){2};", local, left, right);
 
@@ -539,11 +529,10 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             sb.AppendFormat("{0} = {1}+{2};", local, left, right);
         }
 
-
         private static void HandleSetArrayValue(LocalOperation operation, CodeOutput sb,
             MethodInterpreter interpreter)
         {
-            var arrayItem = (SetArrayElement)operation;
+            var arrayItem = (SetArrayElement) operation;
             var variableData = interpreter.AnalyzeProperties.GetVariableData(arrayItem.Instance);
             switch (variableData)
             {
@@ -562,23 +551,28 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             }
         }
 
-        private static void HandleReadArrayItem(LocalOperation operation, CodeOutput bodySb, MethodInterpreter interpreter, ClosureEntities closureEntities)
+        private static void HandleReadArrayItem(LocalOperation operation, CodeOutput bodySb,
+            MethodInterpreter interpreter, ClosureEntities closureEntities)
         {
-            var valueSrc = (GetArrayElement)operation;
+            var valueSrc = (GetArrayElement) operation;
             var parentType = valueSrc.Instance.ComputedType();
             var variableData = interpreter.AnalyzeProperties.GetVariableData(valueSrc.AssignedTo);
             switch (variableData)
             {
                 case EscapingMode.Smart:
-                    bodySb.AppendFormat((parentType.GetClrType(closureEntities).IsClass || parentType.GetClrType(closureEntities).IsInterface)
-                        ? "{0} = (*{1})[{2}];"
-                        : "{0} = {1}[{2}];",
+                    bodySb.AppendFormat(
+                        (parentType.GetClrType(closureEntities).IsClass ||
+                         parentType.GetClrType(closureEntities).IsInterface)
+                            ? "{0} = (*{1})[{2}];"
+                            : "{0} = {1}[{2}];",
                         valueSrc.AssignedTo.Name, valueSrc.Instance.Name, valueSrc.Index.Name);
                     return;
                 case EscapingMode.Pointer:
-                    bodySb.AppendFormat((parentType.GetClrType(closureEntities).IsClass || parentType.GetClrType(closureEntities).IsInterface)
-                        ? "{0} = ((*{1})[{2}]).get();"
-                        : "{0} = ({1}[{2}]).get();",
+                    bodySb.AppendFormat(
+                        (parentType.GetClrType(closureEntities).IsClass ||
+                         parentType.GetClrType(closureEntities).IsInterface)
+                            ? "{0} = ((*{1})[{2}]).get();"
+                            : "{0} = ({1}[{2}]).get();",
                         valueSrc.AssignedTo.Name, valueSrc.Instance.Name, valueSrc.Index.Name);
 
                     return;
@@ -592,7 +586,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             var assignedFrom = fieldGetterInfo.Instance;
             var assignedFromData = interpreter.AnalyzeProperties.GetVariableData(assignedFrom);
             var isOnStack = assignedFromData == EscapingMode.Stack;
-            var fieldText = String.Format(isOnStack ? "{0}.{1}" : "{0}->{1}", fieldGetterInfo.Instance.Name,
+            var fieldText = string.Format(isOnStack ? "{0}.{1}" : "{0}->{1}", fieldGetterInfo.Instance.Name,
                 fieldGetterInfo.FieldName.ValidName());
 
             var assignedTo = fieldGetterInfo.AssignedTo;
@@ -615,15 +609,15 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 
             if (assign.Right is ConstValue)
             {
-                if (assign.FixedType.GetClrType(closureEntities) == typeof(string))
+                if (assign.FixedType.GetClrType(closureEntities) == typeof (string))
                 {
                     bodySb.AppendFormat("{0}->{1} = {2};", assign.Instance.Name,
                         assign.FieldName.ValidName(), assign.Right.ComputedValue());
                 }
                 else
                 {
-                      bodySb.AppendFormat("{0}->{1} = {2};", assign.Instance.Name,
-                    assign.FieldName.ValidName(), assign.Right.Name);
+                    bodySb.AppendFormat("{0}->{1} = {2};", assign.Instance.Name,
+                        assign.FieldName.ValidName(), assign.Right.Name);
                 }
             }
 
@@ -636,7 +630,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 
         private static void HandleNewArray(LocalOperation operation, CodeOutput bodySb, MethodInterpreter interpreter)
         {
-            var assignment = (NewArrayObject)operation;
+            var assignment = (NewArrayObject) operation;
             var arrayData = assignment;
 
             var assignedData = interpreter.AnalyzeProperties.GetVariableData(assignment.AssignedTo);
@@ -657,10 +651,10 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             }
         }
 
-
-        private static void HandleNewObject(LocalOperation operation, CodeOutput bodySb, TypeDescriptionTable typeTable, MethodInterpreter interpreter, ClosureEntities crRuntime)
+        private static void HandleNewObject(LocalOperation operation, CodeOutput bodySb, TypeDescriptionTable typeTable,
+            MethodInterpreter interpreter, ClosureEntities crRuntime)
         {
-            var value = (NewConstructedObject)operation;
+            var value = (NewConstructedObject) operation;
             var rightValue = value;
             var localValue = rightValue.Info;
 

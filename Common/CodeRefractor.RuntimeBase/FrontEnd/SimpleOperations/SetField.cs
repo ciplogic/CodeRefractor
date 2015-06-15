@@ -2,7 +2,6 @@
 
 using CodeRefractor.FrontEnd.SimpleOperations;
 using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
-using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.RuntimeBase.Analyze;
 
 #endregion
@@ -18,7 +17,6 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations
 
         public IdentifierValue Instance { get; set; }
         public string FieldName { get; set; }
-
         public IdentifierValue Right { get; set; }
         public TypeDescription FixedType { get; set; }
 

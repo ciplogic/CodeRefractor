@@ -1,4 +1,4 @@
-#region Usings
+#region Uses
 
 using System.Collections.Generic;
 using CodeRefractor.FrontEnd.SimpleOperations;
@@ -16,7 +16,7 @@ using CodeRefractor.RuntimeBase.Optimizations;
 
 namespace CodeRefractor.MiddleEnd.Optimizations.RedundantExpressions
 {
-	[Optimization(Category = OptimizationCategories.CommonSubexpressionsElimination)]
+    [Optimization(Category = OptimizationCategories.CommonSubexpressionsElimination)]
     internal class PrecomputeRepeatedPureFunctionCall : BlockOptimizationPass
     {
         public override bool OptimizeBlock(CilMethodInterpreter midRepresentation, int startRange, int endRange,
@@ -69,10 +69,10 @@ namespace CodeRefractor.MiddleEnd.Optimizations.RedundantExpressions
             var calls = new List<int>();
             var opArr = useDef.GetLocalOperations();
             var callIds = useDef.GetOperationsOfKind(OperationKind.Call);
-            
+
             foreach (var index in callIds)
             {
-                if(index < startRange || index > endRange)continue;
+                if (index < startRange || index > endRange) continue;
                 var operation = opArr[index];
                 var operationData = EvaluatePureFunctionWithConstantCall.ComputeAndEvaluatePurityOfCall(operation);
                 if (!operationData.Interpreter.AnalyzeProperties.IsPure || !operationData.Info.IsStatic)
@@ -82,10 +82,12 @@ namespace CodeRefractor.MiddleEnd.Optimizations.RedundantExpressions
             return calls;
         }
 
-        private static bool TryMergeCalls(int i, int i1, CallMethodStatic firstCallMethodStatic, CallMethodStatic secondCallMethodStatic,
+        private static bool TryMergeCalls(int i, int i1, CallMethodStatic firstCallMethodStatic,
+            CallMethodStatic secondCallMethodStatic,
             List<LocalOperation> localOperations)
         {
-            var validateParametersAreTheSame = ValidateParametersAreTheSame(firstCallMethodStatic, secondCallMethodStatic);
+            var validateParametersAreTheSame = ValidateParametersAreTheSame(firstCallMethodStatic,
+                secondCallMethodStatic);
             if (!validateParametersAreTheSame)
                 return false;
             return CheckReassignmentsOfParameters(i, i1, firstCallMethodStatic, localOperations);
@@ -114,7 +116,8 @@ namespace CodeRefractor.MiddleEnd.Optimizations.RedundantExpressions
             return true;
         }
 
-        private static bool ValidateParametersAreTheSame(CallMethodStatic firstCallMethodStatic, CallMethodStatic secondCallMethodStatic)
+        private static bool ValidateParametersAreTheSame(CallMethodStatic firstCallMethodStatic,
+            CallMethodStatic secondCallMethodStatic)
         {
             var parametersFirst = new List<IdentifierValue>();
             foreach (var identifierValue in firstCallMethodStatic.Parameters)

@@ -1,8 +1,5 @@
-using System;
-
 namespace CodeRefractor.MiddleEnd.SimpleOperations
 {
-  
     public enum OperationKind
     {
         Call,

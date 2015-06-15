@@ -1,15 +1,14 @@
-#region Usings
+#region Uses
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Text;
+using CodeRefractor.Analyze;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.CodeWriter.Output;
 using CodeRefractor.Runtime;
-using CodeRefractor.RuntimeBase.Shared;
 using CodeRefractor.Util;
 
 #endregion
@@ -18,31 +17,6 @@ namespace CodeRefractor.RuntimeBase.Analyze
 {
     public class TypeDescription
     {
-        public Type ClrType
-        {
-            get { return _clrType; }
-            set { _clrType = value; }
-        }
-
-        public Type GetClrType(ClosureEntities closureEntities)
-        {
-            return _clrType;
-        }
-
-        public TypeCode ClrTypeCode
-        {
-            get { return Type.GetTypeCode(_clrType); }
-            
-        }
-        public TypeDescription BaseType { get; private set; }
-
-        public bool ContainsGenericParameters { get; set; }
-
-
-        public string Name { get; private set; }
-        public string Namespace { get; set; }
-        public bool IsPointer { get; private set; }
-
         private static readonly HashSet<Type> IgnoredSet = new HashSet<Type>(
             new[]
             {
@@ -51,20 +25,14 @@ namespace CodeRefractor.RuntimeBase.Analyze
             }
             );
 
-        private Type _clrType;
-
-
-        public List<FieldDescription> Layout { get; set; }
-
         public TypeDescription(Type clrType)
         {
-           
             try
             {
                 if (clrType == null)
-                    clrType = typeof(object);
+                    clrType = typeof (object);
                 if (clrType.IsInterface)
-                    clrType = typeof(object);
+                    clrType = typeof (object);
 
                 Layout = new List<FieldDescription>();
                 ClrType = clrType;
@@ -75,27 +43,38 @@ namespace CodeRefractor.RuntimeBase.Analyze
             }
             catch (Exception)
             {
-                
-               
             }
-         
+        }
+
+        public Type ClrType { get; set; }
+        public TypeCode ClrTypeCode => Type.GetTypeCode(ClrType);
+        public TypeDescription BaseType { get; private set; }
+        public bool ContainsGenericParameters { get; set; }
+        public string Name { get; private set; }
+        public string Namespace { get; set; }
+        public bool IsPointer { get; private set; }
+        public List<FieldDescription> Layout { get; }
+
+        public Type GetClrType(ClosureEntities closureEntities)
+        {
+            return ClrType;
         }
 
         public void ExtractInformation(ClosureEntities closureEntities)
         {
-            if (IgnoredSet.Contains(_clrType))
+            if (IgnoredSet.Contains(ClrType))
                 return;
-            if (_clrType.IsPointer || _clrType.IsByRef)
+            if (ClrType.IsPointer || ClrType.IsByRef)
             {
-                IsPointer = _clrType.IsPointer;
+                IsPointer = ClrType.IsPointer;
                 return;
             }
 
-            if (_clrType.BaseType != typeof(object))
+            if (ClrType.BaseType != typeof (object))
             {
-                BaseType = new TypeDescription(_clrType.BaseType);
+                BaseType = new TypeDescription(ClrType.BaseType);
             }
-            if (_clrType.IsPrimitive)
+            if (ClrType.IsPrimitive)
                 return;
 
             if (ClrTypeCode == TypeCode.Object)
@@ -106,7 +85,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
 
         private void ExtractFieldsTypes(ClosureEntities crRuntime)
         {
-            var clrType = _clrType.GetReversedType(crRuntime);
+            var clrType = ClrType.GetReversedType(crRuntime);
             if (clrType.Assembly.GlobalAssemblyCache)
                 return;
             if (clrType.IsInterface)
@@ -137,8 +116,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
 
         public void WriteLayout(CodeOutput codeOutput)
         {
-            if (BaseType != null)
-                BaseType.WriteLayout(codeOutput);
+            BaseType?.WriteLayout(codeOutput);
 
             var noOffsetFields = new List<FieldDescription>();
             var dictionary = new SortedDictionary<int, List<FieldDescription>>();
@@ -181,10 +159,10 @@ namespace CodeRefractor.RuntimeBase.Analyze
                 }
                 var staticString = fieldData.IsStatic ? "static " : "";
                 codeOutput.AppendFormat("{2}{0} {1};\n",
-                    fieldData.TypeDescription._clrType.ToCppName(),
+                    fieldData.TypeDescription.ClrType.ToCppName(),
                     fieldData.Name.ValidName(),
                     staticString
-                );
+                    );
             }
         }
 
@@ -201,7 +179,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
 
         public override string ToString()
         {
-            return _clrType.ToString();
+            return ClrType.ToString();
         }
 
         public void WriteStaticFieldInitialization(CodeOutput codeOutput)
@@ -209,7 +187,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
             if (BaseType != null)
                 BaseType.WriteLayout(codeOutput);
 
-            var mappedType = _clrType;
+            var mappedType = ClrType;
 
             var fieldInfos = mappedType.GetFields().ToList();
             fieldInfos.AddRange(mappedType.GetFields(BindingFlags.NonPublic | BindingFlags.Instance));
@@ -219,16 +197,16 @@ namespace CodeRefractor.RuntimeBase.Analyze
                     continue;
 
                 codeOutput.AppendFormat("/* static*/ {0} {3}::{1} = {2};\n",
-                    fieldData.TypeDescription._clrType.ToCppName(),
+                    fieldData.TypeDescription.ClrType.ToCppName(),
                     fieldData.Name.ValidName(),
-                    GetDefault(fieldData.TypeDescription._clrType),
-                    _clrType.ToCppMangling());
+                    GetDefault(fieldData.TypeDescription.ClrType),
+                    ClrType.ToCppMangling());
             }
         }
 
         public Type GetElementType()
         {
-            return _clrType.GetElementType();
+            return ClrType.GetElementType();
         }
     }
 }

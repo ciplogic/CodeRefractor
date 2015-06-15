@@ -1,6 +1,5 @@
-#region Usings
+#region Uses
 
-using CodeRefractor.ClosureCompute;
 using CodeRefractor.RuntimeBase.Optimizations;
 
 #endregion

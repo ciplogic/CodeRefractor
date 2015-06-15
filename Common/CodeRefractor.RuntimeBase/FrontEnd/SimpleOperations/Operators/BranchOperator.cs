@@ -1,8 +1,6 @@
 #region Uses
 
-using System;
 using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
-using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.RuntimeBase.Analyze;
 
 #endregion
@@ -26,7 +24,7 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations.Operators
 
         public override string ToString()
         {
-            return String.Format("Branch operator {0} {2} {1}? jump label_{3}",
+            return string.Format("Branch operator {0} {2} {1}? jump label_{3}",
                 CompareValue, SecondValue,
                 Name,
                 JumpTo.ToHex());

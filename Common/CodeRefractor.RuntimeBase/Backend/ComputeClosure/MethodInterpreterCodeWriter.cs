@@ -1,4 +1,4 @@
-#region Usings
+#region Uses
 
 using System;
 using System.Collections.Generic;
@@ -18,12 +18,14 @@ namespace CodeRefractor.Backend.ComputeClosure
 {
     public static class MethodInterpreterCodeWriter
     {
-        public static string WriteMethodCode(CilMethodInterpreter interpreter, TypeDescriptionTable typeTable, ClosureEntities closureEntities)
+        public static string WriteMethodCode(CilMethodInterpreter interpreter, TypeDescriptionTable typeTable,
+            ClosureEntities closureEntities)
         {
             return CppMethodCodeWriter.WriteCode(interpreter, typeTable, closureEntities);
         }
 
-        public static void WriteMethodSignature(CodeOutput codeOutput, MethodInterpreter interpreter, ClosureEntities closureEntities)
+        public static void WriteMethodSignature(CodeOutput codeOutput, MethodInterpreter interpreter,
+            ClosureEntities closureEntities)
         {
             if (interpreter.Method == null)
             {
@@ -44,7 +46,8 @@ namespace CodeRefractor.Backend.ComputeClosure
             return interpreter.WriteDelegateCallCode();
         }
 
-        public static bool ApplyLocalOptimizations(List<OptimizationPassBase> optimizationPasses, CilMethodInterpreter interpreter, ClosureEntities entities)
+        public static bool ApplyLocalOptimizations(List<OptimizationPassBase> optimizationPasses,
+            CilMethodInterpreter interpreter, ClosureEntities entities)
         {
             if (optimizationPasses == null)
                 return false;

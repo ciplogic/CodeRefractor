@@ -1,7 +1,7 @@
 #region Uses
 
-using System;
 using System.Reflection;
+using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 
@@ -11,9 +11,9 @@ namespace CodeRefractor.FrontEnd.SimpleOperations
 {
     public class FieldRefAssignment : LocalOperation
     {
+        public FieldInfo Field;
         public LocalVariable Left;
         public LocalVariable Right;
-        public FieldInfo Field;
 
         public FieldRefAssignment() : base(OperationKind.FieldRefAssignment)
         {
@@ -21,7 +21,7 @@ namespace CodeRefractor.FrontEnd.SimpleOperations
 
         public override string ToString()
         {
-            return String.Format("{0} = {1}", Left.Name, Right);
+            return string.Format("{0} = {1}", Left.Name, Right);
         }
     }
 }

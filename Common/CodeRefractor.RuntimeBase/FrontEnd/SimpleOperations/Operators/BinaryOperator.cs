@@ -2,7 +2,6 @@
 
 using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.SimpleOperations;
-using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.SimpleOperations.Operators;
 using CodeRefractor.RuntimeBase.Analyze;
 
@@ -21,15 +20,15 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators
         {
         }
 
+        public IdentifierValue Left { get; set; }
+        public IdentifierValue Right { get; set; }
+
         public TypeDescription ComputedType()
         {
             var leftType = Left.ComputedType();
             var rightType = Right.ComputedType();
             return leftType ?? rightType;
         }
-
-        public IdentifierValue Left { get; set; }
-        public IdentifierValue Right { get; set; }
 
         public override string ToString()
         {

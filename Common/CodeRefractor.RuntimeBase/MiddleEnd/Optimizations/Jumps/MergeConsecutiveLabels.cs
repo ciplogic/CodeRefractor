@@ -1,11 +1,10 @@
-﻿#region Usings
+﻿#region Uses
 
 using CodeRefractor.FrontEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Operators;
-using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.Optimizations;
 
@@ -33,7 +32,8 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Jumps
 
                 var operation = operations[i];
                 var jumpId = ((Label) operation).JumpTo;
-                var jumpId2 = ((Label)operation2).JumpTo; ;
+                var jumpId2 = ((Label) operation2).JumpTo;
+                ;
                 OptimizeConsecutiveLabels(operations, jumpId, jumpId2);
                 interpreter.DeleteInstructions(new[] {i + 1});
                 Result = true;
@@ -52,7 +52,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Jumps
                     case OperationKind.AlwaysBranch:
                         var jumpTo = ((Label) operation).JumpTo;
                         if (jumpId2 == jumpTo)
-                            ((Label)operation).JumpTo = jumpId;
+                            ((Label) operation).JumpTo = jumpId;
                         break;
                     case OperationKind.BranchOperator:
                         var destAssignment = (BranchOperator) operation;

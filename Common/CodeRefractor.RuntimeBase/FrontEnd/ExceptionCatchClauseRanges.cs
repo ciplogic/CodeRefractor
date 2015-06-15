@@ -1,11 +1,15 @@
+#region Uses
+
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Mono.Reflection;
 
+#endregion
+
 namespace CodeRefractor.FrontEnd
 {
-    static class ExceptionCatchClauseRanges
+    internal static class ExceptionCatchClauseRanges
     {
         private static List<KeyValuePair<int, int>> GetExceptionRanges(List<ExceptionHandlingClause> handlingExceptions)
         {
@@ -15,7 +19,7 @@ namespace CodeRefractor.FrontEnd
                 if (handlingClause.Flags != ExceptionHandlingClauseOptions.Clause || handlingClause.CatchType == null)
                     continue;
                 result.Add(new KeyValuePair<int, int>(handlingClause.HandlerOffset,
-                    handlingClause.HandlerOffset+handlingClause.HandlerLength));
+                    handlingClause.HandlerOffset + handlingClause.HandlerLength));
             }
             return result;
         }
@@ -30,7 +34,7 @@ namespace CodeRefractor.FrontEnd
         internal static bool IndexInRanges(Instruction instruction, List<KeyValuePair<int, int>> ranges)
         {
             var index = instruction.Offset;
-            return ranges.Any(range => (index >= range.Key)  && (index < range.Value));
+            return ranges.Any(range => (index >= range.Key) && (index < range.Value));
         }
     }
 }

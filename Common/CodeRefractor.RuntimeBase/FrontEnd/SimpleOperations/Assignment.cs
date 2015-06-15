@@ -10,13 +10,13 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations
 {
     public class Assignment : LocalOperation
     {
-        public LocalVariable AssignedTo { get; set; }
-        public IdentifierValue Right { get; set; }
-
         public Assignment()
             : base(OperationKind.Assignment)
         {
         }
+
+        public LocalVariable AssignedTo { get; set; }
+        public IdentifierValue Right { get; set; }
 
         public override string ToString()
         {

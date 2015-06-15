@@ -1,12 +1,14 @@
+#region Uses
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Interpreters;
 using CodeRefractor.Runtime.Annotations;
-using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Shared;
+
+#endregion
 
 namespace CodeRefractor.ClosureCompute.Resolvers
 {
@@ -14,6 +16,7 @@ namespace CodeRefractor.ClosureCompute.Resolvers
     {
         private readonly ClosureEntities _closureEntities;
         private readonly Dictionary<Type, List<MethodInfo>> _solvedTypes;
+
         public ResolveRuntimeMethodUsingExtensions(Assembly assembly, ClosureEntities closureEntities)
         {
             _closureEntities = closureEntities;
@@ -41,12 +44,12 @@ namespace CodeRefractor.ClosureCompute.Resolvers
             }
         }
 
-        void AddMethod(Type declaringType, MethodInfo methodInfo)
+        private void AddMethod(Type declaringType, MethodInfo methodInfo)
         {
             List<MethodInfo> list;
             if (!_solvedTypes.TryGetValue(declaringType, out list))
             {
-                list =new List<MethodInfo>();
+                list = new List<MethodInfo>();
                 _solvedTypes[declaringType] = list;
             }
             list.Add(methodInfo);
@@ -63,7 +66,5 @@ namespace CodeRefractor.ClosureCompute.Resolvers
                 return null;
             return ResolveRuntimeMethod.ResolveMethodWithResult(resultMethod, method.DeclaringType);
         }
-
-        
     }
 }

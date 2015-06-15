@@ -1,19 +1,13 @@
-#region Usings
+#region Uses
 
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
-using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Interpreters;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
-using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
-using CodeRefractor.Runtime;
-using CodeRefractor.RuntimeBase;
-using CodeRefractor.RuntimeBase.Analyze;
-using CodeRefractor.RuntimeBase.MiddleEnd;
 
 #endregion
 
@@ -21,6 +15,8 @@ namespace CodeRefractor.CodeWriter.Linker
 {
     public static class LinkerUtils
     {
+        public const string EscapeName = "NonEscapingArgs";
+
         public static string ComputedValue(this IdentifierValue identifierValue)
         {
             var constValue = identifierValue as ConstValue;
@@ -31,11 +27,10 @@ namespace CodeRefractor.CodeWriter.Linker
             var computeType = identifierValue.ComputedType();
             if (computeType.ClrTypeCode == TypeCode.String)
             {
-                
                 var stringTable = LinkingData.Instance.Strings;
                 var stringId = stringTable.GetStringId((string) constValue.Value);
-                    
-                return String.Format("_str({0})", stringId);
+
+                return string.Format("_str({0})", stringId);
             }
             return constValue.Name;
         }
@@ -49,8 +44,6 @@ namespace CodeRefractor.CodeWriter.Linker
         {
             return crRuntime.ResolveMethod(methodBase);
         }
-
-        public const string EscapeName = "NonEscapingArgs";
 
         public static Dictionary<int, bool> EscapingParameterData(this MethodBase info, ClosureEntities crRuntime)
         {

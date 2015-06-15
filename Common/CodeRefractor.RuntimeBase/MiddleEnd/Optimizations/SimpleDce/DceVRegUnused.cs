@@ -1,12 +1,12 @@
-#region Usings
+#region Uses
 
 using System.Collections.Generic;
 using System.Linq;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.FrontEnd.SimpleOperations;
+using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
-using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.UseDefs;
 using CodeRefractor.RuntimeBase.Optimizations;
@@ -14,14 +14,15 @@ using CodeRefractor.RuntimeBase.Optimizations;
 #endregion
 
 namespace CodeRefractor.MiddleEnd.Optimizations.SimpleDce
-{	
-	[Optimization(Category = OptimizationCategories.DeadCodeElimination)]
-    public class DceVRegUnused  : OptimizationPassBase
+{
+    [Optimization(Category = OptimizationCategories.DeadCodeElimination)]
+    public class DceVRegUnused : OptimizationPassBase
     {
         public DceVRegUnused()
             : base(OptimizationKind.InFunction)
         {
         }
+
         public override bool ApplyOptimization(CilMethodInterpreter interpreter, ClosureEntities closure)
         {
             var operations = interpreter.MidRepresentation.UseDef.GetLocalOperations();

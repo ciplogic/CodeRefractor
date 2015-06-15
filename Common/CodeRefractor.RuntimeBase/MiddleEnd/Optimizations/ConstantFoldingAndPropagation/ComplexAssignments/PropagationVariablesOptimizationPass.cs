@@ -1,4 +1,4 @@
-#region Usings
+#region Uses
 
 using System.Collections.Generic;
 using CodeRefractor.FrontEnd.SimpleOperations;
@@ -25,7 +25,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.Co
             return ProcessOptimizations(startRange, instructionRange, useDef);
         }
 
-        private static bool ProcessOptimizations(int startRange, LocalOperation[] instructionRange, 
+        private static bool ProcessOptimizations(int startRange, LocalOperation[] instructionRange,
             UseDefDescription useDef)
         {
             var result = false;

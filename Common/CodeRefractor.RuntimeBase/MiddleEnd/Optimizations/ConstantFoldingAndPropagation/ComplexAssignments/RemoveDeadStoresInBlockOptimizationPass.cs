@@ -1,8 +1,9 @@
-#region Usings
+#region Uses
 
 using System.Collections.Generic;
 using System.IO;
 using CodeRefractor.FrontEnd.SimpleOperations;
+using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
 using CodeRefractor.MiddleEnd.SimpleOperations;

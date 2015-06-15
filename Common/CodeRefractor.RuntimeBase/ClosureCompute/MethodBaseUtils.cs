@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿#region Uses
+
+using System;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using CodeRefractor.RuntimeBase;
 using CodeRefractor.Util;
+
+#endregion
 
 namespace CodeRefractor.ClosureCompute
 {
@@ -44,7 +44,7 @@ namespace CodeRefractor.ClosureCompute
 
             if ((method.GetMethodName() != otherDefinition.Name) && (otherDefinition.Name != method.Name))
                 return false;
-            
+
 
             if (method.GetReturnType().FullName != otherDefinition.GetReturnType().FullName)
                 return false;
@@ -55,7 +55,7 @@ namespace CodeRefractor.ClosureCompute
 
             for (var index = 0; index < arguments.Length; index++)
             {
-                Type argument = arguments[index];
+                var argument = arguments[index];
                 var parameter = otherDefinition.GetParameters()[index];
                 if (argument.FullName != parameter.ParameterType.FullName)
                     return false;

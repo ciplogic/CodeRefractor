@@ -1,9 +1,13 @@
+#region Uses
+
 using System.Reflection;
 using CodeRefractor.RuntimeBase;
 
+#endregion
+
 namespace CodeRefractor.ClosureCompute
 {
-    public class MethodBaseKey 
+    public class MethodBaseKey
     {
         public MethodBaseKey(MethodBase method)
         {
@@ -11,7 +15,7 @@ namespace CodeRefractor.ClosureCompute
             Method = method;
         }
 
-        public MethodBase Method { get; set; }
+        public MethodBase Method { get; }
 
         public override int GetHashCode()
         {
@@ -26,7 +30,6 @@ namespace CodeRefractor.ClosureCompute
             var destObject = (MethodBaseKey) obj;
             return MethodBaseKeyComparer.CompareEquals(this, destObject);
         }
-
 
         public static bool ParameterListIsMatching(ParameterInfo[] srcParameters, ParameterInfo[] destParameters)
         {

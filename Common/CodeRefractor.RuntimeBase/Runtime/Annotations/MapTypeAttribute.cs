@@ -1,4 +1,4 @@
-﻿#region Usings
+﻿#region Uses
 
 using System;
 
@@ -8,16 +8,11 @@ namespace CodeRefractor.Runtime.Annotations
 {
     public class MapTypeAttribute : Attribute
     {
-        private readonly Type _type;
-
         public MapTypeAttribute(Type type)
         {
-            _type = type;
+            MappedType = type;
         }
 
-        public Type MappedType
-        {
-            get { return _type; }
-        }
+        public Type MappedType { get; }
     }
 }

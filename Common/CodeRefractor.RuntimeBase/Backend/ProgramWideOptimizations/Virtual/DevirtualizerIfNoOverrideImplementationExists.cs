@@ -1,13 +1,18 @@
-﻿using System.Linq;
+﻿#region Uses
+
+using System.Linq;
 using System.Reflection;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.ClosureCompute.Steps;
+using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 using CodeRefractor.FrontEnd.SimpleOperations.Methods;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 using CodeRefractor.Util;
+
+#endregion
 
 namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
 {
@@ -18,7 +23,7 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
             //Interfaces cannot be devirtualized this way
             var methodInterpreters = closure.MethodImplementations.Values
                 .Where(m => m.Kind == MethodKind.CilInstructions)
-                .Select(mth => (CilMethodInterpreter)mth)
+                .Select(mth => (CilMethodInterpreter) mth)
                 .ToArray();
             var result = false;
             foreach (var interpreter in methodInterpreters)
@@ -38,8 +43,8 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
             foreach (var callOp in calls)
             {
                 var op = allOps[callOp];
-                var methodData = (CallMethodStatic)op;
-                var thisParameter = (LocalVariable)methodData.Parameters.First();
+                var methodData = (CallMethodStatic) op;
+                var thisParameter = (LocalVariable) methodData.Parameters.First();
                 var clrType = thisParameter.FixedType.GetClrType(closure);
 
                 var overridenTypes = clrType.ImplementorsOfT(closure);
@@ -49,15 +54,19 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
 
                 if (clrType.BaseType != null && !methodData.Info.IsVirtual)
                 {
-                  if(clrType.BaseType.GetMethods(ClosureEntitiesBuilder.AllFlags).Select(m=>m.MethodMatches(methodData.Info)).Any())
+                    if (
+                        clrType.BaseType.GetMethods(ClosureEntitiesBuilder.AllFlags)
+                            .Select(m => m.MethodMatches(methodData.Info))
+                            .Any())
                         continue;
                 }
-               
+
                 if (overridenTypes.Count >= 1)
                     continue;
-                
+
                 //TODO: map correct method
-                var resolvedMethod = AddVirtualMethodImplementations.GetImplementingMethod(clrType, (MethodInfo) methodData.Info);
+                var resolvedMethod = AddVirtualMethodImplementations.GetImplementingMethod(clrType,
+                    (MethodInfo) methodData.Info);
                 methodData.Interpreter = closure.ResolveMethod(resolvedMethod);
                 interpreter.MidRepresentation.LocalOperations[callOp] = new CallMethodStatic(methodData.Interpreter)
                 {
@@ -72,6 +81,5 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
             }
             return result;
         }
-
     }
 }

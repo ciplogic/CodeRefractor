@@ -1,4 +1,8 @@
-﻿using System;
+﻿#region Uses
+
+using System;
+
+#endregion
 
 namespace CodeRefractor.Runtime.Annotations
 {
@@ -8,7 +12,7 @@ namespace CodeRefractor.Runtime.Annotations
         {
             DeclaringType = declaringType;
         }
-        public Type DeclaringType { get; private set; }
 
+        public Type DeclaringType { get; private set; }
     }
 }

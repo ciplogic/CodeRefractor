@@ -12,14 +12,14 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations.Identifiers
 {
     public class GetArrayElement : LocalOperation
     {
-        public IdentifierValue Index { get; set; }
-        public LocalVariable Instance { get; set; }
-        public LocalVariable AssignedTo { get; set; }
-
         public GetArrayElement()
             : base(OperationKind.GetArrayItem)
         {
         }
+
+        public IdentifierValue Index { get; set; }
+        public LocalVariable Instance { get; set; }
+        public LocalVariable AssignedTo { get; set; }
 
         public Type GetElementType()
         {
@@ -33,12 +33,13 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations.Identifiers
             return string.Format("{0}={1}[{2}]", AssignedTo.Name, Instance.Name, Index.Name);
         }
 
-        public static GetArrayElement Create(LocalVariable assignedTo, LocalVariable instance, IdentifierValue index, ClosureEntities closureEntities)
+        public static GetArrayElement Create(LocalVariable assignedTo, LocalVariable instance, IdentifierValue index,
+            ClosureEntities closureEntities)
         {
             var result = new GetArrayElement
             {
-                AssignedTo = assignedTo, 
-                Instance = instance, 
+                AssignedTo = assignedTo,
+                Instance = instance,
                 Index = index
             };
 

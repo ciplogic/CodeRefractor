@@ -1,4 +1,4 @@
-#region Usings
+#region Uses
 
 using System.Collections.Generic;
 using CodeRefractor.ClosureCompute;
@@ -14,7 +14,7 @@ using CodeRefractor.RuntimeBase.Optimizations;
 namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.SimpleAssignment
 {
     [Optimization(Category = OptimizationCategories.DeadCodeElimination)]
-    internal class DeleteAssignmentWithSelf  : OptimizationPassBase
+    internal class DeleteAssignmentWithSelf : OptimizationPassBase
     {
         public DeleteAssignmentWithSelf()
             : base(OptimizationKind.InFunction)

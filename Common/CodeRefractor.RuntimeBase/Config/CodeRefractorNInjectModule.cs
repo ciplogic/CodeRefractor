@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿#region Uses
+
 using CodeRefractor.RuntimeBase.Config;
 using Ninject.Modules;
+
+#endregion
 
 namespace CodeRefractor.Config
 {

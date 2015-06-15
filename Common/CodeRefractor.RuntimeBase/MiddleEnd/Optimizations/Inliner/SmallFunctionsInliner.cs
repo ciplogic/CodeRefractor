@@ -1,4 +1,4 @@
-﻿#region Usings
+﻿#region Uses
 
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +6,6 @@ using CodeRefractor.Analyze;
 using CodeRefractor.FrontEnd.SimpleOperations;
 using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 using CodeRefractor.FrontEnd.SimpleOperations.Methods;
-using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Interpreters;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
@@ -64,7 +63,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.Inliner
             CallMethodStatic callMethodStatic,
             int pos)
         {
-            var methodToInlineInterpreter = (CilMethodInterpreter)callMethodStatic.Interpreter;
+            var methodToInlineInterpreter = (CilMethodInterpreter) callMethodStatic.Interpreter;
             var mappedParameters = BuildMappedParameters(methodToInlineInterpreter,
                 callMethodStatic);
 
@@ -78,7 +77,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.Inliner
 
             var localOperationsToInline = BuildLocalOperationsToInline(methodToInlineInterpreter,
                 mappedParameters,
-                assignment != null? assignment.Result:null);
+                assignment != null ? assignment.Result : null);
 
             MergeVRegs(intermediateCode, methodToInlineInterpreter, mappedVregs);
             MergeLocalVariables(intermediateCode, methodToInlineInterpreter, mappedLocals);
@@ -136,7 +135,8 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.Inliner
         #region Instruction mapped
 
         private static List<LocalOperation> BuildLocalOperationsToInline(
-            CilMethodInterpreter interpreter, Dictionary<LocalVariable, IdentifierValue> mappedNames, LocalVariable result)
+            CilMethodInterpreter interpreter, Dictionary<LocalVariable, IdentifierValue> mappedNames,
+            LocalVariable result)
         {
             var localOperationsToInline = new List<LocalOperation>();
             var localOperations = interpreter.MidRepresentation.LocalOperations.ToList();
@@ -161,7 +161,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.Inliner
             var identifierValue = localOperation.Get<Return>();
             if (identifierValue == null)
                 return;
-            var assignOp = new Assignment()
+            var assignOp = new Assignment
             {
                 AssignedTo = result,
                 Right = identifierValue.Returning
@@ -190,8 +190,8 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.Inliner
             var mappedVregs = new Dictionary<int, int>();
             var virtRegs = interpreter.MidRepresentation.Vars.VirtRegs;
 
-            List<LocalVariable> localVariables = intermediateCode.Vars.VirtRegs;
-            var countSourceVregs = localVariables.Count==0
+            var localVariables = intermediateCode.Vars.VirtRegs;
+            var countSourceVregs = localVariables.Count == 0
                 ? 1
                 : localVariables.Max(vreg => vreg.Id) + 1;
             for (var i = 0; i < virtRegs.Count; i++)
@@ -217,7 +217,8 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.Inliner
             return mappedNames;
         }
 
-        private static Dictionary<LocalVariable, IdentifierValue> BuildMappedParameters(CilMethodInterpreter interpreter,
+        private static Dictionary<LocalVariable, IdentifierValue> BuildMappedParameters(
+            CilMethodInterpreter interpreter,
             CallMethodStatic callMethodStatic)
         {
             var mappedNames = new Dictionary<LocalVariable, IdentifierValue>();

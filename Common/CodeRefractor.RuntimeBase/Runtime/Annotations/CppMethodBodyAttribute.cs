@@ -1,4 +1,4 @@
-#region Usings
+#region Uses
 
 using System;
 
@@ -9,7 +9,6 @@ namespace CodeRefractor.Runtime.Annotations
     public class CppMethodBodyAttribute : Attribute
     {
         public string Header { get; set; }
-
         public string Code { get; set; }
         public string Libraries { get; set; }
     }

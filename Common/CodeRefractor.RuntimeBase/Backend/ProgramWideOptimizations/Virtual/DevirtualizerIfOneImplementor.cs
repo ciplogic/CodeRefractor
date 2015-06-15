@@ -1,16 +1,14 @@
-﻿#region Usings
+﻿#region Uses
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using CodeRefractor.ClosureCompute;
-using CodeRefractor.CompilerBackend.ProgramWideOptimizations;
 using CodeRefractor.FrontEnd.SimpleOperations.Methods;
 using CodeRefractor.MiddleEnd.Interpreters;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
-using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.Util;
 
 #endregion
@@ -23,21 +21,22 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
         {
             var methodInterpreters = closure.MethodImplementations.Values
                 .Where(m => m.Kind == MethodKind.CilInstructions)
-                .Select(mth=>(CilMethodInterpreter)mth)
+                .Select(mth => (CilMethodInterpreter) mth)
                 .ToArray();
 
             var result = false;
             foreach (var interpreter in methodInterpreters)
             {
                 result |= HandleInterpreterInstructions(
-                    interpreter, 
+                    interpreter,
                     closure.MappedTypes.Values.ToList(),
                     closure);
             }
             return result;
         }
 
-        private static bool HandleInterpreterInstructions(CilMethodInterpreter interpreter, List<Type> usedTypes, ClosureEntities closure)
+        private static bool HandleInterpreterInstructions(CilMethodInterpreter interpreter, List<Type> usedTypes,
+            ClosureEntities closure)
         {
             var useDef = interpreter.MidRepresentation.UseDef;
             var calls = useDef.GetOperationsOfKind(OperationKind.CallVirtual).ToArray();
@@ -62,7 +61,7 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
                     Result = methodData.Result,
                     Parameters = methodData.Parameters
                 };
-                result= true;
+                result = true;
             }
             if (result)
             {
@@ -70,6 +69,5 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
             }
             return result;
         }
-
     }
 }

@@ -1,10 +1,8 @@
-#region Usings
+#region Uses
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using CodeRefractor.CodeWriter.Output;
-using CodeRefractor.RuntimeBase;
 
 #endregion
 
@@ -56,16 +54,16 @@ namespace CodeRefractor.CodeWriter.Linker
             }
 
 
-            sb.BracketClose(assignedStatement: true)
+            sb.BracketClose(true)
                 .Append(" // buildStringTable\n");
 
-            var stringTableContent = String.Join(", " + Environment.NewLine, stringDataBuilder);
+            var stringTableContent = string.Join(", " + Environment.NewLine, stringDataBuilder);
             var length = jump == 0 ? 1 : jump;
             sb.BlankLine()
                 .AppendFormat("const System_Char _stringTable[{0}] =", length)
                 .BracketOpen();
             sb.Append(jump == 0 ? "0" : stringTableContent);
-            sb.BracketClose(assignedStatement: true)
+            sb.BracketClose(true)
                 .Append("; // _stringTable\n");
 
             return sb.ToString();
@@ -73,9 +71,9 @@ namespace CodeRefractor.CodeWriter.Linker
 
         private static void AddTextToStringTable(List<string> stringDataBuilder, short[] itemTextData, string strItem)
         {
-            var itemsText = String.Join(", ", itemTextData);
-            var commentedString = String.Format("/* {0} */", strItem.ToEscapedString());
-            var resultItem = String.Format("{0} {1}", itemsText, commentedString);
+            var itemsText = string.Join(", ", itemTextData);
+            var commentedString = string.Format("/* {0} */", strItem.ToEscapedString());
+            var resultItem = string.Format("{0} {1}", itemsText, commentedString);
             stringDataBuilder.Add(resultItem);
         }
     }

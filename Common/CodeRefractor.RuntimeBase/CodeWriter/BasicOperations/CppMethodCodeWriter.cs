@@ -1,4 +1,4 @@
-﻿#region Usings
+﻿#region Uses
 
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,6 @@ using CodeRefractor.ClosureCompute;
 using CodeRefractor.CodeWriter.Output;
 using CodeRefractor.FrontEnd.SimpleOperations;
 using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
-using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Interpreters;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.SimpleOperations;
@@ -37,10 +36,10 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             var finalSb = new CodeOutput();
 
             finalSb.Append(headerSb.ToString())
-                    .BracketOpen()
-                    .Append(variablesSb.ToString())
-                    .Append(bodySb.ToString())
-                    .BracketClose();
+                .BracketOpen()
+                .Append(variablesSb.ToString())
+                .Append(bodySb.ToString())
+                .BracketClose();
 
             return finalSb.ToString();
         }
@@ -48,14 +47,15 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         private static CodeOutput ComputeBodySb(List<LocalOperation> operations, MidRepresentationVariables vars,
             TypeDescriptionTable typeTable, MethodInterpreter interpreter, ClosureEntities crRuntime)
         {
-            CodeOutput bodySb = new CodeOutput();
+            var bodySb = new CodeOutput();
             foreach (var operation in operations)
             {
                 bodySb.Append("\n");
                 if (CppHandleOperators.HandleAssignmentOperations(bodySb, operation, operation.Kind, typeTable,
                     interpreter, crRuntime))
                     continue;
-                if (CppCastRelatedOperations.HandleCastRelatedOperations(typeTable, crRuntime, operation, bodySb, operation.Kind))
+                if (CppCastRelatedOperations.HandleCastRelatedOperations(typeTable, crRuntime, operation, bodySb,
+                    operation.Kind))
                     continue;
                 if (HandleCallOperations(vars, interpreter, crRuntime, operation, bodySb))
                     continue;
@@ -72,7 +72,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                         CppHandleBranches.HandleBranchOperator(operation, bodySb);
                         break;
                     case OperationKind.Return:
-                        CppHandleCalls.HandleReturn(operation,bodySb,interpreter);
+                        CppHandleCalls.HandleReturn(operation, bodySb, interpreter);
                         break;
 
                     case OperationKind.CopyArrayInitializer:
@@ -87,7 +87,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                         HandleComment(operation.ToString(), bodySb);
                         break;
 
-                        
+
                     default:
                         throw new InvalidOperationException(
                             string.Format(
@@ -160,7 +160,8 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 right.Id);
         }
 
-        private static StringBuilder ComputeVariableSb(MetaMidRepresentation midRepresentation, MethodInterpreter interpreter, ClosureEntities closureEntities)
+        private static StringBuilder ComputeVariableSb(MetaMidRepresentation midRepresentation,
+            MethodInterpreter interpreter, ClosureEntities closureEntities)
         {
             var variablesSb = new StringBuilder();
             var vars = midRepresentation.Vars;
@@ -176,7 +177,8 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         }
 
         private static string ComputeCommaSeparatedParameterTypes(LocalVariable localVariable)
-        {/*
+        {
+/*
             var methodInfo = (MethodInfo) localVariable.CustomData;
 
             var parameters = methodInfo.GetMethodArgumentTypes().ToArray();
@@ -187,15 +189,17 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             return localVariable.VarName;
         }
 
-        private static void AddVariableContent(StringBuilder variablesSb, string format, LocalVariable localVariable, MethodInterpreter interpreter, ClosureEntities closureEntities)
+        private static void AddVariableContent(StringBuilder variablesSb, string format, LocalVariable localVariable,
+            MethodInterpreter interpreter, ClosureEntities closureEntities)
         {
             var localVariableData = interpreter.AnalyzeProperties.GetVariableData(localVariable);
             if (localVariableData == EscapingMode.Stack)
                 return;
-            if (localVariable.ComputedType().GetClrType(closureEntities).IsSubclassOf(typeof(MethodInfo)))
+            if (localVariable.ComputedType().GetClrType(closureEntities).IsSubclassOf(typeof (MethodInfo)))
             {
                 variablesSb
-                    .AppendFormat("System_Void (*{0})({1}*);", //TODO: Added * to deal with pointers, is this the right approach ?
+                    .AppendFormat("System_Void (*{0})({1}*);",
+                        //TODO: Added * to deal with pointers, is this the right approach ?
                         localVariable.Name,
                         ComputeCommaSeparatedParameterTypes(localVariable))
                     .AppendLine();
@@ -218,9 +222,8 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 
         private static void HandleAlwaysBranchOperator(LocalOperation operation, CodeOutput sb)
         {
-            sb.AppendFormat("goto label_{0};", ((AlwaysBranch)operation).JumpTo.ToHex());
+            sb.AppendFormat("goto label_{0};", ((AlwaysBranch) operation).JumpTo.ToHex());
         }
-
 
         private static void WriteLabel(CodeOutput sb, int value)
         {

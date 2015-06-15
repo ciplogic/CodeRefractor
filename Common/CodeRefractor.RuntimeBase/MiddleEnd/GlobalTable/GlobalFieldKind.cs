@@ -4,6 +4,6 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.GlobalTable
     {
         None,
         Const,
-        Static,
+        Static
     }
 }

@@ -1,8 +1,9 @@
-#region Usings
+#region Uses
 
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.RuntimeBase.Analyze;
 
@@ -12,9 +13,8 @@ namespace CodeRefractor.MiddleEnd.Interpreters.Cil
 {
     public class MidRepresentationVariables
     {
-        public List<LocalVariable> VirtRegs = new List<LocalVariable>();
         public readonly List<LocalVariable> LocalVars = new List<LocalVariable>(); //Seems we are not using this anymore
-
+        public List<LocalVariable> VirtRegs = new List<LocalVariable>();
 
         public void SetupLocalVariables(MethodBase value)
         {

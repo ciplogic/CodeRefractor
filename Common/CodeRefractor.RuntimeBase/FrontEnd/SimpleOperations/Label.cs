@@ -1,4 +1,8 @@
+#region Uses
+
 using CodeRefractor.FrontEnd.SimpleOperations;
+
+#endregion
 
 namespace CodeRefractor.MiddleEnd.SimpleOperations
 {
@@ -10,9 +14,10 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations
         }
 
         public int JumpTo { get; set; }
+
         public override string ToString()
         {
-            return string.Format("label_{0}:",JumpTo);
+            return string.Format("label_{0}:", JumpTo);
         }
     }
 }

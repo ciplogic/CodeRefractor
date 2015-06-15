@@ -1,6 +1,5 @@
-﻿#region Usings
+﻿#region Uses
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,10 +12,8 @@ using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 using CodeRefractor.FrontEnd.SimpleOperations.Methods;
 using CodeRefractor.MiddleEnd.Interpreters;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
-using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
-using CodeRefractor.RuntimeBase;
 using CodeRefractor.Util;
 
 #endregion
@@ -27,17 +24,15 @@ namespace CodeRefractor.CodeWriter.BasicOperations
     {
         public static void HandleReturn(LocalOperation operation, CodeOutput bodySb, MethodInterpreter interpreter)
         {
-            var returnValue = (Return)operation;
+            var returnValue = (Return) operation;
 
             returnValue.WriteCodeToOutput(bodySb, interpreter);
         }
 
-
-
         public static void HandleCall(LocalOperation operation, CodeOutput sbCode, MidRepresentationVariables vars,
             MethodInterpreter interpreter, ClosureEntities crRuntime)
         {
-            var operationData = (CallMethodStatic)operation;
+            var operationData = (CallMethodStatic) operation;
             var sb = new StringBuilder();
             var methodInfo = operationData.Info.GetReversedMethod(crRuntime);
             var isVoidMethod = methodInfo.GetReturnType().IsVoid();
@@ -56,7 +51,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         public static void HandleCallInterface(LocalOperation operation, CodeOutput sbCode,
             MidRepresentationVariables vars, MethodInterpreter interpreter, ClosureEntities crRuntime)
         {
-            var operationData = (CallMethodStatic)operation;
+            var operationData = (CallMethodStatic) operation;
             var sb = new StringBuilder();
             var methodInfo = operationData.Info.GetReversedMethod(crRuntime);
             var isVoidMethod = methodInfo.GetReturnType().IsVoid();
@@ -71,9 +66,10 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             sbCode.Append(sb.ToString());
         }
 
-        public static void HandleCallVirtual(LocalOperation operation, CodeOutput sbCode, MethodInterpreter interpreter, ClosureEntities crRuntime)
+        public static void HandleCallVirtual(LocalOperation operation, CodeOutput sbCode, MethodInterpreter interpreter,
+            ClosureEntities crRuntime)
         {
-            var operationData = (CallMethodStatic)operation;
+            var operationData = (CallMethodStatic) operation;
             var sb = new StringBuilder();
             var methodInfo = operationData.Info.GetReversedMethod(crRuntime);
             var isVoidMethod = methodInfo.GetReturnType().IsVoid();
@@ -83,13 +79,13 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             }
 
             var mappedType = methodInfo.DeclaringType.GetReversedMappedType(crRuntime);
-            while ((mappedType.BaseType != typeof(Object))) // Match top level virtual dispatch
+            while ((mappedType.BaseType != typeof (object))) // Match top level virtual dispatch
             {
                 if (mappedType.BaseType == null) break;
                 mappedType = mappedType.BaseType;
             }
 
-            
+
             sb.AppendFormat("{0}_vcall", methodInfo.ClangMethodSignature(crRuntime, mappedType));
 
 
@@ -134,7 +130,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             var fullEscapeData = operationStatic.Interpreter.BuildEscapeModes();
             var parameters = operationStatic.Parameters;
             var parametersData = new List<EscapingMode>();
-            for (int index = 0; index < parameters.Count; index++)
+            for (var index = 0; index < parameters.Count; index++)
             {
                 var identifierValue = parameters[index];
                 if (identifierValue is LocalVariable)
@@ -152,13 +148,13 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             BuildCallString(sb, parameters, fullEscapeData, parametersData.ToArray());
         }
 
-        public static void BuildCallString(StringBuilder sb, 
-                    List<IdentifierValue> parameters,
-                    EscapingMode[] fullEscapeData,
-                    EscapingMode[] parametersData)
+        public static void BuildCallString(StringBuilder sb,
+            List<IdentifierValue> parameters,
+            EscapingMode[] fullEscapeData,
+            EscapingMode[] parametersData)
         {
             var parameterStrings = new List<string>();
-            for (int index = 0; index < parameters.Count; index++)
+            for (var index = 0; index < parameters.Count; index++)
             {
                 var identifierValue = parameters[index];
                 var escapeParameterData = fullEscapeData[index];
@@ -185,23 +181,23 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                                 parameterStrings.Add(computedValue);
                                 continue;
                             case EscapingMode.Smart:
-                                parameterStrings.Add(String.Format("{0}.get()", computedValue));
+                                parameterStrings.Add(string.Format("{0}.get()", computedValue));
                                 continue;
                             case EscapingMode.Stack:
-                                parameterStrings.Add(String.Format("&{0}", computedValue));
+                                parameterStrings.Add(string.Format("&{0}", computedValue));
                                 continue;
                         }
                     }
                         break;
                 }
             }
-            var argumentsJoin = String.Join(", ", parameterStrings);
+            var argumentsJoin = string.Join(", ", parameterStrings);
             sb.AppendFormat("({0});", argumentsJoin);
         }
 
         public static void HandleCallRuntime(LocalOperation operation, CodeOutput sb, ClosureEntities crRuntime)
         {
-            var operationData = (CallMethodStatic)operation;
+            var operationData = (CallMethodStatic) operation;
 
             var methodInfo = operationData.Info;
             if (methodInfo.IsConstructor)
@@ -217,7 +213,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                     operationData.Result.Name);
             }
             var identifierValues = operationData.Parameters;
-            var argumentsCall = String.Join(", ", identifierValues.Select(p => p.Name));
+            var argumentsCall = string.Join(", ", identifierValues.Select(p => p.Name));
 
             sb.AppendFormat("({0});", argumentsCall);
         }

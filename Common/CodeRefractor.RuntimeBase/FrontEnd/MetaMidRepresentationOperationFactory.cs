@@ -18,7 +18,6 @@ using CodeRefractor.MiddleEnd.SimpleOperations.ConstTable;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 using CodeRefractor.MiddleEnd.SimpleOperations.Operators;
-using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
@@ -31,15 +30,22 @@ namespace CodeRefractor.FrontEnd
 {
     public class MetaMidRepresentationOperationFactory
     {
-        private readonly MetaMidRepresentation _representation;
+        private static readonly bool ShowComments = false;
         private readonly EvaluatorStack _evaluator;
-
+        private readonly MetaMidRepresentation _representation;
         private int _leaveOffset = -1;
-        public Type ConstrainedClass { get; set; }
 
+        public MetaMidRepresentationOperationFactory(MetaMidRepresentation representation, EvaluatorStack evaluator)
+        {
+            _representation = representation;
+            _evaluator = evaluator;
+        }
+
+        public Type ConstrainedClass { get; set; }
         /**
          * @NotUsed
          */
+
         public void LeaveTo(int offsetToLeave)
         {
             AlwaysBranch(offsetToLeave);
@@ -65,13 +71,6 @@ namespace CodeRefractor.FrontEnd
             return false;
         }
 
-        public MetaMidRepresentationOperationFactory(MetaMidRepresentation representation, EvaluatorStack evaluator)
-        {
-            _representation = representation;
-            _evaluator = evaluator;
-        }
-
-
         private void AddOperation(LocalOperation value = null)
         {
             _representation.LocalOperations.Add(value);
@@ -80,7 +79,7 @@ namespace CodeRefractor.FrontEnd
             {
                 if (assignment.AssignedTo.FixedType == null)
                     throw new InvalidOperationException(
-                        String.Format("The data introduced in the IR should be well typed. " +
+                        string.Format("The data introduced in the IR should be well typed. " +
                                       Environment.NewLine + "Operation: {0}", value));
             }
         }
@@ -117,7 +116,6 @@ namespace CodeRefractor.FrontEnd
         {
             return _representation.Vars.VirtRegs.First(v => v.Id == value);
         }
-
 
         public void PushInt4(int value)
         {
@@ -168,7 +166,7 @@ namespace CodeRefractor.FrontEnd
         public void CopyStackIntoLocalVariable(int value)
         {
             var topVariable = _evaluator.Pop();
-            
+
             var newLocal = _representation.Vars.LocalVars[value];
             var assingment = new Assignment
             {
@@ -178,8 +176,6 @@ namespace CodeRefractor.FrontEnd
 
             AddOperation(assingment);
         }
-
-        private static bool ShowComments = false;
 
         public void AddCommentInstruction(string comment)
         {
@@ -214,7 +210,7 @@ namespace CodeRefractor.FrontEnd
             {
                 AssignedTo = result,
                 Instance = firstVar,
-                Index = secondVar,
+                Index = secondVar
             };
             result.FixedType = new TypeDescription(arrayVariable.GetElementType());
             AddOperation(arrayVariable);
@@ -240,7 +236,6 @@ namespace CodeRefractor.FrontEnd
             });
         }
 
-
         private void SetUnaryOperator(string operatorName)
         {
             var firstVar = _evaluator.Pop();
@@ -250,7 +245,7 @@ namespace CodeRefractor.FrontEnd
             var assign = new UnaryOperator(operatorName)
             {
                 AssignedTo = result,
-                Left = firstVar,
+                Left = firstVar
             };
             assign.AssignedTo.FixedType = firstVar.ComputedType();
             AddOperation(assign);
@@ -284,7 +279,6 @@ namespace CodeRefractor.FrontEnd
             SetUnaryOperator(OpcodeOperatorNames.Neg);
         }
 
-
         public void LoadLength()
         {
             SetUnaryOperator(OpcodeOperatorNames.LoadLen);
@@ -295,7 +289,7 @@ namespace CodeRefractor.FrontEnd
         public void ConvI8()
         {
             SetUnaryOperator(OpcodeOperatorNames.ConvI8);
-            _evaluator.Top.FixedType = new TypeDescription(typeof (Int64));
+            _evaluator.Top.FixedType = new TypeDescription(typeof (long));
         }
 
         public void ConvR4()
@@ -309,7 +303,6 @@ namespace CodeRefractor.FrontEnd
             SetUnaryOperator(OpcodeOperatorNames.ConvR8);
             _evaluator.Top.FixedType = new TypeDescription(typeof (double));
         }
-
 
         public void Dup()
         {
@@ -328,7 +321,6 @@ namespace CodeRefractor.FrontEnd
         {
             _evaluator.Pop();
         }
-
 
         private void SetBinaryOperator(string operatorName)
         {
@@ -366,56 +358,11 @@ namespace CodeRefractor.FrontEnd
             SetBinaryOperator("clt");
         }
 
-        #region Operators
-
-        public void Add()
-        {
-            SetBinaryOperator(OpcodeOperatorNames.Add);
-        }
-
-        public void Sub()
-        {
-            SetBinaryOperator(OpcodeOperatorNames.Sub);
-        }
-
-        public void Div()
-        {
-            SetBinaryOperator(OpcodeOperatorNames.Div);
-        }
-
-        public void Rem()
-        {
-            SetBinaryOperator(OpcodeOperatorNames.Rem);
-        }
-
-        public void Mul()
-        {
-            SetBinaryOperator(OpcodeOperatorNames.Mul);
-        }
-
-        public void And()
-        {
-            SetBinaryOperator(OpcodeOperatorNames.And);
-        }
-
-        public void Or()
-        {
-            SetBinaryOperator(OpcodeOperatorNames.Or);
-        }
-
-        public void Xor()
-        {
-            SetBinaryOperator(OpcodeOperatorNames.Xor);
-        }
-
-        #endregion
-
         public static bool HandleRuntimeHelpersMethod(MethodBase method)
         {
             var declType = method.DeclaringType;
             return declType == typeof (RuntimeHelpers);
         }
-
 
         public void Call(MethodBase operand)
         {
@@ -430,7 +377,6 @@ namespace CodeRefractor.FrontEnd
                 var pMethodData = new CallMethodStatic(interpreter);
                 CallMethodData(methodInfo, pMethodData);
                 return;
-
             }
             interpreter = new CilMethodInterpreter(methodInfo);
             var methodData = new CallMethodStatic(interpreter);
@@ -526,7 +472,6 @@ namespace CodeRefractor.FrontEnd
             AddOperation(callMethodStatic);
         }
 
-
         public void StoreStaticField(FieldInfo fieldInfo)
         {
             var firstVar = _evaluator.Pop();
@@ -543,7 +488,6 @@ namespace CodeRefractor.FrontEnd
             assignment.AssignedTo.FixedType = firstVar.ComputedType();
             AddOperation(assignment);
         }
-
 
         public void StoresValueFromAddress()
         {
@@ -575,79 +519,6 @@ namespace CodeRefractor.FrontEnd
                 AddOperation(assignment);
             }
         }
-
-        #region Branching operators
-
-        public void BranchIfTrue(int pushedIntValue)
-        {
-            var firstVar = _evaluator.Pop();
-            AddOperation(new BranchOperator(OpcodeBranchNames.BrTrue)
-            {
-                JumpTo = pushedIntValue,
-                CompareValue = firstVar
-            });
-        }
-
-        public void BranchIfFalse(int pushedIntValue)
-        {
-            var firstVar = _evaluator.Pop();
-            AddOperation(new BranchOperator(OpcodeBranchNames.BrFalse)
-            {
-                JumpTo = pushedIntValue,
-                CompareValue = firstVar
-            });
-        }
-
-
-        public void AlwaysBranch(int offset)
-        {
-            AddOperation(new AlwaysBranch {JumpTo = offset});
-        }
-
-        public void BranchIfEqual(int jumpTo)
-        {
-            BranchTwoOperators(jumpTo, OpcodeBranchNames.Beq);
-        }
-
-        private void BranchTwoOperators(int jumpTo, string opcode)
-        {
-            var secondVar = _evaluator.Pop(); // Seems the order here was in reverse
-            var firstVar = _evaluator.Pop();
-
-            AddOperation(new BranchOperator(opcode)
-            {
-                JumpTo = jumpTo,
-                CompareValue = firstVar,
-                SecondValue = secondVar
-            });
-        }
-
-        public void BranchIfGreaterOrEqual(int jumpTo)
-        {
-            BranchTwoOperators(jumpTo, OpcodeBranchNames.Bge);
-        }
-
-        public void BranchIfGreater(int jumpTo)
-        {
-            BranchTwoOperators(jumpTo, OpcodeBranchNames.Bgt);
-        }
-
-        public void BranchIfLessOrEqual(int jumpTo)
-        {
-            BranchTwoOperators(jumpTo, OpcodeBranchNames.Ble);
-        }
-
-        public void BranchIfLess(int jumpTo)
-        {
-            BranchTwoOperators(jumpTo, OpcodeBranchNames.Blt);
-        }
-
-        public void BranchIfNotEqual(int jumpTo)
-        {
-            BranchTwoOperators(jumpTo, OpcodeBranchNames.Bne);
-        }
-
-        #endregion
 
         public void LoadAddressIntoEvaluationStack(LocalVariableInfo index)
         {
@@ -762,7 +633,7 @@ namespace CodeRefractor.FrontEnd
         {
             if (constructorInfo.DeclaringType == typeof (object))
                 return;
-            
+
             constructorInfo.Register();
             var result = SetNewVReg();
             result.FixedType = new TypeDescription(constructorInfo.DeclaringType);
@@ -1009,7 +880,6 @@ namespace CodeRefractor.FrontEnd
             AddOperation(casting);
         }
 
-
         public void Box(Type operand)
         {
             var valueToBox = _evaluator.Pop();
@@ -1059,5 +929,122 @@ namespace CodeRefractor.FrontEnd
 
             AddOperation(assign);
         }
+
+        #region Operators
+
+        public void Add()
+        {
+            SetBinaryOperator(OpcodeOperatorNames.Add);
+        }
+
+        public void Sub()
+        {
+            SetBinaryOperator(OpcodeOperatorNames.Sub);
+        }
+
+        public void Div()
+        {
+            SetBinaryOperator(OpcodeOperatorNames.Div);
+        }
+
+        public void Rem()
+        {
+            SetBinaryOperator(OpcodeOperatorNames.Rem);
+        }
+
+        public void Mul()
+        {
+            SetBinaryOperator(OpcodeOperatorNames.Mul);
+        }
+
+        public void And()
+        {
+            SetBinaryOperator(OpcodeOperatorNames.And);
+        }
+
+        public void Or()
+        {
+            SetBinaryOperator(OpcodeOperatorNames.Or);
+        }
+
+        public void Xor()
+        {
+            SetBinaryOperator(OpcodeOperatorNames.Xor);
+        }
+
+        #endregion
+
+        #region Branching operators
+
+        public void BranchIfTrue(int pushedIntValue)
+        {
+            var firstVar = _evaluator.Pop();
+            AddOperation(new BranchOperator(OpcodeBranchNames.BrTrue)
+            {
+                JumpTo = pushedIntValue,
+                CompareValue = firstVar
+            });
+        }
+
+        public void BranchIfFalse(int pushedIntValue)
+        {
+            var firstVar = _evaluator.Pop();
+            AddOperation(new BranchOperator(OpcodeBranchNames.BrFalse)
+            {
+                JumpTo = pushedIntValue,
+                CompareValue = firstVar
+            });
+        }
+
+
+        public void AlwaysBranch(int offset)
+        {
+            AddOperation(new AlwaysBranch {JumpTo = offset});
+        }
+
+        public void BranchIfEqual(int jumpTo)
+        {
+            BranchTwoOperators(jumpTo, OpcodeBranchNames.Beq);
+        }
+
+        private void BranchTwoOperators(int jumpTo, string opcode)
+        {
+            var secondVar = _evaluator.Pop(); // Seems the order here was in reverse
+            var firstVar = _evaluator.Pop();
+
+            AddOperation(new BranchOperator(opcode)
+            {
+                JumpTo = jumpTo,
+                CompareValue = firstVar,
+                SecondValue = secondVar
+            });
+        }
+
+        public void BranchIfGreaterOrEqual(int jumpTo)
+        {
+            BranchTwoOperators(jumpTo, OpcodeBranchNames.Bge);
+        }
+
+        public void BranchIfGreater(int jumpTo)
+        {
+            BranchTwoOperators(jumpTo, OpcodeBranchNames.Bgt);
+        }
+
+        public void BranchIfLessOrEqual(int jumpTo)
+        {
+            BranchTwoOperators(jumpTo, OpcodeBranchNames.Ble);
+        }
+
+        public void BranchIfLess(int jumpTo)
+        {
+            BranchTwoOperators(jumpTo, OpcodeBranchNames.Blt);
+        }
+
+        public void BranchIfNotEqual(int jumpTo)
+        {
+            BranchTwoOperators(jumpTo, OpcodeBranchNames.Bne);
+        }
+
+        #endregion
     }
 }

@@ -1,4 +1,4 @@
-#region Usings
+#region Uses
 
 using System.Text;
 
@@ -8,34 +8,6 @@ namespace CodeRefractor.DataNode
 {
     internal class Cursor
     {
-        #region Fields
-
-        public byte[] ArrayData;
-        private int _position;
-
-        #endregion
-
-        #region Private
-
-        private byte CurrentByte
-        {
-            get { return ArrayData[_position]; }
-        }
-
-        private ExiLikeEvent CurrentEvent
-        {
-            get { return (ExiLikeEvent) CurrentByte; }
-        }
-
-        private byte ReadByte()
-        {
-            var current = CurrentByte;
-            _position++;
-            return current;
-        }
-
-        #endregion
-
         public string ReadString()
         {
             var arrayLength = ReadInt();
@@ -66,5 +38,27 @@ namespace CodeRefractor.DataNode
             _position++;
             return current;
         }
+
+        #region Fields
+
+        public byte[] ArrayData;
+        private int _position;
+
+        #endregion
+
+        #region Private
+
+        private byte CurrentByte => ArrayData[_position];
+
+        private ExiLikeEvent CurrentEvent => (ExiLikeEvent) CurrentByte;
+
+        private byte ReadByte()
+        {
+            var current = CurrentByte;
+            _position++;
+            return current;
+        }
+
+        #endregion
     }
 }

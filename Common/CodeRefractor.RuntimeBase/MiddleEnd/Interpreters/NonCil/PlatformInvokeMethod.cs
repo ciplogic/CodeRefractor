@@ -1,9 +1,11 @@
+#region Uses
+
 using System.Reflection;
 using System.Runtime.InteropServices;
 using CodeRefractor.FrontEnd.SimpleOperations.Methods;
 using CodeRefractor.MiddleEnd.Interpreters;
-using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
-using CodeRefractor.RuntimeBase.Shared;
+
+#endregion
 
 namespace CodeRefractor.MiddleEnd
 {
@@ -19,7 +21,6 @@ namespace CodeRefractor.MiddleEnd
         public bool IsStatic { get; set; }
         public CallingConvention CallingConvention { get; set; }
         public string MethodName { get; set; }
-
         public string EntryPoint { get; set; }
         public string LibraryName { get; set; }
 
@@ -35,7 +36,6 @@ namespace CodeRefractor.MiddleEnd
             EntryPoint = pinvokeAttribute.EntryPoint;
             Kind = MethodKind.PlatformInvoke;
         }
-
 
         public static bool IsPlatformInvoke(MethodBase method)
         {

@@ -1,3 +1,5 @@
+#region Uses
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,16 +10,17 @@ using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 
+#endregion
+
 namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
 {
     public class DevirtualizerFinalMethods : ProgramOptimizationBase
     {
-
         public override bool Optimize(ClosureEntities closure)
         {
             var methodInterpreters = closure.MethodImplementations.Values
                 .Where(m => m.Kind == MethodKind.CilInstructions)
-                .Select(mth => (CilMethodInterpreter)mth)
+                .Select(mth => (CilMethodInterpreter) mth)
                 .ToArray();
             var result = false;
             foreach (var interpreter in methodInterpreters)
@@ -36,12 +39,12 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
             foreach (var callOp in calls)
             {
                 var op = allOps[callOp];
-                var methodData = (CallMethodStatic)op;
+                var methodData = (CallMethodStatic) op;
                 var callingInterpreterKey = methodData.Interpreter.ToKey();
                 var methodBase = callingInterpreterKey.Interpreter.Method;
-                if(!methodBase.IsFinal)
+                if (!methodBase.IsFinal)
                     continue;
-                
+
                 interpreter.MidRepresentation.LocalOperations[callOp] = new CallMethodStatic(methodData.Interpreter)
                 {
                     Result = methodData.Result,
@@ -55,7 +58,5 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
             }
             return result;
         }
-
-        
     }
 }

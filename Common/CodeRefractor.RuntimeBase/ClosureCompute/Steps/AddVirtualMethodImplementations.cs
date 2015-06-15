@@ -1,8 +1,12 @@
+#region Uses
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using CodeRefractor.Util;
+
+#endregion
 
 namespace CodeRefractor.ClosureCompute.Steps
 {
@@ -17,14 +21,14 @@ namespace CodeRefractor.ClosureCompute.Steps
             foreach (var methodBase in abstractMethods)
             {
                 var declaringType = methodBase.DeclaringType;
-                if(declaringType==null)
+                if (declaringType == null)
                     continue;
 
                 var implementingTypes = declaringType.ImplementorsOfT(closureEntities);
                 foreach (var implementingType in implementingTypes)
                 {
                     var implementingMethod = GetImplementingMethod(implementingType, methodBase);
-                    if(implementingMethod == null)
+                    if (implementingMethod == null)
                         continue;
                     if (implementingMethod.GetMethodBody() == null)
                         continue;
@@ -44,15 +48,16 @@ namespace CodeRefractor.ClosureCompute.Steps
 
         public static MethodInfo GetImplementingMethod(Type implementingType, MethodInfo info)
         {
-
 //            var matchingMethod = implementingType.GetMethods(ClosureEntitiesBuilder.AllFlags) //Doesnt handle all cases
 //                .Where(m => m.Name == info.Name)
 //                .FirstOrDefault(met => MethodMatchesParam(met, info));
 
-            var matchingMethod = implementingType.GetMethod(info.Name, ClosureEntitiesBuilder.AllFlags, null, info.GetParameters().Select(j=>j.ParameterType).ToArray(), null);
+            var matchingMethod = implementingType.GetMethod(info.Name, ClosureEntitiesBuilder.AllFlags, null,
+                info.GetParameters().Select(j => j.ParameterType).ToArray(), null);
             //try again with explicit name
             if (matchingMethod == null)
-                matchingMethod = implementingType.GetMethod(info.GetMethodName(), ClosureEntitiesBuilder.AllFlags, null, info.GetParameters().Select(j => j.ParameterType).ToArray(), null); 
+                matchingMethod = implementingType.GetMethod(info.GetMethodName(), ClosureEntitiesBuilder.AllFlags, null,
+                    info.GetParameters().Select(j => j.ParameterType).ToArray(), null);
 
 
             return matchingMethod;
@@ -65,6 +70,4 @@ namespace CodeRefractor.ClosureCompute.Steps
             return MethodBaseKey.ParameterListIsMatching(srcParameters, destParameters);
         }
     }
-
-
 }

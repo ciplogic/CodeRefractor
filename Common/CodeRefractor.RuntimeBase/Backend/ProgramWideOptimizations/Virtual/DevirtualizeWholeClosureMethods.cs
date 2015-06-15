@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿#region Uses
+
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using CodeRefractor.ClosureCompute;
@@ -7,19 +9,21 @@ using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 
+#endregion
+
 namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
 {
     /// <summary>
-    /// removes abstract unused vcalls
+    ///     removes abstract unused vcalls
     /// </summary>
-    class DevirtualizeWholeClosureMethods : ProgramOptimizationBase
+    internal class DevirtualizeWholeClosureMethods : ProgramOptimizationBase
     {
         public override bool Optimize(ClosureEntities closure)
         {
             var methodInterpreters = closure.MethodImplementations.Values
-                   .Where(m => m.Kind == MethodKind.CilInstructions)
-                   .Select(mth => (CilMethodInterpreter)mth)
-                   .ToArray();
+                .Where(m => m.Kind == MethodKind.CilInstructions)
+                .Select(mth => (CilMethodInterpreter) mth)
+                .ToArray();
             var usedMethods = new HashSet<MethodInfo>();
             foreach (var interpreter in methodInterpreters)
             {
@@ -34,7 +38,8 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
             return result;
         }
 
-        private static void HandleInterpreterInstructions(CilMethodInterpreter interpreter, HashSet<MethodInfo> usedMethods)
+        private static void HandleInterpreterInstructions(CilMethodInterpreter interpreter,
+            HashSet<MethodInfo> usedMethods)
         {
             var useDef = interpreter.MidRepresentation.UseDef;
             var calls = useDef.GetOperationsOfKind(OperationKind.CallVirtual).ToList();
@@ -42,10 +47,9 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
             foreach (var callOp in calls)
             {
                 var op = allOps[callOp];
-                var methodData = (CallMethodStatic)op;
+                var methodData = (CallMethodStatic) op;
                 usedMethods.Add((MethodInfo) methodData.Info);
             }
         }
-
     }
 }

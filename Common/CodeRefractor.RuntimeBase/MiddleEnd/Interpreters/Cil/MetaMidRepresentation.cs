@@ -1,6 +1,5 @@
-#region Usings
+#region Uses
 
-using System;
 using System.Collections.Generic;
 using System.Reflection;
 using CodeRefractor.FrontEnd.SimpleOperations;
@@ -12,13 +11,15 @@ namespace CodeRefractor.MiddleEnd.Interpreters.Cil
 {
     public class MetaMidRepresentation
     {
+        public readonly Dictionary<string, object> AuxiliaryObjects = new Dictionary<string, object>();
+        UseDefDescription _useDef;
+        public List<LocalOperation> LocalOperations = new List<LocalOperation>();
         public MidRepresentationVariables Vars = new MidRepresentationVariables();
 
-        public List<LocalOperation> LocalOperations = new List<LocalOperation>();
-
-        public readonly Dictionary<string, object> AuxiliaryObjects = new Dictionary<string, object>();
-        private UseDefDescription _useDef;
-
+        public MetaMidRepresentation()
+        {
+            UseDef = new UseDefDescription();
+        }
 
         public UseDefDescription UseDef
         {
@@ -33,26 +34,19 @@ namespace CodeRefractor.MiddleEnd.Interpreters.Cil
             private set { _useDef = value; }
         }
 
-        public MetaMidRepresentation()
-        {
-            UseDef = new UseDefDescription();
-        }
+        public MethodBase Method { private get; set; }
+
+        public MethodBody GetMethodBody 
+            => Method.GetMethodBody();
 
         public void UpdateUseDef()
         {
             UseDef.Update(LocalOperations.ToArray());
         }
 
-        public MethodBase Method { private get; set; }
-
         public override string ToString()
         {
-            return String.Format("Interpreter for '{0}' - instruction count: {1}", Method, LocalOperations.Count);
-        }
-
-        public MethodBody GetMethodBody
-        {
-            get { return Method.GetMethodBody(); }
+            return string.Format("Interpreter for '{0}' - instruction count: {1}", Method, LocalOperations.Count);
         }
     }
 }

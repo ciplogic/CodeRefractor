@@ -1,6 +1,7 @@
 #region Uses
 
 using CodeRefractor.FrontEnd.SimpleOperations;
+using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 
 #endregion
@@ -9,13 +10,12 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations.Operators
 {
     public class OperatorBase : LocalOperation
     {
-        public LocalVariable AssignedTo { get; set; }
-
         public OperatorBase(string name, OperationKind kind) : base(kind)
         {
             Name = name;
         }
 
+        public LocalVariable AssignedTo { get; set; }
         public string Name { get; set; }
     }
 }

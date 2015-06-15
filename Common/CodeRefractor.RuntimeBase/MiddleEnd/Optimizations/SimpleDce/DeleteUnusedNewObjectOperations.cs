@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿#region Uses
+
+using System.Collections.Generic;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
@@ -6,6 +8,8 @@ using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.UseDefs;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.Optimizations;
+
+#endregion
 
 namespace CodeRefractor.MiddleEnd.Optimizations.SimpleDce
 {
@@ -16,13 +20,14 @@ namespace CodeRefractor.MiddleEnd.Optimizations.SimpleDce
             : base(OptimizationKind.InFunction)
         {
         }
+
         public override bool ApplyOptimization(CilMethodInterpreter interpreter, ClosureEntities closure)
         {
             var useDef = interpreter.MidRepresentation.UseDef;
 
             List<int> newOperations;
             var newObjOperations = FindAllNewOperators(useDef, out newOperations);
-            if(newObjOperations.Length==0)
+            if (newObjOperations.Length == 0)
                 return false;
             var getAllUsages = useDef.GetAllUsedVariables();
             var unusedNewObj = new List<int>();

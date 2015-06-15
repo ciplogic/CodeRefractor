@@ -1,4 +1,4 @@
-#region Usings
+#region Uses
 
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
@@ -9,10 +9,9 @@ using CodeRefractor.RuntimeBase.Optimizations;
 
 namespace CodeRefractor.MiddleEnd.Optimizations.Purity
 {
-	[Optimization(Category = OptimizationCategories.Analysis)]
+    [Optimization(Category = OptimizationCategories.Analysis)]
     public class AnalyzeFunctionIsEmpty : ResultingGlobalOptimizationPass
     {
-
         public override void OptimizeOperations(CilMethodInterpreter interpreter)
         {
             if (ReadProperty(interpreter))

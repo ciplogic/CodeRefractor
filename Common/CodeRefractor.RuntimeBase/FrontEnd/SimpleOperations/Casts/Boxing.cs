@@ -10,13 +10,13 @@ namespace CodeRefractor.FrontEnd.SimpleOperations.Casts
 {
     public class Boxing : LocalOperation
     {
-        public IdentifierValue Right { get; set; }
-        public LocalVariable AssignedTo { get; set; }
-
         public Boxing()
             : base(OperationKind.Box)
         {
         }
+
+        public IdentifierValue Right { get; set; }
+        public LocalVariable AssignedTo { get; set; }
 
         public override string ToString()
         {

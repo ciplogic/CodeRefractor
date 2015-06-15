@@ -1,4 +1,4 @@
-﻿#region Usings
+﻿#region Uses
 
 using CodeRefractor.ClosureCompute;
 

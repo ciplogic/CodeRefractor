@@ -1,4 +1,4 @@
-#region Usings
+#region Uses
 
 using System.Collections.Generic;
 using CodeRefractor.ClosureCompute;
@@ -21,6 +21,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.SimpleDce
             : base(OptimizationKind.InFunction)
         {
         }
+
         public override bool ApplyOptimization(CilMethodInterpreter interpreter, ClosureEntities closure)
         {
             var operations = interpreter.MidRepresentation.UseDef.GetLocalOperations();
@@ -41,7 +42,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.SimpleDce
                         toRemove.Add(i);
                         continue;
                     case OperationKind.BranchOperator:
-                        var destAssignment = (BranchOperator)operation;
+                        var destAssignment = (BranchOperator) operation;
                         var jumpTo = labelTable[destAssignment.JumpTo];
                         if (jumpTo != labelInfo.Value)
                             continue;

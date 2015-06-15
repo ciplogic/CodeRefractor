@@ -11,16 +11,13 @@ namespace CodeRefractor.FrontEnd.SimpleOperations.Identifiers
     {
         public TypeDescription FixedType;
 
+        public string Name => FormatVar();
+
         public virtual TypeDescription ComputedType()
         {
-            if(FixedType==null && FormatVar()=="unknown")
+            if (FixedType == null && FormatVar() == "unknown")
                 FixedType = new TypeDescription(null);
             return FixedType;
-        }
-
-        public string Name
-        {
-            get { return FormatVar(); }
         }
 
         public virtual string FormatVar()

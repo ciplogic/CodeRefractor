@@ -1,4 +1,4 @@
-﻿#region Usings
+﻿#region Uses
 
 using System.Linq;
 using CodeRefractor.Backend.ProgramWideOptimizations;
@@ -6,15 +6,10 @@ using CodeRefractor.Backend.ProgramWideOptimizations.ConstParameters;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 using CodeRefractor.FrontEnd.SimpleOperations.Methods;
-using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.SimpleOperations;
-using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 using CodeRefractor.MiddleEnd.UseDefs;
-using CodeRefractor.RuntimeBase.Analyze;
-using CodeRefractor.RuntimeBase.MiddleEnd;
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 
 #endregion
 
@@ -24,7 +19,7 @@ namespace CodeRefractor.CompilerBackend.ProgramWideOptimizations.ConstParameters
     {
         public override bool Optimize(ClosureEntities closure)
         {
-        var methodInterpreters = closure.MethodImplementations.Values
+            var methodInterpreters = closure.MethodImplementations.Values
                 .Where(m => m.Kind == MethodKind.CilInstructions)
                 .Cast<CilMethodInterpreter>()
                 .ToList();
@@ -45,7 +40,7 @@ namespace CodeRefractor.CompilerBackend.ProgramWideOptimizations.ConstParameters
                 var parametersData = parametersDatas[index];
                 if (!parametersData.ConstKinds.ContainsValue(ConstantParametersData.ConstValueKind.AssignedConstant))
                     continue;
-                result|= ApplyChangesOnMethod(parametersData, interpreter);
+                result |= ApplyChangesOnMethod(parametersData, interpreter);
             }
             return result;
         }
@@ -78,12 +73,11 @@ namespace CodeRefractor.CompilerBackend.ProgramWideOptimizations.ConstParameters
                 var methodData = (CallMethodStatic) op;
                 if (methodData.Interpreter.Kind != MethodKind.CilInstructions)
                     continue;
-                var callingInterpreter = (CilMethodInterpreter)methodData.Interpreter; 
+                var callingInterpreter = (CilMethodInterpreter) methodData.Interpreter;
                 var interpreterData = ConstantParametersData.GetInterpreterData(callingInterpreter);
                 updatedHappen |= interpreterData.UpdateTable(methodData);
             }
             return updatedHappen;
         }
-
     }
 }

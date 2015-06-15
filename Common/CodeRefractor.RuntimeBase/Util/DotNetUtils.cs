@@ -1,6 +1,5 @@
-#region Usings
+#region Uses
 
-using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 
@@ -15,7 +14,7 @@ namespace CodeRefractor.RuntimeBase.Util
             DotNetPath = RuntimeEnvironment.GetRuntimeDirectory();
         }
 
-        public static string DotNetPath { get; private set; }
+        public static string DotNetPath { get; }
 
         public static string CallDotNetCommand(string program, string arguments, string outputDirectory = "")
         {

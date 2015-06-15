@@ -11,20 +11,6 @@ namespace CodeRefractor.FrontEnd.SimpleOperations.Identifiers
     {
         private object _value;
 
-        public object Value
-        {
-            get { return _value; }
-            set
-            {
-                if (value is ConstValue)
-                {
-                    throw new Exception(
-                        "Invalid value, you try to set the constant description instead of constant itself");
-                }
-                _value = value;
-            }
-        }
-
         public ConstValue()
         {
         }
@@ -40,6 +26,25 @@ namespace CodeRefractor.FrontEnd.SimpleOperations.Identifiers
             }
         }
 
+        public object Value
+        {
+            get { return _value; }
+            set
+            {
+                if (value is ConstValue)
+                {
+                    throw new Exception(
+                        "Invalid value, you try to set the constant description instead of constant itself");
+                }
+                _value = value;
+            }
+        }
+
+        public string Description
+        {
+            get { return string.Format("c: '{0}'", Value); }
+        }
+
         public override IdentifierValue Clone()
         {
             return new ConstValue(Value);
@@ -51,11 +56,6 @@ namespace CodeRefractor.FrontEnd.SimpleOperations.Identifiers
                 return FixedType;
 
             return new TypeDescription(Value == null ? typeof (void) : Value.GetType());
-        }
-
-        public string Description
-        {
-            get { return string.Format("c: '{0}'", Value); }
         }
 
         public bool ValueEquals(ConstValue otherValue)

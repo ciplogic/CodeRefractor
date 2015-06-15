@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿#region Uses
+
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using CodeRefractor.ClosureCompute;
@@ -7,6 +9,8 @@ using CodeRefractor.MiddleEnd.Interpreters;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
+
+#endregion
 
 namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
 {
@@ -18,7 +22,7 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
             // keep the map of <MethodBaseKey, MethodInterpreter>, since deriving from
             // the MethodInterpreter will lead us to the mapped method instead.
 
-            MethodInterpreterKey[] methodInterpreters = closure.MethodImplementations
+            var methodInterpreters = closure.MethodImplementations
                 .Where(m => m.Value.Kind == MethodKind.CilInstructions)
                 .Select(m2 => GetKeyFromMethod(closure, m2.Key.Method))
                 .ToArray();
@@ -32,10 +36,10 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
             {
                 HandleInterpreterInstructions((CilMethodInterpreter) interpreter.Interpreter, candidateMethods, closure);
             }
-            
+
             var removeList = new List<MethodInterpreterKey>();
 
-            foreach (MethodInterpreterKey cilMethodInterpreter in methodInterpreters)
+            foreach (var cilMethodInterpreter in methodInterpreters)
             {
                 //var methodInterpreterKey = GetKeyFromMethod(closure, cilMethodInterpreter.Key.Method);
                 if (!candidateMethods.Contains(cilMethodInterpreter))
@@ -46,7 +50,7 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
 
             foreach (var key in removeList)
             {
-                var resultItem = closure.MethodImplementations.FirstOrDefault(m=>m.Value.ToKey().Equals(key));
+                var resultItem = closure.MethodImplementations.FirstOrDefault(m => m.Value.ToKey().Equals(key));
                 closure.MethodImplementations.Remove(resultItem.Key);
             }
 
@@ -58,7 +62,8 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
             return entryPoint.ToKey(closure);
         }
 
-        private static void HandleInterpreterInstructions(CilMethodInterpreter interpreter, HashSet<MethodInterpreterKey> candidateMethods, ClosureEntities closure)
+        private static void HandleInterpreterInstructions(CilMethodInterpreter interpreter,
+            HashSet<MethodInterpreterKey> candidateMethods, ClosureEntities closure)
         {
             var clrMethod = interpreter.Method;
             if (IsPossibleOverride(closure.AbstractMethods, clrMethod))
@@ -70,7 +75,7 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
             foreach (var callOp in calls)
             {
                 var op = allOps[callOp];
-                var methodData = (CallMethodStatic)op;
+                var methodData = (CallMethodStatic) op;
                 var callingInterpreterKey = methodData.Interpreter.ToKey();
                 candidateMethods.Add(callingInterpreterKey);
             }
@@ -91,6 +96,5 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
             }
             return false;
         }
-
     }
 }

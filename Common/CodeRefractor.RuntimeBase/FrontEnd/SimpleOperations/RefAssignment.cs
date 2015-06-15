@@ -1,7 +1,7 @@
 #region Uses
 
-using System;
 using CodeRefractor.FrontEnd.SimpleOperations;
+using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 
@@ -21,7 +21,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 
         public override string ToString()
         {
-            return String.Format("{0} = {1}", Left.Name, Right);
+            return string.Format("{0} = {1}", Left.Name, Right);
         }
     }
 }

@@ -1,6 +1,10 @@
-﻿using System.Reflection;
+﻿#region Uses
+
+using System.Reflection;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Interpreters;
+
+#endregion
 
 namespace CodeRefractor.ClosureCompute.Resolvers
 {

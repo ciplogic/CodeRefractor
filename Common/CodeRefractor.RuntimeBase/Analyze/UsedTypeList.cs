@@ -1,10 +1,9 @@
-#region Usings
+#region Uses
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using CodeRefractor.ClosureCompute;
-using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
 
 #endregion
@@ -13,6 +12,7 @@ namespace CodeRefractor.Analyze
 {
     public class UsedTypeList
     {
+        public static readonly UsedTypeList Instance = new UsedTypeList();
         public readonly Dictionary<Type, TypeDescription> UserTypeDesc = new Dictionary<Type, TypeDescription>();
 
         public static TypeDescription Set(Type type, ClosureEntities crRuntime)
@@ -32,8 +32,6 @@ namespace CodeRefractor.Analyze
             typeDescription.ExtractInformation(crRuntime);
             return typeDescription;
         }
-
-        public static readonly UsedTypeList Instance = new UsedTypeList();
 
         public static HashSet<Type> GetFieldTypeDependencies(Type type)
         {

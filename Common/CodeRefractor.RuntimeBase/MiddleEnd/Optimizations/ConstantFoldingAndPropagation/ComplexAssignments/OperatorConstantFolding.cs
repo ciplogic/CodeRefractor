@@ -1,4 +1,4 @@
-#region Usings
+#region Uses
 
 using System.Collections.Generic;
 using CodeRefractor.ClosureCompute;
@@ -23,7 +23,6 @@ namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.Co
             : base(OptimizationKind.InFunction)
         {
         }
-
 
         public override bool ApplyOptimization(CilMethodInterpreter interpreter, ClosureEntities closure)
         {
@@ -140,7 +139,6 @@ namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.Co
             return FoldConstant(result, localOperations, pos);
         }
 
-
         private bool HandleCeq(ConstValue constLeft, ConstValue constRight, List<LocalOperation> localOperations,
             int pos)
         {
@@ -160,6 +158,19 @@ namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.Co
         {
             var result = ComputeConstantOperator.ComputeCgt(constLeft, constRight);
             return FoldConstant(result, localOperations, pos);
+        }
+
+        private bool FoldConstant(object result, List<LocalOperation> localOperations, int pos)
+        {
+            var baseOperator = (OperatorBase) localOperations[pos];
+            var resultAssignment = new Assignment
+            {
+                AssignedTo = baseOperator.AssignedTo,
+                Right = new ConstValue(result)
+            };
+            localOperations[pos] =
+                resultAssignment;
+            return true;
         }
 
         #region Compute math operations
@@ -225,18 +236,5 @@ namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.Co
         }
 
         #endregion
-
-        private bool FoldConstant(object result, List<LocalOperation> localOperations, int pos)
-        {
-            var baseOperator = (OperatorBase) localOperations[pos];
-            var resultAssignment = new Assignment
-            {
-                AssignedTo = baseOperator.AssignedTo,
-                Right = new ConstValue(result)
-            };
-            localOperations[pos] =
-                resultAssignment;
-            return true;
-        }
     }
 }

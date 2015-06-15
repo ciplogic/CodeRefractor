@@ -1,4 +1,4 @@
-#region Usings
+#region Uses
 
 using System.Collections.Generic;
 using CodeRefractor.CodeWriter.Linker;
@@ -14,7 +14,7 @@ using CodeRefractor.RuntimeBase.Optimizations;
 
 namespace CodeRefractor.MiddleEnd.Optimizations.Purity
 {
-	[Optimization(Category = OptimizationCategories.Purity)]
+    [Optimization(Category = OptimizationCategories.Purity)]
     public class RemoveDeadPureFunctionCalls : ResultingInFunctionOptimizationPass
     {
         public override void OptimizeOperations(CilMethodInterpreter methodInterpreter)

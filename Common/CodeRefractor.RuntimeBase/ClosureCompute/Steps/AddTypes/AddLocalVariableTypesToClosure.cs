@@ -1,6 +1,10 @@
-﻿using System.Linq;
+﻿#region Uses
+
+using System.Linq;
 using CodeRefractor.FrontEnd.SimpleOperations.Methods;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
+
+#endregion
 
 namespace CodeRefractor.ClosureCompute.Steps.AddTypes
 {
@@ -9,8 +13,8 @@ namespace CodeRefractor.ClosureCompute.Steps.AddTypes
         public override bool UpdateClosure(ClosureEntities closureEntities)
         {
             var methods = closureEntities.MethodImplementations.Values
-                .Where(method=>method.Kind==MethodKind.CilInstructions)
-                .Select(m=>(CilMethodInterpreter)m)
+                .Where(method => method.Kind == MethodKind.CilInstructions)
+                .Select(m => (CilMethodInterpreter) m)
                 .ToArray();
             var result = false;
             foreach (var method in methods)

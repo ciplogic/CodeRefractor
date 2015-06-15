@@ -1,11 +1,10 @@
-#region Usings
+#region Uses
 
 using System.Collections.Generic;
 using CodeRefractor.FrontEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Operators;
-using CodeRefractor.RuntimeBase.MiddleEnd;
 
 #endregion
 

@@ -1,4 +1,4 @@
-#region Usings
+#region Uses
 
 using System;
 using System.Collections.Generic;
@@ -6,13 +6,9 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using CodeRefractor.ClosureCompute;
-using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Interpreters;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.Runtime.Annotations;
-using CodeRefractor.RuntimeBase;
-using CodeRefractor.RuntimeBase.Analyze;
-using CodeRefractor.RuntimeBase.MiddleEnd;
 
 #endregion
 
@@ -25,6 +21,8 @@ namespace CodeRefractor.Analyze
 
         public static readonly Dictionary<Assembly, CrTypeResolver> TypeResolvers
             = new Dictionary<Assembly, CrTypeResolver>();
+
+        private static readonly Dictionary<MethodBase, string> CachedKeys = new Dictionary<MethodBase, string>();
 
         public static void Register(MethodInterpreter interpreter)
         {
@@ -41,7 +39,7 @@ namespace CodeRefractor.Analyze
             Register(interpreter);
 
             var resolved = Resolve(method);
-            if (resolved!=null)
+            if (resolved != null)
             {
                 return resolved;
             }
@@ -55,7 +53,7 @@ namespace CodeRefractor.Analyze
             foreach (var resolver in resolvers)
             {
                 var resolved = resolver.Resolve(interpreter);
-                if (resolved!=null)
+                if (resolved != null)
                     return resolved;
             }
             return null;
@@ -73,14 +71,10 @@ namespace CodeRefractor.Analyze
         {
             try
             {
-
-            
-            if (method.DeclaringType == null) return;
+                if (method.DeclaringType == null) return;
             }
             catch (Exception ex)
             {
-
-                
             }
             var assembly = method.DeclaringType.Assembly;
 
@@ -94,8 +88,6 @@ namespace CodeRefractor.Analyze
                 resolver = (CrTypeResolver) Activator.CreateInstance(resolverType);
             TypeResolvers[assembly] = resolver;
         }
-
-        private static readonly Dictionary<MethodBase, string> CachedKeys = new Dictionary<MethodBase, string>();
 
         public static MethodBase GetReversedMethod(this MethodBase methodInfo, ClosureEntities crRuntime)
         {

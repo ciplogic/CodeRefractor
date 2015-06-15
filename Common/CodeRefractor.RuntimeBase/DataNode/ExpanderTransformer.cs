@@ -1,4 +1,4 @@
-#region Usings
+#region Uses
 
 using System.Collections.Generic;
 
@@ -9,10 +9,9 @@ namespace CodeRefractor.DataNode
     public class ExpanderTransformer
     {
         private readonly Cursor _cursor = new Cursor();
-        private readonly List<string> _stringTable = new List<string>();
         private readonly List<string> _elementsTable = new List<string>();
-
         private readonly Stack<DynNode> _stack = new Stack<DynNode>();
+        private readonly List<string> _stringTable = new List<string>();
 
         private DynNode Top()
         {

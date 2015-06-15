@@ -1,19 +1,22 @@
-using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
+#region Uses
 
-namespace CodeRefractor.MiddleEnd.SimpleOperations.Identifiers
+using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
+
+#endregion
+
+namespace CodeRefractor.FrontEnd.SimpleOperations.Identifiers
 {
     public class LocalVariable : IdentifierValue
     {
-        public VariableKind Kind { get; set; }
-        public int Id { get; set; }
-        public string VarName { get; set; }
-
-        public EscapingMode Escaping { get; set; }
-
         public LocalVariable()
         {
             Escaping = EscapingMode.Smart;
         }
+
+        public VariableKind Kind { get; set; }
+        public int Id { get; set; }
+        public string VarName { get; set; }
+        public EscapingMode Escaping { get; set; }
 
         public override string ToString()
         {
@@ -62,7 +65,7 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations.Identifiers
 
         public override int GetHashCode()
         {
-            return (int)Kind + 8 * Id;
+            return (int) Kind + 8*Id;
         }
 
         public LocalVariable AutoName()

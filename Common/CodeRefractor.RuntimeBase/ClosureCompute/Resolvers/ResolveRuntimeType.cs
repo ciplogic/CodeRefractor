@@ -1,9 +1,13 @@
+#region Uses
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using CodeRefractor.Runtime.Annotations;
 using CodeRefractor.RuntimeBase.Shared;
+
+#endregion
 
 namespace CodeRefractor.ClosureCompute.Resolvers
 {
@@ -14,7 +18,7 @@ namespace CodeRefractor.ClosureCompute.Resolvers
         public ResolveRuntimeType(Assembly assembly)
         {
             _solvedTypes = assembly.GetTypes()
-                .Where(t => ((Type) t).GetCustomAttribute<MapTypeAttribute>() != null)
+                .Where(t => t.GetCustomAttribute<MapTypeAttribute>() != null)
                 .ToDictionary(
                     tp => tp.GetCustomAttribute<MapTypeAttribute>().MappedType
                 );

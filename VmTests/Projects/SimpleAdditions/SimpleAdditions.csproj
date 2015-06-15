@@ -9,7 +9,7 @@
     <RootNamespace>SimpleAdditions</RootNamespace>
     <AssemblyName>SimpleAdditions</AssemblyName>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
@@ -86,6 +86,9 @@
       <Project>{10CEF783-53C3-42A7-940A-73773A2AF24F}</Project>
       <Name>CodeRefractor.Compiler.Internals</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

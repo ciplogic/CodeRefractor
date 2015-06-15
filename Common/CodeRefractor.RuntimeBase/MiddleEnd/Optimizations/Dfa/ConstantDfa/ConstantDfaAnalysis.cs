@@ -1,4 +1,4 @@
-﻿#region Usings
+﻿#region Uses
 
 using System;
 using System.Collections.Generic;
@@ -10,8 +10,6 @@ using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.SimpleOperations.Operators;
 using CodeRefractor.MiddleEnd.UseDefs;
-using CodeRefractor.RuntimeBase.MiddleEnd;
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
 
 #endregion
@@ -20,6 +18,9 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Dfa.ConstantDfa
 {
     internal class ConstantDfaAnalysis : ResultingInFunctionOptimizationPass
     {
+        private Dictionary<int, int> _labelTable = new Dictionary<int, int>();
+        private LocalOperation[] _operations;
+        private DfaPointOfAnalysis[] _pointsOfAnalysis;
 
         public override void OptimizeOperations(CilMethodInterpreter interpreter)
         {
@@ -32,10 +33,6 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Dfa.ConstantDfa
 
             ApplyResult();
         }
-
-        private Dictionary<int, int> _labelTable = new Dictionary<int, int>();
-        private LocalOperation[] _operations;
-        private DfaPointOfAnalysis[] _pointsOfAnalysis;
 
         private void ApplyResult()
         {
@@ -179,11 +176,11 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Dfa.ConstantDfa
                     case OperationKind.Return:
                         return;
                     case OperationKind.AlwaysBranch:
-                        var jumpTo = ((AlwaysBranch)operation).JumpTo;
+                        var jumpTo = ((AlwaysBranch) operation).JumpTo;
                         Interpret(JumpTo(jumpTo), analysis);
                         return;
                     default:
-                        throw new InvalidOperationException(String.Format("Unhandled: {0}", operation));
+                        throw new InvalidOperationException(string.Format("Unhandled: {0}", operation));
                 }
                 cursor++;
                 canUpdate = !(startingConclusions.Equals(_pointsOfAnalysis[cursor]));

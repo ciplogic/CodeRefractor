@@ -4,9 +4,9 @@
     {
         public override bool UpdateClosure(ClosureEntities closureEntities)
         {
-            return closureEntities.AddType(typeof(string))
-                && closureEntities.AddType(typeof(object))
-;
+            return closureEntities.AddType(typeof (string))
+                   && closureEntities.AddType(typeof (object))
+                ;
         }
     }
 }

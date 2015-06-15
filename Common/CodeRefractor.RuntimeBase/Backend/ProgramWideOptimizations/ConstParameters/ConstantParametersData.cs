@@ -1,8 +1,7 @@
-﻿#region Usings
+﻿#region Uses
 
 using System.Collections.Generic;
 using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
-using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
@@ -13,16 +12,16 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.ConstParameters
 {
     internal class ConstantParametersData
     {
-        public const string Name = "ConstantParametersData";
-        public Dictionary<LocalVariable, ConstValue> ConstValues = new Dictionary<LocalVariable, ConstValue>();
-        public Dictionary<LocalVariable, ConstValueKind> ConstKinds = new Dictionary<LocalVariable, ConstValueKind>();
-
         public enum ConstValueKind
         {
             Unused,
             AssignedConstant,
             NonConstant
         }
+
+        public const string Name = "ConstantParametersData";
+        public Dictionary<LocalVariable, ConstValueKind> ConstKinds = new Dictionary<LocalVariable, ConstValueKind>();
+        public Dictionary<LocalVariable, ConstValue> ConstValues = new Dictionary<LocalVariable, ConstValue>();
 
         public static ConstantParametersData GetInterpreterData(CilMethodInterpreter interpreter)
         {

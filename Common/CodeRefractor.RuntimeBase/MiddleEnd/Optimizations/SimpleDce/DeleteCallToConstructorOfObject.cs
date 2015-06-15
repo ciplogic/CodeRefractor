@@ -1,4 +1,4 @@
-﻿#region Usings
+﻿#region Uses
 
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
@@ -18,6 +18,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.SimpleDce
             : base(OptimizationKind.InFunction)
         {
         }
+
         public override bool ApplyOptimization(CilMethodInterpreter interpreter, ClosureEntities closure)
         {
             var midRepresentation = interpreter.MidRepresentation;
@@ -32,9 +33,8 @@ namespace CodeRefractor.MiddleEnd.Optimizations.SimpleDce
                 if (!info.IsConstructor) continue;
                 if (info.DeclaringType != typeof (object) &&
                     info.DeclaringType != interpreter.Method.DeclaringType) continue;
-				midRepresentation.LocalOperations.RemoveAt(index);
+                midRepresentation.LocalOperations.RemoveAt(index);
                 return true;
-                
             }
             return false;
         }

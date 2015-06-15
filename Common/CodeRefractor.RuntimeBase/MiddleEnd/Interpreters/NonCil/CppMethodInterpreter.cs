@@ -1,20 +1,23 @@
+#region Uses
+
 using System.Reflection;
 using CodeRefractor.FrontEnd.SimpleOperations.Methods;
 using CodeRefractor.MiddleEnd.Interpreters;
-using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 using CodeRefractor.Runtime.Annotations;
 using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.MiddleEnd;
-using CodeRefractor.RuntimeBase.Shared;
+
+#endregion
 
 namespace CodeRefractor.MiddleEnd
 {
     public class CppMethodInterpreter : MethodInterpreter
     {
         public readonly CppRepresentation CppRepresentation = new CppRepresentation();
+
         public CppMethodInterpreter(MethodBase method) : base(method)
         {
-            Kind=MethodKind.RuntimeCppMethod;
+            Kind = MethodKind.RuntimeCppMethod;
         }
 
         public static bool IsCppMethod(MethodBase method)

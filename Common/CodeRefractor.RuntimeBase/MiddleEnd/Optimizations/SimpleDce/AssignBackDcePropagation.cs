@@ -1,8 +1,9 @@
-#region Usings
+#region Uses
 
 using System.Collections.Generic;
 using System.Linq;
 using CodeRefractor.ClosureCompute;
+using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
 using CodeRefractor.MiddleEnd.SimpleOperations;
@@ -21,8 +22,8 @@ namespace CodeRefractor.MiddleEnd.Optimizations.SimpleDce
     ///     > var2 = var1
     ///     will transform the code to be > var2 = identifier
     /// </summary>
-	[Optimization(Category = OptimizationCategories.DeadCodeElimination)]
-    internal class DceNewObjectOrArray: OptimizationPassBase
+    [Optimization(Category = OptimizationCategories.DeadCodeElimination)]
+    internal class DceNewObjectOrArray : OptimizationPassBase
     {
         public DceNewObjectOrArray()
             : base(OptimizationKind.InFunction)

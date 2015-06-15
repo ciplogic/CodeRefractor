@@ -1,39 +1,39 @@
+#region Uses
+
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using CodeRefractor.Analyze;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.ClosureCompute.TypeSorter;
 using CodeRefractor.CodeWriter.Output;
-using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.TypeInfoWriter;
 using CodeRefractor.Util;
 
+#endregion
+
 namespace CodeRefractor.CodeWriter.Types
 {
-    static class TypeBodiesCodeGenerator
+    internal static class TypeBodiesCodeGenerator
     {
         public static void WriteClosureStructBodies(CodeOutput codeOutput, ClosureEntities crRuntime)
         {
             //Remove Mapped Types in favour of their resolved types
-        
+
             var typesToMap = crRuntime.MappedTypes.Keys
-                .Where(t=>!ShouldSkipType(t))
+                .Where(t => !ShouldSkipType(t))
                 .ToArray();
             var sorter = new ClosureTypeSorter(typesToMap, crRuntime);
             var sorted = sorter.DoSort();
-            if (sorted.Contains(typeof(IntPtr)))
-                sorted.Remove(typeof(IntPtr));
+            if (sorted.Contains(typeof (IntPtr)))
+                sorted.Remove(typeof (IntPtr));
             var forwardTypesSorted = sorted.ToArray();
             GenerateForwardTypes(forwardTypesSorted, codeOutput, crRuntime);
 
-           
 
             var sortedTypeData = forwardTypesSorted;
 
-           
+
             foreach (var type in sortedTypeData)
             {
                 WriteStructWithFields(codeOutput, crRuntime, type);
@@ -53,9 +53,9 @@ namespace CodeRefractor.CodeWriter.Types
                 //Not Necessary
                 // codeOutput.AppendFormat("struct {0} : public {1} {2} {{", type.ToCppMangling(), type.BaseType.ToCppMangling(),type.GetInterfaces().Any()? " ,"+type.GetInterfaces().Select(j=>j.ToCppMangling()).Aggregate((a,b)=>a + " , " + b):"");
                 codeOutput.AppendFormat(
-                        "struct {0} : public {1}",
-                        type.ToCppMangling(),
-                        type.BaseType.ToCppMangling())
+                    "struct {0} : public {1}",
+                    type.ToCppMangling(),
+                    type.BaseType.ToCppMangling())
                     .BracketOpen();
             }
             else if (!type.IsValueType && type.IsInterface)
@@ -63,7 +63,7 @@ namespace CodeRefractor.CodeWriter.Types
                 codeOutput.AppendFormat("struct {0} : public {1}",
                     type.ToCppMangling(),
                     typeof (object).ToCppMangling())
-                   .BracketOpen();
+                    .BracketOpen();
             }
             else
             {
@@ -77,10 +77,10 @@ namespace CodeRefractor.CodeWriter.Types
             }
 
             //String Support
-            if (type == typeof(string))
+            if (type == typeof (string))
             {
-                crRuntime.AddType(typeof(string));
-                List<Type> usedTypes = crRuntime.MappedTypes.Values.ToList();
+                crRuntime.AddType(typeof (string));
+                var usedTypes = crRuntime.MappedTypes.Values.ToList();
                 var typeTable = new TypeDescriptionTable(usedTypes, crRuntime);
 
                 codeOutput.Append("System_String()")
@@ -123,7 +123,6 @@ namespace CodeRefractor.CodeWriter.Types
                     return false;
             }
 
-          
 
             return true;
         }

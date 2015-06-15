@@ -1,4 +1,4 @@
-﻿#region Usings
+﻿#region Uses
 
 using System;
 using System.Collections.Generic;
@@ -12,14 +12,9 @@ namespace CodeRefractor.RuntimeBase.TypeInfoWriter
 {
     public class VirtualMethodDescription
     {
-        public HashSet<Type> UsingImplementations { get; private set; }
-
-        public string Name { get; set; }
+        public Type BaseType;
         public Type[] Parameters;
         public Type ReturnType;
-        public Type BaseType;
-
-        public MethodInfo BaseMethod { get; private set; }
 
         public VirtualMethodDescription(MethodInfo method, Type baseType)
         {
@@ -30,15 +25,24 @@ namespace CodeRefractor.RuntimeBase.TypeInfoWriter
 
             BaseType = baseType;
             //Handle Interfaces
-            var interfacewithmethod = baseType.GetInterfaces().FirstOrDefault(g =>baseType.GetInterfaceMap(g).TargetMethods.Contains(method));
-            if (interfacewithmethod!=null)
+            var interfacewithmethod =
+                baseType.GetInterfaces().FirstOrDefault(g => baseType.GetInterfaceMap(g).TargetMethods.Contains(method));
+            if (interfacewithmethod != null)
             {
-                BaseMethod = interfacewithmethod.GetMethod(method.Name.Replace(interfacewithmethod.FullName.Replace("+",".")+".",""),Parameters); //Remove explicit name
+                BaseMethod =
+                    interfacewithmethod.GetMethod(
+                        method.Name.Replace(interfacewithmethod.FullName.Replace("+", ".") + ".", ""), Parameters);
+                    //Remove explicit name
             }
             else
-          
-            BaseMethod = BaseType.GetMethod(method.Name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, Parameters, null);
+
+                BaseMethod = BaseType.GetMethod(method.Name,
+                    BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, Parameters, null);
         }
+
+        public HashSet<Type> UsingImplementations { get; }
+        public string Name { get; set; }
+        public MethodInfo BaseMethod { get; private set; }
 
         public override string ToString()
         {
@@ -48,14 +52,14 @@ namespace CodeRefractor.RuntimeBase.TypeInfoWriter
 
         public bool MethodMatches(MethodInfo method, bool addToImplementations = true)
         {
-            if ((method.GetMethodName() != Name)&&(method.Name!=Name))
+            if ((method.GetMethodName() != Name) && (method.Name != Name))
                 return false;
             var declaringType = method.DeclaringType;
             if (BaseType.IsSubclassOf(declaringType))
                 return false;
             if (method.DeclaringType != BaseType)
                 return false;
-            
+
             if (ReturnType != method.ReturnType)
                 return false;
             var arguments = method.GetParameters().Select(par => par.ParameterType).ToArray();
@@ -71,19 +75,18 @@ namespace CodeRefractor.RuntimeBase.TypeInfoWriter
                     return false;
             }
             if (addToImplementations)
-            {   
+            {
 //                //Also add all subclasses that use this method
 //                foreach (var argument in declaringType)
 //                {
 //                    
 //                }
                 var allInterfaceImplementors = declaringType.Assembly.GetTypes()
-    .Where(p => declaringType.IsAssignableFrom(p));
+                    .Where(p => declaringType.IsAssignableFrom(p));
 
                 foreach (var allInterfaceImplementor in allInterfaceImplementors)
                 {
                     UsingImplementations.Add(allInterfaceImplementor);
-                    
                 }
                 UsingImplementations.Add(declaringType);
             }

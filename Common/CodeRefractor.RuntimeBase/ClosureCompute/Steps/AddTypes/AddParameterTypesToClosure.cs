@@ -1,6 +1,9 @@
-﻿using System.Linq;
+﻿#region Uses
+
+using System.Linq;
 using System.Reflection;
-using CodeRefractor.RuntimeBase;
+
+#endregion
 
 namespace CodeRefractor.ClosureCompute.Steps.AddTypes
 {
@@ -10,7 +13,7 @@ namespace CodeRefractor.ClosureCompute.Steps.AddTypes
         {
             var methods = closureEntities.MethodImplementations.Keys;
             var result = false;
-            foreach (var method in methods.Select(mk=>mk.Method))
+            foreach (var method in methods.Select(mk => mk.Method))
             {
                 result |= UpdateClosureForMethod(method, closureEntities);
             }
@@ -21,7 +24,7 @@ namespace CodeRefractor.ClosureCompute.Steps.AddTypes
         {
             var result = false;
             var returnType = method.GetReturnType();
-            if (returnType != typeof(void))
+            if (returnType != typeof (void))
                 result |= closureEntities.AddType(returnType);
 
             result |= closureEntities.AddType(method.DeclaringType);

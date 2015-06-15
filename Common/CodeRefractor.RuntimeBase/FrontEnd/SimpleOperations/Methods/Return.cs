@@ -5,8 +5,6 @@ using CodeRefractor.CodeWriter.Output;
 using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.Interpreters;
 using CodeRefractor.MiddleEnd.SimpleOperations;
-using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
-using CodeRefractor.RuntimeBase;
 
 #endregion
 
@@ -20,7 +18,7 @@ namespace CodeRefractor.FrontEnd.SimpleOperations.Methods
         }
 
         public IdentifierValue Returning { get; set; }
-        
+
         public void WriteCodeToOutput(CodeOutput bodySb, MethodInterpreter interpreter)
         {
             bodySb.Append("\n");
@@ -35,7 +33,7 @@ namespace CodeRefractor.FrontEnd.SimpleOperations.Methods
                 if (Returning is ConstValue)
                 {
                     var retType = interpreter.Method.GetReturnType();
-                    if (retType == typeof(string))
+                    if (retType == typeof (string))
                     {
                         bodySb.AppendFormat("return {0};", Returning.ComputedValue());
                     }

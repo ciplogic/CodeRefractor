@@ -12,7 +12,16 @@ namespace CodeRefractor.FrontEnd
 {
     public class EvaluatorStack : List<IdentifierValue>
     {
+        private int _vRegId;
+
+        public EvaluatorStack(Type[] genericArguments)
+        {
+            GenericArguments = genericArguments;
+        }
+
         public Type[] GenericArguments { get; set; }
+
+        public IdentifierValue Top => this[Count - 1];
 
         public override string ToString()
         {
@@ -23,20 +32,13 @@ namespace CodeRefractor.FrontEnd
                         id.Name));
 
 
-            return String.Join("; ", items);
-        }
-
-        private int _vRegId;
-
-        public EvaluatorStack(Type[] genericArguments)
-        {
-            GenericArguments = genericArguments;
+            return string.Join("; ", items);
         }
 
         public LocalVariable SetNewVReg()
         {
             _vRegId++;
-            
+
             var newLocal = new LocalVariable
             {
                 Kind = VariableKind.Vreg,
@@ -53,11 +55,6 @@ namespace CodeRefractor.FrontEnd
             Add(newLocal);
 
             return this;
-        }
-
-        public IdentifierValue Top
-        {
-            get { return this[Count - 1]; }
         }
 
         public IdentifierValue Pop()

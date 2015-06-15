@@ -1,4 +1,4 @@
-﻿#region Usings
+﻿#region Uses
 
 using System.Collections.Generic;
 using CodeRefractor.ClosureCompute;
@@ -8,9 +8,7 @@ using CodeRefractor.MiddleEnd.Optimizations.Common;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Operators;
 using CodeRefractor.RuntimeBase.Analyze;
-using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
 using CodeRefractor.RuntimeBase.Optimizations;
 
 #endregion
@@ -18,7 +16,7 @@ using CodeRefractor.RuntimeBase.Optimizations;
 namespace CodeRefractor.MiddleEnd.Optimizations.Dfa.ReachabilityDfa
 {
     [Optimization(Category = OptimizationCategories.DeadCodeElimination)]
-    public class ReachabilityLines: OptimizationPassBase
+    public class ReachabilityLines : OptimizationPassBase
     {
         public ReachabilityLines()
             : base(OptimizationKind.InFunction)
@@ -34,7 +32,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Dfa.ReachabilityDfa
             var reached = new SortedSet<int>();
             Interpret(0, operations, labelTable, reached);
             if (reached.Count == operations.Length) return false;
-            
+
             var toDelete = new List<int>();
             for (var i = 0; i < operations.Length; i++)
             {
@@ -67,7 +65,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Dfa.ReachabilityDfa
                         Interpret(labelTable[jumpTo], operations, labelTable, reached);
                         return;
                     case OperationKind.Switch:
-                        var switchAssign = (Switch)operation;
+                        var switchAssign = (Switch) operation;
                         var jumps = switchAssign.Jumps;
                         foreach (var jump in jumps)
                         {

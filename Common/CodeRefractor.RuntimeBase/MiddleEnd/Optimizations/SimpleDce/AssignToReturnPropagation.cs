@@ -1,12 +1,12 @@
-#region Usings
+#region Uses
 
 using CodeRefractor.ClosureCompute;
+using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 using CodeRefractor.FrontEnd.SimpleOperations.Methods;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
-using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 using CodeRefractor.MiddleEnd.UseDefs;
 using CodeRefractor.RuntimeBase.Optimizations;
 
@@ -21,17 +21,18 @@ namespace CodeRefractor.MiddleEnd.Optimizations.SimpleDce
     ///     will transform the code to be
     ///     > var2 = identifier
     /// </summary>
-	[Optimization(Category = OptimizationCategories.DeadCodeElimination)]
+    [Optimization(Category = OptimizationCategories.DeadCodeElimination)]
     internal class AssignToReturnPropagation : OptimizationPassBase
     {
         public AssignToReturnPropagation()
             : base(OptimizationKind.InFunction)
         {
         }
+
         public override bool ApplyOptimization(CilMethodInterpreter interpreter, ClosureEntities closure)
         {
             var localOperations = interpreter.MidRepresentation.UseDef.GetLocalOperations();
-            if(localOperations.Length < 2)
+            if (localOperations.Length < 2)
                 return false;
             var count = localOperations.Length;
             var assignBeforeReturn = localOperations[count - 2];
@@ -50,7 +51,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.SimpleDce
                 return false;
             if (returnInstruction.Returning.Equals(firstAssign.Right))
                 return false;
-            returnInstruction.Returning= firstAssign.Right;
+            returnInstruction.Returning = firstAssign.Right;
             return true;
         }
     }

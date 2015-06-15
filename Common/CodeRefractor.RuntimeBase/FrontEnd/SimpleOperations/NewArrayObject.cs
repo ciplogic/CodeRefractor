@@ -17,9 +17,7 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations
         }
 
         public LocalVariable AssignedTo { get; set; }
-
         public Type TypeArray { get; set; }
-
         public IdentifierValue ArrayLength { get; set; }
 
         public override string ToString()

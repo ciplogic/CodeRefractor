@@ -7,7 +7,6 @@ using System.Reflection;
 using System.Reflection.Emit;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
-using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Shared;
 using CodeRefractor.Util;
 using Mono.Reflection;
@@ -18,8 +17,41 @@ namespace CodeRefractor.FrontEnd
 {
     internal class MethodMidRepresentationBuilder
     {
-        private readonly CilMethodInterpreter _methodInterpreter;
+        //without using this code, R# will complain of too high cyclomatic complexity
+        private static readonly HashSet<int> BranchOpcodes = new HashSet<int>
+        {
+            OpcodeIntValues.Beq,
+            OpcodeIntValues.BeqS,
+            OpcodeIntValues.BneUn,
+            OpcodeIntValues.BneUnS,
+            OpcodeIntValues.Bge,
+            OpcodeIntValues.BgeS,
+            OpcodeIntValues.BgeUn,
+            OpcodeIntValues.BgeUnS,
+            OpcodeIntValues.Bgt,
+            OpcodeIntValues.BgtS,
+            OpcodeIntValues.BgtUn,
+            OpcodeIntValues.BgtUnS,
+            OpcodeIntValues.BrTrueS,
+            OpcodeIntValues.BrTrue,
+            OpcodeIntValues.BrZero,
+            OpcodeIntValues.BrZeroS,
+            OpcodeIntValues.Ble,
+            OpcodeIntValues.BleS,
+            OpcodeIntValues.BleUn, // Were missing leading to no labels being generated
+            OpcodeIntValues.BleUnS,
+            OpcodeIntValues.Blt,
+            OpcodeIntValues.BltS,
+            OpcodeIntValues.BltUn,
+            OpcodeIntValues.BltUnS,
+            OpcodeIntValues.BrS,
+            OpcodeIntValues.Br,
+            OpcodeIntValues.Leave,
+            OpcodeIntValues.LeaveS
+        };
+
         private readonly MethodBase _method;
+        private readonly CilMethodInterpreter _methodInterpreter;
 
         public MethodMidRepresentationBuilder(CilMethodInterpreter methodInterpreter, MethodBase method)
         {
@@ -32,7 +64,7 @@ namespace CodeRefractor.FrontEnd
             var instructions = _method.GetInstructions().ToArray();
             var exceptionRanges = ExceptionCatchClauseRanges.ComputeExceptionInstructionRanges(_method);
             var genericArguments = _method.DeclaringType.GetGenericArguments();
-            Type[] methodGenericArguments = (_method.IsConstructor) ? new Type[0] : _method.GetGenericArguments();
+            var methodGenericArguments = (_method.IsConstructor) ? new Type[0] : _method.GetGenericArguments();
             var finalGeneric = new List<Type>();
             finalGeneric.AddRange(genericArguments);
             finalGeneric.AddRange(methodGenericArguments);
@@ -56,39 +88,6 @@ namespace CodeRefractor.FrontEnd
                 _methodInterpreter.MidRepresentation.Vars.LocalVars);
         }
 
-        //without using this code, R# will complain of too high cyclomatic complexity
-        private static readonly HashSet<int> BranchOpcodes = new HashSet<int>
-        {
-            OpcodeIntValues.Beq,
-            OpcodeIntValues.BeqS,
-            OpcodeIntValues.BneUn,
-            OpcodeIntValues.BneUnS,
-            OpcodeIntValues.Bge,
-            OpcodeIntValues.BgeS,
-            OpcodeIntValues.BgeUn,
-            OpcodeIntValues.BgeUnS,
-            OpcodeIntValues.Bgt,
-            OpcodeIntValues.BgtS,
-            OpcodeIntValues.BgtUn,
-            OpcodeIntValues.BgtUnS,
-            OpcodeIntValues.BrTrueS,
-            OpcodeIntValues.BrTrue,
-            OpcodeIntValues.BrZero,
-            OpcodeIntValues.BrZeroS,
-            OpcodeIntValues.Ble, 
-            OpcodeIntValues.BleS,
-            OpcodeIntValues.BleUn, // Were missing leading to no labels being generated
-            OpcodeIntValues.BleUnS,
-            OpcodeIntValues.Blt,
-            OpcodeIntValues.BltS,
-            OpcodeIntValues.BltUn,
-            OpcodeIntValues.BltUnS,
-            OpcodeIntValues.BrS,
-            OpcodeIntValues.Br,
-            OpcodeIntValues.Leave,
-            OpcodeIntValues.LeaveS,
-        };
-
         private static HashSet<int> ComputeLabels(MethodBase definition)
         {
             var labels = new HashSet<int>();
@@ -101,7 +100,7 @@ namespace CodeRefractor.FrontEnd
                 var opcodeStr = instruction.OpCode.Value;
                 if (opcodeStr == OpcodeIntValues.Switch)
                 {
-                    var offsets = (Instruction[])instruction.Operand;
+                    var offsets = (Instruction[]) instruction.Operand;
                     foreach (var offset in offsets)
                     {
                         AddLabelIfDoesntExist(offset.Offset, labels);
@@ -109,7 +108,7 @@ namespace CodeRefractor.FrontEnd
                 }
                 if (BranchOpcodes.Contains(opcodeStr))
                 {
-                    var offset = ((Instruction)instruction.Operand).Offset;
+                    var offset = ((Instruction) instruction.Operand).Offset;
                     AddLabelIfDoesntExist(offset, labels);
                 }
             }
@@ -121,13 +120,14 @@ namespace CodeRefractor.FrontEnd
             labels.Add(offset);
         }
 
-        private void EvaluateInstruction(Instruction instruction, MetaMidRepresentationOperationFactory operationFactory, HashSet<int> labelList, ClosureEntities closureEntities)
+        private void EvaluateInstruction(Instruction instruction, MetaMidRepresentationOperationFactory operationFactory,
+            HashSet<int> labelList, ClosureEntities closureEntities)
         {
             var opcodeStr = instruction.OpCode.ToString();
             var offset = 0;
             if (instruction.Operand is Instruction)
             {
-                offset = ((Instruction)(instruction.Operand)).Offset;
+                offset = ((Instruction) (instruction.Operand)).Offset;
             }
             if (labelList.Contains(instruction.Offset))
             {
@@ -163,22 +163,22 @@ namespace CodeRefractor.FrontEnd
 
 
             if (HandleExtraInstructions(instruction, operationFactory, opcodeStr, closureEntities)) return;
-            throw new InvalidOperationException(String.Format("Unknown instruction: {0}", instruction));
+            throw new InvalidOperationException(string.Format("Unknown instruction: {0}", instruction));
         }
 
-        private bool HandleExtraInstructions(Instruction instruction, MetaMidRepresentationOperationFactory operationFactory, string opcodeStr, ClosureEntities closureEntities)
+        private bool HandleExtraInstructions(Instruction instruction,
+            MetaMidRepresentationOperationFactory operationFactory, string opcodeStr, ClosureEntities closureEntities)
         {
-
             if (instruction.OpCode == OpCodes.Ret)
             {
                 var isVoid = _method.GetReturnType().IsVoid();
 
                 operationFactory.Return(isVoid);
                 return true;
-            } 
+            }
             if (opcodeStr == "constrained.")
             {
-                operationFactory.ConstrainedClass = (Type)instruction.Operand;
+                operationFactory.ConstrainedClass = (Type) instruction.Operand;
                 return true;
             }
 
@@ -187,7 +187,7 @@ namespace CodeRefractor.FrontEnd
                 if (ConversionOperations(instruction, operationFactory)) return true;
                 return true;
             }
-            
+
             if (instruction.OpCode == OpCodes.Dup)
             {
                 operationFactory.Dup();
@@ -268,9 +268,10 @@ namespace CodeRefractor.FrontEnd
 
                 operationFactory.LoadFieldAddressIntoEvaluationStack(fieldInfo);
                 return true;
-            } if (instruction.OpCode == OpCodes.Ldsflda)
+            }
+            if (instruction.OpCode == OpCodes.Ldsflda)
             {
-                var fieldInfo = (FieldInfo)instruction.Operand;
+                var fieldInfo = (FieldInfo) instruction.Operand;
 
                 operationFactory.LoadStaticFieldAddressIntoEvaluationStack(fieldInfo);
                 return true;
@@ -299,19 +300,20 @@ namespace CodeRefractor.FrontEnd
             return false;
         }
 
-        private static bool HandleArrayOperations(Instruction instruction, MetaMidRepresentationOperationFactory operationFactory, string opcodeStr)
+        private static bool HandleArrayOperations(Instruction instruction,
+            MetaMidRepresentationOperationFactory operationFactory, string opcodeStr)
         {
             if (instruction.OpCode == OpCodes.Newarr)
             {
-                operationFactory.NewArray((Type)instruction.Operand);
+                operationFactory.NewArray((Type) instruction.Operand);
                 return true;
             }
             if (instruction.OpCode == OpCodes.Stelem_I1
-                ||instruction.OpCode == OpCodes.Stelem_I2
-                ||instruction.OpCode == OpCodes.Stelem_I4
-                ||instruction.OpCode == OpCodes.Stelem_I8
-                ||instruction.OpCode == OpCodes.Stelem_R4
-                ||instruction.OpCode == OpCodes.Stelem_R8)
+                || instruction.OpCode == OpCodes.Stelem_I2
+                || instruction.OpCode == OpCodes.Stelem_I4
+                || instruction.OpCode == OpCodes.Stelem_I8
+                || instruction.OpCode == OpCodes.Stelem_R4
+                || instruction.OpCode == OpCodes.Stelem_R8)
             {
                 operationFactory.SetArrayElementValue();
                 return true;
@@ -328,38 +330,40 @@ namespace CodeRefractor.FrontEnd
             }
             if (instruction.OpCode == OpCodes.Stelem)
             {
-                var elemInfo = (Type)instruction.Operand;
+                var elemInfo = (Type) instruction.Operand;
                 operationFactory.StoreElement();
                 return true;
             }
             return false;
         }
 
-        private static bool HandleCalls(Instruction instruction, MetaMidRepresentationOperationFactory operationFactory, short opcodeValue)
+        private static bool HandleCalls(Instruction instruction, MetaMidRepresentationOperationFactory operationFactory,
+            short opcodeValue)
         {
             switch (opcodeValue)
             {
                 case OpcodeIntValues.Nop:
                     return true;
                 case OpcodeIntValues.Call:
-                    operationFactory.Call((MethodBase)instruction.Operand);
+                    operationFactory.Call((MethodBase) instruction.Operand);
                     return true;
                 case OpcodeIntValues.CallVirt:
-                    operationFactory.CallVirtual((MethodBase)instruction.Operand);
+                    operationFactory.CallVirtual((MethodBase) instruction.Operand);
                     operationFactory.ConstrainedClass = null;
                     return true;
 
                 case OpcodeIntValues.NewObj:
-                    {
-                        var consInfo = ((MethodBase)instruction.Operand);
-                        operationFactory.NewObject(consInfo);
-                    }
+                {
+                    var consInfo = ((MethodBase) instruction.Operand);
+                    operationFactory.NewObject(consInfo);
+                }
                     return true;
             }
             return false;
         }
 
-        private static bool ConversionOperations(Instruction instruction, MetaMidRepresentationOperationFactory operationFactory)
+        private static bool ConversionOperations(Instruction instruction,
+            MetaMidRepresentationOperationFactory operationFactory)
         {
             if (instruction.OpCode == OpCodes.Conv_U1)
             {
@@ -412,7 +416,7 @@ namespace CodeRefractor.FrontEnd
 
             if (opcodeStr.StartsWith("starg."))
             {
-                var parameter = (ParameterInfo)instruction.Operand;
+                var parameter = (ParameterInfo) instruction.Operand;
                 var pushedIntValue = parameter.Position;
                 operationFactory.CopyStackIntoArgument(pushedIntValue, _methodInterpreter.AnalyzeProperties);
                 return true;
@@ -420,21 +424,22 @@ namespace CodeRefractor.FrontEnd
 
             if (instruction.OpCode == OpCodes.Stfld)
             {
-                var fieldInfo = (FieldInfo)instruction.Operand;
+                var fieldInfo = (FieldInfo) instruction.Operand;
                 operationFactory.StoreField(fieldInfo);
                 return true;
             }
 
             if (opcodeStr.StartsWith("stobj"))
             {
-                operationFactory.StoreObject((Type)instruction.Operand);
+                operationFactory.StoreObject((Type) instruction.Operand);
                 return true;
             }
 
             return false;
         }
 
-        private bool HandleLoads(string opcodeStr, Instruction instruction, MetaMidRepresentationOperationFactory operationFactory, ClosureEntities closureEntities)
+        private bool HandleLoads(string opcodeStr, Instruction instruction,
+            MetaMidRepresentationOperationFactory operationFactory, ClosureEntities closureEntities)
         {
             if (opcodeStr == "ldelem.ref")
             {
@@ -505,17 +510,17 @@ namespace CodeRefractor.FrontEnd
 
             if (instruction.OpCode == OpCodes.Ldstr)
             {
-                operationFactory.PushString((string)instruction.Operand);
+                operationFactory.PushString((string) instruction.Operand);
                 return true;
             }
             if (instruction.OpCode == OpCodes.Ldc_R8)
             {
-                operationFactory.PushDouble((double)instruction.Operand);
+                operationFactory.PushDouble((double) instruction.Operand);
                 return true;
             }
             if (instruction.OpCode == OpCodes.Ldc_R4)
             {
-                operationFactory.PushFloat((float)instruction.Operand);
+                operationFactory.PushFloat((float) instruction.Operand);
                 return true;
             }
 
@@ -540,12 +545,12 @@ namespace CodeRefractor.FrontEnd
 
             if (opcodeStr.StartsWith("ldobj"))
             {
-                operationFactory.LoadObject((Type)instruction.Operand);
+                operationFactory.LoadObject((Type) instruction.Operand);
                 return true;
             }
             if (instruction.OpCode == OpCodes.Ldfld)
             {
-                var operand = (FieldInfo)instruction.Operand;
+                var operand = (FieldInfo) instruction.Operand;
 
                 operationFactory.LoadField(operand.Name, closureEntities);
                 return true;
@@ -564,11 +569,12 @@ namespace CodeRefractor.FrontEnd
             return false;
         }
 
-        private static bool HandleClassCast(MetaMidRepresentationOperationFactory operationFactory, Instruction instruction)
+        private static bool HandleClassCast(MetaMidRepresentationOperationFactory operationFactory,
+            Instruction instruction)
         {
             if (instruction.OpCode == OpCodes.Castclass)
             {
-                operationFactory.CastClass((Type)instruction.Operand);
+                operationFactory.CastClass((Type) instruction.Operand);
                 return true;
             }
 
@@ -579,14 +585,15 @@ namespace CodeRefractor.FrontEnd
         {
             if (instruction.OpCode == OpCodes.Isinst)
             {
-                operationFactory.IsInst((Type)instruction.Operand);
+                operationFactory.IsInst((Type) instruction.Operand);
                 return true;
             }
 
             return false;
         }
 
-        private static bool HandleException(MetaMidRepresentationOperationFactory operationFactory, Instruction instruction)
+        private static bool HandleException(MetaMidRepresentationOperationFactory operationFactory,
+            Instruction instruction)
         {
             if (instruction.OpCode == OpCodes.Throw)
             {
@@ -597,7 +604,6 @@ namespace CodeRefractor.FrontEnd
             return false;
         }
 
-
         private static bool HandleBoxing(string opcodeStr, int offset,
             MetaMidRepresentationOperationFactory operationFactory, Instruction instruction)
         {
@@ -606,13 +612,13 @@ namespace CodeRefractor.FrontEnd
             if (opcodeStr == "box"
                 )
             {
-                operationFactory.Box((Type)instruction.Operand);
+                operationFactory.Box((Type) instruction.Operand);
                 return true;
             }
             if (opcodeStr == "unbox.any"
                 )
             {
-                operationFactory.Unbox((Type)instruction.Operand);
+                operationFactory.Unbox((Type) instruction.Operand);
                 return true;
             }
 
@@ -621,7 +627,8 @@ namespace CodeRefractor.FrontEnd
             return false;
         }
 
-        private static bool HandleBranching(string opcodeStr, int offset, MetaMidRepresentationOperationFactory operationFactory, Instruction instruction)
+        private static bool HandleBranching(string opcodeStr, int offset,
+            MetaMidRepresentationOperationFactory operationFactory, Instruction instruction)
         {
             #region Branching
 
@@ -635,7 +642,7 @@ namespace CodeRefractor.FrontEnd
             }
 
             if (instruction.OpCode == OpCodes.Endfinally
-               )
+                )
             {
                 //TODO: ignore flow commands for exceptions
                 return true;
@@ -647,7 +654,7 @@ namespace CodeRefractor.FrontEnd
                 return true;
             }
 
-            if (instruction.OpCode == OpCodes.Br_S || 
+            if (instruction.OpCode == OpCodes.Br_S ||
                 instruction.OpCode == OpCodes.Br)
             {
                 operationFactory.AlwaysBranch(offset);
@@ -667,7 +674,8 @@ namespace CodeRefractor.FrontEnd
                 return true;
             }
 
-            if (opcodeStr == OpcodeBranchNames.BgeUn || opcodeStr == OpcodeBranchNames.BgeUnS) //Todo: Fix this cannot treat unsigned as signed
+            if (opcodeStr == OpcodeBranchNames.BgeUn || opcodeStr == OpcodeBranchNames.BgeUnS)
+                //Todo: Fix this cannot treat unsigned as signed
             {
                 operationFactory.BranchIfGreaterOrEqual(offset);
                 return true;
@@ -680,8 +688,8 @@ namespace CodeRefractor.FrontEnd
             }
 
 
-
-            if (opcodeStr == OpcodeBranchNames.BgtUn || opcodeStr == OpcodeBranchNames.BgtUnS) //Todo: Fix this cannot treat unsigned as signed
+            if (opcodeStr == OpcodeBranchNames.BgtUn || opcodeStr == OpcodeBranchNames.BgtUnS)
+                //Todo: Fix this cannot treat unsigned as signed
             {
                 operationFactory.BranchIfGreater(offset);
                 return true;
@@ -698,13 +706,15 @@ namespace CodeRefractor.FrontEnd
                 return true;
             }
 
-            if (opcodeStr == OpcodeBranchNames.BleUn || opcodeStr == OpcodeBranchNames.BleUnS)  //Todo: Fix this cannot treat unsigned as signed
+            if (opcodeStr == OpcodeBranchNames.BleUn || opcodeStr == OpcodeBranchNames.BleUnS)
+                //Todo: Fix this cannot treat unsigned as signed
             {
                 operationFactory.BranchIfLessOrEqual(offset);
                 return true;
             }
 
-            if (opcodeStr == OpcodeBranchNames.BltUn || opcodeStr == OpcodeBranchNames.BltUnS)  //Todo: Fix this cannot treat unsigned as signed
+            if (opcodeStr == OpcodeBranchNames.BltUn || opcodeStr == OpcodeBranchNames.BltUnS)
+                //Todo: Fix this cannot treat unsigned as signed
             {
                 operationFactory.BranchIfLess(offset);
                 return true;
@@ -729,7 +739,8 @@ namespace CodeRefractor.FrontEnd
             return false;
         }
 
-        private static bool HandleOperators(string opcodeStr, MetaMidRepresentationOperationFactory operationFactory, Instruction instruction)
+        private static bool HandleOperators(string opcodeStr, MetaMidRepresentationOperationFactory operationFactory,
+            Instruction instruction)
         {
             #region Operators
 
@@ -821,13 +832,13 @@ namespace CodeRefractor.FrontEnd
 
         private static int GetVariableIndex(Instruction instruction)
         {
-            var localVarInfo = (LocalVariableInfo)instruction.Operand;
+            var localVarInfo = (LocalVariableInfo) instruction.Operand;
             return localVarInfo.LocalIndex;
         }
 
         private static int GetParameterIndex(Instruction instruction)
         {
-            var localVarInfo = (ParameterInfo)instruction.Operand;
+            var localVarInfo = (ParameterInfo) instruction.Operand;
             return localVarInfo.Position;
         }
     }

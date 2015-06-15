@@ -1,15 +1,18 @@
-﻿using System.Collections.Generic;
+﻿#region Uses
+
+using System.Collections.Generic;
 using System.Reflection;
 using CodeRefractor.ClosureCompute.Steps;
 using CodeRefractor.ClosureCompute.Steps.AddTypes;
+
+#endregion
 
 namespace CodeRefractor.ClosureCompute
 {
     public class ClosureEntitiesBuilder
     {
-        public const BindingFlags AllFlags = (BindingFlags)(-1);
+        public const BindingFlags AllFlags = (BindingFlags) (-1);
         public List<ClosureComputeBase> ClosureSteps { get; set; }
-
         public List<MethodResolverBase> MethodResolverList { get; set; }
         public List<TypeResolverBase> TypeResolverList { get; set; }
 
@@ -23,7 +26,7 @@ namespace CodeRefractor.ClosureCompute
             //Method closure steps
             AddClosureStep<AddEntryPointInterpretedMethod>();
             AddClosureStep<AddNotYetInterpretedMethods>();
-           
+
 
             //Type closure steps
             AddClosureStep<AddStringTypeToClosure>();
@@ -32,6 +35,7 @@ namespace CodeRefractor.ClosureCompute
             AddClosureStep<AddVirtualMethods>();
             AddClosureStep<AddVirtualMethodImplementations>();
         }
+
         private void AddClosureStep<T>() where T : ClosureComputeBase, new()
         {
             ClosureSteps.Add(new T());
@@ -41,6 +45,5 @@ namespace CodeRefractor.ClosureCompute
         {
             TypeResolverList.Add(typeResolver);
         }
-
     }
 }

@@ -1,4 +1,10 @@
-namespace CodeRefractor.RuntimeBase.Analyze
+#region Uses
+
+using CodeRefractor.RuntimeBase.Analyze;
+
+#endregion
+
+namespace CodeRefractor.Analyze
 {
     public class FieldDescription
     {
@@ -9,7 +15,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
 
         public override string ToString()
         {
-            var result = string.Format("{0}: {1}", Name, TypeDescription);
+            var result = $"{Name}: {TypeDescription}";
             if (IsStatic)
             {
                 result = result + " (static)";

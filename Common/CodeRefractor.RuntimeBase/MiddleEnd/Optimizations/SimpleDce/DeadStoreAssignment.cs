@@ -1,8 +1,9 @@
-﻿#region Usings
+﻿#region Uses
 
 using System.Collections.Generic;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.FrontEnd.SimpleOperations;
+using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
 using CodeRefractor.MiddleEnd.SimpleOperations;
@@ -16,29 +17,8 @@ using CodeRefractor.RuntimeBase.Optimizations;
 namespace CodeRefractor.MiddleEnd.Optimizations.SimpleDce
 {
     [Optimization(Category = OptimizationCategories.DeadCodeElimination)]
-	internal class DeadStoreAssignment  : OptimizationPassBase
+    internal class DeadStoreAssignment : OptimizationPassBase
     {
-        public DeadStoreAssignment()
-            : base(OptimizationKind.InFunction)
-        {
-        }
-        public override bool ApplyOptimization(CilMethodInterpreter interpreter, ClosureEntities closure)
-        {
-            var useDef = interpreter.MidRepresentation.UseDef;
-            var localOperations = useDef.GetLocalOperations();
-
-			var definitions = new Dictionary<LocalVariable, int>();
-            ComputeDefinitions(localOperations, definitions);
-            RemoveUsages(localOperations, useDef, definitions);
-            if (definitions.Count == 0)
-                return false;
-            var toRemove = BuildRemoveInstructions(localOperations, definitions);
-            if (toRemove.Count == 0)
-                return false;
-            interpreter.MidRepresentation.DeleteInstructions(toRemove);
-            return true;
-        }
-
         private static readonly List<OperationKind> NoSideEffectsOperationKinds = new List<OperationKind>
         {
             OperationKind.Assignment,
@@ -50,6 +30,28 @@ namespace CodeRefractor.MiddleEnd.Optimizations.SimpleDce
             OperationKind.GetField,
             OperationKind.UnaryOperator
         };
+
+        public DeadStoreAssignment()
+            : base(OptimizationKind.InFunction)
+        {
+        }
+
+        public override bool ApplyOptimization(CilMethodInterpreter interpreter, ClosureEntities closure)
+        {
+            var useDef = interpreter.MidRepresentation.UseDef;
+            var localOperations = useDef.GetLocalOperations();
+
+            var definitions = new Dictionary<LocalVariable, int>();
+            ComputeDefinitions(localOperations, definitions);
+            RemoveUsages(localOperations, useDef, definitions);
+            if (definitions.Count == 0)
+                return false;
+            var toRemove = BuildRemoveInstructions(localOperations, definitions);
+            if (toRemove.Count == 0)
+                return false;
+            interpreter.MidRepresentation.DeleteInstructions(toRemove);
+            return true;
+        }
 
         private static void RemoveUsages(LocalOperation[] localOperations, UseDefDescription useDef,
             Dictionary<LocalVariable, int> definitions)

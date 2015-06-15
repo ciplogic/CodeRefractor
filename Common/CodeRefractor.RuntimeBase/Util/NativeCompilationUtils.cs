@@ -1,8 +1,7 @@
-#region Usings
+#region Uses
 
 using System;
 using System.IO;
-using CodeRefractor.RuntimeBase;
 
 #endregion
 
@@ -11,6 +10,63 @@ namespace CodeRefractor.Util
     public static class NativeCompilationUtils
     {
         public static Options CompilerOptions = new GccOptions();
+
+        public static void SetCompilerOptions(string compilerKind)
+        {
+            switch (compilerKind)
+            {
+                case "gcc":
+                    CompilerOptions = new GccOptions();
+                    break;
+                case "clang":
+                    CompilerOptions = new ClangOptions();
+                    break;
+                case "msvc":
+                    CompilerOptions = new WindowsClOptions();
+                    break;
+            }
+        }
+
+        public static string GetFullFileName(this string fileName)
+        {
+            var fileInfo = new FileInfo(fileName);
+
+            return fileInfo.FullName;
+        }
+
+        public static void CompileAppToNativeExe(string fileName, string applicationNativeExe)
+        {
+            var fileInfo = new FileInfo(fileName);
+
+            fileName = fileInfo.FullName;
+            if (!fileInfo.Exists)
+            {
+                throw new InvalidDataException(string.Format("Filename: {0} does not exist!", fileName));
+            }
+            var pathToGpp = CompilerOptions.PathOfCompilerTools + CompilerOptions.CompilerExe;
+
+            var commandLineFormat = "{0} " + CompilerOptions.OptimizationFlags + " {2} -o {1}";
+
+            fileName = GetSafeFileOrPath(fileName);
+            applicationNativeExe = GetSafeFileOrPath(applicationNativeExe);
+
+            var arguments = string.Format(commandLineFormat, fileName, applicationNativeExe,
+                CompilerOptions.LinkerOptions);
+            var standardOutput = pathToGpp.ExecuteCommand(arguments, CompilerOptions.PathOfCompilerTools);
+            if (!string.IsNullOrWhiteSpace(standardOutput) && standardOutput.Contains("error"))
+            {
+                throw new InvalidOperationException(string.Format("Errors when compiling: {0}", standardOutput));
+            }
+            (CompilerOptions.PathOfCompilerTools + "strip").ExecuteCommand(applicationNativeExe,
+                Path.GetDirectoryName(applicationNativeExe));
+        }
+
+        private static string GetSafeFileOrPath(string fileName)
+        {
+            if (fileName.Contains(" "))
+                fileName = string.Format("\"{0}\"", fileName);
+            return fileName;
+        }
 
         private class ClangOptions : Options
         {
@@ -46,75 +102,11 @@ namespace CodeRefractor.Util
 
         public class Options
         {
-            public string CompilerKind;
-            public string PathOfCompilerTools;
             public string CompilerExe;
-            public string OptimizationFlags;
-
+            public string CompilerKind;
             public string LinkerOptions;
-        }
-
-
-        public static void SetCompilerOptions(string compilerKind)
-        {
-            switch (compilerKind)
-            {
-                case "gcc":
-                    CompilerOptions = new GccOptions();
-                    break;
-                case "clang":
-                    CompilerOptions = new ClangOptions();
-                    break;
-                case "msvc":
-                    CompilerOptions = new WindowsClOptions();
-                    break;
-            }
-        }
-
-        public static string GetFullFileName(this string fileName)
-        {
-            var fileInfo = new FileInfo(fileName);
-
-            return fileInfo.FullName; 
-            
-        }
-
-        public static void CompileAppToNativeExe(string fileName, string applicationNativeExe)
-        {
-            var fileInfo = new FileInfo(fileName);
-
-            fileName = fileInfo.FullName; 
-            if (!fileInfo.Exists)
-            {
-                throw new InvalidDataException(string.Format("Filename: {0} does not exist!", fileName));
-            }
-            var pathToGpp = CompilerOptions.PathOfCompilerTools + CompilerOptions.CompilerExe;
-
-            var commandLineFormat = "{0} " + CompilerOptions.OptimizationFlags + " {2} -o {1}";
-
-            fileName = GetSafeFileOrPath(fileName);
-            applicationNativeExe = GetSafeFileOrPath(applicationNativeExe);
-
-            var arguments = String.Format(commandLineFormat, fileName, applicationNativeExe,
-                CompilerOptions.LinkerOptions);
-            var standardOutput = pathToGpp.ExecuteCommand(arguments, CompilerOptions.PathOfCompilerTools);
-            if (!String.IsNullOrWhiteSpace(standardOutput) && standardOutput.Contains("error"))
-            {
-                throw new InvalidOperationException(String.Format("Errors when compiling: {0}", standardOutput));
-            }
-            else
-            {
-                //TODO: this is a temp fix for permissive casting
-
-            }
-            (CompilerOptions.PathOfCompilerTools + "strip").ExecuteCommand(applicationNativeExe,Path.GetDirectoryName(applicationNativeExe));
-        }
-
-        private static string GetSafeFileOrPath(string fileName)
-        {
-            if (fileName.Contains(" "))
-                fileName = string.Format("\"{0}\"", fileName);
-            return fileName;
+            public string OptimizationFlags;
+            public string PathOfCompilerTools;
         }
     }
 }

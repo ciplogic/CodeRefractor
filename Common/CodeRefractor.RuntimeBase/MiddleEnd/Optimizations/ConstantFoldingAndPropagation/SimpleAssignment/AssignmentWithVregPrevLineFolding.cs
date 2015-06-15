@@ -1,12 +1,12 @@
-#region Usings
+#region Uses
 
 using CodeRefractor.ClosureCompute;
+using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.UseDefs;
-using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.Optimizations;
 
 #endregion
@@ -14,7 +14,7 @@ using CodeRefractor.RuntimeBase.Optimizations;
 namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.SimpleAssignment
 {
     [Optimization(Category = OptimizationCategories.Propagation)]
-    public class AssignmentWithVregPrevLineFolding  : OptimizationPassBase
+    public class AssignmentWithVregPrevLineFolding : OptimizationPassBase
     {
         public AssignmentWithVregPrevLineFolding()
             : base(OptimizationKind.InFunction)
@@ -29,7 +29,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.Si
 
             foreach (var index in assigns)
             {
-                if(index==0)
+                if (index == 0)
                     continue;
                 var localOperation = operations[index];
 
@@ -41,15 +41,16 @@ namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.Si
                 var destOperation = operations[index - 1];
                 var destOperationDefiniton = destOperation.GetDefinition();
                 if (destOperationDefiniton == null || !destOperationDefiniton.Equals(vregAssignment)) continue;
-                var localRight = (LocalVariable)localAssignment.Right;
+                var localRight = (LocalVariable) localAssignment.Right;
                 var usagesArr = operations.GetVariableUsages(localRight);
                 if (usagesArr.Count != 1)
                 {
                     return false;
                 }
-                destOperation.SwitchUsageWithDefinition((LocalVariable) localAssignment.Right, localAssignment.AssignedTo);
+                destOperation.SwitchUsageWithDefinition((LocalVariable) localAssignment.Right,
+                    localAssignment.AssignedTo);
                 interpreter.MidRepresentation.LocalOperations.RemoveAt(index);
-                
+
                 return true;
             }
             return false;

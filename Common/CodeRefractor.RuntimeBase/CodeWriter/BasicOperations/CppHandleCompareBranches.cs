@@ -1,9 +1,7 @@
-﻿#region Usings
+﻿#region Uses
 
-using System.Text;
 using CodeRefractor.CodeWriter.Output;
 using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
-using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.RuntimeBase.Analyze;
 
 #endregion

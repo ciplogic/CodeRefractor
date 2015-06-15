@@ -1,4 +1,8 @@
+#region Uses
+
 using System;
+
+#endregion
 
 namespace CodeRefractor.Runtime.Annotations
 {
@@ -6,7 +10,6 @@ namespace CodeRefractor.Runtime.Annotations
     {
         public string Header { get; set; }
         public string Library { get; set; }
-
         public string Code { get; set; }
     }
 }

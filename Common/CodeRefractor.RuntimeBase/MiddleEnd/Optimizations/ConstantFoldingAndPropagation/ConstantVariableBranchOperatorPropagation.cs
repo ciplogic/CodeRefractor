@@ -1,10 +1,9 @@
-#region Usings
+#region Uses
 
 using System;
 using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.SimpleOperations;
-using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.SimpleOperations.Operators;
 using CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndPropagation;
 using CodeRefractor.RuntimeBase.Optimizations;
@@ -25,7 +24,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation
             foreach (var i in branchOperations)
             {
                 var destOperation = operations[i];
-                var destAssignment = (BranchOperator)destOperation;
+                var destAssignment = (BranchOperator) destOperation;
                 if (destAssignment.Name != OpcodeBranchNames.BrTrue && destAssignment.Name != OpcodeBranchNames.BrFalse)
                     continue;
                 var constValue = destAssignment.CompareValue as ConstValue;
@@ -37,7 +36,8 @@ namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation
             }
         }
 
-        private static void ApplyChange(CilMethodInterpreter interpreter, ConstValue constValue, BranchOperator destAssignment,
+        private static void ApplyChange(CilMethodInterpreter interpreter, ConstValue constValue,
+            BranchOperator destAssignment,
             int i)
         {
             var expressionValue = Convert.ToInt32(constValue.Value) != 0;

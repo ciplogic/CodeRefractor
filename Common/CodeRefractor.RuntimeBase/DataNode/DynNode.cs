@@ -1,4 +1,4 @@
-#region Usings
+#region Uses
 
 using System.Collections;
 using System.Collections.Generic;
@@ -11,12 +11,8 @@ namespace CodeRefractor.DataNode
 {
     public class DynNode : IEnumerable<DynNode>
     {
-        public string Name { get; set; }
-
-        public string InnerText { get; set; }
-
-        public readonly List<DynNode> Children;
         public readonly Dictionary<string, string> Attributes;
+        public readonly List<DynNode> Children;
 
         public DynNode(string name)
         {
@@ -25,9 +21,30 @@ namespace CodeRefractor.DataNode
             Name = name;
         }
 
+        public string Name { get; set; }
+        public string InnerText { get; set; }
+
+        public string this[string key]
+        {
+            get
+            {
+                if (!Attributes.ContainsKey(key))
+                {
+                    Attributes[key] = string.Empty;
+                }
+                return Attributes[key];
+            }
+            set { Set(key, value); }
+        }
+
         public IEnumerator<DynNode> GetEnumerator()
         {
             return Children.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
 
         public DynNode Add(string name)
@@ -57,11 +74,6 @@ namespace CodeRefractor.DataNode
             return this;
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
         public override string ToString()
         {
             Contract.Ensures(!string.IsNullOrEmpty(Contract.Result<string>()));
@@ -81,19 +93,6 @@ namespace CodeRefractor.DataNode
             else
                 sb.Append("/>");
             return sb.ToString();
-        }
-
-        public string this[string key]
-        {
-            get
-            {
-                if (!Attributes.ContainsKey(key))
-                {
-                    Attributes[key] = string.Empty;
-                }
-                return Attributes[key];
-            }
-            set { Set(key, value); }
         }
 
         public void Add(string name, string value)

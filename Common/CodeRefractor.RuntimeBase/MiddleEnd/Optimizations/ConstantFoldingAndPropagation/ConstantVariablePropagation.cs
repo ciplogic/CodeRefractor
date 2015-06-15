@@ -1,11 +1,10 @@
-#region Usings
+#region Uses
 
+using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndPropagation;
-using CodeRefractor.RuntimeBase.MiddleEnd;
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.Optimizations;
 
 #endregion
@@ -49,7 +48,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation
                             var destAssignment = (NewArrayObject) destOperation;
                             var arrayCreationInfo = destAssignment;
                             if (!SameVariable(arrayCreationInfo.ArrayLength as LocalVariable,
-                                    srcVariableDefinition.AssignedTo))
+                                srcVariableDefinition.AssignedTo))
                                 continue;
                             arrayCreationInfo.ArrayLength = constValue;
                             Result = true;

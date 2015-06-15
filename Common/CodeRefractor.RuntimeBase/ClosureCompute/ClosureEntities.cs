@@ -4,27 +4,19 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Security.Cryptography;
-using System.Text;
 using CodeRefractor.Backend;
 using CodeRefractor.Backend.ComputeClosure;
 using CodeRefractor.Backend.ProgramWideOptimizations;
 using CodeRefractor.Backend.ProgramWideOptimizations.Virtual;
-using CodeRefractor.CodeWriter.Linker;
 using CodeRefractor.CodeWriter.Output;
 using CodeRefractor.CompilerBackend.ProgramWideOptimizations.ConstParameters;
 using CodeRefractor.FrontEnd.SimpleOperations.Methods;
-using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Interpreters;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
 using CodeRefractor.MiddleEnd.Optimizations.Util;
-using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
-using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Config;
-using CodeRefractor.RuntimeBase.MiddleEnd;
 using CodeRefractor.RuntimeBase.TypeInfoWriter;
-using CodeRefractor.Util;
 
 #endregion
 
@@ -32,26 +24,14 @@ namespace CodeRefractor.ClosureCompute
 {
     public class ClosureEntities
     {
-        public MethodInfo EntryPoint { get; set; }
-
-        //Left type in should be the type from CLR world
-        //Right type should be the type implementing the same layout
-        public Dictionary<Type, Type> MappedTypes { get; set; }
-
-        public Dictionary<MethodBaseKey, MethodInterpreter> MethodImplementations { get; set; }
-        public Dictionary<MethodInterpreterKey, MethodInterpreter> LookupMethods { get; set; }
-        public HashSet<MethodInfo> AbstractMethods { get; set; }
-
+        private readonly Func<CppCodeGenerator> _getCppCodeGenerator;
         internal readonly ClosureEntitiesBuilder EntitiesBuilder = new ClosureEntitiesBuilder();
         private ProgramOptimizationsTable _optimizationsTable;
-        public bool EnableProgramWideOptimizations { get; set; }
-
         public List<RuntimeFeature> Features = new List<RuntimeFeature>();
-        private readonly Func<CppCodeGenerator> _getCppCodeGenerator;
 
         public ClosureEntities(Func<CppCodeGenerator> getCppCodeGenerator)
         {
-            this._getCppCodeGenerator = getCppCodeGenerator;
+            _getCppCodeGenerator = getCppCodeGenerator;
 
             MappedTypes = new Dictionary<Type, Type>();
             MethodImplementations = new Dictionary<MethodBaseKey, MethodInterpreter>(new MethodBaseKeyComparer());
@@ -62,6 +42,15 @@ namespace CodeRefractor.ClosureCompute
 
             SetupProgramOptimizationTable();
         }
+
+        public MethodInfo EntryPoint { get; set; }
+        //Left type in should be the type from CLR world
+        //Right type should be the type implementing the same layout
+        public Dictionary<Type, Type> MappedTypes { get; set; }
+        public Dictionary<MethodBaseKey, MethodInterpreter> MethodImplementations { get; set; }
+        public Dictionary<MethodInterpreterKey, MethodInterpreter> LookupMethods { get; set; }
+        public HashSet<MethodInfo> AbstractMethods { get; set; }
+        public bool EnableProgramWideOptimizations { get; set; }
 
         private void SetupProgramOptimizationTable()
         {
@@ -125,13 +114,13 @@ namespace CodeRefractor.ClosureCompute
         public CodeOutput BuildFullSourceCode()
         {
             var entryInterpreter = ResolveMethod(EntryPoint);
-            List<Type> usedTypes = MappedTypes.Values.ToList();
-            var typeTable = new TypeDescriptionTable(usedTypes,this);
+            var usedTypes = MappedTypes.Values.ToList();
+            var typeTable = new TypeDescriptionTable(usedTypes, this);
 
             return _getCppCodeGenerator().GenerateSourceCodeOutput(
                 entryInterpreter,
                 typeTable,
-                MethodImplementations.Values.ToList(), 
+                MethodImplementations.Values.ToList(),
                 this);
         }
 
@@ -142,7 +131,7 @@ namespace CodeRefractor.ClosureCompute
 
             if (MappedTypes.TryGetValue(type, out result))
                 return result;
-            
+
             foreach (var resolverBase in EntitiesBuilder.TypeResolverList)
             {
                 var resolved = resolverBase.Resolve(type);
@@ -174,7 +163,7 @@ namespace CodeRefractor.ClosureCompute
 
             var optimizations = level.BuildOptimizationPasses1();
             level.BuildOptimizationPasses2();
-            OptimizationLevelBase.UpdateOptimizationsFromCategories(optimizations); 
+            OptimizationLevelBase.UpdateOptimizationsFromCategories(optimizations);
 
             var cilMethods = MethodImplementations.Values
                 .Where(m => m.Kind == MethodKind.CilInstructions)
@@ -187,12 +176,13 @@ namespace CodeRefractor.ClosureCompute
             while (isOptimizationPossible)
             {
                 isOptimizationPossible = false;
-            
+
                 foreach (var cilMethod in cilMethods)
                 {
-                    isOptimizationPossible |= MethodInterpreterCodeWriter.ApplyLocalOptimizations(optimizations, cilMethod, entities);
+                    isOptimizationPossible |= MethodInterpreterCodeWriter.ApplyLocalOptimizations(optimizations,
+                        cilMethod, entities);
                 }
-                
+
                 var programWideOptimizationsAvailable = ApplyProgramWideOptimizations();
                 isOptimizationPossible |= programWideOptimizationsAvailable;
             }
@@ -219,12 +209,12 @@ namespace CodeRefractor.ClosureCompute
 
         public RuntimeFeature FindFeature(string featureName)
         {
-           var feature =  Features.FirstOrDefault(f=>f.Name==featureName);
+            var feature = Features.FirstOrDefault(f => f.Name == featureName);
             if (feature == null)
             {
-                feature = new RuntimeFeature()
+                feature = new RuntimeFeature
                 {
-                    Name = featureName,
+                    Name = featureName
                 };
                 Features.Add(feature);
             }
@@ -234,11 +224,11 @@ namespace CodeRefractor.ClosureCompute
 
     public class RuntimeFeature
     {
-        public string Name ="";
-        public List<string> Headers = new List<string>();
         public List<string> Declarations = new List<string>();
-        public string Initializer ="";
         public string Functions = "";
-        public bool IsUsed =false;
+        public List<string> Headers = new List<string>();
+        public string Initializer = "";
+        public bool IsUsed = false;
+        public string Name = "";
     }
 }

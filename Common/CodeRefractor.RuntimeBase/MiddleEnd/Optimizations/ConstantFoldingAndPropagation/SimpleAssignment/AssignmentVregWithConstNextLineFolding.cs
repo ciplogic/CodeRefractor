@@ -1,18 +1,13 @@
-#region Usings
+#region Uses
 
-using System;
 using System.Collections.Generic;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
-using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.UseDefs;
-using CodeRefractor.RuntimeBase.Analyze;
-using CodeRefractor.RuntimeBase.MiddleEnd;
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.Optimizations;
 
 #endregion
@@ -42,7 +37,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndProp
                 var constValue = assignment.Right;
                 var destOperation = operations[index + 1];
                 if (!destOperation.OperationUses(assignment.AssignedTo)) continue;
-                var toFixInstruction = new ToFixAssignment()
+                var toFixInstruction = new ToFixAssignment
                 {
                     Index = index + 1,
                     SourceAssignment = assignment.AssignedTo,
@@ -59,18 +54,18 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndProp
             }
             return true;
         }
+
         private class ToFixAssignment
         {
-            public LocalVariable SourceAssignment;
-            public IdentifierValue RightValue;
             public int Index;
+            public IdentifierValue RightValue;
+            public LocalVariable SourceAssignment;
 
             public override string ToString()
             {
-                return String.Format("Line {2}: {0} -> {1}",
+                return string.Format("Line {2}: {0} -> {1}",
                     SourceAssignment.Name, RightValue.Name, Index);
             }
         }
-
     }
 }

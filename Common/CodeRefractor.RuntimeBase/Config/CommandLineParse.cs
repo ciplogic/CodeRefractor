@@ -1,11 +1,10 @@
-﻿#region Usings
+﻿#region Uses
 
 using System;
 using System.Collections.Generic;
 using System.IO;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
 using CodeRefractor.RuntimeBase.Optimizations;
-using CodeRefractor.RuntimeBase.Util;
 using CodeRefractor.Util;
 
 #endregion
@@ -15,9 +14,14 @@ namespace CodeRefractor.RuntimeBase.Config
     /**
      * A command line argument parser for the CodeRefractor compiler.
      */
+
     public class CommandLineParse
     {
         public readonly List<string> Arguments = new List<string>();
+        public string ApplicationInputAssembly = "SimpleAdditions.exe";
+        public string ApplicationNativeExe = string.Empty;
+        public string OutputCpp = "output.cpp";
+        public string OutputPro = "output.pro";
 
         public CommandLineParse()
         {
@@ -106,11 +110,5 @@ namespace CodeRefractor.RuntimeBase.Config
             NativeCompilationUtils.CompilerOptions.OptimizationFlags = args[i + 1];
             return i + 1;
         }
-
-
-        public string OutputCpp = "output.cpp";
-        public string OutputPro = "output.pro";
-        public string ApplicationInputAssembly = "SimpleAdditions.exe";
-        public string ApplicationNativeExe = string.Empty;
     }
 }

@@ -1,4 +1,4 @@
-#region Usings
+#region Uses
 
 using CodeRefractor.CodeWriter.Linker;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
@@ -13,7 +13,6 @@ using CodeRefractor.RuntimeBase.Optimizations;
 
 namespace CodeRefractor.MiddleEnd.Optimizations.Inliner
 {
-
     [Optimization(Category = OptimizationCategories.Inliner)]
     public class InlineGetterAndSetterMethods : ResultingGlobalOptimizationPass
     {

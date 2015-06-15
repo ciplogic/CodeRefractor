@@ -1,7 +1,6 @@
 ﻿#region Uses
 
 using System.Reflection;
-using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 
 #endregion
@@ -9,13 +8,12 @@ using CodeRefractor.MiddleEnd.Interpreters.Cil;
 namespace CodeRefractor.ClosureCompute
 {
     /// <summary>
-    /// Are various algorithms which find if new types
-    /// or methods are added to the CR closure
+    ///     Are various algorithms which find if new types
+    ///     or methods are added to the CR closure
     /// </summary>
     public abstract class ClosureComputeBase
     {
         public abstract bool UpdateClosure(ClosureEntities closureEntities);
-
 
         protected static void AddMethodToClosure(ClosureEntities closureEntities, MethodBase method)
         {

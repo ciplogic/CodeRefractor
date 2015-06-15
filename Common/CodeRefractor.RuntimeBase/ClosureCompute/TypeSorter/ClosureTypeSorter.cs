@@ -1,14 +1,16 @@
-﻿using System;
+﻿#region Uses
+
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using CodeRefractor.RuntimeBase;
+
+#endregion
 
 namespace CodeRefractor.ClosureCompute.TypeSorter
 {
-    class ClosureTypeSorter
+    internal class ClosureTypeSorter
     {
-        private readonly List<Type> _types;
         private readonly ClosureEntities _crRuntime;
+        private readonly List<Type> _types;
 
         public ClosureTypeSorter(IEnumerable<Type> types, ClosureEntities crRuntime)
         {

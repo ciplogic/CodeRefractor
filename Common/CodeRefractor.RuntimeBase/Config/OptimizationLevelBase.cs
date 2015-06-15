@@ -1,4 +1,4 @@
-#region Usings
+#region Uses
 
 using System;
 using System.Collections.Generic;
@@ -11,12 +11,42 @@ namespace CodeRefractor.RuntimeBase.Config
 {
     public abstract class OptimizationLevelBase
     {
-		public HashSet<string> EnabledCategories {get; private set;}
+        public static OptimizationLevelBase Instance;
 
-		public OptimizationLevelBase()
-		{
-			EnabledCategories = new HashSet<string>();
-		}
+        public static Dictionary<OptimizationKind, List<OptimizationPassBase>> SortedOptimizations
+            = new Dictionary<OptimizationKind, List<OptimizationPassBase>>();
+
+        public static List<OptimizationPassBase> OptimizationPasses = new List<OptimizationPassBase>();
+        private static int _optimizerLevel;
+
+        public OptimizationLevelBase()
+        {
+            EnabledCategories = new HashSet<string>();
+        }
+
+        public HashSet<string> EnabledCategories { get; }
+
+        public static int OptimizerLevel
+        {
+            get { return _optimizerLevel; }
+            set
+            {
+                _optimizerLevel = value;
+                var optimizationList = Instance.BuildOptimizationPasses0();
+                if (_optimizerLevel >= 1)
+                {
+                    optimizationList.AddRange(Instance.BuildOptimizationPasses1());
+                }
+                if (_optimizerLevel >= 2)
+                {
+                    optimizationList.AddRange(Instance.BuildOptimizationPasses2());
+                }
+                OptimizationPasses = optimizationList;
+                UpdateOptimizationsFromCategories(OptimizationPasses);
+
+                SortOptimizations();
+            }
+        }
 
         public virtual List<OptimizationPassBase> BuildOptimizationPasses0()
         {
@@ -43,39 +73,8 @@ namespace CodeRefractor.RuntimeBase.Config
             var categories = OptimizationCategories.Instance;
             optimizationPasses.Clear();
             categories.BuildRelationsByReflection();
-            IEnumerable<OptimizationPassBase> closure = categories.Closure(Instance.EnabledCategories);
+            var closure = categories.Closure(Instance.EnabledCategories);
             optimizationPasses.AddRange(closure);
-        }
-
-        public static OptimizationLevelBase Instance;
-
-
-        public static Dictionary<OptimizationKind, List<OptimizationPassBase>> SortedOptimizations
-            = new Dictionary<OptimizationKind, List<OptimizationPassBase>>();
-
-        public static List<OptimizationPassBase> OptimizationPasses = new List<OptimizationPassBase>();
-        private static int _optimizerLevel;
-
-        public static int OptimizerLevel
-        {
-            get { return _optimizerLevel; }
-            set
-            {
-                _optimizerLevel = value;
-                var optimizationList = Instance.BuildOptimizationPasses0();
-                if (_optimizerLevel >= 1)
-                {
-                    optimizationList.AddRange(Instance.BuildOptimizationPasses1());
-                }
-                if (_optimizerLevel >= 2)
-                {
-                    optimizationList.AddRange(Instance.BuildOptimizationPasses2());
-                }
-                OptimizationPasses = optimizationList;
-                UpdateOptimizationsFromCategories(OptimizationPasses);
-
-                SortOptimizations();
-            }
         }
 
         public static void ClearOptimizations()

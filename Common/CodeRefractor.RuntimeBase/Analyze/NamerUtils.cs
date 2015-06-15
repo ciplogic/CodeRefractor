@@ -1,3 +1,9 @@
+#region Uses
+
+using CodeRefractor.Analyze;
+
+#endregion
+
 namespace CodeRefractor.RuntimeBase.Analyze
 {
     public static class NamerUtils

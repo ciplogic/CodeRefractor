@@ -1,4 +1,4 @@
-#region Usings
+#region Uses
 
 using System;
 using System.Collections.Generic;
@@ -6,8 +6,6 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Interpreters;
-using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
-using CodeRefractor.RuntimeBase.MiddleEnd;
 
 #endregion
 

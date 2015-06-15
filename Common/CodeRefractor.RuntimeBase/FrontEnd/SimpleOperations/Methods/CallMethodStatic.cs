@@ -1,6 +1,5 @@
 #region Uses
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -9,7 +8,6 @@ using CodeRefractor.FrontEnd.SimpleOperations;
 using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.Interpreters;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
-using CodeRefractor.RuntimeBase;
 
 #endregion
 
@@ -17,20 +15,7 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations.Methods
 {
     public class CallMethodStatic : LocalOperation
     {
-        public bool IsVoid
-        {
-            get { return _interpreter.Method.GetReturnType() == typeof (void); }
-        }
-
         public LocalVariable Result;
-        private MethodInterpreter _interpreter;
-        public List<IdentifierValue> Parameters { get; set; }
-
-        public MethodInterpreter Interpreter
-        {
-            get { return _interpreter; }
-            set { _interpreter = value; }
-        }
 
         public CallMethodStatic(MethodInterpreter interpreter)
             : base(OperationKind.Call)
@@ -41,6 +26,10 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations.Methods
             Info = interpreter.Method;
         }
 
+        public bool IsVoid => Interpreter.Method.GetReturnType() == typeof (void);
+
+        public List<IdentifierValue> Parameters { get; set; }
+        public MethodInterpreter Interpreter { get; set; }
         public MethodBase Info { get; set; }
 
         public void ExtractNeededValuesFromStack(EvaluatorStack evaluatorStack)
@@ -67,10 +56,10 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations.Methods
                         string.Format("{0}:{1}", par.Name, par.ComputedType().Name)));
             if (Result == null)
             {
-                return String.Format("{0}({1})", Info.Name,
+                return string.Format("{0}({1})", Info.Name,
                     paramData);
             }
-            return String.Format("{0} = {1}({2})", Result.Name, Info.Name, paramData);
+            return string.Format("{0} = {1}({2})", Result.Name, Info.Name, paramData);
         }
     }
 }

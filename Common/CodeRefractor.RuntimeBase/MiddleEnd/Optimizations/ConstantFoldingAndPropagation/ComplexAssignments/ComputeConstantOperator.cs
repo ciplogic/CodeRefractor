@@ -1,10 +1,8 @@
-#region Usings
+#region Uses
 
 using System;
 using System.IO;
 using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
-using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
-using CodeRefractor.RuntimeBase;
 
 #endregion
 
@@ -23,7 +21,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.Co
             switch (typeCode)
             {
                 case TypeCode.Int16:
-                    return -(Int16)constLeft.Value;
+                    return -(short) constLeft.Value;
                 case TypeCode.Int64:
                     return -(long) constLeft.Value;
                 case TypeCode.Int32:
@@ -42,7 +40,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.Co
             switch (typeCode)
             {
                 case TypeCode.Int16:
-                    return (Int16)constLeft.Value + (Int16)constRight.Value;
+                    return (short) constLeft.Value + (short) constRight.Value;
                 case TypeCode.Int64:
                     return (long) constLeft.Value + (long) constRight.Value;
                 case TypeCode.Int32:
@@ -109,7 +107,6 @@ namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.Co
             return (int) constLeft.Value%(int) constRight.Value;
         }
 
-
         public static object ComputeOr(ConstValue constLeft, ConstValue constRight)
         {
             return (int) constLeft.Value | (int) constRight.Value;
@@ -124,7 +121,6 @@ namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.Co
         {
             return (int) constLeft.Value ^ (int) constRight.Value;
         }
-
 
         public static object ComputeFloat(ConstValue constLeft)
         {

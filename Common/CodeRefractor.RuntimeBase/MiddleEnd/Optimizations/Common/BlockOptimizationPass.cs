@@ -1,4 +1,4 @@
-#region Usings
+#region Uses
 
 using System.Collections.Generic;
 using CodeRefractor.ClosureCompute;
@@ -34,10 +34,9 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Common
             }
             return result.ToArray();
         }
-        
+
         public override bool ApplyOptimization(CilMethodInterpreter interpreter, ClosureEntities closure)
         {
-            
             var localOperations = interpreter.MidRepresentation.UseDef.GetLocalOperations();
             var sortedLabelPos = BuildBlockOperations(interpreter);
             var startPos = 0;

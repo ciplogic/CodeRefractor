@@ -1,6 +1,7 @@
 #region Uses
 
 using CodeRefractor.FrontEnd.SimpleOperations;
+using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 
 #endregion
@@ -9,12 +10,12 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations
 {
     public class DerefAssignment : LocalOperation
     {
-        public LocalVariable Left { get; set; }
-        public LocalVariable Right { get; set; }
-
         public DerefAssignment()
             : base(OperationKind.DerefAssignment)
         {
         }
+
+        public LocalVariable Left { get; set; }
+        public LocalVariable Right { get; set; }
     }
 }

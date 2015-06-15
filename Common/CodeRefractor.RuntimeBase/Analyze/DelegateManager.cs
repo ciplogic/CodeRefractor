@@ -1,11 +1,10 @@
-﻿#region Usings
+﻿#region Uses
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using CodeRefractor.CodeWriter;
 using CodeRefractor.Util;
 
 #endregion
@@ -14,13 +13,13 @@ namespace CodeRefractor.RuntimeBase.Analyze
 {
     public class DelegateManager
     {
+        public static DelegateManager Instance = new DelegateManager();
+        private readonly Dictionary<Type, MethodInfo> _delegateTypes = new Dictionary<Type, MethodInfo>();
+
         public static void RegisterType(Type declaringType, MethodInfo signature)
         {
             Instance._delegateTypes[declaringType] = signature;
         }
-
-        public static DelegateManager Instance = new DelegateManager();
-        readonly Dictionary<Type, MethodInfo> _delegateTypes =new Dictionary<Type, MethodInfo>();
 
         public string BuildDelegateContent()
         {
@@ -41,15 +40,15 @@ namespace CodeRefractor.RuntimeBase.Analyze
 
             var parametersFormat = TypeNamerUtils.GetCommaSeparatedParameters(parameters);
             var typePrefixFormat = string.Join("_", parameters.Select(paramType => paramType.ToCppMangling()));
-            var paramIndex = 0;
+            int[] paramIndex = {0};
             var namedTypeArgs = string.Join(", ",
                 parameters.Select(
-                    par => string.Format("{0} arg{1}", par.ToCppMangling(), paramIndex++)));
+                    par => $"{par.ToCppMangling()} arg{paramIndex[0]++}"));
 
-            paramIndex = 0;
+            paramIndex[0] = 0;
             var namedArgs = string.Join(", ",
                 parameters.Select(
-                    par => string.Format("arg{0}", paramIndex++)));
+                    par => $"arg{paramIndex[0]++}"));
 
             /* sb.AppendFormat("typedef void(*callBack{0}) ({1});",
                 id, parametersFormat)
@@ -79,22 +78,23 @@ namespace CodeRefractor.RuntimeBase.Analyze
 
             sb.AppendLine("}; //end of class delegate");
 
-          
-            sb.AppendFormat("System_Void {0}_ctor(const {2}<{0}>& _delegate, System_Void*, std::function<System_Void({1})> fn){{",
-                    delegateType.Key.ToCppMangling(),
-                    parametersFormat,
-                    TypeNamerUtils.StdSharedPtr)
-              .AppendLine();
+
+            sb.AppendFormat(
+                "System_Void {0}_ctor(const {2}<{0}>& _delegate, System_Void*, std::function<System_Void({1})> fn){{",
+                delegateType.Key.ToCppMangling(),
+                parametersFormat,
+                TypeNamerUtils.StdSharedPtr)
+                .AppendLine();
 
             sb.AppendLine("  _delegate->Register(fn);");
             sb.AppendLine("}");
-            if (!String.IsNullOrEmpty(namedTypeArgs))
+            if (!string.IsNullOrEmpty(namedTypeArgs))
             {
                 sb.AppendFormat("System_Void {0}_Invoke(const {2}<{0}>& _delegate, {1}){{",
                     delegateType.Key.ToCppMangling(),
                     namedTypeArgs,
                     TypeNamerUtils.StdSharedPtr)
-                .AppendLine();
+                    .AppendLine();
             }
             else
             {
@@ -102,7 +102,6 @@ namespace CodeRefractor.RuntimeBase.Analyze
                     delegateType.Key.ToCppMangling(),
                     TypeNamerUtils.StdSharedPtr)
                     .AppendLine();
-               
             }
 
             sb.AppendFormat("  _delegate->Invoke({0});", namedArgs)

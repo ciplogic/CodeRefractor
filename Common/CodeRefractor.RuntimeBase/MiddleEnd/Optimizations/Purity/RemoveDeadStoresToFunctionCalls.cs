@@ -1,7 +1,8 @@
-#region Usings
+#region Uses
 
 using System.Collections.Generic;
 using System.Linq;
+using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
 using CodeRefractor.MiddleEnd.SimpleOperations;
@@ -13,14 +14,14 @@ using CodeRefractor.RuntimeBase.Optimizations;
 
 namespace CodeRefractor.MiddleEnd.Optimizations.Purity
 {
-	[Optimization(Category = OptimizationCategories.UseDef)]
-	public class RemoveDeadStoresToFunctionCalls : ResultingInFunctionOptimizationPass
+    [Optimization(Category = OptimizationCategories.UseDef)]
+    public class RemoveDeadStoresToFunctionCalls : ResultingInFunctionOptimizationPass
     {
         public override void OptimizeOperations(CilMethodInterpreter interpreter)
         {
-			var useDef = interpreter.MidRepresentation.UseDef;
-			var localOperations = useDef.GetLocalOperations();
-			var calls = useDef.GetOperationsOfKind(OperationKind.Call);
+            var useDef = interpreter.MidRepresentation.UseDef;
+            var localOperations = useDef.GetLocalOperations();
+            var calls = useDef.GetOperationsOfKind(OperationKind.Call);
             if (calls.Length == 0) return;
             var candidates = new Dictionary<LocalVariable, int>();
             foreach (var call in calls)

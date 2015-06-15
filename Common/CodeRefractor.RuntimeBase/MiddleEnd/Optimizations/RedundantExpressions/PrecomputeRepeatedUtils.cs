@@ -1,8 +1,9 @@
-#region Usings
+#region Uses
 
 using System.Collections.Generic;
 using System.Linq;
 using CodeRefractor.FrontEnd.SimpleOperations;
+using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
@@ -28,7 +29,6 @@ namespace CodeRefractor.MiddleEnd.Optimizations.RedundantExpressions
             return localOperation;
         }
 
-
         public static CallMethodStatic GetMethodData(List<LocalOperation> localOperations, List<int> calls, int i)
         {
             var index = calls[i];
@@ -45,7 +45,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.RedundantExpressions
         {
             var midRepresentation = interpreter.MidRepresentation;
             var max = midRepresentation.Vars.VirtRegs.Max(vreg => vreg.Id) + 1;
-            var cacheVariable = new LocalVariable()
+            var cacheVariable = new LocalVariable
             {
                 FixedType = computedType,
                 Id = max,

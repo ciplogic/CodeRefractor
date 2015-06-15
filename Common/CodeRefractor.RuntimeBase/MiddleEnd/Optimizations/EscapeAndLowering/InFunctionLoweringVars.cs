@@ -1,4 +1,4 @@
-﻿#region Usings
+﻿#region Uses
 
 using System;
 using System.Collections.Generic;
@@ -14,7 +14,6 @@ using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 using CodeRefractor.MiddleEnd.UseDefs;
-using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 using CodeRefractor.RuntimeBase.Optimizations;
 
@@ -48,7 +47,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
                 var getVariableData = interpreter.AnalyzeProperties.GetVariableData(variable);
                 if (getVariableData != EscapingMode.Unused)
                 {
-                    result|=interpreter.AnalyzeProperties.SetVariableData(variable, EscapingMode.Pointer);
+                    result |= interpreter.AnalyzeProperties.SetVariableData(variable, EscapingMode.Pointer);
                 }
             }
             AllocateVariablesOnStack(localOp, candidateVariables, interpreter);
@@ -78,12 +77,14 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
             return false;
         }
 
-        private static HashSet<LocalVariable> SetAllCandidateVariables(CilMethodInterpreter interpreter, ClosureEntities closure)
+        private static HashSet<LocalVariable> SetAllCandidateVariables(CilMethodInterpreter interpreter,
+            ClosureEntities closure)
         {
             var candidateVariables = new HashSet<LocalVariable>();
             var midRepresentation = interpreter.MidRepresentation;
             var variables = midRepresentation.Vars;
-            LocalVariable[] toAdd = variables.LocalVars.Where(varId => !varId.ComputedType().GetClrType(closure).IsPrimitive).ToArray();
+            var toAdd =
+                variables.LocalVars.Where(varId => !varId.ComputedType().GetClrType(closure).IsPrimitive).ToArray();
             candidateVariables.AddRange(toAdd);
             toAdd = variables.VirtRegs.Where(varId => !varId.ComputedType().GetClrType(closure).IsPrimitive).ToArray();
             candidateVariables.AddRange(toAdd);
@@ -100,7 +101,8 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
             return candidateVariables;
         }
 
-        private static bool AllocateVariablesOnStack(LocalOperation[] localOp, HashSet<LocalVariable> candidateVariables, MethodInterpreter interpreter)
+        private static bool AllocateVariablesOnStack(LocalOperation[] localOp, HashSet<LocalVariable> candidateVariables,
+            MethodInterpreter interpreter)
         {
             var newOps = localOp.Where(op =>
                 op.Kind == OperationKind.NewArray
@@ -119,7 +121,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
                 var variableData = interpreter.AnalyzeProperties.GetVariableData(variable);
                 if (variableData != EscapingMode.Stack)
                 {
-                    interpreter.AnalyzeProperties.SetVariableData(variable, EscapingMode.Stack);               
+                    interpreter.AnalyzeProperties.SetVariableData(variable, EscapingMode.Stack);
                 }
             }
             return result;
@@ -169,13 +171,13 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
             }
         }
 
-        private static void HandleCallVirtual( HashSet<LocalVariable> candidateVariables, LocalOperation op)
+        private static void HandleCallVirtual(HashSet<LocalVariable> candidateVariables, LocalOperation op)
         {
-            var methodData = (CallMethodStatic)op;
+            var methodData = (CallMethodStatic) op;
             foreach (var identifierValue in methodData.Parameters)
             {
                 var localVariable = identifierValue as LocalVariable;
-                if(localVariable==null)
+                if (localVariable == null)
                     continue;
                 candidateVariables.Remove(localVariable);
             }
@@ -230,7 +232,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
                 var variable = parameter as LocalVariable;
                 if (variable == null)
                     continue;
-                if (escapeFullData[index]==EscapingMode.Smart)
+                if (escapeFullData[index] == EscapingMode.Smart)
                     candidateVariables.Remove(variable);
             }
         }
@@ -254,6 +256,5 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
                 candidateVariables.Remove(right);
             }
         }
-
     }
 }

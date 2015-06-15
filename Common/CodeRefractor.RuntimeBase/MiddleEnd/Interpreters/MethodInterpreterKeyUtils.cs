@@ -1,4 +1,4 @@
-#region Usings
+#region Uses
 
 using System;
 using System.Collections.Generic;
@@ -21,12 +21,10 @@ namespace CodeRefractor.MiddleEnd.Interpreters
         public static MethodInterpreterKey ToKey(this MethodBase methodbase, ClosureEntities closure)
         {
             var interpreter = closure.ResolveMethod(methodbase);
-            var resultKey = new MethodInterpreterKey(interpreter, implementingType:null);
+            var resultKey = new MethodInterpreterKey(interpreter, null);
             resultKey.AdjustDeclaringTypeByImplementingType();
             return resultKey;
-
         }
-
 
         internal static Dictionary<Type, Type> ReversedTypeMap(this Dictionary<Type, Type> map)
         {

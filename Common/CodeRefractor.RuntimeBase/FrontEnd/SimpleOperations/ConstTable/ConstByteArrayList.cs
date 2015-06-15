@@ -1,7 +1,6 @@
 #region Uses
 
 using System.Collections.Generic;
-using System.Text;
 using CodeRefractor.CodeWriter.Output;
 
 #endregion
@@ -10,11 +9,12 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations.ConstTable
 {
     public class ConstByteArrayList
     {
+        public List<ConstByteArrayData> ItemList = new List<ConstByteArrayData>();
+
         public Dictionary<ConstByteArrayData, int> Items =
             new Dictionary<ConstByteArrayData, int>(new ConstByteArrayData.EqualityComparer());
 
-        public List<ConstByteArrayData> ItemList = new List<ConstByteArrayData>();
-        private static readonly ConstByteArrayList StaticInstance = new ConstByteArrayList();
+        public static ConstByteArrayList Instance { get; } = new ConstByteArrayList();
 
         public static int RegisterConstant(byte[] values)
         {
@@ -28,11 +28,6 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations.ConstTable
             Instance.ItemList.Add(data);
             Instance.Items[data] = id;
             return id;
-        }
-
-        public static ConstByteArrayList Instance
-        {
-            get { return StaticInstance; }
         }
 
         public static string BuildConstantTable()

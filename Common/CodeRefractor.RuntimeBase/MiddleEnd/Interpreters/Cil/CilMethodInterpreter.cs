@@ -1,3 +1,5 @@
+#region Uses
+
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,23 +8,33 @@ using CodeRefractor.ClosureCompute;
 using CodeRefractor.FrontEnd;
 using CodeRefractor.FrontEnd.SimpleOperations;
 using CodeRefractor.FrontEnd.SimpleOperations.Methods;
-using CodeRefractor.MiddleEnd.SimpleOperations;
-using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 using CodeRefractor.RuntimeBase;
+
+#endregion
 
 namespace CodeRefractor.MiddleEnd.Interpreters.Cil
 {
     public class CilMethodInterpreter : MethodInterpreter, IEnumerable<LocalOperation>
     {
+        public readonly MetaMidRepresentation MidRepresentation = new MetaMidRepresentation();
+
         public CilMethodInterpreter(MethodBase method)
             : base(method)
         {
             Kind = MethodKind.CilInstructions;
         }
 
-        public readonly MetaMidRepresentation MidRepresentation = new MetaMidRepresentation();
-
         public bool Interpreted { get; set; }
+
+        public IEnumerator<LocalOperation> GetEnumerator()
+        {
+            return MidRepresentation.LocalOperations.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
 
         public void Process(ClosureEntities closureEntities)
         {
@@ -42,11 +54,6 @@ namespace CodeRefractor.MiddleEnd.Interpreters.Cil
             Interpreted = true;
         }
 
-        public IEnumerator<LocalOperation> GetEnumerator()
-        {
-            return MidRepresentation.LocalOperations.GetEnumerator();
-        }
-
         public override string ToString()
         {
             var method = Method;
@@ -61,12 +68,7 @@ namespace CodeRefractor.MiddleEnd.Interpreters.Cil
                 method.GetParameters().Select(p => p.ParameterType.Name)
                 ).ToArray();
 
-            return string.Format("{0}({1})",startName, declaringParams);
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
+            return string.Format("{0}({1})", startName, declaringParams);
         }
     }
 }

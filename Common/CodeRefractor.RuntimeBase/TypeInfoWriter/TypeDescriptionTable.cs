@@ -1,12 +1,12 @@
-﻿#region Usings
+﻿#region Uses
 
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.CodeWriter.Output;
+using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.Util;
@@ -18,11 +18,9 @@ namespace CodeRefractor.RuntimeBase.TypeInfoWriter
     public class TypeDescriptionTable : IComparer<Type>
     {
         private readonly ClosureEntities _closureEntities;
-        private readonly List<Type> _typeClosure;
-
         private readonly Dictionary<Type, HashSet<Type>> _dictionary = new Dictionary<Type, HashSet<Type>>();
-
         private readonly Dictionary<Type, int> _result = new Dictionary<Type, int>();
+        private readonly List<Type> _typeClosure;
 
         public TypeDescriptionTable(List<Type> typeClosure, ClosureEntities closureEntities)
         {
@@ -30,9 +28,9 @@ namespace CodeRefractor.RuntimeBase.TypeInfoWriter
             _typeClosure = typeClosure.Where(
                 FilterType)
                 .ToList();
-           
 
-            for (int index = 0; index < _typeClosure.Count; index++)
+
+            for (var index = 0; index < _typeClosure.Count; index++)
             {
                 var type = _typeClosure[index];
                 // Mapped Types should share typeId with the mapping type
@@ -42,8 +40,24 @@ namespace CodeRefractor.RuntimeBase.TypeInfoWriter
                     _result[mapped] = index;
                 }
                 _result[type] = index;
-                
             }
+        }
+
+        public int Compare(Type left, Type right)
+        {
+            var leftLayout = _dictionary[left];
+            var rightLayout = _dictionary[right];
+            if (leftLayout.Count == 0 && rightLayout.Count == 0)
+                return 0;
+            if (rightLayout.Contains(left))
+                return -1;
+            if (leftLayout.Contains(right))
+                return 1;
+            var countLeft = leftLayout.Count;
+            var countRight = rightLayout.Count;
+            if (countLeft == countRight) return 0;
+            var compare = countLeft - countRight;
+            return compare;
         }
 
         private static bool FilterType(Type type)
@@ -80,23 +94,6 @@ namespace CodeRefractor.RuntimeBase.TypeInfoWriter
             return _result;
         }
 
-        public int Compare(Type left, Type right)
-        {
-            var leftLayout = _dictionary[left];
-            var rightLayout = _dictionary[right];
-            if (leftLayout.Count == 0 && rightLayout.Count == 0)
-                return 0;
-            if (rightLayout.Contains(left))
-                return -1;
-            if (leftLayout.Contains(right))
-                return 1;
-            var countLeft = leftLayout.Count;
-            var countRight = rightLayout.Count;
-            if (countLeft == countRight) return 0;
-            var compare = countLeft - countRight;
-            return compare;
-        }
-
         public void SetIdOfInstance(CodeOutput sb, LocalVariable variable, Type type, bool isStack)
         {
             int typeId;
@@ -117,10 +114,7 @@ namespace CodeRefractor.RuntimeBase.TypeInfoWriter
 
         public bool HasType(Type type)
         {
-            
-            
             return _dictionary.ContainsKey(type);
-            
         }
 
         public int GetTypeId(Type implementation)

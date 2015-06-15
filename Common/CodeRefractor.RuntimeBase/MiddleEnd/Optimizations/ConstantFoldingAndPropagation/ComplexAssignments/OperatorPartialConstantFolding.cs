@@ -1,4 +1,4 @@
-#region Usings
+#region Uses
 
 using System;
 using CodeRefractor.FrontEnd.SimpleOperations;
@@ -6,7 +6,6 @@ using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
 using CodeRefractor.MiddleEnd.SimpleOperations;
-using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.SimpleOperations.Operators;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
 using CodeRefractor.RuntimeBase.Optimizations;
@@ -59,7 +58,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.Co
 
         private void FoldAssign(IdentifierValue constResult, LocalOperation[] localOperations, int pos)
         {
-            localOperations[pos] = new Assignment() {Right = constResult};
+            localOperations[pos] = new Assignment {Right = constResult};
         }
 
         private void HandleMul(ConstValue constLeft, ConstValue constRight,
@@ -89,7 +88,6 @@ namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.Co
             {
                 FoldAssign(constValue, localOperations, pos);
                 Result = true;
-                return;
             }
         }
 
@@ -120,7 +118,6 @@ namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.Co
             {
                 FoldAssign(binaryOperator.Left, localOperations, pos);
                 Result = true;
-                return;
             }
         }
     }

@@ -3,7 +3,6 @@
 using System.Reflection;
 using CodeRefractor.FrontEnd.SimpleOperations;
 using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
-using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 
 #endregion
 
@@ -17,7 +16,6 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations
         }
 
         public IdentifierValue AssignedTo { get; set; }
-
         public MethodBase FunctionPointer { get; set; }
         public MethodInfo CustomData { get; set; }
 

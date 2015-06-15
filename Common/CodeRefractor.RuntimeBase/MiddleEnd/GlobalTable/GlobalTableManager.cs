@@ -1,4 +1,4 @@
-﻿#region Usings
+﻿#region Uses
 
 using System;
 using System.Collections.Generic;
@@ -17,7 +17,7 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.GlobalTable
             {
                 ParentType = parentType,
                 Name = fieldName,
-                ConstValue = value,
+                ConstValue = value
             };
         }
     }

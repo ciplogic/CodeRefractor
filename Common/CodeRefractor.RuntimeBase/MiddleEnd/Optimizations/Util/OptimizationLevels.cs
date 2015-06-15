@@ -1,24 +1,8 @@
-﻿#region Usings
+﻿#region Uses
 
 using System.Collections.Generic;
 using System.Linq;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
-using CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation;
-using CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.ComplexAssignments;
-using CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.SimpleAssignment;
-using CodeRefractor.MiddleEnd.Optimizations.Dfa.ReachabilityDfa;
-using CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering;
-using CodeRefractor.MiddleEnd.Optimizations.Inliner;
-using CodeRefractor.MiddleEnd.Optimizations.Jumps;
-using CodeRefractor.MiddleEnd.Optimizations.Licm;
-using CodeRefractor.MiddleEnd.Optimizations.Purity;
-using CodeRefractor.MiddleEnd.Optimizations.SimpleDce;
-using CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndPropagation;
-using CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndPropagation.ComplexAssignments;
-using CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndPropagation.SimpleAssignment;
-using CodeRefractor.RuntimeBase.Backend.Optimizations.EscapeAndLowering;
-using CodeRefractor.RuntimeBase.Backend.Optimizations.Inliner;
-using CodeRefractor.RuntimeBase.Backend.Optimizations.SimpleDce;
 using CodeRefractor.RuntimeBase.Config;
 using CodeRefractor.RuntimeBase.Optimizations;
 
@@ -52,7 +36,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Util
             OptimizationCategories.Instance.AddChildToParentOptimizationRelation(
                 OptimizationCategories.Level1, OptimizationCategories.Analysis
                 );
-            
+
             //level 3 optimizations
             OptimizationCategories.Instance.AddChildToParentOptimizationRelation(
                 OptimizationCategories.Level3, OptimizationCategories.Global
@@ -61,6 +45,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Util
                 OptimizationCategories.Level3, OptimizationCategories.Inliner
                 );
         }
+
         public override List<OptimizationPassBase> BuildOptimizationPasses0()
         {
             return new List<OptimizationPassBase>();
@@ -78,11 +63,10 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Util
             }.ToList();
         }
 
-
         public override List<OptimizationPassBase> BuildOptimizationPasses2()
         {
-            this.EnabledCategories.Add(OptimizationCategories.Inliner);
-            this.EnabledCategories.Add(OptimizationCategories.Global);
+            EnabledCategories.Add(OptimizationCategories.Inliner);
+            EnabledCategories.Add(OptimizationCategories.Global);
             return new OptimizationPassBase[]
             {
                 //new OneAssignmentDeadStoreAssignment(), //??
@@ -92,10 +76,8 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Util
             }.ToList();
         }
 
-
         public override List<OptimizationPassBase> BuildOptimizationPasses1()
         {
-            
             EnabledCategories.Add(OptimizationCategories.Propagation);
             EnabledCategories.Add(OptimizationCategories.DeadCodeElimination);
             EnabledCategories.Add(OptimizationCategories.Analysis);
@@ -104,7 +86,6 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Util
             return new OptimizationPassBase[]
             {
                 //new FoldVariablesDefinitionsOptimizationPass(),
-
             }.ToList();
         }
     }

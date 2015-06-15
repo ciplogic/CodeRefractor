@@ -36,10 +36,7 @@ namespace CodeRefactor.OpenRuntime
                 Text[i] = value[startPos+i];
         }
 
-        public int Length
-        {
-            get { return Text.Length-1; }
-        }
+        public int Length => Text.Length-1;
 
         private static unsafe int StrLen(byte* data)
         {

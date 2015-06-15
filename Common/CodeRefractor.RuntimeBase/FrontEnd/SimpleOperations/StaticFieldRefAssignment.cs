@@ -1,14 +1,18 @@
-using System;
+#region Uses
+
 using System.Reflection;
+using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
+
+#endregion
 
 namespace CodeRefractor.FrontEnd.SimpleOperations
 {
     public class StaticFieldRefAssignment : LocalOperation
     {
-        public LocalVariable Left;
         public FieldInfo Field;
+        public LocalVariable Left;
 
         public StaticFieldRefAssignment()
             : base(OperationKind.StaticFieldRefAssignment)
@@ -17,7 +21,7 @@ namespace CodeRefractor.FrontEnd.SimpleOperations
 
         public override string ToString()
         {
-            return String.Format("{0} = {1}", Left.Name);
+            return string.Format("{0} = {1}", Left.Name);
         }
     }
 }

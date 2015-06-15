@@ -11,8 +11,8 @@ namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
 {
     public class Unboxing : LocalOperation
     {
-        public IdentifierValue Right;
         public LocalVariable AssignedTo;
+        public IdentifierValue Right;
 
         public Unboxing()
             : base(OperationKind.Unbox)

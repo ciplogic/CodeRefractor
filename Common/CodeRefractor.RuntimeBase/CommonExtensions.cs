@@ -1,4 +1,4 @@
-#region Usings
+#region Uses
 
 using System;
 using System.CodeDom;
@@ -63,7 +63,7 @@ namespace CodeRefractor
                 result.Add(item);
             }
             return result;
-        } 
+        }
 
         public static void AddRange<T>(this SortedSet<T> collection, IEnumerable<T> toAdd)
         {
@@ -94,7 +94,7 @@ namespace CodeRefractor
 
         public static int Int(this string value)
         {
-            return Int32.Parse(value);
+            return int.Parse(value);
         }
 
         public static string Str(this int value)
@@ -147,10 +147,9 @@ namespace CodeRefractor
             return result;
         }
 
-
         public static Type GetMappedType(this Type type, ClosureEntities crRuntime)
         {
-            var mappedType=crRuntime.ResolveType(type);
+            var mappedType = crRuntime.ResolveType(type);
             return mappedType ?? type;
         }
 
@@ -160,16 +159,15 @@ namespace CodeRefractor
             {
                 if (mappedType.Value == type)
                     return mappedType.Key;
-
             }
             return type;
         }
 
-        public static IEnumerable<string> GetParamAsPrettyList(ParameterInfo[] parameterInfos, bool pinvoke =false)
+        public static IEnumerable<string> GetParamAsPrettyList(ParameterInfo[] parameterInfos, bool pinvoke = false)
         {
             return parameterInfos.Select(
                 param =>
-                    String.Format("{0} {1}", param.ParameterType.ToCppName(isPInvoke:pinvoke), param.Name));
+                    string.Format("{0} {1}", param.ParameterType.ToCppName(isPInvoke: pinvoke), param.Name));
         }
 
         public static bool IsBranchOperation(this LocalOperation operation, bool andLabels = true)
@@ -201,8 +199,8 @@ namespace CodeRefractor
             if (value.ToLower() == "m1") //
                 return -1;
             int result;
-            if(!Int32.TryParse(value, out result))
-                throw new InvalidDataException("Integer not well formatted: "+value);
+            if (!int.TryParse(value, out result))
+                throw new InvalidDataException("Integer not well formatted: " + value);
             return result;
         }
 
@@ -251,7 +249,6 @@ namespace CodeRefractor
             {
                 StartInfo =
                 {
-
                     FileName = pathToExe,
                     Arguments = arguments,
                     WorkingDirectory = workingDirectory,
@@ -263,11 +260,11 @@ namespace CodeRefractor
                 }
             };
 
-            StringBuilder output = new StringBuilder();
-            StringBuilder error = new StringBuilder();
+            var output = new StringBuilder();
+            var error = new StringBuilder();
 
-            using (AutoResetEvent outputWaitHandle = new AutoResetEvent(false))
-            using (AutoResetEvent errorWaitHandle = new AutoResetEvent(false))
+            using (var outputWaitHandle = new AutoResetEvent(false))
+            using (var errorWaitHandle = new AutoResetEvent(false))
             {
                 process.OutputDataReceived += (sender, e) =>
                 {
@@ -304,21 +301,16 @@ namespace CodeRefractor
                     // Process completed. Check process.ExitCode here.
                     var standardOutput = output.ToString();
                     var standardError = error.ToString();
-                    return String.IsNullOrWhiteSpace(standardOutput)
+                    return string.IsNullOrWhiteSpace(standardOutput)
                         ? standardError
-                        : String.IsNullOrWhiteSpace(standardError)
+                        : string.IsNullOrWhiteSpace(standardError)
                             ? standardOutput
                             : standardOutput + Environment.NewLine + standardError;
                 }
-                else
-                {
-                    // Timed out.
-                    return "Process terminated immaturely";
-                }
+                // Timed out.
+                return "Process terminated immaturely";
             }
         }
-
-    
 
         public static void DeleteFile(this string fileName)
         {

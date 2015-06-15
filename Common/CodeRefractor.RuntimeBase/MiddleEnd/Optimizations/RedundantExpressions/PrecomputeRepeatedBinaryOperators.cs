@@ -1,7 +1,8 @@
-﻿#region Usings
+﻿#region Uses
 
 using System.Collections.Generic;
 using CodeRefractor.FrontEnd.SimpleOperations;
+using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
 using CodeRefractor.MiddleEnd.SimpleOperations;
@@ -13,8 +14,8 @@ using CodeRefractor.RuntimeBase.Optimizations;
 #endregion
 
 namespace CodeRefractor.MiddleEnd.Optimizations.RedundantExpressions
-{	
-	[Optimization(Category = OptimizationCategories.CommonSubexpressionsElimination)]
+{
+    [Optimization(Category = OptimizationCategories.CommonSubexpressionsElimination)]
     internal class PrecomputeRepeatedBinaryOperators : BlockOptimizationPass
     {
         public override bool OptimizeBlock(CilMethodInterpreter midRepresentation, int startRange, int endRange,
@@ -68,7 +69,6 @@ namespace CodeRefractor.MiddleEnd.Optimizations.RedundantExpressions
             }
             return calls;
         }
-
 
         private static bool AreDifferentOperators(BinaryOperator firstOperator, BinaryOperator secondOperator,
             List<int> calls, int i,

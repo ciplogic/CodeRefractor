@@ -1,19 +1,20 @@
-﻿using System;
-using System.Linq;
+﻿#region Uses
+
+using System;
 using System.Reflection;
 using CodeRefractor.ClosureCompute.Resolvers;
-using CodeRefractor.RuntimeBase;
-using CodeRefractor.Util;
+
+#endregion
 
 namespace CodeRefractor.ClosureCompute
 {
     public class ClosureEntitiesUtils
     {
-        private Func<ClosureEntities> _getClosureEntities;
+        private readonly Func<ClosureEntities> _getClosureEntities;
 
         public ClosureEntitiesUtils(Func<ClosureEntities> getClosureEntities)
         {
-            this._getClosureEntities = getClosureEntities;
+            _getClosureEntities = getClosureEntities;
         }
 
         public ClosureEntities BuildClosureEntities(MethodInfo definition, Assembly runtimeAssembly)

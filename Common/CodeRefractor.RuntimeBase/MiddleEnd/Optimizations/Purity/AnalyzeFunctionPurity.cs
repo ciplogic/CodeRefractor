@@ -1,4 +1,4 @@
-﻿#region Usings
+﻿#region Uses
 
 using CodeRefractor.Backend.Linker;
 using CodeRefractor.MiddleEnd.Interpreters;
@@ -12,7 +12,7 @@ using CodeRefractor.RuntimeBase.Optimizations;
 
 namespace CodeRefractor.MiddleEnd.Optimizations.Purity
 {
-	[Optimization(Category = OptimizationCategories.Analysis)]
+    [Optimization(Category = OptimizationCategories.Analysis)]
     public class AnalyzeFunctionPurity : ResultingGlobalOptimizationPass
     {
         public static bool ReadPurity(MethodInterpreter intermediateCode)

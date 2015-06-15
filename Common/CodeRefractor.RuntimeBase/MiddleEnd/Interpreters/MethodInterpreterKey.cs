@@ -1,4 +1,4 @@
-#region Usings
+#region Uses
 
 using System;
 using System.Collections.Generic;
@@ -13,29 +13,14 @@ namespace CodeRefractor.MiddleEnd.Interpreters
 {
     public class MethodInterpreterKey : IComparable
     {
-        private readonly MethodInterpreter _interpreter;
-        private int _hash;
         private readonly string _methodName;
         private readonly Type[] _parameterList;
-
-        public Type DeclaringType { get; set; }
-
-        public Type ImplementingType { get; set; }
-
-        public void AdjustDeclaringTypeByImplementingType()
-        {
-            Type value = ImplementingType;
-            var customAttr = value.GetCustomAttributeT<ExtensionsImplementation>();
-            if (customAttr != null)
-            {
-                DeclaringType = customAttr.DeclaringType;
-            }
-        }
+        private int _hash;
 
         public MethodInterpreterKey(MethodInterpreter interpreter, Type implementingType = null)
         {
-            _interpreter = interpreter;
-            var methodBase = _interpreter.Method;
+            Interpreter = interpreter;
+            var methodBase = Interpreter.Method;
             DeclaringType = methodBase.DeclaringType;
             ImplementingType = implementingType ?? methodBase.DeclaringType;
             _methodName = methodBase.Name;
@@ -52,6 +37,32 @@ namespace CodeRefractor.MiddleEnd.Interpreters
             RecomputeHash();
         }
 
+        public Type DeclaringType { get; set; }
+        public Type ImplementingType { get; set; }
+        public MethodInterpreter Interpreter { get; }
+
+        public int CompareTo(object obj)
+        {
+            var objKey = obj as MethodInterpreterKey;
+            if (objKey == null)
+                return -2;
+            if (_hash == objKey._hash)
+                return 0;
+            if (_hash < objKey._hash)
+                return -1;
+
+            return 1;
+        }
+
+        public void AdjustDeclaringTypeByImplementingType()
+        {
+            var value = ImplementingType;
+            var customAttr = value.GetCustomAttributeT<ExtensionsImplementation>();
+            if (customAttr != null)
+            {
+                DeclaringType = customAttr.DeclaringType;
+            }
+        }
 
         public void MapTypes(Dictionary<Type, Type> mappedTypes)
         {
@@ -78,7 +89,6 @@ namespace CodeRefractor.MiddleEnd.Interpreters
             return result;
         }
 
-
         private int ComputeHash()
         {
             var baseHash = _methodName.GetHashCode();
@@ -89,27 +99,9 @@ namespace CodeRefractor.MiddleEnd.Interpreters
             return baseHash;
         }
 
-        public MethodInterpreter Interpreter
-        {
-            get { return _interpreter; }
-        }
-
         public override int GetHashCode()
         {
             return _hash;
-        }
-
-        public int CompareTo(object obj)
-        {
-            var objKey = obj as MethodInterpreterKey;
-            if (objKey == null)
-                return -2;
-            if (_hash == objKey._hash)
-                return 0;
-            if (_hash < objKey._hash)
-                return -1;
-
-            return 1;
         }
 
         public override string ToString()

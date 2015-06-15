@@ -1,12 +1,12 @@
-#region Usings
+#region Uses
 
 using System.Collections.Generic;
 using System.Linq;
 using CodeRefractor.FrontEnd.SimpleOperations;
+using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.RuntimeBase.Analyze;
-using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations;
 
 #endregion
 
@@ -14,13 +14,11 @@ namespace CodeRefractor.MiddleEnd.UseDefs
 {
     public class UseDefDescription
     {
-        private volatile LocalVariable[][] _usages = {};
-        private volatile LocalVariable[] _definitions = {};
-
-        private Dictionary<int, int> _labelTable;
         private readonly Dictionary<OperationKind, int[]> _instructionMix = new Dictionary<OperationKind, int[]>();
+        private volatile LocalVariable[] _definitions = {};
+        private Dictionary<int, int> _labelTable;
         private LocalOperation[] _operations;
-
+        private volatile LocalVariable[][] _usages = {};
 
         public void Update(LocalOperation[] operations)
         {

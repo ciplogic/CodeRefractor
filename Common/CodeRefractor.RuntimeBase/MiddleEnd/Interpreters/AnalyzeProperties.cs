@@ -1,4 +1,4 @@
-﻿#region Usings
+﻿#region Uses
 
 using System.Collections.Generic;
 using System.Linq;
@@ -13,14 +13,12 @@ namespace CodeRefractor.MiddleEnd.Interpreters
 {
     public class AnalyzeProperties
     {
+        public readonly List<LocalVariable> Arguments = new List<LocalVariable>();
         public bool IsPure { get; set; }
         public bool IsEmpty { get; set; }
         public bool IsSetter { get; set; }
         public bool IsGetter { get; set; }
         public bool IsReadOnly { get; set; }
-
-
-        public readonly List<LocalVariable> Arguments = new List<LocalVariable>();
 
         public void SetupArguments(MethodBase method)
         {
@@ -46,17 +44,15 @@ namespace CodeRefractor.MiddleEnd.Interpreters
                 })
                 .ToArray();
             Arguments.AddRange(argumentVariables);
-
         }
 
         public void Setup(List<LocalVariable> virtRegs, List<LocalVariable> localVars)
         {
-            
         }
 
         public EscapingMode GetVariableData(LocalVariable variable)
         {
-            EscapingMode result = variable.Escaping;
+            var result = variable.Escaping;
             return result;
         }
 

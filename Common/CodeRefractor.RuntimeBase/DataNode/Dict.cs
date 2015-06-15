@@ -1,4 +1,4 @@
-#region Usings
+#region Uses
 
 using System.Collections.Generic;
 
@@ -6,9 +6,11 @@ using System.Collections.Generic;
 
 namespace CodeRefractor.DataNode
 {
-    internal class Dict
+    class Dict
     {
-        private readonly Dictionary<string, int> _words = new Dictionary<string, int>();
+        readonly Dictionary<string, int> _words = new Dictionary<string, int>();
+
+        public int Count => _words.Count;
 
         public bool HasWord(string word)
         {
@@ -21,11 +23,6 @@ namespace CodeRefractor.DataNode
             if (_words.TryGetValue(word, out id))
                 return id;
             return -1;
-        }
-
-        public int Count
-        {
-            get { return _words.Count; }
         }
 
         internal void AddWord(string newText)
