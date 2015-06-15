@@ -7,7 +7,6 @@ using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
 using CodeRefractor.MiddleEnd.SimpleOperations;
-using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.UseDefs;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.Optimizations;
@@ -40,7 +39,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.SimpleDce
             return ApplyOptimization(interpreter, toPatch, localOperations);
         }
 
-        private bool ApplyOptimization(CilMethodInterpreter methodInterpreter, List<int> toPatch,
+        bool ApplyOptimization(CilMethodInterpreter methodInterpreter, List<int> toPatch,
             LocalOperation[] localOperations)
         {
             foreach (var patchLine in toPatch)
@@ -53,7 +52,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.SimpleDce
             return true;
         }
 
-        private static List<int> Analyze(LocalOperation[] localOperations)
+        static List<int> Analyze(LocalOperation[] localOperations)
         {
             var count = localOperations.Length;
             var toPatch = new List<int>();

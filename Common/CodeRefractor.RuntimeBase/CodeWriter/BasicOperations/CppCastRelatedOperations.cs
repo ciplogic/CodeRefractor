@@ -17,7 +17,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 {
     internal static class CppCastRelatedOperations
     {
-        private static readonly string BoxingTemplate = @"
+        static readonly string BoxingTemplate = @"
 template<class T>
 struct BoxedT : public System_Object
 {
@@ -39,12 +39,12 @@ T unbox_value(" + TypeNamerUtils.StdSharedPtr + @"<System_Object> value){
 	return castedUnboxing->Data;
 }";
 
-        private static void HandleIsInstance(IsInstance operation, CodeOutput bodySb, ClosureEntities crRuntime)
+        static void HandleIsInstance(IsInstance operation, CodeOutput bodySb, ClosureEntities crRuntime)
         {
             LinkingData.Instance.IsInstTable.GenerateInstructionCode(operation, bodySb, crRuntime);
         }
 
-        private static void HandleUnbox(Unboxing unboxing, CodeOutput bodySb, ClosureEntities closureEntities)
+        static void HandleUnbox(Unboxing unboxing, CodeOutput bodySb, ClosureEntities closureEntities)
         {
             var typeDescription = unboxing.AssignedTo.ComputedType();
             bodySb
@@ -54,7 +54,7 @@ T unbox_value(" + TypeNamerUtils.StdSharedPtr + @"<System_Object> value){
                     typeDescription.GetClrType(closureEntities).ToDeclaredVariableType(EscapingMode.Stack));
         }
 
-        private static void HandleBox(Boxing boxing, CodeOutput bodySb, TypeDescriptionTable typeTable,
+        static void HandleBox(Boxing boxing, CodeOutput bodySb, TypeDescriptionTable typeTable,
             ClosureEntities closureEntities)
         {
             var typeDescription = boxing.Right.ComputedType();
@@ -66,7 +66,7 @@ T unbox_value(" + TypeNamerUtils.StdSharedPtr + @"<System_Object> value){
                     typeTable.GetTypeId(typeDescription.GetClrType(closureEntities)));
         }
 
-        private static void HandleCastClass(ClassCasting casting, CodeOutput bodySb, ClosureEntities closureEntities)
+        static void HandleCastClass(ClassCasting casting, CodeOutput bodySb, ClosureEntities closureEntities)
         {
             var typeDescription = casting.AssignedTo.ComputedType();
             bodySb
@@ -82,11 +82,10 @@ T unbox_value(" + TypeNamerUtils.StdSharedPtr + @"<System_Object> value){
             switch (opKind)
             {
                 case OperationKind.Box:
-                    var boxing = crRuntime.FindFeature("Boxing");
-                    if (!boxing.IsUsed)
+                    if (!Boxing.IsUsed)
                     {
-                        boxing.IsUsed = true;
-                        boxing.Declarations.Add(BoxingTemplate);
+                        Boxing.IsUsed = true;
+                        bodySb.Append(BoxingTemplate);
                     }
                     HandleBox((Boxing) operation, bodySb, typeTable, crRuntime);
                     break;

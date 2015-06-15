@@ -42,15 +42,13 @@ namespace CodeRefractor.CodeWriter.Linker
                 );
         }
 
-        private static void AddToRuntime(ClosureEntities crRuntime)
+        static bool IsInstanceUsed { get; set; }
+
+        static void AddToRuntime(ClosureEntities crRuntime)
         {
-            var feature = crRuntime.FindFeature("IsInstance");
+            IsInstanceUsed  = true;
 
-            feature.IsUsed = true;
-            feature.Name = "IsInstance";
-
-            feature.Headers = new List<string> {"map", "algorithm"};
-            feature.Declarations = new List<string>
+            /*feature.Declarations = new List<string>
             {
                 "bool IsInstanceOf(int typeSource, int typeImplementation);",
                 "System_Void buildTypesTable();",
@@ -58,9 +56,10 @@ namespace CodeRefractor.CodeWriter.Linker
             };
             feature.Initializer =
                 "buildTypesTable();";
-        }
+    */    
+    }
 
-        public void BuildTypeMatchingTable(TypeDescriptionTable table, ClosureEntities closure)
+        public void BuildTypeMatchingTable(TypeDescriptionTable table, ClosureEntities closure, StringBuilder featureBuilder)
         {
             var sb = new StringBuilder();
 
@@ -80,10 +79,10 @@ bool IsInstanceOf(int typeSource, int typeImplementation) {
 
 }
 ");
-            closure.FindFeature("IsInstance").Functions += sb.ToString();
+            featureBuilder.AppendLine( sb.ToString());
         }
 
-        private void AddAllTypes(StringBuilder sb, TypeDescriptionTable table, ClosureEntities closure)
+        void AddAllTypes(StringBuilder sb, TypeDescriptionTable table, ClosureEntities closure)
         {
             foreach (var type in TypesToCast)
             {

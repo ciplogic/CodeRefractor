@@ -5,7 +5,6 @@ using System.Linq;
 using CodeRefractor.FrontEnd.SimpleOperations;
 using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.SimpleOperations;
-using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.RuntimeBase.Analyze;
 
 #endregion
@@ -14,11 +13,11 @@ namespace CodeRefractor.MiddleEnd.UseDefs
 {
     public class UseDefDescription
     {
-        private readonly Dictionary<OperationKind, int[]> _instructionMix = new Dictionary<OperationKind, int[]>();
-        private volatile LocalVariable[] _definitions = {};
-        private Dictionary<int, int> _labelTable;
-        private LocalOperation[] _operations;
-        private volatile LocalVariable[][] _usages = {};
+        readonly Dictionary<OperationKind, int[]> _instructionMix = new Dictionary<OperationKind, int[]>();
+        volatile LocalVariable[] _definitions = { };
+        Dictionary<int, int> _labelTable;
+        LocalOperation[] _operations;
+        volatile LocalVariable[][] _usages = { };
 
         public void Update(LocalOperation[] operations)
         {
@@ -33,14 +32,14 @@ namespace CodeRefractor.MiddleEnd.UseDefs
             UpdateLabelsTable(operations);
         }
 
-        private void UpdateLabelsTable(LocalOperation[] operations)
+        void UpdateLabelsTable(LocalOperation[] operations)
         {
             var labelOperations = GetOperationsOfKind(OperationKind.Label);
 
             _labelTable = InstructionsUtils.BuildLabelTable(operations, labelOperations);
         }
 
-        private void SetInstructionMixToField(Dictionary<OperationKind, List<int>> instructionMix)
+        void SetInstructionMixToField(Dictionary<OperationKind, List<int>> instructionMix)
         {
             _instructionMix.Clear();
             foreach (var instruction in instructionMix)
@@ -64,7 +63,7 @@ namespace CodeRefractor.MiddleEnd.UseDefs
             return stillUnused.ToList();
         }
 
-        private Dictionary<OperationKind, List<int>> BuildInstructionMix(LocalOperation[] operations)
+        Dictionary<OperationKind, List<int>> BuildInstructionMix(LocalOperation[] operations)
         {
             var instructionMix = new Dictionary<OperationKind, List<int>>();
             for (var index = 0; index < operations.Length; index++)

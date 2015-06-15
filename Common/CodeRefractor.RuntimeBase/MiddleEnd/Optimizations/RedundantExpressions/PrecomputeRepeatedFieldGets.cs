@@ -7,7 +7,6 @@ using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
 using CodeRefractor.MiddleEnd.SimpleOperations;
-using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.UseDefs;
 using CodeRefractor.RuntimeBase.Optimizations;
 
@@ -29,7 +28,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.RedundantExpressions
             return ProcessOptimizeBlock(midRepresentation, getFieldOperations, localOperations);
         }
 
-        private static bool ProcessOptimizeBlock(CilMethodInterpreter midRepresentation, int[] getFieldOperations,
+        static bool ProcessOptimizeBlock(CilMethodInterpreter midRepresentation, int[] getFieldOperations,
             LocalOperation[] localOperations)
         {
             for (var i = 0; i < getFieldOperations.Length - 1; i++)
@@ -50,7 +49,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.RedundantExpressions
             return false;
         }
 
-        private static void ApplyOptimization(CilMethodInterpreter midRepresentation, int i, int j)
+        static void ApplyOptimization(CilMethodInterpreter midRepresentation, int i, int j)
         {
             var localOps = midRepresentation.MidRepresentation.LocalOperations;
             var firstOperator = localOps[i].Get<GetField>();
@@ -67,14 +66,14 @@ namespace CodeRefractor.MiddleEnd.Optimizations.RedundantExpressions
             localOps[j + 1] = destAssignment;
         }
 
-        private static int[] FindGetFieldOperations(UseDefDescription useDef, int startRange, int endRange)
+        static int[] FindGetFieldOperations(UseDefDescription useDef, int startRange, int endRange)
         {
             var getFieldIndexes = useDef.GetOperationsOfKind(OperationKind.GetField);
             var resultList = getFieldIndexes.Where(index => index >= startRange && index <= endRange).ToArray();
             return resultList;
         }
 
-        private static bool AreDifferentOperators(GetField firstOperator, GetField secondOperator, int[] calls,
+        static bool AreDifferentOperators(GetField firstOperator, GetField secondOperator, int[] calls,
             int i,
             int j, LocalOperation[] localOperations)
         {

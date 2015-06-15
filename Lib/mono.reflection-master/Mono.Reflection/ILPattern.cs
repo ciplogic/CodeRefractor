@@ -57,7 +57,7 @@ namespace Mono.Reflection {
 
 			public OptionalPattern (ILPattern optional)
 			{
-				this.pattern = optional;
+				pattern = optional;
 			}
 
 			public override void Match (MatchContext context)
@@ -209,12 +209,12 @@ namespace Mono.Reflection {
 		internal void Reset (Instruction instruction)
 		{
 			this.instruction = instruction;
-			this.success = true;
+			success = true;
 		}
 
 		internal void Advance ()
 		{
-			this.instruction = this.instruction.Next;
+			instruction = instruction.Next;
 		}
 	}
 }

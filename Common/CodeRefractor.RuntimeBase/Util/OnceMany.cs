@@ -7,9 +7,9 @@
 
     public class OnceMany<T>
     {
-        private readonly T _many;
-        private readonly T _once;
-        private bool _firstReturned;
+        readonly T _many;
+        readonly T _once;
+        bool _firstReturned;
 
         public OnceMany(T once, T many)
         {

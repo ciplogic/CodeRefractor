@@ -63,7 +63,7 @@ namespace CodeRefractor.ClosureCompute.Steps
             return matchingMethod;
         }
 
-        private static bool MethodMatchesParam(MethodInfo met, MethodInfo info)
+        static bool MethodMatchesParam(MethodInfo met, MethodInfo info)
         {
             var srcParameters = met.GetParameters();
             var destParameters = info.GetParameters();

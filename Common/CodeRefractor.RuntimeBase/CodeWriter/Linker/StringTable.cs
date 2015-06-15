@@ -10,8 +10,8 @@ namespace CodeRefractor.CodeWriter.Linker
 {
     public class StringTable
     {
-        private readonly Dictionary<string, int> _stringsDictionary = new Dictionary<string, int>();
-        private readonly List<string> _table = new List<string>();
+        readonly Dictionary<string, int> _stringsDictionary = new Dictionary<string, int>();
+        readonly List<string> _table = new List<string>();
 
         public int GetStringId(string text)
         {
@@ -23,12 +23,12 @@ namespace CodeRefractor.CodeWriter.Linker
             return result;
         }
 
-        private static short[] TextData(string text)
+        static short[] TextData(string text)
         {
             var result = new short[text.Length + 1];
             for (var i = 0; i < text.Length; i++)
             {
-                result[i] = (short) text[i];
+                result[i] = (short)text[i];
             }
             result[text.Length] = 0;
             return result;
@@ -69,7 +69,7 @@ namespace CodeRefractor.CodeWriter.Linker
             return sb.ToString();
         }
 
-        private static void AddTextToStringTable(List<string> stringDataBuilder, short[] itemTextData, string strItem)
+        static void AddTextToStringTable(List<string> stringDataBuilder, short[] itemTextData, string strItem)
         {
             var itemsText = string.Join(", ", itemTextData);
             var commentedString = string.Format("/* {0} */", strItem.ToEscapedString());

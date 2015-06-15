@@ -8,7 +8,6 @@ using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
 using CodeRefractor.MiddleEnd.SimpleOperations;
-using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.SimpleOperations.Operators;
 using CodeRefractor.MiddleEnd.UseDefs;
 using CodeRefractor.RuntimeBase.Analyze;
@@ -64,7 +63,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndProp
             return true;
         }
 
-        private List<int> PatchInstructions(LocalOperation[] localOperations, IEnumerable<int> toPatch)
+        List<int> PatchInstructions(LocalOperation[] localOperations, IEnumerable<int> toPatch)
         {
             var toRemove = new List<int>();
             foreach (var line in toPatch)
@@ -74,12 +73,12 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndProp
                 switch (destOperation.Kind)
                 {
                     case OperationKind.Assignment:
-                        var operatorAssig = (Assignment) destOperation;
+                        var operatorAssig = (Assignment)destOperation;
                         operatorAssig.AssignedTo = assignment.AssignedTo;
                         break;
                     case OperationKind.UnaryOperator:
                     case OperationKind.BinaryOperator:
-                        var operatorData = (OperatorBase) destOperation;
+                        var operatorData = (OperatorBase)destOperation;
                         operatorData.AssignedTo = assignment.AssignedTo;
                         break;
                     default:
@@ -90,7 +89,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndProp
             return toRemove;
         }
 
-        private static void RemoveNonUniqueDefinitions(Dictionary<LocalVariable, int> dictionaryPositions)
+        static void RemoveNonUniqueDefinitions(Dictionary<LocalVariable, int> dictionaryPositions)
         {
             var toRemove = new HashSet<LocalVariable>();
 
@@ -105,7 +104,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndProp
             }
         }
 
-        private void BuildDefinitionDictionary(LocalOperation[] localOperations, UseDefDescription useDef,
+        void BuildDefinitionDictionary(LocalOperation[] localOperations, UseDefDescription useDef,
             Dictionary<LocalVariable, int> definitionsDictionary, Dictionary<LocalVariable, int> usagesDictionary)
         {
             for (var i = 0; i < localOperations.Length; i++)
@@ -117,7 +116,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndProp
             }
         }
 
-        private void UpdateUsagesDictionaryForIndex(int i, LocalVariable[] usages,
+        void UpdateUsagesDictionaryForIndex(int i, LocalVariable[] usages,
             Dictionary<LocalVariable, int> usagesDictionary)
         {
             foreach (var localVariable in usages)
@@ -131,7 +130,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndProp
             }
         }
 
-        private void UpdateDefinitionDictionaryForIndex(int i, LocalVariable def,
+        void UpdateDefinitionDictionaryForIndex(int i, LocalVariable def,
             Dictionary<LocalVariable, int> definitionsDictionary)
         {
             if (def == null)

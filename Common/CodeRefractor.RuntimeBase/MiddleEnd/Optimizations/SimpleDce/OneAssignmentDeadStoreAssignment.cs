@@ -53,7 +53,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.SimpleDce
             return result;
         }
 
-        private Dictionary<LocalVariable, ConstValue> GetAssignToConstOperations(LocalOperation[] localOperations,
+        Dictionary<LocalVariable, ConstValue> GetAssignToConstOperations(LocalOperation[] localOperations,
             UseDefDescription useDef)
         {
             var constValues = new Dictionary<LocalVariable, ConstValue>();
@@ -61,7 +61,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.SimpleDce
             foreach (var index in assignmentIds)
             {
                 var op = localOperations[index];
-                var assign = (Assignment) op;
+                var assign = (Assignment)op;
                 var assignedTo = assign.AssignedTo;
                 if (assignedTo.Kind == VariableKind.Argument)
                     continue;
@@ -81,7 +81,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.SimpleDce
                     constValues.Remove(definition);
                     continue;
                 }
-                var assign = (Assignment) op;
+                var assign = (Assignment)op;
                 var constAssignedValue = assign.Right as ConstValue;
                 if (constAssignedValue == null)
                 {

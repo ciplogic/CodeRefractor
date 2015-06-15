@@ -10,16 +10,16 @@ namespace CodeRefractor.ClosureCompute
 {
     public class ClosureEntitiesUtils
     {
-        private readonly Func<ClosureEntities> _getClosureEntities;
+        readonly ClosureEntities _getClosureEntities;
 
-        public ClosureEntitiesUtils(Func<ClosureEntities> getClosureEntities)
+        public ClosureEntitiesUtils(ClosureEntities getClosureEntities)
         {
             _getClosureEntities = getClosureEntities;
         }
 
         public ClosureEntities BuildClosureEntities(MethodInfo definition, Assembly runtimeAssembly)
         {
-            var closureEntities = _getClosureEntities();
+            var closureEntities = _getClosureEntities;
 
             closureEntities.EntryPoint = definition;
 

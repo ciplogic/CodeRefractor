@@ -17,7 +17,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
 {
     public class TypeDescription
     {
-        private static readonly HashSet<Type> IgnoredSet = new HashSet<Type>(
+        static readonly HashSet<Type> IgnoredSet = new HashSet<Type>(
             new[]
             {
                 typeof (object),
@@ -83,7 +83,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
             }
         }
 
-        private void ExtractFieldsTypes(ClosureEntities crRuntime)
+        void ExtractFieldsTypes(ClosureEntities crRuntime)
         {
             var clrType = ClrType.GetReversedType(crRuntime);
             if (clrType.Assembly.GlobalAssemblyCache)
@@ -131,7 +131,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
             WriteFieldListToLayout(codeOutput, noOffsetFields);
         }
 
-        private void BuildUnionLayouts(List<FieldDescription> noOffsetFields,
+        void BuildUnionLayouts(List<FieldDescription> noOffsetFields,
             SortedDictionary<int, List<FieldDescription>> dictionary)
         {
             foreach (var fieldData in Layout)
@@ -150,7 +150,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
             }
         }
 
-        private static void WriteFieldListToLayout(CodeOutput codeOutput, List<FieldDescription> fields)
+        static void WriteFieldListToLayout(CodeOutput codeOutput, List<FieldDescription> fields)
         {
             foreach (var fieldData in fields)
             {

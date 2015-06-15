@@ -1,5 +1,4 @@
-﻿using System;
-using CodeRefractor.Runtime.Annotations;
+﻿using CodeRefractor.Runtime.Annotations;
 
 namespace CodeRefactor.OpenRuntime.System
 {

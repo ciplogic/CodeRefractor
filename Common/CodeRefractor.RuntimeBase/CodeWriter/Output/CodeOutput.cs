@@ -14,15 +14,15 @@ namespace CodeRefractor.CodeWriter.Output
 
     public class CodeOutput
     {
-        private readonly IndentCode _indentCode;
-        private readonly StringBuilder _stringBuilderOutput;
+        readonly IndentCode _indentCode;
+        public StringBuilder StringBuilderOutput { get; }
         // keeps in mind if the outputting is now at a line beginning or not.
-        private bool _atLineBeginning = true;
+        bool _atLineBeginning = true;
 
         public CodeOutput()
         {
-            _stringBuilderOutput = new StringBuilder("");
-            _indentCode = new IndentCode(_stringBuilderOutput);
+            StringBuilderOutput = new StringBuilder("");
+            _indentCode = new IndentCode(StringBuilderOutput);
         }
 
         /**
@@ -52,7 +52,7 @@ namespace CodeRefractor.CodeWriter.Output
             // in case the text doesn't have enters, we simply add it to the buffer and are done
             if (!text.Contains("\n"))
             {
-                _stringBuilderOutput.Append(text);
+                StringBuilderOutput.Append(text);
                 return this;
             }
 
@@ -63,15 +63,15 @@ namespace CodeRefractor.CodeWriter.Output
             // the lines of the current code we're supposed to append.
             // the first line shouldn't be indented, the last line shouldn't have an ending
             // newline.
-            _stringBuilderOutput.Append(lines[0]);
+            StringBuilderOutput.Append(lines[0]);
             lines.ButFirst(line =>
             {
-                _stringBuilderOutput.Append("\n");
+                StringBuilderOutput.Append("\n");
 
                 if (line != "")
                 {
                     IndentCode();
-                    _stringBuilderOutput.Append(line);
+                    StringBuilderOutput.Append(line);
                 }
                 else
                 {
@@ -89,7 +89,7 @@ namespace CodeRefractor.CodeWriter.Output
 
         public CodeOutput BracketOpen()
         {
-            _stringBuilderOutput.Append(" {\n");
+            StringBuilderOutput.Append(" {\n");
             _indentCode.ChangeIndent(+1);
             _atLineBeginning = true;
 
@@ -132,11 +132,11 @@ namespace CodeRefractor.CodeWriter.Output
             // there's no need to close the current line
             if (_atLineBeginning)
             {
-                _stringBuilderOutput.Append("\n");
+                StringBuilderOutput.Append("\n");
             }
             else
             {
-                _stringBuilderOutput.Append("\n\n");
+                StringBuilderOutput.Append("\n\n");
             }
 
             _atLineBeginning = true;
@@ -148,7 +148,7 @@ namespace CodeRefractor.CodeWriter.Output
          * Indents the code.
          */
 
-        private void IndentCode()
+        void IndentCode()
         {
             _atLineBeginning = false;
             _indentCode.indent();
@@ -156,7 +156,7 @@ namespace CodeRefractor.CodeWriter.Output
 
         public override string ToString()
         {
-            return _stringBuilderOutput.ToString();
+            return StringBuilderOutput.ToString();
         }
     }
 }

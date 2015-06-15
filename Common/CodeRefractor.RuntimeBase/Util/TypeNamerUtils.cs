@@ -207,11 +207,11 @@ namespace CodeRefractor.Util
                 switch (isSmartPtr)
                 {
                     case EscapingMode.Smart:
-                        return string.Format(StdSharedPtr + "<{0}>", type.ToCppMangling());
+                        return $"{StdSharedPtr}<{type.ToCppMangling()}>";
                     case EscapingMode.Pointer:
-                        return string.Format("{0} *", type.ToCppMangling());
+                        return $"{type.ToCppMangling()} *";
                     case EscapingMode.Stack:
-                        return string.Format("{0} ", type.ToCppMangling());
+                        return $"{type.ToCppMangling()} ";
                 }
             }
             if (!(type.IsClass || type.IsInterface) || isSmartPtr != EscapingMode.Smart)
@@ -223,9 +223,9 @@ namespace CodeRefractor.Util
             if (type.IsByRef)
             {
                 var elementType = type.GetElementType();
-                return string.Format("{0}*", elementType.ToCppMangling());
+                return $"{elementType.ToCppMangling()}*";
             }
-            return string.Format(StdSharedPtr + "<{0}>", type.ToCppMangling());
+            return $"{StdSharedPtr}<{type.ToCppMangling()}>";
         }
 
         public static string ToCppName(this Type type,
@@ -246,11 +246,11 @@ namespace CodeRefractor.Util
                 switch (isSmartPtr)
                 {
                     case EscapingMode.Smart:
-                        return string.Format(StdSharedPtr + "< Array < {0} > >", fullTypeName);
+                        return $"{StdSharedPtr}< Array < {fullTypeName} > >";
                     case EscapingMode.Pointer:
-                        return string.Format("Array < {0} > *", fullTypeName);
+                        return $"Array < {fullTypeName} > *";
                     case EscapingMode.Stack:
-                        return string.Format("Array < {0} > ", fullTypeName);
+                        return $"Array < {fullTypeName} > ";
                 }
             }
             if ((type.IsClass || type.IsInterface) || isSmartPtr != EscapingMode.Smart)
@@ -261,7 +261,7 @@ namespace CodeRefractor.Util
                 {
                     var elementType = type.GetElementType();
                     var elementTypeCppName = elementType.ToCppName();
-                    return string.Format("{0}* ", elementTypeCppName);
+                    return $"{elementTypeCppName}* ";
                 }
                 if (type.IsGenericFieldUsage())
                     isSmartPtr = EscapingMode.Stack;
@@ -270,9 +270,9 @@ namespace CodeRefractor.Util
                     case EscapingMode.Smart:
                         return string.Format(StdSharedPtr + "<{0}>", type.ToCppMangling());
                     case EscapingMode.Pointer:
-                        return string.Format("{0}*", type.ToCppMangling());
+                        return $"{type.ToCppMangling()}*";
                     case EscapingMode.Stack:
-                        return string.Format("{0}", type.ToCppMangling());
+                        return $"{type.ToCppMangling()}";
                 }
             }
             if (!(type.IsClass || type.IsInterface) || isSmartPtr != EscapingMode.Smart)
@@ -295,10 +295,10 @@ namespace CodeRefractor.Util
             var typeList = new List<string>();
             for (var i = 1; i <= genericTypeCount; i++)
             {
-                typeList.Add(string.Format("class T{0}", i));
+                typeList.Add($"class T{i}");
             }
             var result = string.Join(", ", typeList);
-            return string.Format("template <{0}> ", result);
+            return $"template <{result}> ";
         }
 
         public static bool IsVoid(this Type type)

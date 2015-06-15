@@ -9,8 +9,8 @@ namespace CodeRefractor.Analyze
 {
     public class FieldNameTable
     {
-        private readonly Dictionary<string, string> _invalidNames = new Dictionary<string, string>();
-        private int _countedField;
+        readonly Dictionary<string, string> _invalidNames = new Dictionary<string, string>();
+        int _countedField;
         public static FieldNameTable Instance { get; } = new FieldNameTable();
 
         public string GetFieldName(string name)

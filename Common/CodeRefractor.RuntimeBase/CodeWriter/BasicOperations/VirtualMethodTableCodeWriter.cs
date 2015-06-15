@@ -123,7 +123,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             return sb.ToString();
         }
 
-        private static void WriteForwardVcalls(ClosureEntities crRuntime, HashSet<MethodInfo> vcalls, StringBuilder sb)
+        static void WriteForwardVcalls(ClosureEntities crRuntime, HashSet<MethodInfo> vcalls, StringBuilder sb)
         {
             foreach (var virtualMethod in vcalls)
             {
@@ -139,7 +139,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             }
         }
 
-        private static string GetParametersString(MethodInfo virtualMethod,
+        static string GetParametersString(MethodInfo virtualMethod,
             ClosureEntities crRuntime)
         {
             var sb = new StringBuilder();
@@ -147,7 +147,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             var declaringType = virtualMethod.DeclaringType.GetReversedMappedType(crRuntime);
             if (declaringType.IsInterface) //Interface definitions are "objects"
             {
-                sb.AppendFormat("const {0} _this", typeof (object).ToCppName());
+                sb.AppendFormat("const {0} _this", typeof(object).ToCppName());
             }
             else
             {
@@ -164,14 +164,14 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             return sb.ToString();
         }
 
-        private static string GetCall(MethodInfo virtualMethod, MethodInfo implementingMethod, ClosureEntities crRuntime)
+        static string GetCall(MethodInfo virtualMethod, MethodInfo implementingMethod, ClosureEntities crRuntime)
         {
             //Add Rest of parameters
             var parameters = virtualMethod.GetParameters();
             var usedArgs = implementingMethod.GetInterpreter(crRuntime) != null
                 ? MidRepresentationUtils.GetUsedArguments(implementingMethod.GetInterpreter(crRuntime))
                 : Enumerable.Repeat(true, parameters.Count() + 1).ToArray();
-                // Sometime we dont have a implementingMethod interpreter ... why ?
+            // Sometime we dont have a implementingMethod interpreter ... why ?
             var pCount = 0;
             var parametersString = usedArgs[0]
                 ? GetCorrectParameter(virtualMethod, implementingMethod, crRuntime, 0)
@@ -197,13 +197,13 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             }
 
 
-//            sb.Append(", ");
-//            var arguments = string.Join(", ", parameters.Select(par=>par.Name));
-//            sb.Append(arguments);
+            //            sb.Append(", ");
+            //            var arguments = string.Join(", ", parameters.Select(par=>par.Name));
+            //            sb.Append(arguments);
             return sb.ToString();
         }
 
-        private static string GetCorrectParameter(MethodInfo virtualMethod, MethodInfo implementingMethod,
+        static string GetCorrectParameter(MethodInfo virtualMethod, MethodInfo implementingMethod,
             ClosureEntities crRuntime, int parameter)
         {
             if (parameter == 0) //TODO: Add Unboxing Feature if Value types are found

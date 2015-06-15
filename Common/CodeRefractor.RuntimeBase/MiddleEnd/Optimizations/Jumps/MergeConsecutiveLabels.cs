@@ -40,7 +40,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Jumps
             }
         }
 
-        private static void OptimizeConsecutiveLabels(LocalOperation[] operations, int jumpId, int jumpId2)
+        static void OptimizeConsecutiveLabels(LocalOperation[] operations, int jumpId, int jumpId2)
         {
             for (var i = 0; i < operations.Length - 2; i++)
             {
@@ -50,12 +50,12 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Jumps
                 switch (operation.Kind)
                 {
                     case OperationKind.AlwaysBranch:
-                        var jumpTo = ((Label) operation).JumpTo;
+                        var jumpTo = ((Label)operation).JumpTo;
                         if (jumpId2 == jumpTo)
-                            ((Label) operation).JumpTo = jumpId;
+                            ((Label)operation).JumpTo = jumpId;
                         break;
                     case OperationKind.BranchOperator:
-                        var destAssignment = (BranchOperator) operation;
+                        var destAssignment = (BranchOperator)operation;
                         if (destAssignment.JumpTo == jumpId2)
                             destAssignment.JumpTo = jumpId;
                         break;

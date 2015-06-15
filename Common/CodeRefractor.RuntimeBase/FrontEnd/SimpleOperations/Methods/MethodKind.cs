@@ -6,6 +6,7 @@ namespace CodeRefractor.FrontEnd.SimpleOperations.Methods
         RuntimeLibrary,
         PlatformInvoke,
         Delegate,
-        RuntimeCppMethod
+        RuntimeCppMethod,
+        Abstract
     }
 }

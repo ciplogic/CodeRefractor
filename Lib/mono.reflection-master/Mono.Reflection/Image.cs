@@ -39,7 +39,7 @@ namespace Mono.Reflection {
 		Image (Stream stream)
 		{
 			this.stream = stream;
-			this.position = stream.Position;
+			position = stream.Position;
 			this.stream.Position = 0;
 		}
 

@@ -7,7 +7,6 @@ using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
 using CodeRefractor.MiddleEnd.SimpleOperations;
-using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.UseDefs;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.Optimizations;
@@ -19,7 +18,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.SimpleDce
     [Optimization(Category = OptimizationCategories.DeadCodeElimination)]
     internal class DeadStoreAssignment : OptimizationPassBase
     {
-        private static readonly List<OperationKind> NoSideEffectsOperationKinds = new List<OperationKind>
+        static readonly List<OperationKind> NoSideEffectsOperationKinds = new List<OperationKind>
         {
             OperationKind.Assignment,
             OperationKind.BinaryOperator,
@@ -53,7 +52,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.SimpleDce
             return true;
         }
 
-        private static void RemoveUsages(LocalOperation[] localOperations, UseDefDescription useDef,
+        static void RemoveUsages(LocalOperation[] localOperations, UseDefDescription useDef,
             Dictionary<LocalVariable, int> definitions)
         {
             for (var index = 0; index < localOperations.Length; index++)
@@ -68,7 +67,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.SimpleDce
             }
         }
 
-        private void ComputeDefinitions(LocalOperation[] localOperations, Dictionary<LocalVariable, int> definitions)
+        void ComputeDefinitions(LocalOperation[] localOperations, Dictionary<LocalVariable, int> definitions)
         {
             for (var index = 0; index < localOperations.Length; index++)
             {
@@ -80,7 +79,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.SimpleDce
             }
         }
 
-        private List<int> BuildRemoveInstructions(LocalOperation[] localOperations,
+        List<int> BuildRemoveInstructions(LocalOperation[] localOperations,
             Dictionary<LocalVariable, int> definitions)
         {
             var toRemove = new List<int>();

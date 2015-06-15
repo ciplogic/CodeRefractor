@@ -38,13 +38,13 @@ namespace CodeRefractor.MiddleEnd.SimpleOperations
             }
         }
 
-        private static bool IsNotObjectType(Type type)
+        static bool IsNotObjectType(Type type)
         {
             var typeCode = Type.GetTypeCode(type);
             return typeCode != TypeCode.Object;
         }
 
-        private static bool HasDefaultConstructor(Type type)
+        static bool HasDefaultConstructor(Type type)
         {
             return type.GetConstructor(Type.EmptyTypes) != null;
         }

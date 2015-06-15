@@ -44,7 +44,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.SimpleDce
             return true;
         }
 
-        private static int[] FindAllNewOperators(UseDefDescription useDef, out List<int> newOperations)
+        static int[] FindAllNewOperators(UseDefDescription useDef, out List<int> newOperations)
         {
             var newObjOperations = useDef.GetOperationsOfKind(OperationKind.NewObject);
             var newArrayOperations = useDef.GetOperationsOfKind(OperationKind.NewArray);

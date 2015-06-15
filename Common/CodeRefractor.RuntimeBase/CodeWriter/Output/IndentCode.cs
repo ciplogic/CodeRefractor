@@ -8,9 +8,9 @@ namespace CodeRefractor.CodeWriter.Output
 {
     internal class IndentCode
     {
-        private const string IndentString = "    "; // TODO: this should be configurable.
-        private readonly StringBuilder _stringBuilderOutput;
-        private int _indentLevel;
+        const string IndentString = "    "; // TODO: this should be configurable.
+        readonly StringBuilder _stringBuilderOutput;
+        int _indentLevel;
 
         public IndentCode(StringBuilder stringBuilderOutput)
         {

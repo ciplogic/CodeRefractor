@@ -8,12 +8,12 @@ namespace CodeRefractor.DataNode
 {
     public class ExpanderTransformer
     {
-        private readonly Cursor _cursor = new Cursor();
-        private readonly List<string> _elementsTable = new List<string>();
-        private readonly Stack<DynNode> _stack = new Stack<DynNode>();
-        private readonly List<string> _stringTable = new List<string>();
+        readonly Cursor _cursor = new Cursor();
+        readonly List<string> _elementsTable = new List<string>();
+        readonly Stack<DynNode> _stack = new Stack<DynNode>();
+        readonly List<string> _stringTable = new List<string>();
 
-        private DynNode Top()
+        DynNode Top()
         {
             return _stack.Peek();
         }
@@ -72,57 +72,57 @@ namespace CodeRefractor.DataNode
             return root;
         }
 
-        private void ExistingText()
+        void ExistingText()
         {
             var text = ReadIdName(_stringTable);
             Top().InnerText = text;
         }
 
-        private void CreateText()
+        void CreateText()
         {
             var text = _cursor.ReadString();
             Top().InnerText = text;
         }
 
-        private void ExistingAttrValue(string attrKey)
+        void ExistingAttrValue(string attrKey)
         {
             var attrValue = ReadIdName(_stringTable);
             Top()[attrKey] = attrValue;
         }
 
-        private void CreateAttrValue(string attrKey)
+        void CreateAttrValue(string attrKey)
         {
             var attrValue = _cursor.ReadString();
             _stringTable.Add(attrValue);
             Top()[attrKey] = attrValue;
         }
 
-        private string ExistingAttrKey()
+        string ExistingAttrKey()
         {
             return ReadIdName(_elementsTable);
         }
 
-        private string CreateAttrKey()
+        string CreateAttrKey()
         {
             var attrKey = _cursor.ReadString();
             _elementsTable.Add(attrKey);
             return attrKey;
         }
 
-        private void CreateExistingElement()
+        void CreateExistingElement()
         {
             var name = ReadIdName(_elementsTable);
             CreateNamedElement(name);
         }
 
-        private string ReadIdName(List<string> stringTable)
+        string ReadIdName(List<string> stringTable)
         {
             var nameId = _cursor.ReadInt();
             var name = stringTable[nameId];
             return name;
         }
 
-        private void CreateNewElement()
+        void CreateNewElement()
         {
             var name = _cursor.ReadString();
             _stringTable.Add(name);
@@ -130,7 +130,7 @@ namespace CodeRefractor.DataNode
             CreateNamedElement(name);
         }
 
-        private void CreateNamedElement(string name)
+        void CreateNamedElement(string name)
         {
             var creaElement = new DynNode(name);
             Top().Children.Add(creaElement);

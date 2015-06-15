@@ -53,7 +53,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Common
             return TryOptimizeBlock(interpreter, startPos, localOperations.Length - 1, localOperations);
         }
 
-        private static List<int> BuildBlockOperations(CilMethodInterpreter methodInterpreter)
+        static List<int> BuildBlockOperations(CilMethodInterpreter methodInterpreter)
         {
             var useDef = methodInterpreter.MidRepresentation.UseDef;
             var result = new List<int>();
@@ -64,7 +64,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Common
             return result;
         }
 
-        private bool TryOptimizeBlock(CilMethodInterpreter localOperations, int startRange, int endRange,
+        bool TryOptimizeBlock(CilMethodInterpreter localOperations, int startRange, int endRange,
             LocalOperation[] operations)
         {
             if (startRange >= endRange)

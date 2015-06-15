@@ -26,7 +26,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Purity
             interpreter.AnalyzeProperties.IsSetter = true;
         }
 
-        private static bool ComputeFunctionPurity(CilMethodInterpreter intermediateCode)
+        static bool ComputeFunctionPurity(CilMethodInterpreter intermediateCode)
         {
             if (intermediateCode == null)
                 return false;

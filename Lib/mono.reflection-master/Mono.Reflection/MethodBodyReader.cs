@@ -72,8 +72,8 @@ namespace Mono.Reflection {
 		{
 			this.method = method;
 
-			this.body = method.GetMethodBody ();
-			if (this.body == null)
+			body = method.GetMethodBody ();
+			if (body == null)
 				throw new ArgumentException ("Method has no body");
 
 			var bytes = body.GetILAsByteArray ();
@@ -86,11 +86,11 @@ namespace Mono.Reflection {
 			if (method.DeclaringType != null)
 				type_arguments = method.DeclaringType.GetGenericArguments ();
 
-			this.parameters = method.GetParameters ();
-			this.locals = body.LocalVariables;
-			this.module = method.Module;
-			this.il = new ByteBuffer (bytes);
-			this.instructions = new List<Instruction> ((bytes.Length + 1) / 2);
+			parameters = method.GetParameters ();
+			locals = body.LocalVariables;
+			module = method.Module;
+			il = new ByteBuffer (bytes);
+			instructions = new List<Instruction> ((bytes.Length + 1) / 2);
 		}
 
 		void ReadInstructions ()
@@ -223,7 +223,7 @@ namespace Mono.Reflection {
 		object GetVariable (Instruction instruction, int index)
 		{
 			return TargetsLocalVariable (instruction.OpCode)
-				? (object) GetLocalVariable (index)
+				? GetLocalVariable (index)
 				: (object) GetParameter (index);
 		}
 

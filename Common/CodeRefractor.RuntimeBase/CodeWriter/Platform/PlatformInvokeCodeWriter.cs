@@ -18,7 +18,7 @@ namespace CodeRefractor.CodeWriter.Platform
 {
     public static class PlatformInvokeCodeWriter
     {
-        private static string Import(string dll, string method, CallingConvention? callingConvention, string entryPoint)
+        static string Import(string dll, string method, CallingConvention? callingConvention, string entryPoint)
         {
             LinkingData.LibraryMethodCount++;
             var id = LinkingData.LibraryMethodCount;
@@ -68,9 +68,9 @@ namespace CodeRefractor.CodeWriter.Platform
                 .ToString();
         }
 
-        private static string WritePInvokeDefinition(this MethodInterpreter methodBase, string methodDll)
+        static string WritePInvokeDefinition(this MethodInterpreter methodBase, string methodDll)
         {
-            var platformInterpreter = (PlatformInvokeMethod) methodBase;
+            var platformInterpreter = (PlatformInvokeMethod)methodBase;
             var retType = platformInterpreter.Method.GetReturnType().ToCppMangling();
             var sb = new StringBuilder();
             var arguments = methodBase.Method.GetArgumentsAsText(true);

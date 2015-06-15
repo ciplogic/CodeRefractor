@@ -1,6 +1,5 @@
 #region Usings
 
-using System;
 using CodeRefractor.Runtime.Annotations;
 
 #endregion
@@ -38,7 +37,7 @@ namespace CodeRefactor.OpenRuntime
 
         public int Length => Text.Length-1;
 
-        private static unsafe int StrLen(byte* data)
+        static unsafe int StrLen(byte* data)
         {
             int result = 0;
             while (*data != 0)

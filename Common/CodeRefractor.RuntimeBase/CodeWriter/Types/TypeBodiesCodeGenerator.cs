@@ -40,7 +40,7 @@ namespace CodeRefractor.CodeWriter.Types
             }
         }
 
-        private static void WriteStructWithFields(CodeOutput codeOutput, ClosureEntities crRuntime, Type type)
+        static void WriteStructWithFields(CodeOutput codeOutput, ClosureEntities crRuntime, Type type)
         {
             if (DelegateManager.IsTypeDelegate(type))
                 return;
@@ -62,7 +62,7 @@ namespace CodeRefractor.CodeWriter.Types
             {
                 codeOutput.AppendFormat("struct {0} : public {1}",
                     type.ToCppMangling(),
-                    typeof (object).ToCppMangling())
+                    typeof(object).ToCppMangling())
                     .BracketOpen();
             }
             else
@@ -71,21 +71,21 @@ namespace CodeRefractor.CodeWriter.Types
                     .BracketOpen();
             }
 
-            if (type == typeof (object))
+            if (type == typeof(object))
             {
                 codeOutput.Append("int _typeId;\n");
             }
 
             //String Support
-            if (type == typeof (string))
+            if (type == typeof(string))
             {
-                crRuntime.AddType(typeof (string));
+                crRuntime.AddType(typeof(string));
                 var usedTypes = crRuntime.MappedTypes.Values.ToList();
                 var typeTable = new TypeDescriptionTable(usedTypes, crRuntime);
 
                 codeOutput.Append("System_String()")
                     .BracketOpen()
-                    .AppendFormat("_typeId = {0};\n", typeTable.GetTypeId(typeof (string)))
+                    .AppendFormat("_typeId = {0};\n", typeTable.GetTypeId(typeof(string)))
                     .BracketClose()
                     .BlankLine();
             }
@@ -99,7 +99,7 @@ namespace CodeRefractor.CodeWriter.Types
             typedesc.WriteStaticFieldInitialization(codeOutput);
         }
 
-        private static void GenerateForwardTypes(Type[] typeDatas, CodeOutput sb, ClosureEntities crRuntime)
+        static void GenerateForwardTypes(Type[] typeDatas, CodeOutput sb, ClosureEntities crRuntime)
         {
             foreach (var typeData in typeDatas)
             {
@@ -113,7 +113,7 @@ namespace CodeRefractor.CodeWriter.Types
             }
         }
 
-        private static bool ShouldSkipType(Type mappedType)
+        static bool ShouldSkipType(Type mappedType)
         {
             var typeCode = mappedType.ExtractTypeCode();
             switch (typeCode)
@@ -127,7 +127,7 @@ namespace CodeRefractor.CodeWriter.Types
             return true;
         }
 
-        private static void WriteClassFieldsBody(CodeOutput codeOutput, Type mappedType, ClosureEntities crRuntime)
+        static void WriteClassFieldsBody(CodeOutput codeOutput, Type mappedType, ClosureEntities crRuntime)
         {
             var typeDesc = UsedTypeList.Set(mappedType, crRuntime);
             typeDesc.WriteLayout(codeOutput);

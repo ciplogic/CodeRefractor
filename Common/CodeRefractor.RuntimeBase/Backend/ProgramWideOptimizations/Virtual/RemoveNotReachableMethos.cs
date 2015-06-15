@@ -57,12 +57,12 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
             return removeList.Count > 0;
         }
 
-        private static MethodInterpreterKey GetKeyFromMethod(ClosureEntities closure, MethodBase entryPoint)
+        static MethodInterpreterKey GetKeyFromMethod(ClosureEntities closure, MethodBase entryPoint)
         {
             return entryPoint.ToKey(closure);
         }
 
-        private static void HandleInterpreterInstructions(CilMethodInterpreter interpreter,
+        static void HandleInterpreterInstructions(CilMethodInterpreter interpreter,
             HashSet<MethodInterpreterKey> candidateMethods, ClosureEntities closure)
         {
             var clrMethod = interpreter.Method;
@@ -75,13 +75,13 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
             foreach (var callOp in calls)
             {
                 var op = allOps[callOp];
-                var methodData = (CallMethodStatic) op;
+                var methodData = (CallMethodStatic)op;
                 var callingInterpreterKey = methodData.Interpreter.ToKey();
                 candidateMethods.Add(callingInterpreterKey);
             }
         }
 
-        private static bool IsPossibleOverride(HashSet<MethodInfo> abstractMethods, MethodBase clrMethod)
+        static bool IsPossibleOverride(HashSet<MethodInfo> abstractMethods, MethodBase clrMethod)
         {
             //TODO: make the match to be as precise as possible
             var clrParams = clrMethod.GetParameters();

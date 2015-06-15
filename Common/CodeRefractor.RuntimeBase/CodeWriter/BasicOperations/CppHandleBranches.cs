@@ -61,13 +61,13 @@ namespace CodeRefractor.RuntimeBase.CodeWriter.BasicOperations
             }
         }
 
-        private static void HandleBrFalse(IdentifierValue localVar, CodeOutput sb, int jumpAddress)
+        static void HandleBrFalse(IdentifierValue localVar, CodeOutput sb, int jumpAddress)
         {
             var local = localVar.Name;
             sb.AppendFormat("if(!({0})) goto label_{1};", local, jumpAddress.ToHex());
         }
 
-        private static void HandleBrTrue(IdentifierValue localVar, CodeOutput sb, int jumpAddress)
+        static void HandleBrTrue(IdentifierValue localVar, CodeOutput sb, int jumpAddress)
         {
             var local = localVar.Name;
             sb.AppendFormat("if({0}) goto label_{1};", local, jumpAddress.ToHex());

@@ -124,6 +124,7 @@
     <Compile Include="FrontEnd\SimpleOperations\OperationUtils.cs" />
     <Compile Include="FrontEnd\SimpleOperations\SetField.cs" />
     <Compile Include="FrontEnd\SimpleOperations\StaticFieldRefAssignment.cs" />
+    <Compile Include="MiddleEnd\Interpreters\Cil\AbstractMethodInterpreter.cs" />
     <Compile Include="MiddleEnd\Interpreters\Cil\CilMethodInterpreter.cs" />
     <Compile Include="MiddleEnd\Interpreters\NonCil\CppMethodInterpreter.cs" />
     <Compile Include="MiddleEnd\Interpreters\NonCil\PlatformInvokeMethod.cs" />

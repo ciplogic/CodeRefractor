@@ -3,9 +3,9 @@ using System.IO;
 using System.Reflection;
 using CodeRefactor.OpenRuntime;
 using CodeRefractor.ClosureCompute;
-using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Config;
 using CodeRefractor.Util;
+using static System.String;
 
 namespace CodeRefractor.Compiler
 {
@@ -14,14 +14,14 @@ namespace CodeRefractor.Compiler
      */
     public class Program
     {
-        private readonly CommandLineParse _commandLineParse;
-        private readonly Func<ClosureEntitiesUtils> _getClosureEntitiesUtils;
+        readonly CommandLineParse _commandLineParse;
+        readonly ClosureEntitiesUtils _getClosureEntitiesUtils;
 
         public Program(CommandLineParse commandLineParse,
-                       Func<ClosureEntitiesUtils>  getClosureEntitiesUtils)
+                       ClosureEntitiesUtils  getClosureEntitiesUtils)
         {
-            this._commandLineParse = commandLineParse;
-            this._getClosureEntitiesUtils = getClosureEntitiesUtils;
+            _commandLineParse = commandLineParse;
+            _getClosureEntitiesUtils = getClosureEntitiesUtils;
         }
  
         /**
@@ -34,7 +34,7 @@ namespace CodeRefractor.Compiler
         {
             var commandLineParse = _commandLineParse;
 
-            if (!String.IsNullOrEmpty(inputAssemblyName))
+            if (!IsNullOrEmpty(inputAssemblyName))
             {
                 commandLineParse.ApplicationInputAssembly = inputAssemblyName;
             }
@@ -46,7 +46,7 @@ namespace CodeRefractor.Compiler
             var definition = asm.EntryPoint; // TODO: what if this is not an application, but a library without an entry point?
             var start = Environment.TickCount;
 
-            var closureEntities = _getClosureEntitiesUtils()
+            var closureEntities = _getClosureEntitiesUtils
                 .BuildClosureEntities(definition, typeof(CrString).Assembly);
 
             var sb = closureEntities.BuildFullSourceCode();

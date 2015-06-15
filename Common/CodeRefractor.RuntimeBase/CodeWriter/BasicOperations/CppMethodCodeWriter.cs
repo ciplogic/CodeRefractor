@@ -12,7 +12,6 @@ using CodeRefractor.MiddleEnd.Interpreters;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.MiddleEnd.SimpleOperations.ConstTable;
-using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.RuntimeBase.CodeWriter.BasicOperations;
 using CodeRefractor.RuntimeBase.TypeInfoWriter;
@@ -44,7 +43,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             return finalSb.ToString();
         }
 
-        private static CodeOutput ComputeBodySb(List<LocalOperation> operations, MidRepresentationVariables vars,
+        static CodeOutput ComputeBodySb(List<LocalOperation> operations, MidRepresentationVariables vars,
             TypeDescriptionTable typeTable, MethodInterpreter interpreter, ClosureEntities crRuntime)
         {
             var bodySb = new CodeOutput();
@@ -63,7 +62,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 switch (operation.Kind)
                 {
                     case OperationKind.Label:
-                        WriteLabel(bodySb, ((Label) operation).JumpTo);
+                        WriteLabel(bodySb, ((Label)operation).JumpTo);
                         break;
                     case OperationKind.AlwaysBranch:
                         HandleAlwaysBranchOperator(operation, bodySb);
@@ -100,7 +99,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             return bodySb;
         }
 
-        private static bool HandleCallOperations(MidRepresentationVariables vars, MethodInterpreter interpreter,
+        static bool HandleCallOperations(MidRepresentationVariables vars, MethodInterpreter interpreter,
             ClosureEntities crRuntime, LocalOperation operation, CodeOutput bodySb)
         {
             switch (operation.Kind)
@@ -123,16 +122,16 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             return true;
         }
 
-        private static void HandleComment(string toString, CodeOutput bodySb)
+        static void HandleComment(string toString, CodeOutput bodySb)
         {
             bodySb
                 .AppendFormat("// {0}", toString);
         }
 
-        private static void HandleSwitch(LocalOperation operation, CodeOutput bodySb)
+        static void HandleSwitch(LocalOperation operation, CodeOutput bodySb)
         {
-            var assign = (Assignment) operation;
-            var instructionTable = (int[]) ((ConstValue) assign.Right).Value;
+            var assign = (Assignment)operation;
+            var instructionTable = (int[])((ConstValue)assign.Right).Value;
 
             var instructionLabelIds = instructionTable;
             bodySb.AppendFormat("switch({0})", assign.AssignedTo.Name);
@@ -146,12 +145,12 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             bodySb.BracketClose();
         }
 
-        private static void HandleCopyArrayInitializer(LocalOperation operation, CodeOutput sb)
+        static void HandleCopyArrayInitializer(LocalOperation operation, CodeOutput sb)
         {
-            var assignment = (Assignment) operation;
+            var assignment = (Assignment)operation;
             var left = assignment.AssignedTo;
-            var right = (ConstByteArrayValue) assignment.Right;
-            var rightArrayData = (ConstByteArrayData) right.Value;
+            var right = (ConstByteArrayValue)assignment.Right;
+            var rightArrayData = (ConstByteArrayData)right.Value;
             var rightArray = rightArrayData.Data;
             sb.AppendFormat("{0} = std::make_shared<Array<System::Byte> >(" +
                             "{1}, RuntimeHelpers_GetBytes({2}) ); ",
@@ -160,7 +159,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 right.Id);
         }
 
-        private static StringBuilder ComputeVariableSb(MetaMidRepresentation midRepresentation,
+        static StringBuilder ComputeVariableSb(MetaMidRepresentation midRepresentation,
             MethodInterpreter interpreter, ClosureEntities closureEntities)
         {
             var variablesSb = new StringBuilder();
@@ -176,26 +175,26 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             return variablesSb;
         }
 
-        private static string ComputeCommaSeparatedParameterTypes(LocalVariable localVariable)
+        static string ComputeCommaSeparatedParameterTypes(LocalVariable localVariable)
         {
-/*
-            var methodInfo = (MethodInfo) localVariable.CustomData;
+            /*
+                        var methodInfo = (MethodInfo) localVariable.CustomData;
 
-            var parameters = methodInfo.GetMethodArgumentTypes().ToArray();
+                        var parameters = methodInfo.GetMethodArgumentTypes().ToArray();
 
-            var parametersFormat = TypeNamerUtils.GetCommaSeparatedParameters(parameters);
-            return parametersFormat;*/
+                        var parametersFormat = TypeNamerUtils.GetCommaSeparatedParameters(parameters);
+                        return parametersFormat;*/
             //TODO: handle funciton pointers in a more clean way
             return localVariable.VarName;
         }
 
-        private static void AddVariableContent(StringBuilder variablesSb, string format, LocalVariable localVariable,
+        static void AddVariableContent(StringBuilder variablesSb, string format, LocalVariable localVariable,
             MethodInterpreter interpreter, ClosureEntities closureEntities)
         {
             var localVariableData = interpreter.AnalyzeProperties.GetVariableData(localVariable);
             if (localVariableData == EscapingMode.Stack)
                 return;
-            if (localVariable.ComputedType().GetClrType(closureEntities).IsSubclassOf(typeof (MethodInfo)))
+            if (localVariable.ComputedType().GetClrType(closureEntities).IsSubclassOf(typeof(MethodInfo)))
             {
                 variablesSb
                     .AppendFormat("System_Void (*{0})({1}*);",
@@ -220,12 +219,12 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 .AppendLine();
         }
 
-        private static void HandleAlwaysBranchOperator(LocalOperation operation, CodeOutput sb)
+        static void HandleAlwaysBranchOperator(LocalOperation operation, CodeOutput sb)
         {
-            sb.AppendFormat("goto label_{0};", ((AlwaysBranch) operation).JumpTo.ToHex());
+            sb.AppendFormat("goto label_{0};", ((AlwaysBranch)operation).JumpTo.ToHex());
         }
 
-        private static void WriteLabel(CodeOutput sb, int value)
+        static void WriteLabel(CodeOutput sb, int value)
         {
             sb.AppendFormat("label_{0}:", value.ToHex());
         }

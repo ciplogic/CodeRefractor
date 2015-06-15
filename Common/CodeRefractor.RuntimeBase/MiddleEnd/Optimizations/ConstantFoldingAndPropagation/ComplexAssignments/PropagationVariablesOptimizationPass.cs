@@ -6,7 +6,6 @@ using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
 using CodeRefractor.MiddleEnd.SimpleOperations;
-using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.UseDefs;
 using CodeRefractor.RuntimeBase.Optimizations;
 
@@ -25,7 +24,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.Co
             return ProcessOptimizations(startRange, instructionRange, useDef);
         }
 
-        private static bool ProcessOptimizations(int startRange, LocalOperation[] instructionRange,
+        static bool ProcessOptimizations(int startRange, LocalOperation[] instructionRange,
             UseDefDescription useDef)
         {
             var result = false;
@@ -41,7 +40,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.Co
             return result;
         }
 
-        private static void UpdateInstructionMapping(
+        static void UpdateInstructionMapping(
             LocalOperation op,
             Dictionary<LocalVariable, ConstValue> constValues,
             Dictionary<LocalVariable, LocalVariable> mappedValues)
@@ -58,7 +57,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.Co
             }
             else
             {
-                mappedValues[assignment.AssignedTo] = (LocalVariable) right;
+                mappedValues[assignment.AssignedTo] = (LocalVariable)right;
             }
         }
 
@@ -72,7 +71,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.Co
         /// <param name="usageVariable"></param>
         /// <param name="constValues"></param>
         /// <param name="mappedValues"></param>
-        private static void RemoveDefinitionsIfTheUsageIsInvalidated(
+        static void RemoveDefinitionsIfTheUsageIsInvalidated(
             LocalVariable usageVariable,
             Dictionary<LocalVariable, ConstValue> constValues,
             Dictionary<LocalVariable, LocalVariable> mappedValues)
@@ -94,7 +93,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.Co
             }
         }
 
-        private static bool UpdateKnownUsages(LocalOperation op, Dictionary<LocalVariable, ConstValue> constValues,
+        static bool UpdateKnownUsages(LocalOperation op, Dictionary<LocalVariable, ConstValue> constValues,
             Dictionary<LocalVariable, LocalVariable> mappedValues, UseDefDescription useDef, int i)
         {
             if (mappedValues.Count == 0 && constValues.Count == 0)

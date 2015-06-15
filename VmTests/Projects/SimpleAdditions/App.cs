@@ -1,43 +1,88 @@
-//Taken From Microsoft Documentation on Virtual Methods
-using System;
-using System.Runtime.InteropServices;
-
-/**
- * Display a message box imported from an external source.
- */
-
-class SingletonClass
+//Tests abstract classes, abstract and overidden properties too
+abstract class Shape
 {
-    private static SingletonClass singletonInstance = null;
-
-    public static SingletonClass GetInstance()
+    public abstract double Area
     {
-        if (singletonInstance == null)
-        {
-            SingletonClass value = new SingletonClass();
-            CompareExchange(ref singletonInstance, value);
-        }
-        return singletonInstance;
+        get;
+        set;
     }
-
-    private static void CompareExchange(ref SingletonClass singletonClass, SingletonClass value)
-    {
-        singletonClass = value;
-    }
-
-    public int Value;
 }
-public class Test
-{
-    // this must be MessageBoxW, since in CR characters are char_w, and not char.
-    [DllImport("User32.dll")]
-    public static extern int MessageBoxW(int handle, String message, String title, uint type);
 
-    [STAThread]
-    public static void Main()
+class Square : Shape
+{
+    public double side;
+
+    public Square(double s)  //constructor
     {
-        var inst = SingletonClass.GetInstance();
-        inst.Value = 3;
-        Console.WriteLine(inst.Value);
+        side = s;
+    }
+
+    public override double Area
+    {
+        get
+        {
+            return side * side;
+        }
+        set
+        {
+            side = System.Math.Sqrt(value);
+        }
+    }
+}
+
+class Cube : Shape
+{
+    public double side;
+
+    public Cube(double s)
+    {
+        side = s;
+    }
+
+    public override double Area
+    {
+        get
+        {
+            return 6 * side * side;
+        }
+        set
+        {
+            side = System.Math.Sqrt(value / 6);
+        }
+    }
+}
+
+class TestShapes
+{
+    static void Main()
+    {
+        // Input the side:
+        System.Console.Write("Enter the side: ");
+        double side = 5;//double.Parse(System.Console.ReadLine());
+
+        // Compute the areas:
+        Square s = new Square(side);
+        Cube c = new Cube(side);
+
+        // Display the results:
+        System.Console.Write("Area of the square =");
+        System.Console.WriteLine(s.Area);
+        System.Console.Write("Area of the cube =");
+        System.Console.WriteLine(c.Area);
+        // System.Console.WriteLine();
+
+        // Input the area:
+        System.Console.Write("Enter the area: ");
+        double area = 50; //double.Parse(System.Console.ReadLine());
+
+        // Compute the sides:
+        s.Area = area;
+        c.Area = area;
+
+        // Display the results:
+        System.Console.Write("Side of the square = ");
+        System.Console.WriteLine((float)s.side);
+        System.Console.Write("Side of the cube = ");
+        System.Console.WriteLine((float)c.side);
     }
 }

@@ -35,7 +35,7 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
             return result;
         }
 
-        private static bool HandleInterpreterInstructions(CilMethodInterpreter interpreter, List<Type> usedTypes,
+        static bool HandleInterpreterInstructions(CilMethodInterpreter interpreter, List<Type> usedTypes,
             ClosureEntities closure)
         {
             var useDef = interpreter.MidRepresentation.UseDef;
@@ -47,7 +47,7 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
             foreach (var callOp in calls)
             {
                 var op = allOps[callOp];
-                var methodData = (CallMethodStatic) op;
+                var methodData = (CallMethodStatic)op;
                 var callingInterpreterKey = methodData.Interpreter.Method.ToKey(closure);
                 var declaringType = callingInterpreterKey.Interpreter.Method.DeclaringType;
                 var implementors = callingInterpreterKey.DeclaringType.ImplementorsOfT(usedTypes);

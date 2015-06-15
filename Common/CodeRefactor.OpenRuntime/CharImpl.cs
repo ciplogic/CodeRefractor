@@ -20,7 +20,7 @@ wchar_t vOut = (wchar_t)wcstol(text->Text->Items,NULL,10);
         [MapMethod(IsStatic = false)]
         public static string ToString(char value)
         {
-            return new string(new char[]{value});
+            return new string(new[]{value});
         }
     }
 }

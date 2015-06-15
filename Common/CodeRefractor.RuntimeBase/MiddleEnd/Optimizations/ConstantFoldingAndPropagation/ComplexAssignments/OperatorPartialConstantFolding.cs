@@ -56,65 +56,65 @@ namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.Co
             }
         }
 
-        private void FoldAssign(IdentifierValue constResult, LocalOperation[] localOperations, int pos)
+        void FoldAssign(IdentifierValue constResult, LocalOperation[] localOperations, int pos)
         {
-            localOperations[pos] = new Assignment {Right = constResult};
+            localOperations[pos] = new Assignment { Right = constResult };
         }
 
-        private void HandleMul(ConstValue constLeft, ConstValue constRight,
+        void HandleMul(ConstValue constLeft, ConstValue constRight,
             LocalOperation destOperation, LocalOperation[] localOperations, int pos)
         {
-            var binaryOperator = (BinaryOperator) destOperation;
+            var binaryOperator = (BinaryOperator)destOperation;
 
-            if (constRight != null && (int) constRight.Value == 1)
+            if (constRight != null && (int)constRight.Value == 1)
             {
                 FoldAssign(binaryOperator.Left, localOperations, pos);
                 Result = true;
                 return;
             }
             var constValue = constLeft ?? constRight;
-            if (constValue != null && constValue.Value is int && (int) constValue.Value == 0)
+            if (constValue != null && constValue.Value is int && (int)constValue.Value == 0)
             {
                 FoldAssign(constValue, localOperations, pos);
                 Result = true;
             }
-            if (constLeft != null && constLeft.Value is double && (double) constValue.Value == 0.0)
+            if (constLeft != null && constLeft.Value is double && (double)constValue.Value == 0.0)
             {
                 FoldAssign(constValue, localOperations, pos);
                 Result = true;
                 return;
             }
-            if (constLeft != null && constValue.Value is float && (float) constValue.Value == 0.0)
+            if (constLeft != null && constValue.Value is float && (float)constValue.Value == 0.0)
             {
                 FoldAssign(constValue, localOperations, pos);
                 Result = true;
             }
         }
 
-        private void HandleDiv(ConstValue constLeft, ConstValue constRight,
+        void HandleDiv(ConstValue constLeft, ConstValue constRight,
             LocalOperation destOperation, LocalOperation[] localOperations, int pos)
         {
-            var binaryOperator = (BinaryOperator) destOperation;
+            var binaryOperator = (BinaryOperator)destOperation;
 
-            if (constRight != null && constRight.Value is int && (int) constRight.Value == 1)
+            if (constRight != null && constRight.Value is int && (int)constRight.Value == 1)
             {
                 throw new NotImplementedException();
                 Result = true;
                 return;
             }
-            if (constLeft != null && constLeft.Value is int && (int) constLeft.Value == 0)
+            if (constLeft != null && constLeft.Value is int && (int)constLeft.Value == 0)
             {
                 FoldAssign(binaryOperator.Left, localOperations, pos);
                 Result = true;
                 return;
             }
-            if (constLeft != null && constLeft.Value is double && (double) constLeft.Value == 0.0)
+            if (constLeft != null && constLeft.Value is double && (double)constLeft.Value == 0.0)
             {
                 FoldAssign(binaryOperator.Left, localOperations, pos);
                 Result = true;
                 return;
             }
-            if (constLeft != null && constLeft.Value is float && (float) constLeft.Value == 0.0)
+            if (constLeft != null && constLeft.Value is float && (float)constLeft.Value == 0.0)
             {
                 FoldAssign(binaryOperator.Left, localOperations, pos);
                 Result = true;

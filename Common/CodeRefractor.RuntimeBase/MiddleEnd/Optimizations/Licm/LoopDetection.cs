@@ -31,7 +31,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Licm
             return result;
         }
 
-        private static List<int> FindStartLoopCandidates(LocalOperation[] localOps)
+        static List<int> FindStartLoopCandidates(LocalOperation[] localOps)
         {
             var findStartLoopCandidates = new List<int>();
             for (var index = 0; index < localOps.Length; index++)

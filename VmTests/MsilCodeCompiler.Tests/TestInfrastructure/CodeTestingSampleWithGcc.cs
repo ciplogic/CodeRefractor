@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using System.Text;
-using System.Threading.Tasks;
 using CodeRefractor;
 using CodeRefractor.Compiler;
 using CodeRefractor.Config;
 using CodeRefractor.MiddleEnd.Optimizations.Util;
-using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Config;
 using CodeRefractor.RuntimeBase.Optimizations;
 using MsilCodeCompiler.Tests.Shared;
@@ -22,7 +17,7 @@ namespace MsilCodeCompiler.Tests.TestInfrastructure
     [TestFixture]
     class CodeTestingSampleWithGcc
     {
-        private StandardKernel kernel;
+        StandardKernel kernel;
 
         [SetUp]
         public void Setup()
@@ -39,7 +34,7 @@ namespace MsilCodeCompiler.Tests.TestInfrastructure
             );
         }
 
-        private static string BuildArgs(string outputFile)
+        static string BuildArgs(string outputFile)
         {
             var sbArgs = new StringBuilder();
             sbArgs.Append(outputFile);

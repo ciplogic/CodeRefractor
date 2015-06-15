@@ -12,7 +12,7 @@ namespace CodeRefractor.FrontEnd
 {
     public class EvaluatorStack : List<IdentifierValue>
     {
-        private int _vRegId;
+        int _vRegId;
 
         public EvaluatorStack(Type[] genericArguments)
         {

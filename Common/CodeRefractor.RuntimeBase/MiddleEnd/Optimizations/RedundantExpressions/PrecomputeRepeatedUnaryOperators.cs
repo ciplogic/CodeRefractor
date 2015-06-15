@@ -6,7 +6,6 @@ using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
 using CodeRefractor.MiddleEnd.SimpleOperations;
-using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.SimpleOperations.Operators;
 using CodeRefractor.MiddleEnd.UseDefs;
 using CodeRefractor.RuntimeBase.Optimizations;
@@ -40,7 +39,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.RedundantExpressions
             return false;
         }
 
-        private static void ApplyOptimization(CilMethodInterpreter midRepresentation, int i, int j)
+        static void ApplyOptimization(CilMethodInterpreter midRepresentation, int i, int j)
         {
             var localOps = midRepresentation.MidRepresentation.LocalOperations;
             var firstOperator = localOps.GetUnaryOperator(i);
@@ -58,7 +57,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.RedundantExpressions
             localOps.Insert(j + 1, destAssignment);
         }
 
-        private static List<int> FindUnaryOperators(List<LocalOperation> localOperations, int startRange, int endRange)
+        static List<int> FindUnaryOperators(List<LocalOperation> localOperations, int startRange, int endRange)
         {
             var calls = new List<int>();
             for (var index = startRange; index <= endRange; index++)
@@ -71,7 +70,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.RedundantExpressions
             return calls;
         }
 
-        private static bool AreDifferentOperators(UnaryOperator firstOperator, UnaryOperator secondOperator,
+        static bool AreDifferentOperators(UnaryOperator firstOperator, UnaryOperator secondOperator,
             IList<int> calls, int i,
             int j, List<LocalOperation> localOperations)
         {
@@ -81,7 +80,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.RedundantExpressions
                 return true;
             if (!(firstOperator.Left is LocalVariable))
                 return true;
-            var definitions = (LocalVariable) firstOperator.Left;
+            var definitions = (LocalVariable)firstOperator.Left;
             var isReassigned = false;
             for (var index = calls[i] + 1; index < calls[j]; index++)
             {

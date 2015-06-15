@@ -19,7 +19,7 @@ namespace MsilCodeCompiler.Tests.OptimizationsTests
     [TestFixture]
     public class TestSmokeRunDoesNotInfiniteLoop
     {
-        private StandardKernel kernel;
+        StandardKernel kernel;
 
         [Test, Timeout(5000)]
         public void TestSimple()

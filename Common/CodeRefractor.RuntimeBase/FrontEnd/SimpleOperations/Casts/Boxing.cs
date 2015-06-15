@@ -2,7 +2,6 @@
 
 using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.SimpleOperations;
-using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 
 #endregion
 
@@ -17,6 +16,8 @@ namespace CodeRefractor.FrontEnd.SimpleOperations.Casts
 
         public IdentifierValue Right { get; set; }
         public LocalVariable AssignedTo { get; set; }
+
+        public static bool IsUsed { get; set; }
 
         public override string ToString()
         {

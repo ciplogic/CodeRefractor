@@ -30,10 +30,10 @@ namespace CodeRefractor.FrontEnd
 {
     public class MetaMidRepresentationOperationFactory
     {
-        private static readonly bool ShowComments = false;
-        private readonly EvaluatorStack _evaluator;
-        private readonly MetaMidRepresentation _representation;
-        private int _leaveOffset = -1;
+        static readonly bool ShowComments = false;
+        readonly EvaluatorStack _evaluator;
+        readonly MetaMidRepresentation _representation;
+        int _leaveOffset = -1;
 
         public MetaMidRepresentationOperationFactory(MetaMidRepresentation representation, EvaluatorStack evaluator)
         {
@@ -71,7 +71,7 @@ namespace CodeRefractor.FrontEnd
             return false;
         }
 
-        private void AddOperation(LocalOperation value = null)
+        void AddOperation(LocalOperation value = null)
         {
             _representation.LocalOperations.Add(value);
             var assignment = value as Assignment;
@@ -84,19 +84,19 @@ namespace CodeRefractor.FrontEnd
             }
         }
 
-        private LocalVariable SetNewVReg()
+        LocalVariable SetNewVReg()
         {
             var newLocal = _evaluator.SetNewVReg();
             _representation.Vars.VirtRegs.Add(newLocal);
             return newLocal;
         }
 
-        private void PushStack(IdentifierValue identifier)
+        void PushStack(IdentifierValue identifier)
         {
             _evaluator.Push(identifier);
         }
 
-        private void AssignValueToStack(object value)
+        void AssignValueToStack(object value)
         {
             var local = value as LocalVariable;
             if (local != null)
@@ -236,7 +236,7 @@ namespace CodeRefractor.FrontEnd
             });
         }
 
-        private void SetUnaryOperator(string operatorName)
+        void SetUnaryOperator(string operatorName)
         {
             var firstVar = _evaluator.Pop();
             var result = SetNewVReg();
@@ -322,7 +322,7 @@ namespace CodeRefractor.FrontEnd
             _evaluator.Pop();
         }
 
-        private void SetBinaryOperator(string operatorName)
+        void SetBinaryOperator(string operatorName)
         {
             var secondVar = _evaluator.Pop();
             var firstVar = _evaluator.Pop();
@@ -394,7 +394,7 @@ namespace CodeRefractor.FrontEnd
             CallMethodDataVirtual(methodInfo, methodData);
         }
 
-        private void CallMethodDataVirtual(MethodBase methodInfo, CallMethodVirtual callMethodStatic)
+        void CallMethodDataVirtual(MethodBase methodInfo, CallMethodVirtual callMethodStatic)
         {
             if (HandleRuntimeHelpersMethod(methodInfo))
             {
@@ -402,7 +402,7 @@ namespace CodeRefractor.FrontEnd
                 AddOperation(callMethodStatic);
                 return;
             }
-            if (methodInfo.IsConstructor && methodInfo.DeclaringType == typeof (object))
+            if (methodInfo.IsConstructor && methodInfo.DeclaringType == typeof(object))
                 return;
             callMethodStatic.ExtractNeededValuesFromStack(_evaluator);
 
@@ -416,7 +416,7 @@ namespace CodeRefractor.FrontEnd
                 //      CallMethodStatic.Parameters[0].ComputedType().ClrType);
             }
             var declaringType = callMethodStatic.Info.DeclaringType;
-            if (declaringType.IsSubclassOf(typeof (Delegate)))
+            if (declaringType.IsSubclassOf(typeof(Delegate)))
             {
                 var signature = declaringType.GetMethod("Invoke");
                 DelegateManager.RegisterType(declaringType, signature);
@@ -433,7 +433,7 @@ namespace CodeRefractor.FrontEnd
             AddOperation(callMethodStatic);
         }
 
-        private void CallMethodData(MethodBase methodInfo, CallMethodStatic callMethodStatic)
+        void CallMethodData(MethodBase methodInfo, CallMethodStatic callMethodStatic)
         {
             if (HandleRuntimeHelpersMethod(methodInfo))
             {
@@ -441,7 +441,7 @@ namespace CodeRefractor.FrontEnd
                 AddOperation(callMethodStatic);
                 return;
             }
-            if (methodInfo.IsConstructor && methodInfo.DeclaringType == typeof (object))
+            if (methodInfo.IsConstructor && methodInfo.DeclaringType == typeof(object))
                 return;
             callMethodStatic.ExtractNeededValuesFromStack(_evaluator);
 
@@ -455,7 +455,7 @@ namespace CodeRefractor.FrontEnd
                 //      CallMethodStatic.Parameters[0].ComputedType().ClrType);
             }
             var declaringType = callMethodStatic.Info.DeclaringType;
-            if (declaringType.IsSubclassOf(typeof (Delegate)))
+            if (declaringType.IsSubclassOf(typeof(Delegate)))
             {
                 var signature = declaringType.GetMethod("Invoke");
                 DelegateManager.RegisterType(declaringType, signature);
@@ -715,11 +715,11 @@ namespace CodeRefractor.FrontEnd
             AssignNullToStack();
         }
 
-        private void AssignNullToStack()
+        void AssignNullToStack()
         {
             var nullConst = new ConstValue(null)
             {
-                FixedType = new TypeDescription(typeof (object))
+                FixedType = new TypeDescription(typeof(object))
             };
             PushStack(nullConst);
         }
@@ -1007,7 +1007,7 @@ namespace CodeRefractor.FrontEnd
             BranchTwoOperators(jumpTo, OpcodeBranchNames.Beq);
         }
 
-        private void BranchTwoOperators(int jumpTo, string opcode)
+        void BranchTwoOperators(int jumpTo, string opcode)
         {
             var secondVar = _evaluator.Pop(); // Seems the order here was in reverse
             var firstVar = _evaluator.Pop();

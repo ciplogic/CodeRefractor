@@ -42,20 +42,20 @@ namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation
             }
         }
 
-        private void FoldEvaluation(BranchOperator operation, bool resultEq)
+        void FoldEvaluation(BranchOperator operation, bool resultEq)
         {
             operation.CompareValue = new ConstValue(resultEq ? 1 : 0);
             operation.Name = OpcodeBranchNames.BrTrue;
             Result = true;
         }
 
-        private static bool EvaluateBeq(ConstValue leftVal, ConstValue rightVal)
+        static bool EvaluateBeq(ConstValue leftVal, ConstValue rightVal)
         {
             var clrTypeCode = leftVal.ComputedType().ClrTypeCode;
             switch (clrTypeCode)
             {
                 case TypeCode.Int32:
-                    return (int) leftVal.Value == (int) rightVal.Value;
+                    return (int)leftVal.Value == (int)rightVal.Value;
                 default:
                     throw new InvalidDataException(
                         "ConstantVariableEvaluation optimization. Case not handled, report a bug with reduced code");

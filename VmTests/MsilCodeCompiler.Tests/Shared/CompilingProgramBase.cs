@@ -6,11 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using CodeRefractor;
-using CodeRefractor.Compiler;
-using CodeRefractor.CompilerBackend;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
-using CodeRefractor.RuntimeBase;
-using CodeRefractor.RuntimeBase.Optimizations;
 using CodeRefractor.RuntimeBase.Util;
 using CodeRefractor.Util;
 using NUnit.Framework;
@@ -74,7 +70,7 @@ class C {{
             return Assembly.LoadFile(assm);
         }
 
-        private string assm;
+        string assm;
 
         public static List<ResultingOptimizationPass> DefaultOptimizationPasses()
         {
@@ -111,7 +107,7 @@ class C {{
             return result;
         }
 
-        private string GenerateOutputCppFromCode(string code, List<ResultingOptimizationPass> optimizationPasses,
+        string GenerateOutputCppFromCode(string code, List<ResultingOptimizationPass> optimizationPasses,
             out string expectedInput)
         {
             const string outputCpp = "output.cpp";

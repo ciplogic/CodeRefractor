@@ -11,7 +11,7 @@ namespace CodeRefractor.FrontEnd
 {
     internal static class ExceptionCatchClauseRanges
     {
-        private static List<KeyValuePair<int, int>> GetExceptionRanges(List<ExceptionHandlingClause> handlingExceptions)
+        static List<KeyValuePair<int, int>> GetExceptionRanges(List<ExceptionHandlingClause> handlingExceptions)
         {
             var result = new List<KeyValuePair<int, int>>();
             foreach (var handlingClause in handlingExceptions)

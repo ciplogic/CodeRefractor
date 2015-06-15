@@ -24,12 +24,11 @@ namespace CodeRefractor.ClosureCompute
 {
     public class ClosureEntities
     {
-        private readonly Func<CppCodeGenerator> _getCppCodeGenerator;
+        readonly CppCodeGenerator _getCppCodeGenerator;
         internal readonly ClosureEntitiesBuilder EntitiesBuilder = new ClosureEntitiesBuilder();
-        private ProgramOptimizationsTable _optimizationsTable;
-        public List<RuntimeFeature> Features = new List<RuntimeFeature>();
+        ProgramOptimizationsTable _optimizationsTable;
 
-        public ClosureEntities(Func<CppCodeGenerator> getCppCodeGenerator)
+        public ClosureEntities(CppCodeGenerator getCppCodeGenerator)
         {
             _getCppCodeGenerator = getCppCodeGenerator;
 
@@ -52,7 +51,7 @@ namespace CodeRefractor.ClosureCompute
         public HashSet<MethodInfo> AbstractMethods { get; set; }
         public bool EnableProgramWideOptimizations { get; set; }
 
-        private void SetupProgramOptimizationTable()
+        void SetupProgramOptimizationTable()
         {
             EnableProgramWideOptimizations = true;
             _optimizationsTable = new ProgramOptimizationsTable
@@ -75,6 +74,10 @@ namespace CodeRefractor.ClosureCompute
 
         public MethodInterpreter ResolveMethod(MethodBase method)
         {
+            if (method.IsAbstract)
+            {
+                return new AbstractMethodInterpreter(method);
+            }
             var result = GetMethodImplementation(method);
             if (result != null)
                 return result;
@@ -117,7 +120,7 @@ namespace CodeRefractor.ClosureCompute
             var usedTypes = MappedTypes.Values.ToList();
             var typeTable = new TypeDescriptionTable(usedTypes, this);
 
-            return _getCppCodeGenerator().GenerateSourceCodeOutput(
+            return _getCppCodeGenerator.GenerateSourceCodeOutput(
                 entryInterpreter,
                 typeTable,
                 MethodImplementations.Values.ToList(),
@@ -188,7 +191,7 @@ namespace CodeRefractor.ClosureCompute
             }
         }
 
-        private bool ApplyProgramWideOptimizations()
+        bool ApplyProgramWideOptimizations()
         {
             var isOptimized = false;
             if (EnableProgramWideOptimizations)
@@ -206,29 +209,5 @@ namespace CodeRefractor.ClosureCompute
             }
             return isOptimized;
         }
-
-        public RuntimeFeature FindFeature(string featureName)
-        {
-            var feature = Features.FirstOrDefault(f => f.Name == featureName);
-            if (feature == null)
-            {
-                feature = new RuntimeFeature
-                {
-                    Name = featureName
-                };
-                Features.Add(feature);
-            }
-            return feature;
-        }
-    }
-
-    public class RuntimeFeature
-    {
-        public List<string> Declarations = new List<string>();
-        public string Functions = "";
-        public List<string> Headers = new List<string>();
-        public string Initializer = "";
-        public bool IsUsed = false;
-        public string Name = "";
     }
 }

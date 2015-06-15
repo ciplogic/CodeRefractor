@@ -24,7 +24,7 @@ namespace CodeRefractor.MiddleEnd
         public string EntryPoint { get; set; }
         public string LibraryName { get; set; }
 
-        private void HandlePlatformInvokeMethod(MethodBase method)
+        void HandlePlatformInvokeMethod(MethodBase method)
         {
             var pinvokeAttribute = method.GetCustomAttribute<DllImportAttribute>();
 

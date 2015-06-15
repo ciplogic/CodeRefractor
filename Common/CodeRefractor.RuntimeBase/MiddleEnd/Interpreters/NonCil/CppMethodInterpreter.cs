@@ -38,7 +38,7 @@ namespace CodeRefractor.MiddleEnd
                 AnalyzeProperties.IsPure = true;
         }
 
-        private static CppMethodBodyAttribute GetCppAttribute(MethodBase resultMethod)
+        static CppMethodBodyAttribute GetCppAttribute(MethodBase resultMethod)
         {
             return resultMethod.GetCustomAttribute<CppMethodBodyAttribute>();
         }

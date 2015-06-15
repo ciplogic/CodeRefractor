@@ -38,7 +38,7 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
             return result;
         }
 
-        private static void HandleInterpreterInstructions(CilMethodInterpreter interpreter,
+        static void HandleInterpreterInstructions(CilMethodInterpreter interpreter,
             HashSet<MethodInfo> usedMethods)
         {
             var useDef = interpreter.MidRepresentation.UseDef;
@@ -47,8 +47,8 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
             foreach (var callOp in calls)
             {
                 var op = allOps[callOp];
-                var methodData = (CallMethodStatic) op;
-                usedMethods.Add((MethodInfo) methodData.Info);
+                var methodData = (CallMethodStatic)op;
+                usedMethods.Add((MethodInfo)methodData.Info);
             }
         }
     }

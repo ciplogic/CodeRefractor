@@ -88,7 +88,7 @@ namespace CodeRefractor.RuntimeBase.Optimizations
             return resultItems;
         }
 
-        private HashSet<string> BuildFullCapabilities(IEnumerable<string> capabilies)
+        HashSet<string> BuildFullCapabilities(IEnumerable<string> capabilies)
         {
             var fullCapabilities = new HashSet<string>(capabilies);
             var added = true;

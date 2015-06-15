@@ -14,7 +14,7 @@ namespace CodeRefractor.RuntimeBase.Analyze
     public class DelegateManager
     {
         public static DelegateManager Instance = new DelegateManager();
-        private readonly Dictionary<Type, MethodInfo> _delegateTypes = new Dictionary<Type, MethodInfo>();
+        readonly Dictionary<Type, MethodInfo> _delegateTypes = new Dictionary<Type, MethodInfo>();
 
         public static void RegisterType(Type declaringType, MethodInfo signature)
         {
@@ -34,13 +34,13 @@ namespace CodeRefractor.RuntimeBase.Analyze
             return sb.ToString();
         }
 
-        private static void GenerateDelegateCode(StringBuilder sb, int id, KeyValuePair<Type, MethodInfo> delegateType)
+        static void GenerateDelegateCode(StringBuilder sb, int id, KeyValuePair<Type, MethodInfo> delegateType)
         {
             var parameters = delegateType.Value.GetMethodArgumentTypes().Skip(1).ToArray();
 
             var parametersFormat = TypeNamerUtils.GetCommaSeparatedParameters(parameters);
             var typePrefixFormat = string.Join("_", parameters.Select(paramType => paramType.ToCppMangling()));
-            int[] paramIndex = {0};
+            int[] paramIndex = { 0 };
             var namedTypeArgs = string.Join(", ",
                 parameters.Select(
                     par => $"{par.ToCppMangling()} arg{paramIndex[0]++}"));

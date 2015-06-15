@@ -9,7 +9,7 @@ namespace CodeRefractor.ClosureCompute.TypeSorter
 {
     internal class TypeComparer : IComparer<Type>
     {
-        private readonly ClosureEntities _crRuntime;
+        readonly ClosureEntities _crRuntime;
 
         public TypeComparer(ClosureEntities crRuntime)
         {
@@ -30,7 +30,7 @@ namespace CodeRefractor.ClosureCompute.TypeSorter
             return 0;
         }
 
-        private HashSet<Type> DependencyTypes(Type type)
+        HashSet<Type> DependencyTypes(Type type)
         {
             var result = new HashSet<Type>();
             var members = type.GetFields(ClosureEntitiesBuilder.AllFlags);
@@ -43,7 +43,7 @@ namespace CodeRefractor.ClosureCompute.TypeSorter
             return result;
         }
 
-        private bool IsSmallerThan(Type x, Type y)
+        bool IsSmallerThan(Type x, Type y)
         {
             if (y.IsSubclassOf(x))
                 return true;

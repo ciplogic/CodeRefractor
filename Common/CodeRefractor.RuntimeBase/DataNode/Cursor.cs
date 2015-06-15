@@ -42,17 +42,17 @@ namespace CodeRefractor.DataNode
         #region Fields
 
         public byte[] ArrayData;
-        private int _position;
+        int _position;
 
         #endregion
 
         #region Private
 
-        private byte CurrentByte => ArrayData[_position];
+        byte CurrentByte => ArrayData[_position];
 
-        private ExiLikeEvent CurrentEvent => (ExiLikeEvent) CurrentByte;
+        ExiLikeEvent CurrentEvent => (ExiLikeEvent)CurrentByte;
 
-        private byte ReadByte()
+        byte ReadByte()
         {
             var current = CurrentByte;
             _position++;

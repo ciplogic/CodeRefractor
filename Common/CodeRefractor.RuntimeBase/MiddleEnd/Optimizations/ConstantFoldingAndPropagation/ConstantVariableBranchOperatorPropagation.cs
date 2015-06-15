@@ -36,7 +36,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation
             }
         }
 
-        private static void ApplyChange(CilMethodInterpreter interpreter, ConstValue constValue,
+        static void ApplyChange(CilMethodInterpreter interpreter, ConstValue constValue,
             BranchOperator destAssignment,
             int i)
         {

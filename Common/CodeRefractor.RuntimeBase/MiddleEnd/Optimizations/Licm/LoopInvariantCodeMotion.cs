@@ -8,7 +8,6 @@ using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
 using CodeRefractor.MiddleEnd.Optimizations.Purity;
 using CodeRefractor.MiddleEnd.SimpleOperations;
-using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.UseDefs;
 using CodeRefractor.RuntimeBase.Optimizations;
 
@@ -44,7 +43,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Licm
             }
         }
 
-        private static void PerformMoveInstructions(MetaMidRepresentation intermediateCode, int loopStart,
+        static void PerformMoveInstructions(MetaMidRepresentation intermediateCode, int loopStart,
             List<int> allInvariantInstructions)
         {
             var localOps = intermediateCode.LocalOperations;
@@ -63,7 +62,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Licm
             }
         }
 
-        private static List<int> GetAllInvariantInstructions(MetaMidRepresentation intermediateCode, int loopStart,
+        static List<int> GetAllInvariantInstructions(MetaMidRepresentation intermediateCode, int loopStart,
             int loopEnd, HashSet<LocalVariable> getAllDefinedVariables)
         {
             var useDef = intermediateCode.UseDef;
@@ -107,7 +106,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Licm
             return result;
         }
 
-        private static HashSet<LocalVariable> GetAllDefinedVariables(MetaMidRepresentation intermediateCode,
+        static HashSet<LocalVariable> GetAllDefinedVariables(MetaMidRepresentation intermediateCode,
             int loopStart, int loopEnd)
         {
             var localOps = intermediateCode.UseDef.GetLocalOperations();

@@ -8,7 +8,6 @@ using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 using CodeRefractor.FrontEnd.SimpleOperations.Methods;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.SimpleOperations;
-using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 using CodeRefractor.Util;
 
@@ -33,7 +32,7 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
             return result;
         }
 
-        private static bool HandleInterpreterInstructions(CilMethodInterpreter interpreter, ClosureEntities closure)
+        static bool HandleInterpreterInstructions(CilMethodInterpreter interpreter, ClosureEntities closure)
         {
             var useDef = interpreter.MidRepresentation.UseDef;
             var calls = useDef.GetOperationsOfKind(OperationKind.CallVirtual).ToArray();
@@ -43,8 +42,8 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
             foreach (var callOp in calls)
             {
                 var op = allOps[callOp];
-                var methodData = (CallMethodStatic) op;
-                var thisParameter = (LocalVariable) methodData.Parameters.First();
+                var methodData = (CallMethodStatic)op;
+                var thisParameter = (LocalVariable)methodData.Parameters.First();
                 var clrType = thisParameter.FixedType.GetClrType(closure);
 
                 var overridenTypes = clrType.ImplementorsOfT(closure);
@@ -66,7 +65,7 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
 
                 //TODO: map correct method
                 var resolvedMethod = AddVirtualMethodImplementations.GetImplementingMethod(clrType,
-                    (MethodInfo) methodData.Info);
+                    (MethodInfo)methodData.Info);
                 methodData.Interpreter = closure.ResolveMethod(resolvedMethod);
                 interpreter.MidRepresentation.LocalOperations[callOp] = new CallMethodStatic(methodData.Interpreter)
                 {

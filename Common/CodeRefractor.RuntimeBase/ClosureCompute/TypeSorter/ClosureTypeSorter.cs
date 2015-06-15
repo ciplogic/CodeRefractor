@@ -9,8 +9,8 @@ namespace CodeRefractor.ClosureCompute.TypeSorter
 {
     internal class ClosureTypeSorter
     {
-        private readonly ClosureEntities _crRuntime;
-        private readonly List<Type> _types;
+        readonly ClosureEntities _crRuntime;
+        readonly List<Type> _types;
 
         public ClosureTypeSorter(IEnumerable<Type> types, ClosureEntities crRuntime)
         {

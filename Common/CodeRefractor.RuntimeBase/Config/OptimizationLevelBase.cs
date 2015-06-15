@@ -17,7 +17,7 @@ namespace CodeRefractor.RuntimeBase.Config
             = new Dictionary<OptimizationKind, List<OptimizationPassBase>>();
 
         public static List<OptimizationPassBase> OptimizationPasses = new List<OptimizationPassBase>();
-        private static int _optimizerLevel;
+        static int _optimizerLevel;
 
         public OptimizationLevelBase()
         {

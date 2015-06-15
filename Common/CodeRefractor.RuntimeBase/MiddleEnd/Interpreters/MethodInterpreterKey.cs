@@ -13,9 +13,9 @@ namespace CodeRefractor.MiddleEnd.Interpreters
 {
     public class MethodInterpreterKey : IComparable
     {
-        private readonly string _methodName;
-        private readonly Type[] _parameterList;
-        private int _hash;
+        readonly string _methodName;
+        readonly Type[] _parameterList;
+        int _hash;
 
         public MethodInterpreterKey(MethodInterpreter interpreter, Type implementingType = null)
         {
@@ -76,12 +76,12 @@ namespace CodeRefractor.MiddleEnd.Interpreters
             RecomputeHash();
         }
 
-        private void RecomputeHash()
+        void RecomputeHash()
         {
             _hash = ComputeHash();
         }
 
-        private static Type GetMappingType(Type type, Dictionary<Type, Type> mappedTypes)
+        static Type GetMappingType(Type type, Dictionary<Type, Type> mappedTypes)
         {
             Type result;
             if (!mappedTypes.TryGetValue(type, out result))
@@ -89,12 +89,12 @@ namespace CodeRefractor.MiddleEnd.Interpreters
             return result;
         }
 
-        private int ComputeHash()
+        int ComputeHash()
         {
             var baseHash = _methodName.GetHashCode();
             foreach (var parameter in _parameterList)
             {
-                baseHash = (6*baseHash) ^ parameter.GetHashCode();
+                baseHash = (6 * baseHash) ^ parameter.GetHashCode();
             }
             return baseHash;
         }

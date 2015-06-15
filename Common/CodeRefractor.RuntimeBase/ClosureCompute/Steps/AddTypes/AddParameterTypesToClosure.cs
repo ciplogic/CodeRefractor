@@ -20,11 +20,11 @@ namespace CodeRefractor.ClosureCompute.Steps.AddTypes
             return result;
         }
 
-        private static bool UpdateClosureForMethod(MethodBase method, ClosureEntities closureEntities)
+        static bool UpdateClosureForMethod(MethodBase method, ClosureEntities closureEntities)
         {
             var result = false;
             var returnType = method.GetReturnType();
-            if (returnType != typeof (void))
+            if (returnType != typeof(void))
                 result |= closureEntities.AddType(returnType);
 
             result |= closureEntities.AddType(method.DeclaringType);

@@ -49,7 +49,7 @@ namespace CodeRefractor.FrontEnd.SimpleOperations.Identifiers
             return GetAutoName();
         }
 
-        private string GetAutoName()
+        string GetAutoName()
         {
             var varKind = Kind == VariableKind.Vreg ? "vreg" : "local";
             var formatVar = string.Format("{0}_{1}", varKind, Id);

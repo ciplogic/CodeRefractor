@@ -1,18 +1,10 @@
 ﻿#region Usings
 
 using System;
-using System.IO;
-using System.Reflection;
-using CodeRefactor.OpenRuntime;
-using CodeRefractor.ClosureCompute;
 using CodeRefractor.Config;
 using CodeRefractor.MiddleEnd.Optimizations.Util;
-using CodeRefractor.RuntimeBase;
 using CodeRefractor.RuntimeBase.Config;
-using CodeRefractor.RuntimeBase.Optimizations;
-using CodeRefractor.Util;
 using Ninject;
-using Ninject.Extensions.Factory;
 
 #endregion
 
@@ -24,7 +16,7 @@ namespace CodeRefractor.Compiler
      */
     public static class ProgramEntryPoint
     {
-        private static void Main(string[] args)
+        static void Main(string[] args)
         {
             try
             {
@@ -42,7 +34,7 @@ namespace CodeRefractor.Compiler
             catch (Exception e)
             {
                 Console.Error.WriteLine("Calling the compiler failed: {0},\nStack trace: {1}",
-                    e.Message, 
+                    e.Message,
                     e.StackTrace);
 
                 Console.ReadKey();

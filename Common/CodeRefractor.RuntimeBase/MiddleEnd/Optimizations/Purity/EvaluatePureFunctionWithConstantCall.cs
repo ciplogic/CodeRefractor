@@ -79,7 +79,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Purity
             return operationData;
         }
 
-        private static bool CheckIfParamAreConst(CallMethodStatic operationStatic, List<object> constParams)
+        static bool CheckIfParamAreConst(CallMethodStatic operationStatic, List<object> constParams)
         {
             var paramsAreConst = true;
             foreach (var parameter in operationStatic.Parameters)

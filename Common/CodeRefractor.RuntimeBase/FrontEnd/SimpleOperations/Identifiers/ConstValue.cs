@@ -9,7 +9,7 @@ namespace CodeRefractor.FrontEnd.SimpleOperations.Identifiers
 {
     public class ConstValue : IdentifierValue
     {
-        private object _value;
+        object _value;
 
         public ConstValue()
         {

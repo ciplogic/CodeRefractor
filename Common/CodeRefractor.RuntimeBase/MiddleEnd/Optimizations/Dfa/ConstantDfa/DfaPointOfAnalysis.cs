@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
-using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 
 #endregion
 
@@ -76,7 +75,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Dfa.ConstantDfa
             return Compare(other);
         }
 
-        private bool Compare(DfaPointOfAnalysis other)
+        bool Compare(DfaPointOfAnalysis other)
         {
             if (States.Count != other.States.Count)
                 return false;

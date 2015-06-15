@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using CodeRefractor.Runtime.Annotations;
 
 namespace CodeRefactor.OpenRuntime.Generic
@@ -9,7 +6,7 @@ namespace CodeRefactor.OpenRuntime.Generic
     [MapType(typeof(List<>))]
     class CrList<T>
     {
-        private T[] _items;
+        T[] _items;
 
         public int Count { get; set; }
         public int Capacity

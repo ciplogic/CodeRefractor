@@ -43,7 +43,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Dfa.ReachabilityDfa
             return true;
         }
 
-        private void Interpret(int cursor, LocalOperation[] operations, Dictionary<int, int> labelTable,
+        void Interpret(int cursor, LocalOperation[] operations, Dictionary<int, int> labelTable,
             SortedSet<int> reached)
         {
             if (reached.Contains(cursor))
@@ -57,15 +57,15 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Dfa.ReachabilityDfa
                 switch (operation.Kind)
                 {
                     case OperationKind.BranchOperator:
-                        var branchOperator = (BranchOperator) operation;
+                        var branchOperator = (BranchOperator)operation;
                         Interpret(labelTable[branchOperator.JumpTo], operations, labelTable, reached);
                         break;
                     case OperationKind.AlwaysBranch:
-                        var jumpTo = ((AlwaysBranch) operation).JumpTo;
+                        var jumpTo = ((AlwaysBranch)operation).JumpTo;
                         Interpret(labelTable[jumpTo], operations, labelTable, reached);
                         return;
                     case OperationKind.Switch:
-                        var switchAssign = (Switch) operation;
+                        var switchAssign = (Switch)operation;
                         var jumps = switchAssign.Jumps;
                         foreach (var jump in jumps)
                         {

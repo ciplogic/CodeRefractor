@@ -7,7 +7,6 @@ using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
 using CodeRefractor.MiddleEnd.SimpleOperations;
-using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.SimpleOperations.Operators;
 using CodeRefractor.MiddleEnd.UseDefs;
 using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
@@ -18,9 +17,9 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Dfa.ConstantDfa
 {
     internal class ConstantDfaAnalysis : ResultingInFunctionOptimizationPass
     {
-        private Dictionary<int, int> _labelTable = new Dictionary<int, int>();
-        private LocalOperation[] _operations;
-        private DfaPointOfAnalysis[] _pointsOfAnalysis;
+        Dictionary<int, int> _labelTable = new Dictionary<int, int>();
+        LocalOperation[] _operations;
+        DfaPointOfAnalysis[] _pointsOfAnalysis;
 
         public override void OptimizeOperations(CilMethodInterpreter interpreter)
         {
@@ -34,7 +33,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Dfa.ConstantDfa
             ApplyResult();
         }
 
-        private void ApplyResult()
+        void ApplyResult()
         {
             Assignment assignment;
             for (var i = 0; i < _operations.Length; i++)
@@ -47,17 +46,17 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Dfa.ConstantDfa
                         HandleAssignment(i, assignment);
                         break;
                     case OperationKind.BinaryOperator:
-                        HandleOperator(i, (OperatorBase) operation);
+                        HandleOperator(i, (OperatorBase)operation);
                         break;
                     case OperationKind.BranchOperator:
-                        var branchOperator = (BranchOperator) operation;
+                        var branchOperator = (BranchOperator)operation;
                         HandleBranchOperator(i, branchOperator);
                         break;
                 }
             }
         }
 
-        private void HandleBranchOperator(int i, BranchOperator branchOperator)
+        void HandleBranchOperator(int i, BranchOperator branchOperator)
         {
             var localVariable = branchOperator.CompareValue as LocalVariable;
             if (localVariable == null)
@@ -70,7 +69,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Dfa.ConstantDfa
             branchOperator.CompareValue = localVariable;
         }
 
-        private void HandleAssignment(int i, Assignment assignment)
+        void HandleAssignment(int i, Assignment assignment)
         {
             var constant = assignment.Right as ConstValue;
             if (constant == null)
@@ -85,7 +84,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Dfa.ConstantDfa
             }
         }
 
-        private void HandleOperator(int i, OperatorBase assignment)
+        void HandleOperator(int i, OperatorBase assignment)
         {
             var binary = assignment as BinaryOperator;
             var unary = assignment as UnaryOperator;
@@ -118,12 +117,12 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Dfa.ConstantDfa
             }
         }
 
-        private int JumpTo(int labelId)
+        int JumpTo(int labelId)
         {
             return _labelTable[labelId];
         }
 
-        private void Interpret(int cursor, DfaPointOfAnalysis startingConclusions)
+        void Interpret(int cursor, DfaPointOfAnalysis startingConclusions)
         {
             var canUpdate = true;
             if (startingConclusions.Equals(_pointsOfAnalysis[cursor]))
@@ -159,14 +158,14 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Dfa.ConstantDfa
                         break;
 
                     case OperationKind.BinaryOperator:
-                        assignment = (Assignment) operation;
+                        assignment = (Assignment)operation;
                         analysis.States[assignment.AssignedTo] = new VariableState
                         {
                             State = VariableState.ConstantState.NotConstant
                         };
                         break;
                     case OperationKind.BranchOperator:
-                        var branchOperator = (BranchOperator) operation;
+                        var branchOperator = (BranchOperator)operation;
                         Interpret(JumpTo(branchOperator.JumpTo), analysis);
                         break;
                     case OperationKind.Label:
@@ -176,7 +175,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Dfa.ConstantDfa
                     case OperationKind.Return:
                         return;
                     case OperationKind.AlwaysBranch:
-                        var jumpTo = ((AlwaysBranch) operation).JumpTo;
+                        var jumpTo = ((AlwaysBranch)operation).JumpTo;
                         Interpret(JumpTo(jumpTo), analysis);
                         return;
                     default:
@@ -187,7 +186,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Dfa.ConstantDfa
             }
         }
 
-        private LocalOperation GetOperation(int i)
+        LocalOperation GetOperation(int i)
         {
             return _operations[i];
         }
