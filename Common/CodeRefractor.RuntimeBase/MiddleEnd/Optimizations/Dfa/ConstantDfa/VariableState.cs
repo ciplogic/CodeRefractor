@@ -6,7 +6,7 @@ using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 
 namespace CodeRefractor.MiddleEnd.Optimizations.Dfa.ConstantDfa
 {
-    internal class VariableState
+    class VariableState
     {
         #region ConstantState enum
 

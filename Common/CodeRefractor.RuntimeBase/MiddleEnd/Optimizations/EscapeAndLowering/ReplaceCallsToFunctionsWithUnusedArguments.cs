@@ -13,7 +13,7 @@ using CodeRefractor.RuntimeBase.Optimizations;
 namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
 {
     [Optimization(Category = OptimizationCategories.Propagation)]
-    internal class ReplaceCallsToFunctionsWithUnusedArguments : ResultingInFunctionOptimizationPass
+class ReplaceCallsToFunctionsWithUnusedArguments : ResultingInFunctionOptimizationPass
     {
         public override void OptimizeOperations(CilMethodInterpreter interpreter)
         {

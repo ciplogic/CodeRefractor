@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using CodeRefactor.OpenRuntime;
 using NUnit.Framework;
 
@@ -112,16 +113,16 @@ namespace MsilCodeCompiler.Tests.OpenRuntime
                 StringImpl.IndexOf(stringValue, "Some", 0, stringValue.Length, StringComparison.Ordinal));
 
             // overloaded versions
-            Assert.AreEqual(stringValue.IndexOf("a", 0, stringValue.Length), // overload #2
+            Assert.AreEqual(stringValue.IndexOf("a", 0, stringValue.Length, StringComparison.Ordinal), // overload #2
                 StringImpl.IndexOf(stringValue, "a", 0, stringValue.Length));
 
-            Assert.AreEqual(stringValue.IndexOf("a", 30), // overload #3
+            Assert.AreEqual(stringValue.IndexOf("a", 30, StringComparison.Ordinal), // overload #3
                 StringImpl.IndexOf(stringValue, "a", 30));
 
             Assert.AreEqual(stringValue.IndexOf("a", 30, StringComparison.Ordinal), // overload #4
                 StringImpl.IndexOf(stringValue, "a", 30, StringComparison.Ordinal));
 
-            Assert.AreEqual(stringValue.IndexOf("a"), // overload #5
+            Assert.AreEqual(stringValue.IndexOf("a", StringComparison.Ordinal), // overload #5
                 StringImpl.IndexOf(stringValue, "a"));
 
             Assert.AreEqual(stringValue.IndexOf("a", StringComparison.Ordinal), // overload #6
@@ -152,22 +153,22 @@ namespace MsilCodeCompiler.Tests.OpenRuntime
             Assert.AreEqual(stringValue.StartsWith("some", StringComparison.Ordinal),
                 StringImpl.StartsWith(stringValue, "some", StringComparison.Ordinal));
 
-            Assert.AreEqual(stringValue.StartsWith("Some"), // overload #2
+            Assert.AreEqual(stringValue.StartsWith("Some", StringComparison.Ordinal), // overload #2
                 StringImpl.StartsWith(stringValue, "Some"));
 
-            Assert.AreEqual(stringValue.StartsWith(""),
+            Assert.AreEqual(stringValue.StartsWith("", StringComparison.Ordinal),
                 StringImpl.StartsWith(stringValue, ""));
 
-            Assert.AreEqual(stringValue.StartsWith("some"),
+            Assert.AreEqual(stringValue.StartsWith("some", StringComparison.Ordinal),
                 StringImpl.StartsWith(stringValue, "some"));
 
-            Assert.AreEqual(stringValue.StartsWith("Some", false, null), //overload #3
+            Assert.AreEqual(stringValue.StartsWith("Some", StringComparison.Ordinal), //overload #3
                 StringImpl.StartsWith(stringValue, "Some", false, null));
 
-            Assert.AreEqual(stringValue.StartsWith("", false, null),
+            Assert.AreEqual(stringValue.StartsWith("", StringComparison.Ordinal),
                 StringImpl.StartsWith(stringValue, "", false, null));
 
-            Assert.AreEqual(stringValue.StartsWith("some", false, null),
+            Assert.AreEqual(stringValue.StartsWith("some", StringComparison.Ordinal),
                 StringImpl.StartsWith(stringValue, "some", false, null));
 
         }

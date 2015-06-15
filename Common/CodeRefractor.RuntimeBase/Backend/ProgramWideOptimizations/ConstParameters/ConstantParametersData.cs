@@ -9,7 +9,7 @@ using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 
 namespace CodeRefractor.Backend.ProgramWideOptimizations.ConstParameters
 {
-    internal class ConstantParametersData
+    class ConstantParametersData
     {
         public enum ConstValueKind
         {

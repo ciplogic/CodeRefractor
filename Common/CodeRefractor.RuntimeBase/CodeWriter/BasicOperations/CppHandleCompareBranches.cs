@@ -8,7 +8,7 @@ using CodeRefractor.RuntimeBase.Analyze;
 
 namespace CodeRefractor.CodeWriter.BasicOperations
 {
-    internal static class CppHandleCompareBranches
+    static class CppHandleCompareBranches
     {
         public static void WriteCompareBranch(IdentifierValue localVar, IdentifierValue secondVar, CodeOutput sb,
             int jumpAddress,

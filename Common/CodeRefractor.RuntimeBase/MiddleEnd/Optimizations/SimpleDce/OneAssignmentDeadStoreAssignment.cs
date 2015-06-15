@@ -16,7 +16,7 @@ using CodeRefractor.RuntimeBase.Optimizations;
 namespace CodeRefractor.RuntimeBase.Backend.Optimizations.SimpleDce
 {
     [Optimization(Category = OptimizationCategories.DeadCodeElimination)]
-    internal class OneAssignmentDeadStoreAssignment : OptimizationPassBase
+class OneAssignmentDeadStoreAssignment : OptimizationPassBase
     {
         public OneAssignmentDeadStoreAssignment()
             : base(OptimizationKind.InFunction)

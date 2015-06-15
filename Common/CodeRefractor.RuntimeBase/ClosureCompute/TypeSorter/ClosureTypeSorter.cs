@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace CodeRefractor.ClosureCompute.TypeSorter
 {
-    internal class ClosureTypeSorter
+    class ClosureTypeSorter
     {
         readonly ClosureEntities _crRuntime;
         readonly List<Type> _types;

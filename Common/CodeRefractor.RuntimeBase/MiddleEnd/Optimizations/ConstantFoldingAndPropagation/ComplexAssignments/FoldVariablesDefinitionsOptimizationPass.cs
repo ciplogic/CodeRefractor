@@ -17,7 +17,7 @@ using CodeRefractor.RuntimeBase.Optimizations;
 
 namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndPropagation.ComplexAssignments
 {
-    internal class FoldVariablesDefinitionsOptimizationPass : OptimizationPassBase
+    class FoldVariablesDefinitionsOptimizationPass : OptimizationPassBase
     {
         public FoldVariablesDefinitionsOptimizationPass()
             : base(OptimizationKind.InFunction)

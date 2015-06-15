@@ -143,7 +143,7 @@ namespace CodeRefractor.Util
                 s = s.Remove(s.IndexOf('`'));
             }
             var fullName = nameSpace + "_" + s;
-            if (s.EndsWith("[]"))
+            if (s.EndsWith("[]", StringComparison.Ordinal))
             {
                 s = s.Remove(s.Length - 2, 2);
                 fullName = string.Format("{2} <Array<{0}_{1}> > &", nameSpace, s, StdSharedPtr);
@@ -177,7 +177,7 @@ namespace CodeRefractor.Util
             {
                 if (type.IsPrimitive || type.IsValueType)
                     isSmartPtr = EscapingMode.Stack;
-                if (type.Name.EndsWith("*") || type.Name.EndsWith("&"))
+                if (type.Name.EndsWith("*", StringComparison.Ordinal) || type.Name.EndsWith("&", StringComparison.Ordinal))
                 {
                     var elementType = type.GetElementType();
                     var elementTypeCppName = elementType.ToCppName();

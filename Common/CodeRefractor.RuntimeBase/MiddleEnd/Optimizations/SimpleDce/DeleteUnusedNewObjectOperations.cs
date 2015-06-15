@@ -14,7 +14,7 @@ using CodeRefractor.RuntimeBase.Optimizations;
 namespace CodeRefractor.MiddleEnd.Optimizations.SimpleDce
 {
     [Optimization(Category = OptimizationCategories.DeadCodeElimination)]
-    internal class DeleteUnusedNewObjectOperations : OptimizationPassBase
+class DeleteUnusedNewObjectOperations : OptimizationPassBase
     {
         public DeleteUnusedNewObjectOperations()
             : base(OptimizationKind.InFunction)

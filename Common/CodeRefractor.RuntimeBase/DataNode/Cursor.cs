@@ -6,7 +6,7 @@ using System.Text;
 
 namespace CodeRefractor.DataNode
 {
-    internal class Cursor
+    class Cursor
     {
         public string ReadString()
         {

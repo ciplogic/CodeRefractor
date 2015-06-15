@@ -22,7 +22,7 @@ using CodeRefractor.Util;
 
 namespace CodeRefractor.CodeWriter.BasicOperations
 {
-    internal static class CppHandleOperators
+    static class CppHandleOperators
     {
         public static bool HandleAssignmentOperations(CodeOutput bodySb, LocalOperation operation, OperationKind kind,
             TypeDescriptionTable typeTable, MethodInterpreter interpreter, ClosureEntities crRuntime)

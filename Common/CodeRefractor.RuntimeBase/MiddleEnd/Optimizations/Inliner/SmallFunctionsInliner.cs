@@ -20,7 +20,7 @@ using CodeRefractor.RuntimeBase.Optimizations;
 namespace CodeRefractor.RuntimeBase.Backend.Optimizations.Inliner
 {
     //[Optimization(Category = OptimizationCategories.Inliner)]
-    internal class SmallFunctionsInliner : ResultingOptimizationPass
+    class SmallFunctionsInliner : ResultingOptimizationPass
     {
         public static int MaxLengthInliner = 200;
         public static int MaxLengthChildFunction = 5;

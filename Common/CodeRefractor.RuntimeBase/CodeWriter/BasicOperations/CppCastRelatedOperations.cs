@@ -15,7 +15,7 @@ using CodeRefractor.Util;
 
 namespace CodeRefractor.CodeWriter.BasicOperations
 {
-    internal static class CppCastRelatedOperations
+    static class CppCastRelatedOperations
     {
         static readonly string BoxingTemplate = @"
 template<class T>

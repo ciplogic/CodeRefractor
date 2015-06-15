@@ -16,7 +16,7 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
     /// <summary>
     ///     removes abstract unused vcalls
     /// </summary>
-    internal class DevirtualizeWholeClosureMethods : ProgramOptimizationBase
+    class DevirtualizeWholeClosureMethods : ProgramOptimizationBase
     {
         public override bool Optimize(ClosureEntities closure)
         {

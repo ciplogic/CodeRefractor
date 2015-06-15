@@ -165,9 +165,9 @@ namespace Mono.Reflection {
 		public static MatchContext Match (MethodBase method, ILPattern pattern)
 		{
 			if (method == null)
-				throw new ArgumentNullException ("method");
+				throw new ArgumentNullException (nameof(method));
 			if (pattern == null)
-				throw new ArgumentNullException ("pattern");
+				throw new ArgumentNullException (nameof(pattern));
 
 			var instructions = method.GetInstructions ();
 			if (instructions.Count == 0)

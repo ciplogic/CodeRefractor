@@ -37,7 +37,7 @@ namespace Mono.Reflection {
 		public static IList<Instruction> GetInstructions (this MethodBase self)
 		{
 			if (self == null)
-				throw new ArgumentNullException ("self");
+				throw new ArgumentNullException (nameof(self));
 
 			return MethodBodyReader.GetInstructions (self).AsReadOnly ();
 		}

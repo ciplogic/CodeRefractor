@@ -23,7 +23,7 @@ namespace CodeRefractor.RuntimeBase.Backend.Optimizations.SimpleDce
     ///     > var2 = identifier
     /// </summary>
     [Optimization(Category = OptimizationCategories.DeadCodeElimination)]
-    internal class DoubleAssignPropagation : OptimizationPassBase
+class DoubleAssignPropagation : OptimizationPassBase
     {
         public DoubleAssignPropagation()
             : base(OptimizationKind.InFunction)

@@ -16,7 +16,7 @@ using CodeRefractor.RuntimeBase.Optimizations;
 namespace CodeRefractor.MiddleEnd.Optimizations.SimpleDce
 {
     [Optimization(Category = OptimizationCategories.DeadCodeElimination)]
-    internal class DeadStoreAssignment : OptimizationPassBase
+class DeadStoreAssignment : OptimizationPassBase
     {
         static readonly List<OperationKind> NoSideEffectsOperationKinds = new List<OperationKind>
         {

@@ -9,7 +9,7 @@ using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 
 namespace CodeRefractor.MiddleEnd.Optimizations.Dfa.ConstantDfa
 {
-    internal class DfaPointOfAnalysis
+    class DfaPointOfAnalysis
     {
         public readonly Dictionary<LocalVariable, VariableState> States = new Dictionary<LocalVariable, VariableState>();
 

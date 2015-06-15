@@ -16,7 +16,7 @@ using CodeRefractor.RuntimeBase.Optimizations;
 namespace CodeRefractor.MiddleEnd.Optimizations.RedundantExpressions
 {
     [Optimization(Category = OptimizationCategories.CommonSubexpressionsElimination)]
-    internal class PrecomputeRepeatedPureFunctionCall : BlockOptimizationPass
+class PrecomputeRepeatedPureFunctionCall : BlockOptimizationPass
     {
         public override bool OptimizeBlock(CilMethodInterpreter midRepresentation, int startRange, int endRange,
             LocalOperation[] operations)

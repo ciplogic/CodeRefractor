@@ -22,7 +22,7 @@ using CodeRefractor.RuntimeBase.Optimizations;
 namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
 {
     [Optimization(Category = OptimizationCategories.Analysis)]
-    internal class InFunctionLoweringVars : OptimizationPassBase
+class InFunctionLoweringVars : OptimizationPassBase
     {
         public InFunctionLoweringVars()
             : base(OptimizationKind.InFunction)

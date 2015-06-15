@@ -6,7 +6,7 @@ using System.Text;
 
 namespace CodeRefractor.CodeWriter.Output
 {
-    internal class IndentCode
+    class IndentCode
     {
         const string IndentString = "    "; // TODO: this should be configurable.
         readonly StringBuilder _stringBuilderOutput;

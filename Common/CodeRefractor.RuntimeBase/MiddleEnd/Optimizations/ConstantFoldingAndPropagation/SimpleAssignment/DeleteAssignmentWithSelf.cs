@@ -14,7 +14,7 @@ using CodeRefractor.RuntimeBase.Optimizations;
 namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.SimpleAssignment
 {
     [Optimization(Category = OptimizationCategories.DeadCodeElimination)]
-    internal class DeleteAssignmentWithSelf : OptimizationPassBase
+class DeleteAssignmentWithSelf : OptimizationPassBase
     {
         public DeleteAssignmentWithSelf()
             : base(OptimizationKind.InFunction)

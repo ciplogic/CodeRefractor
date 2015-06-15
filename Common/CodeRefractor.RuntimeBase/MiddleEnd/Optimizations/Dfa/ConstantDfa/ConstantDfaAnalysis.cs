@@ -15,7 +15,7 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
 
 namespace CodeRefractor.MiddleEnd.Optimizations.Dfa.ConstantDfa
 {
-    internal class ConstantDfaAnalysis : ResultingInFunctionOptimizationPass
+    class ConstantDfaAnalysis : ResultingInFunctionOptimizationPass
     {
         Dictionary<int, int> _labelTable = new Dictionary<int, int>();
         LocalOperation[] _operations;

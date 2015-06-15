@@ -16,7 +16,7 @@ using CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators;
 
 namespace CodeRefractor.MiddleEnd.Optimizations.RedundantExpressions
 {
-    internal static class PrecomputeRepeatedUtils
+    static class PrecomputeRepeatedUtils
     {
         public static LocalOperation CreateAssignLocalOperation(LocalVariable assignedTo, LocalVariable cacheVariable)
         {

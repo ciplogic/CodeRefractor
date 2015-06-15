@@ -11,7 +11,7 @@ using CodeRefractor.RuntimeBase.Optimizations;
 
 namespace CodeRefractor.MiddleEnd.Optimizations.Common
 {
-    internal abstract class BlockOptimizationPass : OptimizationPassBase
+    abstract class BlockOptimizationPass : OptimizationPassBase
     {
         protected BlockOptimizationPass()
             : base(OptimizationKind.InFunction)

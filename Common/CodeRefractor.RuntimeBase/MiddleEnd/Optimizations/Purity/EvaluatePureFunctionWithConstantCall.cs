@@ -17,7 +17,7 @@ using CodeRefractor.RuntimeBase.Optimizations;
 namespace CodeRefractor.MiddleEnd.Optimizations.Purity
 {
     [Optimization(Category = OptimizationCategories.Purity)]
-    internal class EvaluatePureFunctionWithConstantCall : ResultingGlobalOptimizationPass
+class EvaluatePureFunctionWithConstantCall : ResultingGlobalOptimizationPass
     {
         public override bool CheckPreconditions(CilMethodInterpreter midRepresentation, ClosureEntities closure)
         {

@@ -104,7 +104,7 @@ namespace Mono.Reflection {
 		public static FieldInfo GetBackingField (this PropertyInfo self)
 		{
 			if (self == null)
-				throw new ArgumentNullException ("self");
+				throw new ArgumentNullException (nameof(self));
 
 			var getter = self.GetGetMethod (true);
 			if (getter != null)

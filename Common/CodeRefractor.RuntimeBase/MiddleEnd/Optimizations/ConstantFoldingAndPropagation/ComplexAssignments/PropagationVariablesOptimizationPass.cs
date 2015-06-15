@@ -14,7 +14,7 @@ using CodeRefractor.RuntimeBase.Optimizations;
 namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.ComplexAssignments
 {
     [Optimization(Category = OptimizationCategories.Propagation)]
-    internal class PropagationVariables : BlockOptimizationPass
+class PropagationVariables : BlockOptimizationPass
     {
         public override bool OptimizeBlock(CilMethodInterpreter midRepresentation, int startRange, int endRange,
             LocalOperation[] operations)

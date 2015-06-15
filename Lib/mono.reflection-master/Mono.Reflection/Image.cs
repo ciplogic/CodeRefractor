@@ -103,7 +103,7 @@ namespace Mono.Reflection {
 		public static bool IsAssembly (string file)
 		{
 			if (file == null)
-				throw new ArgumentNullException ("file");
+				throw new ArgumentNullException (nameof(file));
 
 			using (var stream = new FileStream (file, FileMode.Open, FileAccess.Read, FileShare.Read))
 				return IsAssembly (stream);
@@ -112,7 +112,7 @@ namespace Mono.Reflection {
 		public static bool IsAssembly (Stream stream)
 		{
 			if (stream == null)
-				throw new ArgumentNullException ("stream");
+				throw new ArgumentNullException (nameof(stream));
 			if (!stream.CanRead)
 				throw new ArgumentException ("Can not read from stream");
 			if (!stream.CanSeek)

@@ -10,7 +10,7 @@ using CodeRefractor.MiddleEnd.SimpleOperations.Operators;
 
 namespace CodeRefractor.MiddleEnd.Optimizations.Licm
 {
-    internal static class LoopDetection
+    static class LoopDetection
     {
         public static List<int> FindLoops(MetaMidRepresentation midRepresentation)
         {

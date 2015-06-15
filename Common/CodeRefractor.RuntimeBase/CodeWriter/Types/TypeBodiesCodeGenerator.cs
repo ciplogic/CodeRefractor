@@ -14,7 +14,7 @@ using CodeRefractor.Util;
 
 namespace CodeRefractor.CodeWriter.Types
 {
-    internal static class TypeBodiesCodeGenerator
+    static class TypeBodiesCodeGenerator
     {
         public static void WriteClosureStructBodies(CodeOutput codeOutput, ClosureEntities crRuntime)
         {

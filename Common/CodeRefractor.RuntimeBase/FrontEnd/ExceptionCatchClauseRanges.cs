@@ -9,7 +9,7 @@ using Mono.Reflection;
 
 namespace CodeRefractor.FrontEnd
 {
-    internal static class ExceptionCatchClauseRanges
+    static class ExceptionCatchClauseRanges
     {
         static List<KeyValuePair<int, int>> GetExceptionRanges(List<ExceptionHandlingClause> handlingExceptions)
         {

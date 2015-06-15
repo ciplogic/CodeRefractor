@@ -9,7 +9,7 @@ using System.Text;
 
 namespace CodeRefractor.MiddleEnd.SimpleOperations
 {
-    internal static class OperationUtils
+    static class OperationUtils
     {
         internal static void PopulateInstance(object result, object localOperation, Type type)
         {

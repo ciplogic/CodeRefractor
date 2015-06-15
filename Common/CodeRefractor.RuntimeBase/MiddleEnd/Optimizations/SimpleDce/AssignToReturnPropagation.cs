@@ -21,7 +21,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.SimpleDce
     ///     > var2 = identifier
     /// </summary>
     [Optimization(Category = OptimizationCategories.DeadCodeElimination)]
-    internal class AssignToReturnPropagation : OptimizationPassBase
+class AssignToReturnPropagation : OptimizationPassBase
     {
         public AssignToReturnPropagation()
             : base(OptimizationKind.InFunction)

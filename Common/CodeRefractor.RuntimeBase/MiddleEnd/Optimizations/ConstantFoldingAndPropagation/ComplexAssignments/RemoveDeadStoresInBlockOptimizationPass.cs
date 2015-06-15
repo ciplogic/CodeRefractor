@@ -15,7 +15,7 @@ using CodeRefractor.RuntimeBase.Optimizations;
 namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.ComplexAssignments
 {
     [Optimization(Category = OptimizationCategories.DeadCodeElimination)]
-    internal class RemoveDeadStoresInBlockOptimizationPass : BlockOptimizationPass
+class RemoveDeadStoresInBlockOptimizationPass : BlockOptimizationPass
     {
         public override bool OptimizeBlock(CilMethodInterpreter midRepresentation, int startRange, int endRange,
             LocalOperation[] operations)

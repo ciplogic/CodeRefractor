@@ -13,7 +13,7 @@ using CodeRefractor.RuntimeBase.Shared;
 
 namespace CodeRefractor.RuntimeBase.CodeWriter.BasicOperations
 {
-    internal static class CppHandleBranches
+    static class CppHandleBranches
     {
         public static void HandleBranchOperator(object operation, CodeOutput sb)
         {

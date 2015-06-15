@@ -15,7 +15,7 @@ using Mono.Reflection;
 
 namespace CodeRefractor.FrontEnd
 {
-    internal class MethodMidRepresentationBuilder
+    class MethodMidRepresentationBuilder
     {
         //without using this code, R# will complain of too high cyclomatic complexity
         static readonly HashSet<int> BranchOpcodes = new HashSet<int>
@@ -284,14 +284,14 @@ namespace CodeRefractor.FrontEnd
                 return true;
             }
 
-            if (opcodeStr.StartsWith("stind."))
+            if (opcodeStr.StartsWith("stind.", StringComparison.Ordinal))
             {
                 //TODO: load the address into evaluation stack
                 operationFactory.StoresValueFromAddress();
                 return true;
             }
 
-            if (opcodeStr.StartsWith("ldind."))
+            if (opcodeStr.StartsWith("ldind.", StringComparison.Ordinal))
             {
                 //TODO: load the address into evaluation stack
                 operationFactory.LoadValueFromAddress(closureEntities);
