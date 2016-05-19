@@ -88,7 +88,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             return true;
         }
 
-        static void HandleAssign(CodeOutput sb, LocalOperation operation, MethodInterpreter interpreter,
+        private static void HandleAssign(CodeOutput sb, LocalOperation operation, MethodInterpreter interpreter,
             ClosureEntities closureEntities)
         {
             var assignment = (Assignment)operation;

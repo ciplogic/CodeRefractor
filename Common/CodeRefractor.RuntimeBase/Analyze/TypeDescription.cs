@@ -111,11 +111,9 @@ namespace CodeRefractor.Analyze
 
         public Type GetClrType(ClosureEntities closureEntities)
         {
-            if (ClrTypeCode == TypeCode.Object)
-            {
-                return LocateObjectType(closureEntities, Namespace, Name);
-            }
-            return ClrType;
+            return ClrTypeCode == TypeCode.Object
+                ? LocateObjectType(closureEntities, Namespace, Name) 
+                : ClrType;
         }
 
         Type LocateObjectType(ClosureEntities closureEntities, string ns, string name)

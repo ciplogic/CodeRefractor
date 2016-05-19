@@ -13,7 +13,7 @@ namespace CodeRefractor.Analyze
     {
         public static string WriteHeaderMethod(this MethodBase methodBase, ClosureEntities crRuntime,
             bool writeEndColon = true)
-        {
+        {       
             var retType = methodBase.GetReturnType().ToCppName();
 
             var sb = new StringBuilder();
