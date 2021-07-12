@@ -1,10 +1,8 @@
 #region Uses
 
-using CodeRefractor.FrontEnd.SimpleOperations;
-
 #endregion
 
-namespace CodeRefractor.MiddleEnd.SimpleOperations
+namespace CodeRefractor.FrontEnd.SimpleOperations
 {
     public class AlwaysBranch : LocalOperation
     {

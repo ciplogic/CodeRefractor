@@ -15,7 +15,6 @@ using System.Threading;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.CodeWriter.Output;
 using CodeRefractor.FrontEnd.SimpleOperations;
-using CodeRefractor.MiddleEnd.SimpleOperations;
 using CodeRefractor.Util;
 
 #endregion

@@ -4,7 +4,7 @@ using System;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.Optimizations
+namespace CodeRefractor.Optimizations
 {
     public class OptimizationAttribute : Attribute
     {

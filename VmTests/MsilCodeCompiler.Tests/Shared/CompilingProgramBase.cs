@@ -7,7 +7,6 @@ using System.Linq;
 using System.Reflection;
 using CodeRefractor;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
-using CodeRefractor.RuntimeBase.Util;
 using CodeRefractor.Util;
 using NUnit.Framework;
 

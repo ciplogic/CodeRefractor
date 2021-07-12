@@ -3,11 +3,10 @@
 using CodeRefractor.FrontEnd.SimpleOperations;
 using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
-using CodeRefractor.MiddleEnd.SimpleOperations;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndPropagation
+namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation
 {
     public abstract class ConstantVariablePropagationBase : ResultingInFunctionOptimizationPass
     {

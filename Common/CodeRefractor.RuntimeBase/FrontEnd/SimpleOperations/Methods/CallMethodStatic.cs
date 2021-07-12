@@ -3,14 +3,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using CodeRefractor.FrontEnd;
-using CodeRefractor.FrontEnd.SimpleOperations;
 using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.Interpreters;
 
 #endregion
 
-namespace CodeRefractor.MiddleEnd.SimpleOperations.Methods
+namespace CodeRefractor.FrontEnd.SimpleOperations.Methods
 {
     public class CallMethodStatic : LocalOperation
     {

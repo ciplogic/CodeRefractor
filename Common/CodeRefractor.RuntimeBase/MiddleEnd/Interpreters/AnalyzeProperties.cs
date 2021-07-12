@@ -5,8 +5,6 @@ using System.Linq;
 using System.Reflection;
 using CodeRefractor.Analyze;
 using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
-using CodeRefractor.MiddleEnd.SimpleOperations.Identifiers;
-using CodeRefractor.RuntimeBase.Analyze;
 
 #endregion
 

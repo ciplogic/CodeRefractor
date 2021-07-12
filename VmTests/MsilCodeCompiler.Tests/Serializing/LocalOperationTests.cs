@@ -1,4 +1,4 @@
-using CodeRefractor.MiddleEnd.SimpleOperations;
+using CodeRefractor.FrontEnd.SimpleOperations;
 using NUnit.Framework;
 
 namespace MsilCodeCompiler.Tests.Serializing

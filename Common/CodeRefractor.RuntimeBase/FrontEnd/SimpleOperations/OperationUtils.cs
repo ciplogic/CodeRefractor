@@ -7,7 +7,7 @@ using System.Text;
 
 #endregion
 
-namespace CodeRefractor.MiddleEnd.SimpleOperations
+namespace CodeRefractor.FrontEnd.SimpleOperations
 {
     static class OperationUtils
     {

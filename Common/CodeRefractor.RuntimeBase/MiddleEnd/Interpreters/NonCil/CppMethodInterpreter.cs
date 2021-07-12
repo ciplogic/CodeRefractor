@@ -2,14 +2,11 @@
 
 using System.Reflection;
 using CodeRefractor.FrontEnd.SimpleOperations.Methods;
-using CodeRefractor.MiddleEnd.Interpreters;
 using CodeRefractor.Runtime.Annotations;
-using CodeRefractor.RuntimeBase;
-using CodeRefractor.RuntimeBase.MiddleEnd;
 
 #endregion
 
-namespace CodeRefractor.MiddleEnd
+namespace CodeRefractor.MiddleEnd.Interpreters.NonCil
 {
     public class CppMethodInterpreter : MethodInterpreter
     {

@@ -1,11 +1,11 @@
 #region Uses
 
+using CodeRefractor.Analyze;
 using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
-using CodeRefractor.RuntimeBase.Analyze;
 
 #endregion
 
-namespace CodeRefractor.MiddleEnd.SimpleOperations.Operators
+namespace CodeRefractor.FrontEnd.SimpleOperations.Operators
 {
     public class BranchOperator : OperatorBase
     {

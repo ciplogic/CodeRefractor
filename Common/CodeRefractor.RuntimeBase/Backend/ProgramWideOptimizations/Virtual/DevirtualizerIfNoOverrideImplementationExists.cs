@@ -4,11 +4,10 @@ using System.Linq;
 using System.Reflection;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.ClosureCompute.Steps;
+using CodeRefractor.FrontEnd.SimpleOperations;
 using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 using CodeRefractor.FrontEnd.SimpleOperations.Methods;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
-using CodeRefractor.MiddleEnd.SimpleOperations;
-using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 using CodeRefractor.Util;
 
 #endregion

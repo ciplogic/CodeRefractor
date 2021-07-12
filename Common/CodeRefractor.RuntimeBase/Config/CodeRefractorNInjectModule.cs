@@ -1,6 +1,5 @@
 ﻿#region Uses
 
-using CodeRefractor.RuntimeBase.Config;
 using Ninject.Modules;
 
 #endregion

@@ -4,12 +4,12 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
-using CodeRefractor.RuntimeBase.Optimizations;
+using CodeRefractor.Optimizations;
 using CodeRefractor.Util;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.Config
+namespace CodeRefractor.Config
 {
     /**
      * A command line argument parser for the CodeRefractor compiler.

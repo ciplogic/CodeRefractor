@@ -6,8 +6,7 @@ using CodeRefractor.Analyze;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.ClosureCompute.TypeSorter;
 using CodeRefractor.CodeWriter.Output;
-using CodeRefractor.RuntimeBase.Analyze;
-using CodeRefractor.RuntimeBase.TypeInfoWriter;
+using CodeRefractor.TypeInfoWriter;
 using CodeRefractor.Util;
 
 #endregion

@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.Util
+namespace CodeRefractor.Util
 {
     public static class DotNetUtils
     {

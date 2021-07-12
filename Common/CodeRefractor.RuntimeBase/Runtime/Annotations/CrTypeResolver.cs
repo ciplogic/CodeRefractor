@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Interpreters;
+using CodeRefractor.MiddleEnd.Interpreters.NonCil;
 
 #endregion
 

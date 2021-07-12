@@ -7,7 +7,7 @@ using System.Text;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.CodeWriter.Output;
 using CodeRefractor.FrontEnd.SimpleOperations.Casts;
-using CodeRefractor.RuntimeBase.TypeInfoWriter;
+using CodeRefractor.TypeInfoWriter;
 using CodeRefractor.Util;
 
 #endregion

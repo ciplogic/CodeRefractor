@@ -3,11 +3,11 @@
 using System;
 using System.Collections.Generic;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
-using CodeRefractor.RuntimeBase.Optimizations;
+using CodeRefractor.Optimizations;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.Config
+namespace CodeRefractor.Config
 {
     public abstract class OptimizationLevelBase
     {

@@ -1,4 +1,4 @@
-namespace CodeRefractor.RuntimeBase.MiddleEnd.GlobalTable
+namespace CodeRefractor.MiddleEnd.GlobalTable
 {
     public enum GlobalFieldKind
     {

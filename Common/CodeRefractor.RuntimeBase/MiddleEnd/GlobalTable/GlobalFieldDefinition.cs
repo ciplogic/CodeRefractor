@@ -4,7 +4,7 @@ using System;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.MiddleEnd.GlobalTable
+namespace CodeRefractor.MiddleEnd.GlobalTable
 {
     public class GlobalFieldDefinition
     {

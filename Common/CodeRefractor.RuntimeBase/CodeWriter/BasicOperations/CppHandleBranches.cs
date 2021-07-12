@@ -1,17 +1,16 @@
 ﻿#region Uses
 
 using System;
-using CodeRefractor.CodeWriter.BasicOperations;
+using CodeRefractor.Analyze;
 using CodeRefractor.CodeWriter.Output;
 using CodeRefractor.FrontEnd.SimpleOperations;
 using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
-using CodeRefractor.MiddleEnd.SimpleOperations.Operators;
-using CodeRefractor.RuntimeBase.Analyze;
-using CodeRefractor.RuntimeBase.Shared;
+using CodeRefractor.FrontEnd.SimpleOperations.Operators;
+using CodeRefractor.Shared;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.CodeWriter.BasicOperations
+namespace CodeRefractor.CodeWriter.BasicOperations
 {
     static class CppHandleBranches
     {

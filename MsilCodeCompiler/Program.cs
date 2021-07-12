@@ -3,7 +3,7 @@ using System.IO;
 using System.Reflection;
 using CodeRefactor.OpenRuntime;
 using CodeRefractor.ClosureCompute;
-using CodeRefractor.RuntimeBase.Config;
+using CodeRefractor.Config;
 using CodeRefractor.Util;
 using static System.String;
 

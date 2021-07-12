@@ -2,8 +2,8 @@
 
 using System.Collections.Generic;
 using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
+using CodeRefractor.FrontEnd.SimpleOperations.Methods;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
-using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 
 #endregion
 

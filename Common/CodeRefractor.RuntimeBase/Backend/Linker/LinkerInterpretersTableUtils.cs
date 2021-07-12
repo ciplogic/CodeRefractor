@@ -20,8 +20,7 @@ namespace CodeRefractor.Backend.Linker
 
         public static bool ReadNoStaticSideEffects(MethodBase methodBase, ClosureEntities crRuntime)
         {
-            var method = methodBase.GetInterpreter(crRuntime) as CilMethodInterpreter;
-            if (method != null && method.MidRepresentation != null)
+            if (methodBase.GetInterpreter(crRuntime) is CilMethodInterpreter method && method.MidRepresentation != null)
             {
                 return method.AnalyzeProperties.IsReadOnly;
             }

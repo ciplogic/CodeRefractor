@@ -1,4 +1,4 @@
-namespace CodeRefractor.RuntimeBase.Shared
+namespace CodeRefractor.Shared
 {
     public static class OpcodeIntValues
     {

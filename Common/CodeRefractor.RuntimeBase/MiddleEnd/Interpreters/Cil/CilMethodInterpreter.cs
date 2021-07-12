@@ -8,7 +8,7 @@ using CodeRefractor.ClosureCompute;
 using CodeRefractor.FrontEnd;
 using CodeRefractor.FrontEnd.SimpleOperations;
 using CodeRefractor.FrontEnd.SimpleOperations.Methods;
-using CodeRefractor.RuntimeBase;
+using CodeRefractor.MiddleEnd.Interpreters.NonCil;
 
 #endregion
 

@@ -3,6 +3,7 @@
 using System.Reflection;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Interpreters;
+using CodeRefractor.MiddleEnd.Interpreters.NonCil;
 
 #endregion
 

@@ -1,7 +1,6 @@
 #region Uses
 
 using System;
-using CodeRefractor.MiddleEnd.SimpleOperations;
 
 #endregion
 

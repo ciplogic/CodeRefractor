@@ -14,14 +14,14 @@ using CodeRefractor.CodeWriter.Linker;
 using CodeRefractor.CodeWriter.Output;
 using CodeRefractor.CodeWriter.Platform;
 using CodeRefractor.CodeWriter.Types;
+using CodeRefractor.FrontEnd.SimpleOperations.ConstTable;
 using CodeRefractor.FrontEnd.SimpleOperations.Methods;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Interpreters;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
-using CodeRefractor.MiddleEnd.SimpleOperations.ConstTable;
+using CodeRefractor.MiddleEnd.Interpreters.NonCil;
 using CodeRefractor.Runtime.Annotations;
-using CodeRefractor.RuntimeBase.Analyze;
-using CodeRefractor.RuntimeBase.TypeInfoWriter;
+using CodeRefractor.TypeInfoWriter;
 using CodeRefractor.Util;
 
 #endregion

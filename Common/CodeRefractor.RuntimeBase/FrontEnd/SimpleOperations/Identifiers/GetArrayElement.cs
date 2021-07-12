@@ -3,13 +3,10 @@
 using System;
 using CodeRefractor.Analyze;
 using CodeRefractor.ClosureCompute;
-using CodeRefractor.FrontEnd.SimpleOperations;
-using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
-using CodeRefractor.RuntimeBase.Analyze;
 
 #endregion
 
-namespace CodeRefractor.MiddleEnd.SimpleOperations.Identifiers
+namespace CodeRefractor.FrontEnd.SimpleOperations.Identifiers
 {
     public class GetArrayElement : LocalOperation
     {

@@ -2,7 +2,7 @@
 
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
-using CodeRefractor.RuntimeBase.Optimizations;
+using CodeRefractor.Optimizations;
 
 #endregion
 

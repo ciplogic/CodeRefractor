@@ -5,7 +5,7 @@ using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
+namespace CodeRefractor.FrontEnd.SimpleOperations
 {
     public class StaticFieldSetter : LocalVariable
     {

@@ -2,11 +2,10 @@
 
 using CodeRefractor.Analyze;
 using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
-using CodeRefractor.RuntimeBase.Analyze;
 
 #endregion
 
-namespace CodeRefractor.MiddleEnd.SimpleOperations.ConstTable
+namespace CodeRefractor.FrontEnd.SimpleOperations.ConstTable
 {
     public class ConstByteArrayValue : ConstValue
     {

@@ -3,11 +3,10 @@
 using System.Reflection;
 using System.Runtime.InteropServices;
 using CodeRefractor.FrontEnd.SimpleOperations.Methods;
-using CodeRefractor.MiddleEnd.Interpreters;
 
 #endregion
 
-namespace CodeRefractor.MiddleEnd
+namespace CodeRefractor.MiddleEnd.Interpreters.NonCil
 {
     public class PlatformInvokeMethod : MethodInterpreter
     {

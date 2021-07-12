@@ -9,7 +9,7 @@ using CodeRefractor.ClosureCompute.Steps;
 using CodeRefractor.CodeWriter.Linker;
 using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 using CodeRefractor.MiddleEnd.Interpreters;
-using CodeRefractor.RuntimeBase.TypeInfoWriter;
+using CodeRefractor.TypeInfoWriter;
 using CodeRefractor.Util;
 
 #endregion

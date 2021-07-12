@@ -1,8 +1,8 @@
 ﻿#region Uses
 
+using CodeRefractor.Analyze;
 using CodeRefractor.CodeWriter.Output;
 using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
-using CodeRefractor.RuntimeBase.Analyze;
 
 #endregion
 

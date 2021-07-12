@@ -7,16 +7,16 @@ using System.Reflection;
 using CodeRefractor.Backend;
 using CodeRefractor.Backend.ComputeClosure;
 using CodeRefractor.Backend.ProgramWideOptimizations;
+using CodeRefractor.Backend.ProgramWideOptimizations.ConstParameters;
 using CodeRefractor.Backend.ProgramWideOptimizations.Virtual;
 using CodeRefractor.CodeWriter.Output;
-using CodeRefractor.CompilerBackend.ProgramWideOptimizations.ConstParameters;
+using CodeRefractor.Config;
 using CodeRefractor.FrontEnd.SimpleOperations.Methods;
 using CodeRefractor.MiddleEnd.Interpreters;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
 using CodeRefractor.MiddleEnd.Optimizations.Util;
-using CodeRefractor.RuntimeBase.Config;
-using CodeRefractor.RuntimeBase.TypeInfoWriter;
+using CodeRefractor.TypeInfoWriter;
 
 #endregion
 

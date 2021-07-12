@@ -1,11 +1,8 @@
 #region Uses
 
-using CodeRefractor.FrontEnd.SimpleOperations;
-using CodeRefractor.MiddleEnd.SimpleOperations;
-
 #endregion
 
-namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations
+namespace CodeRefractor.FrontEnd.SimpleOperations
 {
     public class Switch : LocalOperation
     {

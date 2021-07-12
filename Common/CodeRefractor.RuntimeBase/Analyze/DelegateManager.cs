@@ -9,7 +9,7 @@ using CodeRefractor.Util;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.Analyze
+namespace CodeRefractor.Analyze
 {
     public class DelegateManager
     {

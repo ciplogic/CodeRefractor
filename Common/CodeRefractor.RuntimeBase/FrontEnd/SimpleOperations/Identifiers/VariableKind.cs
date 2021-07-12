@@ -1,4 +1,4 @@
-namespace CodeRefractor.MiddleEnd.SimpleOperations.Identifiers
+namespace CodeRefractor.FrontEnd.SimpleOperations.Identifiers
 {
     public enum VariableKind
     {

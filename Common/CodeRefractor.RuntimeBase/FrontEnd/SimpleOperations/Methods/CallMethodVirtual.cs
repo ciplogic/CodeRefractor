@@ -6,7 +6,7 @@ using CodeRefractor.MiddleEnd.Interpreters;
 
 #endregion
 
-namespace CodeRefractor.MiddleEnd.SimpleOperations.Methods
+namespace CodeRefractor.FrontEnd.SimpleOperations.Methods
 {
     public class CallMethodVirtual : CallMethodStatic
     {

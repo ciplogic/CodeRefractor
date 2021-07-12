@@ -1,4 +1,4 @@
-namespace CodeRefractor.RuntimeBase.Optimizations
+namespace CodeRefractor.Optimizations
 {
     public enum OptimizationKind
     {

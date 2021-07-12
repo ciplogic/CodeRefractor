@@ -3,7 +3,6 @@
 using System;
 using CodeRefractor.Config;
 using CodeRefractor.MiddleEnd.Optimizations.Util;
-using CodeRefractor.RuntimeBase.Config;
 using Ninject;
 
 #endregion

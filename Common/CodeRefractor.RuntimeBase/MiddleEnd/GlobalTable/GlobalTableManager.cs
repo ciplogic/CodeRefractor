@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.MiddleEnd.GlobalTable
+namespace CodeRefractor.MiddleEnd.GlobalTable
 {
     public class GlobalTableManager
     {

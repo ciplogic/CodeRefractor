@@ -1,11 +1,10 @@
 #region Uses
 
 using System;
-using CodeRefractor.Analyze;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.Analyze
+namespace CodeRefractor.Analyze
 {
     public static class UsedTypeListUtils
     {

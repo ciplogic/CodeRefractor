@@ -4,7 +4,7 @@ using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 
 #endregion
 
-namespace CodeRefractor.MiddleEnd.SimpleOperations.Operators
+namespace CodeRefractor.FrontEnd.SimpleOperations.Operators
 {
     public class UnaryOperator : OperatorBase
     {

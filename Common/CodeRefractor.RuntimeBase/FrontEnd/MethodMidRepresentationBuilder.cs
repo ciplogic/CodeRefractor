@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
-using CodeRefractor.RuntimeBase.Shared;
+using CodeRefractor.Shared;
 using CodeRefractor.Util;
 using Mono.Reflection;
 

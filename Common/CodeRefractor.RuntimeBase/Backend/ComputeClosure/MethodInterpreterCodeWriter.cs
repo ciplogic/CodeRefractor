@@ -9,8 +9,9 @@ using CodeRefractor.CodeWriter.Platform;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Interpreters;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
+using CodeRefractor.MiddleEnd.Interpreters.NonCil;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
-using CodeRefractor.RuntimeBase.TypeInfoWriter;
+using CodeRefractor.TypeInfoWriter;
 
 #endregion
 

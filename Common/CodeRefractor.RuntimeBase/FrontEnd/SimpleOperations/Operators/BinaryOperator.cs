@@ -2,13 +2,10 @@
 
 using CodeRefractor.Analyze;
 using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
-using CodeRefractor.MiddleEnd.SimpleOperations;
-using CodeRefractor.MiddleEnd.SimpleOperations.Operators;
-using CodeRefractor.RuntimeBase.Analyze;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.MiddleEnd.SimpleOperations.Operators
+namespace CodeRefractor.FrontEnd.SimpleOperations.Operators
 {
     public class BinaryOperator : OperatorBase
     {

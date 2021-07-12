@@ -1,7 +1,5 @@
 #region Uses
 
-using CodeRefractor.RuntimeBase.Analyze;
-
 #endregion
 
 namespace CodeRefractor.Analyze

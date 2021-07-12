@@ -1,12 +1,10 @@
 #region Uses
 
 using System;
-using CodeRefractor.FrontEnd.SimpleOperations;
-using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 
 #endregion
 
-namespace CodeRefractor.MiddleEnd.SimpleOperations.Identifiers
+namespace CodeRefractor.FrontEnd.SimpleOperations.Identifiers
 {
     public class SetArrayElement : LocalOperation
     {

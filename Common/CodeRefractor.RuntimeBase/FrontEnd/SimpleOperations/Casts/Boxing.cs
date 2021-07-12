@@ -1,7 +1,6 @@
 #region Uses
 
 using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
-using CodeRefractor.MiddleEnd.SimpleOperations;
 
 #endregion
 

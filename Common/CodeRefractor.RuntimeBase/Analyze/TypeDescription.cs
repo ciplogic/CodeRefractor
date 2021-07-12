@@ -8,7 +8,6 @@ using System.Runtime.InteropServices;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.CodeWriter.Output;
 using CodeRefractor.Runtime;
-using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.Util;
 using static System.String;
 

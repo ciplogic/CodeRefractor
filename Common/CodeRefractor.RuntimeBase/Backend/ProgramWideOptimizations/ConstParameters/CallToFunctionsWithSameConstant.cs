@@ -1,19 +1,16 @@
 ﻿#region Uses
 
 using System.Linq;
-using CodeRefractor.Backend.ProgramWideOptimizations;
-using CodeRefractor.Backend.ProgramWideOptimizations.ConstParameters;
 using CodeRefractor.ClosureCompute;
+using CodeRefractor.FrontEnd.SimpleOperations;
 using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 using CodeRefractor.FrontEnd.SimpleOperations.Methods;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
-using CodeRefractor.MiddleEnd.SimpleOperations;
-using CodeRefractor.MiddleEnd.SimpleOperations.Methods;
 using CodeRefractor.MiddleEnd.UseDefs;
 
 #endregion
 
-namespace CodeRefractor.CompilerBackend.ProgramWideOptimizations.ConstParameters
+namespace CodeRefractor.Backend.ProgramWideOptimizations.ConstParameters
 {
     public class CallToFunctionsWithSameConstant : ProgramOptimizationBase
     {

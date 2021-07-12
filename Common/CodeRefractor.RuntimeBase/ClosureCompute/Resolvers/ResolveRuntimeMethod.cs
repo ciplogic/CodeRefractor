@@ -7,8 +7,9 @@ using System.Reflection;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Interpreters;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
+using CodeRefractor.MiddleEnd.Interpreters.NonCil;
 using CodeRefractor.Runtime.Annotations;
-using CodeRefractor.RuntimeBase.Shared;
+using CodeRefractor.Shared;
 
 #endregion
 

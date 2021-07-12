@@ -1,4 +1,4 @@
-namespace CodeRefractor.MiddleEnd.SimpleOperations
+namespace CodeRefractor.FrontEnd.SimpleOperations
 {
     public enum OperationKind
     {

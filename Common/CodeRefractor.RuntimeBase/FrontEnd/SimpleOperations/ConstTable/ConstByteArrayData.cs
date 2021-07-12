@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace CodeRefractor.MiddleEnd.SimpleOperations.ConstTable
+namespace CodeRefractor.FrontEnd.SimpleOperations.ConstTable
 {
     public class ConstByteArrayData
     {

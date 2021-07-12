@@ -4,7 +4,7 @@ using System;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase
+namespace CodeRefractor
 {
     public static class Ensure
     {

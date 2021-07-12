@@ -2,7 +2,6 @@
 
 using System.Reflection;
 using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
-using CodeRefractor.MiddleEnd.SimpleOperations;
 
 #endregion
 

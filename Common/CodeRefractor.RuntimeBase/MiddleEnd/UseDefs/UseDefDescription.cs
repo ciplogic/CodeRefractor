@@ -2,10 +2,9 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using CodeRefractor.Analyze;
 using CodeRefractor.FrontEnd.SimpleOperations;
 using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
-using CodeRefractor.MiddleEnd.SimpleOperations;
-using CodeRefractor.RuntimeBase.Analyze;
 
 #endregion
 

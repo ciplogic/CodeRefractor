@@ -1,12 +1,11 @@
 #region Uses
 
 using System.Reflection;
-using CodeRefractor.FrontEnd.SimpleOperations;
 using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 
 #endregion
 
-namespace CodeRefractor.MiddleEnd.SimpleOperations
+namespace CodeRefractor.FrontEnd.SimpleOperations
 {
     public class FunctionPointerStore : LocalOperation
     {

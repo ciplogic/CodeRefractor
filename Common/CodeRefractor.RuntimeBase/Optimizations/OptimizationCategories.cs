@@ -4,11 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
-using CodeRefractor.RuntimeBase.Shared;
+using CodeRefractor.Shared;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.Optimizations
+namespace CodeRefractor.Optimizations
 {
     public class OptimizationCategories
     {

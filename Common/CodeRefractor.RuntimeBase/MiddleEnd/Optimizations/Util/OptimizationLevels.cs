@@ -2,9 +2,9 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using CodeRefractor.Config;
 using CodeRefractor.MiddleEnd.Optimizations.Common;
-using CodeRefractor.RuntimeBase.Config;
-using CodeRefractor.RuntimeBase.Optimizations;
+using CodeRefractor.Optimizations;
 
 #endregion
 

@@ -8,7 +8,7 @@ using CodeRefractor.Util;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.TypeInfoWriter
+namespace CodeRefractor.TypeInfoWriter
 {
     public class VirtualMethodDescription
     {

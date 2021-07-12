@@ -10,6 +10,7 @@ using CodeRefractor.CodeWriter.Output;
 using CodeRefractor.CodeWriter.Types;
 using CodeRefractor.MiddleEnd;
 using CodeRefractor.MiddleEnd.Interpreters;
+using CodeRefractor.MiddleEnd.Interpreters.NonCil;
 using CodeRefractor.Util;
 
 #endregion

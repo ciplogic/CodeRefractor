@@ -1,13 +1,12 @@
 #region Uses
 
 using System;
+using CodeRefractor.FrontEnd.SimpleOperations;
 using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
+using CodeRefractor.FrontEnd.SimpleOperations.Operators;
 using CodeRefractor.MiddleEnd.Interpreters.Cil;
-using CodeRefractor.MiddleEnd.SimpleOperations;
-using CodeRefractor.MiddleEnd.SimpleOperations.Operators;
-using CodeRefractor.RuntimeBase.Backend.Optimizations.ConstantFoldingAndPropagation;
-using CodeRefractor.RuntimeBase.Optimizations;
-using CodeRefractor.RuntimeBase.Shared;
+using CodeRefractor.Optimizations;
+using CodeRefractor.Shared;
 
 #endregion
 

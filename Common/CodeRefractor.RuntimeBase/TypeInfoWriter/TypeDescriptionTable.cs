@@ -8,12 +8,11 @@ using CodeRefractor.Analyze;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.CodeWriter.Output;
 using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
-using CodeRefractor.RuntimeBase.Analyze;
 using CodeRefractor.Util;
 
 #endregion
 
-namespace CodeRefractor.RuntimeBase.TypeInfoWriter
+namespace CodeRefractor.TypeInfoWriter
 {
     public class TypeDescriptionTable : IComparer<Type>
     {
