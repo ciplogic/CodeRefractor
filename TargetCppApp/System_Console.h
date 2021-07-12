@@ -1,9 +1,6 @@
-#ifndef SystemConsole_H
-#define SystemConsole_H
+#pragma once
 
-#include "../System_Primitives.h"
-#include <math.h>
-#include <string.h>
+#include "System_Primitives.h"
 
 #include <memory>
 
@@ -13,6 +10,3 @@ namespace System
 	std::shared_ptr< Array < System::String> > getArgumentsAsList(int argc, char**argv);
 
 }
-
-
-#endif

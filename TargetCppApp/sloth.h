@@ -1,5 +1,4 @@
-#ifndef SLOTH_H
-#define SLOTH_H
+#pragma once
 
 #define _CRT_SECURE_NO_WARNINGS
 
@@ -8,7 +7,4 @@
 #include <vector>
 #include <functional>
 
-#include "./CodeRefactorRuntime/System_Console.h"
-
-#endif // SLOTH_H
-
+#include "./System_Console.h"

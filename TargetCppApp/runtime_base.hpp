@@ -4,7 +4,6 @@
 #include <map>
 #include <cwchar>
 
-static std::vector<std::shared_ptr<System_String> > _stringJumps;
 
 void buildStringTable();
 void mapLibs();
@@ -31,32 +30,6 @@ void System_Array_Resize(std::shared_ptr< Array<T> >* arr, int newSize)
 	(*arr)->Items = (T*)realloc((*arr)->Items, sizeof(T)*newSize);
 }
 
-extern const wchar_t _stringTable[];
-std::shared_ptr<System_String> _str(int index)
-{
-	return _stringJumps[index];
-}
-
-void _AddJumpAndLength(int jump, int length)
-{
-	auto resultData = &(_stringTable[jump]);
-	
-	auto result = std::make_shared<System_String>(); 
-	auto value = std::make_shared<Array < System_Char >>(length+1, resultData);
-	result->Text =  value;
-	_stringJumps.push_back(result);
-}
-
-static std::vector<System_Byte*> _constTables;
-System_Byte* RuntimeHelpers_GetBytes(int id)
-{
-	return _constTables[id];
-}
-
-void AddConstantByteArray(System_Byte* data)
-{
-	_constTables.push_back(data);
-}
 #ifdef _WIN32
 
 #include <windows.h>

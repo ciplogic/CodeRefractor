@@ -72,6 +72,7 @@
     <Compile Include="ClosureCompute\Steps\AddVirtualMethods.cs" />
     <Compile Include="CodeWriter\BasicOperations\CppCastRelatedOperations.cs" />
     <Compile Include="CodeWriter\Linker\GenerateTypeTableForIsInst.cs" />
+    <Compile Include="CodeWriter\OutputTypesHeader.cs" />
     <Compile Include="CodeWriter\Output\CodeOutput.cs" />
     <Compile Include="CodeWriter\Output\IndentCode.cs" />
     <Compile Include="CodeWriter\Types\CallMarshallerFactory.cs" />

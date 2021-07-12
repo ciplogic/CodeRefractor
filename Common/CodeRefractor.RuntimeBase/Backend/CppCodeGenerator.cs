@@ -9,6 +9,7 @@ using System.Text;
 using CodeRefractor.Analyze;
 using CodeRefractor.Backend.ComputeClosure;
 using CodeRefractor.ClosureCompute;
+using CodeRefractor.CodeWriter;
 using CodeRefractor.CodeWriter.BasicOperations;
 using CodeRefractor.CodeWriter.Linker;
 using CodeRefractor.CodeWriter.Output;
@@ -33,14 +34,14 @@ namespace CodeRefractor.Backend
     /// </summary>
     public class CppCodeGenerator
     {
-        readonly Func<CodeOutput> _createCodeOutput;
+        readonly Func<StringBuilder> _createCodeOutput;
 
-        public CppCodeGenerator(Func<CodeOutput> createCodeOutput)
+        public CppCodeGenerator(Func<StringBuilder> createCodeOutput)
         {
             _createCodeOutput = createCodeOutput;
         }
 
-        public CodeOutput GenerateSourceCodeOutput(
+        public StringBuilder GenerateSourceCodeOutput(
             MethodInterpreter interpreter,
             TypeDescriptionTable table,
             List<MethodInterpreter> closure,
@@ -48,13 +49,12 @@ namespace CodeRefractor.Backend
         {
             var headerSb = _createCodeOutput();
 
-            headerSb.Append("#include \"sloth.h\"")
-                .BlankLine();
+            headerSb.Append("#include \"sloth.h\"\n");
+            
             if (!string.IsNullOrEmpty(TypeNamerUtils.SmartPtrHeader))
             {
                 headerSb
-                    .AppendFormat("#include {0}", TypeNamerUtils.SmartPtrHeader)
-                    .BlankLine();
+                    .AppendFormat("#include {0}\n", TypeNamerUtils.SmartPtrHeader);
             }
 
             var initializersCodeOutput = _createCodeOutput();
@@ -76,7 +76,7 @@ namespace CodeRefractor.Backend
             bodySb.Append(PlatformInvokeCodeWriter.LoadDllMethods());
             bodySb.Append(ConstByteArrayList.BuildConstantTable());
 
-            LinkingData.Instance.IsInstTable.BuildTypeMatchingTable(table, closureEntities, initializersCodeOutput.StringBuilderOutput);
+            LinkingData.Instance.IsInstTable.BuildTypeMatchingTable(table, closureEntities, initializersCodeOutput);
             bodySb.Append(LinkingData.Instance.Strings.BuildStringTable());
 
 
@@ -85,7 +85,7 @@ namespace CodeRefractor.Backend
                 .Append(bodySb.ToString());
         }
 
-        static void WriteCppMethods(List<MethodInterpreter> closure, CodeOutput sb, ClosureEntities crRuntime)
+        static void WriteCppMethods(List<MethodInterpreter> closure, StringBuilder sb, ClosureEntities crRuntime)
         {
             var cppMethods = closure
                 .Where(m => m.Kind == MethodKind.RuntimeCppMethod)
@@ -106,42 +106,42 @@ namespace CodeRefractor.Backend
             }
         }
 
-        static void WriteClosureMethods(List<MethodInterpreter> closure, CodeOutput sb,
+        static void WriteClosureMethods(List<MethodInterpreter> closure, StringBuilder sb,
             TypeDescriptionTable typeTable, ClosureEntities closureEntities)
         {
             WriteClosureBodies(closure, sb, typeTable, closureEntities);
         }
 
-        static void WriteClosureHeaders(IEnumerable<MethodInterpreter> closure, CodeOutput codeOutput,
+        static void WriteClosureHeaders(IEnumerable<MethodInterpreter> closure, StringBuilder stringBuilder,
             ClosureEntities closureEntities)
         {
             closure.Where(interpreter => !interpreter.Method.IsAbstract)
                 .Each(interpreter =>
                 {
-                    MethodInterpreterCodeWriter.WriteMethodSignature(codeOutput, interpreter, closureEntities);
-                    codeOutput.Append("\n");
+                    MethodInterpreterCodeWriter.WriteMethodSignature(stringBuilder, interpreter, closureEntities);
+                    stringBuilder.Append("\n");
                 });
         }
 
-        static void WriteClassFieldsBody(CodeOutput sb, Type mappedType, ClosureEntities crRuntime)
+        static void WriteClassFieldsBody(StringBuilder sb, Type mappedType, ClosureEntities crRuntime)
         {
             var typeDesc = UsedTypeList.Set(mappedType, crRuntime);
             typeDesc.WriteLayout(sb);
         }
 
-        static void WriteClosureDelegateBodies(List<MethodInterpreter> closure, CodeOutput codeOutput)
+        static void WriteClosureDelegateBodies(List<MethodInterpreter> closure, StringBuilder StringBuilder)
         {
             foreach (var interpreter in closure)
             {
                 if (interpreter.Kind != MethodKind.Delegate)
                     continue;
-                codeOutput.Append(MethodInterpreterCodeWriter.WriteDelegateCallCode(interpreter));
+                StringBuilder.Append(MethodInterpreterCodeWriter.WriteDelegateCallCode(interpreter));
             }
 
-            codeOutput.Append(DelegateManager.Instance.BuildDelegateContent());
+            StringBuilder.Append(DelegateManager.Instance.BuildDelegateContent());
         }
 
-        static void WriteClosureBodies(List<MethodInterpreter> closure, CodeOutput sb,
+        static void WriteClosureBodies(List<MethodInterpreter> closure, StringBuilder sb,
             TypeDescriptionTable typeTable, ClosureEntities closureEntities)
         {
             sb.Append("///--- PInvoke code ---\n");
@@ -185,7 +185,7 @@ namespace CodeRefractor.Backend
             sb.AppendFormat("{{ {0} }}", methodNativeDescription.Code).AppendLine();
         }
 
-        static void WriteMainBody(MethodInterpreter interpreter, CodeOutput sb, ClosureEntities crRuntime)
+        static void WriteMainBody(MethodInterpreter interpreter, StringBuilder sb, ClosureEntities crRuntime)
         {
             sb.Append("System_Void initializeRuntime();\n");
             sb.Append("int main(int argc, char**argv)").BracketOpen();
