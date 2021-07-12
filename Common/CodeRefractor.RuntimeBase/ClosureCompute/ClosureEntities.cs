@@ -115,7 +115,7 @@ namespace CodeRefractor.ClosureCompute
             EntitiesBuilder.MethodResolverList.Add(resolveRuntimeMethod);
         }
 
-        public StringBuilder BuildFullSourceCode()
+        public (string Src, string Header) BuildFullSourceCode()
         {
             var entryInterpreter = ResolveMethod(EntryPoint);
             var usedTypes = MappedTypes.Values.ToList();

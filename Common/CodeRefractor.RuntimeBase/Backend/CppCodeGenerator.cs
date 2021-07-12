@@ -34,22 +34,18 @@ namespace CodeRefractor.Backend
     /// </summary>
     public class CppCodeGenerator
     {
-        readonly Func<StringBuilder> _createCodeOutput;
 
-        public CppCodeGenerator(Func<StringBuilder> createCodeOutput)
-        {
-            _createCodeOutput = createCodeOutput;
-        }
-
-        public StringBuilder GenerateSourceCodeOutput(
+        public (string Src, string Header) GenerateSourceCodeOutput(
             MethodInterpreter interpreter,
             TypeDescriptionTable table,
             List<MethodInterpreter> closure,
             ClosureEntities closureEntities)
         {
-            var headerSb = _createCodeOutput();
+            var headerSb = new StringBuilder();
 
             headerSb.Append("#include \"sloth.h\"\n");
+            headerSb.Append("#include \"output.hpp\"\n");
+            headerSb.Append("#include \"sloth_platform.h\"\n");
             
             if (!string.IsNullOrEmpty(TypeNamerUtils.SmartPtrHeader))
             {
@@ -57,8 +53,9 @@ namespace CodeRefractor.Backend
                     .AppendFormat("#include {0}\n", TypeNamerUtils.SmartPtrHeader);
             }
 
-            var initializersCodeOutput = _createCodeOutput();
-            TypeBodiesCodeGenerator.WriteClosureStructBodies(initializersCodeOutput, closureEntities);
+            var initializersCodeOutput = new StringBuilder();
+            var typeSignaturesSb = new StringBuilder("#pragma once\n");
+            TypeBodiesCodeGenerator.WriteClosureStructBodies(typeSignaturesSb, closureEntities);
             WriteClosureDelegateBodies(closure, initializersCodeOutput);
             WriteClosureHeaders(closure, initializersCodeOutput, closureEntities);
 
@@ -66,7 +63,7 @@ namespace CodeRefractor.Backend
             initializersCodeOutput.Append("#include \"runtime_base.hpp\"");
             initializersCodeOutput.BlankLine();
 
-            var bodySb = _createCodeOutput();
+            var bodySb = new StringBuilder();
             bodySb.Append(VirtualMethodTableCodeWriter.GenerateTypeTableCode(table, closureEntities));
                 // We need to use this type table to generate missing jumps for subclasses  that dont override a base method
             WriteCppMethods(closure, bodySb, closureEntities);
@@ -80,9 +77,11 @@ namespace CodeRefractor.Backend
             bodySb.Append(LinkingData.Instance.Strings.BuildStringTable());
 
 
-            return headerSb
+             headerSb
                 .Append(initializersCodeOutput.ToString())
                 .Append(bodySb.ToString());
+             var result = headerSb.ToString();
+             return (result, typeSignaturesSb.ToString());
         }
 
         static void WriteCppMethods(List<MethodInterpreter> closure, StringBuilder sb, ClosureEntities crRuntime)

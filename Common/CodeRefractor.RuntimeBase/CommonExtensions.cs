@@ -327,10 +327,5 @@ namespace CodeRefractor
         {
             File.WriteAllText(fileName, text);
         }
-
-        public static void ToFile(this StringBuilder text, string fileName)
-        {
-            File.WriteAllText(fileName, text.ToString());
-        }
     }
 }

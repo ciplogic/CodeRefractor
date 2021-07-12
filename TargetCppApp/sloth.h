@@ -8,3 +8,5 @@
 #include <functional>
 
 #include "./System_Console.h"
+
+extern const wchar_t _stringTable[];

@@ -7,6 +7,8 @@
 #include <memory>
 
 #include "System_Primitives.h"
+#include "output.hpp"
+#include "sloth.h"
 
 struct System_String;
 
@@ -15,7 +17,6 @@ namespace {
     static std::vector<System_Byte*> _constTables;
 }
 
-extern const wchar_t _stringTable[];
 std::shared_ptr<System_String> _str(int index)
 {
     return _stringJumps[index];
@@ -30,6 +31,13 @@ void _AddJumpAndLength(int jump, int length)
     result->Text = value;
     _stringJumps.push_back(result);
 }
+System_Boolean System_IntPtr_op_Equality(
+        const System_IntPtr&src,
+        const System_IntPtr&dest)
+{
+    return src == dest;
+}
+
 
 System_Byte* RuntimeHelpers_GetBytes(int id)
 {

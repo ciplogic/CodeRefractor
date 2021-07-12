@@ -54,7 +54,7 @@ namespace MsilCodeCompiler.Tests.OptimizationsTests
 
             var sourceCode = closureEntities.BuildFullSourceCode();
 
-            Console.WriteLine(sourceCode);
+            Console.WriteLine(sourceCode.Src);
         }
     }
 }

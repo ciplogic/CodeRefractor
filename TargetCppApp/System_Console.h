@@ -7,6 +7,6 @@
 namespace System
 {
 	struct String;
-	std::shared_ptr< Array < System::String> > getArgumentsAsList(int argc, char**argv);
+	std::shared_ptr<Array<System::String>> getArgumentsAsList(int argc, char**argv);
 
 }

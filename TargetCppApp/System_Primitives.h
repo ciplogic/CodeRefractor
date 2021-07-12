@@ -20,13 +20,6 @@ typedef void		System_Void;
 static void* IntPtr_Zero = 0;
 
 
-System_Boolean System_IntPtr_op_Equality(
-	const System_IntPtr&src, 
-	const System_IntPtr&dest)
-{
-	return src == dest;
-}
-
 template <class T> struct Array 
 {
 	unsigned int Length;

@@ -49,13 +49,13 @@ namespace CodeRefractor.Compiler
             var closureEntities = _getClosureEntitiesUtils
                 .BuildClosureEntities(definition, typeof(CrString).Assembly);
 
-            var sb = closureEntities.BuildFullSourceCode();
+            var fullSourceCode = closureEntities.BuildFullSourceCode();
             var compilationTime = Environment.TickCount - start;
             Console.WriteLine("Compilation time: {0} ms", compilationTime);
 
             var fullPath = commandLineParse.OutputCpp.GetFullFileName();
-            sb.ToFile(fullPath);
-
+            fullSourceCode.Src.ToFile(fullPath);
+            fullSourceCode.Header.ToFile(commandLineParse.OutputH.GetFullFileName());
             Console.WriteLine("Wrote output CPP file '{0}'.", fullPath);
             return fullPath;
 
