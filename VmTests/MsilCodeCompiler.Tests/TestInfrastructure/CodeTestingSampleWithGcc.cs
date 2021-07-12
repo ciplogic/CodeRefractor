@@ -28,9 +28,6 @@ namespace MsilCodeCompiler.Tests.TestInfrastructure
             OptimizationLevelBase.OptimizerLevel = 2;
             OptimizationLevelBase.Instance.EnabledCategories.Add(OptimizationCategories.All);
 
-            kernel = new StandardKernel(
-                new CodeRefractorNInjectModule()
-            );
         }
 
         static string BuildArgs(string outputFile)

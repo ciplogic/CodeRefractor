@@ -1,5 +1,6 @@
 ﻿using System;
 using CodeRefactor.OpenRuntime;
+using CodeRefractor.Backend;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.Config;
 using CodeRefractor.MiddleEnd.Optimizations.Util;
@@ -18,7 +19,6 @@ namespace MsilCodeCompiler.Tests.OptimizationsTests
     [TestFixture]
     public class TestSmokeRunDoesNotInfiniteLoop
     {
-        StandardKernel kernel;
 
         [Test, Timeout(5000)]
         public void TestSimple()
@@ -28,9 +28,6 @@ namespace MsilCodeCompiler.Tests.OptimizationsTests
             OptimizationLevelBase.OptimizerLevel = 2;
             OptimizationLevelBase.Instance.EnabledCategories.Add(OptimizationCategories.All);
 
-            kernel = new StandardKernel(
-                new CodeRefractorNInjectModule()
-            );
 
             var cSharpCode =
                 @"
@@ -47,7 +44,7 @@ namespace MsilCodeCompiler.Tests.OptimizationsTests
                 ";
 
             var dotNetAssembly = CompilingProgramBase.CompileSource(cSharpCode);
-            var closureEntities = kernel.Get<ClosureEntitiesUtils>()
+            var closureEntities = new ClosureEntitiesUtils(new ClosureEntities(new CppCodeGenerator()))
                         .BuildClosureEntities(
                                 dotNetAssembly.EntryPoint, 
                                 typeof (CrString).Assembly);

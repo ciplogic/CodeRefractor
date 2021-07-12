@@ -97,7 +97,6 @@
     <Compile Include="ClosureCompute\Steps\AddTypes\AddParameterTypesToClosure.cs" />
     <Compile Include="ClosureCompute\TypeResolverBase.cs" />
     <Compile Include="ClosureCompute\TypeSorter\TypeComparer.cs" />
-    <Compile Include="Config\CodeRefractorNInjectModule.cs" />
     <Compile Include="DataNode\Cursor.cs" />
     <Compile Include="DataNode\Dict.cs" />
     <Compile Include="DataNode\DynNode.cs" />

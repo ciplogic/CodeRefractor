@@ -1,6 +1,8 @@
 ﻿#region Usings
 
 using System;
+using CodeRefractor.Backend;
+using CodeRefractor.ClosureCompute;
 using CodeRefractor.Config;
 using CodeRefractor.MiddleEnd.Optimizations.Util;
 using Ninject;
@@ -19,16 +21,12 @@ namespace CodeRefractor.Compiler
         {
             try
             {
-                IKernel kernel = new StandardKernel(
-                    new CodeRefractorNInjectModule()
-                );
-
-                var commandLineParse = kernel.Get<CommandLineParse>();
+                var commandLineParse = new CommandLineParse();
                 commandLineParse.Process(args);
 
                 OptimizationLevelBase.Instance = new OptimizationLevels();
                 OptimizationLevelBase.OptimizerLevel = 3;
-                kernel.Get<Program>().CallCompiler("");
+                new Program(commandLineParse, new ClosureEntitiesUtils(new ClosureEntities(new CppCodeGenerator()))).CallCompiler("");
             }
             catch (Exception e)
             {
