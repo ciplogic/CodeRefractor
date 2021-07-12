@@ -1,12 +1,13 @@
 ﻿using System.IO;
 using System.Text;
 using CodeRefractor;
+using CodeRefractor.Backend;
+using CodeRefractor.ClosureCompute;
 using CodeRefractor.Compiler;
 using CodeRefractor.Config;
 using CodeRefractor.MiddleEnd.Optimizations.Util;
 using CodeRefractor.Optimizations;
 using MsilCodeCompiler.Tests.Shared;
-using Ninject;
 using NUnit.Framework;
 
 namespace MsilCodeCompiler.Tests.TestInfrastructure
@@ -16,7 +17,6 @@ namespace MsilCodeCompiler.Tests.TestInfrastructure
     [TestFixture]
     class CodeTestingSampleWithGcc
     {
-        StandardKernel kernel;
 
         [SetUp]
         public void Setup()
@@ -52,7 +52,7 @@ namespace MsilCodeCompiler.Tests.TestInfrastructure
             var csAssembly = CompilingProgramBase.CompileSource(fullCode);
             Assert.IsNotNull(csAssembly);
 
-            var program = kernel.Get<Program>();
+            var program = new Program(new CommandLineParse(), new ClosureEntitiesUtils(new ClosureEntities(new CppCodeGenerator())));
             var outputFile = program.CallCompiler(csAssembly.Location);
             
             var pathToGpp = Path.Combine(PathOfCompilerTools, CompilerExe);

@@ -1,4 +1,5 @@
 obj
+bin
 .idea
 /packages/
 /TargetCppApp/cmake-build-debug

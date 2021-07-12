@@ -6,7 +6,6 @@ using CodeRefractor.Config;
 using CodeRefractor.MiddleEnd.Optimizations.Util;
 using CodeRefractor.Optimizations;
 using MsilCodeCompiler.Tests.Shared;
-using Ninject;
 using NUnit.Framework;
 
 namespace MsilCodeCompiler.Tests.OptimizationsTests
