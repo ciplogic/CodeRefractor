@@ -1,6 +1,7 @@
 #region Uses
 
 using System.Collections.Generic;
+using System.Text;
 using CodeRefractor.CodeWriter.Output;
 
 #endregion
@@ -32,7 +33,7 @@ namespace CodeRefractor.FrontEnd.SimpleOperations.ConstTable
 
         public static string BuildConstantTable()
         {
-            var sb = new CodeOutput();
+            var sb = new StringBuilder();
 
             sb.BlankLine()
                 .Append("System_Void RuntimeHelpersBuildConstantTable()")

@@ -2,6 +2,7 @@
 
 using System;
 using System.Linq;
+using System.Text;
 using CodeRefractor.Analyze;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.ClosureCompute.TypeSorter;
@@ -15,7 +16,7 @@ namespace CodeRefractor.CodeWriter.Types
 {
     static class TypeBodiesCodeGenerator
     {
-        public static void WriteClosureStructBodies(CodeOutput codeOutput, ClosureEntities crRuntime)
+        public static void WriteClosureStructBodies(StringBuilder codeOutput, ClosureEntities crRuntime)
         {
             //Remove Mapped Types in favour of their resolved types
 
@@ -39,7 +40,7 @@ namespace CodeRefractor.CodeWriter.Types
             }
         }
 
-        static void WriteStructWithFields(CodeOutput codeOutput, ClosureEntities crRuntime, Type type)
+        static void WriteStructWithFields(StringBuilder codeOutput, ClosureEntities crRuntime, Type type)
         {
             if (DelegateManager.IsTypeDelegate(type))
                 return;
@@ -98,7 +99,7 @@ namespace CodeRefractor.CodeWriter.Types
             typedesc.WriteStaticFieldInitialization(codeOutput);
         }
 
-        static void GenerateForwardTypes(Type[] typeDatas, CodeOutput sb, ClosureEntities crRuntime)
+        static void GenerateForwardTypes(Type[] typeDatas, StringBuilder sb, ClosureEntities crRuntime)
         {
             foreach (var typeData in typeDatas)
             {
@@ -126,7 +127,7 @@ namespace CodeRefractor.CodeWriter.Types
             return true;
         }
 
-        static void WriteClassFieldsBody(CodeOutput codeOutput, Type mappedType, ClosureEntities crRuntime)
+        static void WriteClassFieldsBody(StringBuilder codeOutput, Type mappedType, ClosureEntities crRuntime)
         {
             var typeDesc = UsedTypeList.Set(mappedType, crRuntime);
             typeDesc.WriteLayout(codeOutput);

@@ -20,14 +20,14 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 {
     static class CppHandleCalls
     {
-        public static void HandleReturn(LocalOperation operation, CodeOutput bodySb, MethodInterpreter interpreter)
+        public static void HandleReturn(LocalOperation operation, StringBuilder bodySb, MethodInterpreter interpreter)
         {
             var returnValue = (Return) operation;
 
             returnValue.WriteCodeToOutput(bodySb, interpreter);
         }
 
-        public static void HandleCall(LocalOperation operation, CodeOutput sbCode, MidRepresentationVariables vars,
+        public static void HandleCall(LocalOperation operation, StringBuilder sbCode, MidRepresentationVariables vars,
             MethodInterpreter interpreter, ClosureEntities crRuntime)
         {
             var operationData = (CallMethodStatic) operation;
@@ -46,7 +46,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             sbCode.Append(sb.ToString());
         }
 
-        public static void HandleCallInterface(LocalOperation operation, CodeOutput sbCode,
+        public static void HandleCallInterface(LocalOperation operation, StringBuilder sbCode,
             MidRepresentationVariables vars, MethodInterpreter interpreter, ClosureEntities crRuntime)
         {
             var operationData = (CallMethodStatic) operation;
@@ -64,7 +64,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             sbCode.Append(sb.ToString());
         }
 
-        public static void HandleCallVirtual(LocalOperation operation, CodeOutput sbCode, MethodInterpreter interpreter,
+        public static void HandleCallVirtual(LocalOperation operation, StringBuilder sbCode, MethodInterpreter interpreter,
             ClosureEntities crRuntime)
         {
             var operationData = (CallMethodStatic) operation;
@@ -193,7 +193,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             sb.AppendFormat("({0});", argumentsJoin);
         }
 
-        public static void HandleCallRuntime(LocalOperation operation, CodeOutput sb, ClosureEntities crRuntime)
+        public static void HandleCallRuntime(LocalOperation operation, StringBuilder sb, ClosureEntities crRuntime)
         {
             var operationData = (CallMethodStatic) operation;
 

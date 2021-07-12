@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Text;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.CodeWriter.Output;
 using CodeRefractor.Runtime;
@@ -180,21 +181,21 @@ namespace CodeRefractor.Analyze
             }
         }
 
-        public void WriteLayout(CodeOutput codeOutput)
+        public void WriteLayout(StringBuilder StringBuilder)
         {
-            BaseType?.WriteLayout(codeOutput);
+            BaseType?.WriteLayout(StringBuilder);
 
             var noOffsetFields = new List<FieldDescription>();
             var dictionary = new SortedDictionary<int, List<FieldDescription>>();
             BuildUnionLayouts(noOffsetFields, dictionary);
             foreach (var fieldList in dictionary.Values)
             {
-                codeOutput.Append("union")
+                StringBuilder.Append("union")
                     .BracketOpen();
-                WriteFieldListToLayout(codeOutput, fieldList);
-                codeOutput.BracketClose();
+                WriteFieldListToLayout(StringBuilder, fieldList);
+                StringBuilder.BracketClose();
             }
-            WriteFieldListToLayout(codeOutput, noOffsetFields);
+            WriteFieldListToLayout(StringBuilder, noOffsetFields);
         }
 
         void BuildUnionLayouts(List<FieldDescription> noOffsetFields,
@@ -216,7 +217,7 @@ namespace CodeRefractor.Analyze
             }
         }
 
-        static void WriteFieldListToLayout(CodeOutput codeOutput, List<FieldDescription> fields)
+        static void WriteFieldListToLayout(StringBuilder StringBuilder, List<FieldDescription> fields)
         {
             foreach (var fieldData in fields)
             {
@@ -224,7 +225,7 @@ namespace CodeRefractor.Analyze
                 {
                 }
                 var staticString = fieldData.IsStatic ? "static " : "";
-                codeOutput.AppendFormat("{2}{0} {1};\n",
+                StringBuilder.AppendFormat("{2}{0} {1};\n",
                     fieldData.TypeDescription.ClrType.ToCppName(),
                     fieldData.Name.ValidName(),
                     staticString
@@ -248,9 +249,9 @@ namespace CodeRefractor.Analyze
             return ClrType.ToString();
         }
 
-        public void WriteStaticFieldInitialization(CodeOutput codeOutput)
+        public void WriteStaticFieldInitialization(StringBuilder StringBuilder)
         {
-            BaseType?.WriteLayout(codeOutput);
+            BaseType?.WriteLayout(StringBuilder);
 
             var mappedType = ClrType;
 
@@ -261,7 +262,7 @@ namespace CodeRefractor.Analyze
                 if (!fieldData.IsStatic)
                     continue;
 
-                codeOutput.AppendFormat("/* static*/ {0} {3}::{1} = {2};\n",
+                StringBuilder.AppendFormat("/* static*/ {0} {3}::{1} = {2};\n",
                     fieldData.TypeDescription.ClrType.ToCppName(),
                     fieldData.Name.ValidName(),
                     GetDefault(fieldData.TypeDescription.ClrType),

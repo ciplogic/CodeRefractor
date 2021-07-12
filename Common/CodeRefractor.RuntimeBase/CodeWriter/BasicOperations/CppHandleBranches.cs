@@ -1,6 +1,7 @@
 ﻿#region Uses
 
 using System;
+using System.Text;
 using CodeRefractor.Analyze;
 using CodeRefractor.CodeWriter.Output;
 using CodeRefractor.FrontEnd.SimpleOperations;
@@ -14,7 +15,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
 {
     static class CppHandleBranches
     {
-        public static void HandleBranchOperator(object operation, CodeOutput sb)
+        public static void HandleBranchOperator(object operation, StringBuilder sb)
         {
             var localBranch = (LocalOperation) operation;
             var objList = (BranchOperator) localBranch;
@@ -60,13 +61,13 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             }
         }
 
-        static void HandleBrFalse(IdentifierValue localVar, CodeOutput sb, int jumpAddress)
+        static void HandleBrFalse(IdentifierValue localVar, StringBuilder sb, int jumpAddress)
         {
             var local = localVar.Name;
             sb.AppendFormat("if(!({0})) goto label_{1};", local, jumpAddress.ToHex());
         }
 
-        static void HandleBrTrue(IdentifierValue localVar, CodeOutput sb, int jumpAddress)
+        static void HandleBrTrue(IdentifierValue localVar, StringBuilder sb, int jumpAddress)
         {
             var local = localVar.Name;
             sb.AppendFormat("if({0}) goto label_{1};", local, jumpAddress.ToHex());

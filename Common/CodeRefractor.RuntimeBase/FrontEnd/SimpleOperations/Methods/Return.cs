@@ -1,5 +1,6 @@
 #region Uses
 
+using System.Text;
 using CodeRefractor.CodeWriter.Linker;
 using CodeRefractor.CodeWriter.Output;
 using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
@@ -18,7 +19,7 @@ namespace CodeRefractor.FrontEnd.SimpleOperations.Methods
 
         public IdentifierValue Returning { get; set; }
 
-        public void WriteCodeToOutput(CodeOutput bodySb, MethodInterpreter interpreter)
+        public void WriteCodeToOutput(StringBuilder bodySb, MethodInterpreter interpreter)
         {
             bodySb.Append("\n");
 

@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.CodeWriter.Linker;
 using CodeRefractor.CodeWriter.Output;
@@ -40,12 +41,12 @@ T unbox_value(" + TypeNamerUtils.StdSharedPtr + @"<System_Object> value){
 	return castedUnboxing->Data;
 }";
 
-        static void HandleIsInstance(IsInstance operation, CodeOutput bodySb, ClosureEntities crRuntime)
+        static void HandleIsInstance(IsInstance operation, StringBuilder bodySb, ClosureEntities crRuntime)
         {
             LinkingData.Instance.IsInstTable.GenerateInstructionCode(operation, bodySb, crRuntime);
         }
 
-        static void HandleUnbox(Unboxing unboxing, CodeOutput bodySb, ClosureEntities closureEntities)
+        static void HandleUnbox(Unboxing unboxing, StringBuilder bodySb, ClosureEntities closureEntities)
         {
             var typeDescription = unboxing.AssignedTo.ComputedType();
             bodySb
@@ -55,7 +56,7 @@ T unbox_value(" + TypeNamerUtils.StdSharedPtr + @"<System_Object> value){
                     typeDescription.GetClrType(closureEntities).ToDeclaredVariableType(EscapingMode.Stack));
         }
 
-        static void HandleBox(Boxing boxing, CodeOutput bodySb, TypeDescriptionTable typeTable,
+        static void HandleBox(Boxing boxing, StringBuilder bodySb, TypeDescriptionTable typeTable,
             ClosureEntities closureEntities)
         {
             var typeDescription = boxing.Right.ComputedType();
@@ -67,7 +68,7 @@ T unbox_value(" + TypeNamerUtils.StdSharedPtr + @"<System_Object> value){
                     typeTable.GetTypeId(typeDescription.GetClrType(closureEntities)));
         }
 
-        static void HandleCastClass(ClassCasting casting, CodeOutput bodySb, ClosureEntities closureEntities)
+        static void HandleCastClass(ClassCasting casting, StringBuilder bodySb, ClosureEntities closureEntities)
         {
             var typeDescription = casting.AssignedTo.ComputedType();
             bodySb
@@ -78,7 +79,7 @@ T unbox_value(" + TypeNamerUtils.StdSharedPtr + @"<System_Object> value){
         }
 
         public static bool HandleCastRelatedOperations(TypeDescriptionTable typeTable, ClosureEntities crRuntime,
-            LocalOperation operation, CodeOutput bodySb, OperationKind opKind)
+            LocalOperation operation, StringBuilder bodySb, OperationKind opKind)
         {
             switch (opKind)
             {

@@ -25,12 +25,12 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             ClosureEntities crRuntime)
         {
             var operations = interpreter.MidRepresentation.LocalOperations;
-            var headerSb = new CodeOutput();
+            var headerSb = new StringBuilder();
             CppWriteSignature.WriteSignature(headerSb, interpreter, crRuntime);
 
             var bodySb = ComputeBodySb(operations, interpreter.MidRepresentation.Vars, typeTable, interpreter, crRuntime);
             var variablesSb = ComputeVariableSb(interpreter.MidRepresentation, interpreter, crRuntime);
-            var finalSb = new CodeOutput();
+            var finalSb = new StringBuilder();
 
             finalSb.Append(headerSb.ToString())
                 .BracketOpen()
@@ -41,10 +41,10 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             return finalSb.ToString();
         }
 
-        static CodeOutput ComputeBodySb(List<LocalOperation> operations, MidRepresentationVariables vars,
+        static StringBuilder ComputeBodySb(List<LocalOperation> operations, MidRepresentationVariables vars,
             TypeDescriptionTable typeTable, MethodInterpreter interpreter, ClosureEntities crRuntime)
         {
-            var bodySb = new CodeOutput();
+            var bodySb = new StringBuilder();
             foreach (var operation in operations)
             {
                 bodySb.Append("\n");
@@ -95,7 +95,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         }
 
         static bool HandleCallOperations(MidRepresentationVariables vars, MethodInterpreter interpreter,
-            ClosureEntities crRuntime, LocalOperation operation, CodeOutput bodySb)
+            ClosureEntities crRuntime, LocalOperation operation, StringBuilder bodySb)
         {
             switch (operation.Kind)
             {
@@ -117,13 +117,13 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             return true;
         }
 
-        static void HandleComment(string toString, CodeOutput bodySb)
+        static void HandleComment(string toString, StringBuilder bodySb)
         {
             bodySb
                 .AppendFormat("// {0}", toString);
         }
 
-        static void HandleSwitch(LocalOperation operation, CodeOutput bodySb)
+        static void HandleSwitch(LocalOperation operation, StringBuilder bodySb)
         {
             var assign = (Assignment)operation;
             var instructionTable = (int[])((ConstValue)assign.Right).Value;
@@ -140,7 +140,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             bodySb.BracketClose();
         }
 
-        static void HandleCopyArrayInitializer(LocalOperation operation, CodeOutput sb)
+        static void HandleCopyArrayInitializer(LocalOperation operation, StringBuilder sb)
         {
             var assignment = (Assignment)operation;
             var left = assignment.AssignedTo;
@@ -214,12 +214,12 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 .AppendLine();
         }
 
-        static void HandleAlwaysBranchOperator(LocalOperation operation, CodeOutput sb)
+        static void HandleAlwaysBranchOperator(LocalOperation operation, StringBuilder sb)
         {
             sb.AppendFormat("goto label_{0};", ((AlwaysBranch)operation).JumpTo.ToHex());
         }
 
-        static void WriteLabel(CodeOutput sb, int value)
+        static void WriteLabel(StringBuilder sb, int value)
         {
             sb.AppendFormat("label_{0}:", value.ToHex());
         }

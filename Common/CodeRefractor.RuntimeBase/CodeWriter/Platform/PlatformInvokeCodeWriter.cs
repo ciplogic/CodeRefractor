@@ -42,7 +42,7 @@ namespace CodeRefractor.CodeWriter.Platform
 
         public static string LoadDllMethods()
         {
-            var sb = new CodeOutput();
+            var sb = new StringBuilder();
 
             sb.BlankLine()
                 .Append("System_Void mapLibs()")
@@ -114,30 +114,30 @@ namespace CodeRefractor.CodeWriter.Platform
                 platformInvoke.CallingConvention,
                 platformInvoke.EntryPoint);
 
-            var codeOutput = new CodeOutput();
+            var StringBuilder = new StringBuilder();
 
-            codeOutput.AppendFormat(platformInvoke.WritePInvokeDefinition(methodId));
-            codeOutput.BlankLine();
-            codeOutput.Append(platformInvoke.Method.WriteHeaderMethod(crRuntime, false));
+            StringBuilder.AppendFormat(platformInvoke.WritePInvokeDefinition(methodId));
+            StringBuilder.BlankLine();
+            StringBuilder.Append(platformInvoke.Method.WriteHeaderMethod(crRuntime, false));
 
             // write PInvoke implementation
-            codeOutput.BracketOpen();
+            StringBuilder.BracketOpen();
 
             var argumentsCall = platformInvoke.Method.GetParameters()
                 .Select(CallMarshallerFactory.CreateMarshaller)
-                .Each(marshaller => { codeOutput.Append(marshaller.GetTransformationCode()); })
-                .Once(marshallers => { codeOutput.BlankLine(); })
+                .Each(marshaller => { StringBuilder.Append(marshaller.GetTransformationCode()); })
+                .Once(marshallers => { StringBuilder.BlankLine(); })
                 .Select(p => p.GetParameterString())
                 .Join(", ");
 
             if (!platformInvoke.Method.GetReturnType().IsVoid())
             {
-                codeOutput.Append("return ");
+                StringBuilder.Append("return ");
             }
-            codeOutput.AppendFormat("{0}({1});", methodId, argumentsCall);
-            codeOutput.BracketClose();
+            StringBuilder.AppendFormat("{0}({1});", methodId, argumentsCall);
+            StringBuilder.BracketClose();
 
-            return codeOutput.ToString();
+            return StringBuilder.ToString();
         }
     }
 }

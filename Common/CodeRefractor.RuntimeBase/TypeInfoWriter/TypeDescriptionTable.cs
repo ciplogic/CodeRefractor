@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using CodeRefractor.Analyze;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.CodeWriter.Output;
@@ -93,7 +94,7 @@ namespace CodeRefractor.TypeInfoWriter
             return _result;
         }
 
-        public void SetIdOfInstance(CodeOutput sb, LocalVariable variable, Type type, bool isStack)
+        public void SetIdOfInstance(StringBuilder sb, LocalVariable variable, Type type, bool isStack)
         {
             int typeId;
             if (!_result.TryGetValue(type, out typeId))

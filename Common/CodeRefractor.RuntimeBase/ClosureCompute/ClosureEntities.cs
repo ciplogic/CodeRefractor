@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using CodeRefractor.Backend;
 using CodeRefractor.Backend.ComputeClosure;
 using CodeRefractor.Backend.ProgramWideOptimizations;
@@ -114,7 +115,7 @@ namespace CodeRefractor.ClosureCompute
             EntitiesBuilder.MethodResolverList.Add(resolveRuntimeMethod);
         }
 
-        public CodeOutput BuildFullSourceCode()
+        public StringBuilder BuildFullSourceCode()
         {
             var entryInterpreter = ResolveMethod(EntryPoint);
             var usedTypes = MappedTypes.Values.ToList();

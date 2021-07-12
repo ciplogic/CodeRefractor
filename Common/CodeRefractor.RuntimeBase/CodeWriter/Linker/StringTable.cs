@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 using CodeRefractor.CodeWriter.Output;
 
 #endregion
@@ -36,7 +37,7 @@ namespace CodeRefractor.CodeWriter.Linker
 
         public string BuildStringTable()
         {
-            var sb = new CodeOutput();
+            var sb = new StringBuilder();
             sb.BlankLine()
                 .Append("System_Void buildStringTable()")
                 .BracketOpen();

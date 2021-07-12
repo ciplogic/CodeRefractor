@@ -77,7 +77,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
         }
 
         public static void WriteHeaderMethodWithEscaping(this MethodInterpreter interpreter,
-            CodeOutput codeOutput,
+            StringBuilder codeOutput,
             ClosureEntities closureEntities,
             bool writeEndColon = true)
         {
@@ -94,7 +94,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 codeOutput.Append(";");
         }
 
-        public static void WriteSignature(CodeOutput codeOutput, MethodInterpreter interpreter,
+        public static void WriteSignature(StringBuilder codeOutput, MethodInterpreter interpreter,
             ClosureEntities closureEntities, bool writeEndColon = false)
         {
             if (interpreter == null)

@@ -24,7 +24,7 @@ namespace CodeRefractor.CodeWriter.Linker
         public HashSet<Type> TypesToCast { get; }
         public ClosureEntities Closure { get; set; }
 
-        public void GenerateInstructionCode(IsInstance isInstance, CodeOutput sb, ClosureEntities crRuntime)
+        public void GenerateInstructionCode(IsInstance isInstance, StringBuilder sb, ClosureEntities crRuntime)
         {
             AddToRuntime(crRuntime);
             //Needs improvement, how do i get the correct typeid at this point ? we cant just use zero :P

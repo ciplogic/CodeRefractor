@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.CodeWriter.BasicOperations;
 using CodeRefractor.CodeWriter.Output;
@@ -25,7 +26,7 @@ namespace CodeRefractor.Backend.ComputeClosure
             return CppMethodCodeWriter.WriteCode(interpreter, typeTable, closureEntities);
         }
 
-        public static void WriteMethodSignature(CodeOutput codeOutput, MethodInterpreter interpreter,
+        public static void WriteMethodSignature(StringBuilder codeOutput, MethodInterpreter interpreter,
             ClosureEntities closureEntities)
         {
             if (interpreter.Method == null)
