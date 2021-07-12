@@ -20,7 +20,7 @@ namespace CodeRefractor.RuntimeBase.Config
         public readonly List<string> Arguments = new List<string>();
         public string ApplicationInputAssembly = "SimpleAdditions.exe";
         public string ApplicationNativeExe = string.Empty;
-        public string OutputCpp = "output.cpp";
+        public string OutputCpp = @"..\TargetCppApp\output.cpp";
         public string OutputPro = "output.pro";
 
         public CommandLineParse()

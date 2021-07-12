@@ -3,12 +3,12 @@
 
 #define _CRT_SECURE_NO_WARNINGS
 
-#include <stdio.h>
+#include <cstdio>
 #include <memory>
 #include <vector>
 #include <functional>
 
-#include "CodeRefactorRuntime/System_Console.h"
+#include "./CodeRefactorRuntime/System_Console.h"
 
 #endif // SLOTH_H
 

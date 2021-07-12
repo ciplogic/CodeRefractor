@@ -28,7 +28,7 @@ CodeRefactorCppDebugging/Debug/*
 *.user
 *.~lock*
 Documentation/BarchelorPaper2014.ddf
-
+.idea
 CodeRefactorCppDebugging\Release*/
 CodeRefactorCppDebugging/Release/*
 ipch/*

@@ -18,6 +18,8 @@ namespace CodeRefractor.Analyze
 {
     public class TypeDescription
     {
+        private readonly Type _clrType;
+
         static readonly HashSet<Type> IgnoredSet = new HashSet<Type>(
             new[]
             {
@@ -28,6 +30,7 @@ namespace CodeRefractor.Analyze
 
         public TypeDescription(Type clrType)
         {
+            _clrType = clrType;
             try
             {
                 if (clrType == null)
@@ -94,10 +97,9 @@ namespace CodeRefractor.Analyze
                 case TypeCode.String:
                     return typeof(string);
                 default:
-                    {
-                        var message = $"Type not known: {Namespace ?? Empty}.{Name}";
-                        throw new InvalidOperationException(message);
-                    }
+                {
+                    return _clrType;
+                }
             }
         }
 
