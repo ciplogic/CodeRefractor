@@ -65,7 +65,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Inliner
                 callMethodStatic);
 
             var mappedLocals = BuildMappedLocals(methodToInlineInterpreter,
-                intermediateCode.Vars.LocalVars.Count);
+                intermediateCode.Vars.LocalVars.Length);
 
             var mappedVregs = BuildMappedVregs(intermediateCode, methodToInlineInterpreter);
 
@@ -88,7 +88,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Inliner
             Dictionary<int, int> mappedVregs)
         {
             var virtRegs = methodToInlineInterpreter.MidRepresentation.Vars.VirtRegs;
-            var vregsToAdd = mappedVregs.Select(id => GetVRegMapped(virtRegs, id)).ToList();
+            var vregsToAdd = mappedVregs.Select(id => GetVRegMapped(virtRegs, id));
 
             intermediateCode.Vars.VirtRegs.AddRange(vregsToAdd);
         }
@@ -205,7 +205,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Inliner
             var mappedNames = new Dictionary<int, LocalVariable>();
             var localVariables =
                 methodToInlineInterpreter.MidRepresentation.Vars.LocalVars;
-            for (var i = 0; i < localVariables.Count; i++)
+            for (var i = 0; i < localVariables.Length; i++)
             {
                 var identifierValue = (LocalVariable)localVariables[i].Clone();
                 mappedNames[identifierValue.Id] = identifierValue;

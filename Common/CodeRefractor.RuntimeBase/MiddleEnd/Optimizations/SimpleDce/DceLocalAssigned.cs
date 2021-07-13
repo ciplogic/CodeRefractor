@@ -72,15 +72,18 @@ namespace CodeRefractor.MiddleEnd.Optimizations.SimpleDce
             locals.Remove(definition.Id);
         }
 
-        static void OptimizeUnusedLocals(HashSet<int> localConstants, MidRepresentationVariables variables)
+        private static void OptimizeUnusedLocals(HashSet<int> localConstants, MidRepresentationVariables variables)
         {
             if (localConstants.Count == 0)
                 return;
+            var localVars = new List<LocalVariable>();
+            localVars.AddRange(variables.LocalVars);
 
             foreach (var localUnused in localConstants)
             {
-                variables.LocalVars.RemoveAll(local => local.Id == localUnused);
+                localVars.RemoveAll(local => local.Id == localUnused);
             }
+            variables.LocalVars = localVars.ToArray();
         }
 
         #endregion

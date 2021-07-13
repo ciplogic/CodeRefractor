@@ -12,7 +12,7 @@ namespace CodeRefractor.MiddleEnd.Interpreters.Cil
 {
     public class MidRepresentationVariables
     {
-        public readonly List<LocalVariable> LocalVars = new List<LocalVariable>(); //Seems we are not using this anymore
+        public LocalVariable[] LocalVars = new LocalVariable[0]; //Seems we are not using this anymore
         public List<LocalVariable> VirtRegs = new List<LocalVariable>();
 
         public void SetupLocalVariables(MethodBase value)
@@ -26,13 +26,12 @@ namespace CodeRefractor.MiddleEnd.Interpreters.Cil
                 FixedType = new TypeDescription(v.LocalType),
                 Id = index,
                 Kind = VariableKind.Local
-            }).ToList();
+            }).ToArray();
             foreach (var localVariable in varsToAdd)
             {
                 localVariable.AutoName();
             }
-            LocalVars.Clear();
-            LocalVars.AddRange(varsToAdd);
+            LocalVars = varsToAdd;
         }
     }
 }

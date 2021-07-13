@@ -5,7 +5,6 @@ using CodeRefractor.Backend;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.Config;
 using CodeRefractor.MiddleEnd.Optimizations.Util;
-using Ninject;
 
 #endregion
 

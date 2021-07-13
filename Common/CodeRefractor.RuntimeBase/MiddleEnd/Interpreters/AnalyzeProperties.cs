@@ -45,7 +45,7 @@ namespace CodeRefractor.MiddleEnd.Interpreters
             Arguments.AddRange(argumentVariables);
         }
 
-        public void Setup(List<LocalVariable> virtRegs, List<LocalVariable> localVars)
+        public void Setup(List<LocalVariable> virtRegs, LocalVariable[] localVars)
         {
         }
 
