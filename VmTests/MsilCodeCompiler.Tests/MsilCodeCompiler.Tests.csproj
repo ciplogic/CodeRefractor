@@ -81,6 +81,10 @@
       <Project>{EE8B9057-95F4-4AB9-BC91-F0ED3D56FE38}</Project>
       <Name>CodeRefractor.Compiler</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Source\CodeRefractor.CodeGen\CodeRefractor.CodeGen.csproj">
+      <Project>{ad3f16fd-04b9-438f-9570-63c2acfd7df6}</Project>
+      <Name>CodeRefractor.CodeGen</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

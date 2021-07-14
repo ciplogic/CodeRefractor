@@ -25,7 +25,7 @@ namespace CodeRefractor.Compiler
 
                 OptimizationLevelBase.Instance = new OptimizationLevels();
                 OptimizationLevelBase.OptimizerLevel = 3;
-                new Program(commandLineParse, new ClosureEntitiesUtils(new ClosureEntities(new CppCodeGenerator()))).CallCompiler("");
+                new Program(commandLineParse, new ClosureEntitiesUtils(new ClosureEntities())).CallCompiler("");
             }
             catch (Exception e)
             {

@@ -35,12 +35,23 @@ namespace CodeRefractor.Backend
     public class CppCodeGenerator
     {
 
-        public (string Src, string Header) GenerateSourceCodeOutput(
+        public static (string Src, string Header) BuildFullSourceCode(ClosureEntities closureEntities)
+        {
+            var entryInterpreter = closureEntities.ResolveMethod(closureEntities.EntryPoint);
+            var usedTypes = closureEntities.MappedTypes.Values.ToList();
+            var typeTable = new TypeDescriptionTable(usedTypes, closureEntities);
+
+            return CppCodeGenerator.GenerateSourceCodeOutput(
+                entryInterpreter,
+                typeTable,
+                closureEntities);
+        }
+        public static (string Src, string Header) GenerateSourceCodeOutput(
             MethodInterpreter interpreter,
             TypeDescriptionTable table,
-            List<MethodInterpreter> closure,
             ClosureEntities closureEntities)
         {
+            var closure = closureEntities.MethodImplementations.Values.ToArray();
             var headerSb = new StringBuilder();
 
             headerSb.Append("#include \"sloth.h\"\n");
@@ -84,7 +95,7 @@ namespace CodeRefractor.Backend
              return (result, typeSignaturesSb.ToString());
         }
 
-        private static void WriteCppMethods(List<MethodInterpreter> closure, StringBuilder sb, ClosureEntities crRuntime)
+        private static void WriteCppMethods(IList<MethodInterpreter> closure, StringBuilder sb, ClosureEntities crRuntime)
         {
             var cppMethods = closure
                 .Where(m => m.Kind == MethodKind.RuntimeCppMethod)
@@ -105,7 +116,7 @@ namespace CodeRefractor.Backend
             }
         }
 
-        private static void WriteClosureMethods(List<MethodInterpreter> closure, StringBuilder sb,
+        private static void WriteClosureMethods(IList<MethodInterpreter> closure, StringBuilder sb,
             TypeDescriptionTable typeTable, ClosureEntities closureEntities)
         {
             WriteClosureBodies(closure, sb, typeTable, closureEntities);
@@ -128,7 +139,7 @@ namespace CodeRefractor.Backend
             typeDesc.WriteLayout(sb);
         }
 
-        private static void WriteClosureDelegateBodies(List<MethodInterpreter> closure, StringBuilder StringBuilder)
+        private static void WriteClosureDelegateBodies(IList<MethodInterpreter> closure, StringBuilder StringBuilder)
         {
             foreach (var interpreter in closure)
             {
@@ -140,7 +151,7 @@ namespace CodeRefractor.Backend
             StringBuilder.Append(DelegateManager.Instance.BuildDelegateContent());
         }
 
-        private static void WriteClosureBodies(List<MethodInterpreter> closure, StringBuilder sb,
+        private static void WriteClosureBodies(IList<MethodInterpreter> closure, StringBuilder sb,
             TypeDescriptionTable typeTable, ClosureEntities closureEntities)
         {
             sb.Append("///--- PInvoke code ---\n");

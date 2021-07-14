@@ -52,7 +52,7 @@ namespace MsilCodeCompiler.Tests.TestInfrastructure
             var csAssembly = CompilingProgramBase.CompileSource(fullCode);
             Assert.IsNotNull(csAssembly);
 
-            var program = new Program(new CommandLineParse(), new ClosureEntitiesUtils(new ClosureEntities(new CppCodeGenerator())));
+            var program = new Program(new CommandLineParse(), new ClosureEntitiesUtils(new ClosureEntities()));
             var outputFile = program.CallCompiler(csAssembly.Location);
             
             var pathToGpp = Path.Combine(PathOfCompilerTools, CompilerExe);

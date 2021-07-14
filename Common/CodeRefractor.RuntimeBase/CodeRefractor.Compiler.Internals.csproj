@@ -9,7 +9,7 @@
     <RootNamespace>CodeRefractor</RootNamespace>
     <AssemblyName>CodeRefractor.Compiler.Internals</AssemblyName>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -62,8 +62,16 @@
     <Compile Include="Analyze\LinkerInterpretersTable.cs" />
     <Compile Include="Analyze\NamerUtils.cs" />
     <Compile Include="Analyze\TypeDescription.cs" />
+    <Compile Include="Backend\ComputeClosure\MethodInterpreterCodeWriter.cs" />
+    <Compile Include="Backend\LinkerInterpretersTableUtils.cs" />
+    <Compile Include="Backend\ProgramWideOptimizations\ConstParameters\CallToFunctionsWithSameConstant.cs" />
+    <Compile Include="Backend\ProgramWideOptimizations\ConstParameters\ConstantParametersData.cs" />
+    <Compile Include="Backend\ProgramWideOptimizations\ProgramOptimizationBase.cs" />
+    <Compile Include="Backend\ProgramWideOptimizations\ProgramOptimizationsTable.cs" />
     <Compile Include="Backend\ProgramWideOptimizations\Virtual\DevirtualizerFinalMethods.cs" />
     <Compile Include="Backend\ProgramWideOptimizations\Virtual\DevirtualizerIfNoOverrideImplementationExists.cs" />
+    <Compile Include="Backend\ProgramWideOptimizations\Virtual\DevirtualizerIfOneImplementor.cs" />
+    <Compile Include="Backend\ProgramWideOptimizations\Virtual\DevirtualizeWholeClosureMethods.cs" />
     <Compile Include="Backend\ProgramWideOptimizations\Virtual\RemoveNotReachableMethos.cs" />
     <Compile Include="ClosureCompute\ClosureEntitiesBuilder.cs" />
     <Compile Include="ClosureCompute\MethodBaseKey.cs" />
@@ -113,21 +121,12 @@
     <Compile Include="MiddleEnd\Interpreters\Cil\CilMethodInterpreter.cs" />
     <Compile Include="MiddleEnd\Interpreters\NonCil\CppMethodInterpreter.cs" />
     <Compile Include="MiddleEnd\Interpreters\NonCil\PlatformInvokeMethod.cs" />
-    <Compile Include="Backend\ProgramWideOptimizations\Virtual\DevirtualizeWholeClosureMethods.cs" />
     <Compile Include="MiddleEnd\Optimizations\Common\OptimizationPassBase.cs" />
     <Compile Include="MiddleEnd\Optimizations\SimpleDce\DeleteUnusedNewObjectOperations.cs" />
     <Compile Include="MiddleEnd\UseDefs\UseDefDescription.cs" />
     <Compile Include="MiddleEnd\UseDefs\UseDefHelper.cs" />
     <Compile Include="Analyze\UsedTypeList.cs" />
     <Compile Include="Analyze\UsedTypeListUtils.cs" />
-    <Compile Include="Backend\ComputeClosure\MethodInterpreterCodeWriter.cs" />
-    <Compile Include="Backend\CppCodeGenerator.cs" />
-    <Compile Include="Backend\Linker\LinkerInterpretersTableUtils.cs" />
-    <Compile Include="Backend\ProgramWideOptimizations\ConstParameters\CallToFunctionsWithSameConstant.cs" />
-    <Compile Include="Backend\ProgramWideOptimizations\ConstParameters\ConstantParametersData.cs" />
-    <Compile Include="Backend\ProgramWideOptimizations\ProgramOptimizationBase.cs" />
-    <Compile Include="Backend\ProgramWideOptimizations\ProgramOptimizationsTable.cs" />
-    <Compile Include="Backend\ProgramWideOptimizations\Virtual\DevirtualizerIfOneImplementor.cs" />
     <Compile Include="CodeWriter\BasicOperations\CppHandleBranches.cs" />
     <Compile Include="CodeWriter\BasicOperations\CppHandleCalls.cs" />
     <Compile Include="CodeWriter\BasicOperations\CppHandleCompareBranches.cs" />

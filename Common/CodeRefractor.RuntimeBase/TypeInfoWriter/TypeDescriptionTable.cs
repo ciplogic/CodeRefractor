@@ -22,7 +22,7 @@ namespace CodeRefractor.TypeInfoWriter
         private readonly Dictionary<Type, int> _result = new Dictionary<Type, int>();
         private readonly List<Type> _typeClosure;
 
-        public TypeDescriptionTable(List<Type> typeClosure, ClosureEntities closureEntities)
+        public TypeDescriptionTable(IList<Type> typeClosure, ClosureEntities closureEntities)
         {
             _closureEntities = closureEntities;
             _typeClosure = typeClosure.Where(

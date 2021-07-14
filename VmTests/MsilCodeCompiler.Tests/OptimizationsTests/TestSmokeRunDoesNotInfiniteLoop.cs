@@ -43,12 +43,12 @@ namespace MsilCodeCompiler.Tests.OptimizationsTests
                 ";
 
             var dotNetAssembly = CompilingProgramBase.CompileSource(cSharpCode);
-            var closureEntities = new ClosureEntitiesUtils(new ClosureEntities(new CppCodeGenerator()))
+            var closureEntities = new ClosureEntitiesUtils(new ClosureEntities())
                         .BuildClosureEntities(
                                 dotNetAssembly.EntryPoint, 
                                 typeof (CrString).Assembly);
 
-            var sourceCode = closureEntities.BuildFullSourceCode();
+            var sourceCode = CppCodeGenerator.BuildFullSourceCode(closureEntities);
 
             Console.WriteLine(sourceCode.Src);
         }

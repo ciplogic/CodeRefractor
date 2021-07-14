@@ -25,13 +25,11 @@ namespace CodeRefractor.ClosureCompute
 {
     public class ClosureEntities
     {
-        private readonly CppCodeGenerator _getCppCodeGenerator;
         internal readonly ClosureEntitiesBuilder EntitiesBuilder = new ClosureEntitiesBuilder();
         private ProgramOptimizationsTable _optimizationsTable;
 
-        public ClosureEntities(CppCodeGenerator getCppCodeGenerator)
+        public ClosureEntities()
         {
-            _getCppCodeGenerator = getCppCodeGenerator;
 
             MappedTypes = new Dictionary<Type, Type>();
             MethodImplementations = new Dictionary<MethodBaseKey, MethodInterpreter>(new MethodBaseKeyComparer());
@@ -69,8 +67,7 @@ namespace CodeRefractor.ClosureCompute
         public MethodInterpreter GetMethodImplementation(MethodBase method)
         {
             var key = new MethodBaseKey(method);
-            MethodInterpreter result;
-            return MethodImplementations.TryGetValue(key, out result) ? result : null;
+            return MethodImplementations.TryGetValue(key, out var result) ? result : null;
         }
 
         public MethodInterpreter ResolveMethod(MethodBase method)
@@ -114,20 +111,7 @@ namespace CodeRefractor.ClosureCompute
         {
             EntitiesBuilder.MethodResolverList.Add(resolveRuntimeMethod);
         }
-
-        public (string Src, string Header) BuildFullSourceCode()
-        {
-            var entryInterpreter = ResolveMethod(EntryPoint);
-            var usedTypes = MappedTypes.Values.ToList();
-            var typeTable = new TypeDescriptionTable(usedTypes, this);
-
-            return _getCppCodeGenerator.GenerateSourceCodeOutput(
-                entryInterpreter,
-                typeTable,
-                MethodImplementations.Values.ToList(),
-                this);
-        }
-
+        
         public Type ResolveType(Type type)
         {
             type = type.ReduceType();

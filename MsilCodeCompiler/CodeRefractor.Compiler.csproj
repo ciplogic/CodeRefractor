@@ -122,6 +122,10 @@
       <Project>{10CEF783-53C3-42A7-940A-73773A2AF24F}</Project>
       <Name>CodeRefractor.Compiler.Internals</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Source\CodeRefractor.CodeGen\CodeRefractor.CodeGen.csproj">
+      <Project>{ad3f16fd-04b9-438f-9570-63c2acfd7df6}</Project>
+      <Name>CodeRefractor.CodeGen</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

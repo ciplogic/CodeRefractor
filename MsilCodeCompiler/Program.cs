@@ -2,6 +2,7 @@
 using System.IO;
 using System.Reflection;
 using CodeRefactor.OpenRuntime;
+using CodeRefractor.Backend;
 using CodeRefractor.ClosureCompute;
 using CodeRefractor.Config;
 using CodeRefractor.Util;
@@ -49,7 +50,7 @@ namespace CodeRefractor.Compiler
             var closureEntities = _getClosureEntitiesUtils
                 .BuildClosureEntities(definition, typeof(CrString).Assembly);
 
-            var fullSourceCode = closureEntities.BuildFullSourceCode();
+            var fullSourceCode = CppCodeGenerator.BuildFullSourceCode(closureEntities);
             var compilationTime = Environment.TickCount - start;
             Console.WriteLine("Compilation time: {0} ms", compilationTime);
 

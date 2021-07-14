@@ -38,7 +38,7 @@ namespace CodeRefractor.Backend.ComputeClosure
             CppWriteSignature.WriteSignature(codeOutput, interpreter, closureEntities, true);
         }
 
-        internal static string WritePInvokeMethodCode(PlatformInvokeMethod interpreter, ClosureEntities crRuntime)
+        public static string WritePInvokeMethodCode(PlatformInvokeMethod interpreter, ClosureEntities crRuntime)
         {
             return interpreter.WritePlatformInvokeMethod(crRuntime);
         }
