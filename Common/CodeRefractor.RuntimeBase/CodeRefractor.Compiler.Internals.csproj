@@ -160,10 +160,7 @@
     <Compile Include="FrontEnd\SimpleOperations\RefArrayItemAssignment.cs" />
     <Compile Include="FrontEnd\SimpleOperations\Switch.cs" />
     <Compile Include="FrontEnd\SimpleOperations\Unboxing.cs" />
-    <Compile Include="Runtime\Annotations\CppLibMethodAttribute.cs" />
     <Compile Include="Runtime\Annotations\CrTypeResolver.cs" />
-    <Compile Include="Runtime\Annotations\MapMethod.cs" />
-    <Compile Include="Runtime\Annotations\MapMethodAttribute.cs" />
     <Compile Include="Runtime\RuntimeLibraryUtils.cs" />
     <Compile Include="TypeInfoWriter\TypeDescriptionTable.cs" />
     <Compile Include="TypeInfoWriter\VirtualMethodDescription.cs" />
@@ -193,8 +190,6 @@
     <Compile Include="Shared\ReflectionUtils.cs" />
     <Compile Include="CommonExtensions.cs" />
     <Compile Include="FrontEnd\EvaluatorStack.cs" />
-    <Compile Include="Runtime\Annotations\MapTypeAttribute.cs" />
-    <Compile Include="Runtime\Annotations\CppMethodBodyAttribute.cs" />
     <Compile Include="FrontEnd\SimpleOperations\GetField.cs" />
     <Compile Include="MiddleEnd\Interpreters\Cil\MetaMidRepresentation.cs" />
     <Compile Include="FrontEnd\SimpleOperations\Methods\CallMethodStatic.cs" />
@@ -293,6 +288,9 @@
       <Project>{97B010AB-0756-46DC-B75A-7A6C4F6FF28D}</Project>
       <Name>Mono.Reflection</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Source\CodeRefractor.Annotations\CodeRefractor.Annotations.csproj">
+      <Project>{bacb32bf-e8e3-422d-9ceb-304dfd61365d}</Project>
+      <Name>CodeRefractor.Annotations</Name>
+    </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
 </Project>

@@ -12,8 +12,5 @@ namespace CodeRefactor.OpenRuntime.System
         {
             return "";
         }
-      
-     
-     
     }
 }

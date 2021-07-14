@@ -112,6 +112,10 @@
     <Compile Include="System\Type.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Source\CodeRefractor.Annotations\CodeRefractor.Annotations.csproj">
+      <Project>{bacb32bf-e8e3-422d-9ceb-304dfd61365d}</Project>
+      <Name>CodeRefractor.Annotations</Name>
+    </ProjectReference>
     <ProjectReference Include="..\CodeRefractor.RuntimeBase\CodeRefractor.Compiler.Internals.csproj">
       <Project>{10CEF783-53C3-42A7-940A-73773A2AF24F}</Project>
       <Name>CodeRefractor.Compiler.Internals</Name>
