@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using CodeRefractor.FrontEnd.SimpleOperations.Methods;
+using CodeRefractor.Runtime.Annotations;
 
 #endregion
 

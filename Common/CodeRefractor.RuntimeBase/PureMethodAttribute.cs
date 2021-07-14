@@ -6,7 +6,5 @@ using System;
 
 namespace CodeRefractor
 {
-    public class PureMethodAttribute : Attribute
-    {
-    }
+
 }
