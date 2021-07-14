@@ -61,7 +61,7 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.ConstParameters
         private static bool HandleInterpreterInstructions(CilMethodInterpreter interpreter)
         {
             var useDef = interpreter.MidRepresentation.UseDef;
-            var calls = useDef.GetOperationsOfKind(OperationKind.Call).ToList();
+            var calls = useDef.GetOperationsOfKind(OperationKind.Call);
             var allOps = useDef.GetLocalOperations();
             var updatedHappen = false;
             foreach (var callOp in calls)

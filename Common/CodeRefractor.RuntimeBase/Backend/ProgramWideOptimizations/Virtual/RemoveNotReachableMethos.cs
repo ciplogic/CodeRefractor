@@ -69,7 +69,7 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
                 candidateMethods.Add(GetKeyFromMethod(closure, clrMethod));
 
             var useDef = interpreter.MidRepresentation.UseDef;
-            var calls = useDef.GetOperationsOfKind(OperationKind.Call).ToList();
+            var calls = useDef.GetOperationsOfKind(OperationKind.Call);
             var allOps = useDef.GetLocalOperations();
             foreach (var callOp in calls)
             {

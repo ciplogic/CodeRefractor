@@ -41,7 +41,7 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
             HashSet<MethodInfo> usedMethods)
         {
             var useDef = interpreter.MidRepresentation.UseDef;
-            var calls = useDef.GetOperationsOfKind(OperationKind.CallVirtual).ToList();
+            var calls = useDef.GetOperationsOfKind(OperationKind.CallVirtual);
             var allOps = useDef.GetLocalOperations();
             foreach (var callOp in calls)
             {

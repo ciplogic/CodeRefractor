@@ -38,7 +38,7 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
             ClosureEntities closure)
         {
             var useDef = interpreter.MidRepresentation.UseDef;
-            var calls = useDef.GetOperationsOfKind(OperationKind.CallVirtual).ToArray();
+            var calls = useDef.GetOperationsOfKind(OperationKind.CallVirtual);
             if (calls.Length == 0)
                 return false;
             var allOps = useDef.GetLocalOperations();

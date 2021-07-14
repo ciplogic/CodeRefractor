@@ -32,7 +32,7 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
         private static bool HandleInterpreterInstructions(CilMethodInterpreter interpreter, List<Type> usedTypes)
         {
             var useDef = interpreter.MidRepresentation.UseDef;
-            var calls = useDef.GetOperationsOfKind(OperationKind.CallVirtual).ToList();
+            var calls = useDef.GetOperationsOfKind(OperationKind.CallVirtual);
             var allOps = useDef.GetLocalOperations();
             var result = false;
             foreach (var callOp in calls)
