@@ -26,9 +26,5 @@
         <OutputPath>..\bin\Release\</OutputPath>
     </PropertyGroup>
     <ItemGroup>
-      <Folder Include="Properties" />
-    </ItemGroup>
-    <ItemGroup>
-      <Compile Remove="Properties\AssemblyInfo.cs" />
     </ItemGroup>
 </Project>
