@@ -19,7 +19,7 @@ using CodeRefractor.Optimizations;
 namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
 {
     [Optimization(Category = OptimizationCategories.Analysis)]
-    class InFunctionLoweringVars : OptimizationPassBase
+    internal class InFunctionLoweringVars : OptimizationPassBase
     {
         public InFunctionLoweringVars()
             : base(OptimizationKind.InFunction)
@@ -51,7 +51,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
             return result;
         }
 
-        static bool RemoveAllEscaping(HashSet<LocalVariable> candidateVariables, LocalOperation[] localOp,
+        private static bool RemoveAllEscaping(HashSet<LocalVariable> candidateVariables, LocalOperation[] localOp,
             UseDefDescription useDef)
         {
             int candidatesCount;
@@ -74,7 +74,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
             return false;
         }
 
-        static HashSet<LocalVariable> SetAllCandidateVariables(CilMethodInterpreter interpreter,
+        private static HashSet<LocalVariable> SetAllCandidateVariables(CilMethodInterpreter interpreter,
             ClosureEntities closure)
         {
             var candidateVariables = new HashSet<LocalVariable>();
@@ -98,7 +98,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
             return candidateVariables;
         }
 
-        static bool AllocateVariablesOnStack(LocalOperation[] localOp, HashSet<LocalVariable> candidateVariables,
+        private static bool AllocateVariablesOnStack(LocalOperation[] localOp, HashSet<LocalVariable> candidateVariables,
             MethodInterpreter interpreter)
         {
             var newOps = localOp.Where(op =>
@@ -168,7 +168,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
             }
         }
 
-        static void HandleCallVirtual(HashSet<LocalVariable> candidateVariables, LocalOperation op)
+        private static void HandleCallVirtual(HashSet<LocalVariable> candidateVariables, LocalOperation op)
         {
             var methodData = (CallMethodStatic)op;
             foreach (var identifierValue in methodData.Parameters)
@@ -184,7 +184,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
             }
         }
 
-        static void HandleRefAssignment(LocalVariable localVariable, HashSet<LocalVariable> candidateVariables,
+        private static void HandleRefAssignment(LocalVariable localVariable, HashSet<LocalVariable> candidateVariables,
             LocalOperation op)
         {
             var value = (RefAssignment)op;
@@ -192,13 +192,13 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
             candidateVariables.Remove(value.Right);
         }
 
-        static void HandleReturn(LocalVariable localVariable, HashSet<LocalVariable> candidateVariables,
+        private static void HandleReturn(LocalVariable localVariable, HashSet<LocalVariable> candidateVariables,
             LocalOperation op)
         {
             candidateVariables.Remove(localVariable);
         }
 
-        static void HandleAssign(HashSet<LocalVariable> candidateVariables, LocalOperation op)
+        private static void HandleAssign(HashSet<LocalVariable> candidateVariables, LocalOperation op)
         {
             var assignData = op.GetAssignment();
             var right = assignData.Right as LocalVariable;
@@ -214,7 +214,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
             }
         }
 
-        static void HandleCall(HashSet<LocalVariable> candidateVariables,
+        private static void HandleCall(HashSet<LocalVariable> candidateVariables,
             LocalOperation op)
         {
             var methodData = (CallMethodStatic)op;
@@ -234,7 +234,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
             }
         }
 
-        static void HandleSetArrayItem(ICollection<LocalVariable> candidateVariables, LocalOperation op)
+        private static void HandleSetArrayItem(ICollection<LocalVariable> candidateVariables, LocalOperation op)
         {
             var assignSetArray = (SetArrayElement)op;
             var right = assignSetArray.Right as LocalVariable;
@@ -244,7 +244,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
             }
         }
 
-        static void HandleSetField(HashSet<LocalVariable> candidateVariables, LocalOperation op)
+        private static void HandleSetField(HashSet<LocalVariable> candidateVariables, LocalOperation op)
         {
             var assignSetArray = (SetField)op;
             var right = assignSetArray.Right as LocalVariable;

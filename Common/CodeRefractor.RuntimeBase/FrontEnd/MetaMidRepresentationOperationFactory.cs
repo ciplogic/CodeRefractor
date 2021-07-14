@@ -25,10 +25,10 @@ namespace CodeRefractor.FrontEnd
 {
     public class MetaMidRepresentationOperationFactory
     {
-        static readonly bool ShowComments = false;
-        readonly EvaluatorStack _evaluator;
-        readonly MetaMidRepresentation _representation;
-        int _leaveOffset = -1;
+        private static readonly bool ShowComments = false;
+        private readonly EvaluatorStack _evaluator;
+        private readonly MetaMidRepresentation _representation;
+        private int _leaveOffset = -1;
 
         public MetaMidRepresentationOperationFactory(MetaMidRepresentation representation, EvaluatorStack evaluator)
         {
@@ -66,7 +66,7 @@ namespace CodeRefractor.FrontEnd
             return false;
         }
 
-        void AddOperation(LocalOperation value = null)
+        private void AddOperation(LocalOperation value = null)
         {
             _representation.LocalOperations.Add(value);
             var assignment = value as Assignment;
@@ -79,19 +79,19 @@ namespace CodeRefractor.FrontEnd
             }
         }
 
-        LocalVariable SetNewVReg()
+        private LocalVariable SetNewVReg()
         {
             var newLocal = _evaluator.SetNewVReg();
             _representation.Vars.VirtRegs.Add(newLocal);
             return newLocal;
         }
 
-        void PushStack(IdentifierValue identifier)
+        private void PushStack(IdentifierValue identifier)
         {
             _evaluator.Push(identifier);
         }
 
-        void AssignValueToStack(object value)
+        private void AssignValueToStack(object value)
         {
             var local = value as LocalVariable;
             if (local != null)
@@ -231,7 +231,7 @@ namespace CodeRefractor.FrontEnd
             });
         }
 
-        void SetUnaryOperator(string operatorName)
+        private void SetUnaryOperator(string operatorName)
         {
             var firstVar = _evaluator.Pop();
             var result = SetNewVReg();
@@ -317,7 +317,7 @@ namespace CodeRefractor.FrontEnd
             _evaluator.Pop();
         }
 
-        void SetBinaryOperator(string operatorName)
+        private void SetBinaryOperator(string operatorName)
         {
             var secondVar = _evaluator.Pop();
             var firstVar = _evaluator.Pop();
@@ -389,7 +389,7 @@ namespace CodeRefractor.FrontEnd
             CallMethodDataVirtual(methodInfo, methodData);
         }
 
-        void CallMethodDataVirtual(MethodBase methodInfo, CallMethodVirtual callMethodStatic)
+        private void CallMethodDataVirtual(MethodBase methodInfo, CallMethodVirtual callMethodStatic)
         {
             if (HandleRuntimeHelpersMethod(methodInfo))
             {
@@ -428,7 +428,7 @@ namespace CodeRefractor.FrontEnd
             AddOperation(callMethodStatic);
         }
 
-        void CallMethodData(MethodBase methodInfo, CallMethodStatic callMethodStatic)
+        private void CallMethodData(MethodBase methodInfo, CallMethodStatic callMethodStatic)
         {
             if (HandleRuntimeHelpersMethod(methodInfo))
             {
@@ -710,7 +710,7 @@ namespace CodeRefractor.FrontEnd
             AssignNullToStack();
         }
 
-        void AssignNullToStack()
+        private void AssignNullToStack()
         {
             var nullConst = new ConstValue(null)
             {
@@ -1002,7 +1002,7 @@ namespace CodeRefractor.FrontEnd
             BranchTwoOperators(jumpTo, OpcodeBranchNames.Beq);
         }
 
-        void BranchTwoOperators(int jumpTo, string opcode)
+        private void BranchTwoOperators(int jumpTo, string opcode)
         {
             var secondVar = _evaluator.Pop(); // Seems the order here was in reverse
             var firstVar = _evaluator.Pop();

@@ -36,7 +36,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.Co
             return result;
         }
 
-        bool ComputeUnaryOperations(int[] unaryOperations, List<LocalOperation> localOperations)
+        private bool ComputeUnaryOperations(int[] unaryOperations, List<LocalOperation> localOperations)
         {
             var result = false;
             foreach (var pos in unaryOperations)
@@ -63,7 +63,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.Co
             return result;
         }
 
-        bool ComputeBinaryOperations(int[] binaryOperations, List<LocalOperation> localOperations)
+        private bool ComputeBinaryOperations(int[] binaryOperations, List<LocalOperation> localOperations)
         {
             var result = false;
             foreach (var pos in binaryOperations)
@@ -119,46 +119,46 @@ namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.Co
             return result;
         }
 
-        bool HandleNeg(ConstValue constLeft, List<LocalOperation> localOperations, int pos)
+        private bool HandleNeg(ConstValue constLeft, List<LocalOperation> localOperations, int pos)
         {
             var result = ComputeConstantOperator.ComputeNeg(constLeft);
             return FoldConstant(result, localOperations, pos);
         }
 
-        bool HandleConvDouble(ConstValue constLeft, List<LocalOperation> localOperations, int pos)
+        private bool HandleConvDouble(ConstValue constLeft, List<LocalOperation> localOperations, int pos)
         {
             var result = ComputeConstantOperator.ComputeDouble(constLeft);
             return FoldConstant(result, localOperations, pos);
         }
 
-        bool HandleConvFloat(ConstValue constLeft, List<LocalOperation> localOperations, int pos)
+        private bool HandleConvFloat(ConstValue constLeft, List<LocalOperation> localOperations, int pos)
         {
             var result = ComputeConstantOperator.ComputeFloat(constLeft);
             return FoldConstant(result, localOperations, pos);
         }
 
-        bool HandleCeq(ConstValue constLeft, ConstValue constRight, List<LocalOperation> localOperations,
+        private bool HandleCeq(ConstValue constLeft, ConstValue constRight, List<LocalOperation> localOperations,
             int pos)
         {
             var result = ComputeConstantOperator.ComputeCeq(constLeft, constRight);
             return FoldConstant(result, localOperations, pos);
         }
 
-        bool HandleClt(ConstValue constLeft, ConstValue constRight, List<LocalOperation> localOperations,
+        private bool HandleClt(ConstValue constLeft, ConstValue constRight, List<LocalOperation> localOperations,
             int pos)
         {
             var result = ComputeConstantOperator.ComputeClt(constLeft, constRight);
             return FoldConstant(result, localOperations, pos);
         }
 
-        bool HandleCgt(ConstValue constLeft, ConstValue constRight, List<LocalOperation> localOperations,
+        private bool HandleCgt(ConstValue constLeft, ConstValue constRight, List<LocalOperation> localOperations,
             int pos)
         {
             var result = ComputeConstantOperator.ComputeCgt(constLeft, constRight);
             return FoldConstant(result, localOperations, pos);
         }
 
-        bool FoldConstant(object result, List<LocalOperation> localOperations, int pos)
+        private bool FoldConstant(object result, List<LocalOperation> localOperations, int pos)
         {
             var baseOperator = (OperatorBase)localOperations[pos];
             var resultAssignment = new Assignment
@@ -173,14 +173,14 @@ namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.Co
 
         #region Compute math operations
 
-        bool HandleAdd(ConstValue constLeft, ConstValue constRight, List<LocalOperation> localOperations,
+        private bool HandleAdd(ConstValue constLeft, ConstValue constRight, List<LocalOperation> localOperations,
             int pos)
         {
             var result = ComputeConstantOperator.ComputeAdd(constLeft, constRight);
             return FoldConstant(result, localOperations, pos);
         }
 
-        bool HandleSub(ConstValue constLeft, ConstValue constRight, List<LocalOperation> localOperations,
+        private bool HandleSub(ConstValue constLeft, ConstValue constRight, List<LocalOperation> localOperations,
             int pos)
         {
             var result = ComputeConstantOperator.ComputeSub(constLeft, constRight);
@@ -188,21 +188,21 @@ namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.Co
         }
 
 
-        bool HandleMul(ConstValue constLeft, ConstValue constRight, List<LocalOperation> localOperations,
+        private bool HandleMul(ConstValue constLeft, ConstValue constRight, List<LocalOperation> localOperations,
             int pos)
         {
             var result = ComputeConstantOperator.ComputeMul(constLeft, constRight);
             return FoldConstant(result, localOperations, pos);
         }
 
-        bool HandleRem(ConstValue constLeft, ConstValue constRight, List<LocalOperation> localOperations,
+        private bool HandleRem(ConstValue constLeft, ConstValue constRight, List<LocalOperation> localOperations,
             int pos)
         {
             var result = ComputeConstantOperator.ComputeRem(constLeft, constRight);
             return FoldConstant(result, localOperations, pos);
         }
 
-        bool HandleDiv(ConstValue constLeft, ConstValue constRight, List<LocalOperation> localOperations,
+        private bool HandleDiv(ConstValue constLeft, ConstValue constRight, List<LocalOperation> localOperations,
             int pos)
         {
             var result = ComputeConstantOperator.ComputeDiv(constLeft, constRight);
@@ -213,21 +213,21 @@ namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.Co
 
         #region Evaluate bit operations
 
-        bool HandleXor(ConstValue constLeft, ConstValue constRight, List<LocalOperation> localOperations,
+        private bool HandleXor(ConstValue constLeft, ConstValue constRight, List<LocalOperation> localOperations,
             int pos)
         {
             var result = ComputeConstantOperator.ComputeXor(constLeft, constRight);
             return FoldConstant(result, localOperations, pos);
         }
 
-        bool HandleAnd(ConstValue constLeft, ConstValue constRight, List<LocalOperation> localOperations,
+        private bool HandleAnd(ConstValue constLeft, ConstValue constRight, List<LocalOperation> localOperations,
             int pos)
         {
             var result = ComputeConstantOperator.ComputeAnd(constLeft, constRight);
             return FoldConstant(result, localOperations, pos);
         }
 
-        bool HandleOr(ConstValue constLeft, ConstValue constRight, List<LocalOperation> localOperations, int pos)
+        private bool HandleOr(ConstValue constLeft, ConstValue constRight, List<LocalOperation> localOperations, int pos)
         {
             var result = ComputeConstantOperator.ComputeOr(constLeft, constRight);
             return FoldConstant(result, localOperations, pos);

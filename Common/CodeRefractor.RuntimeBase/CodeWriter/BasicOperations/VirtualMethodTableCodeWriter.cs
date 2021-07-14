@@ -123,7 +123,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             return sb.ToString();
         }
 
-        static void WriteForwardVcalls(ClosureEntities crRuntime, HashSet<MethodInfo> vcalls, StringBuilder sb)
+        private static void WriteForwardVcalls(ClosureEntities crRuntime, HashSet<MethodInfo> vcalls, StringBuilder sb)
         {
             foreach (var virtualMethod in vcalls)
             {
@@ -139,7 +139,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             }
         }
 
-        static string GetParametersString(MethodInfo virtualMethod,
+        private static string GetParametersString(MethodInfo virtualMethod,
             ClosureEntities crRuntime)
         {
             var sb = new StringBuilder();
@@ -163,7 +163,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             return sb.ToString();
         }
 
-        static string GetCall(MethodInfo virtualMethod, MethodInfo implementingMethod, ClosureEntities crRuntime)
+        private static string GetCall(MethodInfo virtualMethod, MethodInfo implementingMethod, ClosureEntities crRuntime)
         {
             //Add Rest of parameters
             var parameters = virtualMethod.GetParameters();
@@ -202,7 +202,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             return sb.ToString();
         }
 
-        static string GetCorrectParameter(MethodInfo virtualMethod, MethodInfo implementingMethod,
+        private static string GetCorrectParameter(MethodInfo virtualMethod, MethodInfo implementingMethod,
             ClosureEntities crRuntime, int parameter)
         {
             if (parameter == 0) //TODO: Add Unboxing Feature if Value types are found

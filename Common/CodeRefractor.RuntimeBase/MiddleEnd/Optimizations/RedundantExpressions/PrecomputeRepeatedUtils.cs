@@ -13,7 +13,7 @@ using CodeRefractor.MiddleEnd.Interpreters.Cil;
 
 namespace CodeRefractor.MiddleEnd.Optimizations.RedundantExpressions
 {
-    static class PrecomputeRepeatedUtils
+    internal static class PrecomputeRepeatedUtils
     {
         public static LocalOperation CreateAssignLocalOperation(LocalVariable assignedTo, LocalVariable cacheVariable)
         {

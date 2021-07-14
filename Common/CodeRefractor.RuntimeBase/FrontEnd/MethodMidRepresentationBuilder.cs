@@ -15,10 +15,10 @@ using Mono.Reflection;
 
 namespace CodeRefractor.FrontEnd
 {
-    class MethodMidRepresentationBuilder
+    internal class MethodMidRepresentationBuilder
     {
         //without using this code, R# will complain of too high cyclomatic complexity
-        static readonly HashSet<int> BranchOpcodes = new HashSet<int>
+        private static readonly HashSet<int> BranchOpcodes = new HashSet<int>
         {
             OpcodeIntValues.Beq,
             OpcodeIntValues.BeqS,
@@ -50,8 +50,8 @@ namespace CodeRefractor.FrontEnd
             OpcodeIntValues.LeaveS
         };
 
-        readonly MethodBase _method;
-        readonly CilMethodInterpreter _methodInterpreter;
+        private readonly MethodBase _method;
+        private readonly CilMethodInterpreter _methodInterpreter;
 
         public MethodMidRepresentationBuilder(CilMethodInterpreter methodInterpreter, MethodBase method)
         {
@@ -88,7 +88,7 @@ namespace CodeRefractor.FrontEnd
                 _methodInterpreter.MidRepresentation.Vars.LocalVars);
         }
 
-        static HashSet<int> ComputeLabels(MethodBase definition)
+        private static HashSet<int> ComputeLabels(MethodBase definition)
         {
             var labels = new HashSet<int>();
             var body = definition.GetMethodBody();
@@ -120,7 +120,7 @@ namespace CodeRefractor.FrontEnd
             labels.Add(offset);
         }
 
-        void EvaluateInstruction(Instruction instruction, MetaMidRepresentationOperationFactory operationFactory,
+        private void EvaluateInstruction(Instruction instruction, MetaMidRepresentationOperationFactory operationFactory,
             HashSet<int> labelList, ClosureEntities closureEntities)
         {
             var opcodeStr = instruction.OpCode.ToString();
@@ -166,7 +166,7 @@ namespace CodeRefractor.FrontEnd
             throw new InvalidOperationException($"Unknown instruction: {instruction}");
         }
 
-        bool HandleExtraInstructions(Instruction instruction,
+        private bool HandleExtraInstructions(Instruction instruction,
             MetaMidRepresentationOperationFactory operationFactory, string opcodeStr, ClosureEntities closureEntities)
         {
             if (instruction.OpCode == OpCodes.Ret)
@@ -221,7 +221,7 @@ namespace CodeRefractor.FrontEnd
             return false;
         }
 
-        static bool HandleLoadStoreInstructions(Instruction instruction,
+        private static bool HandleLoadStoreInstructions(Instruction instruction,
             MetaMidRepresentationOperationFactory operationFactory, string opcodeStr, ClosureEntities closureEntities)
         {
             if (instruction.OpCode == OpCodes.Ldtoken)
@@ -300,7 +300,7 @@ namespace CodeRefractor.FrontEnd
             return false;
         }
 
-        static bool HandleArrayOperations(Instruction instruction,
+        private static bool HandleArrayOperations(Instruction instruction,
             MetaMidRepresentationOperationFactory operationFactory, string opcodeStr)
         {
             if (instruction.OpCode == OpCodes.Newarr)
@@ -337,7 +337,7 @@ namespace CodeRefractor.FrontEnd
             return false;
         }
 
-        static bool HandleCalls(Instruction instruction, MetaMidRepresentationOperationFactory operationFactory,
+        private static bool HandleCalls(Instruction instruction, MetaMidRepresentationOperationFactory operationFactory,
             short opcodeValue)
         {
             switch (opcodeValue)
@@ -362,7 +362,7 @@ namespace CodeRefractor.FrontEnd
             return false;
         }
 
-        static bool ConversionOperations(Instruction instruction,
+        private static bool ConversionOperations(Instruction instruction,
             MetaMidRepresentationOperationFactory operationFactory)
         {
             if (instruction.OpCode == OpCodes.Conv_U1)
@@ -398,7 +398,7 @@ namespace CodeRefractor.FrontEnd
             return false;
         }
 
-        bool HandleStores(string opcodeStr, Instruction instruction,
+        private bool HandleStores(string opcodeStr, Instruction instruction,
             MetaMidRepresentationOperationFactory operationFactory)
         {
             if (instruction.OpCode == OpCodes.Stloc_S || instruction.OpCode == OpCodes.Stloc)
@@ -438,7 +438,7 @@ namespace CodeRefractor.FrontEnd
             return false;
         }
 
-        bool HandleLoads(string opcodeStr, Instruction instruction,
+        private bool HandleLoads(string opcodeStr, Instruction instruction,
             MetaMidRepresentationOperationFactory operationFactory, ClosureEntities closureEntities)
         {
             if (opcodeStr == "ldelem.ref")
@@ -569,7 +569,7 @@ namespace CodeRefractor.FrontEnd
             return false;
         }
 
-        static bool HandleClassCast(MetaMidRepresentationOperationFactory operationFactory,
+        private static bool HandleClassCast(MetaMidRepresentationOperationFactory operationFactory,
             Instruction instruction)
         {
             if (instruction.OpCode == OpCodes.Castclass)
@@ -581,7 +581,7 @@ namespace CodeRefractor.FrontEnd
             return false;
         }
 
-        static bool HandleIsInst(MetaMidRepresentationOperationFactory operationFactory, Instruction instruction)
+        private static bool HandleIsInst(MetaMidRepresentationOperationFactory operationFactory, Instruction instruction)
         {
             if (instruction.OpCode == OpCodes.Isinst)
             {
@@ -592,7 +592,7 @@ namespace CodeRefractor.FrontEnd
             return false;
         }
 
-        static bool HandleException(MetaMidRepresentationOperationFactory operationFactory,
+        private static bool HandleException(MetaMidRepresentationOperationFactory operationFactory,
             Instruction instruction)
         {
             if (instruction.OpCode == OpCodes.Throw)
@@ -604,7 +604,7 @@ namespace CodeRefractor.FrontEnd
             return false;
         }
 
-        static bool HandleBoxing(string opcodeStr, int offset,
+        private static bool HandleBoxing(string opcodeStr, int offset,
             MetaMidRepresentationOperationFactory operationFactory, Instruction instruction)
         {
             #region Branching
@@ -627,7 +627,7 @@ namespace CodeRefractor.FrontEnd
             return false;
         }
 
-        static bool HandleBranching(string opcodeStr, int offset,
+        private static bool HandleBranching(string opcodeStr, int offset,
             MetaMidRepresentationOperationFactory operationFactory, Instruction instruction)
         {
             #region Branching
@@ -739,7 +739,7 @@ namespace CodeRefractor.FrontEnd
             return false;
         }
 
-        static bool HandleOperators(string opcodeStr, MetaMidRepresentationOperationFactory operationFactory,
+        private static bool HandleOperators(string opcodeStr, MetaMidRepresentationOperationFactory operationFactory,
             Instruction instruction)
         {
             #region Operators
@@ -830,13 +830,13 @@ namespace CodeRefractor.FrontEnd
             return false;
         }
 
-        static int GetVariableIndex(Instruction instruction)
+        private static int GetVariableIndex(Instruction instruction)
         {
             var localVarInfo = (LocalVariableInfo)instruction.Operand;
             return localVarInfo.LocalIndex;
         }
 
-        static int GetParameterIndex(Instruction instruction)
+        private static int GetParameterIndex(Instruction instruction)
         {
             var localVarInfo = (ParameterInfo)instruction.Operand;
             return localVarInfo.Position;

@@ -15,7 +15,7 @@ using CodeRefractor.Optimizations;
 namespace CodeRefractor.MiddleEnd.Optimizations.Purity
 {
     [Optimization(Category = OptimizationCategories.Purity)]
-class EvaluatePureFunctionWithConstantCall : ResultingGlobalOptimizationPass
+    internal class EvaluatePureFunctionWithConstantCall : ResultingGlobalOptimizationPass
     {
         public override bool CheckPreconditions(CilMethodInterpreter midRepresentation, ClosureEntities closure)
         {
@@ -77,7 +77,7 @@ class EvaluatePureFunctionWithConstantCall : ResultingGlobalOptimizationPass
             return operationData;
         }
 
-        static bool CheckIfParamAreConst(CallMethodStatic operationStatic, List<object> constParams)
+        private static bool CheckIfParamAreConst(CallMethodStatic operationStatic, List<object> constParams)
         {
             var paramsAreConst = true;
             foreach (var parameter in operationStatic.Parameters)

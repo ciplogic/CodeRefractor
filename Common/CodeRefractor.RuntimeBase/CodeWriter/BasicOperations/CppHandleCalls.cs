@@ -18,7 +18,7 @@ using CodeRefractor.Util;
 
 namespace CodeRefractor.CodeWriter.BasicOperations
 {
-    static class CppHandleCalls
+    internal static class CppHandleCalls
     {
         public static void HandleReturn(LocalOperation operation, StringBuilder bodySb, MethodInterpreter interpreter)
         {

@@ -42,14 +42,14 @@ namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation
             }
         }
 
-        void FoldEvaluation(BranchOperator operation, bool resultEq)
+        private void FoldEvaluation(BranchOperator operation, bool resultEq)
         {
             operation.CompareValue = new ConstValue(resultEq ? 1 : 0);
             operation.Name = OpcodeBranchNames.BrTrue;
             Result = true;
         }
 
-        static bool EvaluateBeq(ConstValue leftVal, ConstValue rightVal)
+        private static bool EvaluateBeq(ConstValue leftVal, ConstValue rightVal)
         {
             var clrTypeCode = leftVal.ComputedType().ClrTypeCode;
             switch (clrTypeCode)

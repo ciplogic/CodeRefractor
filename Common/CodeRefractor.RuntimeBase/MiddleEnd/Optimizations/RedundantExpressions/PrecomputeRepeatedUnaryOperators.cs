@@ -14,7 +14,7 @@ using CodeRefractor.Optimizations;
 namespace CodeRefractor.MiddleEnd.Optimizations.RedundantExpressions
 {
     [Optimization(Category = OptimizationCategories.CommonSubexpressionsElimination)]
-class PrecomputeRepeatedUnaryOperators : BlockOptimizationPass
+    internal class PrecomputeRepeatedUnaryOperators : BlockOptimizationPass
     {
         public override bool OptimizeBlock(CilMethodInterpreter midRepresentation, int startRange, int endRange,
             LocalOperation[] operations)
@@ -38,7 +38,7 @@ class PrecomputeRepeatedUnaryOperators : BlockOptimizationPass
             return false;
         }
 
-        static void ApplyOptimization(CilMethodInterpreter midRepresentation, int i, int j)
+        private static void ApplyOptimization(CilMethodInterpreter midRepresentation, int i, int j)
         {
             var localOps = midRepresentation.MidRepresentation.LocalOperations;
             var firstOperator = localOps.GetUnaryOperator(i);
@@ -56,7 +56,7 @@ class PrecomputeRepeatedUnaryOperators : BlockOptimizationPass
             localOps.Insert(j + 1, destAssignment);
         }
 
-        static List<int> FindUnaryOperators(List<LocalOperation> localOperations, int startRange, int endRange)
+        private static List<int> FindUnaryOperators(List<LocalOperation> localOperations, int startRange, int endRange)
         {
             var calls = new List<int>();
             for (var index = startRange; index <= endRange; index++)
@@ -69,7 +69,7 @@ class PrecomputeRepeatedUnaryOperators : BlockOptimizationPass
             return calls;
         }
 
-        static bool AreDifferentOperators(UnaryOperator firstOperator, UnaryOperator secondOperator,
+        private static bool AreDifferentOperators(UnaryOperator firstOperator, UnaryOperator secondOperator,
             IList<int> calls, int i,
             int j, List<LocalOperation> localOperations)
         {

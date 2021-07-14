@@ -294,7 +294,7 @@ namespace CodeRefactor.OpenRuntime
             return true;
         }
 
-        static int FindTrimStartIndex(string _this, char[] trimChars)
+        private static int FindTrimStartIndex(string _this, char[] trimChars)
         {
             // FIXME: default, these should be Unicode whitespace.
             // FIXME: these should be static, currently this is a WA for a compiler limitation.
@@ -338,7 +338,7 @@ namespace CodeRefactor.OpenRuntime
             return startIndex;
         }
 
-        static int FindTrimEndLength(string _this, char[] trimChars)
+        private static int FindTrimEndLength(string _this, char[] trimChars)
         {
             // FIXME: default, these should be Unicode whitespace.
             // FIXME: these should be static, currently this is a WA for a compiler limitation.

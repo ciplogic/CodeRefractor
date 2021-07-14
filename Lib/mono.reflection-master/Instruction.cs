@@ -32,13 +32,12 @@ using System.Text;
 namespace Mono.Reflection {
 
 	public sealed class Instruction {
+		private int offset;
+		private OpCode opcode;
+		private object operand;
 
-		int offset;
-		OpCode opcode;
-		object operand;
-
-		Instruction previous;
-		Instruction next;
+		private Instruction previous;
+		private Instruction next;
 
 		public int Offset {
 			get { return offset; }
@@ -146,7 +145,7 @@ namespace Mono.Reflection {
 			return instruction.ToString ();
 		}
 
-		static void AppendLabel (StringBuilder builder, Instruction instruction)
+		private static void AppendLabel (StringBuilder builder, Instruction instruction)
 		{
 			builder.Append ("IL_");
 			builder.Append (instruction.offset.ToString ("x4"));

@@ -10,7 +10,7 @@ namespace CodeRefractor.ClosureCompute
 {
     public class ClosureEntitiesUtils
     {
-        readonly ClosureEntities _getClosureEntities;
+        private readonly ClosureEntities _getClosureEntities;
 
         public ClosureEntitiesUtils(ClosureEntities getClosureEntities)
         {

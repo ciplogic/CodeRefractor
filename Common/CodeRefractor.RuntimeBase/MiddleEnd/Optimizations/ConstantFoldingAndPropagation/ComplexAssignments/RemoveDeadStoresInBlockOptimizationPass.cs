@@ -14,7 +14,7 @@ using CodeRefractor.Optimizations;
 namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.ComplexAssignments
 {
     [Optimization(Category = OptimizationCategories.DeadCodeElimination)]
-class RemoveDeadStoresInBlockOptimizationPass : BlockOptimizationPass
+    internal class RemoveDeadStoresInBlockOptimizationPass : BlockOptimizationPass
     {
         public override bool OptimizeBlock(CilMethodInterpreter midRepresentation, int startRange, int endRange,
             LocalOperation[] operations)
@@ -47,7 +47,7 @@ class RemoveDeadStoresInBlockOptimizationPass : BlockOptimizationPass
             return false;
         }
 
-        static bool TryRemoveLine(int i, List<LocalOperation> localOperations)
+        private static bool TryRemoveLine(int i, List<LocalOperation> localOperations)
         {
             var kind = localOperations[i].Kind;
             switch (kind)

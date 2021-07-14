@@ -35,7 +35,7 @@ namespace CodeRefractor.MiddleEnd.Interpreters.NonCil
                 AnalyzeProperties.IsPure = true;
         }
 
-        static CppMethodBodyAttribute GetCppAttribute(MethodBase resultMethod)
+        private static CppMethodBodyAttribute GetCppAttribute(MethodBase resultMethod)
         {
             return resultMethod.GetCustomAttribute<CppMethodBodyAttribute>();
         }

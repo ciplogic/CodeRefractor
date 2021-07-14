@@ -36,7 +36,7 @@ namespace CodeRefractor.ClosureCompute
             AddClosureStep<AddVirtualMethodImplementations>();
         }
 
-        void AddClosureStep<T>() where T : ClosureComputeBase, new()
+        private void AddClosureStep<T>() where T : ClosureComputeBase, new()
         {
             ClosureSteps.Add(new T());
         }

@@ -47,7 +47,7 @@ namespace CodeRefractor.FrontEnd.SimpleOperations.Identifiers
             return GetAutoName();
         }
 
-        string GetAutoName()
+        private string GetAutoName()
         {
             var varKind = Kind == VariableKind.Vreg ? "vreg" : "local";
             var formatVar = $"{varKind}_{Id}";

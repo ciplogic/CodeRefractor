@@ -15,7 +15,7 @@ namespace MsilCodeCompiler.Tests.TestInfrastructure
 
 
     [TestFixture]
-    class CodeTestingSampleWithGcc
+    internal class CodeTestingSampleWithGcc
     {
 
         [SetUp]
@@ -30,7 +30,7 @@ namespace MsilCodeCompiler.Tests.TestInfrastructure
 
         }
 
-        static string BuildArgs(string outputFile)
+        private static string BuildArgs(string outputFile)
         {
             var sbArgs = new StringBuilder();
             sbArgs.Append(outputFile);

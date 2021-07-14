@@ -8,7 +8,7 @@ using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 
 namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.ComplexAssignments
 {
-    static class ComputeConstantOperator
+    internal static class ComputeConstantOperator
     {
         public static object ComputeDouble(ConstValue constLeft)
         {

@@ -51,9 +51,8 @@ namespace Mono.Reflection {
 			return new OptionalPattern (pattern);
 		}
 
-		class OptionalPattern : ILPattern {
-
-			ILPattern pattern;
+		private class OptionalPattern : ILPattern {
+			private ILPattern pattern;
 
 			public OptionalPattern (ILPattern optional)
 			{
@@ -71,9 +70,8 @@ namespace Mono.Reflection {
 			return new SequencePattern (patterns);
 		}
 
-		class SequencePattern : ILPattern {
-
-			ILPattern [] patterns;
+		private class SequencePattern : ILPattern {
+			private ILPattern [] patterns;
 
 			public SequencePattern (ILPattern [] patterns)
 			{
@@ -96,9 +94,8 @@ namespace Mono.Reflection {
 			return new OpCodePattern (opcode);
 		}
 
-		class OpCodePattern : ILPattern {
-
-			OpCode opcode;
+		private class OpCodePattern : ILPattern {
+			private OpCode opcode;
 
 			public OpCodePattern (OpCode opcode)
 			{
@@ -122,10 +119,9 @@ namespace Mono.Reflection {
 			return new EitherPattern (a, b);
 		}
 
-		class EitherPattern : ILPattern {
-
-			ILPattern a;
-			ILPattern b;
+		private class EitherPattern : ILPattern {
+			private ILPattern a;
+			private ILPattern b;
 
 			public EitherPattern (ILPattern a, ILPattern b)
 			{
@@ -184,7 +180,7 @@ namespace Mono.Reflection {
 		internal Instruction instruction;
 		internal bool success;
 
-		Dictionary<object, object> data = new Dictionary<object, object> ();
+		private Dictionary<object, object> data = new Dictionary<object, object> ();
 
 		public bool IsMatch {
 			get { return success; }

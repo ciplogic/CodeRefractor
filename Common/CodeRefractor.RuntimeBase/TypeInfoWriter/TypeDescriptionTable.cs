@@ -17,10 +17,10 @@ namespace CodeRefractor.TypeInfoWriter
 {
     public class TypeDescriptionTable : IComparer<Type>
     {
-        readonly ClosureEntities _closureEntities;
-        readonly Dictionary<Type, HashSet<Type>> _dictionary = new Dictionary<Type, HashSet<Type>>();
-        readonly Dictionary<Type, int> _result = new Dictionary<Type, int>();
-        readonly List<Type> _typeClosure;
+        private readonly ClosureEntities _closureEntities;
+        private readonly Dictionary<Type, HashSet<Type>> _dictionary = new Dictionary<Type, HashSet<Type>>();
+        private readonly Dictionary<Type, int> _result = new Dictionary<Type, int>();
+        private readonly List<Type> _typeClosure;
 
         public TypeDescriptionTable(List<Type> typeClosure, ClosureEntities closureEntities)
         {
@@ -60,13 +60,13 @@ namespace CodeRefractor.TypeInfoWriter
             return compare;
         }
 
-        static bool FilterType(Type type)
+        private static bool FilterType(Type type)
         {
             var isStatic = (type.IsAbstract && type.IsSealed);
             return !isStatic;
         }
 
-        void BuildDependantTypeDictionary()
+        private void BuildDependantTypeDictionary()
         {
             foreach (var type in _typeClosure)
             {

@@ -61,14 +61,14 @@ namespace CodeRefractor.Util
                 Path.GetDirectoryName(applicationNativeExe));
         }
 
-        static string GetSafeFileOrPath(string fileName)
+        private static string GetSafeFileOrPath(string fileName)
         {
             if (fileName.Contains(" "))
                 fileName = $"\"{fileName}\"";
             return fileName;
         }
 
-        class ClangOptions : Options
+        private class ClangOptions : Options
         {
             public ClangOptions()
             {
@@ -78,7 +78,7 @@ namespace CodeRefractor.Util
             }
         }
 
-        class GccOptions : Options
+        private class GccOptions : Options
         {
             public GccOptions()
             {
@@ -89,7 +89,7 @@ namespace CodeRefractor.Util
             }
         }
 
-        class WindowsClOptions : Options
+        private class WindowsClOptions : Options
         {
             public WindowsClOptions()
             {

@@ -9,9 +9,9 @@ using Mono.Reflection;
 
 namespace CodeRefractor.FrontEnd
 {
-    static class ExceptionCatchClauseRanges
+    internal static class ExceptionCatchClauseRanges
     {
-        static List<KeyValuePair<int, int>> GetExceptionRanges(List<ExceptionHandlingClause> handlingExceptions)
+        private static List<KeyValuePair<int, int>> GetExceptionRanges(List<ExceptionHandlingClause> handlingExceptions)
         {
             var result = new List<KeyValuePair<int, int>>();
             foreach (var handlingClause in handlingExceptions)

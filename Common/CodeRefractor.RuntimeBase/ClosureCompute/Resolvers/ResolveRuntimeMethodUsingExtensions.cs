@@ -14,8 +14,8 @@ namespace CodeRefractor.ClosureCompute.Resolvers
 {
     public class ResolveRuntimeMethodUsingExtensions : MethodResolverBase
     {
-        readonly ClosureEntities _closureEntities;
-        readonly Dictionary<Type, List<MethodInfo>> _solvedTypes;
+        private readonly ClosureEntities _closureEntities;
+        private readonly Dictionary<Type, List<MethodInfo>> _solvedTypes;
 
         public ResolveRuntimeMethodUsingExtensions(Assembly assembly, ClosureEntities closureEntities)
         {
@@ -27,7 +27,7 @@ namespace CodeRefractor.ClosureCompute.Resolvers
             PopulateSolvedTypes(extensionImplementations);
         }
 
-        void PopulateSolvedTypes(List<Type> extensionImplementations)
+        private void PopulateSolvedTypes(List<Type> extensionImplementations)
         {
             foreach (var implementation in extensionImplementations)
             {
@@ -44,7 +44,7 @@ namespace CodeRefractor.ClosureCompute.Resolvers
             }
         }
 
-        void AddMethod(Type declaringType, MethodInfo methodInfo)
+        private void AddMethod(Type declaringType, MethodInfo methodInfo)
         {
             List<MethodInfo> list;
             if (!_solvedTypes.TryGetValue(declaringType, out list))

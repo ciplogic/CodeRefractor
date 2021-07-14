@@ -9,7 +9,7 @@ using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 
 namespace CodeRefractor.MiddleEnd.Optimizations.Dfa.ConstantDfa
 {
-    class DfaPointOfAnalysis
+    internal class DfaPointOfAnalysis
     {
         public readonly Dictionary<LocalVariable, VariableState> States = new Dictionary<LocalVariable, VariableState>();
 
@@ -75,7 +75,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Dfa.ConstantDfa
             return Compare(other);
         }
 
-        bool Compare(DfaPointOfAnalysis other)
+        private bool Compare(DfaPointOfAnalysis other)
         {
             if (States.Count != other.States.Count)
                 return false;

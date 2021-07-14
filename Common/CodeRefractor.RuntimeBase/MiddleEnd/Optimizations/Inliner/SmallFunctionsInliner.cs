@@ -17,7 +17,7 @@ using CodeRefractor.Optimizations;
 namespace CodeRefractor.MiddleEnd.Optimizations.Inliner
 {
     //[Optimization(Category = OptimizationCategories.Inliner)]
-    class SmallFunctionsInliner : ResultingOptimizationPass
+    internal class SmallFunctionsInliner : ResultingOptimizationPass
     {
         public static int MaxLengthInliner = 200;
         public static int MaxLengthChildFunction = 5;
@@ -83,7 +83,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Inliner
             intermediateCode.LocalOperations.InsertRange(indexCall, localOperationsToInline);
         }
 
-        static void MergeVRegs(MetaMidRepresentation intermediateCode,
+        private static void MergeVRegs(MetaMidRepresentation intermediateCode,
             CilMethodInterpreter methodToInlineInterpreter,
             Dictionary<int, int> mappedVregs)
         {
@@ -93,7 +93,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Inliner
             intermediateCode.Vars.VirtRegs.AddRange(vregsToAdd);
         }
 
-        static LocalVariable GetVRegMapped(List<LocalVariable> virtRegs, KeyValuePair<int, int> id)
+        private static LocalVariable GetVRegMapped(List<LocalVariable> virtRegs, KeyValuePair<int, int> id)
         {
             var localVariable = virtRegs.First(item => id.Key == item.Id);
             var vRegMapped = new LocalVariable
@@ -106,7 +106,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Inliner
             return vRegMapped;
         }
 
-        static void MergeLocalVariables(MetaMidRepresentation intermediateCode,
+        private static void MergeLocalVariables(MetaMidRepresentation intermediateCode,
             CilMethodInterpreter methodToInlineInterpreter,
             Dictionary<int, LocalVariable> mappedLocals)
         {
@@ -131,7 +131,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Inliner
 
         #region Instruction mapped
 
-        static List<LocalOperation> BuildLocalOperationsToInline(
+        private static List<LocalOperation> BuildLocalOperationsToInline(
             CilMethodInterpreter interpreter, Dictionary<LocalVariable, IdentifierValue> mappedNames,
             LocalVariable result)
         {
@@ -152,7 +152,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Inliner
             return localOperationsToInline;
         }
 
-        static void HandleReturn(LocalVariable result, List<LocalOperation> localOperationsToInline,
+        private static void HandleReturn(LocalVariable result, List<LocalOperation> localOperationsToInline,
             LocalOperation localOperation)
         {
             var identifierValue = localOperation.Get<Return>();
@@ -167,7 +167,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Inliner
             localOperationsToInline.Add(assignmentReturn);
         }
 
-        static void SwitchUsageClones(Dictionary<LocalVariable, IdentifierValue> mappedNames,
+        private static void SwitchUsageClones(Dictionary<LocalVariable, IdentifierValue> mappedNames,
             LocalOperation clone)
         {
             foreach (var localVariable in mappedNames)
@@ -180,7 +180,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Inliner
 
         #region MappingCreation
 
-        static Dictionary<int, int> BuildMappedVregs(
+        private static Dictionary<int, int> BuildMappedVregs(
             MetaMidRepresentation intermediateCode,
             CilMethodInterpreter interpreter)
         {
@@ -199,7 +199,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Inliner
             return mappedVregs;
         }
 
-        static Dictionary<int, LocalVariable> BuildMappedLocals(CilMethodInterpreter methodToInlineInterpreter,
+        private static Dictionary<int, LocalVariable> BuildMappedLocals(CilMethodInterpreter methodToInlineInterpreter,
             int count)
         {
             var mappedNames = new Dictionary<int, LocalVariable>();
@@ -214,7 +214,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Inliner
             return mappedNames;
         }
 
-        static Dictionary<LocalVariable, IdentifierValue> BuildMappedParameters(
+        private static Dictionary<LocalVariable, IdentifierValue> BuildMappedParameters(
             CilMethodInterpreter interpreter,
             CallMethodStatic callMethodStatic)
         {

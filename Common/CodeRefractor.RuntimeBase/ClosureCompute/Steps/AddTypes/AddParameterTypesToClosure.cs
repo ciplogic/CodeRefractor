@@ -20,7 +20,7 @@ namespace CodeRefractor.ClosureCompute.Steps.AddTypes
             return result;
         }
 
-        static bool UpdateClosureForMethod(MethodBase method, ClosureEntities closureEntities)
+        private static bool UpdateClosureForMethod(MethodBase method, ClosureEntities closureEntities)
         {
             var result = false;
             var returnType = method.GetReturnType();

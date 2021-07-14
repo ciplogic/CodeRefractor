@@ -39,7 +39,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.SimpleDce
 
         #region Remove candidates
 
-        static void RemoveCandidatesInUsages(LocalOperation[] operations, HashSet<int> vregConstants,
+        private static void RemoveCandidatesInUsages(LocalOperation[] operations, HashSet<int> vregConstants,
             UseDefDescription useDef)
         {
             for (var index = 0; index < operations.Length; index++)
@@ -52,7 +52,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.SimpleDce
             }
         }
 
-        static void RemoveCandidatesInDefinitions(LocalOperation[] operations, HashSet<int> vregConstants,
+        private static void RemoveCandidatesInDefinitions(LocalOperation[] operations, HashSet<int> vregConstants,
             UseDefDescription useDef)
         {
             for (var index = 0; index < operations.Length; index++)
@@ -62,7 +62,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.SimpleDce
             }
         }
 
-        static void RemoveCandidate(HashSet<int> vregConstants, LocalVariable definition)
+        private static void RemoveCandidate(HashSet<int> vregConstants, LocalVariable definition)
         {
             if (definition == null)
                 return;
@@ -71,7 +71,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.SimpleDce
             vregConstants.Remove(definition.Id);
         }
 
-        static void OptimizeUnusedVregs(HashSet<int> vregConstants, MidRepresentationVariables variables)
+        private static void OptimizeUnusedVregs(HashSet<int> vregConstants, MidRepresentationVariables variables)
         {
             if (vregConstants.Count == 0)
                 return;

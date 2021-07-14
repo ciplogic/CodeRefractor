@@ -32,18 +32,17 @@ using System.IO;
 namespace Mono.Reflection {
 
 	public sealed class Image : IDisposable {
+		private long position;
+		private Stream stream;
 
-		long position;
-		Stream stream;
-
-		Image (Stream stream)
+		private Image (Stream stream)
 		{
 			this.stream = stream;
 			position = stream.Position;
 			this.stream.Position = 0;
 		}
 
-		bool Advance (int length)
+		private bool Advance (int length)
 		{
 			if (stream.Position + length >= stream.Length)
 				return false;
@@ -52,7 +51,7 @@ namespace Mono.Reflection {
 			return true;
 		}
 
-		bool MoveTo (uint position)
+		private bool MoveTo (uint position)
 		{
 			if (position >= stream.Length)
 				return false;
@@ -66,13 +65,13 @@ namespace Mono.Reflection {
 			stream.Position = position;
 		}
 
-		ushort ReadUInt16 ()
+		private ushort ReadUInt16 ()
 		{
 			return (ushort) (stream.ReadByte ()
 				| (stream.ReadByte () << 8));
 		}
 
-		uint ReadUInt32 ()
+		private uint ReadUInt32 ()
 		{
 			return (uint) (stream.ReadByte ()
 				| (stream.ReadByte () << 8)
@@ -80,7 +79,7 @@ namespace Mono.Reflection {
 				| (stream.ReadByte () << 24));
 		}
 
-		bool IsManagedAssembly ()
+		private bool IsManagedAssembly ()
 		{
 			if (stream.Length < 318)
 				return false;

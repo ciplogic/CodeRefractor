@@ -42,9 +42,9 @@ namespace CodeRefractor.CodeWriter.Linker
                 );
         }
 
-        static bool IsInstanceUsed { get; set; }
+        private static bool IsInstanceUsed { get; set; }
 
-        static void AddToRuntime(ClosureEntities crRuntime)
+        private static void AddToRuntime(ClosureEntities crRuntime)
         {
             IsInstanceUsed  = true;
 
@@ -86,7 +86,7 @@ bool IsInstanceOf(int typeSource, int typeImplementation) {
             featureBuilder.AppendLine( sb.ToString());
         }
 
-        void AddAllTypes(StringBuilder sb, TypeDescriptionTable table, ClosureEntities closure)
+        private void AddAllTypes(StringBuilder sb, TypeDescriptionTable table, ClosureEntities closure)
         {
             foreach (var type in TypesToCast)
             {

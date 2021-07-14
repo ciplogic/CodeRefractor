@@ -13,7 +13,7 @@ namespace CodeRefractor.ClosureCompute.Resolvers
 {
     public class ResolveRuntimeType : TypeResolverBase
     {
-        readonly Dictionary<Type, Type> _solvedTypes;
+        private readonly Dictionary<Type, Type> _solvedTypes;
 
         public ResolveRuntimeType(Assembly assembly)
         {

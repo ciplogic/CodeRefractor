@@ -12,7 +12,7 @@ using CodeRefractor.Optimizations;
 namespace CodeRefractor.MiddleEnd.Optimizations.SimpleDce
 {
     [Optimization(Category = OptimizationCategories.DeadCodeElimination)]
-class DeleteCallToConstructorOfObject : OptimizationPassBase
+    internal class DeleteCallToConstructorOfObject : OptimizationPassBase
     {
         public DeleteCallToConstructorOfObject()
             : base(OptimizationKind.InFunction)

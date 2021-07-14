@@ -22,7 +22,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.SimpleDce
     ///     will transform the code to be > var2 = identifier
     /// </summary>
     [Optimization(Category = OptimizationCategories.DeadCodeElimination)]
-class DceNewObjectOrArray : OptimizationPassBase
+    internal class DceNewObjectOrArray : OptimizationPassBase
     {
         public DceNewObjectOrArray()
             : base(OptimizationKind.InFunction)

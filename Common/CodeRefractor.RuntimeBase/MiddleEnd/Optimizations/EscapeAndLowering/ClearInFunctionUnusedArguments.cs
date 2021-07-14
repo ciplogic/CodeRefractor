@@ -12,7 +12,7 @@ using CodeRefractor.Optimizations;
 namespace CodeRefractor.MiddleEnd.Optimizations.EscapeAndLowering
 {
     [Optimization(Category = OptimizationCategories.DeadCodeElimination)]
-    class ClearInFunctionUnusedArguments : ResultingGlobalOptimizationPass
+    internal class ClearInFunctionUnusedArguments : ResultingGlobalOptimizationPass
     {
         public override void OptimizeOperations(CilMethodInterpreter interpreter)
         {

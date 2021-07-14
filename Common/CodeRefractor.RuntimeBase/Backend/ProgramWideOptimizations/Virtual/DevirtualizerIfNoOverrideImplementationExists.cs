@@ -31,7 +31,7 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
             return result;
         }
 
-        static bool HandleInterpreterInstructions(CilMethodInterpreter interpreter, ClosureEntities closure)
+        private static bool HandleInterpreterInstructions(CilMethodInterpreter interpreter, ClosureEntities closure)
         {
             var useDef = interpreter.MidRepresentation.UseDef;
             var calls = useDef.GetOperationsOfKind(OperationKind.CallVirtual).ToArray();

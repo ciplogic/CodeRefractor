@@ -13,7 +13,7 @@ using CodeRefractor.Optimizations;
 namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.ComplexAssignments
 {
     [Optimization(Category = OptimizationCategories.Propagation)]
-class PropagationVariables : BlockOptimizationPass
+    internal class PropagationVariables : BlockOptimizationPass
     {
         public override bool OptimizeBlock(CilMethodInterpreter midRepresentation, int startRange, int endRange,
             LocalOperation[] operations)
@@ -23,7 +23,7 @@ class PropagationVariables : BlockOptimizationPass
             return ProcessOptimizations(startRange, instructionRange, useDef);
         }
 
-        static bool ProcessOptimizations(int startRange, LocalOperation[] instructionRange,
+        private static bool ProcessOptimizations(int startRange, LocalOperation[] instructionRange,
             UseDefDescription useDef)
         {
             var result = false;
@@ -39,7 +39,7 @@ class PropagationVariables : BlockOptimizationPass
             return result;
         }
 
-        static void UpdateInstructionMapping(
+        private static void UpdateInstructionMapping(
             LocalOperation op,
             Dictionary<LocalVariable, ConstValue> constValues,
             Dictionary<LocalVariable, LocalVariable> mappedValues)
@@ -70,7 +70,7 @@ class PropagationVariables : BlockOptimizationPass
         /// <param name="usageVariable"></param>
         /// <param name="constValues"></param>
         /// <param name="mappedValues"></param>
-        static void RemoveDefinitionsIfTheUsageIsInvalidated(
+        private static void RemoveDefinitionsIfTheUsageIsInvalidated(
             LocalVariable usageVariable,
             Dictionary<LocalVariable, ConstValue> constValues,
             Dictionary<LocalVariable, LocalVariable> mappedValues)
@@ -92,7 +92,7 @@ class PropagationVariables : BlockOptimizationPass
             }
         }
 
-        static bool UpdateKnownUsages(LocalOperation op, Dictionary<LocalVariable, ConstValue> constValues,
+        private static bool UpdateKnownUsages(LocalOperation op, Dictionary<LocalVariable, ConstValue> constValues,
             Dictionary<LocalVariable, LocalVariable> mappedValues, UseDefDescription useDef, int i)
         {
             if (mappedValues.Count == 0 && constValues.Count == 0)

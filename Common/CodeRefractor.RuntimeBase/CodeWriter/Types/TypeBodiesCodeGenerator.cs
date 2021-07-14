@@ -14,7 +14,7 @@ using CodeRefractor.Util;
 
 namespace CodeRefractor.CodeWriter.Types
 {
-    static class TypeBodiesCodeGenerator
+    internal static class TypeBodiesCodeGenerator
     {
         public static void WriteClosureStructBodies(StringBuilder codeOutput, ClosureEntities crRuntime)
         {
@@ -40,7 +40,7 @@ namespace CodeRefractor.CodeWriter.Types
             }
         }
 
-        static void WriteStructWithFields(StringBuilder codeOutput, ClosureEntities crRuntime, Type type)
+        private static void WriteStructWithFields(StringBuilder codeOutput, ClosureEntities crRuntime, Type type)
         {
             if (DelegateManager.IsTypeDelegate(type))
                 return;
@@ -99,7 +99,7 @@ namespace CodeRefractor.CodeWriter.Types
             typedesc.WriteStaticFieldInitialization(codeOutput);
         }
 
-        static void GenerateForwardTypes(Type[] typeDatas, StringBuilder sb, ClosureEntities crRuntime)
+        private static void GenerateForwardTypes(Type[] typeDatas, StringBuilder sb, ClosureEntities crRuntime)
         {
             foreach (var typeData in typeDatas)
             {
@@ -113,7 +113,7 @@ namespace CodeRefractor.CodeWriter.Types
             }
         }
 
-        static bool ShouldSkipType(Type mappedType)
+        private static bool ShouldSkipType(Type mappedType)
         {
             var typeCode = mappedType.ExtractTypeCode();
             switch (typeCode)
@@ -127,7 +127,7 @@ namespace CodeRefractor.CodeWriter.Types
             return true;
         }
 
-        static void WriteClassFieldsBody(StringBuilder codeOutput, Type mappedType, ClosureEntities crRuntime)
+        private static void WriteClassFieldsBody(StringBuilder codeOutput, Type mappedType, ClosureEntities crRuntime)
         {
             var typeDesc = UsedTypeList.Set(mappedType, crRuntime);
             typeDesc.WriteLayout(codeOutput);

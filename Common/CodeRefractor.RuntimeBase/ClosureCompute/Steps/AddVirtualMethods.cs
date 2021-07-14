@@ -11,7 +11,7 @@ using CodeRefractor.MiddleEnd.UseDefs;
 
 namespace CodeRefractor.ClosureCompute.Steps
 {
-    class AddVirtualMethods : ClosureComputeBase
+    internal class AddVirtualMethods : ClosureComputeBase
     {
         public override bool UpdateClosure(ClosureEntities closureEntities)
         {

@@ -41,7 +41,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Dfa.ReachabilityDfa
             return true;
         }
 
-        void Interpret(int cursor, LocalOperation[] operations, Dictionary<int, int> labelTable,
+        private void Interpret(int cursor, LocalOperation[] operations, Dictionary<int, int> labelTable,
             SortedSet<int> reached)
         {
             if (reached.Contains(cursor))

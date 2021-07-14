@@ -9,7 +9,7 @@ using System.Text;
 
 namespace CodeRefractor.FrontEnd.SimpleOperations
 {
-    static class OperationUtils
+    internal static class OperationUtils
     {
         internal static void PopulateInstance(object result, object localOperation, Type type)
         {
@@ -38,13 +38,13 @@ namespace CodeRefractor.FrontEnd.SimpleOperations
             }
         }
 
-        static bool IsNotObjectType(Type type)
+        private static bool IsNotObjectType(Type type)
         {
             var typeCode = Type.GetTypeCode(type);
             return typeCode != TypeCode.Object;
         }
 
-        static bool HasDefaultConstructor(Type type)
+        private static bool HasDefaultConstructor(Type type)
         {
             return type.GetConstructor(Type.EmptyTypes) != null;
         }

@@ -15,7 +15,7 @@ using CodeRefractor.Optimizations;
 namespace CodeRefractor.MiddleEnd.Optimizations.RedundantExpressions
 {
     [Optimization(Category = OptimizationCategories.CommonSubexpressionsElimination)]
-class PrecomputeRepeatedPureFunctionCall : BlockOptimizationPass
+    internal class PrecomputeRepeatedPureFunctionCall : BlockOptimizationPass
     {
         public override bool OptimizeBlock(CilMethodInterpreter midRepresentation, int startRange, int endRange,
             LocalOperation[] operations)
@@ -41,7 +41,7 @@ class PrecomputeRepeatedPureFunctionCall : BlockOptimizationPass
             return false;
         }
 
-        static void ApplyOptimization(CilMethodInterpreter midRepresentation, int i, int j)
+        private static void ApplyOptimization(CilMethodInterpreter midRepresentation, int i, int j)
         {
             var localOps = midRepresentation.MidRepresentation.LocalOperations;
 
@@ -80,7 +80,7 @@ class PrecomputeRepeatedPureFunctionCall : BlockOptimizationPass
             return calls;
         }
 
-        static bool TryMergeCalls(int i, int i1, CallMethodStatic firstCallMethodStatic,
+        private static bool TryMergeCalls(int i, int i1, CallMethodStatic firstCallMethodStatic,
             CallMethodStatic secondCallMethodStatic,
             List<LocalOperation> localOperations)
         {
@@ -91,7 +91,7 @@ class PrecomputeRepeatedPureFunctionCall : BlockOptimizationPass
             return CheckReassignmentsOfParameters(i, i1, firstCallMethodStatic, localOperations);
         }
 
-        static bool CheckReassignmentsOfParameters(int i, int i1, CallMethodStatic firstCallMethodStatic,
+        private static bool CheckReassignmentsOfParameters(int i, int i1, CallMethodStatic firstCallMethodStatic,
             List<LocalOperation> localOperations)
         {
             var parametersFirst = new HashSet<LocalVariable>();
@@ -114,7 +114,7 @@ class PrecomputeRepeatedPureFunctionCall : BlockOptimizationPass
             return true;
         }
 
-        static bool ValidateParametersAreTheSame(CallMethodStatic firstCallMethodStatic,
+        private static bool ValidateParametersAreTheSame(CallMethodStatic firstCallMethodStatic,
             CallMethodStatic secondCallMethodStatic)
         {
             var parametersFirst = new List<IdentifierValue>();

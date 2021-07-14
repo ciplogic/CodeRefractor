@@ -21,7 +21,7 @@ namespace CodeRefractor.CodeWriter.Output
 
         public static StringBuilder BracketClose(this StringBuilder sb, bool assignedStatement = false)
         {
-            sb.Append("}\n");
+            sb.Append("\n}\n");
 
             return sb;
         }

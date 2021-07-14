@@ -6,7 +6,7 @@ using System.Text;
 
 namespace CodeRefractor.DataNode
 {
-    class Cursor
+    internal class Cursor
     {
         public string ReadString()
         {
@@ -42,17 +42,17 @@ namespace CodeRefractor.DataNode
         #region Fields
 
         public byte[] ArrayData;
-        int _position;
+        private int _position;
 
         #endregion
 
         #region Private
 
-        byte CurrentByte => ArrayData[_position];
+        private byte CurrentByte => ArrayData[_position];
 
-        ExiLikeEvent CurrentEvent => (ExiLikeEvent)CurrentByte;
+        private ExiLikeEvent CurrentEvent => (ExiLikeEvent)CurrentByte;
 
-        byte ReadByte()
+        private byte ReadByte()
         {
             var current = CurrentByte;
             _position++;

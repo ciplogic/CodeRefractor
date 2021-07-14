@@ -16,7 +16,7 @@ namespace CodeRefractor.Compiler
      */
     public static class ProgramEntryPoint
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             try
             {

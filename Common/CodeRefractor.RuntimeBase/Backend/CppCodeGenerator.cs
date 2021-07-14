@@ -84,7 +84,7 @@ namespace CodeRefractor.Backend
              return (result, typeSignaturesSb.ToString());
         }
 
-        static void WriteCppMethods(List<MethodInterpreter> closure, StringBuilder sb, ClosureEntities crRuntime)
+        private static void WriteCppMethods(List<MethodInterpreter> closure, StringBuilder sb, ClosureEntities crRuntime)
         {
             var cppMethods = closure
                 .Where(m => m.Kind == MethodKind.RuntimeCppMethod)
@@ -105,13 +105,13 @@ namespace CodeRefractor.Backend
             }
         }
 
-        static void WriteClosureMethods(List<MethodInterpreter> closure, StringBuilder sb,
+        private static void WriteClosureMethods(List<MethodInterpreter> closure, StringBuilder sb,
             TypeDescriptionTable typeTable, ClosureEntities closureEntities)
         {
             WriteClosureBodies(closure, sb, typeTable, closureEntities);
         }
 
-        static void WriteClosureHeaders(IEnumerable<MethodInterpreter> closure, StringBuilder stringBuilder,
+        private static void WriteClosureHeaders(IEnumerable<MethodInterpreter> closure, StringBuilder stringBuilder,
             ClosureEntities closureEntities)
         {
             closure.Where(interpreter => !interpreter.Method.IsAbstract)
@@ -122,13 +122,13 @@ namespace CodeRefractor.Backend
                 });
         }
 
-        static void WriteClassFieldsBody(StringBuilder sb, Type mappedType, ClosureEntities crRuntime)
+        private static void WriteClassFieldsBody(StringBuilder sb, Type mappedType, ClosureEntities crRuntime)
         {
             var typeDesc = UsedTypeList.Set(mappedType, crRuntime);
             typeDesc.WriteLayout(sb);
         }
 
-        static void WriteClosureDelegateBodies(List<MethodInterpreter> closure, StringBuilder StringBuilder)
+        private static void WriteClosureDelegateBodies(List<MethodInterpreter> closure, StringBuilder StringBuilder)
         {
             foreach (var interpreter in closure)
             {
@@ -140,7 +140,7 @@ namespace CodeRefractor.Backend
             StringBuilder.Append(DelegateManager.Instance.BuildDelegateContent());
         }
 
-        static void WriteClosureBodies(List<MethodInterpreter> closure, StringBuilder sb,
+        private static void WriteClosureBodies(List<MethodInterpreter> closure, StringBuilder sb,
             TypeDescriptionTable typeTable, ClosureEntities closureEntities)
         {
             sb.Append("///--- PInvoke code ---\n");
@@ -166,7 +166,7 @@ namespace CodeRefractor.Backend
             sb.Append("///---End closure code ---\n");
         }
 
-        static void WriteUsedCppRuntimeMethod(KeyValuePair<string, MethodBase> methodBodyAttribute,
+        private static void WriteUsedCppRuntimeMethod(KeyValuePair<string, MethodBase> methodBodyAttribute,
             StringBuilder sb, ClosureEntities crRuntime)
         {
             var method = methodBodyAttribute.Value;
@@ -184,7 +184,7 @@ namespace CodeRefractor.Backend
             sb.AppendFormat("{{ {0} }}", methodNativeDescription.Code).AppendLine();
         }
 
-        static void WriteMainBody(MethodInterpreter interpreter, StringBuilder sb, ClosureEntities crRuntime)
+        private static void WriteMainBody(MethodInterpreter interpreter, StringBuilder sb, ClosureEntities crRuntime)
         {
             sb.Append("System_Void initializeRuntime();\n");
             sb.Append("int main(int argc, char**argv)").BracketOpen();

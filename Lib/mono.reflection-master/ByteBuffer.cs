@@ -29,8 +29,7 @@
 using System;
 
 namespace Mono.Reflection {
-
-	class ByteBuffer {
+	internal class ByteBuffer {
 
 		internal byte [] buffer;
 		internal int position;
@@ -121,7 +120,7 @@ namespace Mono.Reflection {
 			return value;
 		}
 
-		void CheckCanRead (int count)
+		private void CheckCanRead (int count)
 		{
 			if (position + count > buffer.Length)
 				throw new ArgumentOutOfRangeException ();

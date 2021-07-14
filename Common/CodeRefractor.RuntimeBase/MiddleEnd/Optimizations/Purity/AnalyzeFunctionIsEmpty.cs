@@ -28,7 +28,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Purity
             return intermediateCode.AnalyzeProperties.IsEmpty;
         }
 
-        static bool ComputeProperty(CilMethodInterpreter intermediateCode)
+        private static bool ComputeProperty(CilMethodInterpreter intermediateCode)
         {
             if (intermediateCode == null)
                 return false;

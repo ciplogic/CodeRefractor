@@ -69,7 +69,7 @@ class C {{
             return Assembly.LoadFile(assm);
         }
 
-        string assm;
+        private string assm;
 
         public static List<ResultingOptimizationPass> DefaultOptimizationPasses()
         {
@@ -106,7 +106,7 @@ class C {{
             return result;
         }
 
-        string GenerateOutputCppFromCode(string code, List<ResultingOptimizationPass> optimizationPasses,
+        private string GenerateOutputCppFromCode(string code, List<ResultingOptimizationPass> optimizationPasses,
             out string expectedInput)
         {
             const string outputCpp = "output.cpp";

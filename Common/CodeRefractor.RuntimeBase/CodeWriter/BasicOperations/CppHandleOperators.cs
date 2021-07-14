@@ -19,7 +19,7 @@ using CodeRefractor.Util;
 
 namespace CodeRefractor.CodeWriter.BasicOperations
 {
-    static class CppHandleOperators
+    internal static class CppHandleOperators
     {
         public static bool HandleAssignmentOperations(StringBuilder bodySb, LocalOperation operation, OperationKind kind,
             TypeDescriptionTable typeTable, MethodInterpreter interpreter, ClosureEntities crRuntime)
@@ -167,13 +167,13 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             }
         }
 
-        static void HandleGetAddressOfArrayItem(LocalOperation operation, StringBuilder bodySb)
+        private static void HandleGetAddressOfArrayItem(LocalOperation operation, StringBuilder bodySb)
         {
             var value = (RefArrayItemAssignment)operation;
             bodySb.AppendFormat("{0} = & ({1}->Items[{2}]);", value.Left.Name, value.ArrayVar.Name, value.Index.Name);
         }
 
-        static void HandleLoadFunction(LocalOperation operation, StringBuilder bodySb, ClosureEntities crRuntime)
+        private static void HandleLoadFunction(LocalOperation operation, StringBuilder bodySb, ClosureEntities crRuntime)
         {
             var assign = (FunctionPointerStore)operation;
             var leftData = assign.AssignedTo;
@@ -182,7 +182,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             bodySb.AppendFormat("{0}=&({1});", leftData.Name, methodName);
         }
 
-        static void HandleSizeOf(LocalOperation operation, StringBuilder bodySb)
+        private static void HandleSizeOf(LocalOperation operation, StringBuilder bodySb)
         {
             var assign = (SizeOfAssignment)operation;
             var leftData = (IdentifierValue)assign.AssignedTo;
@@ -190,7 +190,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             bodySb.AppendFormat("{0} = sizeof({1});", leftData.Name, rightData);
         }
 
-        static void HandleRefAssignment(LocalOperation operation, StringBuilder bodySb)
+        private static void HandleRefAssignment(LocalOperation operation, StringBuilder bodySb)
         {
             var assign = (RefAssignment)operation;
             var leftData = (IdentifierValue)assign.Left;
@@ -198,7 +198,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             bodySb.AppendFormat("{0} = &{1};", leftData.Name, rightData.Name);
         }
 
-        static void HandleFieldRefAssignment(LocalOperation operation, StringBuilder bodySb)
+        private static void HandleFieldRefAssignment(LocalOperation operation, StringBuilder bodySb)
         {
             var assign = (FieldRefAssignment)operation;
             var leftData = assign.Left;
@@ -207,7 +207,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             bodySb.AppendFormat("{0} = &({1}->{2});", leftData.Name, rightData.Name, fieldName);
         }
 
-        static void HandleDerefAssignment(LocalOperation operation, StringBuilder bodySb)
+        private static void HandleDerefAssignment(LocalOperation operation, StringBuilder bodySb)
         {
             var assign = (DerefAssignment)operation;
             var leftData = (IdentifierValue)assign.Left;
@@ -215,7 +215,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             bodySb.AppendFormat("{0} = *{1};", leftData.Name, rightData.Name);
         }
 
-        static void HandleLoadStaticField(LocalOperation operation, StringBuilder bodySb,
+        private static void HandleLoadStaticField(LocalOperation operation, StringBuilder bodySb,
             ClosureEntities closureEntities)
         {
             var assign = (Assignment)operation;
@@ -225,7 +225,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 rightData.FieldName.ValidName());
         }
 
-        static void HandleSetStaticField(LocalOperation operation, StringBuilder bodySb)
+        private static void HandleSetStaticField(LocalOperation operation, StringBuilder bodySb)
         {
             var assign = (Assignment)operation;
             var rightData = (StaticFieldSetter)assign.AssignedTo;
@@ -359,9 +359,9 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                     throw new InvalidOperationException($"Operation '{operationName}' is not handled");
             }
         }
-        
 
-        static void HandleClt(BinaryOperator localVar, StringBuilder sb)
+
+        private static void HandleClt(BinaryOperator localVar, StringBuilder sb)
         {
             string right, left, local;
             GetBinaryOperandNames(localVar, out right, out left, out local);
@@ -369,7 +369,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             sb.AppendFormat("{0} = ({1} < {2})?1:0;", local, left, right);
         }
 
-        static void HandleCgt(BinaryOperator localVar, StringBuilder sb)
+        private static void HandleCgt(BinaryOperator localVar, StringBuilder sb)
         {
             string right, left, local;
             GetBinaryOperandNames(localVar, out right, out left, out local);
@@ -377,7 +377,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             sb.AppendFormat("{0} = ({1} > {2})?1:0;", local, left, right);
         }
 
-        static void HandleCeq(BinaryOperator localVar, StringBuilder sb)
+        private static void HandleCeq(BinaryOperator localVar, StringBuilder sb)
         {
             string right, left, local;
             GetBinaryOperandNames(localVar, out right, out left, out local);
@@ -385,48 +385,48 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             sb.AppendFormat("{0} = ({1} == {2})?1:0;", local, left, right);
         }
 
-        static void HandleNeg(UnaryOperator localVar, StringBuilder sb)
+        private static void HandleNeg(UnaryOperator localVar, StringBuilder sb)
         {
             var operat = localVar;
             sb.AppendFormat("{0} = -{1};", localVar.AssignedTo.Name, operat.Left.Name);
         }
 
-        static void HandleConvR4(UnaryOperator unaryOperator, StringBuilder sb)
+        private static void HandleConvR4(UnaryOperator unaryOperator, StringBuilder sb)
         {
             sb.AppendFormat("{0} = (float){1};", unaryOperator.AssignedTo.Name, unaryOperator.Left.Name);
         }
 
-        static void HandleConvR8(UnaryOperator unaryOperator, StringBuilder sb)
+        private static void HandleConvR8(UnaryOperator unaryOperator, StringBuilder sb)
         {
             sb.AppendFormat("{0} = (double){1};", unaryOperator.AssignedTo.Name, unaryOperator.Left.Name);
         }
 
-        static void HandleConvI(UnaryOperator unaryOperator, StringBuilder sb)
+        private static void HandleConvI(UnaryOperator unaryOperator, StringBuilder sb)
         {
             sb.AppendFormat("{0} = (void*){1};", unaryOperator.AssignedTo.Name, unaryOperator.Left.Name);
         }
 
-        static void HandleConvU1(UnaryOperator unaryOperator, StringBuilder sb)
+        private static void HandleConvU1(UnaryOperator unaryOperator, StringBuilder sb)
         {
             sb.AppendFormat("{0} = (System_Byte){1};", unaryOperator.AssignedTo.Name, unaryOperator.Left.Name);
         }
 
-        static void HandleConvI4(UnaryOperator unaryOperator, StringBuilder sb)
+        private static void HandleConvI4(UnaryOperator unaryOperator, StringBuilder sb)
         {
             sb.AppendFormat("{0} = (int){1};", unaryOperator.AssignedTo.Name, unaryOperator.Left.Name);
         }
 
-        static void HandleConvI8(UnaryOperator unaryOperator, StringBuilder sb)
+        private static void HandleConvI8(UnaryOperator unaryOperator, StringBuilder sb)
         {
             sb.AppendFormat("{0} = (System_Int64){1};", unaryOperator.AssignedTo.Name, unaryOperator.Left.Name);
         }
 
-        static void HandleLoadLen(UnaryOperator unaryOperator, StringBuilder sb)
+        private static void HandleLoadLen(UnaryOperator unaryOperator, StringBuilder sb)
         {
             sb.AppendFormat("{0} = {1}->Length;", unaryOperator.AssignedTo.Name, unaryOperator.Left.Name);
         }
 
-        static void HandleLoadArrayRef(BinaryOperator binaryOperator, StringBuilder sb)
+        private static void HandleLoadArrayRef(BinaryOperator binaryOperator, StringBuilder sb)
         {
             string right, left, local;
             GetBinaryOperandNames(binaryOperator, out right, out left, out local);
@@ -434,7 +434,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             sb.AppendFormat("{0}={1}[{2}];", local, right, left);
         }
 
-        static void HandleNot(UnaryOperator localVar, StringBuilder sb)
+        private static void HandleNot(UnaryOperator localVar, StringBuilder sb)
         {
             var local = localVar.AssignedTo.Name;
             string left;
@@ -442,7 +442,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             sb.AppendFormat("{0} = !{1};", local, left);
         }
 
-        static void HandleXor(BinaryOperator localVar, StringBuilder sb)
+        private static void HandleXor(BinaryOperator localVar, StringBuilder sb)
         {
             string right, left, local;
             GetBinaryOperandNames(localVar, out right, out left, out local);
@@ -450,7 +450,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             sb.AppendFormat("{0} = {1}^{2};", local, left, right);
         }
 
-        static void HandleOr(BinaryOperator localVar, StringBuilder sb)
+        private static void HandleOr(BinaryOperator localVar, StringBuilder sb)
         {
             string right, left, local;
             GetBinaryOperandNames(localVar, out right, out left, out local);
@@ -458,7 +458,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             sb.AppendFormat("{0} = {1}|{2};", local, left, right);
         }
 
-        static void HandleAnd(BinaryOperator localVar, StringBuilder sb)
+        private static void HandleAnd(BinaryOperator localVar, StringBuilder sb)
         {
             string right, left, local;
             GetBinaryOperandNames(localVar, out right, out left, out local);
@@ -466,7 +466,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             sb.AppendFormat("{0} = {1}&{2};", local, left, right);
         }
 
-        static void HandleMul(BinaryOperator localVar, StringBuilder sb)
+        private static void HandleMul(BinaryOperator localVar, StringBuilder sb)
         {
             string right, left, local;
             GetBinaryOperandNames(localVar, out right, out left, out local);
@@ -474,7 +474,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             sb.AppendFormat("{0} = {1}*{2};", local, left, right);
         }
 
-        static void HandleDiv(BinaryOperator localVar, StringBuilder sb)
+        private static void HandleDiv(BinaryOperator localVar, StringBuilder sb)
         {
             string right, left, local;
             GetBinaryOperandNames(localVar, out right, out left, out local);
@@ -482,7 +482,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             sb.AppendFormat("{0} = {1}/{2};", local, left, right);
         }
 
-        static void HandleRem(BinaryOperator localVar, StringBuilder sb)
+        private static void HandleRem(BinaryOperator localVar, StringBuilder sb)
         {
             string right, left, local;
             GetBinaryOperandNames(localVar, out right, out left, out local);
@@ -490,7 +490,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             sb.AppendFormat("{0} = {1}%{2};", local, left, right);
         }
 
-        static void GetBinaryOperandNames(BinaryOperator localVar, out string right,
+        private static void GetBinaryOperandNames(BinaryOperator localVar, out string right,
             out string left, out string local)
         {
             local = localVar.AssignedTo.Name;
@@ -500,12 +500,12 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             right = rightVar == null ? localVar.Right.ToString() : rightVar.Name;
         }
 
-        static void GetUnaryOperandNames(UnaryOperator localVar, out string left)
+        private static void GetUnaryOperandNames(UnaryOperator localVar, out string left)
         {
             left = localVar.Left.Name;
         }
 
-        static void HandleSub(BinaryOperator localVar, StringBuilder sb)
+        private static void HandleSub(BinaryOperator localVar, StringBuilder sb)
         {
             string right, left, local;
             GetBinaryOperandNames(localVar, out right, out left, out local);
@@ -513,7 +513,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             sb.AppendFormat("{0} = {1}-{2};", local, left, right);
         }
 
-        static void HandleAdd(BinaryOperator localVar, StringBuilder sb, ClosureEntities closureEntities)
+        private static void HandleAdd(BinaryOperator localVar, StringBuilder sb, ClosureEntities closureEntities)
         {
             string right, left, local;
             GetBinaryOperandNames(localVar, out right, out left, out local);
@@ -527,7 +527,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             sb.AppendFormat("{0} = {1}+{2};", local, left, right);
         }
 
-        static void HandleSetArrayValue(LocalOperation operation, StringBuilder sb,
+        private static void HandleSetArrayValue(LocalOperation operation, StringBuilder sb,
             MethodInterpreter interpreter)
         {
             var arrayItem = (SetArrayElement)operation;
@@ -549,7 +549,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             }
         }
 
-        static void HandleReadArrayItem(LocalOperation operation, StringBuilder bodySb,
+        private static void HandleReadArrayItem(LocalOperation operation, StringBuilder bodySb,
             MethodInterpreter interpreter, ClosureEntities closureEntities)
         {
             var valueSrc = (GetArrayElement)operation;
@@ -577,7 +577,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             }
         }
 
-        static void HandleGetField(LocalOperation operation, StringBuilder bodySb,
+        private static void HandleGetField(LocalOperation operation, StringBuilder bodySb,
             MethodInterpreter interpreter)
         {
             var fieldGetterInfo = (GetField)operation;
@@ -601,7 +601,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             }
         }
 
-        static void HandleSetField(LocalOperation operation, StringBuilder bodySb, ClosureEntities closureEntities)
+        private static void HandleSetField(LocalOperation operation, StringBuilder bodySb, ClosureEntities closureEntities)
         {
             var assign = (SetField)operation;
 
@@ -626,7 +626,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             }
         }
 
-        static void HandleNewArray(LocalOperation operation, StringBuilder bodySb, MethodInterpreter interpreter)
+        private static void HandleNewArray(LocalOperation operation, StringBuilder bodySb, MethodInterpreter interpreter)
         {
             var assignment = (NewArrayObject)operation;
             var arrayData = assignment;
@@ -649,7 +649,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             }
         }
 
-        static void HandleNewObject(LocalOperation operation, StringBuilder bodySb, TypeDescriptionTable typeTable,
+        private static void HandleNewObject(LocalOperation operation, StringBuilder bodySb, TypeDescriptionTable typeTable,
             MethodInterpreter interpreter, ClosureEntities crRuntime)
         {
             var value = (NewConstructedObject)operation;

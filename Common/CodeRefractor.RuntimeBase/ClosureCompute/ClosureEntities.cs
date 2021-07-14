@@ -25,9 +25,9 @@ namespace CodeRefractor.ClosureCompute
 {
     public class ClosureEntities
     {
-        readonly CppCodeGenerator _getCppCodeGenerator;
+        private readonly CppCodeGenerator _getCppCodeGenerator;
         internal readonly ClosureEntitiesBuilder EntitiesBuilder = new ClosureEntitiesBuilder();
-        ProgramOptimizationsTable _optimizationsTable;
+        private ProgramOptimizationsTable _optimizationsTable;
 
         public ClosureEntities(CppCodeGenerator getCppCodeGenerator)
         {
@@ -52,7 +52,7 @@ namespace CodeRefractor.ClosureCompute
         public HashSet<MethodInfo> AbstractMethods { get; set; }
         public bool EnableProgramWideOptimizations { get; set; }
 
-        void SetupProgramOptimizationTable()
+        private void SetupProgramOptimizationTable()
         {
             EnableProgramWideOptimizations = true;
             _optimizationsTable = new ProgramOptimizationsTable
@@ -192,7 +192,7 @@ namespace CodeRefractor.ClosureCompute
             }
         }
 
-        bool ApplyProgramWideOptimizations()
+        private bool ApplyProgramWideOptimizations()
         {
             var isOptimized = false;
             if (EnableProgramWideOptimizations)

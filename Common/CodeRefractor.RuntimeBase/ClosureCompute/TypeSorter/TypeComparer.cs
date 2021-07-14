@@ -7,9 +7,9 @@ using System.Collections.Generic;
 
 namespace CodeRefractor.ClosureCompute.TypeSorter
 {
-    class TypeComparer : IComparer<Type>
+    internal class TypeComparer : IComparer<Type>
     {
-        readonly ClosureEntities _crRuntime;
+        private readonly ClosureEntities _crRuntime;
 
         public TypeComparer(ClosureEntities crRuntime)
         {
@@ -30,7 +30,7 @@ namespace CodeRefractor.ClosureCompute.TypeSorter
             return 0;
         }
 
-        HashSet<Type> DependencyTypes(Type type)
+        private HashSet<Type> DependencyTypes(Type type)
         {
             var result = new HashSet<Type>();
             var members = type.GetFields(ClosureEntitiesBuilder.AllFlags);
@@ -43,7 +43,7 @@ namespace CodeRefractor.ClosureCompute.TypeSorter
             return result;
         }
 
-        bool IsSmallerThan(Type x, Type y)
+        private bool IsSmallerThan(Type x, Type y)
         {
             if (y.IsSubclassOf(x))
                 return true;

@@ -4,9 +4,9 @@ using CodeRefractor.Runtime.Annotations;
 namespace CodeRefactor.OpenRuntime.Generic
 {
     [MapType(typeof(List<>))]
-    class CrList<T>
+    internal class CrList<T>
     {
-        T[] _items;
+        private T[] _items;
 
         public int Count { get; set; }
         public int Capacity

@@ -17,9 +17,9 @@ using static System.String;
 
 namespace CodeRefractor.CodeWriter.BasicOperations
 {
-    static class CppCastRelatedOperations
+    internal static class CppCastRelatedOperations
     {
-        static readonly string BoxingTemplate = @"
+        private static readonly string BoxingTemplate = @"
 template<class T>
 struct BoxedT : public System_Object
 {
@@ -41,12 +41,12 @@ T unbox_value(" + TypeNamerUtils.StdSharedPtr + @"<System_Object> value){
 	return castedUnboxing->Data;
 }";
 
-        static void HandleIsInstance(IsInstance operation, StringBuilder bodySb, ClosureEntities crRuntime)
+        private static void HandleIsInstance(IsInstance operation, StringBuilder bodySb, ClosureEntities crRuntime)
         {
             LinkingData.Instance.IsInstTable.GenerateInstructionCode(operation, bodySb, crRuntime);
         }
 
-        static void HandleUnbox(Unboxing unboxing, StringBuilder bodySb, ClosureEntities closureEntities)
+        private static void HandleUnbox(Unboxing unboxing, StringBuilder bodySb, ClosureEntities closureEntities)
         {
             var typeDescription = unboxing.AssignedTo.ComputedType();
             bodySb
@@ -56,7 +56,7 @@ T unbox_value(" + TypeNamerUtils.StdSharedPtr + @"<System_Object> value){
                     typeDescription.GetClrType(closureEntities).ToDeclaredVariableType(EscapingMode.Stack));
         }
 
-        static void HandleBox(Boxing boxing, StringBuilder bodySb, TypeDescriptionTable typeTable,
+        private static void HandleBox(Boxing boxing, StringBuilder bodySb, TypeDescriptionTable typeTable,
             ClosureEntities closureEntities)
         {
             var typeDescription = boxing.Right.ComputedType();
@@ -68,7 +68,7 @@ T unbox_value(" + TypeNamerUtils.StdSharedPtr + @"<System_Object> value){
                     typeTable.GetTypeId(typeDescription.GetClrType(closureEntities)));
         }
 
-        static void HandleCastClass(ClassCasting casting, StringBuilder bodySb, ClosureEntities closureEntities)
+        private static void HandleCastClass(ClassCasting casting, StringBuilder bodySb, ClosureEntities closureEntities)
         {
             var typeDescription = casting.AssignedTo.ComputedType();
             bodySb

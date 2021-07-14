@@ -54,12 +54,12 @@ namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.Co
             }
         }
 
-        void FoldAssign(IdentifierValue constResult, LocalOperation[] localOperations, int pos)
+        private void FoldAssign(IdentifierValue constResult, LocalOperation[] localOperations, int pos)
         {
             localOperations[pos] = new Assignment { Right = constResult };
         }
 
-        void HandleMul(ConstValue constLeft, ConstValue constRight,
+        private void HandleMul(ConstValue constLeft, ConstValue constRight,
             LocalOperation destOperation, LocalOperation[] localOperations, int pos)
         {
             var binaryOperator = (BinaryOperator)destOperation;
@@ -89,7 +89,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.Co
             }
         }
 
-        void HandleDiv(ConstValue constLeft, ConstValue constRight,
+        private void HandleDiv(ConstValue constLeft, ConstValue constRight,
             LocalOperation destOperation, LocalOperation[] localOperations, int pos)
         {
             var binaryOperator = (BinaryOperator)destOperation;

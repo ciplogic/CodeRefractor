@@ -16,7 +16,7 @@ using CodeRefractor.Optimizations;
 
 namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.ComplexAssignments
 {
-    class FoldVariablesDefinitionsOptimizationPass : OptimizationPassBase
+    internal class FoldVariablesDefinitionsOptimizationPass : OptimizationPassBase
     {
         public FoldVariablesDefinitionsOptimizationPass()
             : base(OptimizationKind.InFunction)
@@ -62,7 +62,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.Co
             return true;
         }
 
-        List<int> PatchInstructions(LocalOperation[] localOperations, IEnumerable<int> toPatch)
+        private List<int> PatchInstructions(LocalOperation[] localOperations, IEnumerable<int> toPatch)
         {
             var toRemove = new List<int>();
             foreach (var line in toPatch)
@@ -88,7 +88,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.Co
             return toRemove;
         }
 
-        static void RemoveNonUniqueDefinitions(Dictionary<LocalVariable, int> dictionaryPositions)
+        private static void RemoveNonUniqueDefinitions(Dictionary<LocalVariable, int> dictionaryPositions)
         {
             var toRemove = new HashSet<LocalVariable>();
 
@@ -103,7 +103,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.Co
             }
         }
 
-        void BuildDefinitionDictionary(LocalOperation[] localOperations, UseDefDescription useDef,
+        private void BuildDefinitionDictionary(LocalOperation[] localOperations, UseDefDescription useDef,
             Dictionary<LocalVariable, int> definitionsDictionary, Dictionary<LocalVariable, int> usagesDictionary)
         {
             for (var i = 0; i < localOperations.Length; i++)
@@ -115,7 +115,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.Co
             }
         }
 
-        void UpdateUsagesDictionaryForIndex(int i, LocalVariable[] usages,
+        private void UpdateUsagesDictionaryForIndex(int i, LocalVariable[] usages,
             Dictionary<LocalVariable, int> usagesDictionary)
         {
             foreach (var localVariable in usages)
@@ -129,7 +129,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.Co
             }
         }
 
-        void UpdateDefinitionDictionaryForIndex(int i, LocalVariable def,
+        private void UpdateDefinitionDictionaryForIndex(int i, LocalVariable def,
             Dictionary<LocalVariable, int> definitionsDictionary)
         {
             if (def == null)

@@ -4,7 +4,7 @@ using NUnit.Framework;
 namespace MsilCodeCompiler.Tests.Serializing
 {
     [TestFixture]
-    class TestCompactBinaryFromXml
+    internal class TestCompactBinaryFromXml
     {
         [Test]
         public void TestCompactingXmlWithAttribute()

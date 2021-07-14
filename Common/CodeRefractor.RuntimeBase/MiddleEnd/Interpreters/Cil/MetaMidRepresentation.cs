@@ -12,7 +12,7 @@ namespace CodeRefractor.MiddleEnd.Interpreters.Cil
     public class MetaMidRepresentation
     {
         public readonly Dictionary<string, object> AuxiliaryObjects = new Dictionary<string, object>();
-        UseDefDescription _useDef;
+        private UseDefDescription _useDef;
         public List<LocalOperation> LocalOperations = new List<LocalOperation>();
         public MidRepresentationVariables Vars = new MidRepresentationVariables();
 

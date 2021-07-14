@@ -13,7 +13,7 @@ using CodeRefractor.Shared;
 
 namespace CodeRefractor.CodeWriter.BasicOperations
 {
-    static class CppHandleBranches
+    internal static class CppHandleBranches
     {
         public static void HandleBranchOperator(object operation, StringBuilder sb)
         {
@@ -61,13 +61,13 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             }
         }
 
-        static void HandleBrFalse(IdentifierValue localVar, StringBuilder sb, int jumpAddress)
+        private static void HandleBrFalse(IdentifierValue localVar, StringBuilder sb, int jumpAddress)
         {
             var local = localVar.Name;
             sb.AppendFormat("if(!({0})) goto label_{1};", local, jumpAddress.ToHex());
         }
 
-        static void HandleBrTrue(IdentifierValue localVar, StringBuilder sb, int jumpAddress)
+        private static void HandleBrTrue(IdentifierValue localVar, StringBuilder sb, int jumpAddress)
         {
             var local = localVar.Name;
             sb.AppendFormat("if({0}) goto label_{1};", local, jumpAddress.ToHex());

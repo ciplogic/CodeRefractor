@@ -20,7 +20,7 @@ namespace CodeRefractor.Analyze
     {
         private readonly Type _clrType;
 
-        static readonly HashSet<Type> IgnoredSet = new HashSet<Type>(
+        private static readonly HashSet<Type> IgnoredSet = new HashSet<Type>(
             new[]
             {
                 typeof (object),
@@ -62,7 +62,7 @@ namespace CodeRefractor.Analyze
         public Type ClrType
             => ComputeType();
 
-        Type ComputeType()
+        private Type ComputeType()
         {
             if (IsArray)
             {
@@ -118,7 +118,7 @@ namespace CodeRefractor.Analyze
                 : ClrType;
         }
 
-        Type LocateObjectType(ClosureEntities closureEntities, string ns, string name)
+        private Type LocateObjectType(ClosureEntities closureEntities, string ns, string name)
         {
             var assemblies = closureEntities.EntryPoint.DeclaringType.Assembly;
             var types = assemblies.GetTypes().Where(type => type.Name == name).ToArray();
@@ -150,7 +150,7 @@ namespace CodeRefractor.Analyze
             }
         }
 
-        void ExtractFieldsTypes(ClosureEntities crRuntime, Type type)
+        private void ExtractFieldsTypes(ClosureEntities crRuntime, Type type)
         {
             var clrType = type.GetReversedType(crRuntime);
             if (clrType.Assembly.GlobalAssemblyCache)
@@ -198,7 +198,7 @@ namespace CodeRefractor.Analyze
             WriteFieldListToLayout(StringBuilder, noOffsetFields);
         }
 
-        void BuildUnionLayouts(List<FieldDescription> noOffsetFields,
+        private void BuildUnionLayouts(List<FieldDescription> noOffsetFields,
             SortedDictionary<int, List<FieldDescription>> dictionary)
         {
             foreach (var fieldData in Layout)
@@ -217,7 +217,7 @@ namespace CodeRefractor.Analyze
             }
         }
 
-        static void WriteFieldListToLayout(StringBuilder StringBuilder, List<FieldDescription> fields)
+        private static void WriteFieldListToLayout(StringBuilder StringBuilder, List<FieldDescription> fields)
         {
             foreach (var fieldData in fields)
             {

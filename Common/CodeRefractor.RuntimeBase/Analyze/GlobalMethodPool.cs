@@ -16,13 +16,13 @@ namespace CodeRefractor.Analyze
 {
     public static class GlobalMethodPool
     {
-        static readonly SortedDictionary<MethodInterpreterKey, MethodInterpreter> Interpreters =
+        private static readonly SortedDictionary<MethodInterpreterKey, MethodInterpreter> Interpreters =
             new SortedDictionary<MethodInterpreterKey, MethodInterpreter>();
 
         public static readonly Dictionary<Assembly, CrTypeResolver> TypeResolvers
             = new Dictionary<Assembly, CrTypeResolver>();
 
-        static readonly Dictionary<MethodBase, string> CachedKeys = new Dictionary<MethodBase, string>();
+        private static readonly Dictionary<MethodBase, string> CachedKeys = new Dictionary<MethodBase, string>();
 
         public static void Register(MethodInterpreter interpreter)
         {
@@ -67,7 +67,7 @@ namespace CodeRefractor.Analyze
             return resolvers;
         }
 
-        static void SetupTypeResolverIfNecesary(MethodBase method)
+        private static void SetupTypeResolverIfNecesary(MethodBase method)
         {
             try
             {

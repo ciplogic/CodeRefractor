@@ -10,7 +10,7 @@ using CodeRefractor.Optimizations;
 
 namespace CodeRefractor.MiddleEnd.Optimizations.Common
 {
-    abstract class BlockOptimizationPass : OptimizationPassBase
+    internal abstract class BlockOptimizationPass : OptimizationPassBase
     {
         protected BlockOptimizationPass()
             : base(OptimizationKind.InFunction)
@@ -52,7 +52,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Common
             return TryOptimizeBlock(interpreter, startPos, localOperations.Length - 1, localOperations);
         }
 
-        static List<int> BuildBlockOperations(CilMethodInterpreter methodInterpreter)
+        private static List<int> BuildBlockOperations(CilMethodInterpreter methodInterpreter)
         {
             var useDef = methodInterpreter.MidRepresentation.UseDef;
             var result = new List<int>();
@@ -63,7 +63,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Common
             return result;
         }
 
-        bool TryOptimizeBlock(CilMethodInterpreter localOperations, int startRange, int endRange,
+        private bool TryOptimizeBlock(CilMethodInterpreter localOperations, int startRange, int endRange,
             LocalOperation[] operations)
         {
             if (startRange >= endRange)

@@ -14,7 +14,7 @@ using CodeRefractor.Optimizations;
 namespace CodeRefractor.MiddleEnd.Optimizations.SimpleDce
 {
     [Optimization(Category = OptimizationCategories.DeadCodeElimination)]
-class OneAssignmentDeadStoreAssignment : OptimizationPassBase
+    internal class OneAssignmentDeadStoreAssignment : OptimizationPassBase
     {
         public OneAssignmentDeadStoreAssignment()
             : base(OptimizationKind.InFunction)
@@ -51,7 +51,7 @@ class OneAssignmentDeadStoreAssignment : OptimizationPassBase
             return result;
         }
 
-        Dictionary<LocalVariable, ConstValue> GetAssignToConstOperations(LocalOperation[] localOperations,
+        private Dictionary<LocalVariable, ConstValue> GetAssignToConstOperations(LocalOperation[] localOperations,
             UseDefDescription useDef)
         {
             var constValues = new Dictionary<LocalVariable, ConstValue>();

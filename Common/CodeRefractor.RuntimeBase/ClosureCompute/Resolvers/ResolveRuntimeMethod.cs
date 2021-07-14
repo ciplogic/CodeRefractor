@@ -17,8 +17,8 @@ namespace CodeRefractor.ClosureCompute.Resolvers
 {
     public class ResolveRuntimeMethod : MethodResolverBase
     {
-        readonly ClosureEntities _closureEntities;
-        readonly Dictionary<Type, Type> _solvedTypes;
+        private readonly ClosureEntities _closureEntities;
+        private readonly Dictionary<Type, Type> _solvedTypes;
 
         public ResolveRuntimeMethod(Assembly assembly, ClosureEntities closureEntities)
         {
@@ -60,7 +60,7 @@ namespace CodeRefractor.ClosureCompute.Resolvers
             return ResolveMethodWithResult(resultMethod, method.DeclaringType);
         }
 
-        static MethodInterpreter HandleConstructor(MethodBase method, Type resolvingType)
+        private static MethodInterpreter HandleConstructor(MethodBase method, Type resolvingType)
         {
             var allConstuctors = resolvingType.GetConstructors(ClosureEntitiesBuilder.AllFlags).ToArray();
             var methodParameters = method.GetParameters();
@@ -75,7 +75,7 @@ namespace CodeRefractor.ClosureCompute.Resolvers
             return null;
         }
 
-        static bool DoParametersMatch(ParameterInfo[] srcParams, ParameterInfo[] targetParams)
+        private static bool DoParametersMatch(ParameterInfo[] srcParams, ParameterInfo[] targetParams)
         {
             if (srcParams.Length != targetParams.Length)
                 return false;

@@ -9,7 +9,7 @@ using CodeRefractor.FrontEnd.SimpleOperations.Identifiers;
 
 namespace CodeRefractor.CodeWriter.BasicOperations
 {
-    static class CppHandleCompareBranches
+    internal static class CppHandleCompareBranches
     {
         public static void WriteCompareBranch(IdentifierValue localVar, IdentifierValue secondVar, StringBuilder sb,
             int jumpAddress,

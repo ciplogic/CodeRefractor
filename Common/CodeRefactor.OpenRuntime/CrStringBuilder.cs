@@ -7,8 +7,8 @@ namespace CodeRefactor.OpenRuntime
     [MapType(typeof (StringBuilder))]
     public class CrStringBuilder
     {
-        char[] _data = new char[10];
-        int _writtenLength;
+        private char[] _data = new char[10];
+        private int _writtenLength;
 
         public CrStringBuilder Append(string value)
         {
@@ -17,7 +17,7 @@ namespace CodeRefactor.OpenRuntime
             return this;
         }
 
-        void CopyStrToEnd(string str)
+        private void CopyStrToEnd(string str)
         {
             int startLength = _writtenLength;
             for (int i = 0; i < str.Length; i++)
@@ -27,7 +27,7 @@ namespace CodeRefactor.OpenRuntime
             _writtenLength += str.Length;
         }
 
-        void ExpectAddLength(int length)
+        private void ExpectAddLength(int length)
         {
             int newLength = _writtenLength + length;
             if (newLength > _data.Length)

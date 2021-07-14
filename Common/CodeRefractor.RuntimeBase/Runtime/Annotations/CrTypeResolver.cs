@@ -14,7 +14,7 @@ namespace CodeRefractor.Runtime.Annotations
 {
     public abstract class CrTypeResolver
     {
-        readonly Dictionary<Type, Type> _mappedTypes = new Dictionary<Type, Type>();
+        private readonly Dictionary<Type, Type> _mappedTypes = new Dictionary<Type, Type>();
         public abstract MethodInterpreter Resolve(MethodBase methodInterpreter);
 
         protected void MapType<T>(Type mappedType)

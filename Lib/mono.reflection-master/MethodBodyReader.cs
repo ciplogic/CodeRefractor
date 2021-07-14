@@ -34,9 +34,8 @@ using System.Reflection.Emit;
 namespace Mono.Reflection {
 
 	public class MethodBodyReader {
-
-		static readonly OpCode [] one_byte_opcodes;
-		static readonly OpCode [] two_bytes_opcodes;
+		private static readonly OpCode [] one_byte_opcodes;
+		private static readonly OpCode [] two_bytes_opcodes;
 
 		static MethodBodyReader ()
 		{
@@ -58,15 +57,15 @@ namespace Mono.Reflection {
 			}
 		}
 
-		readonly MethodBase method;
-		readonly MethodBody body;
-		readonly Module module;
-		readonly Type [] type_arguments;
-		readonly Type [] method_arguments;
-		readonly ByteBuffer il;
-		readonly ParameterInfo [] parameters;
-		readonly IList<LocalVariableInfo> locals;
-		readonly List<Instruction> instructions;
+		private readonly MethodBase method;
+		private readonly MethodBody body;
+		private readonly Module module;
+		private readonly Type [] type_arguments;
+		private readonly Type [] method_arguments;
+		private readonly ByteBuffer il;
+		private readonly ParameterInfo [] parameters;
+		private readonly IList<LocalVariableInfo> locals;
+		private readonly List<Instruction> instructions;
 
         public MethodBodyReader(MethodBase method)
 		{
@@ -93,7 +92,7 @@ namespace Mono.Reflection {
 			instructions = new List<Instruction> ((bytes.Length + 1) / 2);
 		}
 
-		void ReadInstructions ()
+        private void ReadInstructions ()
 		{
 			Instruction previous = null;
 
@@ -114,7 +113,7 @@ namespace Mono.Reflection {
 			ResolveBranches ();
 		}
 
-		void ReadOperand (Instruction instruction)
+        private void ReadOperand (Instruction instruction)
 		{
 			switch (instruction.OpCode.OperandType) {
 			case OperandType.InlineNone:
@@ -175,7 +174,7 @@ namespace Mono.Reflection {
 			}
 		}
 
-		void ResolveBranches ()
+        private void ResolveBranches ()
 		{
 			foreach (var instruction in instructions) {
 				switch (instruction.OpCode.OperandType) {
@@ -195,7 +194,7 @@ namespace Mono.Reflection {
 			}
 		}
 
-		static Instruction GetInstruction (List<Instruction> instructions, int offset)
+        private static Instruction GetInstruction (List<Instruction> instructions, int offset)
 		{
 			var size = instructions.Count;
 			if (offset < 0 || offset > instructions [size - 1].Offset)
@@ -220,29 +219,29 @@ namespace Mono.Reflection {
 			return null;
 		}
 
-		object GetVariable (Instruction instruction, int index)
+        private object GetVariable (Instruction instruction, int index)
 		{
 			return TargetsLocalVariable (instruction.OpCode)
 				? GetLocalVariable (index)
 				: (object) GetParameter (index);
 		}
 
-		static bool TargetsLocalVariable (OpCode opcode)
+        private static bool TargetsLocalVariable (OpCode opcode)
 		{
 			return opcode.Name.Contains ("loc");
 		}
 
-		LocalVariableInfo GetLocalVariable (int index)
+        private LocalVariableInfo GetLocalVariable (int index)
 		{
 			return locals [index];
 		}
 
-		ParameterInfo GetParameter (int index)
+        private ParameterInfo GetParameter (int index)
 		{
 			return parameters [method.IsStatic ? index : index - 1];
 		}
 
-		OpCode ReadOpCode ()
+        private OpCode ReadOpCode ()
 		{
 			byte op = il.ReadByte ();
 			return op != 0xfe

@@ -33,12 +33,11 @@ using System.Reflection.Emit;
 namespace Mono.Reflection {
 
 	public static class BackingFieldResolver {
-
-		class FieldPattern : ILPattern {
+		private class FieldPattern : ILPattern {
 
 			public static object FieldKey = new object ();
 
-			ILPattern pattern;
+			private ILPattern pattern;
 
 			public FieldPattern (ILPattern pattern)
 			{
@@ -57,12 +56,12 @@ namespace Mono.Reflection {
 			}
 		}
 
-		static ILPattern Field (OpCode opcode)
+		private static ILPattern Field (OpCode opcode)
 		{
 			return new FieldPattern (ILPattern.OpCode (opcode));
 		}
 
-		static ILPattern GetterPattern =
+		private static ILPattern GetterPattern =
 			ILPattern.Sequence (
 				ILPattern.Optional (OpCodes.Nop),
 				ILPattern.Either (
@@ -77,7 +76,7 @@ namespace Mono.Reflection {
 						ILPattern.OpCode (OpCodes.Ldloc_0))),
 				ILPattern.OpCode (OpCodes.Ret));
 
-		static ILPattern SetterPattern =
+		private static ILPattern SetterPattern =
 			ILPattern.Sequence (
 				ILPattern.Optional (OpCodes.Nop),
 				ILPattern.OpCode (OpCodes.Ldarg_0),
@@ -88,7 +87,7 @@ namespace Mono.Reflection {
 						Field (OpCodes.Stfld))),
 				ILPattern.OpCode (OpCodes.Ret));
 
-		static FieldInfo GetBackingField (MethodInfo method, ILPattern pattern)
+		private static FieldInfo GetBackingField (MethodInfo method, ILPattern pattern)
 		{
 			var result = ILPattern.Match (method, pattern);
 			if (!result.success)

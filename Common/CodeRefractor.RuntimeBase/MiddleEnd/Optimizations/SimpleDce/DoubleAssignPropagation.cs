@@ -22,7 +22,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.SimpleDce
     ///     > var2 = identifier
     /// </summary>
     [Optimization(Category = OptimizationCategories.DeadCodeElimination)]
-class DoubleAssignPropagation : OptimizationPassBase
+    internal class DoubleAssignPropagation : OptimizationPassBase
     {
         public DoubleAssignPropagation()
             : base(OptimizationKind.InFunction)
@@ -38,7 +38,7 @@ class DoubleAssignPropagation : OptimizationPassBase
             return ApplyOptimization(interpreter, toPatch, localOperations);
         }
 
-        bool ApplyOptimization(CilMethodInterpreter methodInterpreter, List<int> toPatch,
+        private bool ApplyOptimization(CilMethodInterpreter methodInterpreter, List<int> toPatch,
             LocalOperation[] localOperations)
         {
             foreach (var patchLine in toPatch)
@@ -51,7 +51,7 @@ class DoubleAssignPropagation : OptimizationPassBase
             return true;
         }
 
-        static List<int> Analyze(LocalOperation[] localOperations)
+        private static List<int> Analyze(LocalOperation[] localOperations)
         {
             var count = localOperations.Length;
             var toPatch = new List<int>();

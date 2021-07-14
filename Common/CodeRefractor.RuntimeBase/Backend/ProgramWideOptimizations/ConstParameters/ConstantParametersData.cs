@@ -9,7 +9,7 @@ using CodeRefractor.MiddleEnd.Interpreters.Cil;
 
 namespace CodeRefractor.Backend.ProgramWideOptimizations.ConstParameters
 {
-    class ConstantParametersData
+    internal class ConstantParametersData
     {
         public enum ConstValueKind
         {

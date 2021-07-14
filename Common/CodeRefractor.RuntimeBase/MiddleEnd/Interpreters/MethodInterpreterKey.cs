@@ -13,9 +13,9 @@ namespace CodeRefractor.MiddleEnd.Interpreters
 {
     public class MethodInterpreterKey : IComparable
     {
-        readonly string _methodName;
-        readonly Type[] _parameterList;
-        readonly int _hash;
+        private readonly string _methodName;
+        private readonly Type[] _parameterList;
+        private readonly int _hash;
 
         public MethodInterpreterKey(MethodInterpreter interpreter, Type implementingType = null)
         {
@@ -65,7 +65,7 @@ namespace CodeRefractor.MiddleEnd.Interpreters
         }
 
 
-        int ComputeHash()
+        private int ComputeHash()
         {
             var baseHash = _methodName.GetHashCode();
             foreach (var parameter in _parameterList)

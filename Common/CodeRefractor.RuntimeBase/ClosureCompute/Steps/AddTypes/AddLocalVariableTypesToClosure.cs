@@ -24,7 +24,7 @@ namespace CodeRefractor.ClosureCompute.Steps.AddTypes
             return result;
         }
 
-        static bool UpdateClosureForMethod(CilMethodInterpreter method, ClosureEntities closureEntities)
+        private static bool UpdateClosureForMethod(CilMethodInterpreter method, ClosureEntities closureEntities)
         {
             var representationVariables = method.MidRepresentation.Vars;
             var localVariables = representationVariables.LocalVars;

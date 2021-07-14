@@ -42,7 +42,7 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.ConstParameters
             return result;
         }
 
-        bool ApplyChangesOnMethod(ConstantParametersData parametersData, CilMethodInterpreter interpreter)
+        private bool ApplyChangesOnMethod(ConstantParametersData parametersData, CilMethodInterpreter interpreter)
         {
             var result = false;
             foreach (var constKind in parametersData.ConstKinds)
@@ -58,7 +58,7 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.ConstParameters
             return result;
         }
 
-        static bool HandleInterpreterInstructions(CilMethodInterpreter interpreter)
+        private static bool HandleInterpreterInstructions(CilMethodInterpreter interpreter)
         {
             var useDef = interpreter.MidRepresentation.UseDef;
             var calls = useDef.GetOperationsOfKind(OperationKind.Call).ToList();

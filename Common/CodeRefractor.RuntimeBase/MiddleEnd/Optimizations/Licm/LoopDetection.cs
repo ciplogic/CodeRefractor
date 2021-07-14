@@ -9,7 +9,7 @@ using CodeRefractor.MiddleEnd.Interpreters.Cil;
 
 namespace CodeRefractor.MiddleEnd.Optimizations.Licm
 {
-    static class LoopDetection
+    internal static class LoopDetection
     {
         public static List<int> FindLoops(MetaMidRepresentation midRepresentation)
         {
@@ -30,7 +30,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Licm
             return result;
         }
 
-        static List<int> FindStartLoopCandidates(LocalOperation[] localOps)
+        private static List<int> FindStartLoopCandidates(LocalOperation[] localOps)
         {
             var findStartLoopCandidates = new List<int>();
             for (var index = 0; index < localOps.Length; index++)

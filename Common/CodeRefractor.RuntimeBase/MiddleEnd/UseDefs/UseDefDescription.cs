@@ -12,11 +12,11 @@ namespace CodeRefractor.MiddleEnd.UseDefs
 {
     public class UseDefDescription
     {
-        readonly Dictionary<OperationKind, int[]> _instructionMix = new Dictionary<OperationKind, int[]>();
-        volatile LocalVariable[] _definitions = { };
-        Dictionary<int, int> _labelTable;
-        LocalOperation[] _operations;
-        volatile LocalVariable[][] _usages = { };
+        private readonly Dictionary<OperationKind, int[]> _instructionMix = new Dictionary<OperationKind, int[]>();
+        private volatile LocalVariable[] _definitions = { };
+        private Dictionary<int, int> _labelTable;
+        private LocalOperation[] _operations;
+        private volatile LocalVariable[][] _usages = { };
 
         public void Update(LocalOperation[] operations)
         {
@@ -31,14 +31,14 @@ namespace CodeRefractor.MiddleEnd.UseDefs
             UpdateLabelsTable(operations);
         }
 
-        void UpdateLabelsTable(LocalOperation[] operations)
+        private void UpdateLabelsTable(LocalOperation[] operations)
         {
             var labelOperations = GetOperationsOfKind(OperationKind.Label);
 
             _labelTable = InstructionsUtils.BuildLabelTable(operations, labelOperations);
         }
 
-        void SetInstructionMixToField(Dictionary<OperationKind, List<int>> instructionMix)
+        private void SetInstructionMixToField(Dictionary<OperationKind, List<int>> instructionMix)
         {
             _instructionMix.Clear();
             foreach (var instruction in instructionMix)
@@ -62,7 +62,7 @@ namespace CodeRefractor.MiddleEnd.UseDefs
             return stillUnused.ToList();
         }
 
-        Dictionary<OperationKind, List<int>> BuildInstructionMix(LocalOperation[] operations)
+        private Dictionary<OperationKind, List<int>> BuildInstructionMix(LocalOperation[] operations)
         {
             var instructionMix = new Dictionary<OperationKind, List<int>>();
             for (var index = 0; index < operations.Length; index++)

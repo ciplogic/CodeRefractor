@@ -15,7 +15,7 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
     /// <summary>
     ///     removes abstract unused vcalls
     /// </summary>
-    class DevirtualizeWholeClosureMethods : ProgramOptimizationBase
+    internal class DevirtualizeWholeClosureMethods : ProgramOptimizationBase
     {
         public override bool Optimize(ClosureEntities closure)
         {
@@ -37,7 +37,7 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
             return result;
         }
 
-        static void HandleInterpreterInstructions(CilMethodInterpreter interpreter,
+        private static void HandleInterpreterInstructions(CilMethodInterpreter interpreter,
             HashSet<MethodInfo> usedMethods)
         {
             var useDef = interpreter.MidRepresentation.UseDef;

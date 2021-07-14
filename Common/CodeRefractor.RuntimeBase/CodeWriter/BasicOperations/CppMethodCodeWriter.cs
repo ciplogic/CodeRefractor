@@ -41,7 +41,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             return finalSb.ToString();
         }
 
-        static StringBuilder ComputeBodySb(List<LocalOperation> operations, MidRepresentationVariables vars,
+        private static StringBuilder ComputeBodySb(List<LocalOperation> operations, MidRepresentationVariables vars,
             TypeDescriptionTable typeTable, MethodInterpreter interpreter, ClosureEntities crRuntime)
         {
             var bodySb = new StringBuilder();
@@ -94,7 +94,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             return bodySb;
         }
 
-        static bool HandleCallOperations(MidRepresentationVariables vars, MethodInterpreter interpreter,
+        private static bool HandleCallOperations(MidRepresentationVariables vars, MethodInterpreter interpreter,
             ClosureEntities crRuntime, LocalOperation operation, StringBuilder bodySb)
         {
             switch (operation.Kind)
@@ -117,13 +117,13 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             return true;
         }
 
-        static void HandleComment(string toString, StringBuilder bodySb)
+        private static void HandleComment(string toString, StringBuilder bodySb)
         {
             bodySb
                 .AppendFormat("// {0}", toString);
         }
 
-        static void HandleSwitch(LocalOperation operation, StringBuilder bodySb)
+        private static void HandleSwitch(LocalOperation operation, StringBuilder bodySb)
         {
             var assign = (Assignment)operation;
             var instructionTable = (int[])((ConstValue)assign.Right).Value;
@@ -140,7 +140,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             bodySb.BracketClose();
         }
 
-        static void HandleCopyArrayInitializer(LocalOperation operation, StringBuilder sb)
+        private static void HandleCopyArrayInitializer(LocalOperation operation, StringBuilder sb)
         {
             var assignment = (Assignment)operation;
             var left = assignment.AssignedTo;
@@ -154,7 +154,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 right.Id);
         }
 
-        static StringBuilder ComputeVariableSb(MetaMidRepresentation midRepresentation,
+        private static StringBuilder ComputeVariableSb(MetaMidRepresentation midRepresentation,
             MethodInterpreter interpreter, ClosureEntities closureEntities)
         {
             var variablesSb = new StringBuilder();
@@ -170,7 +170,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             return variablesSb;
         }
 
-        static string ComputeCommaSeparatedParameterTypes(LocalVariable localVariable)
+        private static string ComputeCommaSeparatedParameterTypes(LocalVariable localVariable)
         {
             /*
                         var methodInfo = (MethodInfo) localVariable.CustomData;
@@ -183,7 +183,7 @@ namespace CodeRefractor.CodeWriter.BasicOperations
             return localVariable.VarName;
         }
 
-        static void AddVariableContent(StringBuilder variablesSb, string format, LocalVariable localVariable,
+        private static void AddVariableContent(StringBuilder variablesSb, string format, LocalVariable localVariable,
             MethodInterpreter interpreter, ClosureEntities closureEntities)
         {
             var localVariableData = interpreter.AnalyzeProperties.GetVariableData(localVariable);
@@ -214,12 +214,12 @@ namespace CodeRefractor.CodeWriter.BasicOperations
                 .AppendLine();
         }
 
-        static void HandleAlwaysBranchOperator(LocalOperation operation, StringBuilder sb)
+        private static void HandleAlwaysBranchOperator(LocalOperation operation, StringBuilder sb)
         {
             sb.AppendFormat("goto label_{0};", ((AlwaysBranch)operation).JumpTo.ToHex());
         }
 
-        static void WriteLabel(StringBuilder sb, int value)
+        private static void WriteLabel(StringBuilder sb, int value)
         {
             sb.AppendFormat("label_{0}:", value.ToHex());
         }

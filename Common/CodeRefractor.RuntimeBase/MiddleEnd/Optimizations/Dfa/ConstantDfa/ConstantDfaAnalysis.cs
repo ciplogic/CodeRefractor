@@ -13,11 +13,11 @@ using CodeRefractor.MiddleEnd.UseDefs;
 
 namespace CodeRefractor.MiddleEnd.Optimizations.Dfa.ConstantDfa
 {
-    class ConstantDfaAnalysis : ResultingInFunctionOptimizationPass
+    internal class ConstantDfaAnalysis : ResultingInFunctionOptimizationPass
     {
-        Dictionary<int, int> _labelTable = new Dictionary<int, int>();
-        LocalOperation[] _operations;
-        DfaPointOfAnalysis[] _pointsOfAnalysis;
+        private Dictionary<int, int> _labelTable = new Dictionary<int, int>();
+        private LocalOperation[] _operations;
+        private DfaPointOfAnalysis[] _pointsOfAnalysis;
 
         public override void OptimizeOperations(CilMethodInterpreter interpreter)
         {
@@ -31,7 +31,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Dfa.ConstantDfa
             ApplyResult();
         }
 
-        void ApplyResult()
+        private void ApplyResult()
         {
             Assignment assignment;
             for (var i = 0; i < _operations.Length; i++)
@@ -54,7 +54,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Dfa.ConstantDfa
             }
         }
 
-        void HandleBranchOperator(int i, BranchOperator branchOperator)
+        private void HandleBranchOperator(int i, BranchOperator branchOperator)
         {
             var localVariable = branchOperator.CompareValue as LocalVariable;
             if (localVariable == null)
@@ -67,7 +67,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Dfa.ConstantDfa
             branchOperator.CompareValue = localVariable;
         }
 
-        void HandleAssignment(int i, Assignment assignment)
+        private void HandleAssignment(int i, Assignment assignment)
         {
             var constant = assignment.Right as ConstValue;
             if (constant == null)
@@ -82,7 +82,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Dfa.ConstantDfa
             }
         }
 
-        void HandleOperator(int i, OperatorBase assignment)
+        private void HandleOperator(int i, OperatorBase assignment)
         {
             var binary = assignment as BinaryOperator;
             var unary = assignment as UnaryOperator;
@@ -115,12 +115,12 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Dfa.ConstantDfa
             }
         }
 
-        int JumpTo(int labelId)
+        private int JumpTo(int labelId)
         {
             return _labelTable[labelId];
         }
 
-        void Interpret(int cursor, DfaPointOfAnalysis startingConclusions)
+        private void Interpret(int cursor, DfaPointOfAnalysis startingConclusions)
         {
             var canUpdate = true;
             if (startingConclusions.Equals(_pointsOfAnalysis[cursor]))
@@ -184,7 +184,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Dfa.ConstantDfa
             }
         }
 
-        LocalOperation GetOperation(int i)
+        private LocalOperation GetOperation(int i)
         {
             return _operations[i];
         }

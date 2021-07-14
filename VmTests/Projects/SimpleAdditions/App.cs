@@ -1,8 +1,8 @@
-//Tests abstract classes, abstract and overidden properties too
+//Tests abstract classes, abstract and overridden properties too
 
 namespace SimpleAdditions
 {
-    abstract class Shape
+    internal abstract class Shape
     {
         public abstract double Area
         {
@@ -11,7 +11,7 @@ namespace SimpleAdditions
         }
     }
 
-    class Square : Shape
+    internal class Square : Shape
     {
         public double side;
 
@@ -33,7 +33,7 @@ namespace SimpleAdditions
         }
     }
 
-    class Cube : Shape
+    internal class Cube : Shape
     {
         public double side;
 
@@ -55,9 +55,9 @@ namespace SimpleAdditions
         }
     }
 
-    class TestShapes
+    internal class TestShapes
     {
-        static void Main()
+        private static void Main()
         {
             // Input the side:
             System.Console.Write("Enter the side: ");
@@ -68,7 +68,7 @@ namespace SimpleAdditions
             Cube c = new Cube(side);
 
             // Display the results:
-            System.Console.Write("Area of the square =");
+            System.Console.Write("Square area =");
             System.Console.WriteLine(s.Area);
             System.Console.Write("Area of the cube =");
             System.Console.WriteLine(c.Area);

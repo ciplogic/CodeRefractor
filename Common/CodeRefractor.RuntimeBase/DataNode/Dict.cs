@@ -6,9 +6,9 @@ using System.Collections.Generic;
 
 namespace CodeRefractor.DataNode
 {
-    class Dict
+    internal class Dict
     {
-        readonly Dictionary<string, int> _words = new Dictionary<string, int>();
+        private readonly Dictionary<string, int> _words = new Dictionary<string, int>();
 
         public int Count => _words.Count;
 

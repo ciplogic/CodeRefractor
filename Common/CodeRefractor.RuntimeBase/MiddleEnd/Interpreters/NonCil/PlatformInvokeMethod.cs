@@ -23,7 +23,7 @@ namespace CodeRefractor.MiddleEnd.Interpreters.NonCil
         public string EntryPoint { get; set; }
         public string LibraryName { get; set; }
 
-        void HandlePlatformInvokeMethod(MethodBase method)
+        private void HandlePlatformInvokeMethod(MethodBase method)
         {
             var pinvokeAttribute = method.GetCustomAttribute<DllImportAttribute>();
 

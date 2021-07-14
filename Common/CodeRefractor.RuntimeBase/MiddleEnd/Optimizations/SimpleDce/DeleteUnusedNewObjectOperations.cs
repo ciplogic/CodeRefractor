@@ -14,7 +14,7 @@ using CodeRefractor.Optimizations;
 namespace CodeRefractor.MiddleEnd.Optimizations.SimpleDce
 {
     [Optimization(Category = OptimizationCategories.DeadCodeElimination)]
-class DeleteUnusedNewObjectOperations : OptimizationPassBase
+    internal class DeleteUnusedNewObjectOperations : OptimizationPassBase
     {
         public DeleteUnusedNewObjectOperations()
             : base(OptimizationKind.InFunction)
@@ -44,7 +44,7 @@ class DeleteUnusedNewObjectOperations : OptimizationPassBase
             return true;
         }
 
-        static int[] FindAllNewOperators(UseDefDescription useDef, out List<int> newOperations)
+        private static int[] FindAllNewOperators(UseDefDescription useDef, out List<int> newOperations)
         {
             var newObjOperations = useDef.GetOperationsOfKind(OperationKind.NewObject);
             var newArrayOperations = useDef.GetOperationsOfKind(OperationKind.NewArray);

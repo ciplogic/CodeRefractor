@@ -14,8 +14,8 @@ namespace CodeRefractor.Compiler
      */
     public class Program
     {
-        readonly CommandLineParse _commandLineParse;
-        readonly ClosureEntitiesUtils _getClosureEntitiesUtils;
+        private readonly CommandLineParse _commandLineParse;
+        private readonly ClosureEntitiesUtils _getClosureEntitiesUtils;
 
         public Program(CommandLineParse commandLineParse,
                        ClosureEntitiesUtils  getClosureEntitiesUtils)

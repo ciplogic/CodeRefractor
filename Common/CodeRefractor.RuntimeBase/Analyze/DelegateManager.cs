@@ -14,7 +14,7 @@ namespace CodeRefractor.Analyze
     public class DelegateManager
     {
         public static DelegateManager Instance = new DelegateManager();
-        readonly Dictionary<Type, MethodInfo> _delegateTypes = new Dictionary<Type, MethodInfo>();
+        private readonly Dictionary<Type, MethodInfo> _delegateTypes = new Dictionary<Type, MethodInfo>();
 
         public static void RegisterType(Type declaringType, MethodInfo signature)
         {
@@ -34,7 +34,7 @@ namespace CodeRefractor.Analyze
             return sb.ToString();
         }
 
-        static void GenerateDelegateCode(StringBuilder sb, int id, KeyValuePair<Type, MethodInfo> delegateType)
+        private static void GenerateDelegateCode(StringBuilder sb, int id, KeyValuePair<Type, MethodInfo> delegateType)
         {
             var parameters = delegateType.Value.GetMethodArgumentTypes().Skip(1).ToArray();
 

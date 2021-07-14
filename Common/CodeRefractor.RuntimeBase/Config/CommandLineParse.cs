@@ -30,7 +30,7 @@ namespace CodeRefractor.Config
             InitializeOptimizationKindList(OptimizationKind.Global);
         }
 
-        static void InitializeOptimizationKindList(OptimizationKind optimizationKind)
+        private static void InitializeOptimizationKindList(OptimizationKind optimizationKind)
         {
             OptimizationLevelBase.SortedOptimizations[optimizationKind] = new List<OptimizationPassBase>();
         }
@@ -67,7 +67,7 @@ namespace CodeRefractor.Config
             SetOutputExeNameIfNoneSet();
         }
 
-        void SetOutputExeNameIfNoneSet()
+        private void SetOutputExeNameIfNoneSet()
         {
             if (!string.IsNullOrEmpty(ApplicationNativeExe)) return;
             var info = new FileInfo(ApplicationInputAssembly);
@@ -75,7 +75,7 @@ namespace CodeRefractor.Config
             ApplicationNativeExe = nameWithoutExtension + "_cr.exe";
         }
 
-        static void ShowHelp()
+        private static void ShowHelp()
         {
             var helpText =
                 @" Code Refractor v {0}
@@ -93,7 +93,7 @@ namespace CodeRefractor.Config
             Environment.Exit(0);
         }
 
-        static int HandleCompilerFlags(string[] args, int i)
+        private static int HandleCompilerFlags(string[] args, int i)
         {
             if (i + 1 >= args.Length) // the compiler type was not given as the extra argument.
             {
@@ -106,7 +106,7 @@ namespace CodeRefractor.Config
             return i + 1;
         }
 
-        static int HandleCppFlags(string[] args, int i)
+        private static int HandleCppFlags(string[] args, int i)
         {
             NativeCompilationUtils.CompilerOptions.OptimizationFlags = args[i + 1];
             return i + 1;

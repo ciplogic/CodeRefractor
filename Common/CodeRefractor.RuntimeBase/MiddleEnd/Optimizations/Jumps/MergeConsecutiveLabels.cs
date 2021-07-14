@@ -39,7 +39,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.Jumps
             }
         }
 
-        static void OptimizeConsecutiveLabels(LocalOperation[] operations, int jumpId, int jumpId2)
+        private static void OptimizeConsecutiveLabels(LocalOperation[] operations, int jumpId, int jumpId2)
         {
             for (var i = 0; i < operations.Length - 2; i++)
             {

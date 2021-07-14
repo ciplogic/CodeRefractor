@@ -15,9 +15,9 @@ using CodeRefractor.Optimizations;
 namespace CodeRefractor.MiddleEnd.Optimizations.SimpleDce
 {
     [Optimization(Category = OptimizationCategories.DeadCodeElimination)]
-class DeadStoreAssignment : OptimizationPassBase
+    internal class DeadStoreAssignment : OptimizationPassBase
     {
-        static readonly List<OperationKind> NoSideEffectsOperationKinds = new List<OperationKind>
+        private static readonly List<OperationKind> NoSideEffectsOperationKinds = new List<OperationKind>
         {
             OperationKind.Assignment,
             OperationKind.BinaryOperator,
@@ -51,7 +51,7 @@ class DeadStoreAssignment : OptimizationPassBase
             return true;
         }
 
-        static void RemoveUsages(LocalOperation[] localOperations, UseDefDescription useDef,
+        private static void RemoveUsages(LocalOperation[] localOperations, UseDefDescription useDef,
             Dictionary<LocalVariable, int> definitions)
         {
             for (var index = 0; index < localOperations.Length; index++)
@@ -66,7 +66,7 @@ class DeadStoreAssignment : OptimizationPassBase
             }
         }
 
-        void ComputeDefinitions(LocalOperation[] localOperations, Dictionary<LocalVariable, int> definitions)
+        private void ComputeDefinitions(LocalOperation[] localOperations, Dictionary<LocalVariable, int> definitions)
         {
             for (var index = 0; index < localOperations.Length; index++)
             {
@@ -78,7 +78,7 @@ class DeadStoreAssignment : OptimizationPassBase
             }
         }
 
-        List<int> BuildRemoveInstructions(LocalOperation[] localOperations,
+        private List<int> BuildRemoveInstructions(LocalOperation[] localOperations,
             Dictionary<LocalVariable, int> definitions)
         {
             var toRemove = new List<int>();

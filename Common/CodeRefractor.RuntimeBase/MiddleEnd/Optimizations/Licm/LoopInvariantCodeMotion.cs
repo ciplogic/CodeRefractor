@@ -15,7 +15,7 @@ using CodeRefractor.Optimizations;
 namespace CodeRefractor.MiddleEnd.Optimizations.Licm
 {
     [Optimization(Category = OptimizationCategories.CommonSubexpressionsElimination)]
-class LoopInvariantCodeMotion : ResultingGlobalOptimizationPass
+    internal class LoopInvariantCodeMotion : ResultingGlobalOptimizationPass
     {
         public override bool CheckPreconditions(CilMethodInterpreter midRepresentation, ClosureEntities closure)
         {
@@ -42,7 +42,7 @@ class LoopInvariantCodeMotion : ResultingGlobalOptimizationPass
             }
         }
 
-        static void PerformMoveInstructions(MetaMidRepresentation intermediateCode, int loopStart,
+        private static void PerformMoveInstructions(MetaMidRepresentation intermediateCode, int loopStart,
             List<int> allInvariantInstructions)
         {
             var localOps = intermediateCode.LocalOperations;
@@ -61,7 +61,7 @@ class LoopInvariantCodeMotion : ResultingGlobalOptimizationPass
             }
         }
 
-        static List<int> GetAllInvariantInstructions(MetaMidRepresentation intermediateCode, int loopStart,
+        private static List<int> GetAllInvariantInstructions(MetaMidRepresentation intermediateCode, int loopStart,
             int loopEnd, HashSet<LocalVariable> getAllDefinedVariables)
         {
             var useDef = intermediateCode.UseDef;
@@ -105,7 +105,7 @@ class LoopInvariantCodeMotion : ResultingGlobalOptimizationPass
             return result;
         }
 
-        static HashSet<LocalVariable> GetAllDefinedVariables(MetaMidRepresentation intermediateCode,
+        private static HashSet<LocalVariable> GetAllDefinedVariables(MetaMidRepresentation intermediateCode,
             int loopStart, int loopEnd)
         {
             var localOps = intermediateCode.UseDef.GetLocalOperations();

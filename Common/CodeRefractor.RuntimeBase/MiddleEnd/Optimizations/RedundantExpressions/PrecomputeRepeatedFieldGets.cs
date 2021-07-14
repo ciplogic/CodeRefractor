@@ -14,7 +14,7 @@ using CodeRefractor.Optimizations;
 namespace CodeRefractor.MiddleEnd.Optimizations.RedundantExpressions
 {
     [Optimization(Category = OptimizationCategories.CommonSubexpressionsElimination)]
-class PrecomputeRepeatedFieldGets : BlockOptimizationPass
+    internal class PrecomputeRepeatedFieldGets : BlockOptimizationPass
     {
         public override bool OptimizeBlock(CilMethodInterpreter midRepresentation, int startRange, int endRange,
             LocalOperation[] operations)
@@ -27,7 +27,7 @@ class PrecomputeRepeatedFieldGets : BlockOptimizationPass
             return ProcessOptimizeBlock(midRepresentation, getFieldOperations, localOperations);
         }
 
-        static bool ProcessOptimizeBlock(CilMethodInterpreter midRepresentation, int[] getFieldOperations,
+        private static bool ProcessOptimizeBlock(CilMethodInterpreter midRepresentation, int[] getFieldOperations,
             LocalOperation[] localOperations)
         {
             for (var i = 0; i < getFieldOperations.Length - 1; i++)
@@ -48,7 +48,7 @@ class PrecomputeRepeatedFieldGets : BlockOptimizationPass
             return false;
         }
 
-        static void ApplyOptimization(CilMethodInterpreter midRepresentation, int i, int j)
+        private static void ApplyOptimization(CilMethodInterpreter midRepresentation, int i, int j)
         {
             var localOps = midRepresentation.MidRepresentation.LocalOperations;
             var firstOperator = localOps[i].Get<GetField>();
@@ -65,14 +65,14 @@ class PrecomputeRepeatedFieldGets : BlockOptimizationPass
             localOps[j + 1] = destAssignment;
         }
 
-        static int[] FindGetFieldOperations(UseDefDescription useDef, int startRange, int endRange)
+        private static int[] FindGetFieldOperations(UseDefDescription useDef, int startRange, int endRange)
         {
             var getFieldIndexes = useDef.GetOperationsOfKind(OperationKind.GetField);
             var resultList = getFieldIndexes.Where(index => index >= startRange && index <= endRange).ToArray();
             return resultList;
         }
 
-        static bool AreDifferentOperators(GetField firstOperator, GetField secondOperator, int[] calls,
+        private static bool AreDifferentOperators(GetField firstOperator, GetField secondOperator, int[] calls,
             int i,
             int j, LocalOperation[] localOperations)
         {

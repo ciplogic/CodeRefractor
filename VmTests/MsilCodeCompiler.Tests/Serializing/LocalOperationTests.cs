@@ -4,7 +4,7 @@ using NUnit.Framework;
 namespace MsilCodeCompiler.Tests.Serializing
 {
     [TestFixture]
-class LocalOperationTests
+    internal class LocalOperationTests
     {
         [Test]
         public void CloneInstructions()

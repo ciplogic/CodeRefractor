@@ -8,7 +8,7 @@ using System.IO.Compression;
 
 namespace CodeRefractor.DataNode
 {
-    static class GzipExtractUtils
+    internal static class GzipExtractUtils
     {
         public static byte[] Compress(this byte[] sBytes)
         {

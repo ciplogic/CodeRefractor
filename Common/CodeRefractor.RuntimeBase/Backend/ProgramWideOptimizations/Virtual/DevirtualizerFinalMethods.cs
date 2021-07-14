@@ -29,7 +29,7 @@ namespace CodeRefractor.Backend.ProgramWideOptimizations.Virtual
             return result;
         }
 
-        static bool HandleInterpreterInstructions(CilMethodInterpreter interpreter, List<Type> usedTypes)
+        private static bool HandleInterpreterInstructions(CilMethodInterpreter interpreter, List<Type> usedTypes)
         {
             var useDef = interpreter.MidRepresentation.UseDef;
             var calls = useDef.GetOperationsOfKind(OperationKind.CallVirtual).ToList();

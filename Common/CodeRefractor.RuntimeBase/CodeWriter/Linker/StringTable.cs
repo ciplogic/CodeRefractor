@@ -9,22 +9,32 @@ using CodeRefractor.CodeWriter.Output;
 
 namespace CodeRefractor.CodeWriter.Linker
 {
-    public class StringTable
+    internal class StringTableData
     {
-        readonly Dictionary<string, int> _stringsDictionary = new Dictionary<string, int>();
-        readonly List<string> _table = new List<string>();
+        private readonly Dictionary<string, int> _stringsDictionary = new Dictionary<string, int>();
+        public List<string> Table { get; } = new List<string>();
 
         public int GetStringId(string text)
         {
             int result;
             if (_stringsDictionary.TryGetValue(text, out result)) return result;
-            result = _table.Count;
+            result = Table.Count;
             _stringsDictionary[text] = result;
-            _table.Add(text);
+            Table.Add(text);
             return result;
         }
+        
+    }
+    public class StringTable
+    {
+        private readonly StringTableData _stringTableData = new StringTableData();
 
-        static short[] TextData(string text)
+        public int GetStringId(string text)
+        {
+            return _stringTableData.GetStringId(text);
+        }
+
+        private static short[] TextData(string text)
         {
             var result = new short[text.Length + 1];
             for (var i = 0; i < text.Length; i++)
@@ -45,7 +55,7 @@ namespace CodeRefractor.CodeWriter.Linker
             var stringDataBuilder = new List<string>();
 
             var jump = 0;
-            foreach (var strItem in _table)
+            foreach (var strItem in _stringTableData.Table)
             {
                 sb.AppendFormat("_AddJumpAndLength({0}, {1});\n", jump, strItem.Length);
                 var itemTextData = TextData(strItem);
@@ -70,7 +80,7 @@ namespace CodeRefractor.CodeWriter.Linker
             return sb.ToString();
         }
 
-        static void AddTextToStringTable(List<string> stringDataBuilder, short[] itemTextData, string strItem)
+        private static void AddTextToStringTable(List<string> stringDataBuilder, short[] itemTextData, string strItem)
         {
             var itemsText = string.Join(", ", itemTextData);
             var commentedString = $"/* {strItem.ToEscapedString()} */";

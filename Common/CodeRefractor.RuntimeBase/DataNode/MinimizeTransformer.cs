@@ -9,8 +9,8 @@ namespace CodeRefractor.DataNode
 {
     public class MinimizeTransformer
     {
-        readonly Dict _dict = new Dict();
-        readonly Dict _elementsDict = new Dict();
+        private readonly Dict _dict = new Dict();
+        private readonly Dict _elementsDict = new Dict();
         public readonly List<byte> Result = new List<byte>();
 
         public byte[] Minimize(DynNode node, bool compress)
@@ -22,7 +22,7 @@ namespace CodeRefractor.DataNode
                 : resultArray.Compress();
         }
 
-        static int Bytes(int length)
+        private static int Bytes(int length)
         {
             var counter = 0;
             if (length == 0)
@@ -35,13 +35,13 @@ namespace CodeRefractor.DataNode
             return counter;
         }
 
-        void PushStringById(string item, Dict dict)
+        private void PushStringById(string item, Dict dict)
         {
             var id = dict.GetWordId(item);
             PushInt(id);
         }
 
-        void Process(DynNode node)
+        private void Process(DynNode node)
         {
             if (node.Name == "#text")
             {
@@ -65,7 +65,7 @@ namespace CodeRefractor.DataNode
             PushEvent(ExiLikeEvent.EndElement);
         }
 
-        void CreateOrUpdateItemWithText(string newText, ExiLikeEvent existingElement,
+        private void CreateOrUpdateItemWithText(string newText, ExiLikeEvent existingElement,
             ExiLikeEvent newElementEvent, Dict dict)
         {
             if (_dict.HasWord(newText))
@@ -79,17 +79,17 @@ namespace CodeRefractor.DataNode
             }
         }
 
-        void PushEvent(ExiLikeEvent exi)
+        private void PushEvent(ExiLikeEvent exi)
         {
             Result.Add((byte)(int)(exi));
         }
 
-        static byte[] StrAsBytes(string yourString)
+        private static byte[] StrAsBytes(string yourString)
         {
             return Encoding.UTF8.GetBytes(yourString);
         }
 
-        static byte[] IntAsBytes(int intValue, int byteCount)
+        private static byte[] IntAsBytes(int intValue, int byteCount)
         {
             var intBytes = new List<byte>();
             while (byteCount > 0)
@@ -101,19 +101,19 @@ namespace CodeRefractor.DataNode
             return intBytes.ToArray();
         }
 
-        void PushInt(int intValue)
+        private void PushInt(int intValue)
         {
             var byteCount = Bytes(intValue * 4);
             var length = IntAsBytes(intValue * 4 + byteCount - 1, byteCount);
             PushByteArray(length);
         }
 
-        void PushByteArray(byte[] length)
+        private void PushByteArray(byte[] length)
         {
             Result.AddRange(length);
         }
 
-        void PushEventString(ExiLikeEvent exi, string newText, Dict dict)
+        private void PushEventString(ExiLikeEvent exi, string newText, Dict dict)
         {
             PushEvent(exi);
             dict.AddWord(newText);
