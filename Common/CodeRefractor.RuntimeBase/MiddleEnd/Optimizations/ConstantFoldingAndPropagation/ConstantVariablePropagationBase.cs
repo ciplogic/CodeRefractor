@@ -28,11 +28,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation
 
         public static bool SameVariable(LocalVariable src, LocalVariable dest)
         {
-            return
-                src != null
-                && dest != null
-                && (src.Kind == dest.Kind
-                    && src.Id == dest.Id);
+            return src != null && dest != null && (src.Kind == dest.Kind && src.Id == dest.Id);
         }
     }
 }

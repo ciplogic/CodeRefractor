@@ -17,51 +17,56 @@ namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation
             var operations = interpreter.MidRepresentation.UseDef.GetLocalOperations();
             for (var i = 0; i < operations.Length - 1; i++)
             {
-                Assignment srcVariableDefinition;
-                var constValue = GetConstantFromOperation(operations[i], out srcVariableDefinition);
+                var constValue = GetConstantFromOperation(operations[i], out var srcVariableDefinition);
                 if (constValue == null)
                     continue;
-                for (var j = i + 1; j < operations.Length; j++)
+                PropagateForward(i, operations, srcVariableDefinition, constValue);
+            }
+        }
+
+        private void PropagateForward(int indexOp, LocalOperation[] operations, Assignment srcVariableDefinition,
+            ConstValue constValue)
+        {
+            for (var j = indexOp + 1; j < operations.Length; j++)
+            {
+                var destOperation = operations[j];
+                if (destOperation.Kind == OperationKind.Label)
+                    break;
+                if (destOperation.Kind == OperationKind.BranchOperator)
+                    break;
+                switch (destOperation.Kind)
                 {
-                    var destOperation = operations[j];
-                    if (destOperation.Kind == OperationKind.Label)
-                        break;
-                    if (destOperation.Kind == OperationKind.BranchOperator)
-                        break;
-                    switch (destOperation.Kind)
+                    case OperationKind.Assignment:
                     {
-                        case OperationKind.Assignment:
-                        {
-                            var destAssignment = (Assignment) destOperation;
-                            if (SameVariable(destAssignment.AssignedTo, srcVariableDefinition.AssignedTo))
-                                break;
-                            if (!SameVariable(destAssignment.Right as LocalVariable, srcVariableDefinition.AssignedTo))
-                                continue;
-                            destAssignment.Right = constValue;
-                            Result = true;
-                        }
+                        var destAssignment = (Assignment)destOperation;
+                        if (SameVariable(destAssignment.AssignedTo, srcVariableDefinition.AssignedTo))
                             break;
-                        case OperationKind.NewArray:
-                        {
-                            var destAssignment = (NewArrayObject) destOperation;
-                            var arrayCreationInfo = destAssignment;
-                            if (!SameVariable(arrayCreationInfo.ArrayLength as LocalVariable,
-                                srcVariableDefinition.AssignedTo))
-                                continue;
-                            arrayCreationInfo.ArrayLength = constValue;
-                            Result = true;
-                        }
-                            break;
-                        case OperationKind.SetField:
-                        {
-                            var destAssignment = (Assignment) destOperation;
-                            if (!SameVariable(destAssignment.Right as LocalVariable, srcVariableDefinition.AssignedTo))
-                                continue;
-                            destAssignment.Right = constValue;
-                            Result = true;
-                        }
-                            break;
+                        if (!SameVariable(destAssignment.Right as LocalVariable, srcVariableDefinition.AssignedTo))
+                            continue;
+                        destAssignment.Right = constValue;
+                        Result = true;
                     }
+                        break;
+                    case OperationKind.NewArray:
+                    {
+                        var destAssignment = (NewArrayObject)destOperation;
+                        var arrayCreationInfo = destAssignment;
+                        if (!SameVariable(arrayCreationInfo.ArrayLength as LocalVariable,
+                            srcVariableDefinition.AssignedTo))
+                            continue;
+                        arrayCreationInfo.ArrayLength = constValue;
+                        Result = true;
+                    }
+                        break;
+                    case OperationKind.SetField:
+                    {
+                        var destAssignment = (Assignment)destOperation;
+                        if (!SameVariable(destAssignment.Right as LocalVariable, srcVariableDefinition.AssignedTo))
+                            continue;
+                        destAssignment.Right = constValue;
+                        Result = true;
+                    }
+                        break;
                 }
             }
         }
