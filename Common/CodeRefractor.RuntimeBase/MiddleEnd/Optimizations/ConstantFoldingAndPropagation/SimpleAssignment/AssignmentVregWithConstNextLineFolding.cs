@@ -54,7 +54,7 @@ namespace CodeRefractor.MiddleEnd.Optimizations.ConstantFoldingAndPropagation.Si
             return true;
         }
 
-        private class ToFixAssignment
+        private struct ToFixAssignment
         {
             public int Index;
             public IdentifierValue RightValue;
